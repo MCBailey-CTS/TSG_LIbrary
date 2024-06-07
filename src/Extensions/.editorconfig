@@ -1,0 +1,11 @@
+root = true
+
+[*.cs]
+
+# IDE1006: Naming Styles
+dotnet_diagnostic.IDE1006.severity = none
+
+# IDE0008: Use explicit type
+csharp_style_var_for_built_in_types = true
+
+csharp_space_before_if_parentheses = false

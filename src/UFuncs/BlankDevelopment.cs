@@ -1,0 +1,168 @@
+﻿using System.Linq;
+using NXOpen;
+using NXOpen.GeometricUtilities;
+using NXOpen.UF;
+using TSG_Library.Attributes;
+using static TSG_Library.Extensions.Extensions_;
+using Selection = TSG_Library.Ui.Selection;
+
+namespace TSG_Library.UFuncs
+{
+    [UFunc("blank-development")]
+    [RevisionLog("Blank Development")]
+    [RevisionEntry("1.0", "2017", "06", "05")]
+    [Revision("1.0.1", "Revision Log Created for NX 11.")]
+    [RevisionEntry("1.1", "2017", "08", "22")]
+    [Revision("1.1.1", "Signed so it will run outside of CTS.")]
+    [RevisionEntry("11.1", "2023", "01", "09")]
+    [Revision("11.1.1", "Removed validation")]
+    public class BlankDevelopment : _UFunc
+    {
+        public override void execute()
+        {
+            session_.SetUndoMark(Session.MarkVisibility.Visible, "Develop Curve");
+            var lengthObjs = Selection.SelectCurves();
+
+            // get total length of selected lines
+            var addLength = lengthObjs.Select(selTag => (Curve)session_._GetTaggedObject(selTag.Tag))
+                .Select(selCurve => selCurve.GetLength())
+                .Sum();
+
+            // get user input for the line to develop
+            var cursorLocation = new Point3d();
+            var developObj = Selection.SelectSingleLine();
+
+            if (developObj is null)
+                return;
+
+            // get user selection for which end of the line to extend
+            double[] cursor = { cursorLocation.X, cursorLocation.Y, cursorLocation.Z };
+            AskPositionOnObject(developObj.Tag, cursor);
+            AskCloserToStartOrEnd(developObj.Tag, cursor);
+            // move closest point distance and direction
+            var devLine = (Line)session_._GetTaggedObject(developObj.Tag);
+            EditCurveLength(devLine, addLength, cursor);
+        }
+
+        private static void EditCurveLength(Line editLine, double editLength, double[] cursor)
+        {
+            var section1 = __work_part_.Sections.CreateSection(0.0095, 0.01, 0.5);
+            var builder = __work_part_.Features.CreateCurvelengthBuilder(null);
+
+            using (session_.using_do_update("Edit Curve Length"))
+            using (session_.using_builder_destroyer(builder))
+            {
+                builder.Section = section1;
+                builder.DistanceTolerance = 0.01;
+                builder.CurveOptions.Associative = false;
+                builder.CurveOptions.InputCurveOption = CurveOptions.InputCurve.Replace;
+                builder.CurvelengthData.ExtensionMethod = ExtensionMethod.Incremental;
+                builder.CurvelengthData.ExtensionSide = ExtensionSide.Symmetric;
+                builder.CurvelengthData.ExtensionDirection = ExtensionDirection.Natural;
+                section1.DistanceTolerance = 0.01;
+                section1.ChainingTolerance = 0.0095;
+                builder.CurvelengthData.SetStartDistance("0.0");
+                builder.CurvelengthData.SetEndDistance("0.0");
+                section1.SetAllowedEntityTypes(Section.AllowTypes.OnlyCurves);
+                builder.CurvelengthData.ExtensionSide = ExtensionSide.StartEnd;
+                var curves1 = new Curve[1];
+                var line1 = editLine;
+                curves1[0] = line1;
+                var curveDumbRule1 = __work_part_.ScRuleFactory.CreateRuleCurveDumb(curves1);
+                section1.AllowSelfIntersection(true);
+                var rules1 = new SelectionIntentRule[1];
+                rules1[0] = curveDumbRule1;
+                var helpPoint1 = new Point3d(cursor[0], cursor[1], cursor[2]);
+                section1.AddToSection(rules1, line1, null, null, helpPoint1, Section.Mode.Create, false);
+                builder.CurvelengthData.SetStartDistance("0");
+                builder.CurvelengthData.SetEndDistance("0");
+                builder.CurvelengthData.SetStartDistance("0");
+                builder.CurvelengthData.SetEndDistance("0");
+                builder.CurvelengthData.SetStartDistance(editLength.ToString());
+                builder.CurvelengthData.SetEndDistance("0");
+                builder.CurveOptions.InputCurveOption = CurveOptions.InputCurve.Retain;
+                builder.Commit();
+                builder.GetCommittedObjects();
+            }
+        }
+
+        private static void AskCloserToStartOrEnd(Tag curve, double[] cursorLocation)
+        {
+            var limits = new double[2];
+            var startPoint = new double[3];
+            var endPoint = new double[3];
+            var derivatives = new double[3];
+            var closestPoint = new double[3];
+            TheUFSession.Eval.Initialize(curve, out var evaluator);
+            TheUFSession.Eval.AskLimits(evaluator, limits);
+            TheUFSession.Eval.Evaluate(evaluator, 0, limits[0], startPoint, derivatives);
+            TheUFSession.Eval.Evaluate(evaluator, 0, limits[1], endPoint, derivatives);
+            TheUFSession.Eval.EvaluateClosestPoint(evaluator, cursorLocation, out _, closestPoint);
+            TheUFSession.Eval.Free(evaluator);
+            TheUFSession.Vec3.Distance(closestPoint, startPoint, out _);
+            TheUFSession.Vec3.Distance(closestPoint, endPoint, out _);
+        }
+
+        private static void MapViewToAbsolute(ref double[] cursorLocation)
+        {
+            double[] destinationCsys = { 0, 0, 0, 1, 0, 0, 0, 1, 0 };
+            double[] refViewCsys = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            double[] outputMatrix = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            TheUFSession.Ui.AskLastPickedView(out var viewName);
+            View lastViewPicked = __work_part_.ModelingViews.FindObject(viewName);
+            refViewCsys[3] = lastViewPicked.Matrix.Xx;
+            refViewCsys[4] = lastViewPicked.Matrix.Xy;
+            refViewCsys[5] = lastViewPicked.Matrix.Xz;
+            refViewCsys[6] = lastViewPicked.Matrix.Yx;
+            refViewCsys[7] = lastViewPicked.Matrix.Yy;
+            refViewCsys[8] = lastViewPicked.Matrix.Yz;
+            refViewCsys[9] = lastViewPicked.Matrix.Zx;
+            refViewCsys[10] = lastViewPicked.Matrix.Zy;
+            refViewCsys[11] = lastViewPicked.Matrix.Zz;
+            TheUFSession.Trns.CreateCsysMappingMatrix(refViewCsys, destinationCsys, outputMatrix, out _);
+            TheUFSession.Trns.MapPosition(cursorLocation, outputMatrix);
+        }
+
+        private static void MapAbsoluteToView(ref double[] cursorLocation)
+        {
+            double[] destinationCsys = { 0, 0, 0, 1, 0, 0, 0, 1, 0 };
+            double[] refViewCsys = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            double[] outputMatrix = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            TheUFSession.Ui.AskLastPickedView(out var viewName);
+            View lastViewPicked = __work_part_.ModelingViews.FindObject(viewName);
+            refViewCsys[3] = lastViewPicked.Matrix.Xx;
+            refViewCsys[4] = lastViewPicked.Matrix.Xy;
+            refViewCsys[5] = lastViewPicked.Matrix.Xz;
+            refViewCsys[6] = lastViewPicked.Matrix.Yx;
+            refViewCsys[7] = lastViewPicked.Matrix.Yy;
+            refViewCsys[8] = lastViewPicked.Matrix.Yz;
+            refViewCsys[9] = lastViewPicked.Matrix.Zx;
+            refViewCsys[10] = lastViewPicked.Matrix.Zy;
+            refViewCsys[11] = lastViewPicked.Matrix.Zz;
+            TheUFSession.Trns.CreateCsysMappingMatrix(destinationCsys, refViewCsys, outputMatrix, out _);
+            TheUFSession.Trns.MapPosition(cursorLocation, outputMatrix);
+        }
+
+        private static void AskPositionOnObject(Tag obj, double[] cursorLocation)
+        {
+            double[] cp = { 0, 0, 0 };
+            UFCurve.Line lp;
+            var startPoint = new double[3];
+            var endPoint = new double[3];
+            lp.start_point = startPoint;
+            lp.end_point = endPoint;
+            MapAbsoluteToView(ref cursorLocation);
+            lp.start_point[0] = cursorLocation[0];
+            lp.start_point[1] = cursorLocation[1];
+            lp.start_point[2] = cursorLocation[2] + 10000;
+            lp.end_point[0] = cursorLocation[0];
+            lp.end_point[1] = cursorLocation[1];
+            lp.end_point[2] = cursorLocation[2] - 10000;
+            MapViewToAbsolute(ref lp.start_point);
+            MapViewToAbsolute(ref lp.end_point);
+            TheUFSession.Curve.CreateLine(ref lp, out var aLine);
+            TheUFSession.Modl.AskMinimumDist(obj, aLine, 0, cp, 0, cp, out _, cursorLocation, cp);
+            TheUFSession.Obj.DeleteObject(aLine);
+        }
+    }
+}
