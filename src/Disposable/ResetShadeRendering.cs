@@ -1,6 +1,6 @@
 ﻿using System;
 using NXOpen.Preferences;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.Disposable
 {

@@ -5,7 +5,7 @@ using NXOpen.Assemblies;
 using NXOpen.Features;
 using TSG_Library.Disposable;
 using TSG_Library.Geom;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 {
@@ -62,7 +62,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                                 foreach (var originalFace in originalFaces)
                                 {
-                                    if (!dict.ContainsKey(originalFace))
+                                    if(!dict.ContainsKey(originalFace))
                                         throw new MirrorException("Extrude, dictionary did not contain FACE as a key.");
 
                                     var mirrorFace = (Face)dict[originalFace];
@@ -70,7 +70,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
                                     mirrorFaces.Add(mirrorFace);
                                 }
 
-                                if (mirrorFaces.Count == 0)
+                                if(mirrorFaces.Count == 0)
                                     throw new MirrorException("Extrude: EdgeBoundaryRule did not have enough faces.");
 
                                 mirrorRules.Add(mirroredComp._Prototype().ScRuleFactory
@@ -83,7 +83,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
                 }
             }
 
-            if (mirrorRules.Count == 0)
+            if(mirrorRules.Count == 0)
                 throw new MirrorException("Did not have enough rules for a commit.");
 
             _WorkPart = mirroredComp._Prototype();

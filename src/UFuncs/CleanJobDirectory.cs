@@ -7,9 +7,8 @@ using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Assemblies;
 using TSG_Library.Attributes;
-using TSG_Library.Extensions;
 using TSG_Library.Utilities;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs
 {
@@ -45,7 +44,7 @@ namespace TSG_Library.UFuncs
             // Creates an instance of GFolderWithCtsNumber using the current Displayed Part as it's source.
             var folder = GFolder.create(__work_part_.FullPath);
 
-            if (folder is null)
+            if(folder is null)
             {
                 print_("The current work part does not reside within a GFolder.");
                 return;
@@ -54,12 +53,12 @@ namespace TSG_Library.UFuncs
             var result = MessageBox.Show(@"Are you sure you want to run Clean Job Directory?", @"Alert",
                 MessageBoxButtons.YesNo);
 
-            if (result == DialogResult.No)
+            if(result == DialogResult.No)
                 return;
 
             var match = Regex.Match(__display_part_.Leaf, Regex_Detail);
 
-            if (!match.Success || match.Groups[3].Value != "000")
+            if(!match.Success || match.Groups[3].Value != "000")
                 throw new InvalidOperationException(
                     "Clean Job Directory must be ran from a -000 not located in a 900 folderWithCtsNumber.");
 
@@ -89,7 +88,7 @@ namespace TSG_Library.UFuncs
 
             // Gets the directory the Displayed Part resides in.
             var displayedPartDirectory = Path.GetDirectoryName(__display_part_.FullPath);
-            if (displayedPartDirectory == null) throw new DirectoryNotFoundException($"{__display_part_.FullPath}");
+            if(displayedPartDirectory == null) throw new DirectoryNotFoundException($"{__display_part_.FullPath}");
             var partFilesInDirectory =
                 Directory.GetFiles(displayedPartDirectory, "*.prt", SearchOption.TopDirectoryOnly);
 
@@ -100,7 +99,7 @@ namespace TSG_Library.UFuncs
                 var flag = hashedAssemblyPartPaths.Contains(path);
                 TheUFSession.UF.PrintSyslog(
                     $"Checking if {path} is in displayed assembly. Result: {flag}.{Environment.NewLine}", false);
-                if (flag) continue;
+                if(flag) continue;
                 flag = fileCleanUpSet.Add(path);
                 TheUFSession.UF
                     .PrintSyslog(
@@ -108,7 +107,7 @@ namespace TSG_Library.UFuncs
                         false);
             }
 
-            if (fileCleanUpSet.Count == 0)
+            if(fileCleanUpSet.Count == 0)
             {
                 TheUFSession.UF
                     .PrintSyslog(
@@ -129,7 +128,7 @@ namespace TSG_Library.UFuncs
 
 
             var directoryExists = Directory.Exists(cleanupDirectory);
-            if (!directoryExists)
+            if(!directoryExists)
             {
                 TheUFSession.UF.PrintSyslog($"Directory {cleanupDirectory} does not exist.{Environment.NewLine}",
                     false);
@@ -144,7 +143,7 @@ namespace TSG_Library.UFuncs
             for (var i = 0;; i++)
             {
                 var tempPath = $"{cleanupDirectory}\\{startDirectory}-{i}-Cleanup.7z";
-                if (File.Exists(tempPath)) continue;
+                if(File.Exists(tempPath)) continue;
                 zipPath = tempPath;
                 break;
             }
@@ -164,17 +163,17 @@ namespace TSG_Library.UFuncs
 
         private static IEnumerable<Component> Find(Component snapComp)
         {
-            if (snapComp is null)
+            if(snapComp is null)
                 throw new ArgumentNullException(nameof(snapComp));
 
             var nxComponent = snapComp;
 
-            if (!(nxComponent.Prototype is Part) && !nxComponent.IsSuppressed)
+            if(!(nxComponent.Prototype is Part) && !nxComponent.IsSuppressed)
                 throw new ArgumentException(
                     $@"Please fully load your assembly. {snapComp.DisplayName}{snapComp.OwningComponent.DisplayName} .",
                     nameof(snapComp));
 
-            if (nxComponent.IsSuppressed)
+            if(nxComponent.IsSuppressed)
                 yield break;
 
             yield return snapComp;

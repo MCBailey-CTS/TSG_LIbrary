@@ -4,7 +4,7 @@ using System.Linq;
 using NXOpen;
 using NXOpen.UF;
 using TSG_Library.Attributes;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs
 {
@@ -18,7 +18,7 @@ namespace TSG_Library.UFuncs
 
         public override void execute()
         {
-            if (Session.GetSession().Parts.Display is null)
+            if(Session.GetSession().Parts.Display is null)
             {
                 print_("There is no displayed part loaded");
                 return;
@@ -30,7 +30,7 @@ namespace TSG_Library.UFuncs
 
             var leaf = display.Leaf.ToLower();
 
-            if (!leaf.EndsWith("-layout"))
+            if(!leaf.EndsWith("-layout"))
             {
                 print_("Layout Refset can only be used on layouts.");
                 return;
@@ -54,11 +54,11 @@ namespace TSG_Library.UFuncs
                     .Cast<NXObject>()
                     .ToArray();
 
-                if (objects_to_add.Length > 0)
+                if(objects_to_add.Length > 0)
                 {
                     var body_refset = display.GetAllReferenceSets().SingleOrDefault(set => set.Name == "BODY");
 
-                    if (body_refset is null)
+                    if(body_refset is null)
                     {
                         body_refset = display.CreateReferenceSet();
                         body_refset.SetName("BODY");
@@ -91,12 +91,12 @@ namespace TSG_Library.UFuncs
                     .Cast<NXObject>()
                     .ToArray();
 
-                if (objects_to_add.Length > 0)
+                if(objects_to_add.Length > 0)
                 {
                     var body_no_slug_refset =
                         display.GetAllReferenceSets().SingleOrDefault(set => set.Name == "BODY_NO_SLUG");
 
-                    if (body_no_slug_refset is null)
+                    if(body_no_slug_refset is null)
                     {
                         body_no_slug_refset = display.CreateReferenceSet();
                         body_no_slug_refset.SetName("BODY_NO_SLUG");
@@ -124,12 +124,12 @@ namespace TSG_Library.UFuncs
                     .Cast<NXObject>()
                     .ToArray();
 
-                if (lwr3dObjects.Length > 0)
+                if(lwr3dObjects.Length > 0)
                 {
                     var lwr3dRefset = display.GetAllReferenceSets()
                         .SingleOrDefault(refset => refset.Name == lwr_3d_name);
 
-                    if (lwr3dRefset is null)
+                    if(lwr3dRefset is null)
                     {
                         lwr3dRefset = display.CreateReferenceSet();
                         lwr3dRefset.SetName(lwr_3d_name);
@@ -157,12 +157,12 @@ namespace TSG_Library.UFuncs
                     .Cast<NXObject>()
                     .ToArray();
 
-                if (upr3dObjects.Length > 0)
+                if(upr3dObjects.Length > 0)
                 {
                     var upr3dRefset = display.GetAllReferenceSets()
                         .SingleOrDefault(refset => refset.Name == upr_3d_name);
 
-                    if (upr3dRefset is null)
+                    if(upr3dRefset is null)
                     {
                         upr3dRefset = display.CreateReferenceSet();
                         upr3dRefset.SetName(upr_3d_name);
@@ -190,12 +190,12 @@ namespace TSG_Library.UFuncs
                     .Cast<NXObject>()
                     .ToArray();
 
-                if (pad3dObjects.Length > 0)
+                if(pad3dObjects.Length > 0)
                 {
                     var pad3dRefset = display.GetAllReferenceSets()
                         .SingleOrDefault(refset => refset.Name == pad_3d_name);
 
-                    if (pad3dRefset is null)
+                    if(pad3dRefset is null)
                     {
                         pad3dRefset = display.CreateReferenceSet();
                         pad3dRefset.SetName(pad_3d_name);
@@ -223,12 +223,12 @@ namespace TSG_Library.UFuncs
                     .Cast<NXObject>()
                     .ToArray();
 
-                if (pad3dObjects.Length > 0)
+                if(pad3dObjects.Length > 0)
                 {
                     var pad3dRefset = display.GetAllReferenceSets()
                         .SingleOrDefault(refset => refset.Name == pad_3d_name);
 
-                    if (pad3dRefset is null)
+                    if(pad3dRefset is null)
                     {
                         pad3dRefset = display.CreateReferenceSet();
                         pad3dRefset.SetName(pad_3d_name);
@@ -256,12 +256,12 @@ namespace TSG_Library.UFuncs
                     .Cast<NXObject>()
                     .ToArray();
 
-                if (pad3dObjects.Length > 0)
+                if(pad3dObjects.Length > 0)
                 {
                     var pad3dRefset = display.GetAllReferenceSets()
                         .SingleOrDefault(refset => refset.Name == pad_3d_name);
 
-                    if (pad3dRefset is null)
+                    if(pad3dRefset is null)
                     {
                         pad3dRefset = display.CreateReferenceSet();
                         pad3dRefset.SetName(pad_3d_name);
@@ -289,12 +289,12 @@ namespace TSG_Library.UFuncs
                     .Cast<NXObject>()
                     .ToArray();
 
-                if (pad3dObjects.Length > 0)
+                if(pad3dObjects.Length > 0)
                 {
                     var pad3dRefset = display.GetAllReferenceSets()
                         .SingleOrDefault(refset => refset.Name == pad_3d_name);
 
-                    if (pad3dRefset is null)
+                    if(pad3dRefset is null)
                     {
                         pad3dRefset = display.CreateReferenceSet();
                         pad3dRefset.SetName(pad_3d_name);
@@ -322,12 +322,12 @@ namespace TSG_Library.UFuncs
                     .Cast<NXObject>()
                     .ToArray();
 
-                if (pad3dObjects.Length > 0)
+                if(pad3dObjects.Length > 0)
                 {
                     var pad3dRefset = display.GetAllReferenceSets()
                         .SingleOrDefault(refset => refset.Name == pad_3d_name);
 
-                    if (pad3dRefset is null)
+                    if(pad3dRefset is null)
                     {
                         pad3dRefset = display.CreateReferenceSet();
                         pad3dRefset.SetName(pad_3d_name);
@@ -361,10 +361,10 @@ namespace TSG_Library.UFuncs
                 var refset = session_.Parts.Display.GetAllReferenceSets()
                     .SingleOrDefault(__r => __r.Name == refset_name);
 
-                if (refset is null)
+                if(refset is null)
                     continue;
 
-                if (refset.AskAllDirectMembers().Length == 0 && refset.AskMembersInReferenceSet().Length == 0)
+                if(refset.AskAllDirectMembers().Length == 0 && refset.AskMembersInReferenceSet().Length == 0)
                     refset.OwningPart.DeleteReferenceSet(refset);
             }
 

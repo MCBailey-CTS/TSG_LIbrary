@@ -14,7 +14,7 @@ namespace TSG_Library.Disposable
 
         public void Dispose()
         {
-            if (__handle.IsAllocated)
+            if(__handle.IsAllocated)
                 __handle.Free();
         }
     }

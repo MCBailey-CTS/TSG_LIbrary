@@ -33,11 +33,11 @@ namespace TSG_Library.Forms
         {
             var array1 = components.ToArray();
 
-            if (!array1.Any())
+            if(!array1.Any())
                 throw new ArgumentOutOfRangeException(nameof(components));
 
             var array2 = MergeStrings(array1).ToArray();
-            if (array1.Length == 1)
+            if(array1.Length == 1)
             {
                 var strArray = new string[2]
                 {
@@ -60,7 +60,7 @@ namespace TSG_Library.Forms
         {
             get
             {
-                if (!Session.GetSession().ListingWindow.IsOpen)
+                if(!Session.GetSession().ListingWindow.IsOpen)
                     Session.GetSession().ListingWindow.Open();
                 return Session.GetSession().ListingWindow;
             }
@@ -72,7 +72,7 @@ namespace TSG_Library.Forms
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-            if (lstBox.SelectedIndex < 0)
+            if(lstBox.SelectedIndex < 0)
                 return;
             SelectedReferenceSetName = lstBox.Text;
             IsSelected = true;
@@ -115,9 +115,9 @@ namespace TSG_Library.Forms
                 }).Select(_param0 => TextRenderer.MeasureText(_param0.str, _param0.font)).Select(size => size.Width)
                 .Concat(new int[1]).Max();
             lstBox.Width = num + 20 < 156 ? 156 : num + 20;
-            if (array.Length > 40)
+            if(array.Length > 40)
                 lstBox.Height = lstBox.ItemHeight * 41;
-            else if (array.Length < 10)
+            else if(array.Length < 10)
                 lstBox.Height = lstBox.ItemHeight * 10;
             else
                 lstBox.Height = lstBox.ItemHeight * (array.Length + 1);
@@ -152,7 +152,7 @@ namespace TSG_Library.Forms
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && components != null)
+            if(disposing && components != null)
                 components.Dispose();
             base.Dispose(disposing);
         }

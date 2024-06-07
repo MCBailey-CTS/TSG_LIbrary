@@ -24,10 +24,10 @@ namespace TSG_Library.Utilities
 
         public void WaitForExit()
         {
-            if (_process is null)
+            if(_process is null)
                 throw new ArgumentNullException(nameof(_process));
 
-            if (!_started)
+            if(!_started)
                 throw new InvalidOperationException("Zip process hasn't been started yet.");
 
             _process.WaitForExit();

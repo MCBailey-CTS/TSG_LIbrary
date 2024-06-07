@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 using NXOpen;
-using TSG_Library.Extensions;
 using TSG_Library.Utilities;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
@@ -20,7 +19,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
         {
             var folder = GFolder.create_or_null(part);
 
-            if (!(folder is null))
+            if(!(folder is null))
             {
                 result_node = part.__TreeNode()._SetText($"{part.Leaf} -> not in folder");
                 return false;
@@ -34,7 +33,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
             };
 
             foreach (var str in regexes)
-                if (part.FullPath.ToLower().StartsWith(str.ToLower()))
+                if(part.FullPath.ToLower().StartsWith(str.ToLower()))
                 {
                     result_node = part.__TreeNode();
                     return true;

@@ -11,9 +11,8 @@ using NXOpen.Layer;
 using NXOpen.UF;
 using NXOpen.Utilities;
 using TSG_Library.Attributes;
-using TSG_Library.Extensions;
 using TSG_Library.Utilities;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 using static TSG_Library.UFuncs._UFunc;
 using Selection = TSG_Library.Ui.Selection;
 
@@ -144,10 +143,10 @@ namespace TSG_Library.UFuncs
         {
             get
             {
-                if (chkHistoryType.Checked)
+                if(chkHistoryType.Checked)
                     return MathdataType.History;
 
-                if (chkMasterType.Checked)
+                if(chkMasterType.Checked)
                     return MathdataType.Master;
 
                 chkHistoryType.Checked = true;
@@ -160,10 +159,10 @@ namespace TSG_Library.UFuncs
         {
             get
             {
-                if (rdoR.Checked)
+                if(rdoR.Checked)
                     return DataLevelType1.Revision;
 
-                if (rdoS.Checked)
+                if(rdoS.Checked)
                     return DataLevelType1.Study;
 
                 rdoR.Checked = true;
@@ -196,7 +195,7 @@ namespace TSG_Library.UFuncs
 
                     var rootComponent = __display_part_.__RootComponentOrNull();
 
-                    if (rootComponent is null)
+                    if(rootComponent is null)
                     {
                         txtDataLevel.Text = string.Empty;
                         break;
@@ -208,27 +207,27 @@ namespace TSG_Library.UFuncs
 
                     foreach (var child in rootComponent.GetChildren())
                     {
-                        if (child.IsSuppressed) continue;
+                        if(child.IsSuppressed) continue;
 
-                        if (!(child.Prototype is Part prototype)) continue;
+                        if(!(child.Prototype is Part prototype)) continue;
 
-                        if (!Regex.IsMatch(child.DisplayName, regexString, RegexOptions.IgnoreCase)) continue;
+                        if(!Regex.IsMatch(child.DisplayName, regexString, RegexOptions.IgnoreCase)) continue;
 
                         var rootMasterHistory = prototype.__RootComponentOrNull();
 
-                        if (rootMasterHistory is null) continue;
+                        if(rootMasterHistory is null) continue;
 
                         foreach (var descendant in rootMasterHistory.GetChildren())
                         {
                             var match = Regex.Match(descendant.DisplayName, RLevel, RegexOptions.IgnoreCase);
 
-                            if (!match.Success) continue;
+                            if(!match.Success) continue;
 
                             var rLevelNumber = match.Groups["level"].Value;
 
                             identifier = match.Groups["identifier"].Value;
 
-                            if (int.Parse(rLevelNumber) > int.Parse(maxRLevelString))
+                            if(int.Parse(rLevelNumber) > int.Parse(maxRLevelString))
                                 maxRLevelString = rLevelNumber;
                         }
                     }
@@ -250,20 +249,20 @@ namespace TSG_Library.UFuncs
 
         private void CheckChanged(object sender, EventArgs e)
         {
-            if (sender == rdoR)
+            if(sender == rdoR)
             {
                 SetRevisionLevel();
             }
-            else if (sender == rdoS)
+            else if(sender == rdoS)
             {
                 SetRevisionLevel();
             }
-            else if (sender == chkMasterType && chkMasterType.Checked)
+            else if(sender == chkMasterType && chkMasterType.Checked)
             {
                 chkHistoryType.Checked = false;
                 Reset();
             }
-            else if (sender == chkHistoryType && chkHistoryType.Checked)
+            else if(sender == chkHistoryType && chkHistoryType.Checked)
             {
                 chkMasterType.Checked = false;
                 Reset();
@@ -274,9 +273,9 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if (sender == btnReset)
+                if(sender == btnReset)
                     Reset();
-                else if (sender == btnCreate)
+                else if(sender == btnCreate)
                     foreach (var master in _selectedMasters)
                         using (session_.using_display_part_reset())
                         {
@@ -316,10 +315,10 @@ namespace TSG_Library.UFuncs
             foreach (var tempMaster in FindMasters(__display_part_, MathdataType1))
                 tempMaster.Unblank();
 
-            if (selectedBody is null)
+            if(selectedBody is null)
                 return;
 
-            if (selectedBody.IsOccurrence)
+            if(selectedBody.IsOccurrence)
             {
                 print_("You cannot select an occurrence body.");
                 return;
@@ -336,7 +335,7 @@ namespace TSG_Library.UFuncs
 
         private void Mouse_Enter(object sender, EventArgs e)
         {
-            if (sender != lstMasters) return;
+            if(sender != lstMasters) return;
 
             // Get the position that the mouse is currently over
             var cursorPoint = Cursor.Position;
@@ -345,11 +344,11 @@ namespace TSG_Library.UFuncs
 
             var itemIndex = lstMasters.IndexFromPoint(cursorPoint);
 
-            if (itemIndex < 0) return;
+            if(itemIndex < 0) return;
 
             var item = (ListItem)lstMasters.Items[itemIndex];
 
-            if (_overTag != NXOpen.Tag.Null)
+            if(_overTag != NXOpen.Tag.Null)
                 TagMouseOff?.Invoke(this, _overTag);
 
             TagMouseOn?.Invoke(this, item.Tag);
@@ -359,7 +358,7 @@ namespace TSG_Library.UFuncs
 
         private void Mouse_Move(object sender, MouseEventArgs e)
         {
-            if (sender != lstMasters) return;
+            if(sender != lstMasters) return;
 
             // Get the position that the mouse is currently over
             var cursorPoint = Cursor.Position;
@@ -368,9 +367,9 @@ namespace TSG_Library.UFuncs
 
             var itemIndex = lstMasters.IndexFromPoint(cursorPoint);
 
-            if (itemIndex < 0)
+            if(itemIndex < 0)
             {
-                if (_overTag != NXOpen.Tag.Null)
+                if(_overTag != NXOpen.Tag.Null)
                     TagMouseOff?.Invoke(this, _overTag);
 
                 _overTag = NXOpen.Tag.Null;
@@ -383,9 +382,9 @@ namespace TSG_Library.UFuncs
             // valid masters/items in the control.
             var item = (ListItem)lstMasters.Items[itemIndex];
 
-            if (_overTag == item.Tag) return;
+            if(_overTag == item.Tag) return;
 
-            if (_overTag != NXOpen.Tag.Null)
+            if(_overTag != NXOpen.Tag.Null)
                 TagMouseOff?.Invoke(this, _overTag);
 
             TagMouseOn?.Invoke(this, item.Tag);
@@ -395,7 +394,7 @@ namespace TSG_Library.UFuncs
 
         private void Mouse_Leave(object sender, EventArgs e)
         {
-            if (_overTag != NXOpen.Tag.Null)
+            if(_overTag != NXOpen.Tag.Null)
                 TagMouseOff?.Invoke(this, _overTag);
         }
 
@@ -429,7 +428,7 @@ namespace TSG_Library.UFuncs
             {
                 var display = Session.GetSession().Parts.Display;
 
-                if (display is null)
+                if(display is null)
                 {
                     print_("There is no display part");
                     return;
@@ -437,15 +436,15 @@ namespace TSG_Library.UFuncs
 
                 var folder = GFolder.create(display.FullPath);
 
-                if (!Directory.Exists(folder.dir_math_data))
+                if(!Directory.Exists(folder.dir_math_data))
                 {
                     print_($"GFolder: '{folder.dir_job}' doesn't have a Mathdata folder.");
                     return;
                 }
 
-                if (!rdoR.Checked && !rdoS.Checked)
+                if(!rdoR.Checked && !rdoS.Checked)
                     rdoR.Checked = true;
-                if (!chkHistoryType.Checked && !chkMasterType.Checked)
+                if(!chkHistoryType.Checked && !chkMasterType.Checked)
                     chkMasterType.Checked = true;
 
                 var mathdataType = chkHistoryType.Checked ? MathdataType.History : MathdataType.Master;
@@ -481,7 +480,7 @@ namespace TSG_Library.UFuncs
 
                         var rootComponent = __display_part_.__RootComponentOrNull();
 
-                        if (rootComponent is null)
+                        if(rootComponent is null)
                         {
                             txtDataLevel.Text = string.Empty;
                             break;
@@ -491,29 +490,29 @@ namespace TSG_Library.UFuncs
 
                         foreach (var child in rootComponent.GetChildren())
                         {
-                            if (child.IsSuppressed)
+                            if(child.IsSuppressed)
                                 continue;
 
-                            if (!(child.Prototype is Part prototype))
+                            if(!(child.Prototype is Part prototype))
                                 continue;
 
-                            if (!Regex.IsMatch(child.DisplayName, regexString, RegexOptions.IgnoreCase))
+                            if(!Regex.IsMatch(child.DisplayName, regexString, RegexOptions.IgnoreCase))
                                 continue;
 
                             var rootMasterHistory = prototype.__RootComponentOrNull();
 
-                            if (rootMasterHistory is null)
+                            if(rootMasterHistory is null)
                                 continue;
 
                             foreach (var descendant in rootMasterHistory.GetChildren())
                             {
                                 var match = Regex.Match(descendant.DisplayName, RLevel, RegexOptions.IgnoreCase);
 
-                                if (!match.Success) continue;
+                                if(!match.Success) continue;
 
                                 var rLevelNumber = match.Groups["level"].Value;
 
-                                if (int.Parse(rLevelNumber) > int.Parse(maxRLevelString))
+                                if(int.Parse(rLevelNumber) > int.Parse(maxRLevelString))
                                     maxRLevelString = rLevelNumber;
                             }
                         }
@@ -542,7 +541,7 @@ namespace TSG_Library.UFuncs
                 Hide();
                 var selectedIndex = lstMasters.SelectedIndex;
 
-                if (selectedIndex < 0 || selectedIndex >= lstMasters.Items.Count) return;
+                if(selectedIndex < 0 || selectedIndex >= lstMasters.Items.Count) return;
                 var selectedMaster = (ListItem)lstMasters.Items[selectedIndex];
 
                 TagClicked?.Invoke(this, selectedMaster.Tag);
@@ -563,9 +562,9 @@ namespace TSG_Library.UFuncs
             var regexString = mathdataType == MathdataType.History ? Regex_History : Regex_Master;
 
             foreach (var child in simulation.ComponentAssembly.RootComponent?.GetChildren() ?? new Component[0])
-                if (Regex.IsMatch(child.DisplayName, regexString))
+                if(Regex.IsMatch(child.DisplayName, regexString))
                 {
-                    if (simulation.Layers.GetState(child.Layer) != State.WorkLayer)
+                    if(simulation.Layers.GetState(child.Layer) != State.WorkLayer)
                         simulation.Layers.SetState(child.Layer, State.Selectable);
 
                     // Un-blanks the master.
@@ -594,19 +593,19 @@ namespace TSG_Library.UFuncs
                 var directoryName = Path.GetFileNameWithoutExtension(directory);
 
                 // If the {directoryName} is null, then we can continue.
-                if (directoryName is null) continue;
+                if(directoryName is null) continue;
 
                 // Matches the {directoryName}.
                 var match = Regex.Match(directoryName, ProposalRegex);
 
                 // If the {match} is not successful, then we can continue.
-                if (!match.Success) continue;
+                if(!match.Success) continue;
 
                 // Gets the proposal level from the directory.
                 var proposalLevel = int.Parse(match.Groups["proposalLevel"].Value);
 
                 // If the {proposalLevel} is greater than the {currentProposalLevel}, then we can set the {currentProposalLevel} to the {proposalLevel}.
-                if (currentProposalLevel < proposalLevel)
+                if(currentProposalLevel < proposalLevel)
                     currentProposalLevel = proposalLevel;
             }
 
@@ -617,16 +616,16 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if (partPath == null)
+                if(partPath == null)
                     throw new ArgumentNullException(nameof(partPath));
 
-                if (stepPath == null)
+                if(stepPath == null)
                     throw new ArgumentNullException(nameof(stepPath));
 
-                if (!File.Exists(partPath))
+                if(!File.Exists(partPath))
                     throw new ArgumentException(@"Path to part does not exist.", nameof(partPath));
 
-                if (File.Exists(stepPath))
+                if(File.Exists(stepPath))
                     throw new ArgumentException(@"Path for Step file already exists.", nameof(stepPath));
 
 
@@ -651,7 +650,7 @@ namespace TSG_Library.UFuncs
                 stepCreator.Commit();
                 session_.DeleteUndoMark(undoMarkId2, null);
 
-                if (wait)
+                if(wait)
                     print_(File.Exists(stepPath)
                         ? $"Successfully created \"{stepPath}\"."
                         : $"Unsuccessfully created \"{stepPath}\".");
@@ -672,11 +671,11 @@ namespace TSG_Library.UFuncs
 
             var directoryName = Path.GetDirectoryName(outPutPath);
 
-            if (directoryName is null)
+            if(directoryName is null)
                 return;
 
             foreach (var path in Directory.GetFiles(directoryName))
-                if (path.EndsWith(".log") || path.EndsWith(".def"))
+                if(path.EndsWith(".log") || path.EndsWith(".def"))
                     File.Delete(path);
         }
 
@@ -704,11 +703,11 @@ namespace TSG_Library.UFuncs
         public static string ConstructProposalFilePath(Component master, string dataLevel, string pLevel)
         {
             // If the {master} is not loaded, then we need to throw.
-            if (!(master.Prototype is Part prototype))
+            if(!(master.Prototype is Part prototype))
                 throw new ArgumentOutOfRangeException(nameof(master), "The master must be loaded.");
 
             // The {master} cannot be set to neither "Entire Part" nor "Empty" reference set.
-            if (master.ReferenceSet == Refset_EntirePart || master.ReferenceSet == Refset_Empty)
+            if(master.ReferenceSet == Refset_EntirePart || master.ReferenceSet == Refset_Empty)
                 throw new ArgumentException(
                     "The master cannot be set to the \"Entire Part\" nor \"Empty\" reference set.", nameof(master));
 
@@ -726,10 +725,10 @@ namespace TSG_Library.UFuncs
             // Gets the GFolder that the {master} sits in.
             var folder = GFolder.create_or_null(prototype);
 
-            if (folder is null) throw new DirectoryNotFoundException("Master did not reside within a GFolder.");
+            if(folder is null) throw new DirectoryNotFoundException("Master did not reside within a GFolder.");
 
             // If {componentsInReferenceSet} doesn't have a length of 1, then we need to throw.
-            if (componentsInReferenceSet.Length != 1)
+            if(componentsInReferenceSet.Length != 1)
                 throw new ArgumentOutOfRangeException(nameof(master),
                     $"The reference set \"{referenceSetTitle}\" in the master doesn't contain exactly one component.");
 
@@ -744,7 +743,7 @@ namespace TSG_Library.UFuncs
 
             var revisedPartNumber = $"{dataLevel}{pLevel}-{partNumber}-{TodaysDate}";
 
-            if (Directory.Exists($"{folder.dir_math_data}\\Proposal"))
+            if(Directory.Exists($"{folder.dir_math_data}\\Proposal"))
                 return $"{folder.dir_math_data}\\Proposal\\{TodaysDate}-{pLevel}\\{revisedPartNumber}.prt";
 
             var masterDirectory =
@@ -759,7 +758,7 @@ namespace TSG_Library.UFuncs
         {
             var match = Regex.Match(displayName, PartNumberWithDateRegex);
 
-            if (!match.Success)
+            if(!match.Success)
                 throw new InvalidOperationException(
                     $"The display name {displayName} did not match the part number regex.\n" +
                     "It must start with (TSG\\R)### and end with a date in the form of YYYY-MM-DD.\n");
@@ -773,7 +772,7 @@ namespace TSG_Library.UFuncs
             fileNew1.Units = (Part.Units)__work_part_.PartUnits;
             var directoryName = Path.GetDirectoryName(newPartPath) ?? throw new DirectoryNotFoundException();
 
-            if (!Directory.Exists(directoryName))
+            if(!Directory.Exists(directoryName))
                 Directory.CreateDirectory(directoryName);
 
             fileNew1.NewFileName = newPartPath;
@@ -822,7 +821,7 @@ namespace TSG_Library.UFuncs
             var tempBodyReferenceSet = proposalPart.__FindReferenceSetOrNull(referenceSetName);
 
             // If thw {tempBodyReferenceSet} is not null, then we can delete it.
-            if (!(tempBodyReferenceSet is null))
+            if(!(tempBodyReferenceSet is null))
                 proposalPart.DeleteReferenceSet(tempBodyReferenceSet);
 
             // Creates a reference set derived from the {proposalPrototype}.

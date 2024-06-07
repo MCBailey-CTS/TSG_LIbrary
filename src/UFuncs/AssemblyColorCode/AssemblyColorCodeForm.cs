@@ -5,11 +5,10 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using NXOpen;
 using TSG_Library.Attributes;
-using TSG_Library.Extensions;
 using TSG_Library.Properties;
 using TSG_Library.Utilities;
 using static TSG_Library.UFuncs._UFunc;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 using static NXOpen.UF.UFConstants;
 using static NXOpen.Session;
 using Point = System.Drawing.Point;
@@ -162,13 +161,13 @@ namespace TSG_Library.UFuncs
                 var match = Regex.Match(colorLine, rgbRegex);
 
                 // If the {colorLine} doesn't match, ignore it.
-                if (!match.Success)
+                if(!match.Success)
                 {
                     print_($"Could not match \"{colorLine}\".");
                     continue;
                 }
 
-                if (xCounter % 4 == 0)
+                if(xCounter % 4 == 0)
                 {
                     xCounter = 0;
                     yCounter++;
@@ -212,9 +211,9 @@ namespace TSG_Library.UFuncs
 
                 var toolTipString = $"{button.Name} = {(int)button.Tag}";
 
-                if (detailNotes != "-") toolTipString += $"\n\nDetails:\n{detailNotes}";
+                if(detailNotes != "-") toolTipString += $"\n\nDetails:\n{detailNotes}";
 
-                if (dcb != "-") toolTipString += $"\n\nDiesets, Castings, & Burnouts:\n{dcb}";
+                if(dcb != "-") toolTipString += $"\n\nDiesets, Castings, & Burnouts:\n{dcb}";
 
                 toolTipString = toolTipString.Replace("\\n", "\n");
 
@@ -234,7 +233,7 @@ namespace TSG_Library.UFuncs
         {
             SetUndoMark(MarkVisibility.Visible, "Assembly Color");
 
-            if (__triples is null && rdoFeature.Checked)
+            if(__triples is null && rdoFeature.Checked)
             {
                 UI.GetUI().SelectionManager.SelectFeatures("Select Features", Selection.SelectionFeatureType.Browsable,
                     out var features);
@@ -248,7 +247,7 @@ namespace TSG_Library.UFuncs
                 return;
             }
 
-            if (__triples is null)
+            if(__triples is null)
             {
                 print_("Triples were null");
                 return;
@@ -271,27 +270,27 @@ namespace TSG_Library.UFuncs
 
         private void RdoButton_Click(object sender, EventArgs e)
         {
-            if (rdoFace.Checked)
+            if(rdoFace.Checked)
             {
                 Settings.Default.AssemblyColorCodeLastUsed = (int)AssemblyColorCodeType.Face;
                 __triples = face_mask;
             }
-            else if (rdoFeature.Checked)
+            else if(rdoFeature.Checked)
             {
                 Settings.Default.AssemblyColorCodeLastUsed = (int)AssemblyColorCodeType.Feature;
                 __triples = null;
             }
-            else if (rdoCurves.Checked)
+            else if(rdoCurves.Checked)
             {
                 Settings.Default.AssemblyColorCodeLastUsed = (int)AssemblyColorCodeType.Curve;
                 __triples = curves_mask;
             }
-            else if (rdoSolid.Checked)
+            else if(rdoSolid.Checked)
             {
                 Settings.Default.AssemblyColorCodeLastUsed = (int)AssemblyColorCodeType.Solid;
                 __triples = body_mask;
             }
-            else if (rdoNoFilter.Checked)
+            else if(rdoNoFilter.Checked)
             {
                 Settings.Default.AssemblyColorCodeLastUsed = (int)AssemblyColorCodeType.None;
                 __triples = all_triples;
@@ -331,7 +330,7 @@ namespace TSG_Library.UFuncs
                         out var object_,
                         out _);
 
-                    if (!(object_ is DisplayableObject disp))
+                    if(!(object_ is DisplayableObject disp))
                     {
                         print_("You didn't select an object with a color");
                         return;

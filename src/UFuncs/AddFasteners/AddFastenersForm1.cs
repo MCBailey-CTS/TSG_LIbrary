@@ -14,10 +14,9 @@ using NXOpen.UF;
 using TSG_Library.Attributes;
 using TSG_Library.Disposable;
 using TSG_Library.Exceptions;
-using TSG_Library.Extensions;
 using TSG_Library.Properties;
 using static NXOpen.UF.UFConstants;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 using Selection = TSG_Library.Ui.Selection;
 
 namespace TSG_Library.UFuncs
@@ -57,7 +56,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if (__display_part_ is null)
+                if(__display_part_ is null)
                     return;
 
                 var hasSolidBodyOnLayer1 = __work_part_.Bodies
@@ -83,7 +82,7 @@ namespace TSG_Library.UFuncs
             }
             finally
             {
-                if (!(__display_part_ is null))
+                if(!(__display_part_ is null))
                     __display_part_.Preferences.Workplane.ShowGrid = false;
 
                 mnuStrMainMenu.Enabled = true;
@@ -102,22 +101,22 @@ namespace TSG_Library.UFuncs
                 foreach (var feat in __work_part_.Features.ToArray())
                     try
                     {
-                        if (!(feat is ExtractFace link))
+                        if(!(feat is ExtractFace link))
                             continue;
 
-                        if (!link._IsLinkedBody())
+                        if(!link._IsLinkedBody())
                             continue;
 
                         uf.Wave.IsLinkBroken(link.Tag, out var is_broken);
 
-                        if (is_broken)
+                        if(is_broken)
                             continue;
 
                         uf.Wave.AskLinkXform(link.Tag, out var xform);
 
                         uf.So.AskAssyCtxtPartOcc(xform, __work_part_.__RootComponent().Tag, out var from_part_occ);
 
-                        if (from_part_occ == NXOpen.Tag.Null)
+                        if(from_part_occ == NXOpen.Tag.Null)
                             continue;
 
                         var point = new double[3];
@@ -128,7 +127,7 @@ namespace TSG_Library.UFuncs
 
                         var origin = point._ToPoint3d();
 
-                        if (!from_comp._Origin()._IsEqualTo(origin))
+                        if(!from_comp._Origin()._IsEqualTo(origin))
                             continue;
 
                         session_.delete_objects(link);
@@ -150,7 +149,7 @@ namespace TSG_Library.UFuncs
 
         private void MenuUnits_Click(object sender, EventArgs e)
         {
-            if (_unit == BasePart.Units.Inches)
+            if(_unit == BasePart.Units.Inches)
             {
                 const string mm = "MM";
                 menuItemUnits.Text = mm;
@@ -163,13 +162,13 @@ namespace TSG_Library.UFuncs
                 _unit = BasePart.Units.Inches;
             }
 
-            if (rdoTypeScrew.Checked)
+            if(rdoTypeScrew.Checked)
                 LoadShcs();
 
-            if (rdoTypeDowel.Checked)
+            if(rdoTypeDowel.Checked)
                 LoadDowel();
 
-            if (rdoTypeJack.Checked)
+            if(rdoTypeJack.Checked)
                 LoadJack();
         }
 
@@ -212,13 +211,13 @@ namespace TSG_Library.UFuncs
 
                 var cmb_index = Settings.Default.add_fasteners_grid_index;
 
-                if (cmb_index == -1)
+                if(cmb_index == -1)
                     cmb_index = 0;
 
                 cmbGridSpacing.SelectedIndex = cmb_index;
                 chkGrid.Checked = Settings.Default.add_fasteners_show_grid;
 
-                if (chkCycleAdd.Checked || chkReverseCycleAdd.Checked)
+                if(chkCycleAdd.Checked || chkReverseCycleAdd.Checked)
                     chkSubstitute.Checked = false;
             }
             catch (Exception ex)
@@ -237,7 +236,7 @@ namespace TSG_Library.UFuncs
                 Settings.Default.add_fasteners_form_window_location = Location;
                 Settings.Default.Save();
 
-                if (!(__display_part_ is null) && __work_part_.__HasDynamicBlock())
+                if(!(__display_part_ is null) && __work_part_.__HasDynamicBlock())
                     __work_part_.Bodies.ToArray()[0].__Translucency(0);
             }
             catch (Exception ex)
@@ -260,7 +259,7 @@ namespace TSG_Library.UFuncs
         {
             var _grid_spacing = (double)cmbGridSpacing.SelectedValue;
 
-            if (System.Math.Abs(_grid_spacing) < .001)
+            if(System.Math.Abs(_grid_spacing) < .001)
             {
                 __display_part_.Preferences.Workplane.ShowGrid = false;
                 __display_part_.Preferences.Workplane.SnapToGrid = false;
@@ -343,7 +342,7 @@ namespace TSG_Library.UFuncs
             const string preferred_diameters_path = @"U:\nxFiles\UfuncFiles\AddFastenersPreferredDiameters.txt";
             const string preferred_gm_diameters_path = @"U:\nxFiles\UfuncFiles\AddFastenersPreferredDiametersGm.txt";
 
-            if (cmbPreferred.SelectedIndex == 1)
+            if(cmbPreferred.SelectedIndex == 1)
             {
                 var shcs_preferred_dirs = File.ReadAllLines(preferred_diameters_path)
                     .Where(__s => !string.IsNullOrEmpty(__s))
@@ -353,7 +352,7 @@ namespace TSG_Library.UFuncs
 
                 shcss = shcss.Where(item => shcs_preferred_dirs.Contains(item.Value)).ToArray();
             }
-            else if (cmbPreferred.SelectedIndex == 2)
+            else if(cmbPreferred.SelectedIndex == 2)
             {
                 var shcs_preferred_dirs = File.ReadAllLines(preferred_gm_diameters_path)
                     .Where(__s => !string.IsNullOrEmpty(__s))
@@ -407,7 +406,7 @@ namespace TSG_Library.UFuncs
                 {
                     var match = Regex.Match(__s.Text, "^_?(?<diameter>\\d+)(mm)?-jck-screw-tsg$");
 
-                    if (!match.Success)
+                    if(!match.Success)
                         throw new Exception($"{__s.Text} didn't match regex");
 
                     return int.Parse(match.Groups["diameter"].Value);
@@ -437,19 +436,19 @@ namespace TSG_Library.UFuncs
                 listBoxSelection.SelectedIndex = -1;
                 __work_component_?.__Translucency(0);
 
-                if (__work_part_.__HasDynamicBlock())
+                if(__work_part_.__HasDynamicBlock())
                 {
                     __work_part_.__DynamicBlock().GetBodies()[0].__Translucency(0);
                     toolStripMenuItem1.Enabled = true;
                 }
-                else if (!__work_part_.__HasDynamicBlock())
+                else if(!__work_part_.__HasDynamicBlock())
                 {
                     var bodies = __work_part_.Bodies.ToArray()
                         .Where(__b => __b.IsSolidBody)
                         .Where(__b => __b.Layer == 1)
                         .ToArray();
 
-                    if (bodies.Length == 1)
+                    if(bodies.Length == 1)
                         __work_part_.__SingleSolidBodyOnLayer1().__Translucency(0);
 
                     toolStripMenuItem1.Enabled = true;
@@ -462,7 +461,7 @@ namespace TSG_Library.UFuncs
                     btnChangeRefSet.Enabled = true;
                 }
 
-                if (__work_part_.Tag != __display_part_.Tag)
+                if(__work_part_.Tag != __display_part_.Tag)
                     ufsession_.Assem.SetWorkPart(NXOpen.Tag.Null);
             }
             catch (Exception ex)
@@ -484,7 +483,7 @@ namespace TSG_Library.UFuncs
                 {
                     session_.SetUndoMark(Session.MarkVisibility.Visible, "AddFasteners");
 
-                    if (__work_component_ is null)
+                    if(__work_component_ is null)
                     {
                         // Working at the displayed part
                         WaveIn();
@@ -536,7 +535,7 @@ namespace TSG_Library.UFuncs
             {
                 Body solid_body_layer_1;
 
-                if (!__work_part_.__HasDynamicBlock())
+                if(!__work_part_.__HasDynamicBlock())
                 {
                     solid_body_layer_1 = __work_part_.__SingleSolidBodyOnLayer1();
                 }
@@ -564,13 +563,13 @@ namespace TSG_Library.UFuncs
 
         public static void WaveIn(Component __child, Body solid_body_layer_1)
         {
-            if (__child.IsSuppressed)
+            if(__child.IsSuppressed)
                 return;
 
-            if (__child.Layer != 99 && __child.Layer != 98 && __child.Layer != 97)
+            if(__child.Layer != 99 && __child.Layer != 98 && __child.Layer != 97)
                 return;
 
-            if (!__child.HasInstanceUserAttribute("subtract", NXObject.AttributeType.String, -1))
+            if(!__child.HasInstanceUserAttribute("subtract", NXObject.AttributeType.String, -1))
                 return;
 
             var subtract_att = __child.GetUserAttributeAsString("subtract", NXObject.AttributeType.String, -1);
@@ -612,7 +611,7 @@ namespace TSG_Library.UFuncs
                 tool_bodies,
                 results);
 
-            if (results.All(__res => __res != 1))
+            if(results.All(__res => __res != 1))
             {
                 __child._ReferenceSet(current);
                 return;
@@ -642,7 +641,7 @@ namespace TSG_Library.UFuncs
                     break;
             }
 
-            if (__child.Layer == 99 && subtract_att != "HANDLING" && subtract_att != "WIRE_TAP")
+            if(__child.Layer == 99 && subtract_att != "HANDLING" && subtract_att != "WIRE_TAP")
             {
                 __child._ReferenceSet("BODY");
                 __work_part_.GetAllReferenceSets().Single(__r => __r.Name == "BODY")
@@ -715,36 +714,36 @@ namespace TSG_Library.UFuncs
         {
             var box = (CheckBox)sender;
 
-            if (box == chkSubstitute)
+            if(box == chkSubstitute)
             {
                 chkCycleAdd.Enabled = !chkSubstitute.Checked;
                 chkReverseCycleAdd.Enabled = !chkSubstitute.Checked;
 
-                if (!chkSubstitute.Checked)
+                if(!chkSubstitute.Checked)
                     return;
 
                 chkReverseCycleAdd.Checked = false;
                 chkCycleAdd.Checked = false;
             }
-            else if (box == chkCycleAdd)
+            else if(box == chkCycleAdd)
             {
                 chkReverseCycleAdd.Enabled = true;
                 chkSubstitute.Enabled = !chkCycleAdd.Checked;
 
-                if (!chkCycleAdd.Checked)
+                if(!chkCycleAdd.Checked)
                     return;
 
                 chkReverseCycleAdd.Checked = false;
                 chkSubstitute.Checked = false;
             }
-            else if (chkReverseCycleAdd.Checked)
+            else if(chkReverseCycleAdd.Checked)
             {
                 ChangEnabled(false, chkSubstitute);
                 chkSubstitute.Checked = false;
                 chkSubstitute.Enabled = false;
                 chkCycleAdd.Checked = false;
             }
-            else if (!chkCycleAdd.Checked)
+            else if(!chkCycleAdd.Checked)
             {
                 chkSubstitute.Enabled = true;
             }
@@ -752,7 +751,7 @@ namespace TSG_Library.UFuncs
 
         private void ChkCycleAdd_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkCycleAdd.Checked || chkReverseCycleAdd.Checked)
+            if(chkCycleAdd.Checked || chkReverseCycleAdd.Checked)
             {
                 rdoTypeDowel.Enabled = false;
                 rdoTypeJack.Enabled = false;
@@ -779,7 +778,7 @@ namespace TSG_Library.UFuncs
         {
             session_.SetUndoMark(Session.MarkVisibility.Visible, "WIRE_TAP");
 
-            if (__display_part_.Tag == __work_part_.Tag)
+            if(__display_part_.Tag == __work_part_.Tag)
                 new[] { 99, 98, 97 }.ToList().ForEach(i => __display_part_.Layers.SetState(i, State.Selectable));
 
             var wireTapScrew =
@@ -830,36 +829,36 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if (listBoxSelection.SelectedIndex == -1)
+                if(listBoxSelection.SelectedIndex == -1)
                     return;
 
                 var selected_value = (string)listBoxSelection.SelectedValue;
 
-                if (selected_value == nameof(LoadShcs))
+                if(selected_value == nameof(LoadShcs))
                 {
                     LoadShcs();
                     return;
                 }
 
-                if (selected_value.ToLower().EndsWith(".prt"))
+                if(selected_value.ToLower().EndsWith(".prt"))
                     try
                     {
                         cmbReferenceSet.Enabled = true;
                         var fastener_part = session_.find_or_open(selected_value);
 
-                        if (chkSubstitute.Checked)
+                        if(chkSubstitute.Checked)
                         {
                             SubstituteFasteners(fastener_part);
                             return;
                         }
 
-                        if (chkCycleAdd.Checked || chkReverseCycleAdd.Checked)
+                        if(chkCycleAdd.Checked || chkReverseCycleAdd.Checked)
                         {
                             PlaceFastenersCycle(fastener_part);
                             return;
                         }
 
-                        if (fastener_part.__IsJckScrewTsg())
+                        if(fastener_part.__IsJckScrewTsg())
                         {
                             PlaceFastenersJigJacks(fastener_part);
                             listBoxSelection.Enabled = true;
@@ -885,7 +884,7 @@ namespace TSG_Library.UFuncs
                 const string preferred_gm_diameters_path =
                     @"U:\nxFiles\UfuncFiles\AddFastenersPreferredDiametersGm.txt";
 
-                if (cmbPreferred.SelectedIndex == 1)
+                if(cmbPreferred.SelectedIndex == 1)
                 {
                     var shcs_preferred_dirs = File.ReadAllLines(preferred_diameters_path)
                         .Where(__s => !string.IsNullOrEmpty(__s))
@@ -894,7 +893,7 @@ namespace TSG_Library.UFuncs
 
                     shcss = shcss.Where(item => shcs_preferred_dirs.Contains(item.Value)).ToList();
                 }
-                else if (cmbPreferred.SelectedIndex == 2)
+                else if(cmbPreferred.SelectedIndex == 2)
                 {
                     var shcs_preferred_dirs = File.ReadAllLines(preferred_gm_diameters_path)
                         .Where(__s => !string.IsNullOrEmpty(__s))
@@ -937,7 +936,7 @@ namespace TSG_Library.UFuncs
                     .MajorGridSpacing;
                 chkGrid.Checked = __display_part_.Preferences.Workplane.ShowGrid;
 
-                if (__display_part_.Tag == __work_part_.Tag)
+                if(__display_part_.Tag == __work_part_.Tag)
                 {
                     __display_part_.Layers.SetState(1, State.WorkLayer);
 
@@ -966,7 +965,7 @@ namespace TSG_Library.UFuncs
 
                 session_.delete_objects(csys);
 
-                if (MoveComponentWithMouse(addedFastener) != UF_UI_PICK_RESPONSE)
+                if(MoveComponentWithMouse(addedFastener) != UF_UI_PICK_RESPONSE)
                 {
                     session_.delete_objects(addedFastener);
                     return;
@@ -976,7 +975,7 @@ namespace TSG_Library.UFuncs
                 var proto_csys = __work_part_.CoordinateSystems.CreateCoordinateSystem(addedFastener._Origin(),
                     addedFastener._Orientation(), false);
 
-                if (__work_component_ is null)
+                if(__work_component_ is null)
                 {
                     proto_csys.GetDirections(out var xDir, out var yDir);
                     __display_part_.WCS.SetOriginAndMatrix(proto_csys.Origin, xDir._ToMatrix3x3(yDir));
@@ -996,7 +995,7 @@ namespace TSG_Library.UFuncs
                 PlaceFasteners(addedFastener._Prototype(), false);
                 cmbGridSpacing.SelectedValue = 0.125;
 
-                if (__work_component_ is null)
+                if(__work_component_ is null)
                 {
                     first_jigJack._ReferenceSet("BODY_EDGE");
                 }
@@ -1037,7 +1036,7 @@ namespace TSG_Library.UFuncs
                 {
                     var value = (double)cmbGridSpacing.SelectedValue;
 
-                    if (value > 0.0)
+                    if(value > 0.0)
                         __display_part_.Preferences.Workplane.SetRectangularUniformGridSize(
                             new WorkPlane.GridSize
                                 { MajorGridSpacing = value, MinorLinesPerMajor = 1, SnapPointsPerMinor = 1 }
@@ -1051,7 +1050,7 @@ namespace TSG_Library.UFuncs
                 //cmbGridSpacing.SelectedValue = __display_part_.Preferences.Workplane.GetRectangularUniformGridSize().MajorGridSpacing;
                 chkGrid.Checked = __display_part_.Preferences.Workplane.ShowGrid;
 
-                if (__display_part_.Tag == __work_part_.Tag)
+                if(__display_part_.Tag == __work_part_.Tag)
                 {
                     __display_part_.Layers.SetState(1, State.WorkLayer);
 
@@ -1060,7 +1059,7 @@ namespace TSG_Library.UFuncs
                         .ForEach(i => __display_part_.Layers.SetState(i, State.Selectable));
                 }
 
-                if (reset_ref_sets)
+                if(reset_ref_sets)
                 {
                     cmbReferenceSet.Items.Clear();
                     var refsets = fastener_part.GetAllReferenceSets().Select(__r => __r.Name).ToHashSet();
@@ -1069,7 +1068,7 @@ namespace TSG_Library.UFuncs
                     cmbReferenceSet.Items.AddRange(refsets.ToArray());
                     cmbReferenceSet.SelectedIndex = 0;
 
-                    if (fastener_part.__IsShcs())
+                    if(fastener_part.__IsShcs())
                         cmbReferenceSet.Items.Add("HANDLING");
                 }
 
@@ -1101,7 +1100,7 @@ namespace TSG_Library.UFuncs
                         99,
                         out _);
 
-                    if (MoveComponentWithMouse(addedFastener) != UF_UI_PICK_RESPONSE)
+                    if(MoveComponentWithMouse(addedFastener) != UF_UI_PICK_RESPONSE)
                     {
                         session_.delete_objects(addedFastener);
                         break;
@@ -1159,11 +1158,11 @@ namespace TSG_Library.UFuncs
                 var match = Regex.Match(leaf, "-shcs-(?<length>\\d+)");
                 var actual_dwl = small_dwl;
 
-                if (match.Success)
+                if(match.Success)
                 {
                     var length = int.Parse(match.Groups["length"].Value);
 
-                    if (length >= CycleAdd1.MetricDelimeter)
+                    if(length >= CycleAdd1.MetricDelimeter)
                         actual_dwl = large_dwl;
                 }
 
@@ -1174,14 +1173,14 @@ namespace TSG_Library.UFuncs
                 var dowel_part = session_.find_or_open(dowel);
                 var jigjack_part = session_.find_or_open(jigJack);
 
-                if (chkCycleAdd.Checked)
+                if(chkCycleAdd.Checked)
                     PlaceFasteners(shcs_part);
                 else
                     PlaceFastenersJigJacks(jigjack_part);
 
                 PlaceFasteners(dowel_part);
 
-                if (chkCycleAdd.Checked)
+                if(chkCycleAdd.Checked)
                     PlaceFastenersJigJacks(jigjack_part);
                 else
                     PlaceFasteners(shcs_part);
@@ -1198,24 +1197,24 @@ namespace TSG_Library.UFuncs
             {
                 var fasteners_to_substitue = new Component[0];
 
-                if (nxPart.__IsShcs())
+                if(nxPart.__IsShcs())
                     fasteners_to_substitue = __work_part_.__RootComponent().GetChildren()
                         .Where(__c => __c._IsShcs_())
                         .ToArray();
-                else if (nxPart.__IsDwl())
+                else if(nxPart.__IsDwl())
                     fasteners_to_substitue = __work_part_.__RootComponent().GetChildren()
                         .Where(__c => __c._IsDwl_())
                         .ToArray();
-                else if (nxPart.__IsJckScrew())
+                else if(nxPart.__IsJckScrew())
                     fasteners_to_substitue = __work_part_.__RootComponent().GetChildren()
                         .Where(__c => __c._IsJckScrew_())
                         .ToArray();
-                else if (nxPart.__IsJckScrewTsg())
+                else if(nxPart.__IsJckScrewTsg())
                     fasteners_to_substitue = __work_part_.__RootComponent().GetChildren()
                         .Where(__c => __c._IsJckScrewTsg_())
                         .ToArray();
 
-                if (fasteners_to_substitue.Length == 0)
+                if(fasteners_to_substitue.Length == 0)
                 {
                     print_($"Couldn't find any fasteners to substitue with {nxPart.Leaf}");
                     return;
@@ -1315,10 +1314,10 @@ namespace TSG_Library.UFuncs
             {
                 var fasteners = Selection.SelectManyComponents();
 
-                if (fasteners.Length == 0)
+                if(fasteners.Length == 0)
                     return;
 
-                if (fasteners.Any(__fast => __fast.OwningComponent.Tag != fasteners[0].OwningComponent.Tag))
+                if(fasteners.Any(__fast => __fast.OwningComponent.Tag != fasteners[0].OwningComponent.Tag))
                 {
                     print_("All fasteners must be under the same component");
                     return;
@@ -1338,39 +1337,39 @@ namespace TSG_Library.UFuncs
                 reference_set_names.Remove("MODEL");
 
                 // all shcs metric
-                if (fasteners.All(__fast => __fast._IsShcs()) &&
-                    fasteners.All(__fast => __fast.Name.ToLower().Contains("mm")))
+                if(fasteners.All(__fast => __fast._IsShcs()) &&
+                   fasteners.All(__fast => __fast.Name.ToLower().Contains("mm")))
                 {
                     reference_set_names.Add("HANDLING");
                 }
 
                 // all shcs english
-                else if (fasteners.All(__fast => __fast._IsShcs()) &&
-                         fasteners.All(__fast => !__fast.Name.ToLower().Contains("mm")))
+                else if(fasteners.All(__fast => __fast._IsShcs()) &&
+                        fasteners.All(__fast => !__fast.Name.ToLower().Contains("mm")))
                 {
                     reference_set_names.Add("HANDLING");
                 }
 
                 // all dwl metric
-                else if (fasteners.All(__fast => __fast._IsDwl()) &&
-                         fasteners.All(__fast => __fast.Name.ToLower().Contains("mm")))
+                else if(fasteners.All(__fast => __fast._IsDwl()) &&
+                        fasteners.All(__fast => __fast.Name.ToLower().Contains("mm")))
                 {
                     reference_set_names.Add("TOOLING");
                 }
 
                 // all dwl english
-                else if (fasteners.All(__fast => __fast._IsDwl()) &&
-                         fasteners.All(__fast => !__fast.Name.ToLower().Contains("mm")))
+                else if(fasteners.All(__fast => __fast._IsDwl()) &&
+                        fasteners.All(__fast => !__fast.Name.ToLower().Contains("mm")))
                 {
                     reference_set_names.Add("TOOLING");
                 }
 
                 // all jack screw 
-                else if (fasteners.All(__fast => __fast._IsJckScrew()))
+                else if(fasteners.All(__fast => __fast._IsJckScrew()))
                 {
                 }
                 // all jack screw tsg
-                else if (fasteners.All(__fast => __fast._IsJckScrewTsg()))
+                else if(fasteners.All(__fast => __fast._IsJckScrewTsg()))
                 {
                 }
                 else
@@ -1387,8 +1386,8 @@ namespace TSG_Library.UFuncs
                     {
                         Component actual_fastener;
 
-                        if (!(__work_component_ is null) || selected_fastener.Parent.Tag !=
-                            __display_part_.ComponentAssembly.RootComponent.Tag)
+                        if(!(__work_component_ is null) || selected_fastener.Parent.Tag !=
+                           __display_part_.ComponentAssembly.RootComponent.Tag)
                         {
                             var instance = ufsession_.Assem.AskInstOfPartOcc(selected_fastener.Tag);
                             var actual_tag = ufsession_.Assem.AskPartOccOfInst(
@@ -1411,24 +1410,24 @@ namespace TSG_Library.UFuncs
                             {
                                 ufsession_.Wave.IsLinkBroken(__k.Tag, out var is_broken);
 
-                                if (is_broken)
+                                if(is_broken)
                                     return;
 
                                 ufsession_.Wave.AskLinkXform(__k.Tag, out var xform);
                                 ufsession_.So.AskAssyCtxtPartOcc(xform,
                                     __display_part_.ComponentAssembly.RootComponent.Tag, out var from_part_occ);
 
-                                if (from_part_occ == NXOpen.Tag.Null)
+                                if(from_part_occ == NXOpen.Tag.Null)
                                     return;
 
                                 var point = new double[3];
                                 ufsession_.So.AskPointOfXform(xform, point);
                                 var from_comp = (Component)session_.GetObjectManager().GetTaggedObject(from_part_occ);
 
-                                if (!from_comp._Origin()._IsEqualTo(point))
+                                if(!from_comp._Origin()._IsEqualTo(point))
                                     return;
 
-                                if (from_part_occ != actual_fastener.Tag)
+                                if(from_part_occ != actual_fastener.Tag)
                                     return;
 
                                 session_.delete_objects(__k);
@@ -1453,7 +1452,7 @@ namespace TSG_Library.UFuncs
             const string areYouSure = "Are you sure?";
             var result = MessageBox.Show(createPlanView, areYouSure, MessageBoxButtons.YesNo);
 
-            if (result == DialogResult.Yes)
+            if(result == DialogResult.Yes)
                 MakePlanView(__display_part_.WCS.Save());
         }
 
@@ -1482,7 +1481,7 @@ namespace TSG_Library.UFuncs
             {
                 const string oLibraryFasteners = "G:\\0Library\\Fasteners";
 
-                if (__display_part_.FullPath.StartsWith(oLibraryFasteners))
+                if(__display_part_.FullPath.StartsWith(oLibraryFasteners))
                 {
                     print_("You cannot run this command with a fastener as your display part.");
                     return;
@@ -1512,7 +1511,7 @@ namespace TSG_Library.UFuncs
             ModelingView modelingView1, modelingView2;
             Layout layout;
 
-            if (planView != null)
+            if(planView != null)
             {
                 layout = __work_part_.Layouts.FindObject(l1);
                 modelingView1 = __work_part_.ModelingViews.WorkView;
@@ -1534,18 +1533,18 @@ namespace TSG_Library.UFuncs
         {
             foreach (Feature feature in owningPart.Features)
             {
-                if (feature.FeatureType != "LINKED_BODY")
+                if(feature.FeatureType != "LINKED_BODY")
                     continue;
 
                 ufsession_.Wave.AskLinkXform(feature.Tag, out var xform);
 
-                if (xform == NXOpen.Tag.Null)
+                if(xform == NXOpen.Tag.Null)
                     continue;
 
                 ufsession_.So.AskAssyCtxtPartOcc(xform, owningPart.ComponentAssembly.RootComponent.Tag,
                     out var fromPartOcc);
 
-                if (fromPartOcc == child.Tag)
+                if(fromPartOcc == child.Tag)
                     return (ExtractFace)feature;
             }
 
@@ -1556,7 +1555,7 @@ namespace TSG_Library.UFuncs
         {
             var owningPart = (Part)child.OwningPart;
 
-            if (child.Parent.Tag != owningPart.ComponentAssembly.RootComponent.Tag)
+            if(child.Parent.Tag != owningPart.ComponentAssembly.RootComponent.Tag)
                 throw new ArgumentException("Can only wave out immediate children.");
 
             var linkedBody = GetLinkedBody(owningPart, child);
@@ -1565,18 +1564,18 @@ namespace TSG_Library.UFuncs
 
         public static void WaveOut()
         {
-            if (__work_part_.Tag == __display_part_.Tag)
+            if(__work_part_.Tag == __display_part_.Tag)
             {
                 foreach (var __child in __work_part_.ComponentAssembly.RootComponent.GetChildren())
                     try
                     {
-                        if (__child.Layer != 99 && __child.Layer != 98 && __child.Layer != 97)
+                        if(__child.Layer != 99 && __child.Layer != 98 && __child.Layer != 97)
                             continue;
 
-                        if (__child.IsSuppressed)
+                        if(__child.IsSuppressed)
                             continue;
 
-                        if (!__child._IsFastener())
+                        if(!__child._IsFastener())
                             continue;
 
                         var link = GetLinkedBody(__work_part_, __child);
@@ -1593,10 +1592,10 @@ namespace TSG_Library.UFuncs
 
             foreach (var child in __work_component_.GetChildren())
             {
-                if (child.IsSuppressed)
+                if(child.IsSuppressed)
                     continue;
 
-                if (!child._IsFastener())
+                if(!child._IsFastener())
                     continue;
 
                 var protoPartOcc = _GetProtoPartOcc(__work_part_, child);
@@ -1635,7 +1634,7 @@ namespace TSG_Library.UFuncs
                 case NXOpen.Selection.Response.Cancel:
                     throw new NothingSelectedException();
                 case NXOpen.Selection.Response.Ok:
-                    if (!__work_part_.__HasDynamicBlock())
+                    if(!__work_part_.__HasDynamicBlock())
                     {
                         __display_part_.WCS.SetOriginAndMatrix(_Point3dOrigin, _Matrix3x3Identity);
                         var solid_body = __work_part_.__SingleSolidBodyOnLayer1();
@@ -1653,12 +1652,12 @@ namespace TSG_Library.UFuncs
                 case NXOpen.Selection.Response.ObjectSelected:
                     var selected = (Body)_object;
 
-                    if (selected.IsOccurrence)
+                    if(selected.IsOccurrence)
                     {
                         var proto_selected = selected._Prototype();
                         var part = selected.OwningComponent._Prototype();
 
-                        if (!part.__HasDynamicBlock())
+                        if(!part.__HasDynamicBlock())
                         {
                             __work_component_ = selected.OwningComponent;
                             __work_component_.__Translucency(75);
@@ -1679,9 +1678,9 @@ namespace TSG_Library.UFuncs
                         __work_component_.__Translucency(75);
                         session_.delete_objects(occ_csys, csys);
                     }
-                    else if (__work_part_.__HasDynamicBlock())
+                    else if(__work_part_.__HasDynamicBlock())
                     {
-                        if (__work_part_.__DynamicBlock().GetBodies()[0].Tag != selected.Tag)
+                        if(__work_part_.__DynamicBlock().GetBodies()[0].Tag != selected.Tag)
                             throw new InvalidOperationException("Selected body that wasn't the dynamic block");
 
                         __work_part_.__DynamicBlock().GetBodies()[0].__Translucency(75);
@@ -1695,7 +1694,7 @@ namespace TSG_Library.UFuncs
                             .Where(__b => __b.Layer == 1)
                             .ToArray();
 
-                        if (bodies.Length == 1)
+                        if(bodies.Length == 1)
                         {
                             __work_part_.__SingleSolidBodyOnLayer1().__Translucency(75);
                             __display_part_.WCS.SetOriginAndMatrix(_Point3dOrigin, _Matrix3x3Identity);
@@ -1713,7 +1712,7 @@ namespace TSG_Library.UFuncs
             var origin = dynamicBlock.__Origin();
             var orientation = dynamicBlock.__Orientation();
 
-            if (__work_part_.Tag == __display_part_.Tag)
+            if(__work_part_.Tag == __display_part_.Tag)
             {
                 __display_part_.WCS.SetOriginAndMatrix(origin, orientation);
                 return;
@@ -1751,19 +1750,19 @@ namespace TSG_Library.UFuncs
                     break;
             }
 
-            if (rdoTypeScrew.Checked)
+            if(rdoTypeScrew.Checked)
                 LoadShcs();
         }
 
         private void RdoFastener_CheckedChanged(object sender, EventArgs e)
         {
-            if (rdoTypeScrew.Checked)
+            if(rdoTypeScrew.Checked)
                 LoadShcs();
 
-            if (rdoTypeDowel.Checked)
+            if(rdoTypeDowel.Checked)
                 LoadDowel();
 
-            if (rdoTypeJack.Checked)
+            if(rdoTypeJack.Checked)
                 LoadJack();
         }
 
@@ -1772,7 +1771,7 @@ namespace TSG_Library.UFuncs
             Settings.Default.add_fasteners_preferred_index = cmbPreferred.SelectedIndex;
             Settings.Default.Save();
 
-            if (rdoTypeScrew.Checked)
+            if(rdoTypeScrew.Checked)
                 LoadShcs();
         }
     }

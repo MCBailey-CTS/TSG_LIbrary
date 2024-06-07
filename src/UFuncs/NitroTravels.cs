@@ -4,8 +4,7 @@ using System.IO;
 using System.Linq;
 using NXOpen;
 using TSG_Library.Attributes;
-using TSG_Library.Extensions;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs
 {
@@ -27,7 +26,7 @@ namespace TSG_Library.UFuncs
 
                 ISet<string> hash = new HashSet<string>(partFiles);
 
-                if (__display_part_.ComponentAssembly.RootComponent is null)
+                if(__display_part_.ComponentAssembly.RootComponent is null)
                 {
                     print_("Couldn't display part doesn't have a root component");
                     return;
@@ -40,17 +39,17 @@ namespace TSG_Library.UFuncs
 
                 foreach (var part in parts)
                 {
-                    if (!part.HasUserAttribute("LIBRARY", NXObject.AttributeType.String, -1))
+                    if(!part.HasUserAttribute("LIBRARY", NXObject.AttributeType.String, -1))
                         continue;
 
                     var att = part.GetUserAttributeAsString("LIBRARY", NXObject.AttributeType.String, -1).ToUpper();
 
-                    if (!hash.Contains(att))
+                    if(!hash.Contains(att))
                         continue;
 
                     var expression = part.__FindExpressionOrNull("TRAVEL");
 
-                    if (expression is null)
+                    if(expression is null)
                         continue;
 
                     print_($"{part.Leaf}, Library: {att}, Travel: \"{expression.Value}\"");

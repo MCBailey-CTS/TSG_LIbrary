@@ -1,9 +1,8 @@
 ﻿using System;
 using NXOpen;
 using NXOpen.UF;
-using TSG_Library.Extensions;
 using TSG_Library.Geom;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 using Curve = TSG_Library.Geom.Curve;
 
 namespace TSG_Library
@@ -368,11 +367,11 @@ namespace TSG_Library
 
         private static double IcurveParameter(ICurve icurve, double param)
         {
-            if (icurve is NXOpen.Curve)
+            if(icurve is NXOpen.Curve)
             {
                 var curve = (NXOpen.Curve)icurve;
 
-                if (curve.__Factor() != 1.0)
+                if(curve.__Factor() != 1.0)
                     return param * curve.__Factor();
 
                 return param * (curve._MaxU() - curve._MinU()) + curve._MinU();
@@ -380,7 +379,7 @@ namespace TSG_Library
 
             var edge = (Edge)icurve;
 
-            if (edge.__Factor() != 1.0)
+            if(edge.__Factor() != 1.0)
                 return param * edge.__Factor();
 
             return param * (edge._MaxU() - edge._MinU()) + edge._MinU();
@@ -591,7 +590,7 @@ namespace TSG_Library
             ufsession_.Modl.IntersectCurveToPlane(icurve.__Tag(), plane_tag, out var num_intersections, out var data);
             session_.UndoToMark(markId, "TmpIntersectMark_999");
             IntersectionResult[] array = null;
-            if (num_intersections != 0)
+            if(num_intersections != 0)
             {
                 array = new IntersectionResult[num_intersections];
                 for (var i = 0; i < array.Length; i++) array[i] = new IntersectionResult();
@@ -631,7 +630,7 @@ namespace TSG_Library
         {
             ufsession_.Modl.IntersectCurveToFace(icurve.__Tag(), face.Tag, out var num_intersections, out var data);
             IntersectionResult[] array = null;
-            if (num_intersections != 0)
+            if(num_intersections != 0)
             {
                 array = new IntersectionResult[num_intersections];
                 for (var i = 0; i < array.Length; i++) array[i] = new IntersectionResult();
@@ -678,7 +677,7 @@ namespace TSG_Library
             ufsession_.Modl.IntersectCurveToFace(line.__Tag(), face.Tag, out var num_intersections, out var data);
             IntersectionResult[] array2 = null;
 
-            if (num_intersections != 0)
+            if(num_intersections != 0)
             {
                 array2 = new IntersectionResult[num_intersections];
                 for (var i = 0; i < array2.Length; i++) array2[i] = new IntersectionResult();
@@ -927,7 +926,7 @@ namespace TSG_Library
             /// </remarks>
             internal static IntersectionResult Create(UFCurve.IntersectInfo info)
             {
-                if (info.type_of_intersection != 1) return null;
+                if(info.type_of_intersection != 1) return null;
 
                 return new IntersectionResult
                 {

@@ -3,7 +3,7 @@ using NXOpen;
 using NXOpen.UserDefinedObjects;
 using TSG_Library.Attributes;
 using TSG_Library.UFuncs;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.Ufuncs
 {
@@ -23,7 +23,7 @@ namespace TSG_Library.Ufuncs
             {
                 var displayFlag = displayEvent.UserDefinedObject.GetIntegers();
 
-                if (displayFlag[0] != 1)
+                if(displayFlag[0] != 1)
                     return 0;
 
                 var myUdoDoubles = displayEvent.UserDefinedObject.GetDoubles();
@@ -67,10 +67,10 @@ namespace TSG_Library.Ufuncs
         {
             try
             {
-                if (!(_myUDOClass is null))
+                if(!(_myUDOClass is null))
                     return 0;
 
-                if (alertUser)
+                if(alertUser)
                     UI.GetUI().NXMessageBox
                         .Show("UDO", NXMessageBox.DialogType.Information, "Registering C# UDO Class");
 

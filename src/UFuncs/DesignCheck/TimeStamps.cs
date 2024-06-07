@@ -2,8 +2,7 @@
 using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Features;
-using TSG_Library.Extensions;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 {
@@ -31,15 +30,15 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
             foreach (var feature in part.Features.ToArray())
                 try
                 {
-                    if (!(feature is ExtractFace extract_face)
-                        || !extract_face._IsLinkedBody())
+                    if(!(feature is ExtractFace extract_face)
+                       || !extract_face._IsLinkedBody())
                         continue;
 
                     var builder = extract_face.__OwningPart().Features.CreateExtractFaceBuilder(extract_face);
 
                     using (session_.using_builder_destroyer(builder))
                     {
-                        if (!builder.FixAtCurrentTimestamp)
+                        if(!builder.FixAtCurrentTimestamp)
                             continue;
 
                         var extract_face_node = new TreeNode(extract_face.GetFeatureName())

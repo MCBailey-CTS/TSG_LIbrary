@@ -1,6 +1,6 @@
 ﻿using System;
 using NXOpen;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.Disposable
 {
@@ -13,7 +13,7 @@ namespace TSG_Library.Disposable
         /// <summary>Instantiates the display reset.</summary>
         public DisplayPartReset()
         {
-            if (__display_part_ is null)
+            if(__display_part_ is null)
                 throw new Exception("No display part.");
 
             _originalDisplayPart = __display_part_;

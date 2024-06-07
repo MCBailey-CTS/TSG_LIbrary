@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
-using TSG_Library.Extensions;
 using TSG_Library.Geom;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
@@ -39,10 +38,10 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             foreach (var body in mirroredPart.Bodies.ToArray())
             foreach (var e in body.GetEdges())
-                if (e._HasEndPoints(finalStart, finalEnd))
+                if(e._HasEndPoints(finalStart, finalEnd))
                     newStartEdge = e;
 
-            if (!(originalEndEdge is null))
+            if(!(originalEndEdge is null))
             {
                 finalStart = originalEndEdge._StartPoint()._MirrorMap(plane, originalComp, mirroredComp);
 
@@ -50,11 +49,11 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                 foreach (var body in mirroredPart.Bodies.ToArray())
                 foreach (var e in body.GetEdges())
-                    if (e._HasEndPoints(finalStart, finalEnd))
+                    if(e._HasEndPoints(finalStart, finalEnd))
                         newEndEdge = e;
             }
 
-            if (newStartEdge is null)
+            if(newStartEdge is null)
                 throw new ArgumentException("Could not find start edge");
 
             return mirroredPart.ScRuleFactory.CreateRuleEdgeTangent(newStartEdge, newEndEdge, isFromStart,

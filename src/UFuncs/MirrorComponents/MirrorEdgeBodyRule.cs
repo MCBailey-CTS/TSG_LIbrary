@@ -5,7 +5,6 @@ using MoreLinq;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
-using TSG_Library.Extensions;
 using TSG_Library.Geom;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
@@ -50,13 +49,13 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                 bodyPositions = bodyPositions.DistinctBy(__p => __p.__ToHashCode()).ToList();
 
-                if (bodyPositions.Count != mirroredPositions.Count)
+                if(bodyPositions.Count != mirroredPositions.Count)
                     continue;
 
                 var mirror_hashes = Enumerable.ToHashSet(mirroredPositions.Select(__p => __p.__ToHashCode()));
                 var body_hashes = Enumerable.ToHashSet(bodyPositions.Select(__p => __p.__ToHashCode()));
 
-                if (!mirror_hashes.SetEquals(body_hashes))
+                if(!mirror_hashes.SetEquals(body_hashes))
                     continue;
 
                 mirroredBody = tempMirroredBody;
@@ -64,7 +63,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
                 break;
             }
 
-            if (mirroredBody is null)
+            if(mirroredBody is null)
                 throw new ArgumentException("Could not find a matching body");
 
             return mirroredPart.ScRuleFactory.CreateRuleEdgeBody(mirroredBody);

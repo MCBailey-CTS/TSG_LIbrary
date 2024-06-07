@@ -2,7 +2,7 @@
 using System.Linq;
 using NXOpen;
 using TSG_Library.Attributes;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 using static NXOpen.UF.UFConstants;
 
 namespace TSG_Library.UFuncs
@@ -23,7 +23,7 @@ namespace TSG_Library.UFuncs
             {
                 ufsession_.Obj.CycleObjsInPart(workPart.Tag, UF_reference_set_type, ref cycleRefSet);
 
-                if (cycleRefSet == Tag.Null)
+                if(cycleRefSet == Tag.Null)
                     break;
 
                 refSetTag.Add(cycleRefSet);
@@ -33,7 +33,7 @@ namespace TSG_Library.UFuncs
             {
                 ufsession_.Obj.AskName(refSet, out var refSetName);
 
-                if (refSetName != "BODY")
+                if(refSetName != "BODY")
                     continue;
 
                 isBodyRefSet = true;
@@ -41,7 +41,7 @@ namespace TSG_Library.UFuncs
                 break;
             }
 
-            if (isBodyRefSet)
+            if(isBodyRefSet)
             {
                 //----------------------------------------------
                 // remove all but body and fasteners from body refset
@@ -62,11 +62,11 @@ namespace TSG_Library.UFuncs
                         select body.Tag)
                     .ToList();
 
-                if (wpBody.Count == 1)
+                if(wpBody.Count == 1)
                 {
                     ufsession_.Assem.AddRefSetMembers(bodyRefSet, wpBody.Count, wpBody.ToArray());
 
-                    if (workPart.ComponentAssembly.RootComponent is null)
+                    if(workPart.ComponentAssembly.RootComponent is null)
                         return;
 
                     var compList = (from component in workPart.ComponentAssembly.RootComponent.GetChildren()
@@ -85,9 +85,9 @@ namespace TSG_Library.UFuncs
                 return;
             }
 
-            if (workPart.Bodies.ToArray().Length == 0)
+            if(workPart.Bodies.ToArray().Length == 0)
             {
-                if (workPart.LayerCategories.ToArray().Length != 1)
+                if(workPart.LayerCategories.ToArray().Length != 1)
                     return;
 
                 CreateCategoryNames(workPart);
@@ -108,7 +108,7 @@ namespace TSG_Library.UFuncs
                 return;
             }
 
-            if (workPart.LayerCategories.ToArray().Length == 1)
+            if(workPart.LayerCategories.ToArray().Length == 1)
             {
                 CreateCategoryNames(workPart);
                 const string bodyRefSetName = "BODY";
@@ -127,7 +127,7 @@ namespace TSG_Library.UFuncs
                         select body.Tag)
                     .ToList();
 
-                if (bodyArray.Count == 1)
+                if(bodyArray.Count == 1)
                 {
                     ufsession_.Assem.CreateRefSet(bodyRefSetName, origin, matrixValue, bodyArray.ToArray(),
                         numOfBodyMembers, out bodyRefSet);
@@ -160,14 +160,14 @@ namespace TSG_Library.UFuncs
                         select body.Tag)
                     .ToList();
 
-                if (bodyArray.Count == 1)
+                if(bodyArray.Count == 1)
                 {
                     ufsession_.Assem.CreateRefSet(bodyRefSetName, origin, matrixValue, bodyArray.ToArray(),
                         numOfBodyMembers, out bodyRefSet);
                     ufsession_.Assem.CreateRefSet(subRefSetName, origin, matrixValue, new Tag[] { }, numOfSubMembers,
                         out var _);
 
-                    if (workPart.ComponentAssembly.RootComponent is null)
+                    if(workPart.ComponentAssembly.RootComponent is null)
                         return;
 
                     var compList = (from component in workPart.ComponentAssembly.RootComponent.GetChildren()

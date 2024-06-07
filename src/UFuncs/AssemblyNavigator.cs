@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using NXOpen;
 using TSG_Library.Properties;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs
 {
@@ -163,7 +163,7 @@ namespace TSG_Library.UFuncs
         {
             treeView1.Nodes.Clear();
 
-            if (__display_part_ is null)
+            if(__display_part_ is null)
             {
                 treeView1.Nodes.Add("There is no display part");
                 return;
@@ -171,7 +171,7 @@ namespace TSG_Library.UFuncs
 
             var features = __work_part_.Features.ToArray();
 
-            if (features.Length > 0)
+            if(features.Length > 0)
             {
                 var feature_node = treeView1.Nodes.Add("Features");
 

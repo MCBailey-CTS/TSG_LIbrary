@@ -35,9 +35,9 @@ namespace TSG_Library.UFuncs
         {
             int IComparer.Compare(object x, object x1)
             {
-                if (x is null && x1 is null) return 0;
-                if (x is null ^ x1 is null) return 1;
-                if (((CtsDimensionData)x).DimXvalue > ((CtsDimensionData)x1).DimXvalue) return -1;
+                if(x is null && x1 is null) return 0;
+                if(x is null ^ x1 is null) return 1;
+                if(((CtsDimensionData)x).DimXvalue > ((CtsDimensionData)x1).DimXvalue) return -1;
                 return ((CtsDimensionData)x).DimXvalue < ((CtsDimensionData)x1).DimXvalue ? 1 : 0;
             }
         }
@@ -46,9 +46,9 @@ namespace TSG_Library.UFuncs
         {
             public int Compare(object y, object y1)
             {
-                if (y is null && y1 is null) return 0;
-                if (y is null ^ y1 is null) return 1;
-                if (((CtsDimensionData)y).DimYvalue > ((CtsDimensionData)y1).DimYvalue) return -1;
+                if(y is null && y1 is null) return 0;
+                if(y is null ^ y1 is null) return 1;
+                if(((CtsDimensionData)y).DimYvalue > ((CtsDimensionData)y1).DimYvalue) return -1;
                 return ((CtsDimensionData)y).DimYvalue < ((CtsDimensionData)y1).DimYvalue ? 1 : 0;
             }
         }

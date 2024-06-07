@@ -23,7 +23,7 @@ namespace TSG_Library.Ui
         {
             var preselectedData = (PreselectData)Marshal.PtrToStructure(userData, new PreselectData().GetType());
 
-            if (preselectedData.ItemCount > 0)
+            if(preselectedData.ItemCount > 0)
                 UFSession.GetUFSession().Ui
                     .AddToSelList(select, preselectedData.ItemCount, preselectedData.Items, true);
 
@@ -42,7 +42,7 @@ namespace TSG_Library.Ui
         {
             var preselectComponentsData = new PreselectData { Items = null, ItemCount = 0 };
 
-            if (theComponents != null)
+            if(theComponents != null)
             {
                 var compTags = new Tag[theComponents.Length];
                 for (var ii = 0; ii < theComponents.Length; ii++) compTags[ii] = theComponents[ii].Tag;

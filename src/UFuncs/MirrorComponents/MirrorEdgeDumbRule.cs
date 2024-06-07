@@ -3,7 +3,6 @@ using System.Linq;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
-using TSG_Library.Extensions;
 using TSG_Library.Geom;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
@@ -47,7 +46,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                 foreach (var body in mirroredPart.Bodies.ToArray())
                 foreach (var e in body.GetEdges())
-                    if (e._HasEndPoints(finalStart, finalEnd))
+                    if(e._HasEndPoints(finalStart, finalEnd))
                         newEdges.Add(e);
             }
 

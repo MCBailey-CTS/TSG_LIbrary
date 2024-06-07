@@ -9,9 +9,8 @@ using NXOpen.Assemblies;
 using NXOpen.Layer;
 using NXOpen.UF;
 using TSG_Library.Attributes;
-using TSG_Library.Extensions;
 using TSG_Library.Utilities;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 using static TSG_Library.UFuncs._UFunc;
 
 namespace TSG_Library.UFuncs
@@ -119,7 +118,7 @@ namespace TSG_Library.UFuncs
 
                 var match = opRegex.Match(__display_part_.Leaf);
 
-                if (!match.Success)
+                if(!match.Success)
                     return false;
 
                 return match.Groups[1].Value == "010";
@@ -135,17 +134,17 @@ namespace TSG_Library.UFuncs
 
                 var match = opRegex.Match(__display_part_.Leaf);
 
-                if (!match.Success)
+                if(!match.Success)
                     return false;
                 return match.Groups[1].Value == "900";
                 //}
             }
 
-            if (Session.GetSession().Parts.Display is null)
+            if(Session.GetSession().Parts.Display is null)
                 txtInput.Text = $@"{TodaysDate}-";
-            else if (Is010())
+            else if(Is010())
                 txtInput.Text = $@"{TodaysDate}-Strip";
-            else if (Is900())
+            else if(Is900())
                 txtInput.Text = $@"{TodaysDate}-FlowChart";
 
             txtInput.Focus();
@@ -177,45 +176,45 @@ namespace TSG_Library.UFuncs
 
         public static void CheckAssemblyDummyFiles()
         {
-            if (__display_part_.ComponentAssembly.RootComponent is null)
+            if(__display_part_.ComponentAssembly.RootComponent is null)
                 return;
 
             foreach (var childOfStrip in __display_part_.ComponentAssembly.RootComponent.GetChildren())
             {
-                if (childOfStrip.IsSuppressed)
+                if(childOfStrip.IsSuppressed)
                     continue;
 
-                if (!(childOfStrip.Prototype is Part))
+                if(!(childOfStrip.Prototype is Part))
                     continue;
 
-                if (!Regex.IsMatch(childOfStrip.DisplayName, Regex_PressAssembly, RegexOptions.IgnoreCase))
+                if(!Regex.IsMatch(childOfStrip.DisplayName, Regex_PressAssembly, RegexOptions.IgnoreCase))
                     continue;
 
 
-                if (childOfStrip.GetChildren().Length == 0)
+                if(childOfStrip.GetChildren().Length == 0)
                     throw new Exception(
                         $"A press exists in your assembly without any children. {childOfStrip._AssemblyPathString()}");
 
 
-                if (childOfStrip.GetChildren().Length == 1)
+                if(childOfStrip.GetChildren().Length == 1)
                     throw new Exception(
                         $"A press exists in your assembly with only one child. Expecting a ram and a bolster. {childOfStrip._AssemblyPathString()}");
 
-                if (childOfStrip.GetChildren().Length != 2)
+                if(childOfStrip.GetChildren().Length != 2)
                     continue;
 
                 foreach (var childOfPress in childOfStrip.GetChildren())
                 {
-                    if (!(childOfPress.Prototype is Part))
+                    if(!(childOfPress.Prototype is Part))
                         throw new Exception(
                             $"The child of a press must be loaded. {childOfPress._AssemblyPathString()}");
 
-                    if (childOfPress.IsSuppressed)
+                    if(childOfPress.IsSuppressed)
                         throw new Exception(
                             $"The child of a press cannot be suppressed. {childOfPress._AssemblyPathString()}");
 
-                    if (childOfPress.GetChildren().Length != 0 && childOfPress.GetChildren()
-                            .Any(component => !component.IsSuppressed && component.Prototype is Part))
+                    if(childOfPress.GetChildren().Length != 0 && childOfPress.GetChildren()
+                           .Any(component => !component.IsSuppressed && component.Prototype is Part))
                         continue;
 
                     throw new Exception(
@@ -239,10 +238,10 @@ namespace TSG_Library.UFuncs
             {
                 foreach (var child in session_.Parts.Work.ComponentAssembly.RootComponent.GetChildren())
                 {
-                    if (child.IsSuppressed)
+                    if(child.IsSuppressed)
                         continue;
 
-                    if (!(child.Prototype is Part))
+                    if(!(child.Prototype is Part))
                         continue;
 
                     session_.Parts.SetDisplay((Part)child.Prototype, false, false, out _);
@@ -259,20 +258,20 @@ namespace TSG_Library.UFuncs
                             var referenceSet = proto.GetAllReferenceSets()
                                 .FirstOrDefault(refset => refset.Name == child.ReferenceSet);
 
-                            if (referenceSet is null)
+                            if(referenceSet is null)
                                 continue;
 
                             var objectsInReferenceSet = referenceSet.AskMembersInReferenceSet();
 
                             foreach (var obj in objectsInReferenceSet)
                             {
-                                if (!(obj is DisplayableObject disp))
+                                if(!(obj is DisplayableObject disp))
                                     continue;
 
-                                if (disp.Layer <= 1 || disp.Layer >= 256)
+                                if(disp.Layer <= 1 || disp.Layer >= 256)
                                     continue;
 
-                                if (proto.Layers.GetState(disp.Layer) == State.WorkLayer)
+                                if(proto.Layers.GetState(disp.Layer) == State.WorkLayer)
                                     continue;
 
                                 proto.Layers.SetState(disp.Layer, State.Selectable);
@@ -306,13 +305,13 @@ namespace TSG_Library.UFuncs
 
             foreach (var obj in objectsInReferenceSet)
             {
-                if (!(obj is DisplayableObject disp))
+                if(!(obj is DisplayableObject disp))
                     continue;
 
-                if (disp.Layer <= 1 || disp.Layer >= 256)
+                if(disp.Layer <= 1 || disp.Layer >= 256)
                     continue;
 
-                if (proto.Layers.GetState(disp.Layer) == State.WorkLayer)
+                if(proto.Layers.GetState(disp.Layer) == State.WorkLayer)
                     continue;
 
                 proto.Layers.SetState(disp.Layer, State.Selectable);
@@ -330,10 +329,10 @@ namespace TSG_Library.UFuncs
 
             __display_part_.SetUserAttribute("DATE", -1, TodaysDate, NXOpen.Update.Option.Now);
 
-            if (folder is null)
+            if(folder is null)
                 throw new Exception("The current displayed part is not in a GFolder.");
 
-            if (chkSTP)
+            if(chkSTP)
             {
                 var currentD = __display_part_;
                 var currentW = session_.Parts.Work;
@@ -364,13 +363,13 @@ namespace TSG_Library.UFuncs
             }
 
 
-            if (numUpDownCopies > 0)
+            if(numUpDownCopies > 0)
                 ExportStripPrintDrawing(numUpDownCopies);
 
-            if (!chkPart && !chkPDF && !chkSTP)
+            if(!chkPart && !chkPDF && !chkSTP)
                 return;
 
-            if (chkPDF)
+            if(chkPDF)
                 UpdateForPdf();
 
             //if (chkSTP)
@@ -380,12 +379,12 @@ namespace TSG_Library.UFuncs
                 ? $"{folder.dir_layout}\\{txtInput}"
                 : $"{folder.dir_outgoing}\\{txtInput}";
 
-            if (Directory.Exists(outgoingFolderName))
+            if(Directory.Exists(outgoingFolderName))
             {
-                if (MessageBox.Show(
-                        $@"Folder {outgoingFolderName} already exists, is it okay to overwrite the files in the folder?",
-                        @"Warning",
-                        MessageBoxButtons.YesNo) != DialogResult.Yes)
+                if(MessageBox.Show(
+                       $@"Folder {outgoingFolderName} already exists, is it okay to overwrite the files in the folder?",
+                       @"Warning",
+                       MessageBoxButtons.YesNo) != DialogResult.Yes)
                     return;
 
                 Directory.Delete(outgoingFolderName, true);
@@ -412,7 +411,7 @@ namespace TSG_Library.UFuncs
                 ? "Exporting \".prt\" file."
                 : "Finding objects to export.");
 
-            if (chkPDF)
+            if(chkPDF)
             {
                 uf_.Ui.SetPrompt("Exporting PDF......");
 
@@ -423,7 +422,7 @@ namespace TSG_Library.UFuncs
                     : $"Did not successfully create \"{outputPath}\".");
             }
 
-            if (chkPart)
+            if(chkPart)
             {
                 var outputPath = ExportStripPart(outgoingFolderName);
 
@@ -433,7 +432,7 @@ namespace TSG_Library.UFuncs
             }
 
 
-            if (chkSTP)
+            if(chkSTP)
             {
                 UpdateForStp();
 
@@ -482,7 +481,7 @@ namespace TSG_Library.UFuncs
 
             var zipFile = $"{outgoingFolderName}\\{zipFileName}";
 
-            if (filesToZip.Length != 0)
+            if(filesToZip.Length != 0)
             {
                 var zip = new Zip7(zipFile, filesToZip);
 
@@ -491,9 +490,9 @@ namespace TSG_Library.UFuncs
                 zip.WaitForExit();
             }
 
-            if (chkCopy)
+            if(chkCopy)
             {
-                if (!Directory.Exists(folder.dir_process_sim_data_design))
+                if(!Directory.Exists(folder.dir_process_sim_data_design))
                     Directory.CreateDirectory(folder.dir_process_sim_data_design);
 
                 var zipFiles = Directory.GetFiles(folder.dir_process_sim_data_design, "*.7z",
@@ -532,7 +531,7 @@ namespace TSG_Library.UFuncs
                     session_.ApplicationSwitchImmediate("UG_APP_DRAFTING");
                     sheets[0].Open();
                     uf_.Draw.IsObjectOutOfDate(sheets[0].Tag, out var outOfDate);
-                    if (outOfDate)
+                    if(outOfDate)
                         uf_.Draw.UpdOutOfDateViews(sheets[0].Tag);
                     sheets[0].OwningPart.Save(BasePart.SaveComponents.True, BasePart.CloseAfterSave.False);
                     break;
@@ -559,7 +558,7 @@ namespace TSG_Library.UFuncs
             __display_part_.Layers.WorkLayer = 1;
 
             for (var i = 2; i < +256; i++)
-                if (layerArray.Contains(i))
+                if(layerArray.Contains(i))
                     __display_part_.Layers.SetState(i, State.Selectable);
                 else
                     __display_part_.Layers.SetState(i, State.Hidden);
@@ -568,14 +567,14 @@ namespace TSG_Library.UFuncs
 
             __display_part_.Layers.SetState(1, State.Hidden);
 
-            if (part.ComponentAssembly.RootComponent != null)
+            if(part.ComponentAssembly.RootComponent != null)
             {
                 var validChild = part.ComponentAssembly.RootComponent
                     .GetChildren()
                     .Where(component => component.Prototype is Part)
                     .FirstOrDefault(component => !component.IsSuppressed);
 
-                if (validChild != null)
+                if(validChild != null)
                     return;
             }
 
@@ -624,7 +623,7 @@ namespace TSG_Library.UFuncs
 
         public static void SetLayersInBlanksAndLayoutsAndAddDummies(Part snapStrip010)
         {
-            if (!Regex.IsMatch(snapStrip010.Leaf, Regex_Strip, RegexOptions.IgnoreCase))
+            if(!Regex.IsMatch(snapStrip010.Leaf, Regex_Strip, RegexOptions.IgnoreCase))
                 throw new ArgumentException(@"Must be an op 010 strip.", nameof(snapStrip010));
 
             var currentD = __display_part_;
@@ -653,20 +652,20 @@ namespace TSG_Library.UFuncs
 
                 foreach (var child in Descendants(__display_part_.ComponentAssembly.RootComponent))
                 {
-                    if (!(child.Prototype is Part))
+                    if(!(child.Prototype is Part))
                         continue;
 
-                    if (child.IsSuppressed)
+                    if(child.IsSuppressed)
                         continue;
 
                     var blankMatch = blankNameRegex.Match(child.Name);
 
                     var layoutMatch = layoutNameRegex.Match(child.Name);
 
-                    if (blankMatch.Success)
+                    if(blankMatch.Success)
                         blankLayers.Add(int.Parse(blankMatch.Groups[1].Value) + 10);
 
-                    if (!layoutMatch.Success)
+                    if(!layoutMatch.Success)
                         continue;
 
                     var layer = int.Parse(layoutMatch.Groups[1].Value) * 10;
@@ -676,7 +675,7 @@ namespace TSG_Library.UFuncs
                     layoutLayers.Add(layer + 1);
                 }
 
-                if (blankLayers.Count != 0 && blankPart != null)
+                if(blankLayers.Count != 0 && blankPart != null)
                 {
                     session_.Parts.SetDisplay(blankPart, false, false, out _);
 
@@ -690,7 +689,7 @@ namespace TSG_Library.UFuncs
                     __display_part_.Save(BasePart.SaveComponents.False, BasePart.CloseAfterSave.False);
                 }
 
-                if (layoutLayers.Count != 0 && layoutPart != null)
+                if(layoutLayers.Count != 0 && layoutPart != null)
                 {
                     session_.Parts.SetDisplay(layoutPart, false, false, out _);
 
@@ -746,10 +745,10 @@ namespace TSG_Library.UFuncs
             var directory = Path.GetDirectoryName(filePath);
 
 
-            if (!filePath.EndsWith(".pdf"))
+            if(!filePath.EndsWith(".pdf"))
                 throw new Exception("File path for PDF must end with \".pdf\".");
 
-            if (File.Exists(filePath))
+            if(File.Exists(filePath))
                 throw new Exception($"PDF '{filePath}' already exists.");
 
             var part = session_.find_or_open(partPath);
@@ -778,7 +777,7 @@ namespace TSG_Library.UFuncs
                 pdfBuilder.Colors = PrintPDFBuilder.Color.AsDisplayed;
                 pdfBuilder.Watermark = "";
                 UFSession.GetUFSession().Draw.IsObjectOutOfDate(sheet.Tag, out var flag);
-                if (flag)
+                if(flag)
                 {
                     UFSession.GetUFSession().Draw.UpdOutOfDateViews(sheet.Tag);
                     part.__Save();
@@ -809,7 +808,7 @@ namespace TSG_Library.UFuncs
 
         public static void ExportStripPrintDrawing(int copies)
         {
-            if (copies == 0)
+            if(copies == 0)
                 return;
 
             var _WorkPart = Session.GetSession().Parts.Work;
@@ -837,7 +836,7 @@ namespace TSG_Library.UFuncs
                         session_.ApplicationSwitchImmediate("UG_APP_DRAFTING");
                         sheets[0].Open();
                         TheUFSession.Draw.IsObjectOutOfDate(sheets[0].Tag, out var outOfDate);
-                        if (outOfDate)
+                        if(outOfDate)
                             try
                             {
                                 TheUFSession.Draw.UpdOutOfDateViews(sheets[0].Tag);

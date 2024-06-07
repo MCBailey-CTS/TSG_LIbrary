@@ -3,7 +3,7 @@ using NXOpen;
 using NXOpen.GeometricUtilities;
 using NXOpen.UF;
 using TSG_Library.Attributes;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 using Selection = TSG_Library.Ui.Selection;
 
 namespace TSG_Library.UFuncs
@@ -32,7 +32,7 @@ namespace TSG_Library.UFuncs
             var cursorLocation = new Point3d();
             var developObj = Selection.SelectSingleLine();
 
-            if (developObj is null)
+            if(developObj is null)
                 return;
 
             // get user selection for which end of the line to extend

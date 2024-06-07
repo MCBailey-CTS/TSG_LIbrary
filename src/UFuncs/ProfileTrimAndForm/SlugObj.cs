@@ -4,8 +4,7 @@ using System.Linq;
 using MoreLinq;
 using NXOpen;
 using NXOpen.Features;
-using TSG_Library.Extensions;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs
 {
@@ -47,7 +46,7 @@ namespace TSG_Library.UFuncs
             {
                 var other = face1.GetEdges().First().__StartPoint().__MapCsysToCsys(abs, coordSystem).Z;
 
-                if (other > maxZ)
+                if(other > maxZ)
                     maxFace = face1;
             }
 

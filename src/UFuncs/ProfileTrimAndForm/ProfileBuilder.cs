@@ -6,9 +6,8 @@ using NXOpen.Features;
 using NXOpen.GeometricUtilities;
 using NXOpen.UF;
 using NXOpen.Utilities;
-using TSG_Library.Extensions;
 using TSG_Library.UFuncs;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.Utilities
 {
@@ -39,13 +38,13 @@ namespace TSG_Library.Utilities
 
             var pads = CreatePad(uniteTargets, color, layer + 6).ToArray();
             CreateOffsetPads(pads, expression, padOffsetOut);
-            if (isTrimProfile)
+            if(isTrimProfile)
             {
                 var lowers = CreateLower(uniteTargets, color, layer + 4).ToArray();
                 CreateOffsetPads(lowers, "b", padOffsetOut);
             }
 
-            if (!createFeatureGroup) return;
+            if(!createFeatureGroup) return;
             foreach (var target in uniteTargets)
             {
                 var objects = new List<TaggedObject>();
@@ -63,7 +62,7 @@ namespace TSG_Library.Utilities
         {
             var tagObjects = (from obj in objects select obj.Tag).ToArray();
             var hideResult = 1;
-            if (show) hideResult = 0;
+            if(show) hideResult = 0;
             UFSession.GetUFSession().Modl
                 .CreateSetOfFeature(name, tagObjects, tagObjects.Length, hideResult, out var tag);
             return (FeatureGroup)NXObjectManager.Get(tag);
@@ -115,7 +114,7 @@ namespace TSG_Library.Utilities
             var nXObject1 = builder.Commit();
             builder.Destroy();
 
-            if (nXObject1 is null)
+            if(nXObject1 is null)
                 throw new Exception("Didnt create anything");
 
             return (ExtractFace)nXObject1;

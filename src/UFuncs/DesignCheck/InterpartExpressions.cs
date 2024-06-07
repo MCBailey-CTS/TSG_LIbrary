@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 using NXOpen;
-using TSG_Library.Extensions;
 using TSG_Library.Utilities;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
@@ -59,12 +58,12 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
             foreach (var expression in part.Expressions.ToArray())
                 try
                 {
-                    if (!expression.IsInterpartExpression)
+                    if(!expression.IsInterpartExpression)
                         continue;
 
                     expression.GetInterpartExpressionNames(out var partName, out _);
 
-                    if (partName.StartsWith(folder.dir_job))
+                    if(partName.StartsWith(folder.dir_job))
                         continue;
 
                     var exp_node = new TreeNode(expression.Name) { Tag = expression };

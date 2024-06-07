@@ -15,12 +15,11 @@ using NXOpen.UF;
 using NXOpen.Utilities;
 using TSG_Library.Attributes;
 using TSG_Library.Disposable;
-using TSG_Library.Extensions;
 using TSG_Library.Properties;
 using TSG_Library.UFuncUtilities.AssemblyAutoDetailUtilities;
 using TSG_Library.Ui;
 using TSG_Library.Utilities;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 using static TSG_Library.UFuncs._UFunc;
 using static TSG_Library.UFuncs.CtsDimensionData.EndPointAssociativity;
 using DecimalPointCharacter = NXOpen.Annotations.DecimalPointCharacter;
@@ -153,7 +152,7 @@ namespace TSG_Library.UFuncs
             chkHoleChart.Checked = false;
             chkUpdateViews.Checked = false;
 
-            if (chkDelete4Views.Checked)
+            if(chkDelete4Views.Checked)
                 chkDetailSheet.Checked = false;
 
             chkDetailSheet.Enabled = !chkDelete4Views.Checked;
@@ -173,7 +172,7 @@ namespace TSG_Library.UFuncs
 
                     var selectComponents = Selection.SelectManyComponents();
 
-                    if (selectComponents.Length == 0)
+                    if(selectComponents.Length == 0)
                         return;
 
                     _allComponents.AddRange(selectComponents);
@@ -199,13 +198,13 @@ namespace TSG_Library.UFuncs
             {
                 try
                 {
-                    if (__display_part_.ComponentAssembly.RootComponent is null)
+                    if(__display_part_.ComponentAssembly.RootComponent is null)
                         return;
 
                     _allComponents.Clear();
                     GetChildComponents(__display_part_.ComponentAssembly.RootComponent);
 
-                    if (_allComponents.Count == 0)
+                    if(_allComponents.Count == 0)
                     {
                         print_("No valid components");
                         return;
@@ -219,12 +218,12 @@ namespace TSG_Library.UFuncs
                         {
                             foreach (var attr in comp.GetUserAttributes())
                             {
-                                if (attr.Title.ToUpper() == "MATERIAL")
+                                if(attr.Title.ToUpper() == "MATERIAL")
                                 {
                                     var value = comp.GetUserAttributeAsString("MATERIAL", NXObject.AttributeType.String,
                                         -1);
 
-                                    if (value != "")
+                                    if(value != "")
                                         passedComponents.AddRange(from matAttr in materials
                                             where matAttr.AttrValue == value
                                             select comp);
@@ -234,13 +233,13 @@ namespace TSG_Library.UFuncs
 
                                 // Rev1.1 Change - Added for Scrap Chutes
 
-                                if (attr.Title.ToUpper() != "DESCRIPTION")
+                                if(attr.Title.ToUpper() != "DESCRIPTION")
                                     continue;
 
                                 var dValue = comp.GetUserAttributeAsString("DESCRIPTION", NXObject.AttributeType.String,
                                     -1);
 
-                                if (dValue is null)
+                                if(dValue is null)
                                 {
                                     print_("////////////////////////////////////");
                                     print_($"Component: {comp.DisplayName} has a null DESCRIPTION value.");
@@ -249,10 +248,10 @@ namespace TSG_Library.UFuncs
                                     continue;
                                 }
 
-                                if (dValue.ToUpper() == "CHUTE TO SUIT")
+                                if(dValue.ToUpper() == "CHUTE TO SUIT")
                                     passedComponents.Add(comp);
 
-                                if (dValue.ToLower().Contains("diemaker to alter"))
+                                if(dValue.ToLower().Contains("diemaker to alter"))
                                     passedComponents.Add(comp);
                                 // End of Rev1.1 change                             
                             }
@@ -262,7 +261,7 @@ namespace TSG_Library.UFuncs
                             ex._PrintException(comp.DisplayName);
                         }
 
-                    if (passedComponents.Count == 0)
+                    if(passedComponents.Count == 0)
                     {
                         print_("No valid components");
                         return;
@@ -271,7 +270,7 @@ namespace TSG_Library.UFuncs
                     var selectDeselectComps = passedComponents.ToArray();
                     passedComponents = Preselect.GetUserSelections(selectDeselectComps);
 
-                    if (passedComponents.Count == 0)
+                    if(passedComponents.Count == 0)
                     {
                         print_("No valid components");
                         return;
@@ -321,7 +320,7 @@ namespace TSG_Library.UFuncs
         {
             var dynamic = __work_part_.__DynamicBlock();
 
-            if (__work_part_.Tag == __display_part_.Tag)
+            if(__work_part_.Tag == __display_part_.Tag)
             {
                 __display_part_.WCS.SetOriginAndMatrix(dynamic.__Origin(), dynamic.__Orientation());
                 return;
@@ -338,7 +337,7 @@ namespace TSG_Library.UFuncs
 
                 var ject = __work_component_.FindOccurrence(system);
 
-                if (!(ject is CartesianCoordinateSystem cart))
+                if(!(ject is CartesianCoordinateSystem cart))
                     throw new Exception();
 
                 __display_part_.WCS.SetOriginAndMatrix(_Point3dOrigin, cart.Orientation.Element);
@@ -351,7 +350,7 @@ namespace TSG_Library.UFuncs
             ModelingView planView = null;
 
             foreach (ModelingView view in __work_part_.ModelingViews)
-                if (view.Name == View_Plan)
+                if(view.Name == View_Plan)
                 {
                     planView = view;
                     break;
@@ -370,7 +369,7 @@ namespace TSG_Library.UFuncs
             ModelingView modelingView1, modelingView2;
             Layout layout;
 
-            if (planView != null)
+            if(planView != null)
             {
                 layout = __work_part_.Layouts.FindObject(l1);
                 modelingView1 = __work_part_.ModelingViews.WorkView;
@@ -393,7 +392,7 @@ namespace TSG_Library.UFuncs
         {
             print_("////////////////////////");
 
-            if (!detailComp._IsLoaded())
+            if(!detailComp._IsLoaded())
             {
                 print_($"Component {detailComp.DisplayName} is not loaded");
                 print_("4-VIEW will not be created for this component");
@@ -407,7 +406,7 @@ namespace TSG_Library.UFuncs
 
                 try
                 {
-                    if (__work_part_.__HasDynamicBlock())
+                    if(__work_part_.__HasDynamicBlock())
                         SetWcsToWorkPart();
                 }
                 catch (Exception ex)
@@ -428,7 +427,7 @@ namespace TSG_Library.UFuncs
                     ex._PrintException();
                 }
 
-                if (__display_part_.Layers.GetState(111) != State.WorkLayer)
+                if(__display_part_.Layers.GetState(111) != State.WorkLayer)
                     __display_part_.Layers.SetState(111, State.Selectable);
 
                 using (new ResetShadeRendering())
@@ -437,7 +436,7 @@ namespace TSG_Library.UFuncs
 
                     using (new Destroyer(preferencesBuilder1))
                     {
-                        if (chkColorDetailSheet.Checked)
+                        if(chkColorDetailSheet.Checked)
                         {
                             preferencesBuilder1.ViewStyle.ViewStyleShading.RenderingStyle =
                                 ShadingRenderingStyleOption.FullyShaded;
@@ -450,17 +449,17 @@ namespace TSG_Library.UFuncs
 
                     foreach (var dispRefSet in __display_part_.GetAllReferenceSets())
                     {
-                        if (dispRefSet.Name != "BODY")
+                        if(dispRefSet.Name != "BODY")
                             continue;
 
                         foreach (var refMember in dispRefSet.AskMembersInReferenceSet())
                         {
-                            if (!(refMember is Arc || refMember is Line || refMember is Ellipse || refMember is Spline))
+                            if(!(refMember is Arc || refMember is Line || refMember is Ellipse || refMember is Spline))
                                 continue;
 
                             var lineLayer = (Curve)refMember;
 
-                            if (lineLayer.Layer != 1)
+                            if(lineLayer.Layer != 1)
                                 continue;
 
                             NXObject[] remMember = { refMember };
@@ -469,7 +468,7 @@ namespace TSG_Library.UFuncs
                         }
                     }
 
-                    if (chkHoleChart.Checked)
+                    if(chkHoleChart.Checked)
                         try
                         {
                             // set WCS to "PLAN" view and set "Top" as the work view
@@ -485,14 +484,14 @@ namespace TSG_Library.UFuncs
                                 .Cast<NXObject>()
                                 .ToList();
 
-                            if (deleteNote.Count > 0)
+                            if(deleteNote.Count > 0)
                                 session_.delete_objects(deleteNote.ToArray());
 
                             foreach (Body solidBody in __display_part_.Bodies)
                             {
                                 solidBody.Unblank();
 
-                                if (solidBody.Layer != 1 && solidBody.Layer != 94 && solidBody.Layer != 96)
+                                if(solidBody.Layer != 1 && solidBody.Layer != 94 && solidBody.Layer != 96)
                                     continue;
 
                                 foreach (var cylFace in solidBody.GetFaces())
@@ -504,11 +503,11 @@ namespace TSG_Library.UFuncs
                                     ufsession_.Modl.AskFaceData(cylFace.Tag, out var type, point, dir, box,
                                         out var radius, out _, out _);
 
-                                    if (type != cylinder)
+                                    if(type != cylinder)
                                         continue;
 
                                     // Revision 1.45
-                                    if (!cylFace.Name.ToUpper().Contains("HOLECHART"))
+                                    if(!cylFace.Name.ToUpper().Contains("HOLECHART"))
                                         continue;
 
                                     var cfOrigin = new Point3d(point[0], point[1], point[2]);
@@ -521,8 +520,8 @@ namespace TSG_Library.UFuncs
                                         var holeDiameter = Convert.ToDouble(value);
                                         var faceDiameter = Convert.ToDouble(radius * 2);
                                         var difference = holeDiameter * .000000001;
-                                        if (System.Math.Abs(holeDiameter * multiplier - faceDiameter) <=
-                                            difference * multiplier)
+                                        if(System.Math.Abs(holeDiameter * multiplier - faceDiameter) <=
+                                           difference * multiplier)
                                         {
                                             cfNote[0] = key;
                                             break;
@@ -541,7 +540,7 @@ namespace TSG_Library.UFuncs
                             ex._PrintException();
                         }
 
-                    if (chkDetailSheet.Checked)
+                    if(chkDetailSheet.Checked)
                         try
                         {
                             var objects = __display_part_.Layers.GetAllObjectsOnLayer(1);
@@ -550,16 +549,16 @@ namespace TSG_Library.UFuncs
 
                             foreach (var obj in objects)
                             {
-                                if (obj is Body)
+                                if(obj is Body)
                                     continue;
 
-                                if (obj is Face)
+                                if(obj is Face)
                                     continue;
 
-                                if (obj is Edge)
+                                if(obj is Edge)
                                     continue;
 
-                                if (obj is DisplayableObject disp)
+                                if(obj is DisplayableObject disp)
                                     objectsToMove.Add(disp);
                             }
 
@@ -574,12 +573,12 @@ namespace TSG_Library.UFuncs
                                 .Cast<NXObject>()
                                 .ToList();
 
-                            if (deleteView.Count > 0)
+                            if(deleteView.Count > 0)
                                 session_.delete_objects(deleteView.ToArray());
 
                             string[] drillChart = null;
 
-                            if (chkDrillChart.Checked)
+                            if(chkDrillChart.Checked)
                             {
 #pragma warning disable CS0612 // Type or member is obsolete
                                 drillChart = DrillChart.Main();
@@ -597,7 +596,7 @@ namespace TSG_Library.UFuncs
                             ex._PrintException();
                         }
 
-                    if (chkUpdateViews.Checked)
+                    if(chkUpdateViews.Checked)
                         try
                         {
                             // update all views
@@ -608,7 +607,7 @@ namespace TSG_Library.UFuncs
                                 // Revision 1.7 – 2018 / 02 / 09
                                 ufsession_.Draw.IsObjectOutOfDate(dwg.Tag, out var outOfDate);
 
-                                if (!outOfDate)
+                                if(!outOfDate)
                                     continue;
 
                                 dwg.Open();
@@ -625,7 +624,7 @@ namespace TSG_Library.UFuncs
                             ex._PrintException();
                         }
 
-                    if (!chkDelete4Views.Checked)
+                    if(!chkDelete4Views.Checked)
                         return;
                     // Revision • 1.62 – 2017 / 12 / 13
                     try
@@ -647,7 +646,7 @@ namespace TSG_Library.UFuncs
                         .Cast<NXObject>()
                         .ToList();
 
-                    if (deleteView1.Count > 0)
+                    if(deleteView1.Count > 0)
                         session_.delete_objects(deleteView1.ToArray());
                 }
             }
@@ -712,7 +711,7 @@ namespace TSG_Library.UFuncs
             {
                 ufsession_.View.CycleObjects(drfView.Tag, UFView.CycleObjectsEnum.VisibleObjects, ref visObj);
 
-                if (visObj == NXOpen.Tag.Null)
+                if(visObj == NXOpen.Tag.Null)
                     continue;
 
                 ufsession_.Obj.AskTypeAndSubtype(visObj, out _, out _);
@@ -759,7 +758,7 @@ namespace TSG_Library.UFuncs
             }
 
             // sort all CtsDimensionData objects to find mins and max
-            if (dimData.Count <= 0)
+            if(dimData.Count <= 0)
                 return;
 
             var objInfo = dimData.ToArray();
@@ -868,7 +867,7 @@ namespace TSG_Library.UFuncs
                     ufsession_.View.MapModelToDrawing(drfView.Tag, vertex3._ToArray(), drfVertex3);
                     var drfVertex4 = new double[2];
                     ufsession_.View.MapModelToDrawing(drfView.Tag, vertex4._ToArray(), drfVertex4);
-                    if (drfVertex3[0] <= drfVertex4[0])
+                    if(drfVertex3[0] <= drfVertex4[0])
                         maxY.DimXvalue = drfVertex3[0];
                     else
                         minY.DimXvalue = drfVertex4[0];
@@ -919,7 +918,7 @@ namespace TSG_Library.UFuncs
             ufsession_.Drf.InitObjectStructure(ref drfObjMaxY);
             ufsession_.Drf.InitObjectStructure(ref drfObjMinY);
 
-            if (drfView.Name == "4-VIEW-BOTTOM")
+            if(drfView.Name == "4-VIEW-BOTTOM")
             {
                 AssignDraftObject(drfView, minX, ref drfObjMinX);
                 AssignDraftObject(drfView, maxX, ref drfObjMaxX);
@@ -931,7 +930,7 @@ namespace TSG_Library.UFuncs
                     orthoBtmHorizDimOrigin, out _);
             }
 
-            if (drfView.Name != "4-VIEW-RIGHT")
+            if(drfView.Name != "4-VIEW-RIGHT")
                 return;
 
             AssignDraftObject(drfView, minY, ref drfObjMinY);
@@ -942,7 +941,7 @@ namespace TSG_Library.UFuncs
 
         private static void FindEndPoints(ref CtsDimensionData maxY, out Point3d vertex3, out Point3d vertex4)
         {
-            if (NXObjectManager.Get(maxY.DimEntity).GetType().ToString() == "NXOpen.Line")
+            if(NXObjectManager.Get(maxY.DimEntity).GetType().ToString() == "NXOpen.Line")
             {
                 var line1 = (Line)NXObjectManager.Get(maxY.DimEntity);
                 vertex3 = line1.StartPoint;
@@ -1182,7 +1181,7 @@ namespace TSG_Library.UFuncs
 
                 using (var unitsFormatPreferences = dimensionPreferences.GetUnitsFormatPreferences())
                 {
-                    if (chkDualDimensions.Checked)
+                    if(chkDualDimensions.Checked)
                         unitsFormatPreferences.DualDimensionPlacement = DualDimensionPlacement.Below;
 
                     unitsFormatPreferences.PrimaryDimensionUnit = units == BasePart.Units.Inches
@@ -1246,18 +1245,18 @@ namespace TSG_Library.UFuncs
         {
             foreach (var child in assembly.GetChildren())
             {
-                if (child.IsSuppressed)
+                if(child.IsSuppressed)
                 {
-                    if (!IsNameValid(child))
+                    if(!IsNameValid(child))
                         continue;
                     print_($"{child.DisplayName} is suppressed");
                     continue;
                 }
 
-                if (assembly.GetChildren() is null)
+                if(assembly.GetChildren() is null)
                     continue;
 
-                if (!IsNameValid(child))
+                if(!IsNameValid(child))
                 {
                     GetChildComponents(child);
                     continue;
@@ -1265,12 +1264,12 @@ namespace TSG_Library.UFuncs
 
                 var instance = ufsession_.Assem.AskInstOfPartOcc(child.Tag);
 
-                if (instance == NXOpen.Tag.Null)
+                if(instance == NXOpen.Tag.Null)
                     continue;
 
                 ufsession_.Assem.AskPartNameOfChild(instance, out var partName);
 
-                if (ufsession_.Part.IsLoaded(partName) == 1)
+                if(ufsession_.Part.IsLoaded(partName) == 1)
                 {
                     _allComponents.Add(child);
                     GetChildComponents(child);
@@ -1279,12 +1278,12 @@ namespace TSG_Library.UFuncs
 
                 ufsession_.Cfi.AskFileExist(partName, out var status);
 
-                if (status != 0)
+                if(status != 0)
                     continue;
 
                 ufsession_.Part.OpenQuiet(partName, out var partOpen, out _);
 
-                if (partOpen == NXOpen.Tag.Null)
+                if(partOpen == NXOpen.Tag.Null)
                     continue;
 
                 _allComponents.Add(child);
@@ -1369,7 +1368,7 @@ namespace TSG_Library.UFuncs
             using (var layerState = __display_part_.Layers.GetStates())
             {
                 foreach (Category category in __display_part_.LayerCategories)
-                    if (category.Name == "ALL")
+                    if(category.Name == "ALL")
                         layerState.SetStateOfCategory(category, State.Hidden);
                 __display_part_.Layers.SetStates(layerState, true);
             }
@@ -1393,10 +1392,10 @@ namespace TSG_Library.UFuncs
 
         private void ChkChart_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkDrillChart.Checked)
+            if(chkDrillChart.Checked)
                 chkHoleChart.Checked = false;
 
-            if (chkHoleChart.Checked)
+            if(chkHoleChart.Checked)
                 chkDrillChart.Checked = false;
         }
 
@@ -1440,7 +1439,7 @@ namespace TSG_Library.UFuncs
                 const double increment = .125;
                 var bodyCount = __display_part_.Bodies.Cast<Body>().Count(sBody1 => sBody1.Layer == 1);
 
-                if (bodyCount != 1)
+                if(bodyCount != 1)
                 {
                     print_(
                         $"DetailPart Sheet will not be created.  {__display_part_.FullPath} : Solid bodies on layer one = {bodyCount}");
@@ -1449,7 +1448,7 @@ namespace TSG_Library.UFuncs
 
                 var sBody = __display_part_.__SolidBodyLayer1OrNull();
 
-                if (sBody is null)
+                if(sBody is null)
                 {
                     print_($"Could not find solid body on layer 1 :' {__display_part_.Leaf}'");
                     return;
@@ -1504,7 +1503,7 @@ namespace TSG_Library.UFuncs
                                      viewSpace * unitMultiplier +
                                      viewMinFromBtm * unitMultiplier) / unitMultiplier;
 
-                if (measureWidth > baseWidthXDir * fitSheetXDir || measureHeight > baseHeightYDir * fitSheetYDir)
+                if(measureWidth > baseWidthXDir * fitSheetXDir || measureHeight > baseHeightYDir * fitSheetYDir)
                     do
                     {
                         scale += increment;
@@ -1512,7 +1511,7 @@ namespace TSG_Library.UFuncs
                         scaledHeight = baseHeightYDir * fitSheetYDir * scale;
                     } while (scaledWidth < measureWidth || scaledHeight < measureHeight);
 
-                if (__display_part_.Expressions.ToArray().All(expression => expression.Name != "borderScale"))
+                if(__display_part_.Expressions.ToArray().All(expression => expression.Name != "borderScale"))
                     using (session_.using_do_update("Expression"))
                     {
                         __work_part_.Expressions.CreateWithUnits($"borderScale={scale}", null);
@@ -1542,7 +1541,7 @@ namespace TSG_Library.UFuncs
 
                 try
                 {
-                    if (chkDrillChart.Checked && drillChart.Length > 0)
+                    if(chkDrillChart.Checked && drillChart.Length > 0)
                     {
                         var note = (Note)session_.find_by_name(@"GRUMBLEGRUMBLE");
 
@@ -1597,14 +1596,14 @@ namespace TSG_Library.UFuncs
 
                 foreach (var attributeNote in __display_part_.GetUserAttributes())
                 {
-                    if (attributeNote.Title.ToUpper() != "DESCRIPTION")
+                    if(attributeNote.Title.ToUpper() != "DESCRIPTION")
                         continue;
 
                     var descValue =
                         __display_part_.GetUserAttributeAsString(attributeNote.Title, NXObject.AttributeType.String,
                             -1);
 
-                    if (descValue.ToUpper() == "NITROGEN PLATE SYSTEM")
+                    if(descValue.ToUpper() == "NITROGEN PLATE SYSTEM")
                         continue;
 
                     DimensionView(btmDrfView, orthogonalBtm, scale, distances, units);
@@ -1616,22 +1615,22 @@ namespace TSG_Library.UFuncs
 
                 foreach (var attrNote in __display_part_.GetUserAttributes())
                 {
-                    if (attrNote.Title.ToUpper() == "WTN")
+                    if(attrNote.Title.ToUpper() == "WTN")
                     {
                         var wtnValue =
                             __display_part_.GetUserAttributeAsString(attrNote.Title, NXObject.AttributeType.String, -1);
 
-                        if (wtnValue.ToUpper() == "YES")
+                        if(wtnValue.ToUpper() == "YES")
                             isWireTaper = true;
                     }
 
-                    if (attrNote.Title.ToUpper() != "WFTD")
+                    if(attrNote.Title.ToUpper() != "WFTD")
                         continue;
 
                     var wfftValue =
                         __display_part_.GetUserAttributeAsString(attrNote.Title, NXObject.AttributeType.String, -1);
 
-                    if (wfftValue.ToUpper() == "YES")
+                    if(wfftValue.ToUpper() == "YES")
                         isWaitForDev = true;
                 }
 
@@ -1639,20 +1638,20 @@ namespace TSG_Library.UFuncs
 
                 foreach (Note drfNote in __display_part_.Notes)
                 {
-                    if (drfNote.Layer != 200)
+                    if(drfNote.Layer != 200)
                         continue;
 
                     var noteText = drfNote.GetText();
 
                     //Changed from "TSG STANDARD" to "STANDARD" - to work with the GE Border file. 2016-11-16 Duane VW
-                    if (noteText[0].Contains("STANDARD") && isWireTaper == false)
+                    if(noteText[0].Contains("STANDARD") && isWireTaper == false)
                         addToDelete.Add(drfNote);
 
-                    if (noteText[0].Contains("WAITING FOR FINAL TRIM") && isWaitForDev == false)
+                    if(noteText[0].Contains("WAITING FOR FINAL TRIM") && isWaitForDev == false)
                         addToDelete.Add(drfNote);
                 }
 
-                if (addToDelete.Count != 0)
+                if(addToDelete.Count != 0)
                     session_.delete_objects(addToDelete.ToArray());
             }
             catch (Exception ex)

@@ -37,7 +37,7 @@ namespace TSG_Library.Utilities
                     out var response, out var selectedObj,
                     cursor, out var view);
                 Ufs.Ui.UnlockUgAccess(UF_UI_FROM_CUSTOM);
-                if (response != UF_UI_OBJECT_SELECTED || selectedObj == Tag.Null) return null;
+                if(response != UF_UI_OBJECT_SELECTED || selectedObj == Tag.Null) return null;
                 var comp = (Body)NXObjectManager.Get(selectedObj);
                 comp.Unhighlight();
                 return comp;
@@ -58,7 +58,7 @@ namespace TSG_Library.Utilities
         {
             var obj1 = (Body)NXObjectManager.Get(_object);
             var objComp = obj1.OwningComponent;
-            if (objComp == null) return UF_UI_SEL_ACCEPT;
+            if(objComp == null) return UF_UI_SEL_ACCEPT;
             var isFound = NonValidCandidates.Where(name => objComp.Name != string.Empty)
                 .Any(name => objComp.Name.ToLower().Contains(name));
             return isFound ? UF_UI_SEL_REJECT : UF_UI_SEL_ACCEPT;

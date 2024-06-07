@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 using NXOpen;
-using TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 {
@@ -37,7 +36,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
             //{
             //    if 
 
-            if (!part.__HasAttribute("LibraryPath"))
+            if(!part.__HasAttribute("LibraryPath"))
                 return part.__TreeNode()._SetText("Didn't have library path attribute");
 
             throw new NotImplementedException("I still don't quite understand what this check is doing");

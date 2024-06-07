@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Windows.Forms;
 using NXOpen;
-using TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 {
@@ -22,7 +21,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
         public bool IsPartValidForCheck(Part part, out string message)
         {
             message = "";
-            if (!part.__HasAttribute(Burnouts_Titles_1))
+            if(!part.__HasAttribute(Burnouts_Titles_1))
                 return false;
 
             var value = part.GetUserAttributeAsString(Burnouts_Titles_1, NXObject.AttributeType.String, -1).ToUpper();

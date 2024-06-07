@@ -6,8 +6,7 @@ using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Features;
 using NXOpen.Utilities;
-using TSG_Library.Extensions;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 {
@@ -279,7 +278,7 @@ MATERIAL
                 for (var colindex = 1; colindex < dictionary.Count + 1; colindex++)
                 {
                     var element = split[colindex];
-                    if (!double.TryParse(element, out var unused)) continue;
+                    if(!double.TryParse(element, out var unused)) continue;
                     var diameterKey = tempKeyHolder[colindex];
                     var diameterDictionary = dictionary[diameterKey];
                     diameterDictionary.Add(split[0], element);
@@ -326,7 +325,7 @@ MATERIAL
                     .OfType<ExtractFace>()
                     .ToArray();
 
-                if (extractFaceFeatures.Length != 1)
+                if(extractFaceFeatures.Length != 1)
                 {
                     //InfoWindow.WriteLine();
                     //errorNodes.Add(new ObjectNode("Found invalid face"));
@@ -336,8 +335,8 @@ MATERIAL
                 ufsession_.Wave.AskLinkedFeatureGeom(extractFaceFeatures[0].Tag, out var linkedGeom);
                 ufsession_.Wave.AskLinkedFeatureInfo(linkedGeom, out var linkedFeatureInfo);
 
-                if (linkedFeatureInfo.source_part_name == null ||
-                    !linkedFeatureInfo.source_part_name._IsShcs()) continue;
+                if(linkedFeatureInfo.source_part_name == null ||
+                   !linkedFeatureInfo.source_part_name._IsShcs()) continue;
                 dictionary.Add(face, linkedFeatureInfo.source_part_name);
             }
 
@@ -360,17 +359,17 @@ MATERIAL
                 var diameter = tuple.Item2.Groups["Diameter"].Value;
                 var length = tuple.Item2.Groups["Length"].Value;
                 var expectedDepth = double.Parse(tuple.Item1[diameter][length]);
-                if (expectedDepth < 0)
+                if(expectedDepth < 0)
                     throw new InvalidOperationException("Depth was less than 0");
                 var shcsIsMetric = pair.Value.Contains("mm");
 
-                if (!shcsIsMetric && partIsMetric)
+                if(!shcsIsMetric && partIsMetric)
                     expectedDepth = expectedDepth * 25.4;
 
-                if (shcsIsMetric && !partIsMetric)
+                if(shcsIsMetric && !partIsMetric)
                     expectedDepth = expectedDepth / 25.4;
 
-                if (pair.Key.GetEdges().Length != 2)
+                if(pair.Key.GetEdges().Length != 2)
                 {
                     //ObjectNode objNode = new ObjectNode(pair.Value);
                     //objNode.Add("HoleChart face had more or less than 2 edges.");
@@ -388,7 +387,7 @@ MATERIAL
                     .ToArray();
 
                 // We only want three faces.
-                if (associatedFaces.Length != 3)
+                if(associatedFaces.Length != 3)
                 {
                     //ObjectNode objNode = new ObjectNode(pair.Value);
                     //objNode.Add("HoleChart face had more or less than 3 faces.");

@@ -5,7 +5,7 @@ using NXOpen.Assemblies;
 using NXOpen.Features;
 using TSG_Library.Disposable;
 using TSG_Library.Geom;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 {
@@ -25,13 +25,13 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             var mirroredComp = (Component)dict[originalComp];
 
-            if (!mirroredLinkedBody._IsBroken())
+            if(!mirroredLinkedBody._IsBroken())
                 return;
 
             var originalLinkedBody = (ExtractFace)originalFeature;
 
             // Check to see if they are both broken. Then we can continue.
-            if (originalLinkedBody._IsBroken())
+            if(originalLinkedBody._IsBroken())
                 return;
 
             var xform = originalLinkedBody._XFormTag();
@@ -44,7 +44,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             _UFSession.Wave.AskLinkedFeatureInfo(linkedGeom, out var nameStore);
 
-            if (fromComp is null)
+            if(fromComp is null)
                 throw new MirrorException(
                     $"Linked component was null in {originalFeature.__OwningPart().Leaf} from {originalFeature.GetFeatureName()}");
 
@@ -70,7 +70,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
                 };
 
                 foreach (var libComp in libComps)
-                    if (libComp.IsLibraryComponent(fromComp))
+                    if(libComp.IsLibraryComponent(fromComp))
                     {
                         libComp.Mirror(plane, mirroredComp, originalLinkedBody, fromComp, dict);
 
@@ -81,7 +81,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
                         return;
                     }
 
-                if (!fromComp.DisplayName.Contains("layout") && !fromComp.DisplayName.Contains("blank"))
+                if(!fromComp.DisplayName.Contains("layout") && !fromComp.DisplayName.Contains("blank"))
                     return;
 
                 _WorkPart = __display_part_;

@@ -5,7 +5,7 @@ using NXOpen;
 using NXOpen.UF;
 using TSG_Library.Attributes;
 using static TSG_Library.UFuncs._UFunc;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs
 {
@@ -69,7 +69,7 @@ namespace TSG_Library.UFuncs
 
         private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!(cmbMaterialsBox.SelectedItem is string selected))
+            if(!(cmbMaterialsBox.SelectedItem is string selected))
                 return;
 
             foreach (Part part in session_.Parts)
@@ -77,12 +77,12 @@ namespace TSG_Library.UFuncs
                 // We want to ignore any sort of assembly part.
                 // This takes care of the issue where nothing was being un blanked because the assembly holders almost always don't have 
                 // a material attribute and so they end up being blanked off which blanks their sub assembly off.
-                if (part.Leaf._IsAssemblyHolder())
+                if(part.Leaf._IsAssemblyHolder())
                     continue;
 
                 // If the part doesn't have a {MATERIAL} attribute then we want to blank the occurrences of 
                 // this part off.
-                if (!part.HasUserAttribute("MATERIAL", NXObject.AttributeType.String, -1))
+                if(!part.HasUserAttribute("MATERIAL", NXObject.AttributeType.String, -1))
                 {
                     BlankOff(part);
                     continue;
@@ -93,7 +93,7 @@ namespace TSG_Library.UFuncs
                     part.GetUserAttributeAsString("MATERIAL", NXObject.AttributeType.String, -1);
 
                 // If the material attribute values are equal, then we want to un blank all occurrences of this part.
-                if (materialAttributeValue?.ToUpper() == selected)
+                if(materialAttributeValue?.ToUpper() == selected)
                 {
                     Unblank(part);
                     continue;
@@ -111,7 +111,7 @@ namespace TSG_Library.UFuncs
             {
                 ufsession_.Ui.SetPrompt($"Unblanking {++counter} of {_blankedOffObjects.Count}");
 
-                if (obj._ToTaggedObject() is DisplayableObject disp)
+                if(obj._ToTaggedObject() is DisplayableObject disp)
                     disp.Unblank();
             }
         }

@@ -20,7 +20,7 @@ namespace TSG_Library.UFuncUtilities.BomUtilities
         private void Button1_Click(object sender, EventArgs e)
         {
             foreach (var box in _checkBoxes)
-                if (box.Checked)
+                if(box.Checked)
                     _strings.Add(box.Text);
             Close();
         }
@@ -39,7 +39,7 @@ namespace TSG_Library.UFuncUtilities.BomUtilities
             {
                 var box = new CheckBox { Size = new Size(80, 17), Location = new Point(12, 19 + 23 * i++), Text = str };
                 foreach (var arr in array)
-                    if (arr == str)
+                    if(arr == str)
                         box.Checked = true;
                 dialog.groupBox1.Controls.Add(box);
                 _checkBoxes.Add(box);

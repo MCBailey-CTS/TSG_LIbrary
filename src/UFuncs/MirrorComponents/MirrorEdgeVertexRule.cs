@@ -4,7 +4,6 @@ using System.Linq;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
-using TSG_Library.Extensions;
 using TSG_Library.Geom;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
@@ -32,7 +31,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             Body mirrorBody;
 
-            if (!dict.ContainsKey(originalBody))
+            if(!dict.ContainsKey(originalBody))
             {
                 mirroredFeature.Suppress();
 
@@ -42,7 +41,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                 var mirrorOwningFeature = (BodyFeature)dict[originalOwningFeature];
 
-                if (mirrorOwningFeature.GetBodies().Length != 1)
+                if(mirrorOwningFeature.GetBodies().Length != 1)
                     throw new InvalidOperationException("Invalid number of bodies for feature");
 
                 mirrorBody = mirrorOwningFeature.GetBodies()[0];
@@ -58,7 +57,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             var mirrorEdge = mirrorBody.GetEdges().FirstOrDefault(edge => edge._HasEndPoints(newStart, newEnd));
 
-            if (mirrorEdge is null)
+            if(mirrorEdge is null)
                 throw new InvalidOperationException("Could not find mirror edge");
 
             return mirroredPart.ScRuleFactory.CreateRuleEdgeVertex(mirrorEdge, isFromStart);

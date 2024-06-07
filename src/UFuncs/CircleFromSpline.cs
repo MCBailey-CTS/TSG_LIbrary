@@ -1,7 +1,7 @@
 ﻿using NXOpen;
 using NXOpen.UF;
 using TSG_Library.Attributes;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 using Selection = TSG_Library.Ui.Selection;
 
 namespace TSG_Library.UFuncs
@@ -17,7 +17,7 @@ namespace TSG_Library.UFuncs
     {
         public override void execute()
         {
-            if (Session.GetSession().Parts.Display is null)
+            if(Session.GetSession().Parts.Display is null)
             {
                 print_("There is no displayed part loaded");
                 return;
@@ -25,7 +25,7 @@ namespace TSG_Library.UFuncs
 
             var selObject = Selection.SelectSingleSpline();
 
-            if (selObject is null)
+            if(selObject is null)
                 return;
 
             do

@@ -13,12 +13,11 @@ using NXOpen.Assemblies;
 using NXOpen.UF;
 using NXOpen.Utilities;
 using TSG_Library.Attributes;
-using TSG_Library.Extensions;
 using TSG_Library.Properties;
 using TSG_Library.UFuncUtilities.BomUtilities;
 using TSG_Library.Ui;
 using TSG_Library.Utilities;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 using static TSG_Library.UFuncs._UFunc;
 using Selection = TSG_Library.Ui.Selection;
 
@@ -202,7 +201,7 @@ namespace TSG_Library.UFuncs
                              throw new InvalidOperationException(
                                  "The current work part does not reside in a job folder.");
 
-                if (_selectedComponents.Count == 0 && !_isCasting)
+                if(_selectedComponents.Count == 0 && !_isCasting)
                     BuildComponentList();
 
                 var partsInBom = _selectedComponents
@@ -211,10 +210,10 @@ namespace TSG_Library.UFuncs
                     .Distinct()
                     .ToArray();
 
-                if (!CheckMaterials(partsInBom))
+                if(!CheckMaterials(partsInBom))
                     return;
 
-                if (!CheckSizeDescriptions(partsInBom))
+                if(!CheckSizeDescriptions(partsInBom))
                 {
                     var result =
                         MessageBox.Show(
@@ -234,10 +233,10 @@ namespace TSG_Library.UFuncs
 
                 foreach (var part in partsInBom)
                 {
-                    if (!part.__IsPartDetail())
+                    if(!part.__IsPartDetail())
                         continue;
 
-                    if (part.ComponentAssembly.RootComponent is null)
+                    if(part.ComponentAssembly.RootComponent is null)
                         continue;
 
                     var fasteners = part.ComponentAssembly.RootComponent.GetChildren()
@@ -248,7 +247,7 @@ namespace TSG_Library.UFuncs
                     var metric_fasteners = fasteners.Where(__f => __f.DisplayName.ToLower().Contains("mm")).ToArray();
                     var english_fasteners = fasteners.Where(__f => !__f.DisplayName.ToLower().Contains("mm")).ToArray();
 
-                    if (metric_fasteners.Length > 0 && english_fasteners.Length > 0)
+                    if(metric_fasteners.Length > 0 && english_fasteners.Length > 0)
                         metric_english_fastener_owners.Add(part);
 
                     //NXOpen.Assemblies.Component[] dwls_mm = fasteners.Where(__f => __f._IsDwl()).Where(__f => __f.DisplayName.ToLower().Contains("mm")).ToArray();
@@ -261,7 +260,7 @@ namespace TSG_Library.UFuncs
                     //NXOpen.Assemblies.Component[] jigjack_screws_in = fasteners.Where(__f => __f._IsJckScrewTsg()).Where(__f => !__f.DisplayName.ToLower().Contains("mm")).ToArray();
                 }
 
-                if (metric_english_fastener_owners.Count > 0)
+                if(metric_english_fastener_owners.Count > 0)
                 {
                     print_("/////////////////////////////");
                     print_("The following parts have both unsuppressed english and metric fasteners");
@@ -287,7 +286,7 @@ namespace TSG_Library.UFuncs
 
                 var bomData = WriteData(customerIndex, customerPath, folder);
 
-                if (bomData == null || _isCasting)
+                if(bomData == null || _isCasting)
                     return;
 
                 WriteCheckSheet(bomData, folder);
@@ -316,7 +315,7 @@ namespace TSG_Library.UFuncs
                     var att = part.GetUserAttributes().Select(information => information.Title)
                         .FirstOrDefault(title => title.ToLower() == "material");
 
-                    if (att is null)
+                    if(att is null)
                     {
                         allPassed = false;
                         print_($"{part.Leaf} doesn't have a MATERIAL attribute.");
@@ -336,7 +335,7 @@ namespace TSG_Library.UFuncs
                             print_($"{part.Leaf} MATERIAL attribute has value of EMPTY.");
                             continue;
                         default:
-                            if (string.IsNullOrWhiteSpace(attValue))
+                            if(string.IsNullOrWhiteSpace(attValue))
                             {
                                 allPassed = false;
                                 print_($"{part.Leaf} MATERIAL attribute has value of WHITESPACE.");
@@ -358,7 +357,7 @@ namespace TSG_Library.UFuncs
             var allPassed = true;
 
             foreach (var part in partsInBom)
-                if (!SizeDescription1.Validate(part, out var message))
+                if(!SizeDescription1.Validate(part, out var message))
                 {
                     allPassed = false;
                     print_($"{part.Leaf}:\n{message}\n");
@@ -376,7 +375,7 @@ namespace TSG_Library.UFuncs
             {
                 var checkerStockListPath = folder.file_checker_stock_list();
 
-                if (File.Exists(checkerStockListPath))
+                if(File.Exists(checkerStockListPath))
                     File.Delete(checkerStockListPath);
                 File.Copy(CheckProperties.CheckerTemplateFilePath, checkerStockListPath);
                 var enumeratedDatas = bomDatas.ToArray();
@@ -411,7 +410,7 @@ namespace TSG_Library.UFuncs
                     excelApp.SetCell(checkerStockListPath, 1, rowIndex, colIndex,
                         data.Data.ToUpper().Replace("-ALTER", ""));
 
-                    if (!data.ColorCell) continue;
+                    if(!data.ColorCell) continue;
 
                     excelApp.SetCell(checkerStockListPath, 1, rowIndex, colIndex, Color.FromArgb(0, 255, 0));
                 }
@@ -429,7 +428,7 @@ namespace TSG_Library.UFuncs
                     ? $"{folder.dir_stocklist}\\{__display_part_.Leaf}-casting-stocklist.xlsx"
                     : $"{folder.dir_stocklist}\\{__display_part_.Leaf}-stocklist.xlsx";
 
-                if (File.Exists(expectedStocklistPath))
+                if(File.Exists(expectedStocklistPath))
                     // ReSharper disable once SwitchStatementMissingSomeCases
                     switch (MessageBox.Show($@"{expectedStocklistPath} already exists, would you like to overwrite it.",
                                 @"Warning", MessageBoxButtons.YesNo))
@@ -443,14 +442,14 @@ namespace TSG_Library.UFuncs
 
                 var dir = Path.GetDirectoryName(expectedStocklistPath);
 
-                if (!Directory.Exists(dir))
+                if(!Directory.Exists(dir))
                     Directory.CreateDirectory(dir);
 
                 File.Copy(path, expectedStocklistPath);
                 excelApp.Visible = false;
                 BuildNxExcelList(index);
 
-                if (ExcelData is null || ExcelData.Count == 0)
+                if(ExcelData is null || ExcelData.Count == 0)
                 {
                     print_("Did not find any data to write.");
                     return null;
@@ -461,10 +460,10 @@ namespace TSG_Library.UFuncs
 
                 foreach (var data in ExcelData)
                 {
-                    if (data.ColumnIndex == 1)
+                    if(data.ColumnIndex == 1)
                         dict_parts[data.RowIndex] = data;
 
-                    if (data.ColumnIndex == 3)
+                    if(data.ColumnIndex == 3)
                         dict_sizes[data.RowIndex] = data;
                 }
 
@@ -475,12 +474,12 @@ namespace TSG_Library.UFuncs
                         var part = session_.find_or_open($"{folder.customer_number}-{dict_parts[key].Data}");
                         var description = dict_sizes[key].Data;
 
-                        if (!chkMM.Checked)
+                        if(!chkMM.Checked)
                             continue;
 
                         var solidBody = part.__SolidBodyLayer1OrNull();
 
-                        if (solidBody is null)
+                        if(solidBody is null)
                             continue;
 
                         var massUnits1 = new Unit[5];
@@ -510,7 +509,7 @@ namespace TSG_Library.UFuncs
                         var match = Regex.Match(description,
                             "(?<num0>\\d+\\.\\d+) X (?<num1>\\d+\\.\\d+) X (?<num2>\\d+\\.\\d+)(?<append>.*)");
 
-                        if (!match.Success)
+                        if(!match.Success)
                             continue;
 
                         var box = solidBody._Box3d();
@@ -540,16 +539,16 @@ namespace TSG_Library.UFuncs
 
                 foreach (var comp1 in __display_part_.ComponentAssembly.RootComponent._Descendants())
                 {
-                    if (!comp1._IsLoaded())
+                    if(!comp1._IsLoaded())
                         continue;
 
-                    if (comp1.IsSuppressed)
+                    if(comp1.IsSuppressed)
                         continue;
 
-                    if (!comp1._Prototype().FullPath.ToLower().Contains("fastener"))
+                    if(!comp1._Prototype().FullPath.ToLower().Contains("fastener"))
                         continue;
 
-                    if (comp1._Prototype().FullPath.ToLower().Contains("jck"))
+                    if(comp1._Prototype().FullPath.ToLower().Contains("jck"))
                         continue;
 
                     var fast_inst = UFSession.GetUFSession().Assem.AskInstOfPartOcc(comp1.Tag);
@@ -560,10 +559,10 @@ namespace TSG_Library.UFuncs
 
                     var fastener_instance = (Component)session_._GetTaggedObject(original_inst);
 
-                    if (fastener_instance.Layer == 97 || fastener_instance.Layer == 98)
+                    if(fastener_instance.Layer == 97 || fastener_instance.Layer == 98)
                         continue;
 
-                    if (!_dict.ContainsKey(comp1.DisplayName.Replace("-2x", "")))
+                    if(!_dict.ContainsKey(comp1.DisplayName.Replace("-2x", "")))
                         _dict.Add(comp1.DisplayName.Replace("-2x", ""), 0);
 
                     _dict[comp1.DisplayName.Replace("-2x", "")]++;
@@ -583,7 +582,7 @@ namespace TSG_Library.UFuncs
                 // Constructs the path to the {previous}.
                 var previous = $"{folder.dir_stocklist}\\previous.txt";
                 var flags = new List<string>();
-                if (File.Exists(previous))
+                if(File.Exists(previous))
                     flags.AddRange(File.ReadAllLines(previous));
                 var strings = ShowCheckBoxDialog(ExcelData, flags.ToArray());
                 File.WriteAllLines(previous, strings);
@@ -603,12 +602,12 @@ namespace TSG_Library.UFuncs
             foreach (var dat in data)
             foreach (var str in purMaterials)
             {
-                if (!string.Equals(dat.Data, str, StringComparison.CurrentCultureIgnoreCase)) continue;
-                if (!purchasedList.Contains(dat.Data.ToUpper()))
+                if(!string.Equals(dat.Data, str, StringComparison.CurrentCultureIgnoreCase)) continue;
+                if(!purchasedList.Contains(dat.Data.ToUpper()))
                     purchasedList.Add(dat.Data.ToUpper());
             }
 
-            if (purchasedList.Count == 0)
+            if(purchasedList.Count == 0)
                 return new string[0];
 
             var strings = CheckBoxDialog.ShowBoxes(purchasedList.ToArray(), array, Location);
@@ -627,7 +626,7 @@ namespace TSG_Library.UFuncs
 
                 var selectedComponents = Selection.SelectManyComponents();
 
-                if (selectedComponents.Length > 0)
+                if(selectedComponents.Length > 0)
                 {
                     _selectedComponents = selectedComponents.DistinctBy(comp => comp.DisplayName).ToList();
 
@@ -654,7 +653,7 @@ namespace TSG_Library.UFuncs
                 {
                     BuildComponentList();
 
-                    if (_selectedComponents.Count == 0)
+                    if(_selectedComponents.Count == 0)
                         return;
 
                     _childComponents.Clear();
@@ -662,12 +661,12 @@ namespace TSG_Library.UFuncs
                     foreach (var comp in _selectedComponents.Select(__c => __c))
                     foreach (var attr in comp.GetUserAttributes())
                     {
-                        if (attr.Title.ToUpper() != "DESCRIPTION")
+                        if(attr.Title.ToUpper() != "DESCRIPTION")
                             continue;
 
                         var value = comp.GetStringUserAttribute(attr.Title, -1);
 
-                        if (value.Contains("CAST") || value.Contains("cast"))
+                        if(value.Contains("CAST") || value.Contains("cast"))
                             _childComponents.Add(comp);
                     }
 
@@ -691,18 +690,18 @@ namespace TSG_Library.UFuncs
             ErrorComponents.Clear();
             ExcelData.Clear();
 
-            if (__display_part_.ComponentAssembly.RootComponent is null)
+            if(__display_part_.ComponentAssembly.RootComponent is null)
                 return;
 
             GetChildComponents(__display_part_.ComponentAssembly.RootComponent);
 
-            if (_childComponents.Count == 0)
+            if(_childComponents.Count == 0)
                 return;
 
             var selectDeselectComps = _childComponents.ToArray();
             _childComponents = Preselect.GetUserSelections(selectDeselectComps);
 
-            if (_childComponents.Count != 0)
+            if(_childComponents.Count != 0)
                 _selectedComponents = _childComponents.DistinctBy(comp => comp.DisplayName).ToList();
         }
 
@@ -710,12 +709,12 @@ namespace TSG_Library.UFuncs
         {
             foreach (var child in assembly.GetChildren())
             {
-                if (child.IsSuppressed)
+                if(child.IsSuppressed)
                 {
-                    if (IsAssemNameValid(child))
+                    if(IsAssemNameValid(child))
                         print_($"{child.DisplayName} is suppressed");
 
-                    if (IsNameValid(child))
+                    if(IsNameValid(child))
                         print_($"{child.DisplayName} is suppressed");
 
                     continue;
@@ -723,26 +722,26 @@ namespace TSG_Library.UFuncs
 
                 var isValid = IsNameValid(child);
 
-                if (isValid)
+                if(isValid)
                 {
                     var instance = child._InstanceTag();
 
-                    if (instance == NXOpen.Tag.Null)
+                    if(instance == NXOpen.Tag.Null)
                         continue;
 
                     UFSession.GetUFSession().Assem.AskPartNameOfChild(instance, out var partName);
                     var partLoad = UFSession.GetUFSession().Part.IsLoaded(partName);
 
-                    if (partLoad != 1)
+                    if(partLoad != 1)
                     {
                         UFSession.GetUFSession().Cfi.AskFileExist(partName, out var status);
 
-                        if (status != 0)
+                        if(status != 0)
                             continue;
 
                         UFSession.GetUFSession().Part.OpenQuiet(partName, out var partOpen, out _);
 
-                        if (partOpen == NXOpen.Tag.Null)
+                        if(partOpen == NXOpen.Tag.Null)
                             continue;
                     }
 
@@ -765,25 +764,25 @@ namespace TSG_Library.UFuncs
         {
             var disp = comp.DisplayName.ToLower();
 
-            if (disp.Contains("000"))
+            if(disp.Contains("000"))
                 return true;
 
-            if (disp.Contains("lsh"))
+            if(disp.Contains("lsh"))
                 return true;
 
-            if (disp.Contains("ush"))
+            if(disp.Contains("ush"))
                 return true;
 
-            if (disp.Contains("lsp"))
+            if(disp.Contains("lsp"))
                 return true;
 
-            if (disp.Contains("usp"))
+            if(disp.Contains("usp"))
                 return true;
 
-            if (disp.Contains("lwr"))
+            if(disp.Contains("lwr"))
                 return true;
 
-            if (disp.Contains("upr"))
+            if(disp.Contains("upr"))
                 return true;
 
             return false;
@@ -802,26 +801,26 @@ namespace TSG_Library.UFuncs
 
                 //prompt_($"Building NX Excel List: {i + 1} of {components.Length}");
 
-                if (comp.Name.Length != 3)
+                if(comp.Name.Length != 3)
                     continue;
 
                 hashParts.Add((Part)comp.Prototype);
 
-                if (comp.DisplayName.Contains("mirror"))
+                if(comp.DisplayName.Contains("mirror"))
                 {
                     var testName = comp.DisplayName.Substring(comp.DisplayName.Length - 10, 3);
-                    if (comp.Name != testName)
+                    if(comp.Name != testName)
                         ErrorComponents.Add(comp);
                 }
                 else
                 {
                     var testName = comp.DisplayName.Substring(comp.DisplayName.Length - 3, 3);
-                    if (comp.Name != testName)
+                    if(comp.Name != testName)
                         ErrorComponents.Add(comp);
                 }
             }
 
-            if (ErrorComponents.Count != 0)
+            if(ErrorComponents.Count != 0)
             {
                 foreach (var comp in ErrorComponents.Select(__c => __c))
                 {
@@ -850,7 +849,7 @@ namespace TSG_Library.UFuncs
                 // Added OperationNumber - 2013-09-25 dvw
                 var opNumberName = string.Empty;
                 bool isConverted;
-                if (excelComp.DisplayName.Contains("mirror"))
+                if(excelComp.DisplayName.Contains("mirror"))
                 {
                     compName = excelComp.DisplayName.Substring(excelComp.DisplayName.Length - 10, 3);
                     isConverted = int.TryParse(compName, out compNumber);
@@ -864,8 +863,8 @@ namespace TSG_Library.UFuncs
                     isConverted = int.TryParse(opNumberName, out _);
                 }
 
-                if (isConverted)
-                    if (compNumber > 0 && compNumber < 1000)
+                if(isConverted)
+                    if(compNumber > 0 && compNumber < 1000)
                     {
                         var excelDataName = new NXExcelData
                         {
@@ -916,7 +915,7 @@ namespace TSG_Library.UFuncs
 
                             // todo: do we want to throw in this case?
                             // If the length of {attributes} does not equal 1, then we can just continue for now.
-                            if (attributes.Length != 1) continue;
+                            if(attributes.Length != 1) continue;
                             ExcelData.Add(new NXExcelData
                             {
                                 Data = string.IsNullOrEmpty(attributes[0].StringValue) ? "" : attributes[0].StringValue,
@@ -924,15 +923,15 @@ namespace TSG_Library.UFuncs
                             });
                         }
 
-                        if (isCasting)
+                        if(isCasting)
                             foreach (Body body in excelPart.Bodies)
                             {
                                 var count = 1;
 
-                                if (body.Layer != 1)
+                                if(body.Layer != 1)
                                     continue;
 
-                                if (count != 1)
+                                if(count != 1)
                                 {
                                     print_(
                                         $"More than one solid body on layer one in casting : {excelComp.DisplayName}");
@@ -980,7 +979,7 @@ namespace TSG_Library.UFuncs
 
         private void BtnClearSelection_Click(object sender, EventArgs e)
         {
-            if (_selectedComponents.Count > 0)
+            if(_selectedComponents.Count > 0)
                 prompt_($"Cleared {_selectedComponents.Count} selected components");
             _selectedComponents.Clear();
             _childComponents.Clear();

@@ -4,7 +4,7 @@ using System.Linq;
 using NXOpen;
 using NXOpen.UF;
 using TSG_Library.Attributes;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs
 {
@@ -18,7 +18,7 @@ namespace TSG_Library.UFuncs
         {
             var selectedSplines = SelectSplines();
 
-            if (selectedSplines is null || !selectedSplines.Any())
+            if(selectedSplines is null || !selectedSplines.Any())
                 return;
 
             throw new NotImplementedException();
@@ -101,7 +101,7 @@ namespace TSG_Library.UFuncs
 
         private static Line[] CreateLines(Point3d midPoint, params Point3d[] positions)
         {
-            if (positions.Length == 0)
+            if(positions.Length == 0)
                 throw new ArgumentException("Value cannot be an empty collection.", "positions");
 
             return positions.Select(position => __work_part_.Curves.CreateLine(midPoint, position)).ToArray();
@@ -131,7 +131,7 @@ namespace TSG_Library.UFuncs
 
         private static double[] GetDistances(Point3d midPoint, params Point3d[] positions)
         {
-            if (positions.Length == 0)
+            if(positions.Length == 0)
                 throw new ArgumentException("Value cannot be an empty collection.", "positions");
 
             return positions.Select(position => GetDistance(midPoint, position)).ToArray();
@@ -152,7 +152,7 @@ namespace TSG_Library.UFuncs
 
         private static double Average(params double[] doubles)
         {
-            if (doubles.Length == 0)
+            if(doubles.Length == 0)
                 throw new ArgumentException("Value cannot be an empty collection.", "doubles");
 
             return doubles.Sum() / doubles.Length;

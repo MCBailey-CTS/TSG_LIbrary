@@ -5,8 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using NXOpen;
 using NXOpen.Annotations;
-using TSG_Library.Extensions;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncUtilities.AssemblyAutoDetailUtilities
 {
@@ -37,7 +36,7 @@ namespace TSG_Library.UFuncUtilities.AssemblyAutoDetailUtilities
             // Get the solid body on layer 1
             var solidBody = __display_part_.__SolidBodyLayer1OrNull();
 
-            if (solidBody is null)
+            if(solidBody is null)
                 throw new ArgumentException("Display part does not have solid body on layer 1");
 
             IDictionary<double, Tuple<int[], IList<Face>, string[]>> dict =
@@ -45,10 +44,10 @@ namespace TSG_Library.UFuncUtilities.AssemblyAutoDetailUtilities
 
             foreach (var face in solidBody.GetFaces())
             {
-                if (face.SolidFaceType != Face.FaceType.Cylindrical)
+                if(face.SolidFaceType != Face.FaceType.Cylindrical)
                     continue;
 
-                if (!face.Name.ToUpper().Contains("HOLECHART"))
+                if(!face.Name.ToUpper().Contains("HOLECHART"))
                     continue;
 
                 var point = new double[3];
@@ -67,14 +66,14 @@ namespace TSG_Library.UFuncUtilities.AssemblyAutoDetailUtilities
                     select line
                 ).FirstOrDefault();
 
-                if (actualLine is null)
+                if(actualLine is null)
                 {
                     print_($"Couldn't find hole chart: {diameter}");
 
                     continue;
                 }
 
-                if (!dict.ContainsKey(diameter))
+                if(!dict.ContainsKey(diameter))
                     dict.Add(diameter,
                         new Tuple<int[], IList<Face>, string[]>(new[] { 0 }, new List<Face>(), actualLine));
 

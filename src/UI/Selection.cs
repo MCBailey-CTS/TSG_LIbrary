@@ -5,7 +5,7 @@ using NXOpen.Assemblies;
 using NXOpen.UF;
 using TSG_Library.Utilities;
 using static NXOpen.UF.UFConstants;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.Ui
 {
@@ -184,10 +184,10 @@ namespace TSG_Library.Ui
             {
                 try
                 {
-                    if (!(_object._ToTaggedObject() is TSource source_obj))
+                    if(!(_object._ToTaggedObject() is TSource source_obj))
                         return UF_UI_SEL_REJECT;
 
-                    if (!pred(source_obj))
+                    if(!pred(source_obj))
                         return UF_UI_SEL_REJECT;
 
                     return UF_UI_SEL_ACCEPT;
@@ -206,7 +206,7 @@ namespace TSG_Library.Ui
                 {
                     ufsession_.Ui.SetSelProcs(__select, __filter_proc, null, __user_data);
 
-                    if (!(masks is null) && masks.Length > 0)
+                    if(!(masks is null) && masks.Length > 0)
                         ufsession_.Ui.SetSelMask(
                             __select,
                             UFUi.SelMaskAction.SelMaskClearAndEnableSpecific,
@@ -250,7 +250,7 @@ namespace TSG_Library.Ui
 
                 var __obj = __object._To<TSource>();
 
-                if (__obj is DisplayableObject disp)
+                if(__obj is DisplayableObject disp)
                     disp.Unhighlight();
 
                 return __obj;
@@ -267,13 +267,13 @@ namespace TSG_Library.Ui
             {
                 try
                 {
-                    if (!(_object._ToTaggedObject() is TSource source_obj))
+                    if(!(_object._ToTaggedObject() is TSource source_obj))
                         return UF_UI_SEL_REJECT;
 
-                    if (pred is null)
+                    if(pred is null)
                         return UF_UI_SEL_ACCEPT;
 
-                    if (!pred(source_obj))
+                    if(!pred(source_obj))
                         return UF_UI_SEL_REJECT;
 
                     return UF_UI_SEL_ACCEPT;
@@ -292,7 +292,7 @@ namespace TSG_Library.Ui
                 {
                     ufsession_.Ui.SetSelProcs(__select, __filter_proc, null, __user_data);
 
-                    if (!(masks is null) && masks.Length > 0)
+                    if(!(masks is null) && masks.Length > 0)
                         ufsession_.Ui.SetSelMask(
                             __select,
                             UFUi.SelMaskAction.SelMaskClearAndEnableSpecific,

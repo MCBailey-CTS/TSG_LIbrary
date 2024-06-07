@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NXOpen;
 using TSG_Library.Attributes;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 using static NXOpen.UF.UFConstants;
 using Selection = TSG_Library.Ui.Selection;
 
@@ -31,7 +31,7 @@ namespace TSG_Library.UFuncs
                     var toComponents = Selection.SelectManyComponents().ToList();
                     var cycleRefSet = Tag.Null;
 
-                    if (fromComponent.Count == 0 || toComponents.Count == 0)
+                    if(fromComponent.Count == 0 || toComponents.Count == 0)
                         return;
 
                     var copyFromPart = ufsession_.Assem.AskPrototypeOfOcc(fromComponent[0].Tag);
@@ -40,13 +40,13 @@ namespace TSG_Library.UFuncs
                     {
                         ufsession_.Obj.CycleObjsInPart(copyFromPart, UF_reference_set_type, ref cycleRefSet);
 
-                        if (cycleRefSet == Tag.Null)
+                        if(cycleRefSet == Tag.Null)
                             break;
 
                         ufsession_.Obj.AskName(cycleRefSet, out var name);
 
-                        if (!((name != Refset_Body) & (name != "SUB_TOOL") & (name != Refset_EntirePart) &
-                              (name != Refset_Empty)))
+                        if(!((name != Refset_Body) & (name != "SUB_TOOL") & (name != Refset_EntirePart) &
+                             (name != Refset_Empty)))
                             continue;
 
                         refSetName.Add(name);
@@ -57,17 +57,17 @@ namespace TSG_Library.UFuncs
                     // Create reference sets and add to current work part
                     //------------------------------------------------------------------------------
 
-                    if (refSetName.Count == 0)
+                    if(refSetName.Count == 0)
                         throw new Exception("There are no reference sets other than the component defaults");
 
                     foreach (var wpComponent in toComponents.Select(__c => __c))
                     {
-                        if (!(wpComponent.Prototype is Part))
+                        if(!(wpComponent.Prototype is Part))
                             continue;
 
                         var part = (Part)wpComponent.Prototype;
 
-                        if (part.PartUnits != BasePart.Units.Inches)
+                        if(part.PartUnits != BasePart.Units.Inches)
                             continue;
 
                         __work_component_ = wpComponent;

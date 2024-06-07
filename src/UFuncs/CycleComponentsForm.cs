@@ -16,7 +16,7 @@ using TSG_Library.Ui;
 using TSG_Library.Utilities;
 using static NXOpen.UF.UFConstants;
 using static TSG_Library.UFuncs._UFunc;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 using Selection = TSG_Library.Ui.Selection;
 using View = NXOpen.View;
 
@@ -91,7 +91,7 @@ namespace TSG_Library.UFuncs
                     selCompListBox.Items.Clear();
                     _selComponents = Selection.SelectManyComponents().ToList();
 
-                    if (_selComponents.Count == 0)
+                    if(_selComponents.Count == 0)
                     {
                         _selComponents = new List<Component>();
                         DisplayName?.Clear();
@@ -102,7 +102,7 @@ namespace TSG_Library.UFuncs
                     foreach (var component in _selComponents)
                         DisplayName?.Add(component.DisplayName);
 
-                    if (DisplayName != null)
+                    if(DisplayName != null)
                         foreach (var name in DisplayName)
                             selCompListBox.Items.Add(name);
 
@@ -140,12 +140,12 @@ namespace TSG_Library.UFuncs
                     DisplayName.Clear();
                     selCompListBox.Items.Clear();
 
-                    if (__display_part_.ComponentAssembly.RootComponent is null)
+                    if(__display_part_.ComponentAssembly.RootComponent is null)
                         return;
 
                     GetChildComponents(__display_part_.ComponentAssembly.RootComponent);
 
-                    if (AllComponents.Count == 0)
+                    if(AllComponents.Count == 0)
                         return;
 
                     var materials = CreateMaterialList();
@@ -154,24 +154,24 @@ namespace TSG_Library.UFuncs
                     foreach (var comp in AllComponents)
                     foreach (var attr in comp.GetUserAttributes())
                     {
-                        if (attr.Title.ToUpper() != "MATERIAL")
+                        if(attr.Title.ToUpper() != "MATERIAL")
                             continue;
 
                         var value = comp.GetUserAttributeAsString("MATERIAL", NXObject.AttributeType.String, -1);
 
-                        if (value != "")
+                        if(value != "")
                             passedComponents.AddRange(from matAttr in materials
                                 where matAttr.AttrValue == value
                                 select comp);
                     }
 
-                    if (passedComponents.Count == 0)
+                    if(passedComponents.Count == 0)
                         return;
 
                     var selectDeselectComps = passedComponents.ToArray();
                     passedComponents = Preselect.GetUserSelections(selectDeselectComps);
 
-                    if (passedComponents.Count == 0)
+                    if(passedComponents.Count == 0)
                         return;
 
                     _selComponents = GetOneComponentOfMany(passedComponents);
@@ -208,7 +208,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if (materialComboBox.SelectedIndex != -1)
+                if(materialComboBox.SelectedIndex != -1)
                     materialSelectButton.Enabled = true;
             }
             catch (Exception ex)
@@ -228,9 +228,9 @@ namespace TSG_Library.UFuncs
                 DisplayName.Clear();
                 selCompListBox.Items.Clear();
                 materialComboBox.Enabled = false;
-                if (__display_part_.ComponentAssembly.RootComponent == null) return;
+                if(__display_part_.ComponentAssembly.RootComponent == null) return;
                 GetChildComponents(__display_part_.ComponentAssembly.RootComponent);
-                if (AllComponents.Count == 0) return;
+                if(AllComponents.Count == 0) return;
                 var selOneComp = GetOneComponentOfMany(AllComponents);
                 foreach (var comp in
                          from comp in selOneComp
@@ -245,14 +245,14 @@ namespace TSG_Library.UFuncs
                     DisplayName.Add(comp.DisplayName);
                 }
 
-                if (DisplayName.Count != 0)
+                if(DisplayName.Count != 0)
                 {
                     foreach (var name in DisplayName)
                         selCompListBox.Items.Add(name);
                     selCompListBox.SelectedIndex = 0;
                     var dispComponent = (string)selCompListBox.SelectedItem;
                     foreach (var component in _selComponents)
-                        if (component.DisplayName == dispComponent)
+                        if(component.DisplayName == dispComponent)
                             SetDisplayPart(component);
                     selectButton.Enabled = false;
                     selectAllButton.Enabled = false;
@@ -298,14 +298,14 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if (Session.GetSession().Parts.Work.ComponentAssembly.RootComponent == null)
+                if(Session.GetSession().Parts.Work.ComponentAssembly.RootComponent == null)
                 {
                     print_("No Assembly in current __work_part_.");
                     return;
                 }
 
                 // Revision 2017 – 08 – 16
-                if (!IsAssemblyLoaded(Session.GetSession().Parts.Work.ComponentAssembly.RootComponent))
+                if(!IsAssemblyLoaded(Session.GetSession().Parts.Work.ComponentAssembly.RootComponent))
                     print_("Assembly is not fully loaded. Please fully load it to ensure accurate results.");
 
                 UpdateSessionParts();
@@ -319,17 +319,17 @@ namespace TSG_Library.UFuncs
 
                 foreach (var component in trimmedComponents)
                 {
-                    if (!(component.Prototype is Part part))
+                    if(!(component.Prototype is Part part))
                         continue;
 
                     foreach (Feature feature in part.Features)
                     {
-                        if (feature.GetType().ToString() != "NXOpen.Features.ExtractFace")
+                        if(feature.GetType().ToString() != "NXOpen.Features.ExtractFace")
                             continue;
 
                         ufsession_.Wave.IsLinkBroken(feature.Tag, out var flag);
 
-                        if (!flag || selCompListBox.Items.Contains(component.DisplayName))
+                        if(!flag || selCompListBox.Items.Contains(component.DisplayName))
                             continue;
 
                         selCompListBox.Items.Add(component.DisplayName);
@@ -337,7 +337,7 @@ namespace TSG_Library.UFuncs
                     }
                 }
 
-                if (selCompListBox.Items.Count > 0)
+                if(selCompListBox.Items.Count > 0)
                     __display_part_ = (Part)_selComponents[0].Prototype;
             }
             catch (Exception ex)
@@ -357,9 +357,9 @@ namespace TSG_Library.UFuncs
                 DisplayName.Clear();
                 selCompListBox.Items.Clear();
                 _isBurnout = true;
-                if (__display_part_.ComponentAssembly.RootComponent == null) return;
+                if(__display_part_.ComponentAssembly.RootComponent == null) return;
                 GetChildComponents(__display_part_.ComponentAssembly.RootComponent);
-                if (AllComponents.Count == 0) return;
+                if(AllComponents.Count == 0) return;
                 var selOneComp = GetOneComponentOfMany(AllComponents);
 
                 var materials = new HashSet<string>();
@@ -382,7 +382,7 @@ namespace TSG_Library.UFuncs
                     DisplayName.Add(comp.DisplayName);
                 }
 
-                if (DisplayName.Count == 0)
+                if(DisplayName.Count == 0)
                 {
                     print_("There are no components with HRS PLT / 4140 PLT");
                     DisplayName.Clear();
@@ -396,7 +396,7 @@ namespace TSG_Library.UFuncs
                 var dispComponent = (string)selCompListBox.SelectedItem;
                 foreach (var component in _selComponents.Where(component => component.DisplayName == dispComponent))
                     SetDisplayPart(component);
-                if (_isBurnout)
+                if(_isBurnout)
                     SetBurnoutComponentState();
                 selectButton.Enabled = false;
                 selectAllButton.Enabled = false;
@@ -424,30 +424,30 @@ namespace TSG_Library.UFuncs
                 selCompListBox.Items.Clear();
                 _is4View = true;
 
-                if (__display_part_.ComponentAssembly.RootComponent is null)
+                if(__display_part_.ComponentAssembly.RootComponent is null)
                     return;
 
                 GetChildComponents(__display_part_.ComponentAssembly.RootComponent);
 
-                if (AllComponents.Count == 0)
+                if(AllComponents.Count == 0)
                     return;
 
                 var selOneComp = GetOneComponentOfMany(AllComponents);
 
                 foreach (var comp in selOneComp)
                 {
-                    if (!(comp.Prototype is Part))
+                    if(!(comp.Prototype is Part))
                         continue;
 
                     var compPart = (Part)comp.Prototype;
                     var drawingCollection = compPart.DrawingSheets;
 
-                    if (drawingCollection is null)
+                    if(drawingCollection is null)
                         continue;
 
                     foreach (DrawingSheet drawingSht in drawingCollection)
                     {
-                        if (drawingSht.Name != "4-VIEW")
+                        if(drawingSht.Name != "4-VIEW")
                             continue;
 
                         _selComponents.Add(comp);
@@ -455,7 +455,7 @@ namespace TSG_Library.UFuncs
                     }
                 }
 
-                if (DisplayName.Count == 0)
+                if(DisplayName.Count == 0)
                 {
                     print_("There are no components with a 4-VIEW");
                     _selComponents = new List<Component>();
@@ -473,7 +473,7 @@ namespace TSG_Library.UFuncs
                 foreach (var component in _selComponents.Where(component => component.DisplayName == dispComponent))
                     SetDisplayPart(component);
 
-                if (_is4View)
+                if(_is4View)
                     Set4ViewComponentState();
 
                 selectButton.Enabled = false;
@@ -501,27 +501,27 @@ namespace TSG_Library.UFuncs
                 DisplayName.Clear();
                 selCompListBox.Items.Clear();
 
-                if (__display_part_.ComponentAssembly.RootComponent is null)
+                if(__display_part_.ComponentAssembly.RootComponent is null)
                     return;
 
                 GetChildComponents(__display_part_.ComponentAssembly.RootComponent);
                 GetAssemblyComponents(__display_part_.ComponentAssembly.RootComponent);
 
-                if (AllComponents.Count == 0)
+                if(AllComponents.Count == 0)
                     return;
 
                 var selOneComp = GetOneComponentOfMany(AllComponents);
 
                 foreach (var comp in selOneComp)
                 {
-                    if (!(comp.Prototype is Part))
+                    if(!(comp.Prototype is Part))
                         continue;
 
                     //Get all dims and symbols to check the associativity
                     var part = (Part)comp.Prototype;
                     var dims = part.Dimensions;
 
-                    if ((from dimension in dims.ToArray() select dimension.IsRetained).Any(isRetained => isRetained))
+                    if((from dimension in dims.ToArray() select dimension.IsRetained).Any(isRetained => isRetained))
                     {
                         _selComponents.Add(comp);
                         DisplayName.Add(comp.DisplayName);
@@ -535,16 +535,16 @@ namespace TSG_Library.UFuncs
                     {
                         ufsession_.Obj.AskTypeAndSubtype(drfEnt, out var type, out var subtype);
 
-                        if (type == UF_drafting_entity_type && subtype == UF_draft_id_symbol_subtype)
+                        if(type == UF_drafting_entity_type && subtype == UF_draft_id_symbol_subtype)
                         {
                             var origin = new double[3];
                             ufsession_.Drf.AskIdSymbolInfo(drfEnt, out _, origin, out var symbolInfo);
 
                             foreach (var info in symbolInfo)
                             {
-                                if ((from leaderInfo in info.leader_info
-                                        let numAssocObj = 0
-                                        select leaderInfo.num_assoc_objs).All(numAssocObj => numAssocObj != 0))
+                                if((from leaderInfo in info.leader_info
+                                       let numAssocObj = 0
+                                       select leaderInfo.num_assoc_objs).All(numAssocObj => numAssocObj != 0))
                                     continue;
 
                                 isSymbolRetained = true;
@@ -557,7 +557,7 @@ namespace TSG_Library.UFuncs
                     }
                 }
 
-                if (_selComponents.Count == 0)
+                if(_selComponents.Count == 0)
                 {
                     print_("There are no components with Non-Associative dimensions or id symbols");
                     DisplayName.Clear();
@@ -598,12 +598,12 @@ namespace TSG_Library.UFuncs
                 {
                     SetDisplayPart(component);
                     SetDefaultLayers();
-                    if (!removeCompCheckBox.Checked) continue;
+                    if(!removeCompCheckBox.Checked) continue;
                     selCompListBox.Items.Clear();
                     DisplayName.Remove(DisplayName1);
                     foreach (var name in DisplayName)
                         selCompListBox.Items.Add(name);
-                    if (selCompListBox.Items.Count != 0)
+                    if(selCompListBox.Items.Count != 0)
                         selCompListBox.SelectedIndex = 0;
                 }
             }
@@ -637,7 +637,7 @@ namespace TSG_Library.UFuncs
             {
                 var prevIndex = selCompListBox.SelectedIndex - 1;
 
-                if (prevIndex <= -1)
+                if(prevIndex <= -1)
                     return;
 
                 UpdateSessionParts();
@@ -650,19 +650,19 @@ namespace TSG_Library.UFuncs
                 {
                     SetDisplayPart(component);
 
-                    if (checkBoxDefaultLayers.Checked)
+                    if(checkBoxDefaultLayers.Checked)
                     {
                         UpdateSessionParts();
                         SetDefaultLayers();
                     }
 
-                    if (_isBurnout)
+                    if(_isBurnout)
                         SetBurnoutComponentState();
 
-                    if (_is4View)
+                    if(_is4View)
                         Set4ViewComponentState();
 
-                    if (!removeCompCheckBox.Checked)
+                    if(!removeCompCheckBox.Checked)
                         continue;
 
                     selCompListBox.Items.Clear();
@@ -693,7 +693,7 @@ namespace TSG_Library.UFuncs
             {
                 var nextIndex = selCompListBox.SelectedIndex + 1;
 
-                if (nextIndex >= selCompListBox.Items.Count)
+                if(nextIndex >= selCompListBox.Items.Count)
                     return;
 
                 UpdateSessionParts();
@@ -706,19 +706,19 @@ namespace TSG_Library.UFuncs
                 {
                     SetDisplayPart(component);
 
-                    if (checkBoxDefaultLayers.Checked)
+                    if(checkBoxDefaultLayers.Checked)
                     {
                         UpdateSessionParts();
                         SetDefaultLayers();
                     }
 
-                    if (_isBurnout)
+                    if(_isBurnout)
                         SetBurnoutComponentState();
 
-                    if (_is4View)
+                    if(_is4View)
                         Set4ViewComponentState();
 
-                    if (!removeCompCheckBox.Checked)
+                    if(!removeCompCheckBox.Checked)
                         continue;
 
                     selCompListBox.Items.Clear();
@@ -838,12 +838,12 @@ namespace TSG_Library.UFuncs
             {
                 foreach (var child in assembly.GetChildren())
                 {
-                    if (child.IsSuppressed)
+                    if(child.IsSuppressed)
                         continue;
 
                     var isValid = child.DisplayName._IsDetail();
 
-                    if (!isValid)
+                    if(!isValid)
                     {
                         GetChildComponents(child);
                         continue;
@@ -851,13 +851,13 @@ namespace TSG_Library.UFuncs
 
                     var instance = ufsession_.Assem.AskInstOfPartOcc(child.Tag);
 
-                    if (instance == NXOpen.Tag.Null)
+                    if(instance == NXOpen.Tag.Null)
                         continue;
 
                     ufsession_.Assem.AskPartNameOfChild(instance, out var partName);
                     var partLoad = ufsession_.Part.IsLoaded(partName);
 
-                    if (partLoad == 1)
+                    if(partLoad == 1)
                     {
                         AllComponents.Add(child);
                         GetChildComponents(child);
@@ -866,12 +866,12 @@ namespace TSG_Library.UFuncs
 
                     ufsession_.Cfi.AskFileExist(partName, out var status);
 
-                    if (status != 0)
+                    if(status != 0)
                         continue;
 
                     ufsession_.Part.OpenQuiet(partName, out var partOpen, out _);
 
-                    if (partOpen == NXOpen.Tag.Null)
+                    if(partOpen == NXOpen.Tag.Null)
                         continue;
 
                     AllComponents.Add(child);
@@ -890,12 +890,12 @@ namespace TSG_Library.UFuncs
             {
                 foreach (var child in assembly.GetChildren())
                 {
-                    if (child.IsSuppressed)
+                    if(child.IsSuppressed)
                         continue;
 
                     var isValid = IsAssemblyNameValid(child);
 
-                    if (!isValid)
+                    if(!isValid)
                     {
                         GetAssemblyComponents(child);
                         return;
@@ -903,13 +903,13 @@ namespace TSG_Library.UFuncs
 
                     var instance = ufsession_.Assem.AskInstOfPartOcc(child.Tag);
 
-                    if (instance == NXOpen.Tag.Null)
+                    if(instance == NXOpen.Tag.Null)
                         continue;
 
                     ufsession_.Assem.AskPartNameOfChild(instance, out var partName);
                     var partLoad = ufsession_.Part.IsLoaded(partName);
 
-                    if (partLoad == 1)
+                    if(partLoad == 1)
                     {
                         AllComponents.Add(child);
                         GetAssemblyComponents(child);
@@ -918,7 +918,7 @@ namespace TSG_Library.UFuncs
 
                     ufsession_.Part.OpenQuiet(partName, out var partOpen, out _);
 
-                    if (partOpen == NXOpen.Tag.Null)
+                    if(partOpen == NXOpen.Tag.Null)
                         continue;
 
                     AllComponents.Add(child);
@@ -936,7 +936,7 @@ namespace TSG_Library.UFuncs
             var lastIndex = comp.DisplayName.LastIndexOf('-');
             var subAssemName = comp.DisplayName.Remove(0, lastIndex + 1);
 
-            if (subAssemName.Contains("lsp") || subAssemName.Contains("usp"))
+            if(subAssemName.Contains("lsp") || subAssemName.Contains("usp"))
                 return true;
 
             switch (subAssemName)
@@ -980,14 +980,14 @@ namespace TSG_Library.UFuncs
                 using (var layerState = __display_part_.Layers.GetStates())
                 {
                     foreach (Category category in __display_part_.LayerCategories)
-                        if (category.Name == "ALL")
+                        if(category.Name == "ALL")
                             layerState.SetStateOfCategory(category, State.Hidden);
                     __display_part_.Layers.SetStates(layerState, true);
                 }
 
                 var layers = new List<int>(new[] { 96, 99, 100, 200, 230 });
 
-                if (__display_part_.Leaf.ToLower().Contains("layout"))
+                if(__display_part_.Leaf.ToLower().Contains("layout"))
                     layers.Add(10);
 
                 layers.Where(i => __display_part_.Layers.GetState(i) != State.WorkLayer)
@@ -1010,7 +1010,7 @@ namespace TSG_Library.UFuncs
                 var layerState = __display_part_.Layers.GetStates();
 
                 foreach (Category category in __display_part_.LayerCategories)
-                    if (category.Name == "ALL")
+                    if(category.Name == "ALL")
                         layerState.SetStateOfCategory(category, State.Hidden);
 
                 __display_part_.Layers.SetStates(layerState, true);
@@ -1019,12 +1019,12 @@ namespace TSG_Library.UFuncs
 
                 foreach (DrawingSheet dwgSheet in __display_part_.DrawingSheets)
                 {
-                    if (dwgSheet.Name != "BURNOUT")
+                    if(dwgSheet.Name != "BURNOUT")
                         continue;
 
                     dwgSheet.Open();
 
-                    if (!checkBoxUpdateViews.Checked)
+                    if(!checkBoxUpdateViews.Checked)
                         continue;
 
                     foreach (var view in dwgSheet.GetDraftingViews())
@@ -1047,7 +1047,7 @@ namespace TSG_Library.UFuncs
                 var layerState = __display_part_.Layers.GetStates();
 
                 foreach (Category category in __display_part_.LayerCategories)
-                    if (category.Name == "ALL")
+                    if(category.Name == "ALL")
                         layerState.SetStateOfCategory(category, State.Hidden);
 
                 __display_part_.Layers.SetStates(layerState, true);
@@ -1059,12 +1059,12 @@ namespace TSG_Library.UFuncs
 
                 foreach (DrawingSheet dwgSheet in __display_part_.DrawingSheets)
                 {
-                    if (dwgSheet.Name != "4-VIEW")
+                    if(dwgSheet.Name != "4-VIEW")
                         continue;
 
                     dwgSheet.Open();
 
-                    if (!checkBoxUpdateViews.Checked)
+                    if(!checkBoxUpdateViews.Checked)
                         continue;
 
                     foreach (var view in dwgSheet.GetDraftingViews())
@@ -1079,11 +1079,11 @@ namespace TSG_Library.UFuncs
 
         private void selCompListBox_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Space)
+            if(e.KeyCode == Keys.Space)
             {
                 //print_("Space bar");
 
-                if (next_last_clicked)
+                if(next_last_clicked)
                     NextButton();
                 else
                     PreviousButton();

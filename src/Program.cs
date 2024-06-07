@@ -5,7 +5,7 @@ using NXOpen;
 using NXOpen.UF;
 using TSG_Library.Attributes;
 using TSG_Library.UFuncs;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 public static class Program
 {
@@ -101,7 +101,7 @@ public static class Program
             return;
 
 #pragma warning disable CS0162 // Unreachable code detected
-            if (args.Length == 0)
+            if(args.Length == 0)
             {
                 print_("No main arguments");
                 return;
@@ -146,10 +146,10 @@ public static class Program
         {
             var ufunc_att = type.GetCustomAttributes().OfType<UFuncAttribute>().SingleOrDefault();
 
-            if (ufunc_att is null)
+            if(ufunc_att is null)
                 continue;
 
-            if (ufunc_att.ufunc_name != ufunc_name)
+            if(ufunc_att.ufunc_name != ufunc_name)
                 continue;
 
             __ufunc = (_IUFunc)Activator.CreateInstance(type);
@@ -157,7 +157,7 @@ public static class Program
             break;
         }
 
-        if (__ufunc is null)
+        if(__ufunc is null)
         {
             print_($"Could not find ufunc with name '{ufunc_name}'");
 

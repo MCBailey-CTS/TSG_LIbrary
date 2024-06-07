@@ -5,8 +5,7 @@ using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Utilities;
-using TSG_Library.Extensions;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 {
@@ -40,7 +39,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
             {
                 var component = (Component)NXObjectManager.Get(partOcc);
 
-                if (component.IsSuppressed)
+                if(component.IsSuppressed)
                     continue;
 
                 var expectedName = Regex.Match(component.DisplayName, "[0-9]{4,}-[0-9]{3}-([0-9]{3})").Groups[1].Value;
@@ -48,7 +47,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
                 // todo: Look into the Regex.Replace method. You might be able to use it with the regex below.
                 // Revision 2.1 – 2018 / 01 /30
                 // todo: should be able to combine the following statement into one Regex expression.
-                if (component.Name == expectedName || Regex.IsMatch(component.Name, $"^{expectedName}([A-Z]{{1}})$"))
+                if(component.Name == expectedName || Regex.IsMatch(component.Name, $"^{expectedName}([A-Z]{{1}})$"))
                     continue;
 
                 failedComponents.Add(new Tuple<Component, IEnumerable<string>>(component,

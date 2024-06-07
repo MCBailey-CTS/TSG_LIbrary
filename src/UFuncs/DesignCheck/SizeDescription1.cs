@@ -2,8 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using NXOpen;
-using TSG_Library.Extensions;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.Utilities
 {
@@ -23,7 +22,7 @@ namespace TSG_Library.Utilities
         {
             try
             {
-                if (!part.HasUserAttribute("DESCRIPTION", NXObject.AttributeType.String, -1))
+                if(!part.HasUserAttribute("DESCRIPTION", NXObject.AttributeType.String, -1))
                 {
                     message1 = "Did not have a description attribute";
                     return true;
@@ -39,7 +38,7 @@ namespace TSG_Library.Utilities
 
                 var descriptionMatch = Regex.Match(descriptionAttributeValue, _regex3XPattern, RegexOptions.IgnoreCase);
 
-                if (!CheckDescriptionMatch(descriptionMatch, out var message))
+                if(!CheckDescriptionMatch(descriptionMatch, out var message))
                 {
                     message1 = message;
                     return true;
@@ -47,7 +46,7 @@ namespace TSG_Library.Utilities
 
                 var solidBodyLayer1 = part.__SolidBodyLayer1OrNull();
 
-                if (solidBodyLayer1 is null)
+                if(solidBodyLayer1 is null)
                 {
                     message1 = "Part doesn't have a single solid body on layer 1";
                     return false;
@@ -55,7 +54,7 @@ namespace TSG_Library.Utilities
 
                 var __part = part;
 
-                if (!__part.__HasDynamicBlock())
+                if(!__part.__HasDynamicBlock())
                 {
                     message1 = "Part does not contain a Dynamic Block.";
                     return false;
@@ -136,7 +135,7 @@ namespace TSG_Library.Utilities
                     var boundValue = boundingArray[i];
                     var resultingValue = descValue - boundValue;
                     var absValue = System.Math.Abs(resultingValue);
-                    if (absValue < _tolerance) continue;
+                    if(absValue < _tolerance) continue;
                     var nodeText =
                         $"Value mismatch, Description: {descriptionArray[i]:f2}, Actual: {boundingArray[i]:f2}";
                     var stemp = $"{nodeText}\n{tempString}";
@@ -164,19 +163,19 @@ namespace TSG_Library.Utilities
 
         private static bool CheckDescriptionMatch(Match descriptionMatch, out string message)
         {
-            if (!descriptionMatch.Success)
+            if(!descriptionMatch.Success)
             {
                 message = "Description attribute did not match regular expression.";
                 return false;
             }
 
-            if (descriptionMatch.Groups.Count < 4)
+            if(descriptionMatch.Groups.Count < 4)
             {
                 message = "Description attribute matched less than the required group set.";
                 return false;
             }
 
-            if (descriptionMatch.Groups.Count > 4)
+            if(descriptionMatch.Groups.Count > 4)
             {
                 message = "Description attribute matched more than the required group set.";
                 return false;
@@ -194,11 +193,11 @@ namespace TSG_Library.Utilities
 
             // If it doesn't seem to be working you might have any issue with metric vs english,
             // or you can revert the code back to the original line before you changed to float-point comparison.
-            if (!(System.Math.Abs(fractionValue) > _tolerance))
+            if(!(System.Math.Abs(fractionValue) > _tolerance))
                 return roundValue;
 
             for (var ii = .125; ii <= 1; ii += .125)
-                if (fractionValue <= ii)
+                if(fractionValue <= ii)
                 {
                     var roundedFraction = ii;
                     var finalValue = truncateValue + roundedFraction;

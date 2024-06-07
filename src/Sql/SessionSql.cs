@@ -21,7 +21,7 @@ namespace TSG_Library.Forms
             {
                 var lw = Session.GetSession().ListingWindow;
 
-                if (lw.IsOpen) return lw;
+                if(lw.IsOpen) return lw;
 
                 lw.Open();
 
@@ -37,7 +37,7 @@ namespace TSG_Library.Forms
 
                 user_id = NewMethod(user_id);
 
-                if (user_id is null)
+                if(user_id is null)
                     user_id = NewMethod1();
                 NewMethod2(user_id);
             }
@@ -151,7 +151,7 @@ namespace TSG_Library.Forms
                 {
                     var result = sql.ExecuteScalar();
 
-                    if (result is int _k)
+                    if(result is int _k)
                         user_id = _k;
                 }
             }

@@ -183,7 +183,7 @@
             var num = 0;
 
             for (var i = 1; i < values.Length; i++)
-                if (values[i] > values[num])
+                if(values[i] > values[num])
                     num = i;
 
             return num;
@@ -227,7 +227,7 @@
             var num = 0;
 
             for (var i = 1; i < values.Length; i++)
-                if (values[i] > values[num])
+                if(values[i] > values[num])
                     num = i;
 
             return num;
@@ -293,11 +293,11 @@
             var truncateValue = System.Math.Truncate(roundValue);
             var fractionValue = roundValue - truncateValue;
 
-            if (System.Math.Abs(fractionValue) < tolerance)
+            if(System.Math.Abs(fractionValue) < tolerance)
                 return roundValue;
 
             for (var ii = .125; ii <= 1; ii += .125)
-                if (fractionValue <= ii)
+                if(fractionValue <= ii)
                 {
                     var roundedFraction = ii;
                     return truncateValue + roundedFraction;
@@ -372,7 +372,7 @@
             var num3 = 1E-11;
             var array2 = new double[25, 25];
 
-            if (derivs >= k)
+            if(derivs >= k)
             {
                 for (var j = k; j <= derivs; j++)
                     array[k] = 0.0;

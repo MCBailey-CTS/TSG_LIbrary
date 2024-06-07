@@ -2,7 +2,6 @@
 using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Assemblies;
-using TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 {
@@ -27,7 +26,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
             var part_node = part.__TreeNode();
 
             foreach (var child in part.ComponentAssembly.RootComponent.GetChildren())
-                if (child.GetPositionOverrideType() != PositionOverrideType.Explicit)
+                if(child.GetPositionOverrideType() != PositionOverrideType.Explicit)
                     part_node.Nodes.Add(child._TreeNode());
 
             return part_node;

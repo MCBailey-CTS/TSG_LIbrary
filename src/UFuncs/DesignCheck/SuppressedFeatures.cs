@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Features;
-using TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 {
@@ -30,7 +29,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 
             foreach (var feature in part.Features.GetFeatures())
             {
-                if (!featureNames.Add(feature.GetFeatureName()))
+                if(!featureNames.Add(feature.GetFeatureName()))
                     continue;
 
                 yield return feature;

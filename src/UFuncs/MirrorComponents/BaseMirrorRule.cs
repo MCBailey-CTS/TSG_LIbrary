@@ -4,7 +4,6 @@ using System.Linq;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
-using TSG_Library.Extensions;
 using TSG_Library.Geom;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
@@ -22,7 +21,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
         public static bool EdgePointsMatchFace(Face mirrorFace, IList<Tuple<Point3d, Point3d>> edgePoints)
         {
-            if (edgePoints.Count != mirrorFace.GetEdges().Length)
+            if(edgePoints.Count != mirrorFace.GetEdges().Length)
                 return false;
 
             var faceEdges = new HashSet<Edge>(mirrorFace.GetEdges());
@@ -43,16 +42,16 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             foreach (var tuple in edgePoints)
             {
-                if (edge0._HasEndPoints(tuple.Item1, tuple.Item2))
+                if(edge0._HasEndPoints(tuple.Item1, tuple.Item2))
                     matchedEdges.Add(edge0);
 
-                if (edge1._HasEndPoints(tuple.Item1, tuple.Item2))
+                if(edge1._HasEndPoints(tuple.Item1, tuple.Item2))
                     matchedEdges.Add(edge1);
 
-                if (edge2._HasEndPoints(tuple.Item1, tuple.Item2))
+                if(edge2._HasEndPoints(tuple.Item1, tuple.Item2))
                     matchedEdges.Add(edge2);
 
-                if (edge3._HasEndPoints(tuple.Item1, tuple.Item2))
+                if(edge3._HasEndPoints(tuple.Item1, tuple.Item2))
                     matchedEdges.Add(edge3);
             }
 

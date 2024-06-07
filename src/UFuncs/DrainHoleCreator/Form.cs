@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
-using TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs.DrainHoleCreator
 {
@@ -54,7 +53,7 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
             double endLimit
         ) : this()
         {
-            if (defaultUnits == Units.Millimeters)
+            if(defaultUnits == Units.Millimeters)
                 rdoMetric.Checked = true;
             else
                 rdoEnglish.Checked = true;
@@ -196,7 +195,7 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
 
         private void RdoMetric_CheckedChanged(object sender, EventArgs e)
         {
-            if (!rdoMetric.Checked) return;
+            if(!rdoMetric.Checked) return;
 
             txtDiameterDrain.Text = $@"{50.00:F1}";
 
@@ -207,7 +206,7 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
 
         private void RdoEnglish_CheckedChanged(object sender, EventArgs e)
         {
-            if (!rdoEnglish.Checked) return;
+            if(!rdoEnglish.Checked) return;
 
             txtDiameterDrain.Text = $@"{2.00:F1}";
 
@@ -218,7 +217,7 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
 
         private void TxtDiameterDrain_TextChanged(object sender, EventArgs e)
         {
-            if (double.TryParse(txtDiameterDrain.Text, out var result))
+            if(double.TryParse(txtDiameterDrain.Text, out var result))
                 DiameterChanged?.Invoke(txtDiameterDrain, result);
 
             ValidateDrainHoles();
@@ -226,29 +225,29 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
 
         private void TxtStartLimit_TextChanged(object sender, EventArgs e)
         {
-            if (double.TryParse(txtStartLimit.Text, out var result)) StartLimitChanged?.Invoke(txtStartLimit, result);
+            if(double.TryParse(txtStartLimit.Text, out var result)) StartLimitChanged?.Invoke(txtStartLimit, result);
 
             ValidateDrainHoles();
         }
 
         private void TxtEndLimit_TextChanged(object sender, EventArgs e)
         {
-            if (double.TryParse(txtEndLimit.Text, out var result)) EndLimitChanged?.Invoke(txtEndLimit, result);
+            if(double.TryParse(txtEndLimit.Text, out var result)) EndLimitChanged?.Invoke(txtEndLimit, result);
 
             ValidateDrainHoles();
         }
 
         private void MainForm_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode != Keys.Tab) return;
-            if (e.Modifiers == Keys.Shift)
+            if(e.KeyCode != Keys.Tab) return;
+            if(e.Modifiers == Keys.Shift)
             {
                 ProcessTabKey(false);
             }
             else
             {
                 ProcessTabKey(true);
-                if (ActiveControl is TextBox textBox)
+                if(ActiveControl is TextBox textBox)
                 {
                     textBox.SelectionStart = 0;
                     textBox.SelectionLength = textBox.Text.Length;

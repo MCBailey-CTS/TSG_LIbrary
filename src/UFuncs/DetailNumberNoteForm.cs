@@ -9,11 +9,10 @@ using NXOpen.Features;
 using NXOpen.GeometricAnalysis;
 using TSG_Library.Attributes;
 using TSG_Library.Disposable;
-using TSG_Library.Extensions;
 using TSG_Library.Properties;
 using static NXOpen.Selection;
 using static NXOpen.UF.UFConstants;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 using static TSG_Library.UFuncs._UFunc;
 using Assembly = System.Reflection.Assembly;
 using Selection = TSG_Library.Ui.Selection;
@@ -153,19 +152,19 @@ namespace TSG_Library.UFuncs
                 var targetFace = interferingFaces[i];
                 var toolFace = interferingFaces[i + 1];
 
-                if (!targetFace._IsPlanar())
+                if(!targetFace._IsPlanar())
                     continue;
 
-                if (!toolFace._IsPlanar())
+                if(!toolFace._IsPlanar())
                     continue;
 
                 var targetVector = targetFace._NormalVector()._Unit();
                 var toolVector = toolFace._NormalVector()._Unit();
 
-                if (!targetVector._IsEqualTo(expectedTargetVector))
+                if(!targetVector._IsEqualTo(expectedTargetVector))
                     continue;
 
-                if (!toolVector._IsEqualTo(expectedTargetVector._Negate()))
+                if(!toolVector._IsEqualTo(expectedTargetVector._Negate()))
                     continue;
 
                 CreateNote0(detail, targetFace, toolFace);
@@ -182,7 +181,7 @@ namespace TSG_Library.UFuncs
                 var targetFace = SelectPlanarFace();
 
                 // for now the target face must be an occurrence
-                if (!targetFace.IsOccurrence)
+                if(!targetFace.IsOccurrence)
                 {
                     print_("Please select an occurrence face");
                     return;
@@ -203,7 +202,7 @@ namespace TSG_Library.UFuncs
 
                     var detail = GetDetailName(interferingFaces[1].OwningComponent);
 
-                    if (TryCreateNote(detail, expectedTargetVector, interferingFaces))
+                    if(TryCreateNote(detail, expectedTargetVector, interferingFaces))
                     {
                         solid_body_layer_1_proto.OwningComponent.Blank();
 
@@ -379,7 +378,7 @@ namespace TSG_Library.UFuncs
 
             ReferenceSet refset;
 
-            if (__display_part_.__HasReferenceSet(REFERENCE_SET))
+            if(__display_part_.__HasReferenceSet(REFERENCE_SET))
             {
                 refset = __display_part_.__FindReferenceSet(REFERENCE_SET);
             }
@@ -401,7 +400,7 @@ namespace TSG_Library.UFuncs
         {
             foreach (var line in lines)
             {
-                if (!line.StartsWith(key))
+                if(!line.StartsWith(key))
                     continue;
 
                 var index = line.IndexOf('=');
@@ -416,7 +415,7 @@ namespace TSG_Library.UFuncs
         {
             foreach (var line in lines)
             {
-                if (!line.StartsWith(key))
+                if(!line.StartsWith(key))
                     continue;
 
                 var index = line.IndexOf('=');
@@ -431,7 +430,7 @@ namespace TSG_Library.UFuncs
         {
             foreach (var line in lines)
             {
-                if (!line.StartsWith(key))
+                if(!line.StartsWith(key))
                     continue;
 
                 var index = line.IndexOf('=');

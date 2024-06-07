@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using NXOpen;
 using TSG_Library.Attributes;
 using TSG_Library.Utilities;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 using static TSG_Library.UFuncs._UFunc;
 using Selection = TSG_Library.Ui.Selection;
 
@@ -63,7 +63,7 @@ namespace TSG_Library.UFuncs
 
                 var match = Regex.Match(__display_part_.Leaf, SimUcf.SingleValue("SIM_SPECIAL_REGEX"));
 
-                if (!match.Success)
+                if(!match.Success)
                 {
                     print_("Current DisplayPart not in a valid Job Folder.");
                     return;
@@ -73,29 +73,29 @@ namespace TSG_Library.UFuncs
 
                 var folder = GFolder.create_or_null(__work_part_);
 
-                if (folder is null)
+                if(folder is null)
                     throw new InvalidOperationException("The current work part does not reside within a GFolder.");
 
                 var directory = $"{folder.dir_simulation}\\{TodaysDate}-{customerNumber}-Simulation-Package-for-Design";
 
-                if (Directory.Exists(directory))
+                if(Directory.Exists(directory))
                 {
                     var result = MessageBox.Show($@"{directory} already exists, would you like to replace it?",
                         @"Warning", MessageBoxButtons.YesNo);
-                    if (result == DialogResult.No)
+                    if(result == DialogResult.No)
                         return;
                 }
 
-                if (!Directory.Exists(directory))
+                if(!Directory.Exists(directory))
                     Directory.CreateDirectory(directory);
 
                 // Select Components for data export.
                 var selectedComponents = Selection.SelectManyComponents();
 
-                if (selectedComponents.Length == 0)
+                if(selectedComponents.Length == 0)
                     return;
 
-                if (Directory.Exists(directory))
+                if(Directory.Exists(directory))
                     Directory.Delete(directory, true);
 
                 Directory.CreateDirectory(directory);
@@ -105,10 +105,10 @@ namespace TSG_Library.UFuncs
                     {
                         var displayName = comp.DisplayName.ToLower();
 
-                        if (!comp._IsLoaded())
+                        if(!comp._IsLoaded())
                             continue;
 
-                        if (rdoPrt.Checked)
+                        if(rdoPrt.Checked)
                             try
                             {
                                 var leaf = displayName.Contains("master")
@@ -117,7 +117,7 @@ namespace TSG_Library.UFuncs
 
                                 var compPath = $"{directory}\\{leaf}.prt";
 
-                                if (File.Exists(compPath))
+                                if(File.Exists(compPath))
                                     File.Delete(compPath);
 
                                 File.Copy(comp._Prototype().FullPath, compPath);
@@ -135,13 +135,13 @@ namespace TSG_Library.UFuncs
 
                         try
                         {
-                            if (rdoStpIges.Checked
-                                && (displayName.Contains("fshape")
-                                    || displayName.Contains($"{customerNumber}-t")
-                                    || displayName.Contains("pad")
-                                    || displayName.Contains("profile")
-                                    || displayName.Contains($"{customerNumber}-b"))
-                               )
+                            if(rdoStpIges.Checked
+                               && (displayName.Contains("fshape")
+                                   || displayName.Contains($"{customerNumber}-t")
+                                   || displayName.Contains("pad")
+                                   || displayName.Contains("profile")
+                                   || displayName.Contains($"{customerNumber}-b"))
+                              )
                                 Iges(comp._Prototype().FullPath, $"{exportFileNoExtension}.igs", true);
                         }
                         catch (Exception ex)
@@ -151,12 +151,12 @@ namespace TSG_Library.UFuncs
 
                         try
                         {
-                            if (rdoStpIges.Checked
-                                && (displayName.Contains($"{customerNumber}-d")
-                                    || displayName.ToLower().Contains("ref-data")
-                                    || displayName.ToLower().Contains("refdata")
-                                    || displayName.ToLower().Contains("master"))
-                               )
+                            if(rdoStpIges.Checked
+                               && (displayName.Contains($"{customerNumber}-d")
+                                   || displayName.ToLower().Contains("ref-data")
+                                   || displayName.ToLower().Contains("refdata")
+                                   || displayName.ToLower().Contains("master"))
+                              )
                                 Export.Stp(comp._Prototype().FullPath, $"{exportFileNoExtension}.stp",
                                     "U:\\nxFiles\\Step Translator\\214ug.def");
                         }
@@ -185,11 +185,11 @@ namespace TSG_Library.UFuncs
 
                     filesToZip.ToList().ForEach(File.Delete);
 
-                    if (chkCopy.Checked)
+                    if(chkCopy.Checked)
                     {
                         var processDirectory = folder.dir_process_sim_data_design;
 
-                        if (!Directory.Exists(processDirectory))
+                        if(!Directory.Exists(processDirectory))
                             Directory.CreateDirectory(processDirectory);
 
                         var directoryName = Path.GetFileNameWithoutExtension(directory);
@@ -214,14 +214,14 @@ namespace TSG_Library.UFuncs
 
                 try
                 {
-                    if (chkCopy.Checked)
+                    if(chkCopy.Checked)
                     {
                         var processDirectory = folder.dir_process_sim_data_design;
 
-                        if (!Directory.Exists(processDirectory))
+                        if(!Directory.Exists(processDirectory))
                             Directory.CreateDirectory(processDirectory);
 
-                        if (File.Exists($"{processDirectory}\\{zipFileName}"))
+                        if(File.Exists($"{processDirectory}\\{zipFileName}"))
                             File.Delete($"{processDirectory}\\{zipFileName}");
 
                         File.Copy(zipFile, $"{processDirectory}\\{zipFileName}");
@@ -246,7 +246,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if (File.Exists(igesPath))
+                if(File.Exists(igesPath))
                     throw new ArgumentException(@"Path for iges file already exists.", nameof(igesPath));
 
                 var igesCreator = Session.GetSession().DexManager.CreateIgesCreator();
@@ -272,7 +272,7 @@ namespace TSG_Library.UFuncs
                     igesCreator.Commit();
                 }
 
-                if (wait)
+                if(wait)
                     print_(File.Exists(igesPath)
                         ? $"Successfully created \"{igesPath}\"."
                         : $"Unsuccessfully created \"{igesPath}\".");

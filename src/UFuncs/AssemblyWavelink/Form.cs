@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using NXOpen.Features;
 using TSG_Library.Attributes;
 using TSG_Library.Properties;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 using static TSG_Library.UFuncs.AssemblyWavelink.__UFunc__;
 
 namespace TSG_Library.UFuncs.AssemblyWavelink

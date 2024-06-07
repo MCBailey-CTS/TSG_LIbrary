@@ -1,7 +1,7 @@
 ﻿using System;
 using NXOpen;
 using NXOpen.Preferences;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs
 {

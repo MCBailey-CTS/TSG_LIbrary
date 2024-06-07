@@ -10,10 +10,9 @@ using NXOpen.Assemblies;
 using NXOpen.Layer;
 using NXOpen.UF;
 using TSG_Library.Attributes;
-using TSG_Library.Extensions;
 using TSG_Library.Properties;
 using TSG_Library.Utilities;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 using static TSG_Library.Utilities.GFolder;
 using static TSG_Library.UFuncs._UFunc;
 using static TSG_Library.UFuncs.CloneAssemblyForm;
@@ -71,7 +70,7 @@ namespace TSG_Library.UFuncs
                 var match = Regex.Match(jobDir, @"^([gcph]:)\\(cts|rts|hts|dts|ats|ets)\\(?<top_dir>\d{4,6})",
                     RegexOptions.IgnoreCase);
 
-                if (!match.Success)
+                if(!match.Success)
                 {
                     print_("Could not determine Job Folder");
                     return;
@@ -128,20 +127,20 @@ namespace TSG_Library.UFuncs
                     .Where(__c => __c.Layer == 8)
                     .SingleOrDefault(__c => __c.Name.ToLower().StartsWith("simulation"));
 
-                if (sim_comp is null)
+                if(sim_comp is null)
                 {
                     print_("Did not detect a sim file on Layer 8");
                     return;
                 }
 
-                if (!sim_comp._IsLoaded())
+                if(!sim_comp._IsLoaded())
                 {
                     print_("Please load the simulation file");
                     return;
                 }
 
                 foreach (var child in __display_part_.ComponentAssembly.RootComponent.GetChildren())
-                    if (child.Name.EndsWith("-WORK"))
+                    if(child.Name.EndsWith("-WORK"))
                     {
                         child._Prototype().__AddComponent(
                             sim_comp._Prototype().FullPath,
@@ -221,7 +220,7 @@ namespace TSG_Library.UFuncs
         {
             Location = Settings.Default.clone_strip_form_window_location;
 
-            if (Environment.UserName == "mcbailey")
+            if(Environment.UserName == "mcbailey")
                 txtJobPath.Text = "C:\\CTS\\003506 (lydall)";
 
             chkOfflineDie.Checked = true;
@@ -242,7 +241,7 @@ namespace TSG_Library.UFuncs
         {
             var transfer = (int)numUpDownTransfer.Value;
 
-            if (transfer > 0 && !chkOfflineDie.Checked)
+            if(transfer > 0 && !chkOfflineDie.Checked)
             {
                 numUpDownProgPresses.Value = 0;
                 numUpDownProgPresses.Enabled = false;
@@ -252,7 +251,7 @@ namespace TSG_Library.UFuncs
                 numUpDownProgPresses.Enabled = true;
             }
 
-            if (transfer == 0)
+            if(transfer == 0)
             {
                 numUpDownTranPresses.Value = 0;
                 numUpDownTranPresses.Enabled = false;
@@ -487,16 +486,16 @@ namespace TSG_Library.UFuncs
 
             var trans = ask_tran_station_10();
 
-            if (!__match0.Success)
+            if(!__match0.Success)
                 throw new Exception("Please select a valid transfer or progressive station");
 
             var __prefix = __match0.Groups["prefix"].Value;
 
             List<int> ops;
 
-            if (__prefix == "T")
+            if(__prefix == "T")
                 ops = ask_tran_station_10();
-            else if (__prefix == "P")
+            else if(__prefix == "P")
                 ops = ask_prog_station_10();
             else
                 throw new Exception();
@@ -510,12 +509,12 @@ namespace TSG_Library.UFuncs
 
             foreach (var op in ops)
             {
-                if (op < selected_op)
+                if(op < selected_op)
                     break;
                 move_station(op, op + 10, cust_num, __prefix);
             }
 
-            if (selected_op == 10)
+            if(selected_op == 10)
             {
                 File.Copy(XXXXXX_OP_XXX_Layout, selected_part_path);
             }
@@ -530,7 +529,7 @@ namespace TSG_Library.UFuncs
 
             var op_str = op_10_010(selected_op);
 
-            if (__prefix == "P")
+            if(__prefix == "P")
             {
                 prog_work(op_str, selected_part_path, __prefix);
                 prog_lifted(op_str, selected_part_path, __prefix);
@@ -538,11 +537,11 @@ namespace TSG_Library.UFuncs
 
                 var max_op = ops.Max();
 
-                if (ask_prog_station_10().Count > 0 && ask_tran_station_10().Count > 0 && selected_op == max_op)
+                if(ask_prog_station_10().Count > 0 && ask_tran_station_10().Count > 0 && selected_op == max_op)
                 {
                     prog_transfer(GFolder.create(op_str), selected_part_path, __prefix);
 
-                    if (max_op > 0)
+                    if(max_op > 0)
                     {
                         var max_op_str = op_10_010(max_op);
                         var __comp = __display_part_.ComponentAssembly.RootComponent.GetChildren()
@@ -552,7 +551,7 @@ namespace TSG_Library.UFuncs
                 }
             }
 
-            if (__prefix == "T")
+            if(__prefix == "T")
             {
                 tran_work(op_str, selected_part_path, __prefix);
                 tran_lifted(op_str, selected_part_path, __prefix);
@@ -587,7 +586,7 @@ namespace TSG_Library.UFuncs
             var __match0 = Regex.Match(selected_comp.DisplayName,
                 "^(?<cust_num>\\d{6})-(?<prefix>[TP])(?<detail>\\d{3})-Layout$");
 
-            if (!__match0.Success)
+            if(!__match0.Success)
             {
                 print_("Please select a valid transfer or progressive station");
                 return;
@@ -597,9 +596,9 @@ namespace TSG_Library.UFuncs
 
             List<int> ops;
 
-            if (__prefix == "T")
+            if(__prefix == "T")
                 ops = ask_tran_station_10();
-            else if (__prefix == "P")
+            else if(__prefix == "P")
                 ops = ask_prog_station_10();
             else
                 throw new Exception();
@@ -630,7 +629,7 @@ namespace TSG_Library.UFuncs
 
             foreach (var op in ops)
             {
-                if (op <= selected_op)
+                if(op <= selected_op)
                     continue;
                 move_station(op, op - 10, cust_num, selected_prefix);
             }
@@ -648,7 +647,7 @@ namespace TSG_Library.UFuncs
                 .Select(__r => int.Parse(__r.Groups["op"].Value))
                 .ToArray();
 
-            if (prog_ops.Length > 0 && tran_ops.Length > 0 && __prefix == "P")
+            if(prog_ops.Length > 0 && tran_ops.Length > 0 && __prefix == "P")
             {
                 var folder = GFolder.create(__display_part_.FullPath);
 
@@ -667,7 +666,7 @@ namespace TSG_Library.UFuncs
 
                 var new_path = selected_full_path.Replace(selected_display_name, $"{cust_num}-P{max_op}-Layout");
 
-                if (selected_op - 10 == int.Parse(max_op))
+                if(selected_op - 10 == int.Parse(max_op))
                     prog_P_TRANSFER(max_op, new_path, "P");
             }
 
@@ -691,35 +690,35 @@ namespace TSG_Library.UFuncs
         public static void create(GFolder __folder, int __transfer_layouts, int __tran_presses, int __prog_layouts,
             int __prog_presses, bool __start_at_005, bool __offline_die)
         {
-            if (!File.Exists(__folder.dir_job))
+            if(!File.Exists(__folder.dir_job))
                 Directory.CreateDirectory(__folder.dir_job);
 
-            if (!File.Exists(__folder.dir_layout))
+            if(!File.Exists(__folder.dir_layout))
                 Directory.CreateDirectory(__folder.dir_layout);
 
-            if (!File.Exists(__folder.dir_simulation))
+            if(!File.Exists(__folder.dir_simulation))
                 Directory.CreateDirectory(__folder.dir_simulation);
 
-            if (!File.Exists(__folder.path_simulation))
+            if(!File.Exists(__folder.path_simulation))
             {
                 print_("Couldn't find a simulation file");
                 return;
             }
 
-            if (!__offline_die)
+            if(!__offline_die)
                 clone_non_offline_die(__folder, __transfer_layouts, __tran_presses, __prog_layouts, __prog_presses,
                     __transfer_layouts > 0 ? "900" : "010");
             else
                 clone_offline_die(__folder, __prog_layouts, __transfer_layouts, __prog_presses, __tran_presses, "010");
 
 
-            if (File.Exists(__folder.file_strip("010")))
+            if(File.Exists(__folder.file_strip("010")))
                 session_.find_or_open(__folder.file_strip("010")).__AddComponent(
                     __folder.path_simulation,
                     componentName: "SIMULATION-STRIP",
                     layer: 8);
 
-            if (File.Exists(__folder.file_strip("900")))
+            if(File.Exists(__folder.file_strip("900")))
                 session_.find_or_open(__folder.file_strip("900")).__AddComponent(
                     __folder.path_simulation,
                     componentName: "SIMULATION-STRIP",
@@ -733,14 +732,14 @@ namespace TSG_Library.UFuncs
             __display_part_.__Save();
 
             foreach (Part __part in session_.Parts.ToArray())
-                if (__part.IsModified && __part.Leaf.StartsWith(__folder.customer_number))
+                if(__part.IsModified && __part.Leaf.StartsWith(__folder.customer_number))
                     __part.__Save();
 
-            if (File.Exists(__folder.file_strip("010")))
+            if(File.Exists(__folder.file_strip("010")))
                 session_.Parts.SetActiveDisplay(session_.find_or_open(__folder.file_strip("010")),
                     DisplayPartOption.AllowAdditional, PartDisplayPartWorkPartOption.SameAsDisplay, out _);
 
-            if (File.Exists(__folder.file_strip("900")))
+            if(File.Exists(__folder.file_strip("900")))
                 session_.Parts.SetActiveDisplay(session_.find_or_open(__folder.file_strip("900")),
                     DisplayPartOption.AllowAdditional, PartDisplayPartWorkPartOption.SameAsDisplay, out _);
 
@@ -777,12 +776,12 @@ namespace TSG_Library.UFuncs
                 }
 
             // adds a P{last}-TRANSFER component if this is a transfer die and has prog stations
-            if (__transfer_layouts > 0 && __prog_layouts > 0)
+            if(__transfer_layouts > 0 && __prog_layouts > 0)
                 try
                 {
                     var op_str = op_10_010(__prog_layouts * 10);
                     var layout_path = __folder.file_layout_p(op_str);
-                    if (!File.Exists(layout_path))
+                    if(!File.Exists(layout_path))
                         File.Copy(XXXXXX_OP_XXX_Layout, layout_path);
                     //prog_work(op_str, layout_path, "P");
                     //prog_lifted(op_str, layout_path, "P");
@@ -920,7 +919,7 @@ namespace TSG_Library.UFuncs
             var strip_prog_path = __folder.file_strip(op);
             ExecuteCloneStrip1(__folder, op, strip_prog_path);
             File.Copy(strip_prog_path, strip_tran_path);
-            if (!File.Exists(strip_tran_path))
+            if(!File.Exists(strip_tran_path))
                 File.Copy(XXXXX_Strip, strip_tran_path);
 
             __display_part_ = session_.find_or_open(strip_tran_path);
@@ -949,7 +948,7 @@ namespace TSG_Library.UFuncs
 
             __display_part_.__Save();
 
-            if (!File.Exists(strip_prog_path))
+            if(!File.Exists(strip_prog_path))
                 File.Copy(XXXXX_Strip, strip_prog_path);
             __display_part_ = session_.find_or_open(strip_prog_path);
 
@@ -965,7 +964,7 @@ namespace TSG_Library.UFuncs
         public static void tran_work_lifted_transfer(GFolder __folder, string op_str, string __prefix)
         {
             var layout_path = __folder.file_layout_t(op_str);
-            if (!File.Exists(layout_path))
+            if(!File.Exists(layout_path))
                 File.Copy(XXXXXX_OP_XXX_Layout, layout_path);
             tran_work(op_str, layout_path, __prefix);
             tran_lifted(op_str, layout_path, __prefix);
@@ -975,7 +974,7 @@ namespace TSG_Library.UFuncs
         public static void prog_work_lifted(GFolder __folder, string op_str, string __prefix)
         {
             var layout_path = __folder.file_layout_p(op_str);
-            if (!File.Exists(layout_path))
+            if(!File.Exists(layout_path))
                 File.Copy(XXXXXX_OP_XXX_Layout, layout_path);
             prog_work(op_str, layout_path, __prefix);
             prog_lifted(op_str, layout_path, __prefix);
@@ -984,7 +983,7 @@ namespace TSG_Library.UFuncs
         public static void prog_transfer(GFolder __folder, string __op_str, string __prefix)
         {
             var layout_path = __folder.file_layout(__prefix, __op_str);
-            if (!File.Exists(layout_path))
+            if(!File.Exists(layout_path))
                 File.Copy(XXXXXX_OP_XXX_Layout, layout_path);
             prog_transfer(GFolder.create(__op_str), layout_path, __prefix);
         }
@@ -999,7 +998,7 @@ namespace TSG_Library.UFuncs
             clone.SetDryrun(false);
             clone.AddPart(XXXXX_Strip);
             clone.SetNaming(XXXXX_Strip, UFClone.NamingTechnique.UserName, strip_prog_path);
-            if (op != "900")
+            if(op != "900")
             {
                 clone.AddPart(STRIP_FLANGE_CARRIER_TRACKING);
                 clone.SetNaming(STRIP_FLANGE_CARRIER_TRACKING, UFClone.NamingTechnique.UserName,
@@ -1022,7 +1021,7 @@ namespace TSG_Library.UFuncs
             clone.AddPart(XXXXX_Strip);
             clone.SetNaming(XXXXX_Strip, UFClone.NamingTechnique.UserName, strip_tran_path);
 
-            if (!File.Exists(__folder.path_strip_flange))
+            if(!File.Exists(__folder.path_strip_flange))
             {
                 clone.AddPart(STRIP_FLANGE_CARRIER_TRACKING);
                 clone.SetNaming(STRIP_FLANGE_CARRIER_TRACKING, UFClone.NamingTechnique.UserName,

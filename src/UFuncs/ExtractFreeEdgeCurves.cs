@@ -1,8 +1,7 @@
 ﻿using System.Linq;
 using NXOpen;
 using TSG_Library.Attributes;
-using TSG_Library.Extensions;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 using Selection = TSG_Library.Ui.Selection;
 
 namespace TSG_Library.UFuncs
@@ -17,7 +16,7 @@ namespace TSG_Library.UFuncs
     {
         public override void execute()
         {
-            if (Session.GetSession().Parts.Display is null)
+            if(Session.GetSession().Parts.Display is null)
             {
                 print_("There is no displayed part loaded");
                 return;

@@ -3,7 +3,6 @@ using System.Text.RegularExpressions;
 using PostSharp.Aspects;
 using PostSharp.Extensibility;
 using PostSharp.Serialization;
-using TSG_Library.Extensions;
 
 namespace TSG_Library.Attributes
 {
@@ -18,7 +17,7 @@ namespace TSG_Library.Attributes
 
         public override bool CompileTimeValidate(MethodBase method)
         {
-            if (!Regex.IsMatch(method.Name, "^__[A-Za-z0-9]+$"))
+            if(!Regex.IsMatch(method.Name, "^__[A-Za-z0-9]+$"))
                 Message.Write(method, SeverityType.Error, "Custom01",
                     $"Didn't pass {method.Name}");
 

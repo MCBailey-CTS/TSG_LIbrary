@@ -3,7 +3,7 @@ using System.Linq;
 using NXOpen;
 using NXOpen.Utilities;
 using TSG_Library.Attributes;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 using Selection = TSG_Library.Ui.Selection;
 
 namespace TSG_Library.UFuncs
@@ -29,7 +29,7 @@ namespace TSG_Library.UFuncs
                 {
                     TheUFSession.Modl.AskObjectFeat(delete.Tag, out var featTag);
 
-                    if (featTag == Tag.Null)
+                    if(featTag == Tag.Null)
                         delCurves.Add(delete.Tag);
                 }
 

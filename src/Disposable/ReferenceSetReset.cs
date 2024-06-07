@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using NXOpen.Assemblies;
-using TSG_Library.Extensions;
 
 namespace TSG_Library.Disposable
 {
@@ -18,7 +17,7 @@ namespace TSG_Library.Disposable
             {
                 // Checks to see if the {component} is already in the {_compStringDictionary}.
                 // If it is we can ignore it.
-                if (_compStringDictionary.ContainsKey(component))
+                if(_compStringDictionary.ContainsKey(component))
                     continue;
 
                 // If we get here then we want to add the {component} and it's current reference set to the {_compStringDictionary}.

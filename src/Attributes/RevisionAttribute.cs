@@ -17,7 +17,7 @@ namespace TSG_Library.Attributes
 
             foreach (var i in split)
             {
-                if (!int.TryParse(i, out var number)) continue;
+                if(!int.TryParse(i, out var number)) continue;
                 list.Add(number);
             }
 

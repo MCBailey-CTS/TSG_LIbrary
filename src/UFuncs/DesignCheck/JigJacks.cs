@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 using NXOpen;
-using TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 {
@@ -67,13 +66,13 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
                             Math.Pow(baseLocation.Z - jjPoint3D[i].Z, 2));
 
                         for (var j = 1; j < maxSize; j++)
-                            if (Math.Abs(distance1 - j) < tolerance)
+                            if(Math.Abs(distance1 - j) < tolerance)
                             {
                                 isInch = true;
                                 break;
                             }
 
-                        if (isInch)
+                        if(isInch)
                             continue;
 
                         for (var k = 1; k < maxSize; k++)
@@ -82,14 +81,14 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
                             {
                                 var distance2 = Math.Sqrt(Math.Pow(k, 2) + Math.Pow(m, 2));
 
-                                if (!(Math.Abs(distance1 - distance2) < tolerance))
+                                if(!(Math.Abs(distance1 - distance2) < tolerance))
                                     continue;
 
                                 isInch = true;
                                 break;
                             }
 
-                            if (isInch)
+                            if(isInch)
                                 break;
                         }
                     }

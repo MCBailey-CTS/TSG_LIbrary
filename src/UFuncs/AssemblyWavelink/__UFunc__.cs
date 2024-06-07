@@ -7,10 +7,9 @@ using NXOpen.Assemblies;
 using NXOpen.Features;
 using NXOpen.UF;
 using TSG_Library.Exceptions;
-using TSG_Library.Extensions;
 using TSG_Library.Forms;
 using TSG_Library.Utilities;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 using static NXOpen.Selection;
 using Selection = TSG_Library.Ui.Selection;
 
@@ -57,12 +56,12 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
             //{
             var targets = Selection.SelectManySolidBodies();
 
-            if (targets.Length == 0)
+            if(targets.Length == 0)
                 return;
 
             var tools = Selection.SelectManyComponents();
 
-            if (tools.Length == 0)
+            if(tools.Length == 0)
                 return;
 
             foreach (var target in targets)
@@ -137,22 +136,22 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                     .ToArray();
                 var currentRefset = target.OwningComponent.ReferenceSet;
 
-                if (currentRefset != Refset_EntirePart
-                    && target.OwningComponent.Prototype is Part prototype
-                    && prototype.__FindReferenceSetOrNull(currentRefset) is ReferenceSet refset)
+                if(currentRefset != Refset_EntirePart
+                   && target.OwningComponent.Prototype is Part prototype
+                   && prototype.__FindReferenceSetOrNull(currentRefset) is ReferenceSet refset)
                     using (refset.__UsingRedisplayObject())
                     {
                         refset.AddObjectsToReferenceSet(extractedBodies.SelectMany(face => face.GetBodies()).ToArray());
                     }
 
-                if (__display_part_.PartUnits != target.OwningComponent._Prototype().PartUnits)
+                if(__display_part_.PartUnits != target.OwningComponent._Prototype().PartUnits)
                     continue;
 
                 __work_component_ = target.OwningComponent;
                 PerformBoolean(booleanType, target, extractedBodies);
             }
 
-            if (!blank)
+            if(!blank)
                 return;
 
             foreach (var tool in snapToolsArray)
@@ -187,11 +186,11 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
             {
                 subTool = ufsession_.Assem.CycleEntsInPartOcc(snapComponent.Tag, cycleObjOcc);
 
-                if (subTool != Tag.Null)
+                if(subTool != Tag.Null)
                 {
                     ufsession_.Obj.AskTypeAndSubtype(subTool, out var toolType, out var toolSubType);
 
-                    if (toolType == UFConstants.UF_solid_type && toolSubType == UFConstants.UF_solid_body_subtype)
+                    if(toolType == UFConstants.UF_solid_type && toolSubType == UFConstants.UF_solid_body_subtype)
                         yield return (Body)session_._GetTaggedObject(subTool);
                 }
 
@@ -211,7 +210,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
             Body targetBody,
             IEnumerable<ExtractFace> linkedBodies)
         {
-            if (buttonsBooleans == Feature.BooleanType.Create)
+            if(buttonsBooleans == Feature.BooleanType.Create)
                 return;
 
             Func<BasePart, Body, Body[], BooleanFeature> booleanFunc;
@@ -219,13 +218,13 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
             switch (buttonsBooleans)
             {
                 case Feature.BooleanType.Subtract:
-                    booleanFunc = __BasePart__.__CreateSubtract;
+                    booleanFunc = Extensions.__CreateSubtract;
                     break;
                 case Feature.BooleanType.Unite:
-                    booleanFunc = __BasePart__.__CreateUnite;
+                    booleanFunc = Extensions.__CreateUnite;
                     break;
                 case Feature.BooleanType.Intersect:
-                    booleanFunc = __BasePart__.__CreateIntersect;
+                    booleanFunc = Extensions.__CreateIntersect;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(buttonsBooleans), buttonsBooleans, null);
@@ -238,7 +237,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                 {
                     var bodies = link.GetBodies();
 
-                    if (bodies.Length != 1)
+                    if(bodies.Length != 1)
                     {
                         print_($"Found more than on body in linked body {link.GetFeatureName()}");
                         continue;
@@ -246,7 +245,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
 
                     var toolBody = bodies[0];
 
-                    if (targetBody._InterferesWith(toolBody))
+                    if(targetBody._InterferesWith(toolBody))
                         //if (IsInterfering_Link(targetBody, ))
                         booleanFunc(targetBody.OwningPart, targetBody, new[] { toolBody });
                     else
@@ -266,13 +265,13 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
         {
             var targets = TypeMulti(pred, prompt: TargetPrompt, masks: BodyMask);
 
-            if (targets.Count == 0)
+            if(targets.Count == 0)
                 throw new NothingSelectedException();
 
             targets.ForEach(x => x.Unhighlight());
             var targetBodies = targets.ToList();
 
-            if (targetBodies.Count == 0)
+            if(targetBodies.Count == 0)
                 throw new NothingSelectedException();
 
             return targetBodies;
@@ -298,7 +297,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
             var selectedComponents = ComponentMultiSnap(selectionPredicate, prompt: ToolPrompt);
 
             //If nothing is selected, exit out.
-            if (selectedComponents.Count == 0)
+            if(selectedComponents.Count == 0)
                 throw new NothingSelectedException();
 
             IEnumerable<Component> toolComponents = selectedComponents;
@@ -346,7 +345,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
             try
             {
                 var hyphenIndex = snapComponent.DisplayName.LastIndexOf('-');
-                if (hyphenIndex < 0) /**/ return false;
+                if(hyphenIndex < 0) /**/ return false;
                 var substring = snapComponent.DisplayName.Substring(hyphenIndex);
                 string[] endsWith = { "lwr", "upr", "lsh", "ush", "000" };
                 string[] contains = { "lsp", "usp" };
@@ -365,7 +364,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
             SelectionScope scope = SelectionScope.UseDefault, bool keepHighlighed = false, string prompt = "Select")
         {
             Predicate<Component> predicate1 = null;
-            if (predicate != null)
+            if(predicate != null)
                 predicate1 = x => predicate(x);
 
             return TypeMulti(predicate1, scope, (keepHighlighed ? 1 : 0) != 0, prompt, ComponentMask);
@@ -418,7 +417,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
             try
             {
                 var hyphenIndex = snapComponent.DisplayName.LastIndexOf('-');
-                if (hyphenIndex < 0) /**/ return false;
+                if(hyphenIndex < 0) /**/ return false;
                 var substring = snapComponent.DisplayName.Substring(hyphenIndex);
                 string[] endsWith = { "lwr", "upr", "lsh", "ush", "000" };
                 string[] contains = { "lsp", "usp" };
@@ -463,7 +462,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                             foreach (var child in tool.GetChildren())
                                 try
                                 {
-                                    if (child._IsJckScrewTsg_() || child._IsJckScrew_())
+                                    if(child._IsJckScrewTsg_() || child._IsJckScrew_())
                                         continue;
 
                                     using (child.using_reference_set_reset())
@@ -471,7 +470,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                                         var original_ref_set = child.ReferenceSet;
                                         var proto_child_fastener = child._ProtoChildComp();
 
-                                        if (proto_child_fastener.Layer != Layer_Fastener)
+                                        if(proto_child_fastener.Layer != Layer_Fastener)
                                             continue;
 
                                         try
@@ -489,8 +488,8 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                                             switch (fastener_ref_set_names.Length)
                                             {
                                                 case 0:
-                                                    if ((!(shcs_ref_set is null) && child._IsShcs_()) ||
-                                                        (!(dwl_ref_set is null) && child._IsDwl_()))
+                                                    if((!(shcs_ref_set is null) && child._IsShcs_()) ||
+                                                       (!(dwl_ref_set is null) && child._IsDwl_()))
                                                         print_(
                                                             $"Coulnd't find any valid ref sets for {child.DisplayName}");
                                                     continue;
@@ -503,7 +502,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                                                     continue;
                                             }
 
-                                            if (!target._InterferesWith(child))
+                                            if(!target._InterferesWith(child))
                                             {
                                                 print_(
                                                     $"Could not subtract fastener {child.DisplayName}, no interference.");
@@ -530,7 +529,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                                     ex._PrintException();
                                 }
 
-                            if (blank_tools)
+                            if(blank_tools)
                                 tool.Blank();
                         }
                         catch (Exception ex)
@@ -564,12 +563,12 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                         .ToList();
                     var formCts = new RefSetForm(tools);
 
-                    if (booleanType != Feature.BooleanType.Create)
+                    if(booleanType != Feature.BooleanType.Create)
                         formCts.RemoveReferenceSet("BODY");
 
                     formCts.ShowDialog();
 
-                    if (!formCts.IsSelected)
+                    if(!formCts.IsSelected)
                         return;
 
                     var selectedReferenceSet = formCts.SelectedReferenceSetName;
@@ -613,13 +612,13 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
 
         public static bool IsAssemblyHolder(string str)
         {
-            if (string.IsNullOrEmpty(str))
+            if(string.IsNullOrEmpty(str))
                 return false;
 
             str = Path.GetFileNameWithoutExtension(str);
             var startIndex = str.LastIndexOf('-');
 
-            if (startIndex < 0)
+            if(startIndex < 0)
                 return false;
 
             var str1 = str.Substring(startIndex);

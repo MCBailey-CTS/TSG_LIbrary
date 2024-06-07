@@ -11,11 +11,10 @@ using NXOpen.UF;
 using NXOpen.Utilities;
 using TSG_Library.Attributes;
 using TSG_Library.Disposable;
-using TSG_Library.Extensions;
 using TSG_Library.Geom;
 using TSG_Library.Properties;
 using TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 using static NXOpen.UF.UFConstants;
 using Curve = NXOpen.Curve;
 
@@ -79,17 +78,17 @@ namespace TSG_Library.UFuncs
                     UpdateSessionParts();
                     UpdateOriginalParts();
 
-                    if (_selectedComponents != null)
-                        if (mirrorPlane != null)
+                    if(_selectedComponents != null)
+                        if(mirrorPlane != null)
                         {
-                            if (checkBoxMirrorCopies.Checked)
+                            if(checkBoxMirrorCopies.Checked)
                                 NewMethod(mirrorDict);
                             else
                                 foreach (var selBody in _selectedComponents)
-                                    if (selBody.OwningComponent != null)
+                                    if(selBody.OwningComponent != null)
                                         MirrorComponents.Add(selBody.OwningComponent);
 
-                            if (MirrorComponents.Count > 0)
+                            if(MirrorComponents.Count > 0)
                             {
                                 _UFSession.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
                                 NewMethod17();
@@ -163,22 +162,22 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if (!(compName > 0) || !(compName < 991))
+                if(!(compName > 0) || !(compName < 991))
                     return false;
 
-                if ((compName > 0) & (compName < 10))
+                if((compName > 0) & (compName < 10))
                 {
                     _formatCompName = $"00{compName}";
                     return true;
                 }
 
-                if ((compName > 9) & (compName < 100))
+                if((compName > 9) & (compName < 100))
                 {
                     _formatCompName = $"0{compName}";
                     return true;
                 }
 
-                if (!(compName > 100))
+                if(!(compName > 100))
                     return false;
 
                 _formatCompName = compName.ToString();
@@ -197,7 +196,7 @@ namespace TSG_Library.UFuncs
         private static bool CopyComponentToMirror(Component copyComponent,
             IDictionary<TaggedObject, TaggedObject> mirrorDict)
         {
-            if (copyComponent is null)
+            if(copyComponent is null)
                 return false;
 
             var part = (Part)copyComponent.Prototype;
@@ -218,7 +217,7 @@ namespace TSG_Library.UFuncs
             var compare1 = _WorkPart.FullPath.Remove(indexOf + 1);
             var compare2 = copyPath.Remove(indexOf + 1);
 
-            if (compare1 != compare2)
+            if(compare1 != compare2)
             {
                 TheUi.NXMessageBox.Show("Error", NXMessageBox.DialogType.Error,
                     "The selected component is not from the work part directory. \n                   Save As before making a copy.");
@@ -226,7 +225,7 @@ namespace TSG_Library.UFuncs
                 return false;
             }
 
-            if (!File.Exists(originalPath))
+            if(!File.Exists(originalPath))
             {
                 TheUi.NXMessageBox.Show("Error", NXMessageBox.DialogType.Error,
                     "Save the original file to the assembly before making a copy");
@@ -266,12 +265,12 @@ namespace TSG_Library.UFuncs
             {
                 _UFSession.Obj.CycleObjsInPart(_WorkPart.Tag, UF_reference_set_type, ref cycleRefSet);
 
-                if (cycleRefSet == NXOpen.Tag.Null)
+                if(cycleRefSet == NXOpen.Tag.Null)
                     break;
 
                 _UFSession.Obj.AskName(cycleRefSet, out var name);
 
-                if (name != "BODY")
+                if(name != "BODY")
                     continue;
 
                 Tag[] refSetMembers = { compToAdd.Tag };
@@ -322,7 +321,7 @@ namespace TSG_Library.UFuncs
 
             UpdateSessionParts();
 
-            if (!_WorkPart.__HasDynamicBlock())
+            if(!_WorkPart.__HasDynamicBlock())
             {
                 NewMethod28();
                 return;
@@ -335,7 +334,7 @@ namespace TSG_Library.UFuncs
 
             _UFSession.Modl.CreatePlane(planeOrigin, planeNormal, out var selectedPlane);
 
-            if (mirrorPlane != null)
+            if(mirrorPlane != null)
                 // ReSharper disable once RedundantAssignment
                 _ = NewMethod27(selectedPlane);
         }
@@ -354,14 +353,14 @@ namespace TSG_Library.UFuncs
 
                 UpdateSessionParts();
 
-                if (__display_part_.PartUnits != wpUnits)
+                if(__display_part_.PartUnits != wpUnits)
                     continue;
 
                 _WorkPart = makeWork;
 
                 UpdateSessionParts();
 
-                if (!mirrorComp._Origin()._IsEqualTo(_Point3dOrigin))
+                if(!mirrorComp._Origin()._IsEqualTo(_Point3dOrigin))
                 {
                     NewMethod26(mirrorComp);
                     continue;
@@ -449,7 +448,7 @@ namespace TSG_Library.UFuncs
 
             var isBlockComp = _WorkPart.__HasDynamicBlock();
 
-            if (isBlockComp)
+            if(isBlockComp)
             {
                 SetWcsToWorkPart(mirrorComp);
 
@@ -467,7 +466,7 @@ namespace TSG_Library.UFuncs
             var planeNormal = mirrorPlane.Normal._ToArray();
             Tag selectedPlane;
 
-            if (isBlockComp)
+            if(isBlockComp)
             {
                 SetWcsToWorkPart(mirrorComp);
                 _UFSession.Modl.CreatePlane(planeOrigin, planeNormal, out selectedPlane);
@@ -478,7 +477,7 @@ namespace TSG_Library.UFuncs
             _UFSession.Modl.SetUpdateFailOption(UFModl.UpdateOption.UpdateAcceptAll);
             _UFSession.Modl.CreatePlane(planeOrigin, planeNormal, out selectedPlane);
 
-            if (mirrorPlane != null)
+            if(mirrorPlane != null)
                 NewMethod23(selectedPlane);
         }
 
@@ -500,7 +499,7 @@ namespace TSG_Library.UFuncs
 
         private void NewMethod15(Feature waveMirrorFeature)
         {
-            if (waveMirrorFeature is null)
+            if(waveMirrorFeature is null)
                 return;
 
             _UFSession.Modl.SetUpdateFailOption(UFModl.UpdateOption.UpdateAcceptAll);
@@ -525,7 +524,7 @@ namespace TSG_Library.UFuncs
 
         private void NewMethod14(Feature waveMirrorFeature)
         {
-            if (waveMirrorFeature is null)
+            if(waveMirrorFeature is null)
                 return;
 
             _UFSession.Modl.AskFeatObject(waveMirrorFeature.Tag, out var _, out var featObjects);
@@ -562,21 +561,21 @@ namespace TSG_Library.UFuncs
         {
             foreach (Feature mirrorFeat in _WorkPart.Features)
             {
-                if (mirrorFeat.FeatureType != "ABSOLUTE_DATUM_PLANE")
+                if(mirrorFeat.FeatureType != "ABSOLUTE_DATUM_PLANE")
                     continue;
 
                 _UFSession.Modl.AskFeatObject(mirrorFeat.Tag, out var _, out var _);
                 var taggedObject = NXObjectManager.Get(featObjects[0]);
                 var nxOb = (NXObject)taggedObject;
                 var mirrorDatum = (DatumPlane)NXObjectManager.Get(featObjects[0]);
-                if (mirrorDatum.Layer > 0 && mirrorDatum.Layer < 21)
+                if(mirrorDatum.Layer > 0 && mirrorDatum.Layer < 21)
                     mirrorMove.Add(mirrorDatum.Tag);
             }
         }
 
         private Tag NewMethod12(Tag selectedPlane)
         {
-            if (mirrorPlane is null)
+            if(mirrorPlane is null)
                 return selectedPlane;
 
             var mirrorMatrix = new double[12];
@@ -603,7 +602,7 @@ namespace TSG_Library.UFuncs
 
         private Tag NewMethod9(Tag selectedPlane)
         {
-            if (mirrorPlane is null)
+            if(mirrorPlane is null)
                 return selectedPlane;
             var mirrorMatrix = new double[12];
             _UFSession.Trns.CreateReflectionMatrix(ref selectedPlane, mirrorMatrix, out _);
@@ -674,10 +673,10 @@ namespace TSG_Library.UFuncs
         {
             foreach (Feature featDynamic in _WorkPart.Features)
             {
-                if (featDynamic.FeatureType != "BLOCK")
+                if(featDynamic.FeatureType != "BLOCK")
                     continue;
 
-                if (featDynamic.Name != "FEATURE BLOCK")
+                if(featDynamic.Name != "FEATURE BLOCK")
                     continue;
 
                 var builder = _WorkPart.Features.CreateBlockFeatureBuilder(featDynamic);
@@ -696,10 +695,10 @@ namespace TSG_Library.UFuncs
         {
             foreach (Feature featDynamic in _WorkPart.Features)
             {
-                if (featDynamic.FeatureType != "BLOCK")
+                if(featDynamic.FeatureType != "BLOCK")
                     continue;
 
-                if (featDynamic.Name != "DYNAMIC BLOCK")
+                if(featDynamic.Name != "DYNAMIC BLOCK")
                     continue;
 
                 var builder = _WorkPart.Features.CreateBlockFeatureBuilder(featDynamic);
@@ -721,10 +720,10 @@ namespace TSG_Library.UFuncs
         {
             foreach (Feature featDynamic in _WorkPart.Features)
             {
-                if (featDynamic.FeatureType != "BLOCK")
+                if(featDynamic.FeatureType != "BLOCK")
                     continue;
 
-                if (featDynamic.Name != "DYNAMIC BLOCK")
+                if(featDynamic.Name != "DYNAMIC BLOCK")
                     continue;
 
                 var builder = _WorkPart.Features.CreateBlockFeatureBuilder(featDynamic);
@@ -744,10 +743,10 @@ namespace TSG_Library.UFuncs
         {
             foreach (Feature featDynamic in _WorkPart.Features)
             {
-                if (featDynamic.FeatureType != "BLOCK")
+                if(featDynamic.FeatureType != "BLOCK")
                     continue;
 
-                if (featDynamic.Name != "FEATURE BLOCK")
+                if(featDynamic.Name != "FEATURE BLOCK")
                     continue;
 
                 var featureBlock = (Block)featDynamic;
@@ -772,7 +771,7 @@ namespace TSG_Library.UFuncs
 
             var isCompName = FormatDetailNumber(inputCompName);
 
-            if (!isCompName)
+            if(!isCompName)
                 return;
 
             for (var i = 0; i < _selectedComponents.Length; i++)
@@ -781,7 +780,7 @@ namespace TSG_Library.UFuncs
 
                 var selBody = _selectedComponents[i];
 
-                if (selBody.OwningComponent != null)
+                if(selBody.OwningComponent != null)
                     CopyComponentToMirror(selBody.OwningComponent, mirrorDict);
             }
         }
@@ -859,13 +858,13 @@ namespace TSG_Library.UFuncs
         {
             foreach (Feature mirrorFeat in _WorkPart.Features)
             {
-                if (mirrorFeat.FeatureType != "ABSOLUTE_DATUM_PLANE")
+                if(mirrorFeat.FeatureType != "ABSOLUTE_DATUM_PLANE")
                     continue;
 
                 _UFSession.Modl.AskFeatObject(mirrorFeat.Tag, out var _, out var featObjects);
                 var mirrorDatum = (DatumPlane)NXObjectManager.Get(featObjects[0]);
 
-                if (mirrorDatum.Layer > 0 && mirrorDatum.Layer < 21)
+                if(mirrorDatum.Layer > 0 && mirrorDatum.Layer < 21)
                     mirrorMove.Add(mirrorDatum.Tag);
             }
         }
@@ -878,7 +877,7 @@ namespace TSG_Library.UFuncs
             fastenerMatrix = new List<Matrix3x3>();
 
             // Get all fasteners in the mirror component and their locations
-            if (_WorkPart.ComponentAssembly.RootComponent is null)
+            if(_WorkPart.ComponentAssembly.RootComponent is null)
                 return;
 
             // ReSharper disable once LoopCanBeConvertedToQuery
@@ -896,7 +895,7 @@ namespace TSG_Library.UFuncs
         public static IEnumerable<Tag> GetCurves()
         {
             foreach (Curve curve in _WorkPart.Curves)
-                if (curve.Layer > 0 && curve.Layer < 21)
+                if(curve.Layer > 0 && curve.Layer < 21)
                     yield return curve.Tag;
         }
 
@@ -943,10 +942,10 @@ namespace TSG_Library.UFuncs
         {
             foreach (Feature featBlk in _WorkPart.Features)
             {
-                if (featBlk.FeatureType != "BLOCK")
+                if(featBlk.FeatureType != "BLOCK")
                     continue;
 
-                if (featBlk.Name != "DYNAMIC BLOCK")
+                if(featBlk.Name != "DYNAMIC BLOCK")
                     continue;
 
                 var block1 = (Block)featBlk;
@@ -985,7 +984,7 @@ namespace TSG_Library.UFuncs
                 out var selectedDatum,
                 out var _);
 
-            if (sel == Selection.Response.ObjectSelected || sel == Selection.Response.ObjectSelectedByName)
+            if(sel == Selection.Response.ObjectSelected || sel == Selection.Response.ObjectSelectedByName)
                 return (DatumPlane)selectedDatum;
 
             return null;
@@ -1006,8 +1005,8 @@ namespace TSG_Library.UFuncs
                 mask,
                 out var selectedBody);
 
-            if (sel == Selection.Response.Ok || sel == Selection.Response.ObjectSelected ||
-                sel == Selection.Response.ObjectSelectedByName)
+            if(sel == Selection.Response.Ok || sel == Selection.Response.ObjectSelected ||
+               sel == Selection.Response.ObjectSelectedByName)
                 return selectedBody;
 
             return null;
@@ -1017,7 +1016,7 @@ namespace TSG_Library.UFuncs
         {
             foreach (Feature mirrorFeat in _WorkPart.Features)
             {
-                if (mirrorFeat.FeatureType != "ABSOLUTE_DATUM_PLANE")
+                if(mirrorFeat.FeatureType != "ABSOLUTE_DATUM_PLANE")
                     continue;
 
                 _UFSession.Modl.AskFeatObject(mirrorFeat.Tag, out var _, out var _);
@@ -1028,7 +1027,7 @@ namespace TSG_Library.UFuncs
                 //Blows up below when datum plane is present in component
                 var mirrorDatum = (DatumPlane)NXObjectManager.Get(featObjects[0]);
 
-                if (mirrorDatum.Layer > 0 && mirrorDatum.Layer < 21)
+                if(mirrorDatum.Layer > 0 && mirrorDatum.Layer < 21)
                     mirrorMove.Add(mirrorDatum.Tag);
             }
         }
@@ -1079,7 +1078,7 @@ namespace TSG_Library.UFuncs
                         var mirrorOp = featureMirrors.SingleOrDefault(mirror =>
                             mirror.FeatureType == originalFeature.FeatureType);
 
-                        if (!(mirrorOp is null))
+                        if(!(mirrorOp is null))
                         {
                             mirrorOp.Mirror(originalFeature, dict, plane, originalComp);
 
@@ -1112,17 +1111,17 @@ namespace TSG_Library.UFuncs
                 foreach (Part descendant in __display_part_.__DescendantParts())
                 foreach (Expression exp in descendant.Expressions)
                 {
-                    if (exp.Status != Expression.StatusOption.Broken)
+                    if(exp.Status != Expression.StatusOption.Broken)
                         continue;
 
                     var otherExpressions = exp.__OwningPart().Expressions.ToArray();
 
                     foreach (var t in otherExpressions)
                     {
-                        if (t.Tag == exp.Tag)
+                        if(t.Tag == exp.Tag)
                             continue;
 
-                        if (exp.Name == t.RightHandSide)
+                        if(exp.Name == t.RightHandSide)
                             descendant.Expressions.Delete(t);
                     }
 

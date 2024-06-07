@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using MoreLinq.Extensions;
 using NXOpen;
 using TSG_Library.Attributes;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs
 {
@@ -12,7 +12,7 @@ namespace TSG_Library.UFuncs
     {
         public override void execute()
         {
-            if (Session.GetSession().Parts.Display is null)
+            if(Session.GetSession().Parts.Display is null)
             {
                 print_("There is no displayed part loaded");
                 return;
@@ -23,7 +23,7 @@ namespace TSG_Library.UFuncs
                 "Are you sure you want to delete all bodies on layer 50-55 in the current assembly",
                 MessageBoxButtons.YesNo);
 
-            if (result == DialogResult.No)
+            if(result == DialogResult.No)
                 return;
 
             using (session_.using_suppress_display())
@@ -46,10 +46,10 @@ namespace TSG_Library.UFuncs
 
                 foreach (var component in components)
                 {
-                    if (component.IsSuppressed)
+                    if(component.IsSuppressed)
                         continue;
 
-                    if (!component._IsLoaded())
+                    if(!component._IsLoaded())
                         continue;
 
                     __display_part_ = component._Prototype();
@@ -62,7 +62,7 @@ namespace TSG_Library.UFuncs
                                        && body.LineFont == DisplayableObject.ObjectFont.Phantom)
                         .ToArray();
 
-                    if (bodiesToDelete.Length <= 0)
+                    if(bodiesToDelete.Length <= 0)
                         continue;
 
                     foundBodies = true;
@@ -72,7 +72,7 @@ namespace TSG_Library.UFuncs
                     session_.delete_objects(bodiesToDelete);
                 }
 
-                if (foundBodies)
+                if(foundBodies)
                 {
                     print_("Deleted layer 50 bodies off of these components.");
                     print_(message);

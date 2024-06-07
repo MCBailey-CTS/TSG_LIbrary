@@ -56,10 +56,10 @@ namespace TSG_Library.Ui
             try
             {
                 UFUi.SelInitFnT initialProcess = null;
-                if (SelectionPredicate != null) initialProcess = InitialProcess;
+                if(SelectionPredicate != null) initialProcess = InitialProcess;
                 Ui.LockUgAccess(UFConstants.UF_UI_FROM_CUSTOM);
                 T[] result;
-                if (multiple)
+                if(multiple)
                 {
                     Ui.SelectWithClassDialog(Prompt, Prompt, (int)Scope, initialProcess, IntPtr.Zero, out _, out _,
                         out var selectedObj);
@@ -84,7 +84,7 @@ namespace TSG_Library.Ui
 
         protected virtual int FilterProcess(Tag _object, int[] type, IntPtr userData, IntPtr select)
         {
-            if (!(NXObjectManager.Get(_object) is T taggedObject)) return Reject;
+            if(!(NXObjectManager.Get(_object) is T taggedObject)) return Reject;
 
             //Snap.UI.Selection.SelectObject("").Show().
 
@@ -98,7 +98,7 @@ namespace TSG_Library.Ui
             catch (Exception ex)
             {
                 var lw = Session.GetSession().ListingWindow;
-                if (!lw.IsOpen) lw.Open();
+                if(!lw.IsOpen) lw.Open();
                 lw.WriteLine("Exception occurred in the filtering process of " + taggedObject.JournalIdentifier + ".");
                 lw.WriteLine("Exception: " + ex.GetType() + " : " + ex.Message);
             }
@@ -108,7 +108,7 @@ namespace TSG_Library.Ui
 
         protected virtual int InitialProcess(IntPtr select, IntPtr userData)
         {
-            if (Masks != null && Masks.Any())
+            if(Masks != null && Masks.Any())
                 Ui.SetSelMask(select, UFUi.SelMaskAction.SelMaskClearAndEnableSpecific, 1, Masks);
             Ui.SetSelProcs(select, FilterProcess, null, userData);
             return UFConstants.UF_UI_SEL_SUCCESS;

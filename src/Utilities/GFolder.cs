@@ -2,7 +2,6 @@
 using System.IO;
 using System.Text.RegularExpressions;
 using NXOpen;
-using TSG_Library.Extensions;
 
 namespace TSG_Library.Utilities
 {
@@ -58,7 +57,7 @@ namespace TSG_Library.Utilities
 
                 var match = Regex.Match(dir_leaf, "^\\d+ \\((?<company>[a-zA-Z]+)-\\d+\\)$");
 
-                if (!match.Success)
+                if(!match.Success)
                     throw new FormatException($"Could not find a company: {dir_job}");
 
                 return match.Groups["company"].Value;
@@ -73,7 +72,7 @@ namespace TSG_Library.Utilities
 
                 var match = Regex.Match(dir_leaf, "^\\d+ \\([a-zA-Z]+-(?<cts>\\d+)\\)$");
 
-                if (!match.Success)
+                if(!match.Success)
                     throw new FormatException($"Could not find a cts number: {dir_job}");
 
                 return match.Groups["cts"].Value;
@@ -101,34 +100,34 @@ namespace TSG_Library.Utilities
 
             var dir = top_dir;
 
-            if (!dir.ToLower().Contains("\\cts\\"))
+            if(!dir.ToLower().Contains("\\cts\\"))
             {
                 var match0 = Regex.Match(leaf, @"^(?<num_0>\d{2,})");
 
                 return new GFolder(dir, match0.Groups["num_0"].Value);
             }
 
-            if (int.TryParse(leaf, out _))
+            if(int.TryParse(leaf, out _))
                 return new GFolder(dir, leaf);
 
             {
                 var match = Regex.Match(leaf, @"^(?<cts_number>\d{2,}) \([A-Z]+-[xX]+\)");
 
-                if (match.Success)
+                if(match.Success)
                     return new GFolder(dir, match.Groups["cts_number"].Value);
             }
 
             {
                 var match = Regex.Match(leaf, @"^(?<cts_number>\d{2,}) \([A-Za-z]+-(?<customer_number>\d+)\)");
 
-                if (match.Success)
+                if(match.Success)
                     return new GFolder(dir, match.Groups["customer_number"].Value);
             }
 
             {
                 var match = Regex.Match(leaf, @"^(?<customer_number>\d{2,})");
 
-                if (match.Success)
+                if(match.Success)
                     return new GFolder(dir, match.Groups["customer_number"].Value);
             }
 

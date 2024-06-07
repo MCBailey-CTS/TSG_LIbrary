@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using TSG_Library.Extensions;
 
 namespace TSG_Library.Utilities
 {
@@ -36,12 +35,12 @@ namespace TSG_Library.Utilities
                 for (var index = 0; index < lines.Length; index++)
                 {
                     var startLine = lines[index];
-                    if (!startLine.StartsWith(":") || !startLine.EndsWith(":")) continue;
+                    if(!startLine.StartsWith(":") || !startLine.EndsWith(":")) continue;
                     var list = new List<string>();
                     for (var endIndex = index + 1; endIndex < lines.Length; endIndex++)
                     {
                         var line = lines[endIndex];
-                        if (line == End)
+                        if(line == End)
                         {
                             index = endIndex;
                             break;
@@ -50,7 +49,7 @@ namespace TSG_Library.Utilities
                         list.Add(line);
                     }
 
-                    if (list.Count == 0)
+                    if(list.Count == 0)
                         throw new Exception("Start and End didn't contain any content.");
                     Dictionary[startLine.Substring(1, startLine.Length - 2)] = list.ToArray();
                 }
@@ -75,14 +74,14 @@ namespace TSG_Library.Utilities
             StringComparison comparisonType)
         {
             // Checks to make sure that {filePath} exists.
-            if (!File.Exists(filePath))
+            if(!File.Exists(filePath))
                 throw new FileNotFoundException($"Could not find file \"{filePath}\".", filePath);
 
             // Reads in all the lines from the {filePath}.
             var filePathLines = File.ReadAllLines(filePath).ToList();
 
             // Checks to make sure that {filePathLines} contains at least one line in it.
-            if (filePathLines.Count == 0)
+            if(filePathLines.Count == 0)
                 throw new ArgumentException(@"Supplied file path doesn't contain any readable lines.",
                     nameof(filePath));
 
@@ -93,13 +92,13 @@ namespace TSG_Library.Utilities
             var endDelimeterIndex = filePathLines.FindIndex(line => string.Equals(line, endDelimeter, comparisonType));
 
             // Checks to make sure the {startDelimeterIndex} is less than {endDelimeterIndex}.
-            if (startDelimeterIndex >= endDelimeterIndex)
+            if(startDelimeterIndex >= endDelimeterIndex)
                 throw new Exception("Start delimeter was greater than end delimeter.");
 
-            if (startDelimeterIndex < 0)
+            if(startDelimeterIndex < 0)
                 throw new Exception("Did not find start delimeter.");
 
-            if (endDelimeterIndex < 0)
+            if(endDelimeterIndex < 0)
                 throw new Exception("Did not find end delimeter.");
 
             for (var index = startDelimeterIndex + 1; index < endDelimeterIndex; index++)
@@ -109,7 +108,7 @@ namespace TSG_Library.Utilities
         [DebuggerStepThrough]
         public IEnumerable<TSource> MultipleValues<TSource>(string key)
         {
-            if (!Dictionary.ContainsKey(key))
+            if(!Dictionary.ContainsKey(key))
                 throw new KeyNotFoundException($"Dictionary doesn't contain key: {key}.");
 
             return Dictionary[key].Cast<TSource>().ToArray();
@@ -137,7 +136,7 @@ namespace TSG_Library.Utilities
 
         public string[] MultipleStrings(string key)
         {
-            if (!Dictionary.ContainsKey(key))
+            if(!Dictionary.ContainsKey(key))
                 throw new ArgumentException($"Dictionary doesn't contain key: {key}.");
 
             return Dictionary[key];
@@ -147,7 +146,7 @@ namespace TSG_Library.Utilities
         {
             var strings = MultipleStrings(key);
 
-            if (strings.Length > 1)
+            if(strings.Length > 1)
                 throw new ArgumentException($"Dictionary[{key}] contains more than one element.");
 
             return strings[0];
@@ -157,7 +156,7 @@ namespace TSG_Library.Utilities
         {
             var startIndex = str.IndexOf(RecStart, 0, StringComparison.Ordinal);
             var endIndex = str.IndexOf(RecEnd, 0, StringComparison.Ordinal);
-            if (startIndex < 0 && endIndex < 0)
+            if(startIndex < 0 && endIndex < 0)
                 // "str" doesn't contain any recursive entities.
                 return str;
             var strings = ParseString(dictionary, str, true);
@@ -167,7 +166,7 @@ namespace TSG_Library.Utilities
         private static IEnumerable<string> ParseString(IDictionary<string, string[]> dictionary, string currentString,
             bool startDelimeter)
         {
-            if (startDelimeter)
+            if(startDelimeter)
             {
                 var startIndex = currentString.IndexOf(RecStart, StringComparison.Ordinal);
 
@@ -213,9 +212,9 @@ namespace TSG_Library.Utilities
                     default:
                     {
                         var recursiveEntity = currentString.Substring(0, endIndex);
-                        if (!dictionary.ContainsKey(recursiveEntity))
+                        if(!dictionary.ContainsKey(recursiveEntity))
                             throw new InvalidOperationException($"Could not find a key named {recursiveEntity}");
-                        if (dictionary[recursiveEntity].Length != 1)
+                        if(dictionary[recursiveEntity].Length != 1)
                             throw new InvalidOperationException(
                                 $"Key {recursiveEntity} contains {dictionary[recursiveEntity].Length} elements.");
                         yield return dictionary[recursiveEntity][0];
@@ -225,7 +224,7 @@ namespace TSG_Library.Utilities
 
                 var substring = currentString.Substring(endIndex + RecEnd.Length);
 
-                if (substring.Length == 0)
+                if(substring.Length == 0)
                     yield break;
 
                 var strings = ParseString(dictionary, substring, true);

@@ -3,7 +3,7 @@ using NXOpen;
 using NXOpen.UF;
 using TSG_Library.Attributes;
 using TSG_Library.Utilities;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs
 {
@@ -20,7 +20,7 @@ namespace TSG_Library.UFuncs
     {
         public override void execute()
         {
-            if (Session.GetSession().Parts.Display is null)
+            if(Session.GetSession().Parts.Display is null)
             {
                 print_("There is no displayed part loaded");
 
@@ -29,7 +29,7 @@ namespace TSG_Library.UFuncs
 
             var folder = GFolder.create_or_null(__display_part_);
 
-            if (folder is null)
+            if(folder is null)
             {
                 print_("The current displayed part does not reside in a GFolder.");
 
@@ -40,7 +40,7 @@ namespace TSG_Library.UFuncs
 
             var saveFileDialog1 = new SaveFileDialog { Filter = "JPEG (.jpg)|*.jpg" };
 
-            if (!__display_part_.FullPath.Contains("Q:\\"))
+            if(!__display_part_.FullPath.Contains("Q:\\"))
             {
                 saveFileDialog1.InitialDirectory = "G:\\CTS\\job-info\\pictures\\";
 
@@ -53,7 +53,7 @@ namespace TSG_Library.UFuncs
 
             var result = saveFileDialog1.ShowDialog();
 
-            if (result != DialogResult.OK)
+            if(result != DialogResult.OK)
                 return;
 
 #pragma warning disable CS0618 // Type or member is obsolete

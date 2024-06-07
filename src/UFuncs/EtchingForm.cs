@@ -4,9 +4,8 @@ using MoreLinq;
 using NXOpen;
 using NXOpen.Features;
 using TSG_Library.Attributes;
-using TSG_Library.Extensions;
 using TSG_Library.Utilities;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 using static TSG_Library.UFuncs._UFunc;
 
 namespace TSG_Library.UFuncs
@@ -42,7 +41,7 @@ namespace TSG_Library.UFuncs
                 {
                     var __prototype = __c._Prototype();
 
-                    if (!__prototype.__HasDynamicBlock())
+                    if(!__prototype.__HasDynamicBlock())
                         continue;
 
                     __work_part_ = __prototype;
@@ -57,10 +56,10 @@ namespace TSG_Library.UFuncs
 
                     foreach (TaggedObject __member in __c._Members())
                     {
-                        if (!(__member is Face __face))
+                        if(!(__member is Face __face))
                             continue;
 
-                        if (!__face._IsPlanar())
+                        if(!__face._IsPlanar())
                             continue;
 
                         var __edge_positions = __face.GetEdges().SelectMany(__e =>
@@ -69,7 +68,7 @@ namespace TSG_Library.UFuncs
                             return new[] { vert0, vert1 };
                         }).ToArray();
 
-                        if (!__edge_positions.All(__pos => System.Math.Abs(expected_z - __pos.Z) < .001))
+                        if(!__edge_positions.All(__pos => System.Math.Abs(expected_z - __pos.Z) < .001))
                             continue;
 
                         using (session_.using_display_part_reset())
@@ -89,7 +88,7 @@ namespace TSG_Library.UFuncs
                             var average_z = edge_pos.Select(__p => __p.Z).Average();
 
                             var new_origin = new Point3d(average_x, average_y, z);
-                            var new_ori = __display_part_.WCS._Orientation();
+                            var new_ori = __display_part_.WCS.__Orientation();
 
                             var detail_text_feature = (Text)__display_part_.__CreateTextFeature(
                                 $"{__display_part_.Leaf}",

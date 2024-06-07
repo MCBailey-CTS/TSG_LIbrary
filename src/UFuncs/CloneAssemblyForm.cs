@@ -13,12 +13,11 @@ using NXOpen.Positioning;
 using NXOpen.UF;
 using TSG_Library.Attributes;
 using TSG_Library.Disposable;
-using TSG_Library.Extensions;
 using TSG_Library.Properties;
 using TSG_Library.Utilities;
 using static TSG_Library.Utilities.GFolder;
 using static TSG_Library.UFuncs._UFunc;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs
 {
@@ -59,7 +58,7 @@ namespace TSG_Library.UFuncs
 
                     var folder = create(txtJobFolder_.Text);
 
-                    if (rdoTransfer.Checked)
+                    if(rdoTransfer.Checked)
                     {
                         clone_transfer(__folder, txtOps.Text.Replace(Environment.NewLine, " ")
                             .Replace("  ", " ")
@@ -69,23 +68,23 @@ namespace TSG_Library.UFuncs
                         return;
                     }
 
-                    if (rdoLine.Checked)
+                    if(rdoLine.Checked)
                     {
                         clone_line(folder, ops, rdoMetric_.Checked);
                         return;
                     }
 
-                    if (rdoProressive.Checked)
+                    if(rdoProressive.Checked)
                     {
                         var op = txtOps.Text.Replace("\\n", " ").Trim();
 
-                        if (!File.Exists(folder.file_strip(op)))
+                        if(!File.Exists(folder.file_strip(op)))
                         {
                             print_($"Can't clone prog die without {op}-Strip.");
                             return;
                         }
 
-                        if (!int.TryParse(op, out _))
+                        if(!int.TryParse(op, out _))
                         {
                             print_("Invalid op");
                             return;
@@ -112,16 +111,16 @@ namespace TSG_Library.UFuncs
         {
             chkStartWithBlank.Enabled = rdoTransfer.Checked;
 
-            if (!chkStartWithBlank.Enabled)
+            if(!chkStartWithBlank.Enabled)
                 chkStartWithBlank.Checked = false;
 
-            if (rdoProressive.Checked)
+            if(rdoProressive.Checked)
                 txtOps.Text = "010";
 
-            if (rdoLine.Checked)
+            if(rdoLine.Checked)
                 txtOps.Text = "010 020 030 040";
 
-            if (rdoTransfer.Checked)
+            if(rdoTransfer.Checked)
                 txtOps.Text = $"301 010 020{Environment.NewLine}302 030 040";
         }
 
@@ -151,7 +150,7 @@ namespace TSG_Library.UFuncs
 
             rdoTransfer.Checked = true;
 
-            if (Environment.UserName == "mcbailey")
+            if(Environment.UserName == "mcbailey")
             {
                 txtJobFolder_.Text = @"C:\CTS\003506 (lydall)";
 
@@ -173,7 +172,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if (!Directory.Exists(__folder.dir_op(op)))
+                if(!Directory.Exists(__folder.dir_op(op)))
                     Directory.CreateDirectory(__folder.dir_op(op));
 
                 ExecuteCloneProg(__folder, op);
@@ -251,7 +250,7 @@ namespace TSG_Library.UFuncs
                 {
                     try
                     {
-                        if (press_op_dieset == 0)
+                        if(press_op_dieset == 0)
                         {
                             print_("Did not hook up dieset control to a press.");
                         }
@@ -284,7 +283,7 @@ namespace TSG_Library.UFuncs
             {
                 foreach (var op in ops)
                 {
-                    if (!Directory.Exists(__folder.dir_op(op)))
+                    if(!Directory.Exists(__folder.dir_op(op)))
                         Directory.CreateDirectory(__folder.dir_op(op));
 
                     ExecuteCloneLineOp(__folder, op);
@@ -325,7 +324,7 @@ namespace TSG_Library.UFuncs
                 foreach (var op in ops)
                     session_.find_or_open(__folder.file_detail0(op, "000")).__SetActiveDisplay();
 
-                if (!Directory.Exists(__folder.dir_op("900")))
+                if(!Directory.Exists(__folder.dir_op("900")))
                     Directory.CreateDirectory(__folder.dir_op("900"));
 
                 ExecuteCloneLine900(__folder);
@@ -533,9 +532,9 @@ namespace TSG_Library.UFuncs
 
             foreach (var op in all_ops_and_shoes)
             {
-                if (op.StartsWith("3"))
+                if(op.StartsWith("3"))
                 {
-                    if (!Directory.Exists(__folder.dir_op(op)))
+                    if(!Directory.Exists(__folder.dir_op(op)))
                         Directory.CreateDirectory(__folder.dir_op(op));
 
                     ExecuteCloneTranShoe(__folder, op);
@@ -549,7 +548,7 @@ namespace TSG_Library.UFuncs
                     continue;
                 }
 
-                if (!Directory.Exists(__folder.dir_op(op)))
+                if(!Directory.Exists(__folder.dir_op(op)))
                     Directory.CreateDirectory(__folder.dir_op(op));
 
                 ExecuteCloneTranOp(__folder, op);
@@ -558,9 +557,9 @@ namespace TSG_Library.UFuncs
 
                 try
                 {
-                    if (!start_with_strip)
+                    if(!start_with_strip)
                         replace_strip_layout_in_display(__folder.file_layout_t(op), "LAYOUT", true);
-                    else if (op == "010")
+                    else if(op == "010")
                         replace_strip_layout_in_display(__folder.file_strip_900, "STRIP", true);
                     else
                         replace_strip_layout_in_display(__folder.file_layout_t(op_020_010(op)), "LAYOUT", true);
@@ -592,11 +591,11 @@ namespace TSG_Library.UFuncs
                 //NXOpen.Session.GetSession().set_active_display(p);
             }
 
-            if (!Directory.Exists(__folder.dir_op("900")))
+            if(!Directory.Exists(__folder.dir_op("900")))
                 Directory.CreateDirectory(__folder.dir_op("900"));
 
             foreach (var op in all_ops_and_shoes)
-                if (!op.StartsWith("3"))
+                if(!op.StartsWith("3"))
                     add_press(__folder, op);
 
             foreach (var key in __dict.Keys)
@@ -656,7 +655,7 @@ namespace TSG_Library.UFuncs
 
                 __display_part_ = session_.find_or_open(tmep);
 
-                if (File.Exists(__folder.file_strip_900))
+                if(File.Exists(__folder.file_strip_900))
                     replace_strip_layout_in_display(__folder.file_strip_900, "STRIP", true);
             }
 
@@ -693,10 +692,10 @@ namespace TSG_Library.UFuncs
                 {
                     var leaf = Path.GetFileNameWithoutExtension(__file);
 
-                    if (leaf is null)
+                    if(leaf is null)
                         continue;
 
-                    if (leaf.EndsWith("lwr") || leaf.EndsWith("upr"))
+                    if(leaf.EndsWith("lwr") || leaf.EndsWith("upr"))
                         __display_part_.__AddComponent(__file);
                 }
             }
@@ -716,12 +715,12 @@ namespace TSG_Library.UFuncs
             {
                 var leaf = Path.GetFileName(__file);
 
-                if (__file is null)
+                if(__file is null)
                     continue;
 
                 var match = Regex.Match(leaf, "^\\d+-T(?<op>\\d+)-Press", RegexOptions.IgnoreCase);
 
-                if (!match.Success)
+                if(!match.Success)
                     continue;
 
                 add_press(__folder, match.Groups["op"].Value);
@@ -735,11 +734,11 @@ namespace TSG_Library.UFuncs
             {
                 __child.SetName(__child.DisplayName.Replace(__folder.customer_number + "-", ""));
 
-                if (__child.DisplayName.EndsWith("lwr") || __child.DisplayName.EndsWith("upr"))
+                if(__child.DisplayName.EndsWith("lwr") || __child.DisplayName.EndsWith("upr"))
                 {
                     __child._ReferenceSet("BODY");
 
-                    if (__child.DisplayName.EndsWith("upr"))
+                    if(__child.DisplayName.EndsWith("upr"))
                         __child.__Layer(101);
                     else
                         __child.__Layer(1);
@@ -753,17 +752,17 @@ namespace TSG_Library.UFuncs
                 {
                     var leaf = Path.GetFileNameWithoutExtension(__file);
 
-                    if (leaf is null)
+                    if(leaf is null)
                         continue;
 
-                    if (!leaf.EndsWith("lwr") && !leaf.EndsWith("upr"))
+                    if(!leaf.EndsWith("lwr") && !leaf.EndsWith("upr"))
                         continue;
 
                     var is_lower = leaf.EndsWith("lwr");
                     var path_upr_lwr_assembly_holder = __file;
                     __display_part_ = session_.find_or_open(path_upr_lwr_assembly_holder);
 
-                    if (is_lower)
+                    if(is_lower)
                         ConstrainLSH(__folder, start_with_strip);
                     else
                         ConstrainUSH(__folder, start_with_strip);
@@ -773,7 +772,7 @@ namespace TSG_Library.UFuncs
             using (new DisplayPartReset())
             {
                 foreach (var __c in __display_part_.ComponentAssembly.RootComponent.GetChildren())
-                    if (__c.DisplayName.ToLower().EndsWith("-lwr") || __c.DisplayName.ToLower().EndsWith("-upr"))
+                    if(__c.DisplayName.ToLower().EndsWith("-lwr") || __c.DisplayName.ToLower().EndsWith("-upr"))
                     {
                         __c._ReferenceSet("MATE");
                         constrain_xy(__c, $"{__c.DisplayName}-XY");
@@ -790,17 +789,17 @@ namespace TSG_Library.UFuncs
                 {
                     var leaf = Path.GetFileNameWithoutExtension(__file);
 
-                    if (leaf is null)
+                    if(leaf is null)
                         continue;
 
-                    if (!leaf.EndsWith("lwr") && !leaf.EndsWith("upr"))
+                    if(!leaf.EndsWith("lwr") && !leaf.EndsWith("upr"))
                         continue;
 
                     __display_part_ = session_.find_or_open(__file);
 
                     foreach (var __c in __display_part_.ComponentAssembly.RootComponent.GetChildren())
                     {
-                        if (__c.DisplayName.ToLower().Contains("strip"))
+                        if(__c.DisplayName.ToLower().Contains("strip"))
                             continue;
 
                         __c._ReferenceSet("BODY");
@@ -819,10 +818,10 @@ namespace TSG_Library.UFuncs
                 {
                     var leaf = Path.GetFileNameWithoutExtension(__file);
 
-                    if (leaf is null)
+                    if(leaf is null)
                         continue;
 
-                    if (!leaf.EndsWith("lwr") && !leaf.EndsWith("upr"))
+                    if(!leaf.EndsWith("lwr") && !leaf.EndsWith("upr"))
                         continue;
 
                     __display_part_ = session_.find_or_open(__file);
@@ -831,7 +830,7 @@ namespace TSG_Library.UFuncs
                     {
                         var match = Regex.Match(exp.GetFormula(), "^(?<name>T\\d{3}[XYZ])$");
 
-                        if (!match.Success)
+                        if(!match.Success)
                             continue;
 
                         exp.OwningPart.Expressions.Rename(exp, $"{match.Groups["name"].Value}_");
@@ -843,10 +842,10 @@ namespace TSG_Library.UFuncs
                             exp.GetFormula());
                     }
 
-                    if (__display_part_.Leaf.ToLower().Contains("upr"))
+                    if(__display_part_.Leaf.ToLower().Contains("upr"))
                         foreach (var __child in __display_part_.ComponentAssembly.RootComponent.GetChildren())
                         {
-                            if (__child.Name.ToLower().Contains("strip"))
+                            if(__child.Name.ToLower().Contains("strip"))
                                 continue;
 
                             __child.__Layer(101);
@@ -892,16 +891,16 @@ namespace TSG_Library.UFuncs
             // this is where you constrain the ops
             using (new DisplayPartReset())
             {
-                if (chkStartWithBlank)
+                if(chkStartWithBlank)
                     foreach (var __file in Directory.GetFiles(__folder.dir_op("900"), "*.prt",
                                  SearchOption.TopDirectoryOnly))
                     {
                         var leaf = Path.GetFileNameWithoutExtension(__file);
 
-                        if (leaf is null)
+                        if(leaf is null)
                             continue;
 
-                        if (!leaf.EndsWith("lwr") && !leaf.EndsWith("upr"))
+                        if(!leaf.EndsWith("lwr") && !leaf.EndsWith("upr"))
                             continue;
 
                         __display_part_ = session_.find_or_open(__file);
@@ -926,7 +925,7 @@ namespace TSG_Library.UFuncs
                             var match = Regex.Match(child.DisplayName, "^\\d+-(?<op>\\d+)-(usp|lsp)$",
                                 RegexOptions.IgnoreCase);
 
-                            if (!match.Success)
+                            if(!match.Success)
                             {
                                 print_("Wasn't a success");
                                 continue;
@@ -938,7 +937,7 @@ namespace TSG_Library.UFuncs
                             Expression exp;
 #pragma warning restore CS0168 // Variable is declared but never used
 
-                            if (op == "010")
+                            if(op == "010")
                             {
                                 __display_part_.__ConstrainOccProtoDistance(
                                     child._AbsOccDatumPlaneYZ(),
@@ -999,12 +998,12 @@ namespace TSG_Library.UFuncs
 
                         foreach (var exp in __display_part_.Expressions.ToArray())
                         {
-                            if (exp.IsInterpartExpression)
+                            if(exp.IsInterpartExpression)
                                 continue;
 
                             var match = Regex.Match(exp.GetFormula(), "^(?<pt>P|T)(?<op>\\d+)(?<xyz>X|Y|Z)$");
 
-                            if (!match.Success)
+                            if(!match.Success)
                                 continue;
 
                             exp.OwningPart.Expressions.Rename(exp, $"{exp.GetFormula()}_");
@@ -1022,10 +1021,10 @@ namespace TSG_Library.UFuncs
                     {
                         var leaf = Path.GetFileNameWithoutExtension(__file);
 
-                        if (leaf is null)
+                        if(leaf is null)
                             continue;
 
-                        if (!leaf.EndsWith("lwr") && !leaf.EndsWith("upr"))
+                        if(!leaf.EndsWith("lwr") && !leaf.EndsWith("upr"))
                             continue;
 
                         __display_part_ = session_.find_or_open(__file);
@@ -1043,7 +1042,7 @@ namespace TSG_Library.UFuncs
                             var match = Regex.Match(child.DisplayName, "^\\d+-(?<op>\\d+)-(usp|lsp)$",
                                 RegexOptions.IgnoreCase);
 
-                            if (!match.Success)
+                            if(!match.Success)
                             {
                                 print_("Wasn't a success");
                                 continue;
@@ -1092,12 +1091,12 @@ namespace TSG_Library.UFuncs
 
                         foreach (var exp in __display_part_.Expressions.ToArray())
                         {
-                            if (exp.IsInterpartExpression)
+                            if(exp.IsInterpartExpression)
                                 continue;
 
                             var match = Regex.Match(exp.GetFormula(), "^(?<pt>P|T)(?<op>\\d+)(?<xyz>X|Y|Z)$");
 
-                            if (!match.Success)
+                            if(!match.Success)
                                 continue;
 
                             exp.OwningPart.Expressions.Rename(exp, $"{exp.GetFormula()}_");
@@ -1116,7 +1115,7 @@ namespace TSG_Library.UFuncs
             {
                 foreach (var op in all_ops_and_shoes)
                 {
-                    if (!op.StartsWith("3"))
+                    if(!op.StartsWith("3"))
                         continue;
 
                     var dieset_control = $"{__folder.customer_number}-{op}-dieset-control.prt";
@@ -1158,7 +1157,7 @@ namespace TSG_Library.UFuncs
 
                 foreach (var __file in Directory.EnumerateFiles(__folder.dir_layout))
                 {
-                    if (!__file.ToLower().Contains("press"))
+                    if(!__file.ToLower().Contains("press"))
                         continue;
                     __press_parts.Add(session_.find_or_open(__file));
                 }
@@ -1315,7 +1314,7 @@ namespace TSG_Library.UFuncs
                             var _id = session_.SetUndoMark(Session.MarkVisibility.Visible, "parallels");
 
 
-                            if (!units_mm)
+                            if(!units_mm)
                                 session_.UpdateManager.AddObjectsToDeleteList(__display_part_.DisplayedConstraints
                                     .ToArray().Where(__c => __c.Layer == 255).ToArray());
                             else
@@ -1333,14 +1332,14 @@ namespace TSG_Library.UFuncs
 
                             foreach (var __child in __par.ComponentAssembly.RootComponent.GetChildren())
                             {
-                                if (__child.Name.ToUpper().Contains("MM") && !units_mm)
+                                if(__child.Name.ToUpper().Contains("MM") && !units_mm)
                                 {
                                     session_.UpdateManager.AddObjectsToDeleteList(__child.GetConstraints()
                                         .Select(__c => __c.GetDisplayedConstraint()).ToArray());
                                     session_.UpdateManager.AddObjectsToDeleteList(new[] { __child });
                                 }
 
-                                if (!__child.Name.ToUpper().Contains("MM") && units_mm)
+                                if(!__child.Name.ToUpper().Contains("MM") && units_mm)
                                 {
                                     session_.UpdateManager.AddObjectsToDeleteList(__child.GetConstraints()
                                         .Select(__c => __c.GetDisplayedConstraint()).ToArray());
@@ -1363,7 +1362,7 @@ namespace TSG_Library.UFuncs
                     markId2 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Delete");
 
 
-                    if (units_mm)
+                    if(units_mm)
                     {
                         var workPart = __work_part_;
                         {
@@ -1589,7 +1588,7 @@ namespace TSG_Library.UFuncs
                     markId2 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Delete");
 
 
-                    if (units_mm)
+                    if(units_mm)
                     {
                         var workPart = __work_part_;
                         {
@@ -1811,7 +1810,7 @@ namespace TSG_Library.UFuncs
                 {
                     session_.find_or_open(__folder.file_detail0(op, "lsh")).__SetActiveDisplay();
 
-                    if (units_mm)
+                    if(units_mm)
                     {
                         __display_part_.ComponentAssembly.RootComponent
                             .find_component_("COMPONENT Smart Demountable Guide Pin English 4")
@@ -1907,7 +1906,7 @@ namespace TSG_Library.UFuncs
             {
                 var press_path = __folder.file_press_t(op);
 
-                if (!File.Exists(press_path))
+                if(!File.Exists(press_path))
                 {
                     print_("////////////////////////////");
                     print_($"Did not add press to {__display_part_.Leaf}");
@@ -1966,7 +1965,7 @@ namespace TSG_Library.UFuncs
 
             foreach (var __child in __display_part_.ComponentAssembly.RootComponent.GetChildren())
             {
-                if (!__child.DisplayName.EndsWith("-lsp"))
+                if(!__child.DisplayName.EndsWith("-lsp"))
                     continue;
 
                 var actual_op = __child.DisplayName
@@ -1981,10 +1980,10 @@ namespace TSG_Library.UFuncs
 
                 var exp_op = actual_op;
 
-                if (start_with_strip)
+                if(start_with_strip)
                     exp_op = op_020_010(actual_op);
 
-                if (actual_op == "010" && start_with_strip)
+                if(actual_op == "010" && start_with_strip)
                 {
                     new_interpart_exp_x = "P010X";
                     new_interpart_exp_y = "P010Y";
@@ -2033,7 +2032,7 @@ namespace TSG_Library.UFuncs
 
             foreach (var __child in __display_part_.ComponentAssembly.RootComponent.GetChildren())
             {
-                if (!__child.DisplayName.EndsWith("-usp"))
+                if(!__child.DisplayName.EndsWith("-usp"))
                     continue;
 
                 var actual_op = __child.DisplayName
@@ -2049,10 +2048,10 @@ namespace TSG_Library.UFuncs
 
                 var exp_op = actual_op;
 
-                if (start_with_strip)
+                if(start_with_strip)
                     exp_op = op_020_010(actual_op);
 
-                if (actual_op == "010" && start_with_strip)
+                if(actual_op == "010" && start_with_strip)
                 {
                     new_interpart_exp_x = "P010X";
                     new_interpart_exp_y = "P010Y";
@@ -2092,7 +2091,7 @@ namespace TSG_Library.UFuncs
             }
             catch (NXException __ex)
             {
-                if (__ex.ErrorCode != 3520016)
+                if(__ex.ErrorCode != 3520016)
                     throw;
 
                 throw NXException.Create(__ex.ErrorCode, $"Could not find object {__display_part_.Leaf}");
@@ -2323,10 +2322,10 @@ namespace TSG_Library.UFuncs
         {
             var inter_expression = new List<string>(new[] { "b", "e", "em", "m", "p" });
 
-            if (prefix == "T")
+            if(prefix == "T")
                 inter_expression.Add("TP");
 
-            if (prefix == "P")
+            if(prefix == "P")
                 inter_expression.Add("pp");
 
             var source = inter_expression.Select(__display_part_.__FindExpression)
@@ -2352,7 +2351,7 @@ namespace TSG_Library.UFuncs
         {
             var __match = Regex.Match(__display_part_.Leaf, "^(?<cus_num>\\d{6})-.*$");
 
-            if (!__match.Success)
+            if(!__match.Success)
             {
                 print_("Could not find customer number");
                 return;
@@ -2371,7 +2370,7 @@ namespace TSG_Library.UFuncs
 
                 try
                 {
-                    if (File.Exists(press_path))
+                    if(File.Exists(press_path))
                         continue;
 
                     File.Copy(XXXXX_Press_XX_Assembly, press_path);

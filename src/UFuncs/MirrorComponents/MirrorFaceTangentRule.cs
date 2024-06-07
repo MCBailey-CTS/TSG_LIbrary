@@ -4,7 +4,6 @@ using System.Linq;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
-using TSG_Library.Extensions;
 using TSG_Library.Geom;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
@@ -54,29 +53,29 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             foreach (var body in mirrorOwningFeatureOfStartFace.GetBodies())
             {
-                if (!(mirrorStartFace is null) && !(mirrorEndFace is null))
+                if(!(mirrorStartFace is null) && !(mirrorEndFace is null))
                     break;
 
                 foreach (var face in body.GetFaces())
                 {
-                    if (mirrorStartFace is null && EdgePointsMatchFace(face, expectedStartFaceEdgePoints))
+                    if(mirrorStartFace is null && EdgePointsMatchFace(face, expectedStartFaceEdgePoints))
                     {
                         mirrorStartFace = face;
 
                         continue;
                     }
 
-                    if (!(mirrorEndFace is null) || !EdgePointsMatchFace(face, expectedEndFaceEdgePoints))
+                    if(!(mirrorEndFace is null) || !EdgePointsMatchFace(face, expectedEndFaceEdgePoints))
                         continue;
 
                     mirrorEndFace = face;
                 }
             }
 
-            if (mirrorStartFace is null)
+            if(mirrorStartFace is null)
                 throw new ArgumentException("Unable to find start face");
 
-            if (mirrorEndFace is null)
+            if(mirrorEndFace is null)
                 throw new ArgumentException("Unable to find end face");
 
             return mirroredPart.ScRuleFactory.CreateRuleFaceTangent(mirrorStartFace, new[] { mirrorEndFace });

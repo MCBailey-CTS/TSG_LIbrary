@@ -11,7 +11,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
     {
         public bool IsLibraryComponent(Component component)
         {
-            if (!component.HasUserAttribute("LIBRARY", NXObject.AttributeType.String, -1))
+            if(!component.HasUserAttribute("LIBRARY", NXObject.AttributeType.String, -1))
                 return false;
 
             // Check to see if it is a smart key metric

@@ -6,7 +6,7 @@ using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.UF;
 using TSG_Library.Attributes;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs
 {
@@ -25,7 +25,7 @@ namespace TSG_Library.UFuncs
 
             var result = dialog.ShowDialog();
 
-            if (result != DialogResult.OK)
+            if(result != DialogResult.OK)
                 return;
 
 
@@ -103,7 +103,7 @@ namespace TSG_Library.UFuncs
             {
                 print_(child.DisplayName);
                 // insert code to process component or subassembly
-                if (true /*LoadComponent(child)*/)
+                if(true /*LoadComponent(child)*/)
                     //session_.ListingWindow.WriteLine("old component name: " + child.Name);
                     //session_.ListingWindow.WriteLine("file name: " + child.Prototype.OwningPart.Leaf);
                     // Get the Part() object
@@ -158,7 +158,7 @@ namespace TSG_Library.UFuncs
             while ((textLine = file.ReadLine()) != null)
             {
                 //VB textLine = FileSystem.LineInput(1);
-                if (lineCounter > 3)
+                if(lineCounter > 3)
                 {
                     colorName = textLine.Substring(0, 30);
                     red = textLine.Substring(34, 8);

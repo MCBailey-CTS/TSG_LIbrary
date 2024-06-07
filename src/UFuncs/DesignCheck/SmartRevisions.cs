@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using NXOpen;
-using TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 {
@@ -22,7 +21,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 
             foreach (var dir in Directory.GetDirectories("G:\\0Library", "*", SearchOption.TopDirectoryOnly))
             {
-                if (dir == @"G:\0Library\DfsrPrivate")
+                if(dir == @"G:\0Library\DfsrPrivate")
                     continue;
 
                 foreach (var file in Directory.GetFiles(dir, "Smart*.prt", SearchOption.AllDirectories))

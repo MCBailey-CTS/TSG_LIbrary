@@ -1,743 +1,685 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="packages\PostSharp.2024.1.4\build\PostSharp.props" Condition="Exists('packages\PostSharp.2024.1.4\build\PostSharp.props')" />
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{1EFBE2F3-41C1-41BF-84C8-3660330985B7}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TSG_Library</RootNamespace>
-    <AssemblyName>TSG_Library</AssemblyName>
-    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.Office.Interop.Excel.15.0.4795.1001\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="MoreLinq, Version=4.2.0.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
-      <HintPath>packages\morelinq.4.2.0\lib\netstandard2.0\MoreLinq.dll</HintPath>
-    </Reference>
-    <Reference Include="NXOpen">
-      <HintPath>..\..\Program Files\Siemens\NX1899\NXBIN\managed\NXOpen.dll</HintPath>
-    </Reference>
-    <Reference Include="NXOpen.UF">
-      <HintPath>..\..\Program Files\Siemens\NX1899\NXBIN\managed\NXOpen.UF.dll</HintPath>
-    </Reference>
-    <Reference Include="NXOpen.Utilities">
-      <HintPath>..\..\Program Files\Siemens\NX1899\NXBIN\managed\NXOpen.Utilities.dll</HintPath>
-    </Reference>
-    <Reference Include="NXOpenUI">
-      <HintPath>..\..\Program Files\Siemens\NX1899\NXBIN\managed\NXOpenUI.dll</HintPath>
-    </Reference>
-    <Reference Include="PostSharp, Version=2024.1.4.0, Culture=neutral, PublicKeyToken=b13fd38b8f9c99d7, processorArchitecture=MSIL">
-      <HintPath>packages\PostSharp.Redist.2024.1.4\lib\net45\PostSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
-    <Compile Include="src\Attributes\ExtensionsAspect.cs" />
-    <Compile Include="src\Attributes\RevisionAttribute.cs" />
-    <Compile Include="src\Attributes\RevisionEntryAttribute.cs" />
-    <Compile Include="src\Attributes\RevisionLogAttribute.cs" />
-    <Compile Include="src\Attributes\UfuncAttribute.cs" />
-    <Compile Include="src\Attributes\UFuncDisposedAttribute.cs" />
-    <Compile Include="src\Compute.cs" />
-    <Compile Include="src\Disposable\Destroyer.cs" />
-    <Compile Include="src\Disposable\DisplayPartReset.cs" />
-    <Compile Include="src\Disposable\DoUpdate.cs" />
-    <Compile Include="src\Disposable\FormHideShow.cs" />
-    <Compile Include="src\Disposable\GCHandleFree.cs" />
-    <Compile Include="src\Disposable\HideShowForm.cs" />
-    <Compile Include="src\Disposable\Initialize2EvaluatorFree.cs" />
-    <Compile Include="src\Disposable\LockNX.cs" />
-    <Compile Include="src\Disposable\LockUiFromCustom.cs" />
-    <Compile Include="src\Disposable\LockUpdates.cs" />
-    <Compile Include="src\Disposable\RedisplayObject.cs" />
-    <Compile Include="src\Disposable\ReferenceSetReset.cs" />
-    <Compile Include="src\Disposable\RegenerateDisplay.cs" />
-    <Compile Include="src\Disposable\ResetComponentReferenceSet.cs" />
-    <Compile Include="src\Disposable\ResetShadeRendering.cs" />
-    <Compile Include="src\Disposable\SetWorkPartContextQuietly.cs" />
-    <Compile Include="src\Disposable\SuppressDisplayReset.cs" />
-    <Compile Include="src\Enum\DirectionUV.cs" />
-    <Compile Include="src\Enum\LayerState.cs" />
-    <Compile Include="src\Enum\MarkVisibility.cs" />
-    <Compile Include="src\Enum\PlaneDir.cs" />
-    <Compile Include="src\Enum\ReopenMode.cs" />
-    <Compile Include="src\Enum\ReopenScope.cs" />
-    <Compile Include="src\Enum\Templates.cs" />
-    <Compile Include="src\Enum\UndoMarkId.cs" />
-    <Compile Include="src\Enum\Unit.cs" />
-    <Compile Include="src\Enum\Units.cs" />
-    <Compile Include="src\Exceptions\AssertWorkPartException.cs" />
-    <Compile Include="src\Exceptions\FastenerSubtractionSetException.cs" />
-    <Compile Include="src\Exceptions\ImproperReferenceSetException.cs" />
-    <Compile Include="src\Exceptions\InvalidDelimeterException.cs" />
-    <Compile Include="src\Exceptions\InvalidFastenerException.cs" />
-    <Compile Include="src\Exceptions\MoreThanOneSolidBodyOnLayer1Exception.cs" />
-    <Compile Include="src\Exceptions\NoDynamicBlockException.cs" />
-    <Compile Include="src\Exceptions\NoSolidBodyOnLayer1Exception.cs" />
-    <Compile Include="src\Exceptions\NotAFastenerException.cs" />
-    <Compile Include="src\Exceptions\NothingSelectedException.cs" />
-    <Compile Include="src\Exceptions\NullWorkComponentException.cs" />
-    <Compile Include="src\Exceptions\PartIsNotWorkOrDisplayException.cs" />
-    <Compile Include="src\Extensions.cs" />
-    <Compile Include="src\Extensions\Arc.cs" />
-    <Compile Include="src\Extensions\BasePart.cs" />
-    <Compile Include="src\Extensions\Block.cs" />
-    <Compile Include="src\Extensions\Body.cs" />
-    <Compile Include="src\Extensions\BodyDumbRule.cs" />
-    <Compile Include="src\Extensions\BodyFeature.cs" />
-    <Compile Include="src\Extensions\Builder.cs" />
-    <Compile Include="src\Extensions\CartesianCoordinateSystem.cs" />
-    <Compile Include="src\Extensions\Chamfer.cs" />
-    <Compile Include="src\Extensions\Collections.cs" />
-    <Compile Include="src\Extensions\Component.cs" />
-    <Compile Include="src\Extensions\ComponentAssembly.cs" />
-    <Compile Include="src\Extensions\ComponentConstraint.cs" />
-    <Compile Include="src\Extensions\Conic.cs" />
-    <Compile Include="src\Extensions\Constants.cs" />
-    <Compile Include="src\Extensions\Constraint.cs" />
-    <Compile Include="src\Extensions\CoordinateSystem.cs" />
-    <Compile Include="src\Extensions\Csys.cs" />
-    <Compile Include="src\Extensions\Curve.cs" />
-    <Compile Include="src\Extensions\CurveDumbRule.cs" />
-    <Compile Include="src\Extensions\DatumAxisFeature.cs" />
-    <Compile Include="src\Extensions\DatumCsys.cs" />
-    <Compile Include="src\Extensions\Dimension.cs" />
-    <Compile Include="src\Extensions\DisplayableConstraint.cs" />
-    <Compile Include="src\Extensions\DoubleArray.cs" />
-    <Compile Include="src\Extensions\Edge.cs" />
-    <Compile Include="src\Extensions\EdgeBlend.cs" />
-    <Compile Include="src\Extensions\Ellipse.cs" />
-    <Compile Include="src\Extensions\Exception.cs" />
-    <Compile Include="src\Extensions\ExtractFace.cs" />
-    <Compile Include="src\Extensions\Extrude.cs" />
-    <Compile Include="src\Extensions\Face.cs" />
-    <Compile Include="src\Extensions\Feature.cs" />
-    <Compile Include="src\Extensions\Features.cs" />
-    <Compile Include="src\Extensions\FileNew.cs" />
-    <Compile Include="src\Extensions\Globals.cs" />
-    <Compile Include="src\Extensions\Hyperbola.cs" />
-    <Compile Include="src\Extensions\ICurve.cs" />
-    <Compile Include="src\Extensions\Int.cs" />
-    <Compile Include="src\Extensions\IntegerArray.cs" />
-    <Compile Include="src\Extensions\Line.cs" />
-    <Compile Include="src\Extensions\Masks.cs" />
-    <Compile Include="src\Extensions\Matrix3x3.cs" />
-    <Compile Include="src\Extensions\Modl.cs" />
-    <Compile Include="src\Extensions\NXMatrix.cs" />
-    <Compile Include="src\Extensions\NXObject.cs" />
-    <Compile Include="src\Extensions\Obj.cs" />
-    <Compile Include="src\Extensions\Parabola.cs" />
-    <Compile Include="src\Extensions\Part.cs" />
-    <Compile Include="src\Extensions\Point3d.cs" />
-    <Compile Include="src\Extensions\Rules.cs" />
-    <Compile Include="src\Extensions\ScCollector.cs" />
-    <Compile Include="src\Extensions\Section.cs" />
-    <Compile Include="src\Extensions\Session.cs" />
-    <Compile Include="src\Extensions\SmartObject.cs" />
-    <Compile Include="src\Extensions\Spline.cs" />
-    <Compile Include="src\Extensions\Sql.cs" />
-    <Compile Include="src\Extensions\String.cs" />
-    <Compile Include="src\Extensions\Tag.cs" />
-    <Compile Include="src\Extensions\TreeNode.cs" />
-    <Compile Include="src\Extensions\Trns.cs" />
-    <Compile Include="src\Extensions\Vector3d.cs" />
-    <Compile Include="src\Extensions\WCS.cs" />
-    <Compile Include="src\Extensions\__ConstraintReference__.cs" />
-    <Compile Include="src\Extensions\__DatumAxis__.cs" />
-    <Compile Include="src\Extensions\__DisplayableObject__.cs" />
-    <Compile Include="src\Geom\Box3d.cs" />
-    <Compile Include="src\Geom\Curve.cs" />
-    <Compile Include="src\Geom\Surface.cs" />
-    <Compile Include="src\Geom\Transform.cs" />
-    <Compile Include="src\Math.cs" />
-    <Compile Include="src\Program.cs" />
-    <Compile Include="src\Sql\SessionSql.cs" />
-    <Compile Include="src\Sql\UFuncLog.cs" />
-    <Compile Include="src\UFuncs\AddFasteners\AddFastenersForm1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\AddFasteners\AddFastenersForm1.Designer.cs">
-      <DependentUpon>AddFastenersForm1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\AddFasteners\CycleAdd1.cs" />
-    <Compile Include="src\UFuncs\AddFasteners\CycleAddStruct.cs" />
-    <Compile Include="src\UFuncs\AddFasteners\FastenerListItem.cs" />
-    <Compile Include="src\UFuncs\AddFasteners\GridSpacing.cs" />
-    <Compile Include="src\UFuncs\AddPierceComponents\AddPierceComponentsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\AddPierceComponents\AddPierceComponentsForm.Designer.cs">
-      <DependentUpon>AddPierceComponentsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\AddPierceComponents\PierceProperties1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\AssemblyAutoDetail\AssemblyAutoDetailForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\AssemblyAutoDetail\AssemblyAutoDetailForm.Designer.cs">
-      <DependentUpon>AssemblyAutoDetailForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\AssemblyAutoDetail\CtsDimensionData.cs" />
-    <Compile Include="src\UFuncs\AssemblyAutoDetail\DrillChart.cs" />
-    <Compile Include="src\UFuncs\AssemblyColorCode\AssemblyColorCodeAtdForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\AssemblyColorCode\AssemblyColorCodeAtdForm.Designer.cs">
-      <DependentUpon>AssemblyColorCodeAtdForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\AssemblyColorCode\AssemblyColorCodeBentlerForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\AssemblyColorCode\AssemblyColorCodeBentlerForm.Designer.cs">
-      <DependentUpon>AssemblyColorCodeBentlerForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\AssemblyColorCode\AssemblyColorCodeForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\AssemblyColorCode\AssemblyColorCodeForm.Designer.cs">
-      <DependentUpon>AssemblyColorCodeForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\AssemblyExport\AssemblyExportDesignDataForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\AssemblyExport\AssemblyExportDesignDataForm.Designer.cs">
-      <DependentUpon>AssemblyExportDesignDataForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\AssemblyExport\Export.cs" />
-    <Compile Include="src\UFuncs\AssemblyNavigator.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\AssemblyNavigator.Designer.cs">
-      <DependentUpon>AssemblyNavigator.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\AssemblyWavelink\AssemblyWavelink.FormCtsReferenceSet.cs" />
-    <Compile Include="src\UFuncs\AssemblyWavelink\AssemblyWavelink.RefSetForm.cs" />
-    <Compile Include="src\UFuncs\AssemblyWavelink\Form.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\AssemblyWavelink\Form.Designer.cs">
-      <DependentUpon>Form.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\AssemblyWavelink\FormCtsReferenceSet.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\AssemblyWavelink\RefSetForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\AssemblyWavelink\RefSetForm.Designer.cs">
-      <DependentUpon>RefSetForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\AssemblyWavelink\__UFunc__.cs" />
-    <Compile Include="src\UFuncs\AutoSizeComponent.cs" />
-    <Compile Include="src\UFuncs\BillOfMaterial\BillOfMaterialForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\BillOfMaterial\BillOfMaterialForm.Designer.cs">
-      <DependentUpon>BillOfMaterialForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\BillOfMaterial\BomProperties.cs" />
-    <Compile Include="src\UFuncs\BillOfMaterial\CheckBoxDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\BillOfMaterial\CheckBoxDialog.Designer.cs">
-      <DependentUpon>CheckBoxDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\BillOfMaterial\CheckProperties.cs" />
-    <Compile Include="src\UFuncs\BillOfMaterial\ExcelApplication.cs" />
-    <Compile Include="src\UFuncs\BillOfMaterial\NXExcelData.cs" />
-    <Compile Include="src\UFuncs\BlankDataBuilderForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\BlankDataBuilderForm.Designer.cs">
-      <DependentUpon>BlankDataBuilderForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\BlankDevelopment.cs" />
-    <Compile Include="src\UFuncs\BlockAttributerForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\BlockAttributerForm.Designer.cs">
-      <DependentUpon>BlockAttributerForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\CategoryRefSets.cs" />
-    <Compile Include="src\UFuncs\CircleFromSpline.cs" />
-    <Compile Include="src\UFuncs\CleanJobDirectory.cs" />
-    <Compile Include="src\UFuncs\CloneAssemblyForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\CloneAssemblyForm.Designer.cs">
-      <DependentUpon>CloneAssemblyForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\CloneStripForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\CloneStripForm.Designer.cs">
-      <DependentUpon>CloneStripForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\ComponentBuilder\ComponentBuilder.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\ComponentBuilder\ComponentBuilder.Designer.cs">
-      <DependentUpon>ComponentBuilder.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\ComponentBuilder\CtsComponentColor.cs" />
-    <Compile Include="src\UFuncs\ComponentBuilder\CtsComponentType.cs" />
-    <Compile Include="src\UFuncs\ComponentBuilder\CtsSubtoolColor.cs" />
-    <Compile Include="src\UFuncs\ComponentBuilder\EditBlock.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\ComponentBuilder\EditBlock.Designer.cs">
-      <DependentUpon>EditBlock.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\ComponentBuilder\EditSizeForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\ComponentBuilder\EditSizeForm.Designer.cs">
-      <DependentUpon>EditSizeForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\ConvertSplineToCircle.cs" />
-    <Compile Include="src\UFuncs\CopyAttributesForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\CopyAttributesForm.Designer.cs">
-      <DependentUpon>CopyAttributesForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\CopyPasteCleanup.cs" />
-    <Compile Include="src\UFuncs\CopyRefSets.cs" />
-    <Compile Include="src\UFuncs\CopyToLayer50\CopyToLayer50.cs" />
-    <Compile Include="src\UFuncs\CreateBurnoutForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\CreateBurnoutForm.Designer.cs">
-      <DependentUpon>CreateBurnoutForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\CreateResetDatumCsys.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\CreateResetDatumCsys.Designer.cs">
-      <DependentUpon>CreateResetDatumCsys.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\CycleComponentsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\CycleComponentsForm.Designer.cs">
-      <DependentUpon>CycleComponentsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\DataBaseImageExporter.cs" />
-    <Compile Include="src\UFuncs\DeleteLayer50.cs" />
-    <Compile Include="src\UFuncs\DeleteUnusedCurves.cs" />
-    <Compile Include="src\UFuncs\DesignCheck\BrokenLinks.cs" />
-    <Compile Include="src\UFuncs\DesignCheck\Burnouts.cs" />
-    <Compile Include="src\UFuncs\DesignCheck\BushingsAndPins.cs" />
-    <Compile Include="src\UFuncs\DesignCheck\CastingChildren.cs" />
-    <Compile Include="src\UFuncs\DesignCheck\CastingHalfMoons.cs" />
-    <Compile Include="src\UFuncs\DesignCheck\CBoreDepths.cs" />
-    <Compile Include="src\UFuncs\DesignCheck\ComponentNames.cs" />
-    <Compile Include="src\UFuncs\DesignCheck\DescriptionNXAttribute.cs" />
-    <Compile Include="src\UFuncs\DesignCheck\DesignCheckFile.cs" />
-    <Compile Include="src\UFuncs\DesignCheck\DesignCheckForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\DesignCheck\DesignCheckForm.Designer.cs">
-      <DependentUpon>DesignCheckForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\DesignCheck\Dimensions.cs" />
-    <Compile Include="src\UFuncs\DesignCheck\FolderLocations.cs" />
-    <Compile Include="src\UFuncs\DesignCheck\IDesignCheck.cs" />
-    <Compile Include="src\UFuncs\DesignCheck\InterpartExpressions.cs" />
-    <Compile Include="src\UFuncs\DesignCheck\JigJacks.cs" />
-    <Compile Include="src\UFuncs\DesignCheck\LinkedBodyParents.cs" />
-    <Compile Include="src\UFuncs\DesignCheck\Model.cs" />
-    <Compile Include="src\UFuncs\DesignCheck\Model1.cs" />
-    <Compile Include="src\UFuncs\DesignCheck\PositionOverride.cs" />
-    <Compile Include="src\UFuncs\DesignCheck\SizeDescription.cs" />
-    <Compile Include="src\UFuncs\DesignCheck\SizeDescription1.cs" />
-    <Compile Include="src\UFuncs\DesignCheck\SmartRevisions.cs" />
-    <Compile Include="src\UFuncs\DesignCheck\SuppressedFeatures.cs" />
-    <Compile Include="src\UFuncs\DesignCheck\TimeStamps.cs" />
-    <Compile Include="src\UFuncs\DesignCheck\WireTaperNotes.cs" />
-    <Compile Include="src\UFuncs\DetailNumberNoteForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\DetailNumberNoteForm.Designer.cs">
-      <DependentUpon>DetailNumberNoteForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\DrainHoleCreator\DrainHoleCreator.cs" />
-    <Compile Include="src\UFuncs\DrainHoleCreator\DrainHoleModel.cs" />
-    <Compile Include="src\UFuncs\DrainHoleCreator\DrainHolePresenter.cs" />
-    <Compile Include="src\UFuncs\DrainHoleCreator\DrainHoleSettings.cs" />
-    <Compile Include="src\UFuncs\DrainHoleCreator\Form.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\DrainHoleCreator\Form.Designer.cs">
-      <DependentUpon>Form.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\DrainHoleCreator\IDrainHoleCreator.cs" />
-    <Compile Include="src\UFuncs\DrainHoleCreator\IDrainHoleModel.cs" />
-    <Compile Include="src\UFuncs\DrainHoleCreator\IDrainHoleSettings.cs" />
-    <Compile Include="src\UFuncs\DrainHoleCreator\IDrainHoleView.cs" />
-    <Compile Include="src\UFuncs\DrainHoleCreator\Units.cs" />
-    <Compile Include="src\UFuncs\DrainHoleCreator\__UFunc__.cs" />
-    <Compile Include="src\UFuncs\DrawDieAssembly\DrawDieAssembly.cs" />
-    <Compile Include="src\UFuncs\DrawDieAssembly\DrawDieCreator.cs" />
-    <Compile Include="src\UFuncs\DrawDieAssembly\IDrawDieComponent.cs" />
-    <Compile Include="src\UFuncs\DynamicHandle.cs" />
-    <Compile Include="src\UFuncs\EtchingForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\EtchingForm.Designer.cs">
-      <DependentUpon>EtchingForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\ExportSimPackageForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\ExportSimPackageForm.Designer.cs">
-      <DependentUpon>ExportSimPackageForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\ExportStrip\ExportStripForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\ExportStrip\ExportStripForm.Designer.cs">
-      <DependentUpon>ExportStripForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\ExportStrip\Zip7.cs" />
-    <Compile Include="src\UFuncs\ExtractFreeEdgeCurves.cs" />
-    <Compile Include="src\UFuncs\FShapeExporterForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\FShapeExporterForm.Designer.cs">
-      <DependentUpon>FShapeExporterForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\Grid\Grid.cs" />
-    <Compile Include="src\UFuncs\Grid\GridForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\Grid\GridForm.Designer.cs">
-      <DependentUpon>GridForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\IdentifyAndDeleteForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\IdentifyAndDeleteForm.Designer.cs">
-      <DependentUpon>IdentifyAndDeleteForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\LayoutRefSets.cs" />
-    <Compile Include="src\UFuncs\LoadColorPalette.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\BaseMirrorFeature.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\BaseMirrorRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\ILibraryComponent.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\IMirrorFeature.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\IMirrorRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorBlock.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorChamfer.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorComponentsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorComponentsForm.Designer.cs">
-      <DependentUpon>MirrorComponentsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeBlend.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeBodyRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeBoundaryRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeChainRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeDumbRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeMultipleSeedTangentRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeTangentRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeVertexRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorException.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorExtractedBody.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorExtrude.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorFaceAndAdjacentFacesRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorFaceDumbRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorFaceTangentRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorIntersect.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorLinkedBody.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorOffset.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorSmartButton.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorSmartKey.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorSmartStandardLiftersGuidedKeepersMetric.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorSmartStockEjector.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorSubtract.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorUnite.cs" />
-    <Compile Include="src\UFuncs\NitroTravels.cs" />
-    <Compile Include="src\UFuncs\Nx7zip\Nx7ZipCompression.cs" />
-    <Compile Include="src\UFuncs\Nx7zip\Nx7zipForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\Nx7zip\Nx7zipForm.Designer.cs">
-      <DependentUpon>Nx7zipForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\NxWinZip\NxWinZipForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\NxWinZip\NxWinZipForm.Designer.cs">
-      <DependentUpon>NxWinZipForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\NxWinZip\WinZipCompression.cs" />
-    <Compile Include="src\UFuncs\ProfileTrimAndForm\Pad.cs" />
-    <Compile Include="src\UFuncs\ProfileTrimAndForm\ProfileBuilder.cs" />
-    <Compile Include="src\UFuncs\ProfileTrimAndForm\ProfileTrimAndForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\ProfileTrimAndForm\ProfileTrimAndForm.Designer.cs">
-      <DependentUpon>ProfileTrimAndForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\ProfileTrimAndForm\SlugObj.cs" />
-    <Compile Include="src\UFuncs\ProfileTrimAndForm\UniteTarget.cs" />
-    <Compile Include="src\UFuncs\ProposalDataWizard\ListItem.cs" />
-    <Compile Include="src\UFuncs\ProposalDataWizard\ProposalDataWizardForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\ProposalDataWizard\ProposalDataWizardForm.Designer.cs">
-      <DependentUpon>ProposalDataWizardForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\SessionForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\SessionForm.Designer.cs">
-      <DependentUpon>SessionForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\ShowOnlyForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\ShowOnlyForm.Designer.cs">
-      <DependentUpon>ShowOnlyForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\SimRefSets\ReferenceSetMaker.cs" />
-    <Compile Include="src\UFuncs\SimRefSets\SimRefSetsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\SimRefSets\SimRefSetsForm.Designer.cs">
-      <DependentUpon>SimRefSetsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\SimulationDataBuilder\SimDataDeleteConfirm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\SimulationDataBuilder\SimDataDeleteConfirm.Designer.cs">
-      <DependentUpon>SimDataDeleteConfirm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\SimulationDataBuilder\SimDataDeletion.cs" />
-    <Compile Include="src\UFuncs\SimulationDataBuilder\SimulationDataBuilderForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\SimulationDataBuilder\SimulationDataBuilderForm.Designer.cs">
-      <DependentUpon>SimulationDataBuilderForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\SplineToCurves.cs" />
-    <Compile Include="src\UFuncs\StripRefSetter.cs" />
-    <Compile Include="src\UFuncs\WireStartHoleForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\WireStartHoleForm.Designer.cs">
-      <DependentUpon>WireStartHoleForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\WireTaperDevelopmentForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\WireTaperDevelopmentForm.Designer.cs">
-      <DependentUpon>WireTaperDevelopmentForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\_IUFunc.cs" />
-    <Compile Include="src\UFuncs\_UFunc.cs" />
-    <Compile Include="src\UFuncs\_UFuncForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UI\Masks.cs" />
-    <Compile Include="src\UI\Preselect.cs" />
-    <Compile Include="src\UI\Result.cs" />
-    <Compile Include="src\UI\Selection.cs" />
-    <Compile Include="src\UI\SelectWithFilter.cs" />
-    <Compile Include="src\UI\SpecialSelection1.cs" />
-    <Compile Include="src\UI\SpecialSelectionAssWavelink.cs" />
-    <Compile Include="src\Utilities\CtsAttributes.cs" />
-    <Compile Include="src\Utilities\GFolder.cs" />
-    <Compile Include="src\Utilities\Ucf.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <None Include="src\Extensions\.editorconfig" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\AddFasteners\AddFastenersForm1.resx">
-      <DependentUpon>AddFastenersForm1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\AddPierceComponents\AddPierceComponentsForm.resx">
-      <DependentUpon>AddPierceComponentsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\AssemblyAutoDetail\AssemblyAutoDetailForm.resx">
-      <DependentUpon>AssemblyAutoDetailForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\AssemblyColorCode\AssemblyColorCodeAtdForm.resx">
-      <DependentUpon>AssemblyColorCodeAtdForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\AssemblyColorCode\AssemblyColorCodeBentlerForm.resx">
-      <DependentUpon>AssemblyColorCodeBentlerForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\AssemblyColorCode\AssemblyColorCodeForm.resx">
-      <DependentUpon>AssemblyColorCodeForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\AssemblyExport\AssemblyExportDesignDataForm.resx">
-      <DependentUpon>AssemblyExportDesignDataForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\AssemblyNavigator.resx">
-      <DependentUpon>AssemblyNavigator.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\AssemblyWavelink\Form.resx">
-      <DependentUpon>Form.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\BillOfMaterial\BillOfMaterialForm.resx">
-      <DependentUpon>BillOfMaterialForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\BlankDataBuilderForm.resx">
-      <DependentUpon>BlankDataBuilderForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\BlockAttributerForm.resx">
-      <DependentUpon>BlockAttributerForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\CloneAssemblyForm.resx">
-      <DependentUpon>CloneAssemblyForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\CloneStripForm.resx">
-      <DependentUpon>CloneStripForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\ComponentBuilder\ComponentBuilder.resx">
-      <DependentUpon>ComponentBuilder.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\ComponentBuilder\EditBlock.resx">
-      <DependentUpon>EditBlock.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\ComponentBuilder\EditSizeForm.resx">
-      <DependentUpon>EditSizeForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\CopyAttributesForm.resx">
-      <DependentUpon>CopyAttributesForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\CreateBurnoutForm.resx">
-      <DependentUpon>CreateBurnoutForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\CycleComponentsForm.resx">
-      <DependentUpon>CycleComponentsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\DesignCheck\DesignCheckForm.resx">
-      <DependentUpon>DesignCheckForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\DetailNumberNoteForm.resx">
-      <DependentUpon>DetailNumberNoteForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\EtchingForm.resx">
-      <DependentUpon>EtchingForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\ExportSimPackageForm.resx">
-      <DependentUpon>ExportSimPackageForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\ExportStrip\ExportStripForm.resx">
-      <DependentUpon>ExportStripForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\FShapeExporterForm.resx">
-      <DependentUpon>FShapeExporterForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\Grid\GridForm.resx">
-      <DependentUpon>GridForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\IdentifyAndDeleteForm.resx">
-      <DependentUpon>IdentifyAndDeleteForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\Nx7zip\Nx7zipForm.resx">
-      <DependentUpon>Nx7zipForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\ProfileTrimAndForm\ProfileTrimAndForm.resx">
-      <DependentUpon>ProfileTrimAndForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\ProposalDataWizard\ProposalDataWizardForm.resx">
-      <DependentUpon>ProposalDataWizardForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\SessionForm.resx">
-      <DependentUpon>SessionForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\ShowOnlyForm.resx">
-      <DependentUpon>ShowOnlyForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\SimRefSets\SimRefSetsForm.resx">
-      <DependentUpon>SimRefSetsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\SimulationDataBuilder\SimulationDataBuilderForm.resx">
-      <DependentUpon>SimulationDataBuilderForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\WireStartHoleForm.resx">
-      <DependentUpon>WireStartHoleForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\WireTaperDevelopmentForm.resx">
-      <DependentUpon>WireTaperDevelopmentForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\_UFuncForm.resx">
-      <DependentUpon>_UFuncForm.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\NXSigningResource.res" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <Import Project="packages\PostSharp.2024.1.4\build\PostSharp.props"
+            Condition="Exists('packages\PostSharp.2024.1.4\build\PostSharp.props')" />
+    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props"
+            Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
     <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <ProjectGuid>{1EFBE2F3-41C1-41BF-84C8-3660330985B7}</ProjectGuid>
+        <OutputType>Library</OutputType>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <RootNamespace>TSG_Library</RootNamespace>
+        <AssemblyName>TSG_Library</AssemblyName>
+        <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
+        <FileAlignment>512</FileAlignment>
+        <Deterministic>true</Deterministic>
+        <NuGetPackageImportStamp>
+        </NuGetPackageImportStamp>
     </PropertyGroup>
-    <Error Condition="!Exists('packages\PostSharp.2024.1.4\build\PostSharp.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\PostSharp.2024.1.4\build\PostSharp.props'))" />
-    <Error Condition="!Exists('packages\PostSharp.2024.1.4\build\PostSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\PostSharp.2024.1.4\build\PostSharp.targets'))" />
-  </Target>
-  <Import Project="packages\PostSharp.2024.1.4\build\PostSharp.targets" Condition="Exists('packages\PostSharp.2024.1.4\build\PostSharp.targets')" />
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+        <OutputPath>bin\Debug\</OutputPath>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <DebugType>pdbonly</DebugType>
+        <Optimize>true</Optimize>
+        <OutputPath>bin\Release\</OutputPath>
+        <DefineConstants>TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference
+            Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+            <HintPath>packages\Microsoft.Office.Interop.Excel.15.0.4795.1001\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
+            <EmbedInteropTypes>True</EmbedInteropTypes>
+        </Reference>
+        <Reference
+            Include="MoreLinq, Version=4.2.0.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
+            <HintPath>packages\morelinq.4.2.0\lib\netstandard2.0\MoreLinq.dll</HintPath>
+        </Reference>
+        <Reference Include="NXOpen">
+            <HintPath>..\..\Program Files\Siemens\NX1899\NXBIN\managed\NXOpen.dll</HintPath>
+        </Reference>
+        <Reference Include="NXOpen.UF">
+            <HintPath>..\..\Program Files\Siemens\NX1899\NXBIN\managed\NXOpen.UF.dll</HintPath>
+        </Reference>
+        <Reference Include="NXOpen.Utilities">
+            <HintPath>..\..\Program Files\Siemens\NX1899\NXBIN\managed\NXOpen.Utilities.dll</HintPath>
+        </Reference>
+        <Reference Include="NXOpenUI">
+            <HintPath>..\..\Program Files\Siemens\NX1899\NXBIN\managed\NXOpenUI.dll</HintPath>
+        </Reference>
+        <Reference
+            Include="PostSharp, Version=2024.1.4.0, Culture=neutral, PublicKeyToken=b13fd38b8f9c99d7, processorArchitecture=MSIL">
+            <HintPath>packages\PostSharp.Redist.2024.1.4\lib\net45\PostSharp.dll</HintPath>
+        </Reference>
+        <Reference Include="System" />
+        <Reference Include="System.Core" />
+        <Reference Include="System.Drawing" />
+        <Reference Include="System.Windows.Forms" />
+        <Reference Include="System.Xml.Linq" />
+        <Reference Include="System.Data.DataSetExtensions" />
+        <Reference Include="Microsoft.CSharp" />
+        <Reference Include="System.Data" />
+        <Reference Include="System.Net.Http" />
+        <Reference Include="System.Xml" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="Properties\Resources.Designer.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>Resources.resx</DependentUpon>
+        </Compile>
+        <Compile Include="Properties\Settings.Designer.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTimeSharedInput>True</DesignTimeSharedInput>
+            <DependentUpon>Settings.settings</DependentUpon>
+        </Compile>
+        <Compile Include="src\Attributes\ExtensionsAspect.cs" />
+        <Compile Include="src\Attributes\RevisionAttribute.cs" />
+        <Compile Include="src\Attributes\RevisionEntryAttribute.cs" />
+        <Compile Include="src\Attributes\RevisionLogAttribute.cs" />
+        <Compile Include="src\Attributes\UfuncAttribute.cs" />
+        <Compile Include="src\Attributes\UFuncDisposedAttribute.cs" />
+        <Compile Include="src\Compute.cs" />
+        <Compile Include="src\Disposable\Destroyer.cs" />
+        <Compile Include="src\Disposable\DisplayPartReset.cs" />
+        <Compile Include="src\Disposable\DoUpdate.cs" />
+        <Compile Include="src\Disposable\FormHideShow.cs" />
+        <Compile Include="src\Disposable\GCHandleFree.cs" />
+        <Compile Include="src\Disposable\HideShowForm.cs" />
+        <Compile Include="src\Disposable\Initialize2EvaluatorFree.cs" />
+        <Compile Include="src\Disposable\LockNX.cs" />
+        <Compile Include="src\Disposable\LockUiFromCustom.cs" />
+        <Compile Include="src\Disposable\LockUpdates.cs" />
+        <Compile Include="src\Disposable\RedisplayObject.cs" />
+        <Compile Include="src\Disposable\ReferenceSetReset.cs" />
+        <Compile Include="src\Disposable\RegenerateDisplay.cs" />
+        <Compile Include="src\Disposable\ResetComponentReferenceSet.cs" />
+        <Compile Include="src\Disposable\ResetShadeRendering.cs" />
+        <Compile Include="src\Disposable\SetWorkPartContextQuietly.cs" />
+        <Compile Include="src\Disposable\SuppressDisplayReset.cs" />
+        <Compile Include="src\Enum\DirectionUV.cs" />
+        <Compile Include="src\Enum\LayerState.cs" />
+        <Compile Include="src\Enum\MarkVisibility.cs" />
+        <Compile Include="src\Enum\PlaneDir.cs" />
+        <Compile Include="src\Enum\ReopenMode.cs" />
+        <Compile Include="src\Enum\ReopenScope.cs" />
+        <Compile Include="src\Enum\Templates.cs" />
+        <Compile Include="src\Enum\UndoMarkId.cs" />
+        <Compile Include="src\Enum\Unit.cs" />
+        <Compile Include="src\Enum\Units.cs" />
+        <Compile Include="src\Exceptions\AssertWorkPartException.cs" />
+        <Compile Include="src\Exceptions\FastenerSubtractionSetException.cs" />
+        <Compile Include="src\Exceptions\ImproperReferenceSetException.cs" />
+        <Compile Include="src\Exceptions\InvalidDelimeterException.cs" />
+        <Compile Include="src\Exceptions\InvalidFastenerException.cs" />
+        <Compile Include="src\Exceptions\MoreThanOneSolidBodyOnLayer1Exception.cs" />
+        <Compile Include="src\Exceptions\NoDynamicBlockException.cs" />
+        <Compile Include="src\Exceptions\NoSolidBodyOnLayer1Exception.cs" />
+        <Compile Include="src\Exceptions\NotAFastenerException.cs" />
+        <Compile Include="src\Exceptions\NothingSelectedException.cs" />
+        <Compile Include="src\Exceptions\NullWorkComponentException.cs" />
+        <Compile Include="src\Exceptions\PartIsNotWorkOrDisplayException.cs" />
+        <Compile Include="src\Extensions.cs" />
+        <Compile Include="src\Geom\Box3d.cs" />
+        <Compile Include="src\Geom\Curve.cs" />
+        <Compile Include="src\Geom\Surface.cs" />
+        <Compile Include="src\Geom\Transform.cs" />
+        <Compile Include="src\Math.cs" />
+        <Compile Include="src\Program.cs" />
+        <Compile Include="src\Sql\SessionSql.cs" />
+        <Compile Include="src\Sql\UFuncLog.cs" />
+        <Compile Include="src\UFuncs\AddFasteners\AddFastenersForm1.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\AddFasteners\AddFastenersForm1.Designer.cs">
+            <DependentUpon>AddFastenersForm1.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\AddFasteners\CycleAdd1.cs" />
+        <Compile Include="src\UFuncs\AddFasteners\CycleAddStruct.cs" />
+        <Compile Include="src\UFuncs\AddFasteners\FastenerListItem.cs" />
+        <Compile Include="src\UFuncs\AddFasteners\GridSpacing.cs" />
+        <Compile Include="src\UFuncs\AddPierceComponents\AddPierceComponentsForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\AddPierceComponents\AddPierceComponentsForm.Designer.cs">
+            <DependentUpon>AddPierceComponentsForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\AddPierceComponents\PierceProperties1.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\AssemblyAutoDetail\AssemblyAutoDetailForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\AssemblyAutoDetail\AssemblyAutoDetailForm.Designer.cs">
+            <DependentUpon>AssemblyAutoDetailForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\AssemblyAutoDetail\CtsDimensionData.cs" />
+        <Compile Include="src\UFuncs\AssemblyAutoDetail\DrillChart.cs" />
+        <Compile Include="src\UFuncs\AssemblyColorCode\AssemblyColorCodeAtdForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\AssemblyColorCode\AssemblyColorCodeAtdForm.Designer.cs">
+            <DependentUpon>AssemblyColorCodeAtdForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\AssemblyColorCode\AssemblyColorCodeBentlerForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\AssemblyColorCode\AssemblyColorCodeBentlerForm.Designer.cs">
+            <DependentUpon>AssemblyColorCodeBentlerForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\AssemblyColorCode\AssemblyColorCodeForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\AssemblyColorCode\AssemblyColorCodeForm.Designer.cs">
+            <DependentUpon>AssemblyColorCodeForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\AssemblyExport\AssemblyExportDesignDataForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\AssemblyExport\AssemblyExportDesignDataForm.Designer.cs">
+            <DependentUpon>AssemblyExportDesignDataForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\AssemblyExport\Export.cs" />
+        <Compile Include="src\UFuncs\AssemblyNavigator.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\AssemblyNavigator.Designer.cs">
+            <DependentUpon>AssemblyNavigator.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\AssemblyWavelink\AssemblyWavelink.FormCtsReferenceSet.cs" />
+        <Compile Include="src\UFuncs\AssemblyWavelink\AssemblyWavelink.RefSetForm.cs" />
+        <Compile Include="src\UFuncs\AssemblyWavelink\Form.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\AssemblyWavelink\Form.Designer.cs">
+            <DependentUpon>Form.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\AssemblyWavelink\FormCtsReferenceSet.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\AssemblyWavelink\RefSetForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\AssemblyWavelink\RefSetForm.Designer.cs">
+            <DependentUpon>RefSetForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\AssemblyWavelink\__UFunc__.cs" />
+        <Compile Include="src\UFuncs\AutoSizeComponent.cs" />
+        <Compile Include="src\UFuncs\BillOfMaterial\BillOfMaterialForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\BillOfMaterial\BillOfMaterialForm.Designer.cs">
+            <DependentUpon>BillOfMaterialForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\BillOfMaterial\BomProperties.cs" />
+        <Compile Include="src\UFuncs\BillOfMaterial\CheckBoxDialog.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\BillOfMaterial\CheckBoxDialog.Designer.cs">
+            <DependentUpon>CheckBoxDialog.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\BillOfMaterial\CheckProperties.cs" />
+        <Compile Include="src\UFuncs\BillOfMaterial\ExcelApplication.cs" />
+        <Compile Include="src\UFuncs\BillOfMaterial\NXExcelData.cs" />
+        <Compile Include="src\UFuncs\BlankDataBuilderForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\BlankDataBuilderForm.Designer.cs">
+            <DependentUpon>BlankDataBuilderForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\BlankDevelopment.cs" />
+        <Compile Include="src\UFuncs\BlockAttributerForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\BlockAttributerForm.Designer.cs">
+            <DependentUpon>BlockAttributerForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\CategoryRefSets.cs" />
+        <Compile Include="src\UFuncs\CircleFromSpline.cs" />
+        <Compile Include="src\UFuncs\CleanJobDirectory.cs" />
+        <Compile Include="src\UFuncs\CloneAssemblyForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\CloneAssemblyForm.Designer.cs">
+            <DependentUpon>CloneAssemblyForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\CloneStripForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\CloneStripForm.Designer.cs">
+            <DependentUpon>CloneStripForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\ComponentBuilder\ComponentBuilder.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\ComponentBuilder\ComponentBuilder.Designer.cs">
+            <DependentUpon>ComponentBuilder.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\ComponentBuilder\CtsComponentColor.cs" />
+        <Compile Include="src\UFuncs\ComponentBuilder\CtsComponentType.cs" />
+        <Compile Include="src\UFuncs\ComponentBuilder\CtsSubtoolColor.cs" />
+        <Compile Include="src\UFuncs\ComponentBuilder\EditBlock.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\ComponentBuilder\EditBlock.Designer.cs">
+            <DependentUpon>EditBlock.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\ComponentBuilder\EditSizeForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\ComponentBuilder\EditSizeForm.Designer.cs">
+            <DependentUpon>EditSizeForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\ConvertSplineToCircle.cs" />
+        <Compile Include="src\UFuncs\CopyAttributesForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\CopyAttributesForm.Designer.cs">
+            <DependentUpon>CopyAttributesForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\CopyPasteCleanup.cs" />
+        <Compile Include="src\UFuncs\CopyRefSets.cs" />
+        <Compile Include="src\UFuncs\CopyToLayer50\CopyToLayer50.cs" />
+        <Compile Include="src\UFuncs\CreateBurnoutForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\CreateBurnoutForm.Designer.cs">
+            <DependentUpon>CreateBurnoutForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\CreateResetDatumCsys.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\CreateResetDatumCsys.Designer.cs">
+            <DependentUpon>CreateResetDatumCsys.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\CycleComponentsForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\CycleComponentsForm.Designer.cs">
+            <DependentUpon>CycleComponentsForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\DataBaseImageExporter.cs" />
+        <Compile Include="src\UFuncs\DeleteLayer50.cs" />
+        <Compile Include="src\UFuncs\DeleteUnusedCurves.cs" />
+        <Compile Include="src\UFuncs\DesignCheck\BrokenLinks.cs" />
+        <Compile Include="src\UFuncs\DesignCheck\Burnouts.cs" />
+        <Compile Include="src\UFuncs\DesignCheck\BushingsAndPins.cs" />
+        <Compile Include="src\UFuncs\DesignCheck\CastingChildren.cs" />
+        <Compile Include="src\UFuncs\DesignCheck\CastingHalfMoons.cs" />
+        <Compile Include="src\UFuncs\DesignCheck\CBoreDepths.cs" />
+        <Compile Include="src\UFuncs\DesignCheck\ComponentNames.cs" />
+        <Compile Include="src\UFuncs\DesignCheck\DescriptionNXAttribute.cs" />
+        <Compile Include="src\UFuncs\DesignCheck\DesignCheckFile.cs" />
+        <Compile Include="src\UFuncs\DesignCheck\DesignCheckForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\DesignCheck\DesignCheckForm.Designer.cs">
+            <DependentUpon>DesignCheckForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\DesignCheck\Dimensions.cs" />
+        <Compile Include="src\UFuncs\DesignCheck\FolderLocations.cs" />
+        <Compile Include="src\UFuncs\DesignCheck\IDesignCheck.cs" />
+        <Compile Include="src\UFuncs\DesignCheck\InterpartExpressions.cs" />
+        <Compile Include="src\UFuncs\DesignCheck\JigJacks.cs" />
+        <Compile Include="src\UFuncs\DesignCheck\LinkedBodyParents.cs" />
+        <Compile Include="src\UFuncs\DesignCheck\Model.cs" />
+        <Compile Include="src\UFuncs\DesignCheck\Model1.cs" />
+        <Compile Include="src\UFuncs\DesignCheck\PositionOverride.cs" />
+        <Compile Include="src\UFuncs\DesignCheck\SizeDescription.cs" />
+        <Compile Include="src\UFuncs\DesignCheck\SizeDescription1.cs" />
+        <Compile Include="src\UFuncs\DesignCheck\SmartRevisions.cs" />
+        <Compile Include="src\UFuncs\DesignCheck\SuppressedFeatures.cs" />
+        <Compile Include="src\UFuncs\DesignCheck\TimeStamps.cs" />
+        <Compile Include="src\UFuncs\DesignCheck\WireTaperNotes.cs" />
+        <Compile Include="src\UFuncs\DetailNumberNoteForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\DetailNumberNoteForm.Designer.cs">
+            <DependentUpon>DetailNumberNoteForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\DrainHoleCreator\DrainHoleCreator.cs" />
+        <Compile Include="src\UFuncs\DrainHoleCreator\DrainHoleModel.cs" />
+        <Compile Include="src\UFuncs\DrainHoleCreator\DrainHolePresenter.cs" />
+        <Compile Include="src\UFuncs\DrainHoleCreator\DrainHoleSettings.cs" />
+        <Compile Include="src\UFuncs\DrainHoleCreator\Form.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\DrainHoleCreator\Form.Designer.cs">
+            <DependentUpon>Form.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\DrainHoleCreator\IDrainHoleCreator.cs" />
+        <Compile Include="src\UFuncs\DrainHoleCreator\IDrainHoleModel.cs" />
+        <Compile Include="src\UFuncs\DrainHoleCreator\IDrainHoleSettings.cs" />
+        <Compile Include="src\UFuncs\DrainHoleCreator\IDrainHoleView.cs" />
+        <Compile Include="src\UFuncs\DrainHoleCreator\Units.cs" />
+        <Compile Include="src\UFuncs\DrainHoleCreator\__UFunc__.cs" />
+        <Compile Include="src\UFuncs\DrawDieAssembly\DrawDieAssembly.cs" />
+        <Compile Include="src\UFuncs\DrawDieAssembly\DrawDieCreator.cs" />
+        <Compile Include="src\UFuncs\DrawDieAssembly\IDrawDieComponent.cs" />
+        <Compile Include="src\UFuncs\DynamicHandle.cs" />
+        <Compile Include="src\UFuncs\EtchingForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\EtchingForm.Designer.cs">
+            <DependentUpon>EtchingForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\ExportSimPackageForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\ExportSimPackageForm.Designer.cs">
+            <DependentUpon>ExportSimPackageForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\ExportStrip\ExportStripForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\ExportStrip\ExportStripForm.Designer.cs">
+            <DependentUpon>ExportStripForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\ExportStrip\Zip7.cs" />
+        <Compile Include="src\UFuncs\ExtractFreeEdgeCurves.cs" />
+        <Compile Include="src\UFuncs\FShapeExporterForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\FShapeExporterForm.Designer.cs">
+            <DependentUpon>FShapeExporterForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\Grid\Grid.cs" />
+        <Compile Include="src\UFuncs\Grid\GridForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\Grid\GridForm.Designer.cs">
+            <DependentUpon>GridForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\IdentifyAndDeleteForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\IdentifyAndDeleteForm.Designer.cs">
+            <DependentUpon>IdentifyAndDeleteForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\LayoutRefSets.cs" />
+        <Compile Include="src\UFuncs\LoadColorPalette.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\BaseMirrorFeature.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\BaseMirrorRule.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\ILibraryComponent.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\IMirrorFeature.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\IMirrorRule.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\MirrorBlock.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\MirrorChamfer.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\MirrorComponentsForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\MirrorComponents\MirrorComponentsForm.Designer.cs">
+            <DependentUpon>MirrorComponentsForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeBlend.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeBodyRule.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeBoundaryRule.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeChainRule.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeDumbRule.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeMultipleSeedTangentRule.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeTangentRule.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeVertexRule.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\MirrorException.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\MirrorExtractedBody.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\MirrorExtrude.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\MirrorFaceAndAdjacentFacesRule.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\MirrorFaceDumbRule.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\MirrorFaceTangentRule.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\MirrorIntersect.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\MirrorLinkedBody.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\MirrorOffset.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\MirrorSmartButton.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\MirrorSmartKey.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\MirrorSmartStandardLiftersGuidedKeepersMetric.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\MirrorSmartStockEjector.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\MirrorSubtract.cs" />
+        <Compile Include="src\UFuncs\MirrorComponents\MirrorUnite.cs" />
+        <Compile Include="src\UFuncs\NitroTravels.cs" />
+        <Compile Include="src\UFuncs\Nx7zip\Nx7ZipCompression.cs" />
+        <Compile Include="src\UFuncs\Nx7zip\Nx7zipForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\Nx7zip\Nx7zipForm.Designer.cs">
+            <DependentUpon>Nx7zipForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\NxWinZip\NxWinZipForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\NxWinZip\NxWinZipForm.Designer.cs">
+            <DependentUpon>NxWinZipForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\NxWinZip\WinZipCompression.cs" />
+        <Compile Include="src\UFuncs\ProfileTrimAndForm\Pad.cs" />
+        <Compile Include="src\UFuncs\ProfileTrimAndForm\ProfileBuilder.cs" />
+        <Compile Include="src\UFuncs\ProfileTrimAndForm\ProfileTrimAndForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\ProfileTrimAndForm\ProfileTrimAndForm.Designer.cs">
+            <DependentUpon>ProfileTrimAndForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\ProfileTrimAndForm\SlugObj.cs" />
+        <Compile Include="src\UFuncs\ProfileTrimAndForm\UniteTarget.cs" />
+        <Compile Include="src\UFuncs\ProposalDataWizard\ListItem.cs" />
+        <Compile Include="src\UFuncs\ProposalDataWizard\ProposalDataWizardForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\ProposalDataWizard\ProposalDataWizardForm.Designer.cs">
+            <DependentUpon>ProposalDataWizardForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\SessionForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\SessionForm.Designer.cs">
+            <DependentUpon>SessionForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\ShowOnlyForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\ShowOnlyForm.Designer.cs">
+            <DependentUpon>ShowOnlyForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\SimRefSets\ReferenceSetMaker.cs" />
+        <Compile Include="src\UFuncs\SimRefSets\SimRefSetsForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\SimRefSets\SimRefSetsForm.Designer.cs">
+            <DependentUpon>SimRefSetsForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\SimulationDataBuilder\SimDataDeleteConfirm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\SimulationDataBuilder\SimDataDeleteConfirm.Designer.cs">
+            <DependentUpon>SimDataDeleteConfirm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\SimulationDataBuilder\SimDataDeletion.cs" />
+        <Compile Include="src\UFuncs\SimulationDataBuilder\SimulationDataBuilderForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\SimulationDataBuilder\SimulationDataBuilderForm.Designer.cs">
+            <DependentUpon>SimulationDataBuilderForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\SplineToCurves.cs" />
+        <Compile Include="src\UFuncs\StripRefSetter.cs" />
+        <Compile Include="src\UFuncs\WireStartHoleForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\WireStartHoleForm.Designer.cs">
+            <DependentUpon>WireStartHoleForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\WireTaperDevelopmentForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UFuncs\WireTaperDevelopmentForm.Designer.cs">
+            <DependentUpon>WireTaperDevelopmentForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="src\UFuncs\_IUFunc.cs" />
+        <Compile Include="src\UFuncs\_UFunc.cs" />
+        <Compile Include="src\UFuncs\_UFuncForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="src\UI\Masks.cs" />
+        <Compile Include="src\UI\Preselect.cs" />
+        <Compile Include="src\UI\Result.cs" />
+        <Compile Include="src\UI\Selection.cs" />
+        <Compile Include="src\UI\SelectWithFilter.cs" />
+        <Compile Include="src\UI\SpecialSelection1.cs" />
+        <Compile Include="src\UI\SpecialSelectionAssWavelink.cs" />
+        <Compile Include="src\Utilities\CtsAttributes.cs" />
+        <Compile Include="src\Utilities\GFolder.cs" />
+        <Compile Include="src\Utilities\Ucf.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="packages.config" />
+        <None Include="Properties\Settings.settings">
+            <Generator>SettingsSingleFileGenerator</Generator>
+            <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+        </None>
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Properties\Resources.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\AddFasteners\AddFastenersForm1.resx">
+            <DependentUpon>AddFastenersForm1.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\AddPierceComponents\AddPierceComponentsForm.resx">
+            <DependentUpon>AddPierceComponentsForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\AssemblyAutoDetail\AssemblyAutoDetailForm.resx">
+            <DependentUpon>AssemblyAutoDetailForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\AssemblyColorCode\AssemblyColorCodeAtdForm.resx">
+            <DependentUpon>AssemblyColorCodeAtdForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\AssemblyColorCode\AssemblyColorCodeBentlerForm.resx">
+            <DependentUpon>AssemblyColorCodeBentlerForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\AssemblyColorCode\AssemblyColorCodeForm.resx">
+            <DependentUpon>AssemblyColorCodeForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\AssemblyExport\AssemblyExportDesignDataForm.resx">
+            <DependentUpon>AssemblyExportDesignDataForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\AssemblyNavigator.resx">
+            <DependentUpon>AssemblyNavigator.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\AssemblyWavelink\Form.resx">
+            <DependentUpon>Form.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\BillOfMaterial\BillOfMaterialForm.resx">
+            <DependentUpon>BillOfMaterialForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\BlankDataBuilderForm.resx">
+            <DependentUpon>BlankDataBuilderForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\BlockAttributerForm.resx">
+            <DependentUpon>BlockAttributerForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\CloneAssemblyForm.resx">
+            <DependentUpon>CloneAssemblyForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\CloneStripForm.resx">
+            <DependentUpon>CloneStripForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\ComponentBuilder\ComponentBuilder.resx">
+            <DependentUpon>ComponentBuilder.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\ComponentBuilder\EditBlock.resx">
+            <DependentUpon>EditBlock.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\ComponentBuilder\EditSizeForm.resx">
+            <DependentUpon>EditSizeForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\CopyAttributesForm.resx">
+            <DependentUpon>CopyAttributesForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\CreateBurnoutForm.resx">
+            <DependentUpon>CreateBurnoutForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\CycleComponentsForm.resx">
+            <DependentUpon>CycleComponentsForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\DesignCheck\DesignCheckForm.resx">
+            <DependentUpon>DesignCheckForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\DetailNumberNoteForm.resx">
+            <DependentUpon>DetailNumberNoteForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\EtchingForm.resx">
+            <DependentUpon>EtchingForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\ExportSimPackageForm.resx">
+            <DependentUpon>ExportSimPackageForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\ExportStrip\ExportStripForm.resx">
+            <DependentUpon>ExportStripForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\FShapeExporterForm.resx">
+            <DependentUpon>FShapeExporterForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\Grid\GridForm.resx">
+            <DependentUpon>GridForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\IdentifyAndDeleteForm.resx">
+            <DependentUpon>IdentifyAndDeleteForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\Nx7zip\Nx7zipForm.resx">
+            <DependentUpon>Nx7zipForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\ProfileTrimAndForm\ProfileTrimAndForm.resx">
+            <DependentUpon>ProfileTrimAndForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\ProposalDataWizard\ProposalDataWizardForm.resx">
+            <DependentUpon>ProposalDataWizardForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\SessionForm.resx">
+            <DependentUpon>SessionForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\ShowOnlyForm.resx">
+            <DependentUpon>ShowOnlyForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\SimRefSets\SimRefSetsForm.resx">
+            <DependentUpon>SimRefSetsForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\SimulationDataBuilder\SimulationDataBuilderForm.resx">
+            <DependentUpon>SimulationDataBuilderForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\WireStartHoleForm.resx">
+            <DependentUpon>WireStartHoleForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\WireTaperDevelopmentForm.resx">
+            <DependentUpon>WireTaperDevelopmentForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="src\UFuncs\_UFuncForm.resx">
+            <DependentUpon>_UFuncForm.cs</DependentUpon>
+        </EmbeddedResource>
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="Resources\NXSigningResource.res" />
+    </ItemGroup>
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+    <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+        <PropertyGroup>
+            <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+        </PropertyGroup>
+        <Error Condition="!Exists('packages\PostSharp.2024.1.4\build\PostSharp.props')"
+               Text="$([System.String]::Format('$(ErrorText)', 'packages\PostSharp.2024.1.4\build\PostSharp.props'))" />
+        <Error Condition="!Exists('packages\PostSharp.2024.1.4\build\PostSharp.targets')"
+               Text="$([System.String]::Format('$(ErrorText)', 'packages\PostSharp.2024.1.4\build\PostSharp.targets'))" />
+    </Target>
+    <Import Project="packages\PostSharp.2024.1.4\build\PostSharp.targets"
+            Condition="Exists('packages\PostSharp.2024.1.4\build\PostSharp.targets')" />
 </Project>

@@ -127,7 +127,7 @@ namespace TSG_Library.Geom
             var num7 = num2;
             var num8 = num2;
             foreach (var box3d in inputBoxes)
-                if (box3d != null)
+                if(box3d != null)
                 {
                     num3 = System.Math.Min(num3, box3d.MinX);
                     num4 = System.Math.Min(num4, box3d.MinY);

@@ -7,7 +7,7 @@ using TSG_Library.Attributes;
 using TSG_Library.Properties;
 using static TSG_Library.UFuncs._UFunc;
 using static TSG_Library.UFuncs.AssemblyColorCodeForm;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 using Point = System.Drawing.Point;
 
 namespace TSG_Library.UFuncs
@@ -90,13 +90,13 @@ namespace TSG_Library.UFuncs
                 var match = Regex.Match(colorLine, rgbRegex);
 
                 // If the {colorLine} doesn't match, ignore it.
-                if (!match.Success)
+                if(!match.Success)
                 {
                     print_($"Could not match \"{colorLine}\".");
                     continue;
                 }
 
-                if (xCounter % 4 == 0)
+                if(xCounter % 4 == 0)
                 {
                     xCounter = 0;
                     yCounter++;
@@ -141,9 +141,9 @@ namespace TSG_Library.UFuncs
                 var toolTipString =
                     $"{button.Name} = {(int)button.Tag}, a={aValue}, r={rValue}, g={gValue}, b={bValue}";
 
-                if (detailNotes != "-") toolTipString += $"\n\nDetails:\n{detailNotes}";
+                if(detailNotes != "-") toolTipString += $"\n\nDetails:\n{detailNotes}";
 
-                if (dcb != "-") toolTipString += $"\n\nDiesets, Castings, & Burnouts:\n{dcb}";
+                if(dcb != "-") toolTipString += $"\n\nDiesets, Castings, & Burnouts:\n{dcb}";
 
                 toolTipString = toolTipString.Replace("\\n", "\n");
 
@@ -247,13 +247,13 @@ namespace TSG_Library.UFuncs
 
         private void RdoButton_Click(object sender, EventArgs e)
         {
-            if (sender == rdoFace)
+            if(sender == rdoFace)
                 Settings.Default.AssemblyColorCodeLastUsed = (int)AssemblyColorCodeType.Face;
-            else if (sender == rdoFeature)
+            else if(sender == rdoFeature)
                 Settings.Default.AssemblyColorCodeLastUsed = (int)AssemblyColorCodeType.Feature;
-            else if (sender == rdoSolid)
+            else if(sender == rdoSolid)
                 Settings.Default.AssemblyColorCodeLastUsed = (int)AssemblyColorCodeType.Solid;
-            else if (sender == rdoNoFilter)
+            else if(sender == rdoNoFilter)
                 Settings.Default.AssemblyColorCodeLastUsed = (int)AssemblyColorCodeType.None;
         }
 

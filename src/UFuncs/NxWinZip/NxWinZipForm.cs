@@ -9,7 +9,7 @@ using NXOpen;
 using NXOpen.Assemblies;
 using TSG_Library.Attributes;
 using TSG_Library.Utilities;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs
 {
@@ -56,7 +56,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if (displayPart is null)
+                if(displayPart is null)
                 {
                     MessageBox.Show("Please load an assembly", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -83,12 +83,12 @@ namespace TSG_Library.UFuncs
                     progressBarLoadAssm.Value = Convert.ToInt32(percentComplete * 100);
                     count++;
 
-                    if (part.IsFullyLoaded) continue;
+                    if(part.IsFullyLoaded) continue;
                     session_.Parts.Open(part.FullPath, out var loadStatus2);
                     loadStatus2.Dispose();
                 }
 
-                if (displayPart.ComponentAssembly.RootComponent == null)
+                if(displayPart.ComponentAssembly.RootComponent == null)
                 {
                     MessageBox.Show("Display Part is not an Assembly", "Error", MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
@@ -99,7 +99,7 @@ namespace TSG_Library.UFuncs
                 GetAllChildComponents(displayPart.ComponentAssembly.RootComponent);
                 selComponents = allComponents.DistinctBy(__c => __c.DisplayName).ToList();
 
-                if (selComponents != null)
+                if(selComponents != null)
                     foreach (var comp in selComponents)
                         assmParts.Add((Part)comp.Prototype);
 
@@ -116,9 +116,9 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if (displayPart == null)
+                if(displayPart == null)
                 {
-                    if (openFileDialog1.ShowDialog() != DialogResult.OK) return;
+                    if(openFileDialog1.ShowDialog() != DialogResult.OK) return;
                     result = DialogResult.OK;
 
                     assmParts.Clear();
@@ -143,7 +143,7 @@ namespace TSG_Library.UFuncs
                         progressBarLoadAssm.Value = Convert.ToInt32(percentComplete * 100);
                         count++;
 
-                        if (part.IsFullyLoaded) continue;
+                        if(part.IsFullyLoaded) continue;
                         session_.Parts.Open(part.FullPath, out var loadStatus2);
                         loadStatus2.Dispose();
                     }
@@ -172,14 +172,14 @@ namespace TSG_Library.UFuncs
                 MessageBoxButtons.OKCancel, MessageBoxIcon.Warning,
                 MessageBoxDefaultButton.Button1);
 
-            if (closeResult != DialogResult.OK) return;
+            if(closeResult != DialogResult.OK) return;
             CloseAssembly();
             SetFormDefaults();
         }
 
         private void ButtonSave_Click(object sender, EventArgs e)
         {
-            if (comboBoxCompression.SelectedIndex == 0)
+            if(comboBoxCompression.SelectedIndex == 0)
             {
                 // ReSharper disable once StringLiteralTypo
                 saveFileDialog1.DefaultExt = "zipx";
@@ -196,10 +196,10 @@ namespace TSG_Library.UFuncs
 
         private void ButtonOk_Click(object sender, EventArgs e)
         {
-            if (result == DialogResult.OK)
+            if(result == DialogResult.OK)
                 CreateZipFile(saveFileDialog1.FileName);
 
-            if (buttonCloseAssm.Enabled)
+            if(buttonCloseAssm.Enabled)
                 CloseAssembly();
 
             SetFormDefaults();
@@ -220,7 +220,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if (assmParts.Count == 0) return;
+                if(assmParts.Count == 0) return;
                 var compressionLevel = (WinZipCompression)comboBoxCompression.SelectedItem;
                 var compression = compressionLevel.CompressValue;
                 var tempFile = Path.GetTempPath() + "zipData.txt";
@@ -240,7 +240,7 @@ namespace TSG_Library.UFuncs
 
                 var process = new Process();
 
-                if (checkBoxDirPath.Checked)
+                if(checkBoxDirPath.Checked)
                 {
                     process.EnableRaisingEvents = false;
                     process.StartInfo.FileName = winZip;
@@ -326,7 +326,7 @@ namespace TSG_Library.UFuncs
             saveFileDialog1.InitialDirectory = dirOnly;
             saveFileDialog1.FileName = name;
 
-            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            if(saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 result = DialogResult.OK;
                 buttonOk.Enabled = true;
@@ -346,8 +346,8 @@ namespace TSG_Library.UFuncs
         {
             foreach (var descendant in assemblyPart1._DescendantsAll())
             {
-                if (descendant.IsSuppressed) continue;
-                if (descendant.Prototype is Part)
+                if(descendant.IsSuppressed) continue;
+                if(descendant.Prototype is Part)
                 {
                     print_("Heer");
                     allComponents.Add(descendant);
@@ -360,16 +360,16 @@ namespace TSG_Library.UFuncs
 
             try
             {
-                if (assemblyPart1.GetChildren() == null) return;
+                if(assemblyPart1.GetChildren() == null) return;
                 foreach (var child in assemblyPart1.GetChildren())
                 {
-                    if (child.IsSuppressed) continue;
+                    if(child.IsSuppressed) continue;
                     var instance = TheUFSession.Assem.AskInstOfPartOcc(child.Tag);
-                    if (instance == NXOpen.Tag.Null) continue;
+                    if(instance == NXOpen.Tag.Null) continue;
                     TheUFSession.Assem.AskPartNameOfChild(instance, out var partName);
                     var partLoad = TheUFSession.Part.IsLoaded(partName);
 
-                    if (partLoad == 1)
+                    if(partLoad == 1)
                     {
                         allComponents.Add(child);
                         GetAllChildComponents(child);
@@ -381,7 +381,7 @@ namespace TSG_Library.UFuncs
                         print_(partName);
                         TheUFSession.Part.OpenQuiet(partName, out var partOpen, out _);
 
-                        if (partOpen == NXOpen.Tag.Null) continue;
+                        if(partOpen == NXOpen.Tag.Null) continue;
                         allComponents.Add(child);
                         GetAllChildComponents(child);
                     }

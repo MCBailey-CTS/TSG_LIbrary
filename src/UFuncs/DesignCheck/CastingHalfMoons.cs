@@ -2,8 +2,7 @@
 using System.Linq;
 using System.Windows.Forms;
 using NXOpen;
-using TSG_Library.Extensions;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 {
@@ -68,7 +67,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
             //        yield break;
             //}
 
-            if (allHalfMoonFacesInPart.Any(face => face.SolidFaceType == Face.FaceType.Planar))
+            if(allHalfMoonFacesInPart.Any(face => face.SolidFaceType == Face.FaceType.Planar))
             {
                 //yield return new DesignCheckResult(false, part, this,
                 //    new ObjectNode("Found at least one face named half moon that is not a Planar Face."));
@@ -82,7 +81,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
             var halfMoons2 = dictionary[halfMoonConst + "2"].ToArray();
 
             // Checks to make sure that the program found 2 and only 2 NXOpen.Face's named HALFMOON1.
-            if (halfMoons1.Length != 2)
+            if(halfMoons1.Length != 2)
             {
                 //yield return new DesignCheckResult(false, part, this, new ObjectNode(halfMoons1.Length == 1
                 //    ? "Only found one face named " + halfMoonConst + "1."
@@ -91,7 +90,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
             }
 
             // Checks to make sure that the program found 2 and only 2 NXOpen.Face's named HALFMOON2.
-            if (halfMoons2.Length != 2)
+            if(halfMoons2.Length != 2)
             {
                 //yield return new DesignCheckResult(false, part, this, new ObjectNode(halfMoons2.Length == 1
                 //    ? "Only found one face named " + halfMoonConst + "2."
@@ -100,8 +99,8 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
             }
 
             // Checks to make sure that the normal of all the half moon faces is parallel to the absolute XY plane of the displayed snapPart.
-            if (allHalfMoonFacesInPart.Any(halfMoonFace =>
-                    !halfMoonFace._NormalVector()._IsPerpendicularTo(_Vector3dZ())))
+            if(allHalfMoonFacesInPart.Any(halfMoonFace =>
+                   !halfMoonFace._NormalVector()._IsPerpendicularTo(_Vector3dZ())))
             {
                 //yield
                 //    return new DesignCheckResult(false, part, this,
@@ -110,7 +109,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
                 //yield break;
             }
 
-            if (!CheckMoons(halfMoons1[0], halfMoons1[1]))
+            if(!CheckMoons(halfMoons1[0], halfMoons1[1]))
             {
                 //yield
                 //    return new DesignCheckResult(false, part, this,

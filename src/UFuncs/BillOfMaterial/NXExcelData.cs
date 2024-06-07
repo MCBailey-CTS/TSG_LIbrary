@@ -75,10 +75,10 @@ namespace TSG_Library.UFuncs
         {
             foreach (var excelData in data)
             {
-                if (strings.All(str =>
-                        !string.Equals(str, excelData.Data, StringComparison.CurrentCultureIgnoreCase))) continue;
+                if(strings.All(str =>
+                       !string.Equals(str, excelData.Data, StringComparison.CurrentCultureIgnoreCase))) continue;
                 excelData.ColorCell = true;
-                if (worksheet.Cells[excelData.RowIndex, excelData.ColumnIndex] is Range range)
+                if(worksheet.Cells[excelData.RowIndex, excelData.ColumnIndex] is Range range)
                     range.Interior.Color = System.Drawing.Color.FromArgb(0, 255, 0);
             }
         }

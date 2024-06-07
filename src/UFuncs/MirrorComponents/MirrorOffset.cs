@@ -4,7 +4,7 @@ using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
 using TSG_Library.Geom;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 {
@@ -43,7 +43,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
                         case Body _:
                             throw new MirrorException("Can't mirror body in offset face.");
                         case Face originalFace:
-                            if (!dict.ContainsKey(originalFace))
+                            if(!dict.ContainsKey(originalFace))
                                 throw new MirrorException("OffsetFace dictionary did not contain FACE as a key.");
 
                             var mirrorFace = (Face)dict[originalFace];
@@ -59,7 +59,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
                                 $"Unknown object type \"{originalObj.GetType().Name}\" in offset face.");
                     }
 
-                if (mirrorRules.Count == 0)
+                if(mirrorRules.Count == 0)
                     throw new MirrorException("Did not have enough SelectionIntentRules for OffsetFace commit.");
 
                 builder.FaceCollector.ReplaceRules(mirrorRules.ToArray(), false);

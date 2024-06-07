@@ -4,7 +4,6 @@ using System.Linq;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
-using TSG_Library.Extensions;
 using TSG_Library.Geom;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
@@ -26,12 +25,12 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             var originalBlock = (Block)originalFeature;
             var mirrorBlock = (Block)mirrorFeature;
 
-            if (!TryMatchFaces(originalBlock.GetFaces(), mirrorBlock.GetFaces(), plane, originalComp, mirrorComp,
-                    out var facePairs))
+            if(!TryMatchFaces(originalBlock.GetFaces(), mirrorBlock.GetFaces(), plane, originalComp, mirrorComp,
+                   out var facePairs))
                 throw new Exception($"Unable to match faces in {originalFeature.GetFeatureName()}");
 
-            if (!TryMatchEdges(originalBlock.GetEdges(), mirrorBlock.GetEdges(), plane, originalComp, mirrorComp,
-                    out var edgePairs))
+            if(!TryMatchEdges(originalBlock.GetEdges(), mirrorBlock.GetEdges(), plane, originalComp, mirrorComp,
+                   out var edgePairs))
                 throw new Exception($"Unable to match edges in {originalFeature.GetFeatureName()}");
 
             for (var index = 0; index < facePairs.Length; index += 2)
@@ -75,7 +74,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
                 var originalEdge = originalEdges1.First();
                 originalEdges1.Remove(originalEdge);
 
-                if (!TryMatchEdge(originalEdge, mirrorEdges1, plane, originalComp, mirrorComp, out var mirrorEdge))
+                if(!TryMatchEdge(originalEdge, mirrorEdges1, plane, originalComp, mirrorComp, out var mirrorEdge))
                 {
                     edgePairs = null;
 
@@ -108,7 +107,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
                 var originalFace = originalFaces1.First();
                 originalFaces1.Remove(originalFace);
 
-                if (!TryMatchFace(originalFace, mirrorFaces1, plane, originalComp, mirrorComp, out var mirrorFace))
+                if(!TryMatchFace(originalFace, mirrorFaces1, plane, originalComp, mirrorComp, out var mirrorFace))
                 {
                     facePairs = null;
 
@@ -137,7 +136,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             {
                 var mirrorVector = tempMirrorFace._NormalVector()._Unit();
 
-                if (!mirrorVector._IsEqualTo(expectedMirrorVector))
+                if(!mirrorVector._IsEqualTo(expectedMirrorVector))
                     continue;
 
                 mirrorFace = tempMirrorFace;
@@ -160,7 +159,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             var expectedEndPoint = originalEdge._EndPoint()._MirrorMap(plane, originalComp, mirrorComp);
 
             foreach (var tempMirrorEdge in mirrorEdges)
-                if (tempMirrorEdge._HasEndPoints(expectedStartPoint, expectedEndPoint))
+                if(tempMirrorEdge._HasEndPoints(expectedStartPoint, expectedEndPoint))
                 {
                     mirrorEdge = tempMirrorEdge;
                     return true;

@@ -4,10 +4,9 @@ using NXOpen;
 using NXOpen.Features;
 using NXOpen.Preferences;
 using TSG_Library.Attributes;
-using TSG_Library.Extensions;
 using TSG_Library.Properties;
 using static TSG_Library.UFuncs._UFunc;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs
 {
@@ -47,13 +46,13 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if (__display_part_ is null)
+                if(__display_part_ is null)
                 {
                     print_("No DisplayPart");
                     return;
                 }
 
-                if (!__display_part_.__HasDynamicBlock())
+                if(!__display_part_.__HasDynamicBlock())
                 {
                     print_("No Dynamic Block");
                     return;
@@ -61,8 +60,8 @@ namespace TSG_Library.UFuncs
 
                 var dynamic_block = __display_part_.__DynamicBlock();
 
-                if (chkSubtract.Checked)
-                    if (!__work_part_.__HasDynamicBlock())
+                if(chkSubtract.Checked)
+                    if(!__work_part_.__HasDynamicBlock())
                     {
                         print_("Current Work Part doesn't not contain a dynamic block");
 

@@ -12,8 +12,7 @@ using NXOpen.Drawings;
 using NXOpen.Layer;
 using NXOpen.UF;
 using TSG_Library.Disposable;
-using TSG_Library.Extensions;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.Utilities
 {
@@ -53,7 +52,7 @@ namespace TSG_Library.Utilities
                     TheUFSession.Ui.SetPrompt("Filtering components to export.");
                     var folder = GFolder.create(topLevelAssembly.FullPath);
 
-                    if (!components.All(comp => comp.OwningPart.Tag == topLevelAssembly.Tag))
+                    if(!components.All(comp => comp.OwningPart.Tag == topLevelAssembly.Tag))
                         throw new InvalidOperationException(
                             "All valid components must be under the top level display part.");
 
@@ -62,7 +61,7 @@ namespace TSG_Library.Utilities
 
                     foreach (var comp in components)
                     {
-                        if (!(comp.Prototype is Part part))
+                        if(!(comp.Prototype is Part part))
                             continue;
 
                         hashedParts.Add(part);
@@ -72,7 +71,7 @@ namespace TSG_Library.Utilities
 
                     const string sevenZip = @"C:\Program Files\7-Zip\7z.exe";
 
-                    if (!File.Exists(sevenZip))
+                    if(!File.Exists(sevenZip))
                         throw new FileNotFoundException($"Could not find \"{sevenZip}\".");
 
                     var parentFolder = isSixDigit
@@ -83,8 +82,8 @@ namespace TSG_Library.Utilities
                         ? null
                         : $"{parentFolder}\\{outgoingDirectoryName}";
 
-                    if (!(isRto && isSixDigit) && zipAssembly && exportDirectory != null &&
-                        Directory.Exists(exportDirectory))
+                    if(!(isRto && isSixDigit) && zipAssembly && exportDirectory != null &&
+                       Directory.Exists(exportDirectory))
                         switch (MessageBox.Show($@"{exportDirectory} already exisits, would you like to overwrite it?",
                                     @"Warning", MessageBoxButtons.YesNo))
                         {
@@ -95,12 +94,12 @@ namespace TSG_Library.Utilities
                                 return;
                         }
 
-                    if (!(isRto && isSixDigit))
-                        if (!string.IsNullOrEmpty(outgoingDirectoryName))
+                    if(!(isRto && isSixDigit))
+                        if(!string.IsNullOrEmpty(outgoingDirectoryName))
                             Directory.CreateDirectory(exportDirectory);
 
                     // If this is an RTO, then we need to delete the data files in the appropriate op folders.
-                    if (isRto && !isChange)
+                    if(isRto && !isChange)
                         try
                         {
                             DeleteOpFolders(__display_part_, folder);
@@ -110,7 +109,7 @@ namespace TSG_Library.Utilities
                             ex._PrintException();
                         }
 
-                    if (exportDirectory != null)
+                    if(exportDirectory != null)
                         Directory.CreateDirectory(exportDirectory);
 
                     var detailRegex = new Regex(Regex_Detail, RegexOptions.IgnoreCase);
@@ -118,7 +117,7 @@ namespace TSG_Library.Utilities
 
                     var exportDict = SortPartsForExport(validParts);
 
-                    if (!CheckSizeDescriptions(exportDict["PDF_4-VIEW"]))
+                    if(!CheckSizeDescriptions(exportDict["PDF_4-VIEW"]))
                         switch (MessageBox.Show(
                                     "At least one block did not match its' description. Would you like to continue?",
                                     "Warning", MessageBoxButtons.YesNo))
@@ -143,7 +142,7 @@ namespace TSG_Library.Utilities
                         try
                         {
                             // Sets up the strip.
-                            if (isRto || stpDetails || zipAssembly)
+                            if(isRto || stpDetails || zipAssembly)
                                 using (session_.using_display_part_reset())
                                 {
                                     SetUpStrip(folder);
@@ -166,7 +165,7 @@ namespace TSG_Library.Utilities
 
                         var dict = new Dictionary<string, Process>();
 
-                        if (isRto && detailRegex.IsMatch(topLevelAssembly.Leaf))
+                        if(isRto && detailRegex.IsMatch(topLevelAssembly.Leaf))
                         {
                             var stpPath = CreatePath(folder, topLevelAssembly, "-Step-Assembly", ".stp");
                             ;
@@ -175,35 +174,35 @@ namespace TSG_Library.Utilities
 
                             var dir = Path.GetDirectoryName(output);
 
-                            if (!Directory.Exists(dir))
+                            if(!Directory.Exists(dir))
                                 Directory.CreateDirectory(dir);
 
                             Stp(topLevelAssembly.FullPath, stpPath, FilePath_ExternalStep_Assembly_def);
                         }
 
                         // Prints the parts with 4-Views.
-                        if (print4Views)
+                        if(print4Views)
                             using (session_.using_display_part_reset())
                             {
                                 PrintPdfs(exportDict["PDF_4-VIEW"]);
                             }
 
                         // Gets the processes that will create the pdf 4-Views.
-                        if (isRto || pdf4Views)
+                        if(isRto || pdf4Views)
                             foreach (var part in exportDict["PDF_4-VIEW"])
                                 try
                                 {
-                                    if (part.Leaf.EndsWith("000"))
+                                    if(part.Leaf.EndsWith("000"))
                                         continue;
 
                                     var pdfPath = CreatePath(folder, part, "-Pdf-4-Views", ".pdf");
 
                                     var dir = Path.GetDirectoryName(pdfPath);
 
-                                    if (!Directory.Exists(dir))
+                                    if(!Directory.Exists(dir))
                                         Directory.CreateDirectory(dir);
 
-                                    if (File.Exists(pdfPath))
+                                    if(File.Exists(pdfPath))
                                         File.Delete(pdfPath);
 
                                     Pdf(part, "4-VIEW", pdfPath);
@@ -214,7 +213,7 @@ namespace TSG_Library.Utilities
                                 }
 
                         // If this is a RTO then 
-                        if (isRto || stpDetails)
+                        if(isRto || stpDetails)
                             foreach (var part in exportDict["PDF_4-VIEW"])
                                 try
                                 {
@@ -222,10 +221,10 @@ namespace TSG_Library.Utilities
 
                                     var dir = Path.GetDirectoryName(stpPath);
 
-                                    if (!Directory.Exists(dir))
+                                    if(!Directory.Exists(dir))
                                         Directory.CreateDirectory(dir);
 
-                                    if (File.Exists(stpPath))
+                                    if(File.Exists(stpPath))
                                         File.Delete(stpPath);
 
                                     Stp(part.FullPath, stpPath, FilePath_ExternalStep_Detail_def);
@@ -234,14 +233,14 @@ namespace TSG_Library.Utilities
                                 {
                                     ex._PrintException();
                                 }
-                        else if (zipAssembly)
+                        else if(zipAssembly)
                             try
                             {
                                 var path = $"{exportDirectory}\\{topLevelAssembly.Leaf}.stp";
 
                                 var dir = Path.GetDirectoryName(path);
 
-                                if (!Directory.Exists(dir))
+                                if(!Directory.Exists(dir))
                                     Directory.CreateDirectory(dir);
 
                                 Stp(topLevelAssembly.FullPath, path, FilePath_ExternalStep_Detail_def);
@@ -350,7 +349,7 @@ namespace TSG_Library.Utilities
                         //        }
 
                         // Creates casting parasolids.
-                        if (isRto || paraCasting)
+                        if(isRto || paraCasting)
                             foreach (var castingPart in exportDict["X_T_CASTING"])
                                 try
                                 {
@@ -369,7 +368,7 @@ namespace TSG_Library.Utilities
 
                         var zipPath = $"{exportDirectory}\\{topLevelAssembly.Leaf}_NX.7z";
 
-                        if ((isRto && !isSixDigit) || (zipAssembly && !isRto))
+                        if((isRto && !isSixDigit) || (zipAssembly && !isRto))
                         {
                             assemblyProcess = Assembly(topLevelAssembly, false, zipPath);
                             assemblyProcess.Start();
@@ -382,10 +381,10 @@ namespace TSG_Library.Utilities
                         prompt_("Zipping up data folders.");
 
                         // Gets all the data folders that were created and zips them up and places them in the proper outgoingData folderWithCtsNumber if this is an RTO.
-                        if (isRto && !isSixDigit)
+                        if(isRto && !isSixDigit)
                             ZipUpDataFolders(directoriesToExport, exportDirectory);
 
-                        if (isRto && !isSixDigit)
+                        if(isRto && !isSixDigit)
                             ZipupDirectories(sevenZip, directoriesToExport, zipPath);
 
                         foreach (var file_key in dict.Keys)
@@ -393,7 +392,7 @@ namespace TSG_Library.Utilities
                             {
                                 var process = dict[file_key];
 
-                                if (File.Exists(file_key))
+                                if(File.Exists(file_key))
                                     continue;
 
                                 prompt_($"Recreating: {file_key}");
@@ -408,18 +407,18 @@ namespace TSG_Library.Utilities
                             }
 
                         // Checks to make sure that any expected data files were actually created.
-                        if (expectedFiles.Count > 0)
+                        if(expectedFiles.Count > 0)
                             ErrorCheck(isRto, zipAssembly, expectedFiles);
 
                         // Moves the sim report to the out going folderWithCtsNumber if one exists.
-                        if (isRto && !isSixDigit && !(exportDirectory is null))
+                        if(isRto && !isSixDigit && !(exportDirectory is null))
                             MoveSimReport(folder, exportDirectory);
 
                         // Moves the stock list to the outgoing folderWithCtsNumber if one exists.
-                        if (isRto && !isSixDigit && !(exportDirectory is null))
+                        if(isRto && !isSixDigit && !(exportDirectory is null))
                             MoveStocklist(folder, topLevelAssembly.Leaf, exportDirectory);
 
-                        if (!(exportDirectory is null))
+                        if(!(exportDirectory is null))
                             ZipupDataDirectories(exportDirectory, assemblyProcess);
 
                         /////////////////////////
@@ -441,14 +440,14 @@ namespace TSG_Library.Utilities
 
         public static void DeleteOpFolders(Part part, GFolder folder)
         {
-            if (folder is null)
+            if(folder is null)
                 throw new ArgumentException();
 
             // Matches the {part.Leaf} to 000 regex.
             var top_match = Regex.Match(part.Leaf, Regex_Op000Holder, RegexOptions.IgnoreCase);
 
             // If the {match} is not a success, then {part} is not a "000".
-            if (!top_match.Success)
+            if(!top_match.Success)
                 throw new Exception($"Part \"{part.FullPath}\" is not a 000.");
 
             // Gets the op of the {part}.
@@ -468,12 +467,12 @@ namespace TSG_Library.Utilities
                     {
                         var match = Regex.Match(component.DisplayName, Regex_Lwr);
 
-                        if (!match.Success)
+                        if(!match.Success)
                             continue;
 
                         var assembly_op = match.Groups["opNum"].Value;
 
-                        if (assembly_op.Length % 2 != 0)
+                        if(assembly_op.Length % 2 != 0)
                             continue;
 
                         for (var i = 0; i < assembly_op.Length - 1; i += 2)
@@ -502,17 +501,17 @@ namespace TSG_Library.Utilities
                     var assemblyFolder = folder.dir_op(assemblyOp000);
 
                     // If the directory {assemblyFolder} doesn't exist, then we want to throw.
-                    if (!Directory.Exists(assemblyFolder))
+                    if(!Directory.Exists(assemblyFolder))
                         throw new DirectoryNotFoundException($"Could not find directory \"{assemblyFolder}\".");
 
                     foreach (var directory in Directory.GetDirectories(assemblyFolder))
                     {
                         var dirName = Path.GetFileName(directory);
 
-                        if (dirName == null)
+                        if(dirName == null)
                             continue;
 
-                        if (!dirName.StartsWith($"{folder.customer_number}-{assemblyOp000}"))
+                        if(!dirName.StartsWith($"{folder.customer_number}-{assemblyOp000}"))
                             continue;
 
                         // Adds the {directory} to the {directoriesToDelete}.
@@ -540,17 +539,17 @@ namespace TSG_Library.Utilities
                         var assemblyFolder = folder.dir_op(assemblyOp);
 
                         // If the directory {assemblyFolder} doesn't exist, then we want to throw.
-                        if (!Directory.Exists(assemblyFolder))
+                        if(!Directory.Exists(assemblyFolder))
                             throw new DirectoryNotFoundException($"Could not find directory \"{assemblyFolder}\".");
 
                         foreach (var directory in Directory.GetDirectories(assemblyFolder))
                         {
                             var dirName = Path.GetFileName(directory);
 
-                            if (dirName == null)
+                            if(dirName == null)
                                 continue;
 
-                            if (!dirName.StartsWith($"{folder.customer_number}-{assemblyOp}"))
+                            if(!dirName.StartsWith($"{folder.customer_number}-{assemblyOp}"))
                                 continue;
 
                             // Adds the {directory} to the {directoriesToDelete}.
@@ -562,7 +561,7 @@ namespace TSG_Library.Utilities
             }
 
             foreach (var dir in directoriesToDelete)
-                if (Directory.Exists(dir))
+                if(Directory.Exists(dir))
                     Directory.Delete(dir, true);
         }
 
@@ -571,12 +570,12 @@ namespace TSG_Library.Utilities
         {
             foreach (var expected in expectedFiles)
             {
-                if (!expected.EndsWith(".stp") || !File.Exists(expected))
+                if(!expected.EndsWith(".stp") || !File.Exists(expected))
                     continue;
 
                 var fileText = File.ReadAllText(expected);
 
-                if (!fileText.Contains("Cyan"))
+                if(!fileText.Contains("Cyan"))
                     continue;
 
                 File.WriteAllText(expected, fileText.Replace("Cyan", "cyan"));
@@ -604,9 +603,9 @@ namespace TSG_Library.Utilities
             foreach (var part in partsInBom)
                 try
                 {
-                    if (!SizeDescription1.Validate(part, out var message))
+                    if(!SizeDescription1.Validate(part, out var message))
                     {
-                        if (message == "Part does not contain a Dynamic Block.")
+                        if(message == "Part does not contain a Dynamic Block.")
                             continue;
                         allPassed = false;
                         print_($"{part.Leaf}:\n{message}\n");
@@ -660,7 +659,7 @@ namespace TSG_Library.Utilities
 
 
             for (var i = 2; i <= 256; i++)
-                if (Layers.Contains(i))
+                if(Layers.Contains(i))
                     __display_part_.Layers.SetState(i, State.Selectable);
                 else
                     __display_part_.Layers.SetState(i, State.Hidden);
@@ -677,14 +676,14 @@ namespace TSG_Library.Utilities
                 var castingDirectory =
                     $"{folder.dir_job}\\{folder.customer_number}-{op}\\{folder.customer_number}-{op}-Parasolids-Castings";
 
-                if (!Directory.Exists(castingDirectory))
+                if(!Directory.Exists(castingDirectory))
                     Directory.CreateDirectory(castingDirectory);
 
                 try
                 {
                     var step_path = $"{castingDirectory}\\{part.Leaf}.stp";
 
-                    if (File.Exists(step_path))
+                    if(File.Exists(step_path))
                         File.Delete(step_path);
 
                     using (session_.using_lock_ug_updates())
@@ -692,10 +691,10 @@ namespace TSG_Library.Utilities
                     {
                         foreach (var child in __display_part_.ComponentAssembly.RootComponent.GetChildren())
                         {
-                            if (child.Layer == 96)
+                            if(child.Layer == 96)
                                 continue;
 
-                            if (child.IsSuppressed)
+                            if(child.IsSuppressed)
                                 continue;
 
                             child.Suppress();
@@ -760,7 +759,7 @@ namespace TSG_Library.Utilities
 
                 var castingPath = $"{castingDirectory}\\{part.Leaf}.x_t";
 
-                if (File.Exists(castingPath))
+                if(File.Exists(castingPath))
                     File.Delete(castingPath);
 
                 var tagBodies = part.Bodies
@@ -770,23 +769,23 @@ namespace TSG_Library.Utilities
                     .Select(body => body.Tag)
                     .ToList();
 
-                if (tagBodies.Count == 0)
+                if(tagBodies.Count == 0)
                 {
                     print_($"Did not find any solid bodies on layer 1 in part {part.Leaf}");
 
                     return;
                 }
 
-                if (!(part.ComponentAssembly.RootComponent is null))
+                if(!(part.ComponentAssembly.RootComponent is null))
                     foreach (var child in part.ComponentAssembly.RootComponent.GetChildren())
                     {
-                        if (child.IsSuppressed)
+                        if(child.IsSuppressed)
                             continue;
 
-                        if (child.Layer != 96)
+                        if(child.Layer != 96)
                             continue;
 
-                        if (child.ReferenceSet == "Empty")
+                        if(child.ReferenceSet == "Empty")
                             continue;
 
                         foreach (var __body in child._Members().OfType<Body>().Where(__b => __b.IsSolidBody))
@@ -808,7 +807,7 @@ namespace TSG_Library.Utilities
 
         public static void SetLayersInBlanksAndLayoutsAndAddDummies(Part snapStrip010)
         {
-            if (!Regex.IsMatch(snapStrip010.Leaf, Regex_Strip, RegexOptions.IgnoreCase))
+            if(!Regex.IsMatch(snapStrip010.Leaf, Regex_Strip, RegexOptions.IgnoreCase))
                 throw new ArgumentException(@"Must be an op 010 strip.", nameof(snapStrip010));
 
             using (session_.using_display_part_reset())
@@ -833,22 +832,22 @@ namespace TSG_Library.Utilities
 
                 foreach (var child in __display_part_.ComponentAssembly.RootComponent._Descendants())
                 {
-                    if (!(child.Prototype is Part))
+                    if(!(child.Prototype is Part))
                         continue;
 
-                    if (child.IsSuppressed)
+                    if(child.IsSuppressed)
                         continue;
 
                     var blankMatch = blankNameRegex.Match(child.Name);
                     var layoutMatch = layoutNameRegex.Match(child.Name);
 
-                    if (blankMatch.Success)
+                    if(blankMatch.Success)
                     {
                         var layer = int.Parse(blankMatch.Groups[1].Value) + 10;
                         blankLayers.Add(layer);
                     }
 
-                    if (!layoutMatch.Success) continue;
+                    if(!layoutMatch.Success) continue;
                     {
                         var layer = int.Parse(layoutMatch.Groups[1].Value) * 10;
                         layoutLayers.Add(layer);
@@ -856,7 +855,7 @@ namespace TSG_Library.Utilities
                     }
                 }
 
-                if (blankLayers.Count != 0 && blankPart != null)
+                if(blankLayers.Count != 0 && blankPart != null)
                 {
                     __display_part_ = blankPart;
                     __work_part_ = __display_part_;
@@ -866,7 +865,7 @@ namespace TSG_Library.Utilities
                         .Save(BasePart.SaveComponents.False, BasePart.CloseAfterSave.False);
                 }
 
-                if (layoutLayers.Count != 0 && layoutPart != null)
+                if(layoutLayers.Count != 0 && layoutPart != null)
                 {
                     __display_part_ = layoutPart;
                     __work_part_ = __display_part_;
@@ -893,14 +892,14 @@ namespace TSG_Library.Utilities
             __display_part_.Layers.SetState(layerArray.Min(), State.WorkLayer);
             __display_part_.Layers.SetState(1, State.Hidden);
 
-            if (!(part.ComponentAssembly.RootComponent is null))
+            if(!(part.ComponentAssembly.RootComponent is null))
             {
                 var validChild = part.ComponentAssembly.RootComponent
                     .GetChildren()
                     .Where(component => component._IsLoaded())
                     .FirstOrDefault(component => !component.IsSuppressed);
 
-                if (validChild != null)
+                if(validChild != null)
                     return;
             }
 
@@ -914,23 +913,23 @@ namespace TSG_Library.Utilities
         {
             TheUFSession.Ui.SetPrompt("Checking Dummy files exist.");
 
-            if (__display_part_.ComponentAssembly.RootComponent == null)
+            if(__display_part_.ComponentAssembly.RootComponent == null)
                 return;
 
             foreach (var childOfStrip in __display_part_.ComponentAssembly.RootComponent.GetChildren())
             {
-                if (childOfStrip.IsSuppressed)
+                if(childOfStrip.IsSuppressed)
                     continue;
 
-                if (!childOfStrip._IsLoaded())
+                if(!childOfStrip._IsLoaded())
                     continue;
 
-                if (!Regex.IsMatch(childOfStrip.DisplayName, Regex_PressAssembly, RegexOptions.IgnoreCase))
+                if(!Regex.IsMatch(childOfStrip.DisplayName, Regex_PressAssembly, RegexOptions.IgnoreCase))
                     continue;
 
                 var pressComponent = childOfStrip;
 
-                if (pressComponent.GetChildren().Length == 0)
+                if(pressComponent.GetChildren().Length == 0)
                     throw new InvalidOperationException(
                         $"A press exists in your assembly without any children. {pressComponent._AssemblyPathString()}");
 
@@ -942,17 +941,17 @@ namespace TSG_Library.Utilities
                     case 2:
                         foreach (var childOfPress in pressComponent.GetChildren())
                         {
-                            if (!childOfPress._IsLoaded())
+                            if(!childOfPress._IsLoaded())
                                 throw new InvalidOperationException(
                                     $"The child of a press must be loaded. {childOfPress._AssemblyPathString()}");
 
-                            if (childOfPress.IsSuppressed)
+                            if(childOfPress.IsSuppressed)
                                 throw new InvalidOperationException(
                                     $"The child of a press cannot be suppressed. {childOfPress._AssemblyPathString()}");
 
-                            if (childOfPress.GetChildren().Length != 0 && childOfPress.GetChildren()
-                                    .Select(component => component)
-                                    .Any(component => !component.IsSuppressed && component.Prototype is Part))
+                            if(childOfPress.GetChildren().Length != 0 && childOfPress.GetChildren()
+                                   .Select(component => component)
+                                   .Any(component => !component.IsSuppressed && component.Prototype is Part))
                                 continue;
 
                             throw new InvalidOperationException(
@@ -971,7 +970,7 @@ namespace TSG_Library.Utilities
                 var stpFilesInOutGoingFolder =
                     Directory.GetFiles(exportDirectory, "*.stp", SearchOption.TopDirectoryOnly);
 
-                if (stpFilesInOutGoingFolder.Length != 0)
+                if(stpFilesInOutGoingFolder.Length != 0)
                 {
                     var displayName = Path.GetFileNameWithoutExtension(stpFilesInOutGoingFolder.First());
 
@@ -985,7 +984,7 @@ namespace TSG_Library.Utilities
                     foreach (var file in stpFilesInOutGoingFolder)
                         try
                         {
-                            if (File.Exists(file)) File.Delete(file);
+                            if(File.Exists(file)) File.Delete(file);
                         }
                         catch (Exception ex)
                         {
@@ -1043,34 +1042,34 @@ namespace TSG_Library.Utilities
             {
                 var match = detailRegex.Match(part.Leaf);
 
-                if (!match.Success)
+                if(!match.Success)
                     continue;
 
-                if (part.Leaf._IsAssemblyHolder())
+                if(part.Leaf._IsAssemblyHolder())
                     continue;
 
-                if (part.Leaf.EndsWith("000"))
+                if(part.Leaf.EndsWith("000"))
                     continue;
 
-                if (part.__HasDrawingSheet("4-VIEW"))
+                if(part.__HasDrawingSheet("4-VIEW"))
                 {
                     exportDict["PDF_4-VIEW"].Add(part);
                     exportDict["DWG_4-VIEW"].Add(part);
                 }
 
-                if (part.__HasDrawingSheet("BURNOUT"))
+                if(part.__HasDrawingSheet("BURNOUT"))
                     exportDict["DWG_BURNOUT"].Add(part);
 
-                if (part.__IsSee3DData())
+                if(part.__IsSee3DData())
                     exportDict["STP_SEE3D"].Add(part);
 
-                if (part.__Is999())
+                if(part.__Is999())
                     exportDict["STP_999"].Add(part);
 
-                if (part.__IsCasting())
+                if(part.__IsCasting())
                     exportDict["X_T_CASTING"].Add(part);
 
-                if (part.__HasReferenceSet("BODY"))
+                if(part.__HasReferenceSet("BODY"))
                     exportDict["X_T"].Add(part);
             }
 
@@ -1094,37 +1093,37 @@ namespace TSG_Library.Utilities
 
                 ISet<Part> partsToUpdate = new HashSet<Part>();
 
-                if (isRto || pdf4Views || dwg4Views || stpDetails)
+                if(isRto || pdf4Views || dwg4Views || stpDetails)
                     foreach (var part in partsWith4ViewsNoAssemblyHolders)
-                        if (selected_parts.Contains(part))
+                        if(selected_parts.Contains(part))
                             partsToUpdate.Add(part);
 
-                if (isRto || dwgBurnout)
+                if(isRto || dwgBurnout)
                     foreach (var part in burnoutParts)
-                        if (selected_parts.Contains(part))
+                        if(selected_parts.Contains(part))
                             partsToUpdate.Add(part);
 
-                if (isRto || print4Views)
+                if(isRto || print4Views)
                     foreach (var part in partsWith4Views)
-                        if (selected_parts.Contains(part))
+                        if(selected_parts.Contains(part))
                             partsToUpdate.Add(part);
 
-                if (isRto || paraCasting)
+                if(isRto || paraCasting)
                     foreach (var part in castingParts)
-                        if (selected_parts.Contains(part))
+                        if(selected_parts.Contains(part))
                             partsToUpdate.Add(part);
 
-                if (isRto || stp999)
+                if(isRto || stp999)
                     foreach (var part in nine99Parts)
-                        if (selected_parts.Contains(part))
+                        if(selected_parts.Contains(part))
                             partsToUpdate.Add(part);
 
-                if (isRto || stpSee3DData)
+                if(isRto || stpSee3DData)
                     foreach (var part in see3DDataParts)
-                        if (selected_parts.Contains(part))
+                        if(selected_parts.Contains(part))
                             partsToUpdate.Add(part);
 
-                if (partsToUpdate.Count > 0)
+                if(partsToUpdate.Count > 0)
                     UpdateParts(partsToUpdate.ToArray());
             }
         }
@@ -1153,20 +1152,20 @@ namespace TSG_Library.Utilities
         {
             try
             {
-                if (!folder.is_cts_job())
+                if(!folder.is_cts_job())
                     return;
 
-                if (GetReports(folder.cts_number).Length != 0)
+                if(GetReports(folder.cts_number).Length != 0)
                     foreach (var report in GetReports(folder.cts_number))
                     {
                         var reportName = Path.GetFileName(report);
 
-                        if (reportName == null)
+                        if(reportName == null)
                             continue;
 
                         var exportedReportPath = $"{exportDirectory}\\{reportName}";
 
-                        if (File.Exists(exportedReportPath))
+                        if(File.Exists(exportedReportPath))
                         {
                             print_($"Sim report \"{exportedReportPath}\" already exists.");
                             continue;
@@ -1203,7 +1202,7 @@ namespace TSG_Library.Utilities
                 for (var i = length; processesCompleted < processes.Length; i++)
                 {
                     var first = hashProcesses.FirstOrDefault(process => process != null && process.HasExited);
-                    if (first == null)
+                    if(first == null)
                     {
                         i--;
                         continue;
@@ -1211,7 +1210,7 @@ namespace TSG_Library.Utilities
 
                     hashProcesses.Remove(first);
                     processesCompleted++;
-                    if (i < processes.Length)
+                    if(i < processes.Length)
                     {
                         var nextProcess = processes[i];
                         nextProcess.Start();
@@ -1245,14 +1244,14 @@ namespace TSG_Library.Utilities
                     __display_part_ = part;
                     __work_part_ = __display_part_;
 
-                    if (part.__IsCasting() && !(part.ComponentAssembly.RootComponent is null))
+                    if(part.__IsCasting() && !(part.ComponentAssembly.RootComponent is null))
                         // If it is a casting then it cannot contain a child that is a lift lug and set to entire part.
-                        if ((from child in part.ComponentAssembly.RootComponent.GetChildren()
-                                where child.Prototype is Part
-                                where child._Prototype().FullPath.Contains("LiftLugs")
-                                where child.ReferenceSet != Refset_Empty
-                                select child)
-                            .Any(child => child.ReferenceSet == Refset_EntirePart))
+                        if((from child in part.ComponentAssembly.RootComponent.GetChildren()
+                               where child.Prototype is Part
+                               where child._Prototype().FullPath.Contains("LiftLugs")
+                               where child.ReferenceSet != Refset_Empty
+                               select child)
+                           .Any(child => child.ReferenceSet == Refset_EntirePart))
                             print_(
                                 $"Casting part {__display_part_.Leaf} contains a Lift Lug that is set to Entire Part. Casting Part cannot be made.");
 
@@ -1289,7 +1288,7 @@ namespace TSG_Library.Utilities
             {
                 var strip_010 = folder.file_strip("010");
 
-                if (File.Exists(strip_010))
+                if(File.Exists(strip_010))
                     session_.find_or_open(strip_010);
 
                 var op010Strip = session_.find_or_open(strip_010);
@@ -1321,13 +1320,13 @@ namespace TSG_Library.Utilities
         /// <param name="snapComponent">The component to get the descendants from.</param>
         private static IEnumerable<Component> GetAssembly(Component snapComponent)
         {
-            if (!snapComponent._IsLoaded())
+            if(!snapComponent._IsLoaded())
                 yield break;
 
-            if (snapComponent.DisplayName.ToLower().EndsWith("-simulation"))
+            if(snapComponent.DisplayName.ToLower().EndsWith("-simulation"))
                 yield break;
 
-            if (snapComponent.IsSuppressed)
+            if(snapComponent.IsSuppressed)
                 yield break;
 
             yield return snapComponent;
@@ -1362,7 +1361,7 @@ namespace TSG_Library.Utilities
 
             print_($"Created {fileCreatedCount} file(s).");
 
-            if (!isRto && !zipAssembly)
+            if(!isRto && !zipAssembly)
                 print_(
                     "Created files will have to be manually moved to outgoingData folderWithCtsNumber if that is desired. (Example: RTO)");
 
@@ -1374,12 +1373,12 @@ namespace TSG_Library.Utilities
             {
                 var extension = Path.GetExtension(file);
 
-                if (extension == null)
+                if(extension == null)
                     continue;
 
                 var errorFilePath = file.Replace(extension, ".err");
 
-                if (File.Exists(errorFilePath))
+                if(File.Exists(errorFilePath))
                 {
                     var fileContents = File.ReadAllLines(errorFilePath);
 
@@ -1393,7 +1392,7 @@ namespace TSG_Library.Utilities
                 }
             }
 
-            if (errorList.Count <= 0)
+            if(errorList.Count <= 0)
                 return;
 
             print_("Files that were not created.");
@@ -1418,13 +1417,13 @@ namespace TSG_Library.Utilities
                 {
                     var name = Path.GetFileNameWithoutExtension(part.FullPath);
 
-                    if (name == null)
+                    if(name == null)
                         return false;
 
                     name = name.ToLower();
 
-                    if (name.EndsWith("000") || name.EndsWith("lsh") || name.EndsWith("ush") || name.EndsWith("lwr") ||
-                        name.EndsWith("upr"))
+                    if(name.EndsWith("000") || name.EndsWith("lsh") || name.EndsWith("ush") || name.EndsWith("lwr") ||
+                       name.EndsWith("upr"))
                         return false;
 
                     return !name.Contains("lsp") && !name.Contains("usp");
@@ -1495,7 +1494,7 @@ namespace TSG_Library.Utilities
                     where name.EndsWith($"{topDisplayName}-stocklist")
                     select file).SingleOrDefault();
 
-                if (stocklist is null)
+                if(stocklist is null)
                 {
                     print_($"Could not find a stocklist named: {topDisplayName}-stocklist");
                     return;
@@ -1566,13 +1565,13 @@ namespace TSG_Library.Utilities
 
         public static void SevenZip(string path, bool wait, string textFileToRead)
         {
-            if (string.IsNullOrEmpty(path))
+            if(string.IsNullOrEmpty(path))
                 throw new ArgumentException(@"Invalid path.", nameof(path));
 
-            if (File.Exists(path))
+            if(File.Exists(path))
                 throw new IOException("The specified output_path already exists.");
 
-            if (!File.Exists(textFileToRead))
+            if(!File.Exists(textFileToRead))
                 throw new FileNotFoundException();
 
             var fileToRead = "a -t7z \"" + path + "\" \"@" + textFileToRead + "\" -mx9";
@@ -1589,7 +1588,7 @@ namespace TSG_Library.Utilities
 
             process.Start();
 
-            if (!wait)
+            if(!wait)
                 return;
 
             process.WaitForExit();
@@ -1603,10 +1602,10 @@ namespace TSG_Library.Utilities
         {
             var directory = Path.GetDirectoryName(filePath);
 
-            if (!filePath.EndsWith(".pdf"))
+            if(!filePath.EndsWith(".pdf"))
                 throw new InvalidOperationException("File path for PDF must end with \".pdf\".");
 
-            if (File.Exists(filePath))
+            if(File.Exists(filePath))
                 throw new ArgumentOutOfRangeException("output_path", "PDF \"" + filePath + "\" already exists.");
 
             //We can use SingleOrDefault here because NX will prevent the naming of two drawing sheets the exact same string.
@@ -1637,7 +1636,7 @@ namespace TSG_Library.Utilities
                 pdfBuilder.Watermark = "";
                 UFSession.GetUFSession().Draw.IsObjectOutOfDate(sheet.Tag, out var flag);
 
-                if (flag)
+                if(flag)
                 {
                     UFSession.GetUFSession().Draw.UpdOutOfDateViews(sheet.Tag);
                     part.__Save();
@@ -1652,13 +1651,13 @@ namespace TSG_Library.Utilities
 
         public static void Stp(string partPath, string output_path, string settings_file)
         {
-            if (!output_path.EndsWith(".stp"))
+            if(!output_path.EndsWith(".stp"))
                 throw new InvalidOperationException("File path for STP must end with \".stp\".");
 
-            if (File.Exists(output_path))
+            if(File.Exists(output_path))
                 throw new ArgumentOutOfRangeException("output_path", "STP \"" + output_path + "\" already exists.");
 
-            if (!File.Exists(partPath))
+            if(!File.Exists(partPath))
                 throw new FileNotFoundException("Could not find file location \"" + partPath + "\".");
 
             session_.find_or_open(partPath);
@@ -1683,7 +1682,7 @@ namespace TSG_Library.Utilities
 
             var switchFilePath = output_path.Replace(".stp", ".log");
 
-            if (File.Exists(switchFilePath))
+            if(File.Exists(switchFilePath))
                 File.Delete(switchFilePath);
         }
 
@@ -1691,7 +1690,7 @@ namespace TSG_Library.Utilities
         {
             var directory = Path.GetDirectoryName(filePath);
 
-            if (File.Exists(filePath))
+            if(File.Exists(filePath))
                 throw new ArgumentOutOfRangeException("output_path", "DWG \"" + filePath + "\" already exists.");
 
             var part = session_.find_or_open(partPath);
@@ -1706,7 +1705,7 @@ namespace TSG_Library.Utilities
 
             UFSession.GetUFSession().Draw.IsObjectOutOfDate(sheet.Tag, out var flag);
 
-            if (flag)
+            if(flag)
             {
                 SetLayers();
                 UFSession.GetUFSession().Draw.UpdOutOfDateViews(sheet.Tag);
@@ -1739,7 +1738,7 @@ namespace TSG_Library.Utilities
 
             var switchFilePath = filePath.Replace(".dwg", ".log");
 
-            if (File.Exists(switchFilePath))
+            if(File.Exists(switchFilePath))
                 File.Delete(switchFilePath);
         }
     }

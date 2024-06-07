@@ -13,7 +13,7 @@ using NXOpen.Utilities;
 using NXOpenUI;
 using TSG_Library.Properties;
 using TSG_Library.Utilities;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 using static NXOpen.UF.UFConstants;
 using Part = NXOpen.Part;
 
@@ -50,7 +50,7 @@ namespace TSG_Library.UFuncs
 
         private void EditBlockForm_Load(object sender, EventArgs e)
         {
-            if (Settings.Default.udoComponentBuilderWindowLocation != null)
+            if(Settings.Default.udoComponentBuilderWindowLocation != null)
                 Location = Settings.Default.udoComponentBuilderWindowLocation;
 
 
@@ -59,8 +59,8 @@ namespace TSG_Library.UFuncs
             LoadGridSizes();
 
 
-            if (string.IsNullOrEmpty(comboBoxGridBlock.Text))
-                if (!(Session.GetSession().Parts.Work is null))
+            if(string.IsNullOrEmpty(comboBoxGridBlock.Text))
+                if(!(Session.GetSession().Parts.Work is null))
                     comboBoxGridBlock.SelectedItem = Session.GetSession().Parts.Work.PartUnits == BasePart.Units.Inches
                         ? "0.250"
                         : "6.35";
@@ -86,7 +86,7 @@ namespace TSG_Library.UFuncs
 
         private void ComboBoxGridBlock_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBoxGridBlock.Text == "0.000")
+            if(comboBoxGridBlock.Text == "0.000")
             {
                 bool isConverted;
                 isConverted = double.TryParse(comboBoxGridBlock.Text, out _gridSpace);
@@ -108,7 +108,7 @@ namespace TSG_Library.UFuncs
         {
             comboBoxGridBlock.Items.Clear();
 
-            if (_displayPart.PartUnits == BasePart.Units.Inches)
+            if(_displayPart.PartUnits == BasePart.Units.Inches)
             {
                 comboBoxGridBlock.Items.Add("0.002");
                 comboBoxGridBlock.Items.Add("0.03125");
@@ -132,7 +132,7 @@ namespace TSG_Library.UFuncs
             }
 
             foreach (string gridSetting in comboBoxGridBlock.Items)
-                if (gridSetting == Settings.Default.EditBlockFormGridIncrement)
+                if(gridSetting == Settings.Default.EditBlockFormGridIncrement)
                 {
                     var gridIndex = comboBoxGridBlock.Items.IndexOf(gridSetting);
 
@@ -151,7 +151,7 @@ namespace TSG_Library.UFuncs
                 WorkPlane workPlane1;
                 workPlane1 = _displayPart.Preferences.Workplane;
 
-                if (workPlane1 != null)
+                if(workPlane1 != null)
                 {
                     workPlane1.GridType = WorkPlane.Grid.Rectangular;
 
@@ -199,7 +199,7 @@ namespace TSG_Library.UFuncs
                 WorkPlane workPlane1;
                 workPlane1 = _displayPart.Preferences.Workplane;
 
-                if (workPlane1 != null)
+                if(workPlane1 != null)
                 {
                     workPlane1.GridType = WorkPlane.Grid.Rectangular;
 
@@ -239,7 +239,7 @@ namespace TSG_Library.UFuncs
 
         public int Startup()
         {
-            if (_registered == 0)
+            if(_registered == 0)
             {
                 var editForm = this;
                 _idWorkPartChanged1 = session_.Parts.AddWorkPartChangedHandler(editForm.WorkPartChanged1);
@@ -280,13 +280,13 @@ namespace TSG_Library.UFuncs
 
                 var editComponent = SelectOneComponent("Select Component to edit construction");
 
-                if (editComponent != null)
+                if(editComponent != null)
                 {
                     var assmUnits = _displayPart.PartUnits;
                     var compBase = (BasePart)editComponent.Prototype;
                     var compUnits = compBase.PartUnits;
 
-                    if (compUnits == assmUnits)
+                    if(compUnits == assmUnits)
                     {
                         ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
@@ -302,7 +302,7 @@ namespace TSG_Library.UFuncs
                         var allRefSets = _displayPart.GetAllReferenceSets();
 
                         foreach (var namedRefSet in allRefSets)
-                            if (namedRefSet.Name == "EDIT")
+                            if(namedRefSet.Name == "EDIT")
                                 _workPart.DeleteReferenceSet(namedRefSet);
 
                         int nErrs1;
@@ -414,7 +414,7 @@ namespace TSG_Library.UFuncs
                 var allRefSets = _workPart.GetAllReferenceSets();
 
                 foreach (var namedRefSet in allRefSets)
-                    if (namedRefSet.Name == "EDIT")
+                    if(namedRefSet.Name == "EDIT")
                         _workPart.DeleteReferenceSet(namedRefSet);
 
                 int nErrs1;
@@ -461,7 +461,7 @@ namespace TSG_Library.UFuncs
                 //    areUnitsEqual = true;
                 //}
 
-                if (dispUnits == Part.Units.Millimeters)
+                if(dispUnits == Part.Units.Millimeters)
                 {
                     _displayPart.UnitCollection.SetDefaultDataEntryUnits(UnitCollection.UnitDefaults.GMmNDegC);
                     _displayPart.UnitCollection.SetDefaultObjectInformationUnits(UnitCollection.UnitDefaults.GMmNDegC);
@@ -478,8 +478,8 @@ namespace TSG_Library.UFuncs
                 session_.Preferences.EmphasisVisualization.WorkPartEmphasis = false;
                 session_.Preferences.Assemblies.WorkPartDisplayAsEntirePart = false;
 
-                if (_isNewSelection)
-                    if (_updateComponent == null)
+                if(_isNewSelection)
+                    if(_updateComponent == null)
                     {
                         SelectWithFilter.NonValidCandidates = _nonValidNames;
                         SelectWithFilter.GetSelectedWithFilter("Select Component for Dynamic Edit");
@@ -487,15 +487,15 @@ namespace TSG_Library.UFuncs
                         _isNewSelection = true;
                     }
 
-                if (_editBody != null)
+                if(_editBody != null)
                 {
                     var editComponent = _editBody.OwningComponent;
 
-                    if (editComponent != null)
+                    if(editComponent != null)
                     {
                         var checkPartName = (Part)editComponent.Prototype;
 
-                        if (!checkPartName.FullPath.Contains("mirror"))
+                        if(!checkPartName.FullPath.Contains("mirror"))
                         {
                             _updateComponent = editComponent;
 
@@ -503,9 +503,9 @@ namespace TSG_Library.UFuncs
                             var compBase = (BasePart)editComponent.Prototype;
                             var compUnits = compBase.PartUnits;
 
-                            if (compUnits == assmUnits)
+                            if(compUnits == assmUnits)
                             {
-                                if (_isNewSelection)
+                                if(_isNewSelection)
                                 {
                                     ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
@@ -514,8 +514,8 @@ namespace TSG_Library.UFuncs
                                     UpdateSessionParts();
 
                                     foreach (Feature featBlk in _workPart.Features)
-                                        if (featBlk.FeatureType == "BLOCK")
-                                            if (featBlk.Name == "DYNAMIC BLOCK")
+                                        if(featBlk.FeatureType == "BLOCK")
+                                            if(featBlk.Name == "DYNAMIC BLOCK")
                                             {
                                                 isBlockComponent = true;
                                                 CreateEditData(editComponent);
@@ -527,7 +527,7 @@ namespace TSG_Library.UFuncs
                                     isBlockComponent = true;
                                 }
 
-                                if (isBlockComponent)
+                                if(isBlockComponent)
                                 {
                                     DisableForm();
 
@@ -561,7 +561,7 @@ namespace TSG_Library.UFuncs
                                         ufsession_.Ui.SpecifyScreenPosition(message, MotionCallback, motionCbData,
                                             screenPos, out viewTag, out var response);
 
-                                        if (response == UF_UI_PICK_RESPONSE)
+                                        if(response == UF_UI_PICK_RESPONSE)
                                         {
                                             UpdateDynamicHandles();
                                             ShowDynamicHandles();
@@ -589,19 +589,19 @@ namespace TSG_Library.UFuncs
                     }
                     else
                     {
-                        if (!_displayPart.FullPath.Contains("mirror"))
+                        if(!_displayPart.FullPath.Contains("mirror"))
                         {
                             foreach (Feature featBlk in _workPart.Features)
-                                if (featBlk.FeatureType == "BLOCK")
-                                    if (featBlk.Name == "DYNAMIC BLOCK")
+                                if(featBlk.FeatureType == "BLOCK")
+                                    if(featBlk.Name == "DYNAMIC BLOCK")
                                         isBlockComponent = true;
 
-                            if (isBlockComponent)
+                            if(isBlockComponent)
                             {
                                 DisableForm();
 
 
-                                if (_isNewSelection)
+                                if(_isNewSelection)
                                 {
                                     CreateEditData(editComponent);
 
@@ -638,7 +638,7 @@ namespace TSG_Library.UFuncs
                                     ufsession_.Ui.SpecifyScreenPosition(message, MotionCallback, motionCbData,
                                         screenPos, out viewTag, out var response);
 
-                                    if (response == UF_UI_PICK_RESPONSE)
+                                    if(response == UF_UI_PICK_RESPONSE)
                                     {
                                         UpdateDynamicHandles();
                                         ShowDynamicHandles();
@@ -706,7 +706,7 @@ namespace TSG_Library.UFuncs
 
                 var dispUnits = (Part.Units)_displayPart.PartUnits;
 
-                if (dispUnits == Part.Units.Millimeters)
+                if(dispUnits == Part.Units.Millimeters)
                 {
                     _displayPart.UnitCollection.SetDefaultDataEntryUnits(UnitCollection.UnitDefaults.GMmNDegC);
                     _displayPart.UnitCollection.SetDefaultObjectInformationUnits(UnitCollection.UnitDefaults.GMmNDegC);
@@ -722,8 +722,8 @@ namespace TSG_Library.UFuncs
                 session_.Preferences.EmphasisVisualization.WorkPartEmphasis = false;
                 session_.Preferences.Assemblies.WorkPartDisplayAsEntirePart = false;
 
-                if (_isNewSelection)
-                    if (_updateComponent == null)
+                if(_isNewSelection)
+                    if(_updateComponent == null)
                     {
                         SelectWithFilter.NonValidCandidates = _nonValidNames;
                         SelectWithFilter.GetSelectedWithFilter("Select Component to Move");
@@ -731,16 +731,16 @@ namespace TSG_Library.UFuncs
                         _isNewSelection = true;
                     }
 
-                if (_editBody == null)
+                if(_editBody == null)
                     return;
 
                 var editComponent = _editBody.OwningComponent;
 
-                if (editComponent != null)
+                if(editComponent != null)
                 {
                     var checkPartName = (Part)editComponent.Prototype;
 
-                    if (!checkPartName.FullPath.Contains("mirror"))
+                    if(!checkPartName.FullPath.Contains("mirror"))
                     {
                         _updateComponent = editComponent;
 
@@ -748,9 +748,9 @@ namespace TSG_Library.UFuncs
                         var compBase = (BasePart)editComponent.Prototype;
                         var compUnits = compBase.PartUnits;
 
-                        if (compUnits == assmUnits)
+                        if(compUnits == assmUnits)
                         {
-                            if (_isNewSelection)
+                            if(_isNewSelection)
                             {
                                 ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
@@ -759,8 +759,8 @@ namespace TSG_Library.UFuncs
                                 UpdateSessionParts();
 
                                 foreach (Feature featBlk in _workPart.Features)
-                                    if (featBlk.FeatureType == "BLOCK")
-                                        if (featBlk.Name == "DYNAMIC BLOCK")
+                                    if(featBlk.FeatureType == "BLOCK")
+                                        if(featBlk.Name == "DYNAMIC BLOCK")
                                         {
                                             isBlockComponent = true;
                                             CreateEditData(editComponent);
@@ -772,7 +772,7 @@ namespace TSG_Library.UFuncs
                                 isBlockComponent = true;
                             }
 
-                            if (isBlockComponent)
+                            if(isBlockComponent)
                             {
                                 DisableForm();
 
@@ -807,7 +807,7 @@ namespace TSG_Library.UFuncs
                                     ufsession_.Ui.SpecifyScreenPosition(message, MotionCallback, motionCbData,
                                         screenPos, out viewTag, out var response);
 
-                                    if (response == UF_UI_PICK_RESPONSE)
+                                    if(response == UF_UI_PICK_RESPONSE)
                                     {
                                         UpdateDynamicHandles();
                                         ShowDynamicHandles();
@@ -836,18 +836,18 @@ namespace TSG_Library.UFuncs
                 }
                 else
                 {
-                    if (!_displayPart.FullPath.Contains("mirror"))
+                    if(!_displayPart.FullPath.Contains("mirror"))
                     {
                         foreach (Feature featBlk in _workPart.Features)
-                            if (featBlk.FeatureType == "BLOCK")
-                                if (featBlk.Name == "DYNAMIC BLOCK")
+                            if(featBlk.FeatureType == "BLOCK")
+                                if(featBlk.Name == "DYNAMIC BLOCK")
                                     isBlockComponent = true;
 
-                        if (isBlockComponent)
+                        if(isBlockComponent)
                         {
                             DisableForm();
 
-                            if (_isNewSelection)
+                            if(_isNewSelection)
                             {
                                 CreateEditData(editComponent);
 
@@ -855,7 +855,7 @@ namespace TSG_Library.UFuncs
                             }
                         }
 
-                        if (isBlockComponent)
+                        if(isBlockComponent)
                         {
                             var pHandle = new List<Point>();
                             pHandle = SelectHandlePoint();
@@ -888,7 +888,7 @@ namespace TSG_Library.UFuncs
                                 ufsession_.Ui.SpecifyScreenPosition(message, MotionCallback, motionCbData, screenPos,
                                     out viewTag, out var response);
 
-                                if (response == UF_UI_PICK_RESPONSE)
+                                if(response == UF_UI_PICK_RESPONSE)
                                 {
                                     UpdateDynamicHandles();
                                     ShowDynamicHandles();
@@ -941,7 +941,7 @@ namespace TSG_Library.UFuncs
                 ufsession_.Ui.AskInfoUnits(out var infoUnits);
                 var dispUnits = (Part.Units)_displayPart.PartUnits;
 
-                if (dispUnits == Part.Units.Millimeters)
+                if(dispUnits == Part.Units.Millimeters)
                 {
                     _displayPart.UnitCollection.SetDefaultDataEntryUnits(UnitCollection.UnitDefaults.GMmNDegC);
                     _displayPart.UnitCollection.SetDefaultObjectInformationUnits(UnitCollection.UnitDefaults.GMmNDegC);
@@ -958,9 +958,9 @@ namespace TSG_Library.UFuncs
                 session_.Preferences.EmphasisVisualization.WorkPartEmphasis = false;
                 session_.Preferences.Assemblies.WorkPartDisplayAsEntirePart = false;
 
-                if (_isNewSelection)
+                if(_isNewSelection)
                 {
-                    if (_updateComponent == null)
+                    if(_updateComponent == null)
                     {
                         SelectWithFilter.NonValidCandidates = _nonValidNames;
                         SelectWithFilter.GetSelectedWithFilter("Select Component - Match From");
@@ -983,25 +983,25 @@ namespace TSG_Library.UFuncs
                     _isNewSelection = true;
                 }
 
-                if (_editBody != null)
+                if(_editBody != null)
                 {
                     var editComponent = _editBody.OwningComponent;
 
-                    if (editComponent != null)
+                    if(editComponent != null)
                     {
                         var checkPartName = (Part)editComponent.Prototype;
 
                         foreach (Feature featBlk in checkPartName.Features)
-                            if (featBlk.FeatureType == "BLOCK")
-                                if (featBlk.Name == "DYNAMIC BLOCK")
+                            if(featBlk.FeatureType == "BLOCK")
+                                if(featBlk.Name == "DYNAMIC BLOCK")
                                     isBlockComponent = true;
 
-                        if (isBlockComponent)
+                        if(isBlockComponent)
                         {
                             DisableForm();
                             isBlockComponent = false;
 
-                            if (!checkPartName.FullPath.Contains("mirror"))
+                            if(!checkPartName.FullPath.Contains("mirror"))
                             {
                                 _updateComponent = editComponent;
 
@@ -1009,13 +1009,13 @@ namespace TSG_Library.UFuncs
                                 var compBase = (BasePart)editComponent.Prototype;
                                 var compUnits = compBase.PartUnits;
 
-                                if (compUnits == assmUnits)
+                                if(compUnits == assmUnits)
                                 {
                                     SelectWithFilter.NonValidCandidates = _nonValidNames;
                                     SelectWithFilter.GetSelectedWithFilter("Select Component - Match To");
                                     var editBodyTo = SelectWithFilter.SelectedCompBody;
 
-                                    if (editBodyTo != null)
+                                    if(editBodyTo != null)
                                     {
                                         var matchComponent = editBodyTo.OwningComponent;
 
@@ -1026,18 +1026,18 @@ namespace TSG_Library.UFuncs
                                         UpdateSessionParts();
 
                                         foreach (Feature featBlk in _workPart.Features)
-                                            if (featBlk.FeatureType == "BLOCK")
-                                                if (featBlk.Name == "DYNAMIC BLOCK")
+                                            if(featBlk.FeatureType == "BLOCK")
+                                                if(featBlk.Name == "DYNAMIC BLOCK")
                                                     isBlockComponent = true;
 
-                                        if (isBlockComponent)
+                                        if(isBlockComponent)
                                         {
                                             DisableForm();
 
                                             SetWcsToWorkPart(matchComponent);
 
                                             foreach (Feature featBlk in _workPart.Features)
-                                                if (featBlk.Name == "DYNAMIC BLOCK")
+                                                if(featBlk.Name == "DYNAMIC BLOCK")
                                                 {
                                                     // get current block feature
                                                     var block1 = (Block)featBlk;
@@ -1072,7 +1072,7 @@ namespace TSG_Library.UFuncs
                                                     UpdateSessionParts();
 
                                                     foreach (Feature featDynamic in _workPart.Features)
-                                                        if (featDynamic.Name == "DYNAMIC BLOCK")
+                                                        if(featDynamic.Name == "DYNAMIC BLOCK")
                                                         {
                                                             var block2 = (Block)featDynamic;
 
@@ -1213,7 +1213,7 @@ namespace TSG_Library.UFuncs
 
                 var dispUnits = (Part.Units)_displayPart.PartUnits;
 
-                if (dispUnits == Part.Units.Millimeters)
+                if(dispUnits == Part.Units.Millimeters)
                 {
                     _displayPart.UnitCollection.SetDefaultDataEntryUnits(UnitCollection.UnitDefaults.GMmNDegC);
                     _displayPart.UnitCollection.SetDefaultObjectInformationUnits(UnitCollection.UnitDefaults.GMmNDegC);
@@ -1230,8 +1230,8 @@ namespace TSG_Library.UFuncs
                 session_.Preferences.EmphasisVisualization.WorkPartEmphasis = false;
                 session_.Preferences.Assemblies.WorkPartDisplayAsEntirePart = false;
 
-                if (_isNewSelection)
-                    if (_updateComponent == null)
+                if(_isNewSelection)
+                    if(_updateComponent == null)
                     {
                         SelectWithFilter.NonValidCandidates = _nonValidNames;
                         SelectWithFilter.GetSelectedWithFilter("Select Component to Edit Size");
@@ -1239,16 +1239,16 @@ namespace TSG_Library.UFuncs
                         _isNewSelection = true;
                     }
 
-                if (_editBody is null)
+                if(_editBody is null)
                     return;
 
                 var editComponent = _editBody.OwningComponent;
 
-                if (editComponent != null)
+                if(editComponent != null)
                 {
                     var checkPartName = (Part)editComponent.Prototype;
 
-                    if (!checkPartName.FullPath.Contains("mirror"))
+                    if(!checkPartName.FullPath.Contains("mirror"))
                     {
                         _updateComponent = editComponent;
 
@@ -1256,9 +1256,9 @@ namespace TSG_Library.UFuncs
                         var compBase = (BasePart)editComponent.Prototype;
                         var compUnits = compBase.PartUnits;
 
-                        if (compUnits == assmUnits)
+                        if(compUnits == assmUnits)
                         {
-                            if (_isNewSelection)
+                            if(_isNewSelection)
                             {
                                 ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
@@ -1267,8 +1267,8 @@ namespace TSG_Library.UFuncs
                                 UpdateSessionParts();
 
                                 foreach (Feature featBlk in _workPart.Features)
-                                    if (featBlk.FeatureType == "BLOCK")
-                                        if (featBlk.Name == "DYNAMIC BLOCK")
+                                    if(featBlk.FeatureType == "BLOCK")
+                                        if(featBlk.Name == "DYNAMIC BLOCK")
                                         {
                                             isBlockComponent = true;
                                             CreateEditData(editComponent);
@@ -1280,7 +1280,7 @@ namespace TSG_Library.UFuncs
                                 isBlockComponent = true;
                             }
 
-                            if (isBlockComponent)
+                            if(isBlockComponent)
                             {
                                 UpdateDynamicBlock(editComponent);
                                 CreateEditData(editComponent);
@@ -1305,20 +1305,20 @@ namespace TSG_Library.UFuncs
 
                                     foreach (var eLine in _edgeRepLines)
                                     {
-                                        if (eLine.Name == "XBASE1")
+                                        if(eLine.Name == "XBASE1")
                                         {
                                             blockOrigin = eLine.StartPoint;
                                             blockLength = eLine.GetLength();
                                         }
 
-                                        if (eLine.Name == "YBASE1") blockWidth = eLine.GetLength();
+                                        if(eLine.Name == "YBASE1") blockWidth = eLine.GetLength();
 
-                                        if (eLine.Name == "ZBASE1") blockHeight = eLine.GetLength();
+                                        if(eLine.Name == "ZBASE1") blockHeight = eLine.GetLength();
                                     }
 
                                     Point pointPrototype;
 
-                                    if (_udoPointHandle.IsOccurrence)
+                                    if(_udoPointHandle.IsOccurrence)
                                         pointPrototype = (Point)_udoPointHandle.Prototype;
                                     else
                                         pointPrototype = _udoPointHandle;
@@ -1327,22 +1327,22 @@ namespace TSG_Library.UFuncs
                                     var movePtsHalf = new List<NXObject>();
                                     var movePtsFull = new List<NXObject>();
 
-                                    if (pointPrototype.Name.Contains("POS"))
+                                    if(pointPrototype.Name.Contains("POS"))
                                     {
                                         foreach (Point namedPt in _workPart.Points)
                                         {
-                                            if (namedPt.Name == "")
+                                            if(namedPt.Name == "")
                                                 continue;
 
-                                            if (namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
+                                            if(namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
                                                 doNotMovePts.Add(namedPt);
 
-                                            else if (namedPt.Name.Contains("Y") && pointPrototype.Name.Contains("Y"))
+                                            else if(namedPt.Name.Contains("Y") && pointPrototype.Name.Contains("Y"))
                                                 doNotMovePts.Add(namedPt);
 
-                                            else if (namedPt.Name.Contains("Z") && pointPrototype.Name.Contains("Z"))
+                                            else if(namedPt.Name.Contains("Z") && pointPrototype.Name.Contains("Z"))
                                                 doNotMovePts.Add(namedPt);
-                                            else if (namedPt.Name.Contains("BLKORIGIN"))
+                                            else if(namedPt.Name.Contains("BLKORIGIN"))
                                                 doNotMovePts.Add(namedPt);
                                             else
                                                 movePtsHalf.Add(namedPt);
@@ -1354,18 +1354,18 @@ namespace TSG_Library.UFuncs
                                     {
                                         foreach (Point namedPt in _workPart.Points)
                                         {
-                                            if (namedPt.Name == "")
+                                            if(namedPt.Name == "")
                                                 continue;
 
-                                            if (namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
+                                            if(namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
                                                 doNotMovePts.Add(namedPt);
 
-                                            else if (namedPt.Name.Contains("Y") && pointPrototype.Name.Contains("Y"))
+                                            else if(namedPt.Name.Contains("Y") && pointPrototype.Name.Contains("Y"))
                                                 doNotMovePts.Add(namedPt);
 
-                                            else if (namedPt.Name.Contains("Z") && pointPrototype.Name.Contains("Z"))
+                                            else if(namedPt.Name.Contains("Z") && pointPrototype.Name.Contains("Z"))
                                                 doNotMovePts.Add(namedPt);
-                                            else if (namedPt.Name.Contains("BLKORIGIN"))
+                                            else if(namedPt.Name.Contains("BLKORIGIN"))
                                                 movePtsFull.Add(namedPt);
                                             else
                                                 movePtsHalf.Add(namedPt);
@@ -1383,23 +1383,23 @@ namespace TSG_Library.UFuncs
 
                                     foreach (var eLine in _edgeRepLines)
                                     {
-                                        if (eLine.Name == "YBASE1" || eLine.Name == "YCEILING1" ||
-                                            eLine.Name == "ZBASE1" || eLine.Name == "ZBASE3") negXObjs.Add(eLine);
+                                        if(eLine.Name == "YBASE1" || eLine.Name == "YCEILING1" ||
+                                           eLine.Name == "ZBASE1" || eLine.Name == "ZBASE3") negXObjs.Add(eLine);
 
-                                        if (eLine.Name == "YBASE2" || eLine.Name == "YCEILING2" ||
-                                            eLine.Name == "ZBASE2" || eLine.Name == "ZBASE4") posXObjs.Add(eLine);
+                                        if(eLine.Name == "YBASE2" || eLine.Name == "YCEILING2" ||
+                                           eLine.Name == "ZBASE2" || eLine.Name == "ZBASE4") posXObjs.Add(eLine);
 
-                                        if (eLine.Name == "XBASE1" || eLine.Name == "XCEILING1" ||
-                                            eLine.Name == "ZBASE1" || eLine.Name == "ZBASE2") negYObjs.Add(eLine);
+                                        if(eLine.Name == "XBASE1" || eLine.Name == "XCEILING1" ||
+                                           eLine.Name == "ZBASE1" || eLine.Name == "ZBASE2") negYObjs.Add(eLine);
 
-                                        if (eLine.Name == "XBASE2" || eLine.Name == "XCEILING2" ||
-                                            eLine.Name == "ZBASE3" || eLine.Name == "ZBASE4") posYObjs.Add(eLine);
+                                        if(eLine.Name == "XBASE2" || eLine.Name == "XCEILING2" ||
+                                           eLine.Name == "ZBASE3" || eLine.Name == "ZBASE4") posYObjs.Add(eLine);
 
-                                        if (eLine.Name == "XBASE1" || eLine.Name == "XBASE2" ||
-                                            eLine.Name == "YBASE1" || eLine.Name == "YBASE2") negZObjs.Add(eLine);
+                                        if(eLine.Name == "XBASE1" || eLine.Name == "XBASE2" ||
+                                           eLine.Name == "YBASE1" || eLine.Name == "YBASE2") negZObjs.Add(eLine);
 
-                                        if (eLine.Name == "XCEILING1" || eLine.Name == "XCEILING2" ||
-                                            eLine.Name == "YCEILING1" || eLine.Name == "YCEILING2") posZObjs.Add(eLine);
+                                        if(eLine.Name == "XCEILING1" || eLine.Name == "XCEILING2" ||
+                                           eLine.Name == "YCEILING1" || eLine.Name == "YCEILING2") posZObjs.Add(eLine);
                                     }
 
                                     var allxAxisLines = new List<Line>();
@@ -1408,11 +1408,11 @@ namespace TSG_Library.UFuncs
 
                                     foreach (var eLine in _edgeRepLines)
                                     {
-                                        if (eLine.Name.StartsWith("X")) allxAxisLines.Add(eLine);
+                                        if(eLine.Name.StartsWith("X")) allxAxisLines.Add(eLine);
 
-                                        if (eLine.Name.StartsWith("Y")) allyAxisLines.Add(eLine);
+                                        if(eLine.Name.StartsWith("Y")) allyAxisLines.Add(eLine);
 
-                                        if (eLine.Name.StartsWith("Z")) allzAxisLines.Add(eLine);
+                                        if(eLine.Name.StartsWith("Z")) allzAxisLines.Add(eLine);
                                     }
 
                                     EditSizeForm sizeForm = null;
@@ -1421,21 +1421,21 @@ namespace TSG_Library.UFuncs
                                     var convertWidth = blockWidth / 25.4;
                                     var convertHeight = blockHeight / 25.4;
 
-                                    if (_displayPart.PartUnits == BasePart.Units.Inches)
+                                    if(_displayPart.PartUnits == BasePart.Units.Inches)
                                     {
-                                        if (pointPrototype.Name.Contains("X"))
+                                        if(pointPrototype.Name.Contains("X"))
                                         {
                                             sizeForm = new EditSizeForm(blockLength);
                                             sizeForm.ShowDialog();
                                         }
 
-                                        if (pointPrototype.Name.Contains("Y"))
+                                        if(pointPrototype.Name.Contains("Y"))
                                         {
                                             sizeForm = new EditSizeForm(blockWidth);
                                             sizeForm.ShowDialog();
                                         }
 
-                                        if (pointPrototype.Name.Contains("Z"))
+                                        if(pointPrototype.Name.Contains("Z"))
                                         {
                                             sizeForm = new EditSizeForm(blockHeight);
                                             sizeForm.ShowDialog();
@@ -1443,35 +1443,35 @@ namespace TSG_Library.UFuncs
                                     }
                                     else
                                     {
-                                        if (pointPrototype.Name.Contains("X"))
+                                        if(pointPrototype.Name.Contains("X"))
                                         {
                                             sizeForm = new EditSizeForm(convertLength);
                                             sizeForm.ShowDialog();
                                         }
 
-                                        if (pointPrototype.Name.Contains("Y"))
+                                        if(pointPrototype.Name.Contains("Y"))
                                         {
                                             sizeForm = new EditSizeForm(convertWidth);
                                             sizeForm.ShowDialog();
                                         }
 
-                                        if (pointPrototype.Name.Contains("Z"))
+                                        if(pointPrototype.Name.Contains("Z"))
                                         {
                                             sizeForm = new EditSizeForm(convertHeight);
                                             sizeForm.ShowDialog();
                                         }
                                     }
 
-                                    if (sizeForm.DialogResult == DialogResult.OK)
+                                    if(sizeForm.DialogResult == DialogResult.OK)
                                     {
                                         var editSize = sizeForm.InputValue;
                                         double distance = 0;
 
-                                        if (_displayPart.PartUnits == BasePart.Units.Millimeters) editSize *= 25.4;
+                                        if(_displayPart.PartUnits == BasePart.Units.Millimeters) editSize *= 25.4;
 
-                                        if (editSize > 0)
+                                        if(editSize > 0)
                                         {
-                                            if (pointPrototype.Name == "POSX")
+                                            if(pointPrototype.Name == "POSX")
                                             {
                                                 distance = editSize - blockLength;
 
@@ -1490,7 +1490,7 @@ namespace TSG_Library.UFuncs
                                                 MoveObjects(movePtsHalf.ToArray(), distance / 2, "X");
                                             }
 
-                                            if (pointPrototype.Name == "NEGX")
+                                            if(pointPrototype.Name == "NEGX")
                                             {
                                                 distance = blockLength - editSize;
 
@@ -1509,7 +1509,7 @@ namespace TSG_Library.UFuncs
                                                 MoveObjects(movePtsHalf.ToArray(), distance / 2, "X");
                                             }
 
-                                            if (pointPrototype.Name == "POSY")
+                                            if(pointPrototype.Name == "POSY")
                                             {
                                                 distance = editSize - blockWidth;
 
@@ -1528,7 +1528,7 @@ namespace TSG_Library.UFuncs
                                                 MoveObjects(movePtsHalf.ToArray(), distance / 2, "Y");
                                             }
 
-                                            if (pointPrototype.Name == "NEGY")
+                                            if(pointPrototype.Name == "NEGY")
                                             {
                                                 distance = blockWidth - editSize;
 
@@ -1547,7 +1547,7 @@ namespace TSG_Library.UFuncs
                                                 MoveObjects(movePtsHalf.ToArray(), distance / 2, "Y");
                                             }
 
-                                            if (pointPrototype.Name == "POSZ")
+                                            if(pointPrototype.Name == "POSZ")
                                             {
                                                 distance = editSize - blockHeight;
 
@@ -1566,7 +1566,7 @@ namespace TSG_Library.UFuncs
                                                 MoveObjects(movePtsHalf.ToArray(), distance / 2, "Z");
                                             }
 
-                                            if (pointPrototype.Name == "NEGZ")
+                                            if(pointPrototype.Name == "NEGZ")
                                             {
                                                 distance = blockHeight - editSize;
 
@@ -1627,18 +1627,18 @@ namespace TSG_Library.UFuncs
                 }
                 else
                 {
-                    if (!_displayPart.FullPath.Contains("mirror"))
+                    if(!_displayPart.FullPath.Contains("mirror"))
                     {
                         foreach (Feature featBlk in _workPart.Features)
-                            if (featBlk.FeatureType == "BLOCK")
-                                if (featBlk.Name == "DYNAMIC BLOCK")
+                            if(featBlk.FeatureType == "BLOCK")
+                                if(featBlk.Name == "DYNAMIC BLOCK")
                                     isBlockComponent = true;
 
-                        if (isBlockComponent)
+                        if(isBlockComponent)
                         {
                             DisableForm();
 
-                            if (_isNewSelection)
+                            if(_isNewSelection)
                             {
                                 CreateEditData(editComponent);
 
@@ -1663,20 +1663,20 @@ namespace TSG_Library.UFuncs
 
                                 foreach (var eLine in _edgeRepLines)
                                 {
-                                    if (eLine.Name == "XBASE1")
+                                    if(eLine.Name == "XBASE1")
                                     {
                                         blockOrigin = eLine.StartPoint;
                                         blockLength = eLine.GetLength();
                                     }
 
-                                    if (eLine.Name == "YBASE1") blockWidth = eLine.GetLength();
+                                    if(eLine.Name == "YBASE1") blockWidth = eLine.GetLength();
 
-                                    if (eLine.Name == "ZBASE1") blockHeight = eLine.GetLength();
+                                    if(eLine.Name == "ZBASE1") blockHeight = eLine.GetLength();
                                 }
 
                                 Point pointPrototype;
 
-                                if (_udoPointHandle.IsOccurrence)
+                                if(_udoPointHandle.IsOccurrence)
                                     pointPrototype = (Point)_udoPointHandle.Prototype;
                                 else
                                     pointPrototype = _udoPointHandle;
@@ -1685,20 +1685,20 @@ namespace TSG_Library.UFuncs
                                 var movePtsHalf = new List<NXObject>();
                                 var movePtsFull = new List<NXObject>();
 
-                                if (pointPrototype.Name.Contains("POS"))
+                                if(pointPrototype.Name.Contains("POS"))
                                 {
                                     foreach (Point namedPt in _workPart.Points)
-                                        if (namedPt.Name != "")
+                                        if(namedPt.Name != "")
                                         {
-                                            if (namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
+                                            if(namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
                                                 doNotMovePts.Add(namedPt);
 
-                                            else if (namedPt.Name.Contains("Y") && pointPrototype.Name.Contains("Y"))
+                                            else if(namedPt.Name.Contains("Y") && pointPrototype.Name.Contains("Y"))
                                                 doNotMovePts.Add(namedPt);
 
-                                            else if (namedPt.Name.Contains("Z") && pointPrototype.Name.Contains("Z"))
+                                            else if(namedPt.Name.Contains("Z") && pointPrototype.Name.Contains("Z"))
                                                 doNotMovePts.Add(namedPt);
-                                            else if (namedPt.Name.Contains("BLKORIGIN"))
+                                            else if(namedPt.Name.Contains("BLKORIGIN"))
                                                 doNotMovePts.Add(namedPt);
                                             else
                                                 movePtsHalf.Add(namedPt);
@@ -1709,17 +1709,17 @@ namespace TSG_Library.UFuncs
                                 else
                                 {
                                     foreach (Point namedPt in _workPart.Points)
-                                        if (namedPt.Name != "")
+                                        if(namedPt.Name != "")
                                         {
-                                            if (namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
+                                            if(namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
                                                 doNotMovePts.Add(namedPt);
 
-                                            else if (namedPt.Name.Contains("Y") && pointPrototype.Name.Contains("Y"))
+                                            else if(namedPt.Name.Contains("Y") && pointPrototype.Name.Contains("Y"))
                                                 doNotMovePts.Add(namedPt);
 
-                                            else if (namedPt.Name.Contains("Z") && pointPrototype.Name.Contains("Z"))
+                                            else if(namedPt.Name.Contains("Z") && pointPrototype.Name.Contains("Z"))
                                                 doNotMovePts.Add(namedPt);
-                                            else if (namedPt.Name.Contains("BLKORIGIN"))
+                                            else if(namedPt.Name.Contains("BLKORIGIN"))
                                                 movePtsFull.Add(namedPt);
                                             else
                                                 movePtsHalf.Add(namedPt);
@@ -1737,23 +1737,23 @@ namespace TSG_Library.UFuncs
 
                                 foreach (var eLine in _edgeRepLines)
                                 {
-                                    if (eLine.Name == "YBASE1" || eLine.Name == "YCEILING1" || eLine.Name == "ZBASE1" ||
-                                        eLine.Name == "ZBASE3") negXObjs.Add(eLine);
+                                    if(eLine.Name == "YBASE1" || eLine.Name == "YCEILING1" || eLine.Name == "ZBASE1" ||
+                                       eLine.Name == "ZBASE3") negXObjs.Add(eLine);
 
-                                    if (eLine.Name == "YBASE2" || eLine.Name == "YCEILING2" || eLine.Name == "ZBASE2" ||
-                                        eLine.Name == "ZBASE4") posXObjs.Add(eLine);
+                                    if(eLine.Name == "YBASE2" || eLine.Name == "YCEILING2" || eLine.Name == "ZBASE2" ||
+                                       eLine.Name == "ZBASE4") posXObjs.Add(eLine);
 
-                                    if (eLine.Name == "XBASE1" || eLine.Name == "XCEILING1" || eLine.Name == "ZBASE1" ||
-                                        eLine.Name == "ZBASE2") negYObjs.Add(eLine);
+                                    if(eLine.Name == "XBASE1" || eLine.Name == "XCEILING1" || eLine.Name == "ZBASE1" ||
+                                       eLine.Name == "ZBASE2") negYObjs.Add(eLine);
 
-                                    if (eLine.Name == "XBASE2" || eLine.Name == "XCEILING2" || eLine.Name == "ZBASE3" ||
-                                        eLine.Name == "ZBASE4") posYObjs.Add(eLine);
+                                    if(eLine.Name == "XBASE2" || eLine.Name == "XCEILING2" || eLine.Name == "ZBASE3" ||
+                                       eLine.Name == "ZBASE4") posYObjs.Add(eLine);
 
-                                    if (eLine.Name == "XBASE1" || eLine.Name == "XBASE2" || eLine.Name == "YBASE1" ||
-                                        eLine.Name == "YBASE2") negZObjs.Add(eLine);
+                                    if(eLine.Name == "XBASE1" || eLine.Name == "XBASE2" || eLine.Name == "YBASE1" ||
+                                       eLine.Name == "YBASE2") negZObjs.Add(eLine);
 
-                                    if (eLine.Name == "XCEILING1" || eLine.Name == "XCEILING2" ||
-                                        eLine.Name == "YCEILING1" || eLine.Name == "YCEILING2") posZObjs.Add(eLine);
+                                    if(eLine.Name == "XCEILING1" || eLine.Name == "XCEILING2" ||
+                                       eLine.Name == "YCEILING1" || eLine.Name == "YCEILING2") posZObjs.Add(eLine);
                                 }
 
                                 var allxAxisLines = new List<Line>();
@@ -1762,11 +1762,11 @@ namespace TSG_Library.UFuncs
 
                                 foreach (var eLine in _edgeRepLines)
                                 {
-                                    if (eLine.Name.StartsWith("X")) allxAxisLines.Add(eLine);
+                                    if(eLine.Name.StartsWith("X")) allxAxisLines.Add(eLine);
 
-                                    if (eLine.Name.StartsWith("Y")) allyAxisLines.Add(eLine);
+                                    if(eLine.Name.StartsWith("Y")) allyAxisLines.Add(eLine);
 
-                                    if (eLine.Name.StartsWith("Z")) allzAxisLines.Add(eLine);
+                                    if(eLine.Name.StartsWith("Z")) allzAxisLines.Add(eLine);
                                 }
 
                                 EditSizeForm sizeForm = null;
@@ -1774,21 +1774,21 @@ namespace TSG_Library.UFuncs
                                 var convertWidth = blockWidth / 25.4;
                                 var convertHeight = blockHeight / 25.4;
 
-                                if (_displayPart.PartUnits == BasePart.Units.Inches)
+                                if(_displayPart.PartUnits == BasePart.Units.Inches)
                                 {
-                                    if (pointPrototype.Name.Contains("X"))
+                                    if(pointPrototype.Name.Contains("X"))
                                     {
                                         sizeForm = new EditSizeForm(blockLength);
                                         sizeForm.ShowDialog();
                                     }
 
-                                    if (pointPrototype.Name.Contains("Y"))
+                                    if(pointPrototype.Name.Contains("Y"))
                                     {
                                         sizeForm = new EditSizeForm(blockWidth);
                                         sizeForm.ShowDialog();
                                     }
 
-                                    if (pointPrototype.Name.Contains("Z"))
+                                    if(pointPrototype.Name.Contains("Z"))
                                     {
                                         sizeForm = new EditSizeForm(blockHeight);
                                         sizeForm.ShowDialog();
@@ -1796,35 +1796,35 @@ namespace TSG_Library.UFuncs
                                 }
                                 else
                                 {
-                                    if (pointPrototype.Name.Contains("X"))
+                                    if(pointPrototype.Name.Contains("X"))
                                     {
                                         sizeForm = new EditSizeForm(convertLength);
                                         sizeForm.ShowDialog();
                                     }
 
-                                    if (pointPrototype.Name.Contains("Y"))
+                                    if(pointPrototype.Name.Contains("Y"))
                                     {
                                         sizeForm = new EditSizeForm(convertWidth);
                                         sizeForm.ShowDialog();
                                     }
 
-                                    if (pointPrototype.Name.Contains("Z"))
+                                    if(pointPrototype.Name.Contains("Z"))
                                     {
                                         sizeForm = new EditSizeForm(convertHeight);
                                         sizeForm.ShowDialog();
                                     }
                                 }
 
-                                if (sizeForm.DialogResult == DialogResult.OK)
+                                if(sizeForm.DialogResult == DialogResult.OK)
                                 {
                                     var editSize = sizeForm.InputValue;
                                     double distance = 0;
 
-                                    if (_displayPart.PartUnits == BasePart.Units.Millimeters) editSize *= 25.4;
+                                    if(_displayPart.PartUnits == BasePart.Units.Millimeters) editSize *= 25.4;
 
-                                    if (editSize > 0)
+                                    if(editSize > 0)
                                     {
-                                        if (pointPrototype.Name == "POSX")
+                                        if(pointPrototype.Name == "POSX")
                                         {
                                             distance = editSize - blockLength;
 
@@ -1843,7 +1843,7 @@ namespace TSG_Library.UFuncs
                                             MoveObjects(movePtsHalf.ToArray(), distance / 2, "X");
                                         }
 
-                                        if (pointPrototype.Name == "NEGX")
+                                        if(pointPrototype.Name == "NEGX")
                                         {
                                             distance = blockLength - editSize;
 
@@ -1862,7 +1862,7 @@ namespace TSG_Library.UFuncs
                                             MoveObjects(movePtsHalf.ToArray(), distance / 2, "X");
                                         }
 
-                                        if (pointPrototype.Name == "POSY")
+                                        if(pointPrototype.Name == "POSY")
                                         {
                                             distance = editSize - blockWidth;
 
@@ -1881,7 +1881,7 @@ namespace TSG_Library.UFuncs
                                             MoveObjects(movePtsHalf.ToArray(), distance / 2, "Y");
                                         }
 
-                                        if (pointPrototype.Name == "NEGY")
+                                        if(pointPrototype.Name == "NEGY")
                                         {
                                             distance = blockWidth - editSize;
 
@@ -1900,7 +1900,7 @@ namespace TSG_Library.UFuncs
                                             MoveObjects(movePtsHalf.ToArray(), distance / 2, "Y");
                                         }
 
-                                        if (pointPrototype.Name == "POSZ")
+                                        if(pointPrototype.Name == "POSZ")
                                         {
                                             distance = editSize - blockHeight;
 
@@ -1919,7 +1919,7 @@ namespace TSG_Library.UFuncs
                                             MoveObjects(movePtsHalf.ToArray(), distance / 2, "Z");
                                         }
 
-                                        if (pointPrototype.Name == "NEGZ")
+                                        if(pointPrototype.Name == "NEGZ")
                                         {
                                             distance = blockHeight - editSize;
 
@@ -2008,7 +2008,7 @@ namespace TSG_Library.UFuncs
                 ufsession_.Ui.AskInfoUnits(out var infoUnits);
                 var dispUnits = (Part.Units)_displayPart.PartUnits;
 
-                if (dispUnits == Part.Units.Millimeters)
+                if(dispUnits == Part.Units.Millimeters)
                 {
                     _displayPart.UnitCollection.SetDefaultDataEntryUnits(UnitCollection.UnitDefaults.GMmNDegC);
                     _displayPart.UnitCollection.SetDefaultObjectInformationUnits(UnitCollection.UnitDefaults.GMmNDegC);
@@ -2024,8 +2024,8 @@ namespace TSG_Library.UFuncs
                 //{
                 session_.Preferences.EmphasisVisualization.WorkPartEmphasis = false;
 
-                if (_isNewSelection)
-                    if (_updateComponent == null)
+                if(_isNewSelection)
+                    if(_updateComponent == null)
                     {
                         SelectWithFilter.NonValidCandidates = _nonValidNames;
                         SelectWithFilter.GetSelectedWithFilter("Select Component to Align");
@@ -2033,15 +2033,15 @@ namespace TSG_Library.UFuncs
                         _isNewSelection = true;
                     }
 
-                if (_editBody != null)
+                if(_editBody != null)
                 {
                     var editComponent = _editBody.OwningComponent;
 
-                    if (editComponent != null)
+                    if(editComponent != null)
                     {
                         var checkPartName = (Part)editComponent.Prototype;
 
-                        if (!checkPartName.FullPath.Contains("mirror"))
+                        if(!checkPartName.FullPath.Contains("mirror"))
                         {
                             _updateComponent = editComponent;
 
@@ -2049,9 +2049,9 @@ namespace TSG_Library.UFuncs
                             var compBase = (BasePart)editComponent.Prototype;
                             var compUnits = compBase.PartUnits;
 
-                            if (compUnits == assmUnits)
+                            if(compUnits == assmUnits)
                             {
-                                if (_isNewSelection)
+                                if(_isNewSelection)
                                 {
                                     ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
@@ -2060,8 +2060,8 @@ namespace TSG_Library.UFuncs
                                     UpdateSessionParts();
 
                                     foreach (Feature featBlk in _workPart.Features)
-                                        if (featBlk.FeatureType == "BLOCK")
-                                            if (featBlk.Name == "DYNAMIC BLOCK")
+                                        if(featBlk.FeatureType == "BLOCK")
+                                            if(featBlk.Name == "DYNAMIC BLOCK")
                                             {
                                                 isBlockComponent = true;
                                                 CreateEditData(editComponent);
@@ -2073,7 +2073,7 @@ namespace TSG_Library.UFuncs
                                     isBlockComponent = true;
                                 }
 
-                                if (isBlockComponent)
+                                if(isBlockComponent)
                                 {
                                     UpdateDynamicBlock(editComponent);
                                     CreateEditData(editComponent);
@@ -2093,7 +2093,7 @@ namespace TSG_Library.UFuncs
 
                                         Point pointPrototype;
 
-                                        if (_udoPointHandle.IsOccurrence)
+                                        if(_udoPointHandle.IsOccurrence)
                                             pointPrototype = (Point)_udoPointHandle.Prototype;
                                         else
                                             pointPrototype = _udoPointHandle;
@@ -2102,22 +2102,22 @@ namespace TSG_Library.UFuncs
                                         var movePtsHalf = new List<NXObject>();
                                         var movePtsFull = new List<NXObject>();
 
-                                        if (pointPrototype.Name.Contains("POS"))
+                                        if(pointPrototype.Name.Contains("POS"))
                                         {
                                             foreach (Point namedPt in _workPart.Points)
-                                                if (namedPt.Name != "")
+                                                if(namedPt.Name != "")
                                                 {
-                                                    if (namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
+                                                    if(namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
                                                         doNotMovePts.Add(namedPt);
 
-                                                    else if (namedPt.Name.Contains("Y") &&
-                                                             pointPrototype.Name.Contains("Y"))
+                                                    else if(namedPt.Name.Contains("Y") &&
+                                                            pointPrototype.Name.Contains("Y"))
                                                         doNotMovePts.Add(namedPt);
 
-                                                    else if (namedPt.Name.Contains("Z") &&
-                                                             pointPrototype.Name.Contains("Z"))
+                                                    else if(namedPt.Name.Contains("Z") &&
+                                                            pointPrototype.Name.Contains("Z"))
                                                         doNotMovePts.Add(namedPt);
-                                                    else if (namedPt.Name.Contains("BLKORIGIN"))
+                                                    else if(namedPt.Name.Contains("BLKORIGIN"))
                                                         doNotMovePts.Add(namedPt);
                                                     else
                                                         movePtsHalf.Add(namedPt);
@@ -2128,19 +2128,19 @@ namespace TSG_Library.UFuncs
                                         else
                                         {
                                             foreach (Point namedPt in _workPart.Points)
-                                                if (namedPt.Name != "")
+                                                if(namedPt.Name != "")
                                                 {
-                                                    if (namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
+                                                    if(namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
                                                         doNotMovePts.Add(namedPt);
 
-                                                    else if (namedPt.Name.Contains("Y") &&
-                                                             pointPrototype.Name.Contains("Y"))
+                                                    else if(namedPt.Name.Contains("Y") &&
+                                                            pointPrototype.Name.Contains("Y"))
                                                         doNotMovePts.Add(namedPt);
 
-                                                    else if (namedPt.Name.Contains("Z") &&
-                                                             pointPrototype.Name.Contains("Z"))
+                                                    else if(namedPt.Name.Contains("Z") &&
+                                                            pointPrototype.Name.Contains("Z"))
                                                         doNotMovePts.Add(namedPt);
-                                                    else if (namedPt.Name.Contains("BLKORIGIN"))
+                                                    else if(namedPt.Name.Contains("BLKORIGIN"))
                                                         movePtsFull.Add(namedPt);
                                                     else
                                                         movePtsHalf.Add(namedPt);
@@ -2158,24 +2158,24 @@ namespace TSG_Library.UFuncs
 
                                         foreach (var eLine in _edgeRepLines)
                                         {
-                                            if (eLine.Name == "YBASE1" || eLine.Name == "YCEILING1" ||
-                                                eLine.Name == "ZBASE1" || eLine.Name == "ZBASE3") negXObjs.Add(eLine);
+                                            if(eLine.Name == "YBASE1" || eLine.Name == "YCEILING1" ||
+                                               eLine.Name == "ZBASE1" || eLine.Name == "ZBASE3") negXObjs.Add(eLine);
 
-                                            if (eLine.Name == "YBASE2" || eLine.Name == "YCEILING2" ||
-                                                eLine.Name == "ZBASE2" || eLine.Name == "ZBASE4") posXObjs.Add(eLine);
+                                            if(eLine.Name == "YBASE2" || eLine.Name == "YCEILING2" ||
+                                               eLine.Name == "ZBASE2" || eLine.Name == "ZBASE4") posXObjs.Add(eLine);
 
-                                            if (eLine.Name == "XBASE1" || eLine.Name == "XCEILING1" ||
-                                                eLine.Name == "ZBASE1" || eLine.Name == "ZBASE2") negYObjs.Add(eLine);
+                                            if(eLine.Name == "XBASE1" || eLine.Name == "XCEILING1" ||
+                                               eLine.Name == "ZBASE1" || eLine.Name == "ZBASE2") negYObjs.Add(eLine);
 
-                                            if (eLine.Name == "XBASE2" || eLine.Name == "XCEILING2" ||
-                                                eLine.Name == "ZBASE3" || eLine.Name == "ZBASE4") posYObjs.Add(eLine);
+                                            if(eLine.Name == "XBASE2" || eLine.Name == "XCEILING2" ||
+                                               eLine.Name == "ZBASE3" || eLine.Name == "ZBASE4") posYObjs.Add(eLine);
 
-                                            if (eLine.Name == "XBASE1" || eLine.Name == "XBASE2" ||
-                                                eLine.Name == "YBASE1" || eLine.Name == "YBASE2") negZObjs.Add(eLine);
+                                            if(eLine.Name == "XBASE1" || eLine.Name == "XBASE2" ||
+                                               eLine.Name == "YBASE1" || eLine.Name == "YBASE2") negZObjs.Add(eLine);
 
-                                            if (eLine.Name == "XCEILING1" || eLine.Name == "XCEILING2" ||
-                                                eLine.Name == "YCEILING1" ||
-                                                eLine.Name == "YCEILING2") posZObjs.Add(eLine);
+                                            if(eLine.Name == "XCEILING1" || eLine.Name == "XCEILING2" ||
+                                               eLine.Name == "YCEILING1" ||
+                                               eLine.Name == "YCEILING2") posZObjs.Add(eLine);
                                         }
 
                                         var allxAxisLines = new List<Line>();
@@ -2184,11 +2184,11 @@ namespace TSG_Library.UFuncs
 
                                         foreach (var eLine in _edgeRepLines)
                                         {
-                                            if (eLine.Name.StartsWith("X")) allxAxisLines.Add(eLine);
+                                            if(eLine.Name.StartsWith("X")) allxAxisLines.Add(eLine);
 
-                                            if (eLine.Name.StartsWith("Y")) allyAxisLines.Add(eLine);
+                                            if(eLine.Name.StartsWith("Y")) allyAxisLines.Add(eLine);
 
-                                            if (eLine.Name.StartsWith("Z")) allzAxisLines.Add(eLine);
+                                            if(eLine.Name.StartsWith("Z")) allzAxisLines.Add(eLine);
                                         }
 
                                         var message = "Select Reference Point";
@@ -2203,7 +2203,7 @@ namespace TSG_Library.UFuncs
 
                                         ufsession_.Ui.UnlockUgAccess(UF_UI_FROM_CUSTOM);
 
-                                        if (response == UF_UI_OK)
+                                        if(response == UF_UI_OK)
                                         {
                                             var mappedBase = new double[3];
                                             ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, basePoint,
@@ -2220,11 +2220,11 @@ namespace TSG_Library.UFuncs
 
                                             double distance;
 
-                                            if (pointPrototype.Name == "POSX")
+                                            if(pointPrototype.Name == "POSX")
                                             {
                                                 distance = Math.Abs(mappedPoint[0] - mappedBase[0]);
 
-                                                if (mappedBase[0] < mappedPoint[0]) distance *= -1;
+                                                if(mappedBase[0] < mappedPoint[0]) distance *= -1;
 
                                                 foreach (var posXLine in posXObjs) movePtsFull.Add(posXLine);
 
@@ -2241,11 +2241,11 @@ namespace TSG_Library.UFuncs
                                                 MoveObjects(movePtsHalf.ToArray(), distance / 2, "X");
                                             }
 
-                                            if (pointPrototype.Name == "NEGX")
+                                            if(pointPrototype.Name == "NEGX")
                                             {
                                                 distance = Math.Abs(mappedPoint[0] - mappedBase[0]);
 
-                                                if (mappedBase[0] < mappedPoint[0]) distance *= -1;
+                                                if(mappedBase[0] < mappedPoint[0]) distance *= -1;
 
                                                 foreach (var addLine in negXObjs) movePtsFull.Add(addLine);
 
@@ -2262,11 +2262,11 @@ namespace TSG_Library.UFuncs
                                                 MoveObjects(movePtsHalf.ToArray(), distance / 2, "X");
                                             }
 
-                                            if (pointPrototype.Name == "POSY")
+                                            if(pointPrototype.Name == "POSY")
                                             {
                                                 distance = Math.Abs(mappedPoint[1] - mappedBase[1]);
 
-                                                if (mappedBase[1] < mappedPoint[1]) distance *= -1;
+                                                if(mappedBase[1] < mappedPoint[1]) distance *= -1;
 
                                                 foreach (var addLine in posYObjs) movePtsFull.Add(addLine);
 
@@ -2283,11 +2283,11 @@ namespace TSG_Library.UFuncs
                                                 MoveObjects(movePtsHalf.ToArray(), distance / 2, "Y");
                                             }
 
-                                            if (pointPrototype.Name == "NEGY")
+                                            if(pointPrototype.Name == "NEGY")
                                             {
                                                 distance = Math.Abs(mappedPoint[1] - mappedBase[1]);
 
-                                                if (mappedBase[1] < mappedPoint[1]) distance *= -1;
+                                                if(mappedBase[1] < mappedPoint[1]) distance *= -1;
 
                                                 foreach (var addLine in negYObjs) movePtsFull.Add(addLine);
 
@@ -2304,11 +2304,11 @@ namespace TSG_Library.UFuncs
                                                 MoveObjects(movePtsHalf.ToArray(), distance / 2, "Y");
                                             }
 
-                                            if (pointPrototype.Name == "POSZ")
+                                            if(pointPrototype.Name == "POSZ")
                                             {
                                                 distance = Math.Abs(mappedPoint[2] - mappedBase[2]);
 
-                                                if (mappedBase[2] < mappedPoint[2]) distance *= -1;
+                                                if(mappedBase[2] < mappedPoint[2]) distance *= -1;
 
                                                 foreach (var addLine in posZObjs) movePtsFull.Add(addLine);
 
@@ -2325,11 +2325,11 @@ namespace TSG_Library.UFuncs
                                                 MoveObjects(movePtsHalf.ToArray(), distance / 2, "Z");
                                             }
 
-                                            if (pointPrototype.Name == "NEGZ")
+                                            if(pointPrototype.Name == "NEGZ")
                                             {
                                                 distance = Math.Abs(mappedPoint[2] - mappedBase[2]);
 
-                                                if (mappedBase[2] < mappedPoint[2]) distance *= -1;
+                                                if(mappedBase[2] < mappedPoint[2]) distance *= -1;
 
                                                 foreach (var addLine in negZObjs) movePtsFull.Add(addLine);
 
@@ -2412,7 +2412,7 @@ namespace TSG_Library.UFuncs
                 ufsession_.Ui.AskInfoUnits(out var infoUnits);
                 var dispUnits = (Part.Units)_displayPart.PartUnits;
 
-                if (dispUnits == Part.Units.Millimeters)
+                if(dispUnits == Part.Units.Millimeters)
                 {
                     _displayPart.UnitCollection.SetDefaultDataEntryUnits(UnitCollection.UnitDefaults.GMmNDegC);
                     _displayPart.UnitCollection.SetDefaultObjectInformationUnits(UnitCollection.UnitDefaults.GMmNDegC);
@@ -2429,8 +2429,8 @@ namespace TSG_Library.UFuncs
                 session_.Preferences.EmphasisVisualization.WorkPartEmphasis = false;
                 session_.Preferences.Assemblies.WorkPartDisplayAsEntirePart = false;
 
-                if (_isNewSelection)
-                    if (_updateComponent == null)
+                if(_isNewSelection)
+                    if(_updateComponent == null)
                     {
                         SelectWithFilter.NonValidCandidates = _nonValidNames;
                         SelectWithFilter.GetSelectedWithFilter("Select Component to Align");
@@ -2438,15 +2438,15 @@ namespace TSG_Library.UFuncs
                         _isNewSelection = true;
                     }
 
-                if (_editBody != null)
+                if(_editBody != null)
                 {
                     var editComponent = _editBody.OwningComponent;
 
-                    if (editComponent != null)
+                    if(editComponent != null)
                     {
                         var checkPartName = (Part)editComponent.Prototype;
 
-                        if (!checkPartName.FullPath.Contains("mirror"))
+                        if(!checkPartName.FullPath.Contains("mirror"))
                         {
                             _updateComponent = editComponent;
 
@@ -2454,9 +2454,9 @@ namespace TSG_Library.UFuncs
                             var compBase = (BasePart)editComponent.Prototype;
                             var compUnits = compBase.PartUnits;
 
-                            if (compUnits == assmUnits)
+                            if(compUnits == assmUnits)
                             {
-                                if (_isNewSelection)
+                                if(_isNewSelection)
                                 {
                                     ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
@@ -2465,8 +2465,8 @@ namespace TSG_Library.UFuncs
                                     UpdateSessionParts();
 
                                     foreach (Feature featBlk in _workPart.Features)
-                                        if (featBlk.FeatureType == "BLOCK")
-                                            if (featBlk.Name == "DYNAMIC BLOCK")
+                                        if(featBlk.FeatureType == "BLOCK")
+                                            if(featBlk.Name == "DYNAMIC BLOCK")
                                             {
                                                 isBlockComponent = true;
                                                 CreateEditData(editComponent);
@@ -2478,7 +2478,7 @@ namespace TSG_Library.UFuncs
                                     isBlockComponent = true;
                                 }
 
-                                if (isBlockComponent)
+                                if(isBlockComponent)
                                 {
                                     var pHandle = new List<Point>();
                                     pHandle = SelectHandlePoint();
@@ -2495,7 +2495,7 @@ namespace TSG_Library.UFuncs
 
                                         Point pointPrototype;
 
-                                        if (_udoPointHandle.IsOccurrence)
+                                        if(_udoPointHandle.IsOccurrence)
                                             pointPrototype = (Point)_udoPointHandle.Prototype;
                                         else
                                             pointPrototype = _udoPointHandle;
@@ -2503,13 +2503,13 @@ namespace TSG_Library.UFuncs
                                         var movePtsFull = new List<NXObject>();
 
                                         foreach (Point nPoint in _workPart.Points)
-                                            if (nPoint.Name.Contains("X") || nPoint.Name.Contains("Y") ||
-                                                nPoint.Name.Contains("Z") || nPoint.Name.Contains("BLKORIGIN"))
+                                            if(nPoint.Name.Contains("X") || nPoint.Name.Contains("Y") ||
+                                               nPoint.Name.Contains("Z") || nPoint.Name.Contains("BLKORIGIN"))
                                                 movePtsFull.Add(nPoint);
 
                                         foreach (Line nLine in _workPart.Lines)
-                                            if (nLine.Name.Contains("X") || nLine.Name.Contains("Y") ||
-                                                nLine.Name.Contains("Z"))
+                                            if(nLine.Name.Contains("X") || nLine.Name.Contains("Y") ||
+                                               nLine.Name.Contains("Z"))
                                                 movePtsFull.Add(nLine);
 
                                         var message = "Select Reference Point";
@@ -2524,7 +2524,7 @@ namespace TSG_Library.UFuncs
 
                                         ufsession_.Ui.UnlockUgAccess(UF_UI_FROM_CUSTOM);
 
-                                        if (response == UF_UI_OK)
+                                        if(response == UF_UI_OK)
                                         {
                                             var mappedBase = new double[3];
                                             ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, basePoint,
@@ -2541,56 +2541,56 @@ namespace TSG_Library.UFuncs
 
                                             double distance;
 
-                                            if (pointPrototype.Name == "POSX")
+                                            if(pointPrototype.Name == "POSX")
                                             {
                                                 distance = Math.Abs(mappedPoint[0] - mappedBase[0]);
 
-                                                if (mappedBase[0] < mappedPoint[0]) distance *= -1;
+                                                if(mappedBase[0] < mappedPoint[0]) distance *= -1;
 
                                                 MoveObjects(movePtsFull.ToArray(), distance, "X");
                                             }
 
-                                            if (pointPrototype.Name == "NEGX")
+                                            if(pointPrototype.Name == "NEGX")
                                             {
                                                 distance = Math.Abs(mappedPoint[0] - mappedBase[0]);
 
-                                                if (mappedBase[0] < mappedPoint[0]) distance *= -1;
+                                                if(mappedBase[0] < mappedPoint[0]) distance *= -1;
 
                                                 MoveObjects(movePtsFull.ToArray(), distance, "X");
                                             }
 
-                                            if (pointPrototype.Name == "POSY")
+                                            if(pointPrototype.Name == "POSY")
                                             {
                                                 distance = Math.Abs(mappedPoint[1] - mappedBase[1]);
 
-                                                if (mappedBase[1] < mappedPoint[1]) distance *= -1;
+                                                if(mappedBase[1] < mappedPoint[1]) distance *= -1;
 
                                                 MoveObjects(movePtsFull.ToArray(), distance, "Y");
                                             }
 
-                                            if (pointPrototype.Name == "NEGY")
+                                            if(pointPrototype.Name == "NEGY")
                                             {
                                                 distance = Math.Abs(mappedPoint[1] - mappedBase[1]);
 
-                                                if (mappedBase[1] < mappedPoint[1]) distance *= -1;
+                                                if(mappedBase[1] < mappedPoint[1]) distance *= -1;
 
                                                 MoveObjects(movePtsFull.ToArray(), distance, "Y");
                                             }
 
-                                            if (pointPrototype.Name == "POSZ")
+                                            if(pointPrototype.Name == "POSZ")
                                             {
                                                 distance = Math.Abs(mappedPoint[2] - mappedBase[2]);
 
-                                                if (mappedBase[2] < mappedPoint[2]) distance *= -1;
+                                                if(mappedBase[2] < mappedPoint[2]) distance *= -1;
 
                                                 MoveObjects(movePtsFull.ToArray(), distance, "Z");
                                             }
 
-                                            if (pointPrototype.Name == "NEGZ")
+                                            if(pointPrototype.Name == "NEGZ")
                                             {
                                                 distance = Math.Abs(mappedPoint[2] - mappedBase[2]);
 
-                                                if (mappedBase[2] < mappedPoint[2]) distance *= -1;
+                                                if(mappedBase[2] < mappedPoint[2]) distance *= -1;
 
                                                 MoveObjects(movePtsFull.ToArray(), distance, "Z");
                                             }
@@ -2661,7 +2661,7 @@ namespace TSG_Library.UFuncs
                 ufsession_.Ui.AskInfoUnits(out var infoUnits);
                 var dispUnits = (Part.Units)_displayPart.PartUnits;
 
-                if (dispUnits == Part.Units.Millimeters)
+                if(dispUnits == Part.Units.Millimeters)
                 {
                     _displayPart.UnitCollection.SetDefaultDataEntryUnits(UnitCollection.UnitDefaults.GMmNDegC);
                     _displayPart.UnitCollection.SetDefaultObjectInformationUnits(UnitCollection.UnitDefaults.GMmNDegC);
@@ -2678,8 +2678,8 @@ namespace TSG_Library.UFuncs
                 session_.Preferences.EmphasisVisualization.WorkPartEmphasis = false;
                 session_.Preferences.Assemblies.WorkPartDisplayAsEntirePart = false;
 
-                if (_isNewSelection)
-                    if (_updateComponent == null)
+                if(_isNewSelection)
+                    if(_updateComponent == null)
                     {
                         SelectWithFilter.NonValidCandidates = _nonValidNames;
                         SelectWithFilter.GetSelectedWithFilter("Select Component to Align Edge");
@@ -2687,15 +2687,15 @@ namespace TSG_Library.UFuncs
                         _isNewSelection = true;
                     }
 
-                if (_editBody != null)
+                if(_editBody != null)
                 {
                     var editComponent = _editBody.OwningComponent;
 
-                    if (editComponent != null)
+                    if(editComponent != null)
                     {
                         var checkPartName = (Part)editComponent.Prototype;
 
-                        if (!checkPartName.FullPath.Contains("mirror"))
+                        if(!checkPartName.FullPath.Contains("mirror"))
                         {
                             _updateComponent = editComponent;
 
@@ -2703,9 +2703,9 @@ namespace TSG_Library.UFuncs
                             var compBase = (BasePart)editComponent.Prototype;
                             var compUnits = compBase.PartUnits;
 
-                            if (compUnits == assmUnits)
+                            if(compUnits == assmUnits)
                             {
-                                if (_isNewSelection)
+                                if(_isNewSelection)
                                 {
                                     ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
@@ -2714,8 +2714,8 @@ namespace TSG_Library.UFuncs
                                     UpdateSessionParts();
 
                                     foreach (Feature featBlk in _workPart.Features)
-                                        if (featBlk.FeatureType == "BLOCK")
-                                            if (featBlk.Name == "DYNAMIC BLOCK")
+                                        if(featBlk.FeatureType == "BLOCK")
+                                            if(featBlk.Name == "DYNAMIC BLOCK")
                                             {
                                                 isBlockComponent = true;
                                                 CreateEditData(editComponent);
@@ -2727,7 +2727,7 @@ namespace TSG_Library.UFuncs
                                     isBlockComponent = true;
                                 }
 
-                                if (isBlockComponent)
+                                if(isBlockComponent)
                                 {
                                     var pHandle = new List<Point>();
                                     pHandle = SelectHandlePoint();
@@ -2744,7 +2744,7 @@ namespace TSG_Library.UFuncs
 
                                         Point pointPrototype;
 
-                                        if (_udoPointHandle.IsOccurrence)
+                                        if(_udoPointHandle.IsOccurrence)
                                             pointPrototype = (Point)_udoPointHandle.Prototype;
                                         else
                                             pointPrototype = _udoPointHandle;
@@ -2753,22 +2753,22 @@ namespace TSG_Library.UFuncs
                                         var movePtsHalf = new List<NXObject>();
                                         var movePtsFull = new List<NXObject>();
 
-                                        if (pointPrototype.Name.Contains("POS"))
+                                        if(pointPrototype.Name.Contains("POS"))
                                         {
                                             foreach (Point namedPt in _workPart.Points)
-                                                if (namedPt.Name != "")
+                                                if(namedPt.Name != "")
                                                 {
-                                                    if (namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
+                                                    if(namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
                                                         doNotMovePts.Add(namedPt);
 
-                                                    else if (namedPt.Name.Contains("Y") &&
-                                                             pointPrototype.Name.Contains("Y"))
+                                                    else if(namedPt.Name.Contains("Y") &&
+                                                            pointPrototype.Name.Contains("Y"))
                                                         doNotMovePts.Add(namedPt);
 
-                                                    else if (namedPt.Name.Contains("Z") &&
-                                                             pointPrototype.Name.Contains("Z"))
+                                                    else if(namedPt.Name.Contains("Z") &&
+                                                            pointPrototype.Name.Contains("Z"))
                                                         doNotMovePts.Add(namedPt);
-                                                    else if (namedPt.Name.Contains("BLKORIGIN"))
+                                                    else if(namedPt.Name.Contains("BLKORIGIN"))
                                                         doNotMovePts.Add(namedPt);
                                                     else
                                                         movePtsHalf.Add(namedPt);
@@ -2779,19 +2779,19 @@ namespace TSG_Library.UFuncs
                                         else
                                         {
                                             foreach (Point namedPt in _workPart.Points)
-                                                if (namedPt.Name != "")
+                                                if(namedPt.Name != "")
                                                 {
-                                                    if (namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
+                                                    if(namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
                                                         doNotMovePts.Add(namedPt);
 
-                                                    else if (namedPt.Name.Contains("Y") &&
-                                                             pointPrototype.Name.Contains("Y"))
+                                                    else if(namedPt.Name.Contains("Y") &&
+                                                            pointPrototype.Name.Contains("Y"))
                                                         doNotMovePts.Add(namedPt);
 
-                                                    else if (namedPt.Name.Contains("Z") &&
-                                                             pointPrototype.Name.Contains("Z"))
+                                                    else if(namedPt.Name.Contains("Z") &&
+                                                            pointPrototype.Name.Contains("Z"))
                                                         doNotMovePts.Add(namedPt);
-                                                    else if (namedPt.Name.Contains("BLKORIGIN"))
+                                                    else if(namedPt.Name.Contains("BLKORIGIN"))
                                                         movePtsFull.Add(namedPt);
                                                     else
                                                         movePtsHalf.Add(namedPt);
@@ -2809,24 +2809,24 @@ namespace TSG_Library.UFuncs
 
                                         foreach (var eLine in _edgeRepLines)
                                         {
-                                            if (eLine.Name == "YBASE1" || eLine.Name == "YCEILING1" ||
-                                                eLine.Name == "ZBASE1" || eLine.Name == "ZBASE3") negXObjs.Add(eLine);
+                                            if(eLine.Name == "YBASE1" || eLine.Name == "YCEILING1" ||
+                                               eLine.Name == "ZBASE1" || eLine.Name == "ZBASE3") negXObjs.Add(eLine);
 
-                                            if (eLine.Name == "YBASE2" || eLine.Name == "YCEILING2" ||
-                                                eLine.Name == "ZBASE2" || eLine.Name == "ZBASE4") posXObjs.Add(eLine);
+                                            if(eLine.Name == "YBASE2" || eLine.Name == "YCEILING2" ||
+                                               eLine.Name == "ZBASE2" || eLine.Name == "ZBASE4") posXObjs.Add(eLine);
 
-                                            if (eLine.Name == "XBASE1" || eLine.Name == "XCEILING1" ||
-                                                eLine.Name == "ZBASE1" || eLine.Name == "ZBASE2") negYObjs.Add(eLine);
+                                            if(eLine.Name == "XBASE1" || eLine.Name == "XCEILING1" ||
+                                               eLine.Name == "ZBASE1" || eLine.Name == "ZBASE2") negYObjs.Add(eLine);
 
-                                            if (eLine.Name == "XBASE2" || eLine.Name == "XCEILING2" ||
-                                                eLine.Name == "ZBASE3" || eLine.Name == "ZBASE4") posYObjs.Add(eLine);
+                                            if(eLine.Name == "XBASE2" || eLine.Name == "XCEILING2" ||
+                                               eLine.Name == "ZBASE3" || eLine.Name == "ZBASE4") posYObjs.Add(eLine);
 
-                                            if (eLine.Name == "XBASE1" || eLine.Name == "XBASE2" ||
-                                                eLine.Name == "YBASE1" || eLine.Name == "YBASE2") negZObjs.Add(eLine);
+                                            if(eLine.Name == "XBASE1" || eLine.Name == "XBASE2" ||
+                                               eLine.Name == "YBASE1" || eLine.Name == "YBASE2") negZObjs.Add(eLine);
 
-                                            if (eLine.Name == "XCEILING1" || eLine.Name == "XCEILING2" ||
-                                                eLine.Name == "YCEILING1" ||
-                                                eLine.Name == "YCEILING2") posZObjs.Add(eLine);
+                                            if(eLine.Name == "XCEILING1" || eLine.Name == "XCEILING2" ||
+                                               eLine.Name == "YCEILING1" ||
+                                               eLine.Name == "YCEILING2") posZObjs.Add(eLine);
                                         }
 
                                         var allxAxisLines = new List<Line>();
@@ -2835,11 +2835,11 @@ namespace TSG_Library.UFuncs
 
                                         foreach (var eLine in _edgeRepLines)
                                         {
-                                            if (eLine.Name.StartsWith("X")) allxAxisLines.Add(eLine);
+                                            if(eLine.Name.StartsWith("X")) allxAxisLines.Add(eLine);
 
-                                            if (eLine.Name.StartsWith("Y")) allyAxisLines.Add(eLine);
+                                            if(eLine.Name.StartsWith("Y")) allyAxisLines.Add(eLine);
 
-                                            if (eLine.Name.StartsWith("Z")) allzAxisLines.Add(eLine);
+                                            if(eLine.Name.StartsWith("Z")) allzAxisLines.Add(eLine);
                                         }
 
                                         var message = "Select Reference Point";
@@ -2854,7 +2854,7 @@ namespace TSG_Library.UFuncs
 
                                         ufsession_.Ui.UnlockUgAccess(UF_UI_FROM_CUSTOM);
 
-                                        if (response == UF_UI_OK)
+                                        if(response == UF_UI_OK)
                                         {
                                             bool isDistance;
 
@@ -2862,7 +2862,7 @@ namespace TSG_Library.UFuncs
                                                 "Enter offset value", .004, NumberStyles.AllowDecimalPoint,
                                                 CultureInfo.InvariantCulture.NumberFormat, out var inputDist);
 
-                                            if (isDistance)
+                                            if(isDistance)
                                             {
                                                 var mappedBase = new double[3];
                                                 ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, basePoint,
@@ -2879,11 +2879,11 @@ namespace TSG_Library.UFuncs
 
                                                 double distance;
 
-                                                if (pointPrototype.Name == "POSX")
+                                                if(pointPrototype.Name == "POSX")
                                                 {
                                                     distance = Math.Abs(mappedPoint[0] - mappedBase[0]);
 
-                                                    if (mappedBase[0] < mappedPoint[0])
+                                                    if(mappedBase[0] < mappedPoint[0])
                                                     {
                                                         distance *= -1;
                                                         distance += inputDist;
@@ -2908,11 +2908,11 @@ namespace TSG_Library.UFuncs
                                                     MoveObjects(movePtsHalf.ToArray(), distance / 2, "X");
                                                 }
 
-                                                if (pointPrototype.Name == "NEGX")
+                                                if(pointPrototype.Name == "NEGX")
                                                 {
                                                     distance = Math.Abs(mappedPoint[0] - mappedBase[0]);
 
-                                                    if (mappedBase[0] < mappedPoint[0])
+                                                    if(mappedBase[0] < mappedPoint[0])
                                                     {
                                                         distance *= -1;
                                                         distance += inputDist;
@@ -2937,11 +2937,11 @@ namespace TSG_Library.UFuncs
                                                     MoveObjects(movePtsHalf.ToArray(), distance / 2, "X");
                                                 }
 
-                                                if (pointPrototype.Name == "POSY")
+                                                if(pointPrototype.Name == "POSY")
                                                 {
                                                     distance = Math.Abs(mappedPoint[1] - mappedBase[1]);
 
-                                                    if (mappedBase[1] < mappedPoint[1])
+                                                    if(mappedBase[1] < mappedPoint[1])
                                                     {
                                                         distance *= -1;
                                                         distance += inputDist;
@@ -2966,11 +2966,11 @@ namespace TSG_Library.UFuncs
                                                     MoveObjects(movePtsHalf.ToArray(), distance / 2, "Y");
                                                 }
 
-                                                if (pointPrototype.Name == "NEGY")
+                                                if(pointPrototype.Name == "NEGY")
                                                 {
                                                     distance = Math.Abs(mappedPoint[1] - mappedBase[1]);
 
-                                                    if (mappedBase[1] < mappedPoint[1])
+                                                    if(mappedBase[1] < mappedPoint[1])
                                                     {
                                                         distance *= -1;
                                                         distance += inputDist;
@@ -2995,11 +2995,11 @@ namespace TSG_Library.UFuncs
                                                     MoveObjects(movePtsHalf.ToArray(), distance / 2, "Y");
                                                 }
 
-                                                if (pointPrototype.Name == "POSZ")
+                                                if(pointPrototype.Name == "POSZ")
                                                 {
                                                     distance = Math.Abs(mappedPoint[2] - mappedBase[2]);
 
-                                                    if (mappedBase[2] < mappedPoint[2])
+                                                    if(mappedBase[2] < mappedPoint[2])
                                                     {
                                                         distance *= -1;
                                                         distance += inputDist;
@@ -3024,11 +3024,11 @@ namespace TSG_Library.UFuncs
                                                     MoveObjects(movePtsHalf.ToArray(), distance / 2, "Z");
                                                 }
 
-                                                if (pointPrototype.Name == "NEGZ")
+                                                if(pointPrototype.Name == "NEGZ")
                                                 {
                                                     distance = Math.Abs(mappedPoint[2] - mappedBase[2]);
 
-                                                    if (mappedBase[2] < mappedPoint[2])
+                                                    if(mappedBase[2] < mappedPoint[2])
                                                     {
                                                         distance *= -1;
                                                         distance += inputDist;
@@ -3114,9 +3114,9 @@ namespace TSG_Library.UFuncs
 
         private void ComboBoxGrid_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode.Equals(Keys.Return))
+            if(e.KeyCode.Equals(Keys.Return))
             {
-                if (comboBoxGridBlock.Text == "0.000")
+                if(comboBoxGridBlock.Text == "0.000")
                 {
                     bool isConverted;
                     isConverted = double.TryParse(comboBoxGridBlock.Text, out _gridSpace);
@@ -3191,13 +3191,13 @@ namespace TSG_Library.UFuncs
                 session_.Preferences.EmphasisVisualization.WorkPartEmphasis = false;
                 session_.Preferences.Assemblies.WorkPartDisplayAsEntirePart = false;
 
-                if (compToMove != null)
+                if(compToMove != null)
                 {
                     var assmUnits = _displayPart.PartUnits;
                     var compBase = (BasePart)compToMove.Prototype;
                     var compUnits = compBase.PartUnits;
 
-                    if (compUnits == assmUnits)
+                    if(compUnits == assmUnits)
                     {
                         ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
@@ -3243,7 +3243,7 @@ namespace TSG_Library.UFuncs
                             ufsession_.Ui.SpecifyScreenPosition(message, MotionCallback, motionCbData, screenPos,
                                 out viewTag, out var response);
 
-                            if (response == UF_UI_PICK_RESPONSE)
+                            if(response == UF_UI_PICK_RESPONSE)
                             {
                                 UpdateDynamicHandles();
                                 ShowDynamicHandles();
@@ -3267,7 +3267,7 @@ namespace TSG_Library.UFuncs
             {
                 // set component translucency
 
-                if (setCompTranslucency != null)
+                if(setCompTranslucency != null)
                 {
                     DisplayModification editObjectDisplay;
                     editObjectDisplay = session_.DisplayManager.NewDisplayModification();
@@ -3280,7 +3280,7 @@ namespace TSG_Library.UFuncs
                 else
                 {
                     foreach (Body dispBody in _workPart.Bodies)
-                        if (dispBody.Layer == 1)
+                        if(dispBody.Layer == 1)
                         {
                             DisplayModification editObjectDisplay;
                             editObjectDisplay = session_.DisplayManager.NewDisplayModification();
@@ -3295,8 +3295,8 @@ namespace TSG_Library.UFuncs
                 SetWcsToWorkPart(setCompTranslucency);
 
                 foreach (Feature featBlk in _workPart.Features)
-                    if (featBlk.FeatureType == "BLOCK")
-                        if (featBlk.Name == "DYNAMIC BLOCK")
+                    if(featBlk.FeatureType == "BLOCK")
+                        if(featBlk.Name == "DYNAMIC BLOCK")
                         {
                             // get current block feature
                             var block1 = (Block)featBlk;
@@ -3314,7 +3314,7 @@ namespace TSG_Library.UFuncs
                             session_.Parts.SetWork(_displayPart);
                             UpdateSessionParts();
 
-                            if (mLength != 0 && mWidth != 0 && mHeight != 0)
+                            if(mLength != 0 && mWidth != 0 && mHeight != 0)
                             {
                                 // create edit block feature
                                 Feature nullFeaturesFeature = null;
@@ -3378,19 +3378,19 @@ namespace TSG_Library.UFuncs
         {
             var myUdOclass = session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoDynamicHandle");
 
-            if (myUdOclass != null)
+            if(myUdOclass != null)
             {
                 UserDefinedObject[] currentUdo;
                 currentUdo = _workPart.UserDefinedObjectManager.GetUdosOfClass(myUdOclass);
 
-                if (currentUdo.Length != 0)
+                if(currentUdo.Length != 0)
                 {
                     BasePart myBasePart = _workPart;
                     var myUdOmanager = myBasePart.UserDefinedObjectManager;
 
                     foreach (Point pointHandle in _workPart.Points)
                     foreach (var udoHandle in currentUdo)
-                        if (pointHandle.Name == udoHandle.Name)
+                        if(pointHandle.Name == udoHandle.Name)
                         {
                             double[] pointLocation =
                                 { pointHandle.Coordinates.X, pointHandle.Coordinates.Y, pointHandle.Coordinates.Z };
@@ -3547,12 +3547,12 @@ namespace TSG_Library.UFuncs
             {
                 var myUdOclass = session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoDynamicHandle");
 
-                if (myUdOclass != null)
+                if(myUdOclass != null)
                 {
                     UserDefinedObject[] currentUdo;
                     currentUdo = _workPart.UserDefinedObjectManager.GetUdosOfClass(myUdOclass);
 
-                    if (currentUdo.Length == 0)
+                    if(currentUdo.Length == 0)
                     {
                         BasePart myBasePart = _workPart;
                         var myUdOmanager = myBasePart.UserDefinedObjectManager;
@@ -3593,7 +3593,7 @@ namespace TSG_Library.UFuncs
 
                             ufsession_.Vec3.IsEqual(dir, wcsVectorX, 0.00, out var isEqualX);
 
-                            if (isEqualX == 1)
+                            if(isEqualX == 1)
                             {
                                 var pointLocation = new Point3d(pointOnFace[0], pointOnFace[1], pointOnFace[2]);
                                 var point1 = _workPart.Points.CreatePoint(pointLocation);
@@ -3614,7 +3614,7 @@ namespace TSG_Library.UFuncs
 
                             ufsession_.Vec3.IsEqual(dir, wcsVectorY, 0.00, out var isEqualY);
 
-                            if (isEqualY == 1)
+                            if(isEqualY == 1)
                             {
                                 var pointLocation = new Point3d(pointOnFace[0], pointOnFace[1], pointOnFace[2]);
                                 var point1 = _workPart.Points.CreatePoint(pointLocation);
@@ -3635,7 +3635,7 @@ namespace TSG_Library.UFuncs
 
                             ufsession_.Vec3.IsEqual(dir, wcsVectorZ, 0.00, out var isEqualZ);
 
-                            if (isEqualZ == 1)
+                            if(isEqualZ == 1)
                             {
                                 var pointLocation = new Point3d(pointOnFace[0], pointOnFace[1], pointOnFace[2]);
                                 var point1 = _workPart.Points.CreatePoint(pointLocation);
@@ -3656,7 +3656,7 @@ namespace TSG_Library.UFuncs
 
                             ufsession_.Vec3.IsEqual(dir, wcsVectorNegX, 0.00, out var isEqualNegX);
 
-                            if (isEqualNegX == 1)
+                            if(isEqualNegX == 1)
                             {
                                 var pointLocation = new Point3d(pointOnFace[0], pointOnFace[1], pointOnFace[2]);
                                 var point1 = _workPart.Points.CreatePoint(pointLocation);
@@ -3677,7 +3677,7 @@ namespace TSG_Library.UFuncs
 
                             ufsession_.Vec3.IsEqual(dir, wcsVectorNegY, 0.00, out var isEqualNegY);
 
-                            if (isEqualNegY == 1)
+                            if(isEqualNegY == 1)
                             {
                                 var pointLocation = new Point3d(pointOnFace[0], pointOnFace[1], pointOnFace[2]);
                                 var point1 = _workPart.Points.CreatePoint(pointLocation);
@@ -3698,7 +3698,7 @@ namespace TSG_Library.UFuncs
 
                             ufsession_.Vec3.IsEqual(dir, wcsVectorNegZ, 0.00, out var isEqualNegZ);
 
-                            if (isEqualNegZ == 1)
+                            if(isEqualNegZ == 1)
                             {
                                 var pointLocation = new Point3d(pointOnFace[0], pointOnFace[1], pointOnFace[2]);
                                 var point1 = _workPart.Points.CreatePoint(pointLocation);
@@ -3744,12 +3744,12 @@ namespace TSG_Library.UFuncs
 
                 var myUdOclass = session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoDynamicHandle");
 
-                if (myUdOclass != null)
+                if(myUdOclass != null)
                 {
                     UserDefinedObject[] currentUdo;
                     currentUdo = _workPart.UserDefinedObjectManager.GetUdosOfClass(myUdOclass);
 
-                    if (currentUdo.Length != 0)
+                    if(currentUdo.Length != 0)
                     {
                         foreach (var dispUdo in currentUdo)
                         {
@@ -3761,7 +3761,7 @@ namespace TSG_Library.UFuncs
                         }
 
                         foreach (Point udoPoint in _workPart.Points)
-                            if (udoPoint.Name != "" && udoPoint.Layer == _displayPart.Layers.WorkLayer)
+                            if(udoPoint.Name != "" && udoPoint.Layer == _displayPart.Layers.WorkLayer)
                             {
                                 udoPoint.SetVisibility(SmartObject.VisibilityOption.Visible);
                                 udoPoint.RedisplayObject();
@@ -3781,7 +3781,7 @@ namespace TSG_Library.UFuncs
             {
                 // set component translucency and update dynamic block
 
-                if (updateComp != null)
+                if(updateComp != null)
                 {
                     DisplayModification editObjectDisplay1;
                     editObjectDisplay1 = session_.DisplayManager.NewDisplayModification();
@@ -3794,7 +3794,7 @@ namespace TSG_Library.UFuncs
                 else
                 {
                     foreach (Body dispBody in _workPart.Bodies)
-                        if (dispBody.Layer == 1)
+                        if(dispBody.Layer == 1)
                         {
                             DisplayModification editObjectDisplay;
                             editObjectDisplay = session_.DisplayManager.NewDisplayModification();
@@ -3813,7 +3813,7 @@ namespace TSG_Library.UFuncs
 
                 foreach (Point pPoint in _workPart.Points)
                 {
-                    if (pPoint.Name != "BLKORIGIN")
+                    if(pPoint.Name != "BLKORIGIN")
                         continue;
 
                     blkOrigin.X = pPoint.Coordinates.X;
@@ -3823,20 +3823,20 @@ namespace TSG_Library.UFuncs
 
                 foreach (var blkLine in _edgeRepLines)
                 {
-                    if (blkLine.Name == "XBASE1") length = blkLine.GetLength().ToString();
+                    if(blkLine.Name == "XBASE1") length = blkLine.GetLength().ToString();
 
-                    if (blkLine.Name == "YBASE1") width = blkLine.GetLength().ToString();
+                    if(blkLine.Name == "YBASE1") width = blkLine.GetLength().ToString();
 
-                    if (blkLine.Name == "ZBASE1") height = blkLine.GetLength().ToString();
+                    if(blkLine.Name == "ZBASE1") height = blkLine.GetLength().ToString();
                 }
 
-                if (_isUprParallel)
+                if(_isUprParallel)
                 {
                     width = _parallelHeightExp;
                     height = _parallelWidthExp;
                 }
 
-                if (_isLwrParallel)
+                if(_isLwrParallel)
                 {
                     width = _parallelHeightExp;
                     height = _parallelWidthExp;
@@ -3858,8 +3858,8 @@ namespace TSG_Library.UFuncs
                 blkOrigin.Z = mappedPoint[2];
 
                 foreach (Feature featDynamic in _workPart.Features)
-                    if (featDynamic.FeatureType == "BLOCK")
-                        if (featDynamic.Name == "DYNAMIC BLOCK")
+                    if(featDynamic.FeatureType == "BLOCK")
+                        if(featDynamic.Name == "DYNAMIC BLOCK")
                         {
                             var block2 = (Block)featDynamic;
 
@@ -3923,12 +3923,12 @@ namespace TSG_Library.UFuncs
 
                 var myUdOclass = session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoDynamicHandle");
 
-                if (myUdOclass != null)
+                if(myUdOclass != null)
                 {
                     UserDefinedObject[] currentUdo;
                     currentUdo = _workPart.UserDefinedObjectManager.GetUdosOfClass(myUdOclass);
 
-                    if (currentUdo.Length != 0)
+                    if(currentUdo.Length != 0)
                     {
                         foreach (var dispUdo in currentUdo)
                         {
@@ -3938,7 +3938,7 @@ namespace TSG_Library.UFuncs
                         }
 
                         foreach (Point namedPt in _workPart.Points)
-                            if (namedPt.Name != "")
+                            if(namedPt.Name != "")
                                 namedPt.Blank();
                     }
                 }
@@ -3956,7 +3956,7 @@ namespace TSG_Library.UFuncs
 
             var myUdOclass = session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoDynamicHandle");
 
-            if (myUdOclass != null)
+            if(myUdOclass != null)
             {
                 UserDefinedObject[] currentUdo;
                 currentUdo = _workPart.UserDefinedObjectManager.GetUdosOfClass(myUdOclass);
@@ -3964,7 +3964,7 @@ namespace TSG_Library.UFuncs
             }
 
             foreach (Point namedPt in _workPart.Points)
-                if (namedPt.Name != "")
+                if(namedPt.Name != "")
                     session_.UpdateManager.AddToDeleteList(namedPt);
 
             foreach (var dLine in _edgeRepLines) session_.UpdateManager.AddToDeleteList(dLine);
@@ -3989,7 +3989,7 @@ namespace TSG_Library.UFuncs
                 Selection.SelectionAction.ClearAndEnableSpecific,
                 false, false, mask, out var selectedPoint, out var cursor);
 
-            if ((sel == Selection.Response.ObjectSelected) | (sel == Selection.Response.ObjectSelectedByName))
+            if((sel == Selection.Response.ObjectSelected) | (sel == Selection.Response.ObjectSelectedByName))
                 pointSelection.Add((Point)selectedPoint);
 
             return pointSelection;
@@ -4000,7 +4000,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if (compRefCsys != null)
+                if(compRefCsys != null)
                 {
                     ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
@@ -4017,17 +4017,17 @@ namespace TSG_Library.UFuncs
 
                     foreach (Expression exp in _workPart.Expressions)
                     {
-                        if (exp.Name == "uprParallel")
+                        if(exp.Name == "uprParallel")
                         {
-                            if (exp.RightHandSide.Contains("yes"))
+                            if(exp.RightHandSide.Contains("yes"))
                                 _isUprParallel = true;
                             else
                                 _isUprParallel = false;
                         }
 
-                        if (exp.Name == "lwrParallel")
+                        if(exp.Name == "lwrParallel")
                         {
-                            if (exp.RightHandSide.Contains("yes"))
+                            if(exp.RightHandSide.Contains("yes"))
                                 _isLwrParallel = true;
                             else
                                 _isLwrParallel = false;
@@ -4035,8 +4035,8 @@ namespace TSG_Library.UFuncs
                     }
 
                     foreach (Feature featBlk in _workPart.Features)
-                        if (featBlk.FeatureType == "BLOCK")
-                            if (featBlk.Name == "DYNAMIC BLOCK")
+                        if(featBlk.FeatureType == "BLOCK")
+                            if(featBlk.Name == "DYNAMIC BLOCK")
                             {
                                 var block1 = (Block)featBlk;
 
@@ -4050,13 +4050,13 @@ namespace TSG_Library.UFuncs
                                 var mWidth = blockFeatureBuilderMatch.Width.Value;
                                 var mHeight = blockFeatureBuilderMatch.Height.Value;
 
-                                if (_isUprParallel)
+                                if(_isUprParallel)
                                 {
                                     _parallelHeightExp = "uprParallelHeight";
                                     _parallelWidthExp = "uprParallelWidth";
                                 }
 
-                                if (_isLwrParallel)
+                                if(_isLwrParallel)
                                 {
                                     _parallelHeightExp = "lwrParallelHeight";
                                     _parallelWidthExp = "lwrParallelWidth";
@@ -4083,7 +4083,7 @@ namespace TSG_Library.UFuncs
                                 NXObject[] addToBody = { featBlkCsys };
 
                                 foreach (var bRefSet in _displayPart.GetAllReferenceSets())
-                                    if (bRefSet.Name == "BODY")
+                                    if(bRefSet.Name == "BODY")
                                         bRefSet.AddObjectsToReferenceSet(addToBody);
 
                                 session_.Parts.SetDisplay(_originalDisplayPart, false, false,
@@ -4094,15 +4094,15 @@ namespace TSG_Library.UFuncs
                                 UpdateSessionParts();
 
                                 foreach (CartesianCoordinateSystem wpCsys in _workPart.CoordinateSystems)
-                                    if (wpCsys.Layer == 254)
-                                        if (wpCsys.Name == "EDITCSYS")
+                                    if(wpCsys.Layer == 254)
+                                        if(wpCsys.Name == "EDITCSYS")
                                         {
                                             NXObject csysOccurrence;
                                             csysOccurrence = session_.Parts.WorkComponent.FindOccurrence(wpCsys);
 
                                             var editCsys = (CartesianCoordinateSystem)csysOccurrence;
 
-                                            if (editCsys != null)
+                                            if(editCsys != null)
                                             {
                                                 _displayPart.WCS.SetOriginAndMatrix(editCsys.Origin,
                                                     editCsys.Orientation.Element);
@@ -4133,17 +4133,17 @@ namespace TSG_Library.UFuncs
 
                     foreach (Expression exp in _workPart.Expressions)
                     {
-                        if (exp.Name == "uprParallel")
+                        if(exp.Name == "uprParallel")
                         {
-                            if (exp.RightHandSide.Contains("yes"))
+                            if(exp.RightHandSide.Contains("yes"))
                                 _isUprParallel = true;
                             else
                                 _isUprParallel = false;
                         }
 
-                        if (exp.Name == "lwrParallel")
+                        if(exp.Name == "lwrParallel")
                         {
-                            if (exp.RightHandSide.Contains("yes"))
+                            if(exp.RightHandSide.Contains("yes"))
                                 _isLwrParallel = true;
                             else
                                 _isLwrParallel = false;
@@ -4151,8 +4151,8 @@ namespace TSG_Library.UFuncs
                     }
 
                     foreach (Feature featBlk in _workPart.Features)
-                        if (featBlk.FeatureType == "BLOCK")
-                            if (featBlk.Name == "DYNAMIC BLOCK")
+                        if(featBlk.FeatureType == "BLOCK")
+                            if(featBlk.Name == "DYNAMIC BLOCK")
                             {
                                 var block1 = (Block)featBlk;
 
@@ -4166,13 +4166,13 @@ namespace TSG_Library.UFuncs
                                 var mWidth = blockFeatureBuilderMatch.Width.Value;
                                 var mHeight = blockFeatureBuilderMatch.Height.Value;
 
-                                if (_isUprParallel)
+                                if(_isUprParallel)
                                 {
                                     _parallelHeightExp = "uprParallelHeight";
                                     _parallelWidthExp = "uprParallelWidth";
                                 }
 
-                                if (_isLwrParallel)
+                                if(_isLwrParallel)
                                 {
                                     _parallelHeightExp = "lwrParallelHeight";
                                     _parallelWidthExp = "lwrParallelWidth";
@@ -4288,7 +4288,7 @@ namespace TSG_Library.UFuncs
                 Selection.SelectionAction.ClearAndEnableSpecific,
                 false, false, mask, out var selectedComp, out var cursor);
 
-            if ((sel == Selection.Response.ObjectSelected) | (sel == Selection.Response.ObjectSelectedByName))
+            if((sel == Selection.Response.ObjectSelected) | (sel == Selection.Response.ObjectSelectedByName))
             {
                 compSelection = (Component)selectedComp;
                 return compSelection;
@@ -4302,13 +4302,13 @@ namespace TSG_Library.UFuncs
             _displayPart.Views.Refresh();
 
             foreach (var eLine in _edgeRepLines)
-                if (eLine.Name == "XBASE1" || eLine.Name == "YBASE1" || eLine.Name == "ZBASE1")
+                if(eLine.Name == "XBASE1" || eLine.Name == "YBASE1" || eLine.Name == "ZBASE1")
                 {
                     var view = _displayPart.Views.WorkView.Tag;
                     var viewType = UFDisp.ViewType.UseWorkView;
                     var dim = string.Empty;
 
-                    if (_displayPart.PartUnits == BasePart.Units.Inches)
+                    if(_displayPart.PartUnits == BasePart.Units.Inches)
                     {
                         var roundDim = Math.Round(eLine.GetLength(), 3);
                         dim = $"{roundDim:0.000}";
@@ -4327,7 +4327,7 @@ namespace TSG_Library.UFuncs
                     double charSize;
                     var font = 1;
 
-                    if (_displayPart.PartUnits == BasePart.Units.Inches)
+                    if(_displayPart.PartUnits == BasePart.Units.Inches)
                         charSize = .125;
                     else
                         charSize = 3.175;
@@ -4347,17 +4347,17 @@ namespace TSG_Library.UFuncs
 
         private double RoundDistanceToGrid(double spacing, double cursor)
         {
-            if (spacing != 0)
+            if(spacing != 0)
             {
-                if (_displayPart.PartUnits == BasePart.Units.Inches)
+                if(_displayPart.PartUnits == BasePart.Units.Inches)
                 {
                     var round = Math.Abs(cursor);
                     var roundValue = Math.Round(round, 3);
                     var truncateValue = Math.Truncate(roundValue);
                     var fractionValue = roundValue - truncateValue;
-                    if (fractionValue != 0)
+                    if(fractionValue != 0)
                         for (var ii = spacing; ii <= 1; ii += spacing)
-                            if (fractionValue <= ii)
+                            if(fractionValue <= ii)
                             {
                                 var roundedFraction = ii;
                                 var finalValue = truncateValue + roundedFraction;
@@ -4365,7 +4365,7 @@ namespace TSG_Library.UFuncs
                                 break;
                             }
 
-                    if (cursor < 0) round *= -1;
+                    if(cursor < 0) round *= -1;
 
                     return round;
                 }
@@ -4375,9 +4375,9 @@ namespace TSG_Library.UFuncs
                     var roundValue = Math.Round(round, 3);
                     var truncateValue = Math.Truncate(roundValue);
                     var fractionValue = roundValue - truncateValue;
-                    if (fractionValue != 0)
+                    if(fractionValue != 0)
                         for (var ii = spacing / 25.4; ii <= 1; ii += spacing / 25.4)
-                            if (fractionValue <= ii)
+                            if(fractionValue <= ii)
                             {
                                 var roundedFraction = ii;
                                 var finalValue = truncateValue + roundedFraction;
@@ -4385,7 +4385,7 @@ namespace TSG_Library.UFuncs
                                 break;
                             }
 
-                    if (cursor < 0) round *= -1;
+                    if(cursor < 0) round *= -1;
 
                     return round * 25.4;
                 }
@@ -4399,7 +4399,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if (distance != 0)
+                if(distance != 0)
                 {
                     _displayPart.WCS.SetOriginAndMatrix(_workCompOrigin, _workCompOrientation);
 
@@ -4428,21 +4428,21 @@ namespace TSG_Library.UFuncs
 
                     moveObjectBuilder1.TransformMotion.DeltaEnum = ModlMotion.Delta.ReferenceWcsWorkPart;
 
-                    if (deltaXyz == "X")
+                    if(deltaXyz == "X")
                     {
                         moveObjectBuilder1.TransformMotion.DeltaXc.RightHandSide = distance.ToString();
                         moveObjectBuilder1.TransformMotion.DeltaYc.RightHandSide = "0";
                         moveObjectBuilder1.TransformMotion.DeltaZc.RightHandSide = "0";
                     }
 
-                    if (deltaXyz == "Y")
+                    if(deltaXyz == "Y")
                     {
                         moveObjectBuilder1.TransformMotion.DeltaXc.RightHandSide = "0";
                         moveObjectBuilder1.TransformMotion.DeltaYc.RightHandSide = distance.ToString();
                         moveObjectBuilder1.TransformMotion.DeltaZc.RightHandSide = "0";
                     }
 
-                    if (deltaXyz == "Z")
+                    if(deltaXyz == "Z")
                     {
                         moveObjectBuilder1.TransformMotion.DeltaXc.RightHandSide = "0";
                         moveObjectBuilder1.TransformMotion.DeltaYc.RightHandSide = "0";
@@ -4470,7 +4470,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if (_isDynamic)
+                if(_isDynamic)
                 {
                     var pointPrototype = _udoPointHandle.IsOccurrence
                         ? (Point)_udoPointHandle.Prototype
@@ -4482,20 +4482,20 @@ namespace TSG_Library.UFuncs
 
                     var movePtsFull = new List<NXObject>();
 
-                    if (pointPrototype.Name.Contains("POS"))
+                    if(pointPrototype.Name.Contains("POS"))
                     {
                         foreach (Point namedPt in _workPart.Points)
-                            if (namedPt.Name != "")
+                            if(namedPt.Name != "")
                             {
-                                if (namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
+                                if(namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
                                     doNotMovePts.Add(namedPt);
 
-                                else if (namedPt.Name.Contains("Y") && pointPrototype.Name.Contains("Y"))
+                                else if(namedPt.Name.Contains("Y") && pointPrototype.Name.Contains("Y"))
                                     doNotMovePts.Add(namedPt);
 
-                                else if (namedPt.Name.Contains("Z") && pointPrototype.Name.Contains("Z"))
+                                else if(namedPt.Name.Contains("Z") && pointPrototype.Name.Contains("Z"))
                                     doNotMovePts.Add(namedPt);
-                                else if (namedPt.Name.Contains("BLKORIGIN"))
+                                else if(namedPt.Name.Contains("BLKORIGIN"))
                                     doNotMovePts.Add(namedPt);
                                 else
                                     movePtsHalf.Add(namedPt);
@@ -4506,17 +4506,17 @@ namespace TSG_Library.UFuncs
                     else
                     {
                         foreach (Point namedPt in _workPart.Points)
-                            if (namedPt.Name != "")
+                            if(namedPt.Name != "")
                             {
-                                if (namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
+                                if(namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
                                     doNotMovePts.Add(namedPt);
 
-                                else if (namedPt.Name.Contains("Y") && pointPrototype.Name.Contains("Y"))
+                                else if(namedPt.Name.Contains("Y") && pointPrototype.Name.Contains("Y"))
                                     doNotMovePts.Add(namedPt);
 
-                                else if (namedPt.Name.Contains("Z") && pointPrototype.Name.Contains("Z"))
+                                else if(namedPt.Name.Contains("Z") && pointPrototype.Name.Contains("Z"))
                                     doNotMovePts.Add(namedPt);
-                                else if (namedPt.Name.Contains("BLKORIGIN"))
+                                else if(namedPt.Name.Contains("BLKORIGIN"))
                                     movePtsFull.Add(namedPt);
                                 else
                                     movePtsHalf.Add(namedPt);
@@ -4554,17 +4554,17 @@ namespace TSG_Library.UFuncs
                                 break;
                         }
 
-                        if (eLine.Name == "XBASE1" || eLine.Name == "XCEILING1" || eLine.Name == "ZBASE1" ||
-                            eLine.Name == "ZBASE2") negYObjs.Add(eLine);
+                        if(eLine.Name == "XBASE1" || eLine.Name == "XCEILING1" || eLine.Name == "ZBASE1" ||
+                           eLine.Name == "ZBASE2") negYObjs.Add(eLine);
 
-                        if (eLine.Name == "XBASE2" || eLine.Name == "XCEILING2" || eLine.Name == "ZBASE3" ||
-                            eLine.Name == "ZBASE4") posYObjs.Add(eLine);
+                        if(eLine.Name == "XBASE2" || eLine.Name == "XCEILING2" || eLine.Name == "ZBASE3" ||
+                           eLine.Name == "ZBASE4") posYObjs.Add(eLine);
 
-                        if (eLine.Name == "XBASE1" || eLine.Name == "XBASE2" || eLine.Name == "YBASE1" ||
-                            eLine.Name == "YBASE2") negZObjs.Add(eLine);
+                        if(eLine.Name == "XBASE1" || eLine.Name == "XBASE2" || eLine.Name == "YBASE1" ||
+                           eLine.Name == "YBASE2") negZObjs.Add(eLine);
 
-                        if (eLine.Name == "XCEILING1" || eLine.Name == "XCEILING2" || eLine.Name == "YCEILING1" ||
-                            eLine.Name == "YCEILING2") posZObjs.Add(eLine);
+                        if(eLine.Name == "XCEILING1" || eLine.Name == "XCEILING2" || eLine.Name == "YCEILING1" ||
+                           eLine.Name == "YCEILING2") posZObjs.Add(eLine);
                     }
 
                     var allxAxisLines = new List<Line>();
@@ -4573,11 +4573,11 @@ namespace TSG_Library.UFuncs
 
                     foreach (var eLine in _edgeRepLines)
                     {
-                        if (eLine.Name.StartsWith("X")) allxAxisLines.Add(eLine);
+                        if(eLine.Name.StartsWith("X")) allxAxisLines.Add(eLine);
 
-                        if (eLine.Name.StartsWith("Y")) allyAxisLines.Add(eLine);
+                        if(eLine.Name.StartsWith("Y")) allyAxisLines.Add(eLine);
 
-                        if (eLine.Name.StartsWith("Z")) allzAxisLines.Add(eLine);
+                        if(eLine.Name.StartsWith("Z")) allzAxisLines.Add(eLine);
                     }
 
                     // get the distance from the selected point to the cursor location
@@ -4593,18 +4593,18 @@ namespace TSG_Library.UFuncs
                     ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, pointStart, UF_CSYS_ROOT_WCS_COORDS, mappedPoint);
                     ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, position, UF_CSYS_ROOT_WCS_COORDS, mappedCursor);
 
-                    if (pointPrototype.Name == "POSX" || pointPrototype.Name == "NEGX")
-                        if (mappedPoint[0] != mappedCursor[0])
+                    if(pointPrototype.Name == "POSX" || pointPrototype.Name == "NEGX")
+                        if(mappedPoint[0] != mappedCursor[0])
                         {
                             var xDistance = Math.Sqrt(Math.Pow(mappedPoint[0] - mappedCursor[0], 2));
 
-                            if (xDistance >= _gridSpace)
+                            if(xDistance >= _gridSpace)
                             {
-                                if (mappedCursor[0] < mappedPoint[0]) xDistance *= -1;
+                                if(mappedCursor[0] < mappedPoint[0]) xDistance *= -1;
 
                                 _distanceMoved += xDistance;
 
-                                if (pointPrototype.Name == "POSX")
+                                if(pointPrototype.Name == "POSX")
                                 {
                                     foreach (var posXLine in posXObjs) movePtsFull.Add(posXLine);
 
@@ -4643,18 +4643,18 @@ namespace TSG_Library.UFuncs
                             }
                         }
 
-                    if (pointPrototype.Name == "POSY" || pointPrototype.Name == "NEGY")
-                        if (mappedPoint[1] != mappedCursor[1])
+                    if(pointPrototype.Name == "POSY" || pointPrototype.Name == "NEGY")
+                        if(mappedPoint[1] != mappedCursor[1])
                         {
                             var yDistance = Math.Sqrt(Math.Pow(mappedPoint[1] - mappedCursor[1], 2));
 
-                            if (yDistance >= _gridSpace)
+                            if(yDistance >= _gridSpace)
                             {
-                                if (mappedCursor[1] < mappedPoint[1]) yDistance *= -1;
+                                if(mappedCursor[1] < mappedPoint[1]) yDistance *= -1;
 
                                 _distanceMoved += yDistance;
 
-                                if (pointPrototype.Name == "POSY")
+                                if(pointPrototype.Name == "POSY")
                                 {
                                     foreach (var addLine in posYObjs) movePtsFull.Add(addLine);
 
@@ -4693,19 +4693,19 @@ namespace TSG_Library.UFuncs
                             }
                         }
 
-                    if (pointPrototype.Name == "POSZ" || pointPrototype.Name == "NEGZ")
-                        if (mappedPoint[2] != mappedCursor[2])
+                    if(pointPrototype.Name == "POSZ" || pointPrototype.Name == "NEGZ")
+                        if(mappedPoint[2] != mappedCursor[2])
                         {
                             var zDistance = Math.Sqrt(Math.Pow(mappedPoint[2] - mappedCursor[2], 2));
                             zDistance = RoundDistanceToGrid(_gridSpace, zDistance);
 
-                            if (zDistance >= _gridSpace)
+                            if(zDistance >= _gridSpace)
                             {
-                                if (mappedCursor[2] < mappedPoint[2]) zDistance *= -1;
+                                if(mappedCursor[2] < mappedPoint[2]) zDistance *= -1;
 
                                 _distanceMoved += zDistance;
 
-                                if (pointPrototype.Name == "POSZ")
+                                if(pointPrototype.Name == "POSZ")
                                 {
                                     foreach (var addLine in posZObjs) movePtsFull.Add(addLine);
 
@@ -4752,7 +4752,7 @@ namespace TSG_Library.UFuncs
                 {
                     Point pointPrototype;
 
-                    if (_udoPointHandle.IsOccurrence)
+                    if(_udoPointHandle.IsOccurrence)
                         pointPrototype = (Point)_udoPointHandle.Prototype;
                     else
                         pointPrototype = _udoPointHandle;
@@ -4760,7 +4760,7 @@ namespace TSG_Library.UFuncs
                     var moveAll = new List<NXObject>();
 
                     foreach (Point namedPts in _workPart.Points)
-                        if (namedPts.Name != "")
+                        if(namedPts.Name != "")
                             moveAll.Add(namedPts);
 
                     foreach (var eLine in _edgeRepLines) moveAll.Add(eLine);
@@ -4778,14 +4778,14 @@ namespace TSG_Library.UFuncs
                     ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, pointStart, UF_CSYS_ROOT_WCS_COORDS, mappedPoint);
                     ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, position, UF_CSYS_ROOT_WCS_COORDS, mappedCursor);
 
-                    if (pointPrototype.Name == "POSX" || pointPrototype.Name == "NEGX")
-                        if (mappedPoint[0] != mappedCursor[0])
+                    if(pointPrototype.Name == "POSX" || pointPrototype.Name == "NEGX")
+                        if(mappedPoint[0] != mappedCursor[0])
                         {
                             var xDistance = Math.Sqrt(Math.Pow(mappedPoint[0] - mappedCursor[0], 2));
 
-                            if (xDistance >= _gridSpace)
+                            if(xDistance >= _gridSpace)
                             {
-                                if (mappedCursor[0] < mappedPoint[0]) xDistance *= -1;
+                                if(mappedCursor[0] < mappedPoint[0]) xDistance *= -1;
 
                                 _distanceMoved += xDistance;
 
@@ -4793,14 +4793,14 @@ namespace TSG_Library.UFuncs
                             }
                         }
 
-                    if (pointPrototype.Name == "POSY" || pointPrototype.Name == "NEGY")
-                        if (mappedPoint[1] != mappedCursor[1])
+                    if(pointPrototype.Name == "POSY" || pointPrototype.Name == "NEGY")
+                        if(mappedPoint[1] != mappedCursor[1])
                         {
                             var yDistance = Math.Sqrt(Math.Pow(mappedPoint[1] - mappedCursor[1], 2));
 
-                            if (yDistance >= _gridSpace)
+                            if(yDistance >= _gridSpace)
                             {
-                                if (mappedCursor[1] < mappedPoint[1]) yDistance *= -1;
+                                if(mappedCursor[1] < mappedPoint[1]) yDistance *= -1;
 
                                 _distanceMoved += yDistance;
 
@@ -4808,15 +4808,15 @@ namespace TSG_Library.UFuncs
                             }
                         }
 
-                    if (pointPrototype.Name == "POSZ" || pointPrototype.Name == "NEGZ")
-                        if (mappedPoint[2] != mappedCursor[2])
+                    if(pointPrototype.Name == "POSZ" || pointPrototype.Name == "NEGZ")
+                        if(mappedPoint[2] != mappedCursor[2])
                         {
                             var zDistance = Math.Sqrt(Math.Pow(mappedPoint[2] - mappedCursor[2], 2));
                             zDistance = RoundDistanceToGrid(_gridSpace, zDistance);
 
-                            if (zDistance >= _gridSpace)
+                            if(zDistance >= _gridSpace)
                             {
-                                if (mappedCursor[2] < mappedPoint[2]) zDistance *= -1;
+                                if(mappedCursor[2] < mappedPoint[2]) zDistance *= -1;
 
                                 _distanceMoved += zDistance;
 
@@ -4835,14 +4835,14 @@ namespace TSG_Library.UFuncs
 
                 foreach (var eLine in _edgeRepLines)
                 {
-                    if (eLine.Name == "XBASE1") editBlkLength = eLine.GetLength();
+                    if(eLine.Name == "XBASE1") editBlkLength = eLine.GetLength();
 
-                    if (eLine.Name == "YBASE1") editBlkWidth = eLine.GetLength();
+                    if(eLine.Name == "YBASE1") editBlkWidth = eLine.GetLength();
 
-                    if (eLine.Name == "ZBASE1") editBlkHeight = eLine.GetLength();
+                    if(eLine.Name == "ZBASE1") editBlkHeight = eLine.GetLength();
                 }
 
-                if (_displayPart.PartUnits == BasePart.Units.Inches)
+                if(_displayPart.PartUnits == BasePart.Units.Inches)
                 {
                     ufsession_.Ui.SetPrompt(
                         $"X = {editBlkLength:0.000}  Y = {editBlkWidth:0.000}  Z = {$"{editBlkHeight:0.000}"}  Distance Moved =  {$"{_distanceMoved:0.000}"}");

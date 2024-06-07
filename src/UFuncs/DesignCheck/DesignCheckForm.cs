@@ -6,10 +6,9 @@ using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Assemblies;
 using TSG_Library.Attributes;
-using TSG_Library.Extensions;
 using TSG_Library.Properties;
 using TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities;
-using static TSG_Library.Extensions.Extensions_;
+using static TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs
 {
@@ -202,13 +201,13 @@ namespace TSG_Library.UFuncs
                     foreach (var part in loaded_parts)
                         try
                         {
-                            if (!check.IsPartValidForCheck(part, out var message))
+                            if(!check.IsPartValidForCheck(part, out var message))
                             {
                                 ignored_node.Nodes.Add(part.__TreeNode());
                                 continue;
                             }
 
-                            if (check.PerformCheck(part, out var result_node))
+                            if(check.PerformCheck(part, out var result_node))
                                 passed_node.Nodes.Add(result_node);
                             else
                                 failed_node.Nodes.Add(result_node);
@@ -351,7 +350,7 @@ namespace TSG_Library.UFuncs
             {
                 print_("double clicked11");
 
-                if (!(e.Node.Tag is Part part))
+                if(!(e.Node.Tag is Part part))
                     return;
 
                 //__display_part_.Acti
@@ -376,7 +375,7 @@ namespace TSG_Library.UFuncs
             {
                 var xNode = x as TreeNode;
                 var yNode = y as TreeNode;
-                if (ReferenceEquals(xNode, yNode)) return 0;
+                if(ReferenceEquals(xNode, yNode)) return 0;
                 return xNode is null
                     ? string.CompareOrdinal(null, yNode.Text)
                     : string.CompareOrdinal(xNode.Text, yNode?.Text);

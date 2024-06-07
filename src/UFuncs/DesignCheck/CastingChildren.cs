@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Windows.Forms;
 using NXOpen;
-using TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 {
@@ -32,10 +31,10 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
         public bool IsPartValidForCheck(Part part, out string message)
         {
             message = "";
-            if (!part.__IsPartDetail())
+            if(!part.__IsPartDetail())
                 return false;
 
-            if (!part.__HasAttribute("MATERIAL"))
+            if(!part.__HasAttribute("MATERIAL"))
             {
                 message = $"Part {part.Leaf} doesn't have a MATERIAL attribute";
                 return false;
