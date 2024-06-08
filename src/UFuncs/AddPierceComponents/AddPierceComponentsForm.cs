@@ -960,9 +960,9 @@ namespace TSG_Library.UFuncs
 
             // Revision • 1.2 – 2017 / 12 / 07
             var layout = snapFace.OwningComponent;
-            var xAxis = layout._Members().OfType<DatumAxis>().Single(axis => axis.Name == "PIERCED_AXIS_X_" + integer);
-            var yAxis = layout._Members().OfType<DatumAxis>().Single(axis => axis.Name == "PIERCED_AXIS_Y_" + integer);
-            var zAxis = layout._Members().OfType<DatumAxis>().Single(axis => axis.Name == "PIERCED_AXIS_Z_" + integer);
+            var xAxis = layout.__Members().OfType<DatumAxis>().Single(axis => axis.Name == "PIERCED_AXIS_X_" + integer);
+            var yAxis = layout.__Members().OfType<DatumAxis>().Single(axis => axis.Name == "PIERCED_AXIS_Y_" + integer);
+            var zAxis = layout.__Members().OfType<DatumAxis>().Single(axis => axis.Name == "PIERCED_AXIS_Z_" + integer);
             var orientation = xAxis.Direction._ToMatrix3x3(yAxis.Direction);
             var newOrigin = xAxis.Origin;
             if(zOffsetExpression != null)
@@ -996,7 +996,7 @@ namespace TSG_Library.UFuncs
                 bodyReferenceSet?.AddObjectsToReferenceSet(new NXObject[] { addedComponent });
             }
 
-            var zAxisComponent = addedComponent._Members()
+            var zAxisComponent = addedComponent.__Members()
                 .OfType<DatumAxis>()
                 .Single(axis => axis.Direction._IsEqualTo(_Vector3dZ()));
 
@@ -1265,7 +1265,7 @@ namespace TSG_Library.UFuncs
         public static DatumAxis GetZAxisOccurenceOfSlug(Face face)
         {
             var integer = GetFaceNameInteger(face);
-            return face.OwningComponent._Members()
+            return face.OwningComponent.__Members()
                 .OfType<DatumAxis>()
                 .Single(plane => plane.Name == "PIERCED_AXIS_Z_" + integer);
         }
@@ -1273,7 +1273,7 @@ namespace TSG_Library.UFuncs
         public static DatumPlane GetYZPlaneOccurenceOfSlug(Face face)
         {
             var integer = GetFaceNameInteger(face);
-            return face.OwningComponent._Members()
+            return face.OwningComponent.__Members()
                 .OfType<DatumPlane>()
                 .Single(plane => plane.Name == "PIERCED_PLANE_YZ_" + integer);
         }
@@ -1308,13 +1308,13 @@ namespace TSG_Library.UFuncs
         public static Face GetTopFaceOfPunch(Component snapPunch)
         {
             // ReSharper disable once StringLiteralTypo
-            return snapPunch._Members().OfType<Face>().Single(face => face.Name == "PUNCHTOPFACE");
+            return snapPunch.__Members().OfType<Face>().Single(face => face.Name == "PUNCHTOPFACE");
         }
 
         public static Face GetAlignFaceOfRetainer(Component snapPunch)
         {
             // ReSharper disable once StringLiteralTypo
-            return snapPunch._Members().OfType<Face>().Single(face => face.Name == "ALIGNPUNCH");
+            return snapPunch.__Members().OfType<Face>().Single(face => face.Name == "ALIGNPUNCH");
         }
 
         internal static string EditInteger(int integer)

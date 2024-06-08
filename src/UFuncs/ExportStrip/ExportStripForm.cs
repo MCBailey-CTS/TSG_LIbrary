@@ -792,7 +792,7 @@ namespace TSG_Library.UFuncs
 
         public static string ExportStripPart(string outgoingFolderPath)
         {
-            var assemblyPartPaths = __display_part_.ComponentAssembly.RootComponent._Descendants()
+            var assemblyPartPaths = __display_part_.ComponentAssembly.RootComponent.__Descendants()
                 .Where(component => !component.IsSuppressed)
                 .Select(component => component.Prototype)
                 .OfType<Part>()

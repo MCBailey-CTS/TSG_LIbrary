@@ -63,7 +63,7 @@ namespace TSG_Library.UFuncs
             try
             {
                 foreach (var child in __display_part_.ComponentAssembly.RootComponent.GetChildren()
-                             .Where(__c => __c._IsLoaded()).Select(__c => __c._Prototype()).Distinct())
+                             .Where(__c => __c.__IsLoaded()).Select(__c => __c._Prototype()).Distinct())
                     try
                     {
                         __display_part_ = child;

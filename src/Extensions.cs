@@ -27,9 +27,11 @@ using Curve = NXOpen.Curve;
 using Type = NXOpen.GeometricUtilities.Type;
 using Unit = TSG_Library.Enum.Unit;
 using static NXOpen.UF.UFConstants;
+using TSG_Library.Attributes;
 
 namespace TSG_Library
 {
+    [ExtensionsAspect]
     public static class Extensions
     {
         public const string DetailNameRegex = @"^(?<jobNum>\d+)-(?<opNum>\d+)-(?<detailName>[0-9-A-Za-z]+)$";
@@ -69,7 +71,7 @@ namespace TSG_Library
         //     The maximum value allowed for order is 3. Usinga value greater than 3 will result
         //     in a run-time error.
         [Obsolete(nameof(NotImplementedException))]
-        public static Point3d[] Derivatives(double value, int order)
+        public static Point3d[] __Derivatives(double value, int order)
         {
             //bool flag = ObjectType == ObjectTypes.Type.Arc;
             //UFEval eval = ufsession_.Eval;
@@ -110,7 +112,7 @@ namespace TSG_Library
         // Returns:
         //     A transformed copy of NX.Curve
         [Obsolete(nameof(NotImplementedException))]
-        public static Curve Copy(double[] xform)
+        public static Curve __Copy(double[] xform)
         {
             //NXOpen.Curve nXOpenCurve = NXOpenCurve;
             //NXObject nXObject = NXObject.Wrap(nXOpenCurve.Tag);
@@ -149,7 +151,7 @@ namespace TSG_Library
         //     To create a transformation, use the functions in the Snap.Geom.Transform class.
 
 
-        internal static EqualityComparer<Point3d> Point3d_EqualityComparer(double tolerance = .001)
+        internal static EqualityComparer<Point3d> __Point3dEqualityComparer(double tolerance = .001)
         {
             return new ComparerPoint3d(tolerance);
         }
@@ -172,7 +174,7 @@ namespace TSG_Library
             var list = new List<SelectionIntentRule>();
 
             for (var i = 0; i < icurves.Length; i++)
-                if(icurves[i] is Curve curve)
+                if (icurves[i] is Curve curve)
                 {
                     var curves = new Curve[1] { curve };
                     var item = __work_part_.ScRuleFactory.CreateRuleCurveDumb(curves);
@@ -208,7 +210,7 @@ namespace TSG_Library
         /// <param name="offsetValues">Offset distances for section curves</param>
         /// <param name="createSheet">If true, forces creation of a sheet body</param>
         /// <returns>An NX.Extrude object</returns>
-        internal static Extrude CreateExtrude(
+        internal static Extrude __CreateExtrude(
             Section section,
             Vector3d axis,
             double[] extents,
@@ -222,14 +224,14 @@ namespace TSG_Library
             extrudeBuilder.DistanceTolerance = DistanceTolerance;
             extrudeBuilder.BooleanOperation.Type = BooleanOperation.BooleanType.Create;
 
-            if(createSheet)
+            if (createSheet)
                 extrudeBuilder.FeatureOptions.BodyType = FeatureOptions.BodyStyle.Sheet;
 
             extrudeBuilder.Limits.StartExtend.Value.RightHandSide = extents[0].ToString();
             extrudeBuilder.Limits.EndExtend.Value.RightHandSide = extents[1].ToString();
             extrudeBuilder.Offset.Option = Type.NoOffset;
 
-            if(offset)
+            if (offset)
             {
                 extrudeBuilder.Offset.Option = Type.NonsymmetricOffset;
                 extrudeBuilder.Offset.StartOffset.RightHandSide = offsetValues[0].ToString();
@@ -258,7 +260,7 @@ namespace TSG_Library
         /// <param name="ray">The ray</param>
         /// <returns>Line end-points</returns>
         [Obsolete(nameof(NotImplementedException))]
-        internal static Point3d[] ClipRay(Geom.Curve.Ray ray)
+        internal static Point3d[] __ClipRay(Geom.Curve.Ray ray)
         {
             var num = -1000000.0;
             var num2 = 1000000.0;
@@ -266,7 +268,7 @@ namespace TSG_Library
             var num4 = 200.0 * MetersToPartUnits;
             var x = ray.Axis.X;
             var x2 = ray.Origin.X;
-            if(System.Math.Abs(x) > num3)
+            if (System.Math.Abs(x) > num3)
             {
                 var val = System.Math.Min((0.0 - num4 - x2) / x, (num4 - x2) / x);
                 var val2 = System.Math.Max((0.0 - num4 - x2) / x, (num4 - x2) / x);
@@ -276,7 +278,7 @@ namespace TSG_Library
 
             x = ray.Axis.Y;
             x2 = ray.Origin.Y;
-            if(System.Math.Abs(x) > num3)
+            if (System.Math.Abs(x) > num3)
             {
                 var val = System.Math.Min((0.0 - num4 - x2) / x, (num4 - x2) / x);
                 var val3 = System.Math.Max((0.0 - num4 - x2) / x, (num4 - x2) / x);
@@ -286,7 +288,7 @@ namespace TSG_Library
 
             x = ray.Axis.Z;
             x2 = ray.Origin.Z;
-            if(System.Math.Abs(x) > num3)
+            if (System.Math.Abs(x) > num3)
             {
                 var val = System.Math.Min((0.0 - num4 - x2) / x, (num4 - x2) / x);
                 var val4 = System.Math.Max((0.0 - num4 - x2) / x, (num4 - x2) / x);
@@ -302,7 +304,7 @@ namespace TSG_Library
 
 
         [Obsolete(nameof(NotImplementedException))]
-        public static bool IsReverseDirection(OffsetCurveBuilder builder, ICurve[] icurves, Point3d pos,
+        public static bool __IsReverseDirection(OffsetCurveBuilder builder, ICurve[] icurves, Point3d pos,
             Vector3d helpVector)
         {
             //int num = -1;
@@ -506,10 +508,10 @@ namespace TSG_Library
 
         public static string _PadInt(this int integer, int padLength)
         {
-            if(integer < 0)
+            if (integer < 0)
                 throw new ArgumentOutOfRangeException(nameof(integer), @"You cannot pad a negative integer.");
 
-            if(padLength < 1)
+            if (padLength < 1)
                 throw new ArgumentOutOfRangeException(nameof(padLength),
                     @"You cannot have a pad length of less than 1.");
 
@@ -521,7 +523,7 @@ namespace TSG_Library
             {
                 integerString = $"0{integerString}";
 
-                if(counter++ > 100)
+                if (counter++ > 100)
                     throw new TimeoutException(nameof(_PadInt));
             }
 
@@ -710,42 +712,42 @@ namespace TSG_Library
 
         #region DatumCsys
 
-        public static DatumPlane _DatumPlaneXY(this DatumCsys datumCsys)
+        public static DatumPlane __DatumPlaneXY(this DatumCsys datumCsys)
         {
             ufsession_.Modl.AskDatumCsysComponents(datumCsys.Tag, out _, out _, out _, out var dplanes);
-            return (DatumPlane)session_._GetTaggedObject(dplanes[0]);
+            return (DatumPlane)session_.__GetTaggedObject(dplanes[0]);
         }
 
-        public static DatumPlane _DatumPlaneXZ(this DatumCsys datumCsys)
+        public static DatumPlane __DatumPlaneXZ(this DatumCsys datumCsys)
         {
             ufsession_.Modl.AskDatumCsysComponents(datumCsys.Tag, out _, out _, out _, out var dplanes);
-            return (DatumPlane)session_._GetTaggedObject(dplanes[2]);
+            return (DatumPlane)session_.__GetTaggedObject(dplanes[2]);
         }
 
-        public static DatumPlane _DatumPlaneYZ(this DatumCsys datumCsys)
+        public static DatumPlane __DatumPlaneYZ(this DatumCsys datumCsys)
         {
             ufsession_.Modl.AskDatumCsysComponents(datumCsys.Tag, out _, out _, out _, out var dplanes);
-            return (DatumPlane)session_._GetTaggedObject(dplanes[1]);
+            return (DatumPlane)session_.__GetTaggedObject(dplanes[1]);
         }
 
-        public static Vector3d _Vector3dX(this DatumCsys datumCsys)
+        public static Vector3d __Vector3dX(this DatumCsys datumCsys)
         {
             ufsession_.Modl.AskDatumCsysComponents(datumCsys.Tag, out _, out _, out var daxes, out _);
-            var axis = (DatumAxis)session_._GetTaggedObject(daxes[0]);
+            var axis = (DatumAxis)session_.__GetTaggedObject(daxes[0]);
             return axis.Direction;
         }
 
-        public static Vector3d _Vector3dY(this DatumCsys datumCsys)
+        public static Vector3d __Vector3dY(this DatumCsys datumCsys)
         {
             ufsession_.Modl.AskDatumCsysComponents(datumCsys.Tag, out _, out _, out var daxes, out _);
-            var axis = (DatumAxis)session_._GetTaggedObject(daxes[1]);
+            var axis = (DatumAxis)session_.__GetTaggedObject(daxes[1]);
             return axis.Direction;
         }
 
-        public static Vector3d _Vector3dZ(this DatumCsys datumCsys)
+        public static Vector3d __Vector3dZ(this DatumCsys datumCsys)
         {
             ufsession_.Modl.AskDatumCsysComponents(datumCsys.Tag, out _, out _, out var daxes, out _);
-            var axis = (DatumAxis)session_._GetTaggedObject(daxes[2]);
+            var axis = (DatumAxis)session_.__GetTaggedObject(daxes[2]);
             return axis.Direction;
         }
 
@@ -1332,7 +1334,7 @@ namespace TSG_Library
             basePart.__AssertIsWorkPart();
             var array = origin._ToArray();
             ufsession_.Csys.CreateCsys(array, matrix.Tag, out var csys_id);
-            var objectFromTag = (NXObject)session_._GetTaggedObject(csys_id);
+            var objectFromTag = (NXObject)session_.__GetTaggedObject(csys_id);
             var coordinateSystem = (CoordinateSystem)objectFromTag;
             return coordinateSystem;
         }
@@ -1359,7 +1361,7 @@ namespace TSG_Library
             var matrix = __work_part_.NXMatrices.Create(axisX._ToMatrix3x3(axisY, axisZ));
             var nXOpenTag = matrix.Tag;
             ufsession_.Csys.CreateCsys(array, nXOpenTag, out var csys_id);
-            var objectFromTag = (NXObject)session_._GetTaggedObject(csys_id);
+            var objectFromTag = (NXObject)session_.__GetTaggedObject(csys_id);
             var coordinateSystem = (CoordinateSystem)objectFromTag;
             return coordinateSystem;
         }
@@ -2193,7 +2195,7 @@ namespace TSG_Library
         {
             obj.Color = color;
 
-            if(redisplayObj)
+            if (redisplayObj)
                 obj.__RedisplayObject();
         }
 
@@ -2201,7 +2203,7 @@ namespace TSG_Library
         {
             ufsession_.Obj.SetTranslucency(obj.Tag, translucency);
 
-            if(redisplayObj)
+            if (redisplayObj)
                 obj.__RedisplayObject();
         }
 
@@ -2214,7 +2216,7 @@ namespace TSG_Library
         {
             displayableObject.Layer = layer;
 
-            if(redisplayObj)
+            if (redisplayObj)
                 displayableObject.__RedisplayObject();
         }
 
@@ -2548,17 +2550,17 @@ namespace TSG_Library
 
         public static bool __IsCasting(this BasePart part)
         {
-            if(!part.__IsPartDetail())
+            if (!part.__IsPartDetail())
                 return false;
 
             var materials = Ucf.StaticRead(Ucf.ConceptControlFile, ":CASTING_MATERIALS:",
                 ":END_CASTING_MATERIALS:", StringComparison.OrdinalIgnoreCase).ToArray();
             const string material = "MATERIAL";
 
-            if(!Regex.IsMatch(part.Leaf, Regex_Detail))
+            if (!Regex.IsMatch(part.Leaf, Regex_Detail))
                 return false;
 
-            if(!part.HasUserAttribute(material, NXObject.AttributeType.String, -1))
+            if (!part.HasUserAttribute(material, NXObject.AttributeType.String, -1))
                 return false;
 
             var materialValue = part.GetUserAttributeAsString(material, NXObject.AttributeType.String, -1);
@@ -2619,13 +2621,13 @@ namespace TSG_Library
 
         public static void __AssertIsDisplayPart(this BasePart basePart)
         {
-            if(session_.Parts.Display.Tag != basePart.Tag)
+            if (session_.Parts.Display.Tag != basePart.Tag)
                 throw new ArgumentException($"Part must be display part to {nameof(__AssertIsDisplayPart)}");
         }
 
         public static void __AssertIsDisplayOrWorkPart(this BasePart basePart)
         {
-            if(session_.Parts.Display.Tag != basePart.Tag || session_.Parts.Work.Tag != basePart.Tag)
+            if (session_.Parts.Display.Tag != basePart.Tag || session_.Parts.Work.Tag != basePart.Tag)
                 throw new PartIsNotWorkOrDisplayException();
         }
 
@@ -2639,7 +2641,7 @@ namespace TSG_Library
             {
                 ufsession_.Obj.CycleByName(name, ref _tag);
 
-                if(_tag == Tag.Null)
+                if (_tag == Tag.Null)
                     break;
 
                 list.Add(session_.GetObjectManager().GetTaggedObject(_tag));
@@ -2801,7 +2803,7 @@ namespace TSG_Library
             }
             catch (NXException ex)
             {
-                if(ex.ErrorCode == 3515007)
+                if (ex.ErrorCode == 3515007)
                 {
                     var message = "A category with the given name already exists.";
                     var ex2 = new ArgumentException(message, ex);
@@ -3063,7 +3065,7 @@ namespace TSG_Library
             // The tag to hold the csys.
             Tag csysId;
 
-            if(makeTemporary)
+            if (makeTemporary)
                 ufsession_.Csys.CreateTempCsys(origin._ToArray(), matrix.Tag, out csysId);
             else
                 ufsession_.Csys.CreateCsys(origin._ToArray(), matrix.Tag, out csysId);
@@ -3177,7 +3179,7 @@ namespace TSG_Library
         {
             var regex = new Regex("SEE(-|_| )3D(-|_| )DATA");
 
-            if(!part.HasUserAttribute("DESCRIPTION", NXObject.AttributeType.String, -1))
+            if (!part.HasUserAttribute("DESCRIPTION", NXObject.AttributeType.String, -1))
                 return false;
 
             var descriptionValue =
@@ -3210,7 +3212,7 @@ namespace TSG_Library
                 tubeBuilder.InnerDiameter.RightHandSide = innerDiameter.ToString();
                 tubeBuilder.OutputOption = TubeBuilder.Output.MultipleSegments;
 
-                if(createBsurface)
+                if (createBsurface)
                     tubeBuilder.OutputOption = TubeBuilder.Output.SingleSegment;
 
                 var section = tubeBuilder.PathSection;
@@ -3249,7 +3251,7 @@ namespace TSG_Library
             var uFSession = ufsession_;
             var point_coords = new double[3] { x, y, z };
             uFSession.Curve.CreatePoint(point_coords, out var point);
-            return (Point)session_._GetTaggedObject(point);
+            return (Point)session_.__GetTaggedObject(point);
         }
 
         /// <summary>Creates a point from xy-coordinates (assumes z=0)</summary>
@@ -3322,7 +3324,7 @@ namespace TSG_Library
         public static ScCollector __CreateScCollector(this BasePart part,
             params SelectionIntentRule[] intentRules)
         {
-            if(intentRules.Length == 0)
+            if (intentRules.Length == 0)
                 throw new ArgumentException($"Cannot create {nameof(ScCollector)} from 0 {nameof(intentRules)}.",
                     nameof(intentRules));
 
@@ -3340,7 +3342,7 @@ namespace TSG_Library
             Point3d helpPoint = default,
             Section.Mode mode = Section.Mode.Create)
         {
-            if(intentRules.Length == 0)
+            if (intentRules.Length == 0)
                 throw new ArgumentException($"Cannot create {nameof(Section)} from 0 {nameof(intentRules)}.",
                     nameof(intentRules));
 
@@ -3623,7 +3625,7 @@ namespace TSG_Library
                 section.AddICurve(curves);
 #pragma warning disable CS0618 // Type or member is obsolete
                 offsetCurveBuilder.ReverseDirection =
-                    IsReverseDirection(offsetCurveBuilder, curves, helpPoint, helpVector);
+                    __IsReverseDirection(offsetCurveBuilder, curves, helpPoint, helpVector);
 #pragma warning restore CS0618 // Type or member is obsolete
                 var feature = offsetCurveBuilder.CommitFeature();
                 return feature as OffsetCurve;
@@ -3671,7 +3673,7 @@ namespace TSG_Library
                 section.AddICurve(curves);
 #pragma warning disable CS0618 // Type or member is obsolete
                 offsetCurveBuilder.ReverseDirection =
-                    IsReverseDirection(offsetCurveBuilder, curves, helpPoint, helpVector);
+                    __IsReverseDirection(offsetCurveBuilder, curves, helpPoint, helpVector);
 #pragma warning restore CS0618 // Type or member is obsolete
                 var feature = offsetCurveBuilder.CommitFeature();
                 offsetCurveBuilder.CurvesToOffset.CleanMappingData();
@@ -3746,7 +3748,7 @@ namespace TSG_Library
             var array = center._ToArray();
             var array2 = new int[3];
             var arc_opts = new int[3];
-            if(doTrim)
+            if (doTrim)
             {
                 array2[0] = 1;
                 array2[1] = 1;
@@ -3758,12 +3760,12 @@ namespace TSG_Library
             }
 
             ufsession_.Curve.CreateFillet(0, curve_objs, array, radius, array2, arc_opts, out var fillet_obj);
-            return (Arc)session_._GetTaggedObject(fillet_obj);
+            return (Arc)session_.__GetTaggedObject(fillet_obj);
         }
 
         public static void __AssertIsWorkPart(this BasePart basePart)
         {
-            if(__work_part_.Tag != basePart.Tag)
+            if (__work_part_.Tag != basePart.Tag)
                 throw new AssertWorkPartException(basePart);
         }
 
@@ -4053,7 +4055,7 @@ namespace TSG_Library
         {
             basePart.__AssertIsWorkPart();
 
-            if(boundingCurves.Length == 0)
+            if (boundingCurves.Length == 0)
                 throw new ArgumentOutOfRangeException();
 
             var part = __work_part_;
@@ -4148,7 +4150,7 @@ namespace TSG_Library
         {
             var match = Regex.Match(part.Leaf, Regex_Detail);
             //GFolderWithCtsNumber.DetailPart.DetailExclusiveRegex.Match(nxPart.Leaf);
-            if(!match.Success) return false;
+            if (!match.Success) return false;
             var detailNumber = int.Parse(match.Groups[3].Value);
             return detailNumber >= 990 && detailNumber <= 1000;
         }
@@ -4241,7 +4243,7 @@ namespace TSG_Library
         public static CurveDumbRule __CreateRuleCurveDumb(this BasePart part,
             params Curve[] curves)
         {
-            if(curves.Length == 0)
+            if (curves.Length == 0)
                 throw new ArgumentException($"Cannot create rule from 0 {nameof(curves)}.", nameof(curves));
 
             return part.ScRuleFactory.CreateRuleCurveDumb(curves);
@@ -4249,7 +4251,7 @@ namespace TSG_Library
 
         public static EdgeDumbRule __CreateRuleEdgeDumb(this BasePart part, params Edge[] edges)
         {
-            if(edges.Length == 0)
+            if (edges.Length == 0)
                 throw new ArgumentException($"Cannot create rule from 0 {nameof(edges)}.", nameof(edges));
 
             return part.ScRuleFactory.CreateRuleEdgeDumb(edges);
@@ -4266,7 +4268,7 @@ namespace TSG_Library
         public static EdgeFeatureRule __CreateRuleEdgeFeature(this BasePart part,
             params Feature[] features)
         {
-            if(features.Length == 0)
+            if (features.Length == 0)
                 throw new ArgumentException($"Cannot create rule from 0 {nameof(features)}.", nameof(features));
 
             return part.ScRuleFactory.CreateRuleEdgeFeature(features);
@@ -4275,7 +4277,7 @@ namespace TSG_Library
         public static FaceFeatureRule __CreateRuleFaceFeature(this BasePart part,
             params Feature[] features)
         {
-            if(features.Length == 0)
+            if (features.Length == 0)
                 throw new ArgumentException($"Cannot create rule from 0 {nameof(features)}.", nameof(features));
 
             return part.ScRuleFactory.CreateRuleFaceFeature(features);
@@ -4284,7 +4286,7 @@ namespace TSG_Library
         public static CurveFeatureRule __CreateRuleCurveFeature(this BasePart part,
             params Feature[] features)
         {
-            if(features.Length == 0)
+            if (features.Length == 0)
                 throw new ArgumentException($"Cannot create rule from 0 {nameof(features)}.", nameof(features));
 
             return part.ScRuleFactory.CreateRuleCurveFeature(features);
@@ -4298,7 +4300,7 @@ namespace TSG_Library
             bool isFromSeedStart = true,
             double gapTolerance = 0.001)
         {
-            if(features.Length == 0)
+            if (features.Length == 0)
                 throw new ArgumentException($"Cannot create rule from 0 {nameof(features)}.", nameof(features));
 
             return part.ScRuleFactory.CreateRuleCurveFeatureChain(features, startCurve, endCurve, isFromSeedStart,
@@ -4365,7 +4367,7 @@ namespace TSG_Library
             Expression source_expression,
             string destination_name)
         {
-            if(part.Tag != __display_part_.Tag)
+            if (part.Tag != __display_part_.Tag)
                 throw new Exception("Part must be displayed part to create interpart expressions");
 
             var
@@ -4422,13 +4424,13 @@ namespace TSG_Library
             DatumPlane __proto_plane,
             string __distance_or_expression_name)
         {
-            if(__work_part_.Tag != __display_part_.Tag)
+            if (__work_part_.Tag != __display_part_.Tag)
                 throw new Exception("Display part must be Work part");
 
-            if(!__occ_plane.IsOccurrence)
+            if (!__occ_plane.IsOccurrence)
                 throw new Exception("Occurrence plane for constraint was actually a prototype.");
 
-            if(__proto_plane.IsOccurrence)
+            if (__proto_plane.IsOccurrence)
                 throw new Exception("Prototype plane for constraint was actually an occurrence.");
 
             part.__AssertIsDisplayPart();
@@ -4491,7 +4493,7 @@ namespace TSG_Library
         {
             ufsession_.Modl.AskDatumCsysComponents(part.__AbsoluteDatumCsys().Tag, out var csys_tag, out _,
                 out _, out _);
-            return (CartesianCoordinateSystem)session_._GetTaggedObject(csys_tag);
+            return (CartesianCoordinateSystem)session_.__GetTaggedObject(csys_tag);
         }
 
         public static void __ReplaceRefSets(this BasePart part, Component[] __components,
@@ -4520,13 +4522,13 @@ namespace TSG_Library
 
         public static void __RightClickOpenAssemblyWhole(this BasePart part)
         {
-            if(session_.Parts.Display is null)
+            if (session_.Parts.Display is null)
                 throw new Exception("There is no open display part to right click open assembly");
 
-            if(__work_part_.Tag != __display_part_.Tag)
+            if (__work_part_.Tag != __display_part_.Tag)
                 throw new Exception("DisplayPart does not equal __work_part_");
 
-            if(__display_part_.Tag != part.Tag)
+            if (__display_part_.Tag != part.Tag)
                 throw new Exception($"Part {part.Leaf} is not the current display part");
 
             __display_part_.ComponentAssembly.OpenComponents(
@@ -4592,7 +4594,7 @@ namespace TSG_Library
 
         public static PartCollection.SdpsStatus __SetActiveDisplay(this BasePart __part)
         {
-            if(session_.Parts.AllowMultipleDisplayedParts != PartCollection.MultipleDisplayedPartStatus.Enabled)
+            if (session_.Parts.AllowMultipleDisplayedParts != PartCollection.MultipleDisplayedPartStatus.Enabled)
                 throw new Exception("Session does not allow multiple displayed parts");
 
             return session_.Parts.SetActiveDisplay(
@@ -4798,7 +4800,7 @@ namespace TSG_Library
 
         public static bool _InterferesWith(this Body target, Component component)
         {
-            if(target.OwningPart.Tag != component.OwningPart.Tag)
+            if (target.OwningPart.Tag != component.OwningPart.Tag)
                 throw new ArgumentException("Body and component are not in the same assembly.");
 
             return target._InterferesWith(component.solid_body_memebers());
@@ -4814,7 +4816,7 @@ namespace TSG_Library
             ufsession_.Modl.CheckInterference(target.Tag, solid_bodies.Length, solid_bodies, results);
 
             for (var i = 0; i < solid_bodies.Length; i++)
-                if(results[i] == 1)
+                if (results[i] == 1)
                     return true;
 
             return false;
@@ -4827,13 +4829,13 @@ namespace TSG_Library
         public static DatumPlane _DatumPlaneXZ(this CartesianCoordinateSystem datumCsys)
         {
             ufsession_.Modl.AskDatumCsysComponents(datumCsys.Tag, out _, out _, out _, out var dplanes);
-            return (DatumPlane)session_._GetTaggedObject(dplanes[2]);
+            return (DatumPlane)session_.__GetTaggedObject(dplanes[2]);
         }
 
         public static DatumPlane _DatumPlaneYZ(this CartesianCoordinateSystem datumCsys)
         {
             ufsession_.Modl.AskDatumCsysComponents(datumCsys.Tag, out _, out _, out _, out var dplanes);
-            return (DatumPlane)session_._GetTaggedObject(dplanes[1]);
+            return (DatumPlane)session_.__GetTaggedObject(dplanes[1]);
         }
 
         #endregion
@@ -4884,7 +4886,7 @@ namespace TSG_Library
                 var key = keySelector(value);
 
                 // Checks to see if the dictionary contains the {key}.
-                if(!dictionary.ContainsKey(key))
+                if (!dictionary.ContainsKey(key))
                     // If it doesn't we need to add it with an initialized {List<TValue>}.
                     dictionary[key] = new List<TValue>();
 
@@ -4899,43 +4901,43 @@ namespace TSG_Library
 
         #region Component
 
-        public static IEnumerable<Component> _DescendantsAll(
+        public static IEnumerable<Component> __DescendantsAll(
             this Component component)
         {
-            return from descendant in component._Descendants(true, true, true) select descendant;
+            return from descendant in component.__Descendants(true, true, true) select descendant;
         }
 
-        public static IEnumerable<Component> _Descendants(
+        public static IEnumerable<Component> __Descendants(
             this Component rootComponent,
             bool includeRoot = true,
             bool includeSuppressed = false,
             bool includeUnloaded = false)
         {
-            if(includeRoot)
+            if (includeRoot)
                 yield return rootComponent;
 
             var children = rootComponent.GetChildren();
 
             for (var index = 0; index < children.Length; index++)
             {
-                if(children[index].IsSuppressed && !includeSuppressed)
+                if (children[index].IsSuppressed && !includeSuppressed)
                     continue;
 
-                if(!children[index]._IsLoaded() && !includeUnloaded)
+                if (!children[index].__IsLoaded() && !includeUnloaded)
                     continue;
 
                 foreach (var descendant in children[index]
-                             ._Descendants(includeRoot, includeSuppressed, includeUnloaded))
+                             .__Descendants(includeRoot, includeSuppressed, includeUnloaded))
                     yield return descendant;
             }
         }
 
-        public static bool _IsLoaded(this Component component)
+        public static bool __IsLoaded(this Component component)
         {
             return component.Prototype is Part;
         }
 
-        public static IEnumerable<NXObject> _Members(this Component component)
+        public static IEnumerable<NXObject> __Members(this Component component)
         {
             var uFSession = ufsession_;
             var tag = Tag.Null;
@@ -4945,14 +4947,14 @@ namespace TSG_Library
             {
                 tag = uFSession.Assem.CycleEntsInPartOcc(component.Tag, tag);
 
-                if(tag == Tag.Null)
+                if (tag == Tag.Null)
                     continue;
 
                 try
                 {
-                    var nXObject = session_._GetTaggedObject(tag) as NXObject;
+                    var nXObject = session_.__GetTaggedObject(tag) as NXObject;
 
-                    if(nXObject is null)
+                    if (nXObject is null)
                         continue;
 
                     list.Add(nXObject);
@@ -4966,20 +4968,20 @@ namespace TSG_Library
             return list;
         }
 
-        public static Tag _InstanceTag(this Component component)
+        public static Tag __InstanceTag(this Component component)
         {
             return ufsession_.Assem.AskInstOfPartOcc(component.Tag);
         }
 
-        public static Component _ProtoChildComp(this Component component)
+        public static Component __ProtoChildComp(this Component component)
         {
-            var instance = component._InstanceTag();
+            var instance = component.__InstanceTag();
             var root_component = component.OwningComponent._Prototype().ComponentAssembly.RootComponent.Tag;
             var proto_child_fastener_tag = ufsession_.Assem.AskPartOccOfInst(root_component, instance);
-            return (Component)session_._GetTaggedObject(proto_child_fastener_tag);
+            return (Component)session_.__GetTaggedObject(proto_child_fastener_tag);
         }
 
-        public static ExtractFace _CreateLinkedBody(this Component child)
+        public static ExtractFace __CreateLinkedBody(this Component child)
         {
             var builder = __work_part_.BaseFeatures.CreateWaveLinkBuilder(null);
 
@@ -5035,19 +5037,19 @@ namespace TSG_Library
         public static DatumPlane _AbsOccDatumPlaneXY(this Component component)
         {
             return (DatumPlane)component.FindOccurrence(component._Prototype().__AbsoluteDatumCsys()
-                ._DatumPlaneXY());
+                .__DatumPlaneXY());
         }
 
         public static DatumPlane _AbsOccDatumPlaneXZ(this Component component)
         {
             return (DatumPlane)component.FindOccurrence(component._Prototype().__AbsoluteDatumCsys()
-                ._DatumPlaneXZ());
+                .__DatumPlaneXZ());
         }
 
         public static DatumPlane _AbsOccDatumPlaneYZ(this Component component)
         {
             return (DatumPlane)component.FindOccurrence(component._Prototype().__AbsoluteDatumCsys()
-                ._DatumPlaneYZ());
+                .__DatumPlaneYZ());
         }
 
         public static Component find_component_(this Component component,
@@ -5069,7 +5071,7 @@ namespace TSG_Library
         public static Component _InstOfPartOcc(this Component component)
         {
             var instance = ufsession_.Assem.AskInstOfPartOcc(component.Tag);
-            return (Component)session_._GetTaggedObject(instance);
+            return (Component)session_.__GetTaggedObject(instance);
         }
 
 
@@ -5108,14 +5110,14 @@ namespace TSG_Library
         {
             var constraints = component.GetConstraints();
 
-            if(constraints.Length > 0)
+            if (constraints.Length > 0)
                 session_.delete_objects(constraints);
 
             session_.delete_objects(component);
         }
 
 
-        public static string _AssemblyPathString(this Component component)
+        public static string __AssemblyPathString(this Component component)
         {
             return $"{component._AssemblyPath().Aggregate("{ ", (str, cmp) => $"{str}{cmp.DisplayName}, ")}}}";
         }
@@ -5125,12 +5127,12 @@ namespace TSG_Library
             return new ReferenceSetReset(component);
         }
 
-        public static Part prototype(this Component comp)
+        public static Part __prototype(this Component comp)
         {
             return comp._Prototype();
         }
 
-        public static ReferenceSet[] reference_sets(this Part part)
+        public static ReferenceSet[] __reference_sets(this Part part)
         {
             return part.GetAllReferenceSets();
         }
@@ -5142,7 +5144,7 @@ namespace TSG_Library
 
         public static Component _ToComponent(this Tag __tag)
         {
-            return (Component)session_._GetTaggedObject(__tag);
+            return (Component)session_.__GetTaggedObject(__tag);
         }
 
         public static void __DeleteInstanceUserAttribute(this Component component, string title)
@@ -5214,7 +5216,7 @@ namespace TSG_Library
 
         public static void _ReferenceSet(this Component component, string referenceSetTitle)
         {
-            if(!(component.Prototype is Part part))
+            if (!(component.Prototype is Part part))
                 throw new ArgumentException($"The given component \"{component.DisplayName}\" is not loaded.");
 
             //   part._RightClickOpen
@@ -5242,7 +5244,7 @@ namespace TSG_Library
 
         public static Body[] solid_body_memebers(this Component component)
         {
-            return component._Members()
+            return component.__Members()
                 .OfType<Body>()
                 .Where(__b => __b.IsSolidBody)
                 .ToArray();
@@ -7038,7 +7040,7 @@ namespace TSG_Library
         {
             var direction = 1;
 
-            if(arclength < 0.0)
+            if (arclength < 0.0)
                 direction = -1;
 
             var array = curve.Position(baseParameter)._ToArray();
@@ -7291,7 +7293,7 @@ namespace TSG_Library
 
         public static Vector3d _NormalVector(this Edge edge)
         {
-            if(edge.SolidEdgeType != Edge.EdgeType.Linear)
+            if (edge.SolidEdgeType != Edge.EdgeType.Linear)
                 throw new ArgumentException("Cannot ask for the vector of a non linear edge");
 
             return edge._StartPoint()._Subtract(edge._EndPoint());
@@ -7305,10 +7307,10 @@ namespace TSG_Library
         /// <returns>The edge positions.</returns>
         public static bool _HasEndPoints(this Edge edge, Point3d pos1, Point3d pos2)
         {
-            if(edge._StartPoint()._IsEqualTo(pos1) && edge._EndPoint()._IsEqualTo(pos2))
+            if (edge._StartPoint()._IsEqualTo(pos1) && edge._EndPoint()._IsEqualTo(pos2))
                 return true;
 
-            if(edge._StartPoint()._IsEqualTo(pos2) && edge._EndPoint()._IsEqualTo(pos1))
+            if (edge._StartPoint()._IsEqualTo(pos2) && edge._EndPoint()._IsEqualTo(pos1))
                 return true;
 
             return false;
@@ -7317,7 +7319,7 @@ namespace TSG_Library
         public static Curve _ToCurve(this Edge edge)
         {
             ufsession_.Modl.CreateCurveFromEdge(edge.Tag, out var ugcrv_id);
-            return (Curve)session_._GetTaggedObject(ugcrv_id);
+            return (Curve)session_.__GetTaggedObject(ugcrv_id);
         }
 
         //
@@ -7359,7 +7361,7 @@ namespace TSG_Library
         //     / Factor
         internal static double __Factor(this Edge edge)
         {
-            if(edge.SolidEdgeType == Edge.EdgeType.Elliptical ||
+            if (edge.SolidEdgeType == Edge.EdgeType.Elliptical ||
                edge.SolidEdgeType == Edge.EdgeType.Circular)
                 return 180.0 / System.Math.PI;
 
@@ -7606,14 +7608,14 @@ namespace TSG_Library
 
             print_("///////////////////////////////////////////");
 
-            if(!string.IsNullOrEmpty(userMessage))
+            if (!string.IsNullOrEmpty(userMessage))
                 print_($"UserMessage: {userMessage}");
 
             print_($"Message: {ex.Message}");
 
             print_($"Exception: {ex.GetType()}");
 
-            if(ex is NXException nx)
+            if (ex is NXException nx)
                 print_($"Error Code: {nx.ErrorCode}");
 
             var methods = ex.StackTrace.Split('\n');
@@ -7754,7 +7756,7 @@ namespace TSG_Library
             ufsession_.Modl.AskFaceData(__face.Tag, out var type, point, dir, box, out var radius,
                 out var rad_data, out var norm_dir);
 
-            if(type != 22)
+            if (type != 22)
                 throw new InvalidOperationException("Cannot ask for the normal of a non planar face");
 
             return dir._ToVector3d();
@@ -7988,21 +7990,21 @@ namespace TSG_Library
         private static string GetAppName(FileNew fileNew, Templates templateType)
         {
             var result = "GatewayTemplate";
-            if(templateType == Templates.AeroSheetMetal) result = SafeAppName(fileNew, "AeroSheetMetalTemplate");
+            if (templateType == Templates.AeroSheetMetal) result = SafeAppName(fileNew, "AeroSheetMetalTemplate");
 
-            if(templateType == Templates.Assembly) result = SafeAppName(fileNew, "AssemblyTemplate");
+            if (templateType == Templates.Assembly) result = SafeAppName(fileNew, "AssemblyTemplate");
 
-            if(templateType == Templates.Modeling) result = SafeAppName(fileNew, "ModelTemplate");
+            if (templateType == Templates.Modeling) result = SafeAppName(fileNew, "ModelTemplate");
 
-            if(templateType == Templates.NXSheetMetal) result = SafeAppName(fileNew, "NXSheetMetalTemplate");
+            if (templateType == Templates.NXSheetMetal) result = SafeAppName(fileNew, "NXSheetMetalTemplate");
 
-            if(templateType == Templates.RoutingElectrical) result = SafeAppName(fileNew, "RoutingElectricalTemplate");
+            if (templateType == Templates.RoutingElectrical) result = SafeAppName(fileNew, "RoutingElectricalTemplate");
 
-            if(templateType == Templates.RoutingLogical) result = SafeAppName(fileNew, "RoutingLogicalTemplate");
+            if (templateType == Templates.RoutingLogical) result = SafeAppName(fileNew, "RoutingLogicalTemplate");
 
-            if(templateType == Templates.RoutingMechanical) result = SafeAppName(fileNew, "RoutingMechanicalTemplate");
+            if (templateType == Templates.RoutingMechanical) result = SafeAppName(fileNew, "RoutingMechanicalTemplate");
 
-            if(templateType == Templates.ShapeStudio) result = SafeAppName(fileNew, "StudioTemplate");
+            if (templateType == Templates.ShapeStudio) result = SafeAppName(fileNew, "StudioTemplate");
 
             return result;
         }
@@ -8032,54 +8034,54 @@ namespace TSG_Library
         private static string GetTemplateFileName(FileNew fileNew, Templates templateType, Units unit)
         {
             var result = "Blank";
-            if(unit == Units.MilliMeters)
+            if (unit == Units.MilliMeters)
             {
-                if(templateType == Templates.AeroSheetMetal)
+                if (templateType == Templates.AeroSheetMetal)
                     result = SafeTemplateName(fileNew, "aero-sheet-metal-mm-template.prt");
 
-                if(templateType == Templates.Assembly) result = SafeTemplateName(fileNew, "assembly-mm-template.prt");
+                if (templateType == Templates.Assembly) result = SafeTemplateName(fileNew, "assembly-mm-template.prt");
 
-                if(templateType == Templates.Modeling)
+                if (templateType == Templates.Modeling)
                     result = SafeTemplateName(fileNew, "model-plain-1-mm-template.prt");
 
-                if(templateType == Templates.NXSheetMetal)
+                if (templateType == Templates.NXSheetMetal)
                     result = SafeTemplateName(fileNew, "sheet-metal-mm-template.prt");
 
-                if(templateType == Templates.RoutingElectrical)
+                if (templateType == Templates.RoutingElectrical)
                     result = SafeTemplateName(fileNew, "routing-elec-mm-template.prt");
 
-                if(templateType == Templates.RoutingLogical)
+                if (templateType == Templates.RoutingLogical)
                     result = SafeTemplateName(fileNew, "routing-logical-mm-template.prt");
 
-                if(templateType == Templates.RoutingMechanical)
+                if (templateType == Templates.RoutingMechanical)
                     result = SafeTemplateName(fileNew, "routing-mech-mm-template.prt");
 
-                if(templateType == Templates.ShapeStudio)
+                if (templateType == Templates.ShapeStudio)
                     result = SafeTemplateName(fileNew, "shape-studio-mm-template.prt");
             }
             else
             {
-                if(templateType == Templates.AeroSheetMetal)
+                if (templateType == Templates.AeroSheetMetal)
                     result = SafeTemplateName(fileNew, "aero-sheet-metal-inch-template.prt");
 
-                if(templateType == Templates.Assembly) result = SafeTemplateName(fileNew, "assembly-inch-template.prt");
+                if (templateType == Templates.Assembly) result = SafeTemplateName(fileNew, "assembly-inch-template.prt");
 
-                if(templateType == Templates.Modeling)
+                if (templateType == Templates.Modeling)
                     result = SafeTemplateName(fileNew, "model-plain-1-inch-template.prt");
 
-                if(templateType == Templates.NXSheetMetal)
+                if (templateType == Templates.NXSheetMetal)
                     result = SafeTemplateName(fileNew, "sheet-metal-inch-template.prt");
 
-                if(templateType == Templates.RoutingElectrical)
+                if (templateType == Templates.RoutingElectrical)
                     result = SafeTemplateName(fileNew, "routing-elec-inch-template.prt");
 
-                if(templateType == Templates.RoutingLogical)
+                if (templateType == Templates.RoutingLogical)
                     result = SafeTemplateName(fileNew, "routing-logical-inch-template.prt");
 
-                if(templateType == Templates.RoutingMechanical)
+                if (templateType == Templates.RoutingMechanical)
                     result = SafeTemplateName(fileNew, "routing-mech-inch-template.prt");
 
-                if(templateType == Templates.ShapeStudio)
+                if (templateType == Templates.ShapeStudio)
                     result = SafeTemplateName(fileNew, "shape-studio-inch-template.prt");
             }
 
@@ -8108,7 +8110,7 @@ namespace TSG_Library
         {
             var applicationNames = fileNew.GetApplicationNames();
             var result = "GatewayTemplate";
-            if(Array.IndexOf(applicationNames, testName) > -1) result = testName;
+            if (Array.IndexOf(applicationNames, testName) > -1) result = testName;
 
             return result;
         }
@@ -8136,7 +8138,7 @@ namespace TSG_Library
             var availableTemplates = fileNew.GetAvailableTemplates();
             var result = "Blank";
 
-            if(Array.IndexOf(availableTemplates, testName) > -1)
+            if (Array.IndexOf(availableTemplates, testName) > -1)
                 result = testName;
 
             return result;
@@ -8404,7 +8406,7 @@ namespace TSG_Library
             get
             {
                 ufsession_.Csys.AskWcs(out var wcs_id);
-                return (CartesianCoordinateSystem)session_._GetTaggedObject(wcs_id);
+                return (CartesianCoordinateSystem)session_.__GetTaggedObject(wcs_id);
             }
             set => ufsession_.Csys.SetWcs(value.Tag);
         }
@@ -8547,7 +8549,7 @@ namespace TSG_Library
             get => __work_part_.Preferences.Modeling.GetHistoryMode();
             set
             {
-                if(value)
+                if (value)
                     __work_part_.Preferences.Modeling.SetHistoryMode();
                 else
                     __work_part_.Preferences.Modeling.SetHistoryFreeMode();
@@ -8583,7 +8585,7 @@ namespace TSG_Library
             {
                 var uFSession = ufsession_;
                 uFSession.Csys.AskWcs(out var wcs_id);
-                var objectFromTag = (NXObject)session_._GetTaggedObject(wcs_id);
+                var objectFromTag = (NXObject)session_.__GetTaggedObject(wcs_id);
                 var csys = (CartesianCoordinateSystem)objectFromTag;
                 return csys;
             }
@@ -8651,7 +8653,7 @@ namespace TSG_Library
         {
             var lw = GetSession().ListingWindow;
 
-            if(!lw.IsOpen)
+            if (!lw.IsOpen)
                 lw.Open();
 
             lw.WriteLine(message);
@@ -8735,11 +8737,11 @@ namespace TSG_Library
 
         public static string op_10_010(int __op)
         {
-            if(__op == 0)
+            if (__op == 0)
                 return "000";
-            if(__op < 10)
+            if (__op < 10)
                 throw new Exception("op integer must be 0 or greater than 9");
-            if(__op < 100)
+            if (__op < 100)
                 return $"0{__op}";
             return $"{__op}";
         }
@@ -8844,7 +8846,7 @@ namespace TSG_Library
 
         public static Tag __Tag(this ICurve curve)
         {
-            if(curve is TaggedObject taggedObject)
+            if (curve is TaggedObject taggedObject)
                 return taggedObject.Tag;
 
             throw new ArgumentException("Curve was not a tagged object");
@@ -8880,7 +8882,7 @@ namespace TSG_Library
             var data = new double[6];
             ufsession_.Modl.AskObjDimensionality(icurve.__Tag(), out var dimensionality, data);
 
-            if(dimensionality == 3)
+            if (dimensionality == 3)
                 throw new ArgumentException("The input curve is not planar.");
         }
 
@@ -8931,7 +8933,7 @@ namespace TSG_Library
 
         public static Line _Copy(this Line line)
         {
-            if(line.IsOccurrence)
+            if (line.IsOccurrence)
                 throw new ArgumentException($@"Cannot copy {nameof(line)} that is an occurrence.", nameof(line));
 
             return line.__OwningPart().Curves.CreateLine(line._StartPoint(), line._EndPoint());
@@ -9066,7 +9068,7 @@ namespace TSG_Library
             get
             {
                 var mask1 = new UFUi.Mask
-                    { object_type = 70, object_subtype = 0, solid_type = 0 };
+                { object_type = 70, object_subtype = 0, solid_type = 0 };
                 return mask1;
             }
         }
@@ -9270,7 +9272,7 @@ namespace TSG_Library
             StringComparison stringComparison)
         {
             foreach (DrawingSheet drawingSheet in part.DrawingSheets)
-                if(drawingSheet.Name.Equals(drawingSheetName, stringComparison))
+                if (drawingSheet.Name.Equals(drawingSheetName, stringComparison))
                     return drawingSheet;
 
             return null;
@@ -9461,7 +9463,7 @@ namespace TSG_Library
             var nXObject = fileNew.Commit();
             fileNew.Destroy();
 
-            if(nXOpenPart != null)
+            if (nXOpenPart != null)
             {
                 __work_part_ = nXOpenPart;
                 __display_part_ = nXOpenPart2;
@@ -9484,7 +9486,7 @@ namespace TSG_Library
             const string __next__ = "...NEXT...";
             const int max = 14;
 
-            if(items.Length == max)
+            if (items.Length == max)
                 using (session_.using_lock_ui_from_custom())
                 {
                     var picked_item = ufsession_.Ui.DisplayMenu(
@@ -9545,7 +9547,7 @@ namespace TSG_Library
 
                 var end_index = set_of_items.Length - 1;
 
-                if(list_items.Count < max)
+                if (list_items.Count < max)
                 {
                     set_of_items = new string[list_items.Count];
                     end_index = list_items.Count;
@@ -9577,7 +9579,7 @@ namespace TSG_Library
                         case 0:
                             throw new Exception("Picked item was 0");
                         case 1:
-                            if(current_set_index > 0)
+                            if (current_set_index > 0)
                                 current_set_index--;
                             continue;
                         case 2:
@@ -9609,13 +9611,13 @@ namespace TSG_Library
                         case 17:
                             return separated[current_set_index][12];
                         case 18:
-                            if(separated[current_set_index][13] == __next__ && current_set_index + 1 < separated.Count)
+                            if (separated[current_set_index][13] == __next__ && current_set_index + 1 < separated.Count)
                             {
                                 current_set_index++;
                                 continue;
                             }
 
-                            if(current_set_index + 1 == separated.Count)
+                            if (current_set_index + 1 == separated.Count)
                                 continue;
 
                             return separated[current_set_index][13];
@@ -9646,7 +9648,7 @@ namespace TSG_Library
         public static IDisposable using_form_show_hide(this Session _, Form __form,
             bool hide_form = true)
         {
-            if(hide_form)
+            if (hide_form)
                 __form.Hide();
 
             return new FormHideShow(__form);
@@ -9659,7 +9661,7 @@ namespace TSG_Library
         {
             try
             {
-                if(ufsession_.Part.IsLoaded(__path_or_leaf) == 0)
+                if (ufsession_.Part.IsLoaded(__path_or_leaf) == 0)
                     return session.Parts.Open(__path_or_leaf, out _);
 
                 return (Part)session.Parts.FindObject(__path_or_leaf);
@@ -9721,25 +9723,25 @@ namespace TSG_Library
             return new LockUpdates();
         }
 
-        public static IDisposable using_regenerate_display(this Session _)
+        public static IDisposable __UsingRegenerateDisplay(this Session _)
         {
             return new RegenerateDisplay();
         }
 
-        public static void delete_objects(this Session session_, params Tag[] __objects_to_delete)
+        public static void __DeleteObjects(this Session session_, params Tag[] __objects_to_delete)
         {
-            delete_objects(session_, __objects_to_delete.Select(session_._GetTaggedObject).ToArray());
+            delete_objects(session_, __objects_to_delete.Select(session_.__GetTaggedObject).ToArray());
         }
 
-        public static TaggedObject _GetTaggedObject(this Session session, Tag tag)
+        public static TaggedObject __GetTaggedObject(this Session session, Tag tag)
         {
             return session.GetObjectManager().GetTaggedObject(tag);
         }
 
-        public static PartCollection.SdpsStatus set_active_display(this Session session_,
+        public static PartCollection.SdpsStatus __SetActiveDisplay(this Session session_,
             Part __part)
         {
-            if(session_.Parts.AllowMultipleDisplayedParts != PartCollection.MultipleDisplayedPartStatus.Enabled)
+            if (session_.Parts.AllowMultipleDisplayedParts != PartCollection.MultipleDisplayedPartStatus.Enabled)
                 throw new Exception("Session does not allow multiple displayed parts");
 
             return session_.Parts.SetActiveDisplay(
@@ -9750,7 +9752,7 @@ namespace TSG_Library
         }
 
 
-        public static void _SelectSingleObject(
+        public static void __SelectSingleObject(
             this Session _,
             string message,
             string title,
@@ -9775,7 +9777,7 @@ namespace TSG_Library
         {
             var cursor = new double[3];
 
-            session._SelectSingleObject(
+            session.__SelectSingleObject(
                 "Select Component Message",
                 "Select Component Title",
                 UF_UI_SEL_SCOPE_ANY_IN_ASSEMBLY,
@@ -9805,8 +9807,8 @@ namespace TSG_Library
             {
                 ufsession_.Obj.CycleByName(__name, ref __tag);
 
-                if(__tag != Tag.Null)
-                    yield return session_._GetTaggedObject(__tag);
+                if (__tag != Tag.Null)
+                    yield return session_.__GetTaggedObject(__tag);
             } while (__tag != Tag.Null);
         }
 
@@ -9867,11 +9869,11 @@ namespace TSG_Library
                 cnn.Open();
 
                 using (var sql = new SqlCommand
-                       {
-                           Connection = cnn,
+                {
+                    Connection = cnn,
 
-                           CommandText = command_text
-                       })
+                    CommandText = command_text
+                })
                 {
                     return sql.ExecuteScalar();
                 }
@@ -9890,11 +9892,11 @@ namespace TSG_Library
                 cnn.Open();
 
                 using (var sql = new SqlCommand
-                       {
-                           Connection = cnn,
+                {
+                    Connection = cnn,
 
-                           CommandText = command_text
-                       })
+                    CommandText = command_text
+                })
                 {
                     return sql.ExecuteReader();
                 }
@@ -9907,12 +9909,12 @@ namespace TSG_Library
 
         private static bool FastenerInfo(string file, string regex, out string diameter, out string length)
         {
-            if(file.Contains("\\"))
+            if (file.Contains("\\"))
                 file = Path.GetFileNameWithoutExtension(file);
 
             var match = Regex.Match(file, regex, RegexOptions.IgnoreCase);
 
-            if(!match.Success)
+            if (!match.Success)
             {
                 diameter = string.Empty;
 
@@ -10043,7 +10045,7 @@ namespace TSG_Library
             var leaf = Path.GetFileNameWithoutExtension(file);
             var match = Regex.Match(leaf, "^\\d+-\\d+-(?<detail>\\d+)$");
 
-            if(!match.Success)
+            if (!match.Success)
                 throw new FormatException("Could not find detail number.");
 
             return match.Groups["detail"].Value;
@@ -10120,10 +10122,10 @@ namespace TSG_Library
 
         public static bool _IsFastener(this string file, out string diameter)
         {
-            if(file._IsShcs(out diameter))
+            if (file._IsShcs(out diameter))
                 return true;
 
-            if(file._IsDwl(out diameter))
+            if (file._IsDwl(out diameter))
                 return true;
 
             return file._IsJckScrew(out diameter) || file._IsJckScrewTsg(out diameter);
@@ -10149,7 +10151,7 @@ namespace TSG_Library
         {
             var leaf = Path.GetFileNameWithoutExtension(str);
 
-            if(leaf is null)
+            if (leaf is null)
                 return false;
 
             return Regex.IsMatch(leaf, "^\\d+-\\d+-\\d+$");
@@ -10162,7 +10164,7 @@ namespace TSG_Library
 
             var match = Regex.Match(leaf, "^\\d+-(?<op>\\d+)-\\d+$");
 
-            if(!match.Success)
+            if (!match.Success)
                 throw new Exception($"could not find an op: '{leaf}'");
 
             return match.Groups["op"].Value;
@@ -10171,13 +10173,13 @@ namespace TSG_Library
 
         public static bool IsAssemblyHolder(string str)
         {
-            if(string.IsNullOrEmpty(str))
+            if (string.IsNullOrEmpty(str))
                 return false;
 
             str = Path.GetFileNameWithoutExtension(str);
             var startIndex = str.LastIndexOf('-');
 
-            if(startIndex < 0)
+            if (startIndex < 0)
                 return false;
 
             var str1 = str.Substring(startIndex);

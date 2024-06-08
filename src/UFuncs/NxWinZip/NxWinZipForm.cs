@@ -344,7 +344,7 @@ namespace TSG_Library.UFuncs
 
         private static void GetAllChildComponents(Component assemblyPart1)
         {
-            foreach (var descendant in assemblyPart1._DescendantsAll())
+            foreach (var descendant in assemblyPart1.__DescendantsAll())
             {
                 if(descendant.IsSuppressed) continue;
                 if(descendant.Prototype is Part)

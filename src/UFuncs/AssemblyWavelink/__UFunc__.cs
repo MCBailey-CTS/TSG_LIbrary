@@ -92,7 +92,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                             }
 
 
-                            var linked_body = tool._CreateLinkedBody();
+                            var linked_body = tool.__CreateLinkedBody();
 
                             target.OwningPart.__CreateBoolean(target, linked_body.GetBodies(),
                                 Feature.BooleanType.Subtract);
@@ -191,7 +191,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                     ufsession_.Obj.AskTypeAndSubtype(subTool, out var toolType, out var toolSubType);
 
                     if(toolType == UFConstants.UF_solid_type && toolSubType == UFConstants.UF_solid_body_subtype)
-                        yield return (Body)session_._GetTaggedObject(subTool);
+                        yield return (Body)session_.__GetTaggedObject(subTool);
                 }
 
                 cycleObjOcc = subTool;
@@ -316,7 +316,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                 ufsession_.Wave.AskLinkedFeatureInfo(link.Tag, out var info);
                 ufsession_.Wave.AskLinkXform(link.Tag, out var xform);
                 ufsession_.So.AskAssyCtxtPartOcc(xform, __work_component_.Tag, out var partOcc);
-                var comp = (Component)session_._GetTaggedObject(partOcc);
+                var comp = (Component)session_.__GetTaggedObject(partOcc);
                 //var firstPartOfMessage = "Was unable to subtract " + info.source_part_name;
                 var firstPartOfMessage = $"Was unable to {booleanType} {info.source_part_name}";
                 var fileName = Path.GetFileNameWithoutExtension(__work_part_.FullPath);
@@ -384,7 +384,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
             var body = snapToolBody._Prototype().Tag;
             ufsession_.So.CreateXformAssyCtxt(objectInPart, fromPartOcc, toPartOcc, out var xform);
             ufsession_.Wave.CreateLinkedBody(body, xform, objectInPart, false, out var linkedFeature);
-            var extract = (ExtractFace)session_._GetTaggedObject(linkedFeature);
+            var extract = (ExtractFace)session_.__GetTaggedObject(linkedFeature);
             extract._Layer(100);
             print_($"Created {extract.GetFeatureName()} in {extract.OwningPart.Leaf}");
             return extract;
@@ -468,7 +468,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                                     using (child.using_reference_set_reset())
                                     {
                                         var original_ref_set = child.ReferenceSet;
-                                        var proto_child_fastener = child._ProtoChildComp();
+                                        var proto_child_fastener = child.__ProtoChildComp();
 
                                         if(proto_child_fastener.Layer != Layer_Fastener)
                                             continue;
@@ -509,7 +509,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                                                 continue;
                                             }
 
-                                            var ext = child._CreateLinkedBody();
+                                            var ext = child.__CreateLinkedBody();
                                             ext._Layer(96);
 
                                             print_("//////////////////");
@@ -552,7 +552,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
         {
             session_.SetUndoMark(Session.MarkVisibility.Visible, "Assembly Wavelink");
             using (session_.using_display_part_reset())
-            using (session_.using_regenerate_display())
+            using (session_.__UsingRegenerateDisplay())
             {
                 try
                 {

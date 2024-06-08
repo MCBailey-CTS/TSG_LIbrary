@@ -485,7 +485,7 @@ namespace TSG_Library.UFuncs
         {
             var mirrorMatrix = new double[12];
             _UFSession.Trns.CreateReflectionMatrix(ref selectedPlane, mirrorMatrix, out var _);
-            session_.delete_objects(selectedPlane);
+            session_.__DeleteObjects(selectedPlane);
             _UFSession.Modl.Update();
             var mirrorMove = NewMethod11();
             TransformObjects(mirrorMove, mirrorMatrix);
@@ -510,7 +510,7 @@ namespace TSG_Library.UFuncs
             _UFSession.Modl.CreatePlane(planeOrigin, planeNormal, out var selectedPlane);
             var mirrorMatrix = new double[12];
             _UFSession.Trns.CreateReflectionMatrix(ref selectedPlane, mirrorMatrix, out _);
-            session_.delete_objects(waveMirrorPlane.Tag, waveMirrorFeature.Tag, selectedPlane);
+            session_.__DeleteObjects(waveMirrorPlane.Tag, waveMirrorFeature.Tag, selectedPlane);
             _UFSession.Modl.Update();
             var mirrorMove = new List<Tag>(GetCurves());
             NewMethod29(featObjects, mirrorMove);
@@ -580,7 +580,7 @@ namespace TSG_Library.UFuncs
 
             var mirrorMatrix = new double[12];
             _UFSession.Trns.CreateReflectionMatrix(ref selectedPlane, mirrorMatrix, out _);
-            session_.delete_objects(selectedPlane);
+            session_.__DeleteObjects(selectedPlane);
             _UFSession.Modl.Update();
             var mirrorMove = new List<Tag>(GetCurves());
             NewMethod22(mirrorMove);
@@ -708,7 +708,7 @@ namespace TSG_Library.UFuncs
                     NewMethod1(builder);
                 }
 
-                session_.delete_objects(waveMirrorFeature.Tag, waveMirrorPlane.Tag, selectedPlane);
+                session_.__DeleteObjects(waveMirrorFeature.Tag, waveMirrorPlane.Tag, selectedPlane);
 
                 _UFSession.Modl.Update();
             }

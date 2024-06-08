@@ -291,7 +291,7 @@ namespace TSG_Library.UFuncs
 
         public static bool IsAssemblyLoaded(Component compSp)
         {
-            return AreFullyLoaded(compSp._DescendantsAll());
+            return AreFullyLoaded(compSp.__DescendantsAll());
         }
 
         private void ButtonBrokenLinks_Click(object sender, EventArgs e)
@@ -312,7 +312,7 @@ namespace TSG_Library.UFuncs
                 UpdateOriginalParts();
                 _selComponents = new List<Component>();
                 selCompListBox.Items.Clear();
-                var descendants = __display_part_.ComponentAssembly.RootComponent._DescendantsAll()
+                var descendants = __display_part_.ComponentAssembly.RootComponent.__DescendantsAll()
                     .Where(__c => !__c.IsSuppressed);
                 var hashSet = new HashSet<Component>(descendants.DistinctBy(__d => __d.DisplayName));
                 var trimmedComponents = hashSet.Select(component => component).ToArray();

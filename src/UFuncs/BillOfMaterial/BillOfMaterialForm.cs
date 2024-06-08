@@ -205,7 +205,7 @@ namespace TSG_Library.UFuncs
                     BuildComponentList();
 
                 var partsInBom = _selectedComponents
-                    .Where(__c => __c._IsLoaded())
+                    .Where(__c => __c.__IsLoaded())
                     .Select(component => component._Prototype())
                     .Distinct()
                     .ToArray();
@@ -537,9 +537,9 @@ namespace TSG_Library.UFuncs
 
                 var _dict = new Dictionary<string, int>();
 
-                foreach (var comp1 in __display_part_.ComponentAssembly.RootComponent._Descendants())
+                foreach (var comp1 in __display_part_.ComponentAssembly.RootComponent.__Descendants())
                 {
-                    if(!comp1._IsLoaded())
+                    if(!comp1.__IsLoaded())
                         continue;
 
                     if(comp1.IsSuppressed)
@@ -557,7 +557,7 @@ namespace TSG_Library.UFuncs
 
                     var original_inst = UFSession.GetUFSession().Assem.AskPartOccOfInst(root.Tag, fast_inst);
 
-                    var fastener_instance = (Component)session_._GetTaggedObject(original_inst);
+                    var fastener_instance = (Component)session_.__GetTaggedObject(original_inst);
 
                     if(fastener_instance.Layer == 97 || fastener_instance.Layer == 98)
                         continue;
@@ -724,7 +724,7 @@ namespace TSG_Library.UFuncs
 
                 if(isValid)
                 {
-                    var instance = child._InstanceTag();
+                    var instance = child.__InstanceTag();
 
                     if(instance == NXOpen.Tag.Null)
                         continue;

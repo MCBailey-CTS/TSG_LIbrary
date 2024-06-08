@@ -31,8 +31,8 @@ namespace TSG_Library.UFuncs
         public static void Etching1()
         {
             var components = __display_part_.ComponentAssembly.RootComponent
-                ._Descendants()
-                .Where(__c => __c._IsLoaded())
+                .__Descendants()
+                .Where(__c => __c.__IsLoaded())
                 .DistinctBy(__c => __c.DisplayName)
                 .ToArray();
 
@@ -54,7 +54,7 @@ namespace TSG_Library.UFuncs
 
                     var expected_z = __display_part_.WCS.CoordinateSystem.Origin.Z;
 
-                    foreach (TaggedObject __member in __c._Members())
+                    foreach (TaggedObject __member in __c.__Members())
                     {
                         if(!(__member is Face __face))
                             continue;

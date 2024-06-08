@@ -123,7 +123,7 @@ namespace TSG_Library.UFuncs
 
                         uf.So.AskPointOfXform(xform, point);
 
-                        var from_comp = (Component)session_._GetTaggedObject(from_part_occ);
+                        var from_comp = (Component)session_.__GetTaggedObject(from_part_occ);
 
                         var origin = point._ToPoint3d();
 
@@ -596,7 +596,7 @@ namespace TSG_Library.UFuncs
 
             __child._ReferenceSet(subtract_ref_set);
 
-            var tool_bodies = __child._Members()
+            var tool_bodies = __child.__Members()
                 .OfType<Body>()
                 .Where(__b => __b.IsSolidBody)
                 .Select(__b => __b.Tag)
@@ -685,7 +685,7 @@ namespace TSG_Library.UFuncs
 
         private static ExtractFace CreateLinkedBody(Part owningPart, Component child)
         {
-            var toolBodies = child._Members()
+            var toolBodies = child.__Members()
                 .OfType<Body>()
                 .Where(body => body.IsSolidBody)
                 .ToArray();
@@ -1392,7 +1392,7 @@ namespace TSG_Library.UFuncs
                             var instance = ufsession_.Assem.AskInstOfPartOcc(selected_fastener.Tag);
                             var actual_tag = ufsession_.Assem.AskPartOccOfInst(
                                 __work_component_._Prototype().ComponentAssembly.RootComponent.Tag, instance);
-                            actual_fastener = (Component)session_._GetTaggedObject(actual_tag);
+                            actual_fastener = (Component)session_.__GetTaggedObject(actual_tag);
                             __display_part_ = actual_fastener.Parent._Prototype();
                         }
                         else

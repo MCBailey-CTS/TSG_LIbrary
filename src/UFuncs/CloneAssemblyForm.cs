@@ -941,17 +941,17 @@ namespace TSG_Library.UFuncs
                             {
                                 __display_part_.__ConstrainOccProtoDistance(
                                     child._AbsOccDatumPlaneYZ(),
-                                    __display_part_.__AbsoluteDatumCsys()._DatumPlaneYZ(),
+                                    __display_part_.__AbsoluteDatumCsys().__DatumPlaneYZ(),
                                     "P010X");
 
                                 __display_part_.__ConstrainOccProtoDistance(
                                     child._AbsOccDatumPlaneXZ(),
-                                    __display_part_.__AbsoluteDatumCsys()._DatumPlaneXZ(),
+                                    __display_part_.__AbsoluteDatumCsys().__DatumPlaneXZ(),
                                     "P010Y");
 
                                 __display_part_.__ConstrainOccProtoDistance(
                                     child._AbsOccDatumPlaneXY(),
-                                    __display_part_.__AbsoluteDatumCsys()._DatumPlaneXY(),
+                                    __display_part_.__AbsoluteDatumCsys().__DatumPlaneXY(),
                                     "P010Z");
 
                                 continue;
@@ -963,7 +963,7 @@ namespace TSG_Library.UFuncs
                             {
                                 __display_part_.__ConstrainOccProtoDistance(
                                     child._AbsOccDatumPlaneYZ(),
-                                    __display_part_.__AbsoluteDatumCsys()._DatumPlaneYZ(),
+                                    __display_part_.__AbsoluteDatumCsys().__DatumPlaneYZ(),
                                     $"T{prev}X");
                             }
                             catch (Exception ex)
@@ -975,7 +975,7 @@ namespace TSG_Library.UFuncs
                             {
                                 __display_part_.__ConstrainOccProtoDistance(
                                     child._AbsOccDatumPlaneXZ(),
-                                    __display_part_.__AbsoluteDatumCsys()._DatumPlaneXZ(),
+                                    __display_part_.__AbsoluteDatumCsys().__DatumPlaneXZ(),
                                     $"T{prev}Y");
                             }
                             catch (Exception ex)
@@ -987,7 +987,7 @@ namespace TSG_Library.UFuncs
                             {
                                 __display_part_.__ConstrainOccProtoDistance(
                                     child._AbsOccDatumPlaneXY(),
-                                    __display_part_.__AbsoluteDatumCsys()._DatumPlaneXY(),
+                                    __display_part_.__AbsoluteDatumCsys().__DatumPlaneXY(),
                                     $"T{prev}Z");
                             }
                             catch (Exception ex)
@@ -1056,7 +1056,7 @@ namespace TSG_Library.UFuncs
                             {
                                 __display_part_.__ConstrainOccProtoDistance(
                                     child._AbsOccDatumPlaneYZ(),
-                                    __display_part_.__AbsoluteDatumCsys()._DatumPlaneYZ(),
+                                    __display_part_.__AbsoluteDatumCsys().__DatumPlaneYZ(),
                                     $"T{op}X");
                             }
                             catch (Exception ex)
@@ -1068,7 +1068,7 @@ namespace TSG_Library.UFuncs
                             {
                                 __display_part_.__ConstrainOccProtoDistance(
                                     child._AbsOccDatumPlaneXZ(),
-                                    __display_part_.__AbsoluteDatumCsys()._DatumPlaneXZ(),
+                                    __display_part_.__AbsoluteDatumCsys().__DatumPlaneXZ(),
                                     $"T{op}Y");
                             }
                             catch (Exception ex)
@@ -1080,7 +1080,7 @@ namespace TSG_Library.UFuncs
                             {
                                 __display_part_.__ConstrainOccProtoDistance(
                                     child._AbsOccDatumPlaneXY(),
-                                    __display_part_.__AbsoluteDatumCsys()._DatumPlaneXY(),
+                                    __display_part_.__AbsoluteDatumCsys().__DatumPlaneXY(),
                                     $"T{op}Z");
                             }
                             catch (Exception ex)
@@ -1235,7 +1235,7 @@ namespace TSG_Library.UFuncs
         {
             var datum_plane1 = comp_lwr._AbsOccDatumPlaneYZ();
 
-            var datum_plane2 = __display_part_.__AbsoluteDatumCsys()._DatumPlaneYZ();
+            var datum_plane2 = __display_part_.__AbsoluteDatumCsys().__DatumPlaneYZ();
 
             ConstrainUnits(comp_lwr, new_interpart_exp_x, datum_plane1, datum_plane2, suffix);
         }
@@ -1243,7 +1243,7 @@ namespace TSG_Library.UFuncs
         private static void constraint_xz_1(Component comp_lwr, string new_interpart_exp_y, string suffix)
         {
             var datum_plane1 = comp_lwr._AbsOccDatumPlaneXZ();
-            var datum_plane2 = __display_part_.__AbsoluteDatumCsys()._DatumPlaneXZ();
+            var datum_plane2 = __display_part_.__AbsoluteDatumCsys().__DatumPlaneXZ();
             ConstrainUnits(comp_lwr, new_interpart_exp_y, datum_plane1, datum_plane2, suffix);
         }
 
@@ -1251,7 +1251,7 @@ namespace TSG_Library.UFuncs
         {
             var datum_plane1 = comp_lwr._AbsOccDatumPlaneXY();
 
-            var datum_plane2 = __display_part_.__AbsoluteDatumCsys()._DatumPlaneXY();
+            var datum_plane2 = __display_part_.__AbsoluteDatumCsys().__DatumPlaneXY();
 
             ConstrainUnits(comp_lwr, new_interpart_exp_z, datum_plane1, datum_plane2, suffix);
         }
@@ -2107,7 +2107,7 @@ namespace TSG_Library.UFuncs
             try
             {
                 var datum_plane1 = __press._AbsOccDatumPlaneXY();
-                var datum_plane2 = __work_part_.__AbsoluteDatumCsys()._DatumPlaneXY();
+                var datum_plane2 = __work_part_.__AbsoluteDatumCsys().__DatumPlaneXY();
                 var constraint = __display_part_.__ConstrainOccProtoDistance(datum_plane1, datum_plane2, "0");
                 constraint.SetName(constraint_name);
             }
@@ -2122,7 +2122,7 @@ namespace TSG_Library.UFuncs
             try
             {
                 var datum_plane1 = __press._AbsOccDatumPlaneXZ();
-                var datum_plane2 = __work_part_.__AbsoluteDatumCsys()._DatumPlaneXZ();
+                var datum_plane2 = __work_part_.__AbsoluteDatumCsys().__DatumPlaneXZ();
                 var constraint = __display_part_.__ConstrainOccProtoDistance(datum_plane1, datum_plane2, "0");
                 constraint.SetName(constraint_name);
             }
@@ -2137,7 +2137,7 @@ namespace TSG_Library.UFuncs
             try
             {
                 var datum_plane1 = __press._AbsOccDatumPlaneYZ();
-                var datum_plane2 = __work_part_.__AbsoluteDatumCsys()._DatumPlaneYZ();
+                var datum_plane2 = __work_part_.__AbsoluteDatumCsys().__DatumPlaneYZ();
                 var constraint = __display_part_.__ConstrainOccProtoDistance(datum_plane1, datum_plane2, "0");
                 constraint.SetName(constraint_name);
             }
@@ -2156,7 +2156,7 @@ namespace TSG_Library.UFuncs
             // constrains the yz planes
             var constraint_yz = __display_part_.__ConstrainOccProtoDistance(
                 press_comp._AbsOccDatumPlaneYZ(),
-                strip_csys0._DatumPlaneYZ(),
+                strip_csys0.__DatumPlaneYZ(),
                 "0.0");
             constraint_yz.SetName($"PRESS-{prefix}{op_str}-YZ");
             constraint_yz.GetDisplayedConstraint().__Layer(256);
@@ -2177,7 +2177,7 @@ namespace TSG_Library.UFuncs
                 .ElementAt(1)
                 .GetEntities()[0];
             var constraint_xz = __display_part_.__ConstrainOccProtoDistance(
-                (DatumPlane)press_comp.find_occurrence(proto_press_csys._DatumPlaneYZ()),
+                (DatumPlane)press_comp.find_occurrence(proto_press_csys.__DatumPlaneYZ()),
                 (DatumPlane)__entity,
                 "0.0");
             constraint_xz.SetName($"PRESS-{prefix}{op_str}-XZ");
@@ -2205,7 +2205,7 @@ namespace TSG_Library.UFuncs
         {
             var constraint_xy = __display_part_.__ConstrainOccProtoDistance(
                 press_comp._AbsOccDatumPlaneXY(),
-                strip_csys0._DatumPlaneXY(),
+                strip_csys0.__DatumPlaneXY(),
                 "0.0");
             constraint_xy.SetName($"PRESS-{prefix}{op_str}-XY");
             constraint_xy.GetDisplayedConstraint().__Layer(256);
@@ -2249,9 +2249,9 @@ namespace TSG_Library.UFuncs
                 // gets the first feature in the layout_comp.prototype and casts it to a DatumCsysFeature_
                 var strip_csys = __display_part_.Features.OfType<DatumCsys>().First();
 
-                var datum_plane_xy1 = proto_layout_csys._DatumPlaneXY();
+                var datum_plane_xy1 = proto_layout_csys.__DatumPlaneXY();
                 var __plane_occ = (DatumPlane)layout_comp.find_occurrence(datum_plane_xy1);
-                var datum_plane_xy = strip_csys._DatumPlaneXY();
+                var datum_plane_xy = strip_csys.__DatumPlaneXY();
                 NewMethod24(comp_name, expression_z, __plane_occ, datum_plane_xy);
 
                 NewMethod8(comp_name, expression_x, layout_comp, proto_layout_csys, strip_csys);
@@ -2293,7 +2293,7 @@ namespace TSG_Library.UFuncs
         {
             var comp_dist_const_yz = __display_part_.__ConstrainOccProtoDistance(
                 layout_comp._AbsOccDatumPlaneYZ(),
-                strip_csys._DatumPlaneYZ(),
+                strip_csys.__DatumPlaneYZ(),
                 expression_x.Name);
 
             comp_dist_const_yz.GetDisplayedConstraint().__Layer(256);
@@ -2311,7 +2311,7 @@ namespace TSG_Library.UFuncs
             var layout_occ_plane = layout_comp._AbsOccDatumPlaneXZ();
             var constraint_xz = __display_part_.__ConstrainOccProtoDistance(
                 layout_occ_plane,
-                strip_csys._DatumPlaneXZ(),
+                strip_csys.__DatumPlaneXZ(),
                 expression_y.Name);
             constraint_xz.SetName($"{comp_name}-XZ");
             constraint_xz.GetDisplayedConstraint().__Layer(256);

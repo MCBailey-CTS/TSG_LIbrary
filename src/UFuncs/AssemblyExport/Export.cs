@@ -788,7 +788,7 @@ namespace TSG_Library.Utilities
                         if(child.ReferenceSet == "Empty")
                             continue;
 
-                        foreach (var __body in child._Members().OfType<Body>().Where(__b => __b.IsSolidBody))
+                        foreach (var __body in child.__Members().OfType<Body>().Where(__b => __b.IsSolidBody))
                             tagBodies.Add(__body.Tag);
                     }
 
@@ -816,12 +816,12 @@ namespace TSG_Library.Utilities
 
                 var layoutNameRegex = new Regex("^LAYOUT-([0-9]{1,})$");
 
-                var layoutPart = __display_part_.ComponentAssembly.RootComponent._Descendants()
+                var layoutPart = __display_part_.ComponentAssembly.RootComponent.__Descendants()
                     .Select(component => component.Prototype)
                     .OfType<Part>()
                     .FirstOrDefault(component => Regex.IsMatch(component.Leaf, Regex_Layout, RegexOptions.IgnoreCase));
 
-                var blankPart = __display_part_.ComponentAssembly.RootComponent._Descendants()
+                var blankPart = __display_part_.ComponentAssembly.RootComponent.__Descendants()
                     .Select(component => component.Prototype)
                     .OfType<Part>()
                     .FirstOrDefault(component => Regex.IsMatch(component.Leaf, Regex_Blank, RegexOptions.IgnoreCase));
@@ -830,7 +830,7 @@ namespace TSG_Library.Utilities
 
                 var blankLayers = new HashSet<int>();
 
-                foreach (var child in __display_part_.ComponentAssembly.RootComponent._Descendants())
+                foreach (var child in __display_part_.ComponentAssembly.RootComponent.__Descendants())
                 {
                     if(!(child.Prototype is Part))
                         continue;
@@ -896,7 +896,7 @@ namespace TSG_Library.Utilities
             {
                 var validChild = part.ComponentAssembly.RootComponent
                     .GetChildren()
-                    .Where(component => component._IsLoaded())
+                    .Where(component => component.__IsLoaded())
                     .FirstOrDefault(component => !component.IsSuppressed);
 
                 if(validChild != null)
@@ -921,7 +921,7 @@ namespace TSG_Library.Utilities
                 if(childOfStrip.IsSuppressed)
                     continue;
 
-                if(!childOfStrip._IsLoaded())
+                if(!childOfStrip.__IsLoaded())
                     continue;
 
                 if(!Regex.IsMatch(childOfStrip.DisplayName, Regex_PressAssembly, RegexOptions.IgnoreCase))
@@ -931,23 +931,23 @@ namespace TSG_Library.Utilities
 
                 if(pressComponent.GetChildren().Length == 0)
                     throw new InvalidOperationException(
-                        $"A press exists in your assembly without any children. {pressComponent._AssemblyPathString()}");
+                        $"A press exists in your assembly without any children. {pressComponent.__AssemblyPathString()}");
 
                 switch (pressComponent.GetChildren().Length)
                 {
                     case 1:
                         throw new InvalidOperationException(
-                            $"A press exists in your assembly with only one child. Expecting a ram and a bolster. {pressComponent._AssemblyPathString()}");
+                            $"A press exists in your assembly with only one child. Expecting a ram and a bolster. {pressComponent.__AssemblyPathString()}");
                     case 2:
                         foreach (var childOfPress in pressComponent.GetChildren())
                         {
-                            if(!childOfPress._IsLoaded())
+                            if(!childOfPress.__IsLoaded())
                                 throw new InvalidOperationException(
-                                    $"The child of a press must be loaded. {childOfPress._AssemblyPathString()}");
+                                    $"The child of a press must be loaded. {childOfPress.__AssemblyPathString()}");
 
                             if(childOfPress.IsSuppressed)
                                 throw new InvalidOperationException(
-                                    $"The child of a press cannot be suppressed. {childOfPress._AssemblyPathString()}");
+                                    $"The child of a press cannot be suppressed. {childOfPress.__AssemblyPathString()}");
 
                             if(childOfPress.GetChildren().Length != 0 && childOfPress.GetChildren()
                                    .Select(component => component)
@@ -955,7 +955,7 @@ namespace TSG_Library.Utilities
                                 continue;
 
                             throw new InvalidOperationException(
-                                $"The child of a bolster or ram under a press must be the Dummy file: {DummyPath}. {childOfPress._AssemblyPathString()}");
+                                $"The child of a bolster or ram under a press must be the Dummy file: {DummyPath}. {childOfPress.__AssemblyPathString()}");
                         }
 
                         break;
@@ -1320,7 +1320,7 @@ namespace TSG_Library.Utilities
         /// <param name="snapComponent">The component to get the descendants from.</param>
         private static IEnumerable<Component> GetAssembly(Component snapComponent)
         {
-            if(!snapComponent._IsLoaded())
+            if(!snapComponent.__IsLoaded())
                 yield break;
 
             if(snapComponent.DisplayName.ToLower().EndsWith("-simulation"))

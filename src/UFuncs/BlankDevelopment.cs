@@ -24,7 +24,7 @@ namespace TSG_Library.UFuncs
             var lengthObjs = Selection.SelectCurves();
 
             // get total length of selected lines
-            var addLength = lengthObjs.Select(selTag => (Curve)session_._GetTaggedObject(selTag.Tag))
+            var addLength = lengthObjs.Select(selTag => (Curve)session_.__GetTaggedObject(selTag.Tag))
                 .Select(selCurve => selCurve.GetLength())
                 .Sum();
 
@@ -40,7 +40,7 @@ namespace TSG_Library.UFuncs
             AskPositionOnObject(developObj.Tag, cursor);
             AskCloserToStartOrEnd(developObj.Tag, cursor);
             // move closest point distance and direction
-            var devLine = (Line)session_._GetTaggedObject(developObj.Tag);
+            var devLine = (Line)session_.__GetTaggedObject(developObj.Tag);
             EditCurveLength(devLine, addLength, cursor);
         }
 

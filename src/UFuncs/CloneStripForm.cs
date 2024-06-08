@@ -133,7 +133,7 @@ namespace TSG_Library.UFuncs
                     return;
                 }
 
-                if(!sim_comp._IsLoaded())
+                if(!sim_comp.__IsLoaded())
                 {
                     print_("Please load the simulation file");
                     return;
@@ -451,7 +451,7 @@ namespace TSG_Library.UFuncs
             var length = uf_.Assem.AskOccsOfPart(__display_part_.Tag, old_part.Tag, out var __part_occs);
             for (var i = 0; i < length; i++)
             {
-                var comp = (Component)session_._GetTaggedObject(__part_occs[i]);
+                var comp = (Component)session_.__GetTaggedObject(__part_occs[i]);
 
                 comp.SetName(comp.Name.Replace(__old_op, __next_op));
 
@@ -623,7 +623,7 @@ namespace TSG_Library.UFuncs
 
             uf_.Assem.AskOccsOfPart(__display_part_.Tag, selected_comp._Prototype().Tag, out var part_occs);
             for (var i = 0; i < part_occs.Length; i++)
-                ((Component)session_._GetTaggedObject(part_occs[i])).delete_self_and_constraints();
+                ((Component)session_.__GetTaggedObject(part_occs[i])).delete_self_and_constraints();
 
             selected_part.__Close();
 
@@ -652,7 +652,7 @@ namespace TSG_Library.UFuncs
                 var folder = GFolder.create(__display_part_.FullPath);
 
                 var paths = __display_part_.ComponentAssembly.RootComponent.GetChildren()
-                    .Where(__c => __c._IsLoaded())
+                    .Where(__c => __c.__IsLoaded())
                     .Where(__c => Regex.IsMatch(__c.Name, "^P(?<op>\\d\\d\\d)-"))
                     .Select(__c => __c._Prototype().FullPath)
                     .ToArray();

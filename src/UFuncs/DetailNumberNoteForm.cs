@@ -193,7 +193,7 @@ namespace TSG_Library.UFuncs
 
                 foreach (var tool in selectedToolComponents)
                 {
-                    var solid_body_layer_1_proto = tool._Members()
+                    var solid_body_layer_1_proto = tool.__Members()
                         .OfType<Body>()
                         .Single(__b => ((Body)__b.Prototype).Layer == 1);
 

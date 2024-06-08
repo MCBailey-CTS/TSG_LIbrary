@@ -392,7 +392,7 @@ namespace TSG_Library.UFuncs
         {
             print_("////////////////////////");
 
-            if(!detailComp._IsLoaded())
+            if(!detailComp.__IsLoaded())
             {
                 print_($"Component {detailComp.DisplayName} is not loaded");
                 print_("4-VIEW will not be created for this component");

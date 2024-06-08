@@ -33,7 +33,7 @@ namespace TSG_Library.UFuncs
                 }
 
                 var parts = __display_part_.ComponentAssembly.RootComponent
-                    ._Descendants()
+                    .__Descendants()
                     .Select(__c => __c.Prototype).OfType<Part>()
                     .OrderBy(p => p.Leaf).ToArray();
 

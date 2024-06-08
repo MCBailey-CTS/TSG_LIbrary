@@ -78,7 +78,7 @@ namespace TSG_Library.UFuncs
                     // Select All: Iterate through assembly.
                 {
                     _allComponents = __display_part_.__RootComponent()
-                        ._Descendants()
+                        .__Descendants()
                         .Where(__c => !__c.IsSuppressed)
                         .ToList();
                 }

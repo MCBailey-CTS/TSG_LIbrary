@@ -98,7 +98,7 @@ namespace TSG_Library.UFuncs
             var __display_part_ = Session.GetSession().Parts.Display;
 
             var components = selectAll
-                ? __display_part_.ComponentAssembly.RootComponent._Descendants().ToList()
+                ? __display_part_.ComponentAssembly.RootComponent.__Descendants().ToList()
                 : Selection.SelectManyComponents().ToList();
 
             if(components.Count == 0)
@@ -133,7 +133,7 @@ namespace TSG_Library.UFuncs
             if(rdoRto.Checked)
             {
                 isRto = true;
-                components = __display_part_.ComponentAssembly.RootComponent._Descendants().ToArray();
+                components = __display_part_.ComponentAssembly.RootComponent.__Descendants().ToArray();
             }
             else if(rdoChange.Checked)
             {
@@ -143,7 +143,7 @@ namespace TSG_Library.UFuncs
             else if(rdoReview50.Checked || rdoReview90.Checked || rdoReview100.Checked || rdoOther.Checked)
             {
                 isRto = false;
-                components = __display_part_.ComponentAssembly.RootComponent._Descendants().ToArray();
+                components = __display_part_.ComponentAssembly.RootComponent.__Descendants().ToArray();
             }
             else
             {

@@ -31,9 +31,9 @@ namespace TSG_Library.UFuncs
                 var part = __work_part_;
 
                 var comps = __work_part_.ComponentAssembly.RootComponent
-                    ._Descendants()
+                    .__Descendants()
                     .Where(__c => !__c.IsSuppressed)
-                    .Where(__c => __c._IsLoaded())
+                    .Where(__c => __c.__IsLoaded())
                     .DistinctBy(__c => __c)
                     .ToArray();
 
@@ -49,7 +49,7 @@ namespace TSG_Library.UFuncs
                     if(component.IsSuppressed)
                         continue;
 
-                    if(!component._IsLoaded())
+                    if(!component.__IsLoaded())
                         continue;
 
                     __display_part_ = component._Prototype();

@@ -277,7 +277,7 @@ namespace TSG_Library.UFuncs
 #pragma warning restore CS0612 // Type or member is obsolete
 
 
-                Execute(checkers, __display_part_.ComponentAssembly.RootComponent._Descendants().ToArray());
+                Execute(checkers, __display_part_.ComponentAssembly.RootComponent.__Descendants().ToArray());
 
                 //TreeNode[] check_nodes = new TreeNode[checkers.Length];
 

@@ -105,7 +105,7 @@ namespace TSG_Library.UFuncs
                     {
                         var displayName = comp.DisplayName.ToLower();
 
-                        if(!comp._IsLoaded())
+                        if(!comp.__IsLoaded())
                             continue;
 
                         if(rdoPrt.Checked)

@@ -321,7 +321,7 @@ namespace TSG_Library.UFuncs
         {
             UFSession.GetUFSession().Assem.AskOccsOfPart(__display_part_.Tag, part.Tag, out var partOccs);
 
-            var __count = partOccs.Select(session_._GetTaggedObject)
+            var __count = partOccs.Select(session_.__GetTaggedObject)
                 .Cast<Component>()
                 .Where(__c => !__c.IsSuppressed)
                 .Where(__c => __c.Name.Length == 3)
