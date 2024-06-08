@@ -128,15 +128,15 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             Surface.Plane plane, Component originalComp,
             Component mirrorComp, out Face mirrorFace)
         {
-            var expectedMirrorVector = originalFace._NormalVector()
-                ._MirrorMap(plane, originalComp, mirrorComp)
-                ._Unit();
+            var expectedMirrorVector = originalFace.__NormalVector()
+                .__MirrorMap(plane, originalComp, mirrorComp)
+                .__Unit();
 
             foreach (var tempMirrorFace in mirrorFaces)
             {
-                var mirrorVector = tempMirrorFace._NormalVector()._Unit();
+                var mirrorVector = tempMirrorFace.__NormalVector().__Unit();
 
-                if(!mirrorVector._IsEqualTo(expectedMirrorVector))
+                if(!mirrorVector.__IsEqualTo(expectedMirrorVector))
                     continue;
 
                 mirrorFace = tempMirrorFace;
@@ -155,11 +155,11 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             Component mirrorComp,
             out Edge mirrorEdge)
         {
-            var expectedStartPoint = originalEdge._StartPoint()._MirrorMap(plane, originalComp, mirrorComp);
-            var expectedEndPoint = originalEdge._EndPoint()._MirrorMap(plane, originalComp, mirrorComp);
+            var expectedStartPoint = originalEdge.__StartPoint().__MirrorMap(plane, originalComp, mirrorComp);
+            var expectedEndPoint = originalEdge.__EndPoint().__MirrorMap(plane, originalComp, mirrorComp);
 
             foreach (var tempMirrorEdge in mirrorEdges)
-                if(tempMirrorEdge._HasEndPoints(expectedStartPoint, expectedEndPoint))
+                if(tempMirrorEdge.__HasEndPoints(expectedStartPoint, expectedEndPoint))
                 {
                     mirrorEdge = tempMirrorEdge;
                     return true;

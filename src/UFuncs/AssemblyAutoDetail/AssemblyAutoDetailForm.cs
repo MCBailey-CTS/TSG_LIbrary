@@ -164,7 +164,7 @@ namespace TSG_Library.UFuncs
 
         private void ButtonSelect_Click(object sender, EventArgs e)
         {
-            using (session_.using_form_show_hide(this))
+            using (session_.__UsingFormShowHide(this))
             {
                 try
                 {
@@ -187,14 +187,14 @@ namespace TSG_Library.UFuncs
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
             }
         }
 
         private void ButtonSelectAll_Click(object sender, EventArgs e)
         {
-            using (session_.using_form_show_hide(this))
+            using (session_.__UsingFormShowHide(this))
             {
                 try
                 {
@@ -258,7 +258,7 @@ namespace TSG_Library.UFuncs
                         }
                         catch (Exception ex)
                         {
-                            ex._PrintException(comp.DisplayName);
+                            ex.__PrintException(comp.DisplayName);
                         }
 
                     if(passedComponents.Count == 0)
@@ -284,14 +284,14 @@ namespace TSG_Library.UFuncs
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
             }
         }
 
         private void DetailComponents(IEnumerable<Component> selectedComponents)
         {
-            using (session_.using_display_part_reset())
+            using (session_.__usingDisplayPartReset())
             {
                 var componentArray = selectedComponents.ToArray();
 
@@ -306,7 +306,7 @@ namespace TSG_Library.UFuncs
                     }
                     catch (Exception ex)
                     {
-                        ex._PrintException(detailComp.DisplayName);
+                        ex.__PrintException(detailComp.DisplayName);
                     }
                 }
 
@@ -326,9 +326,9 @@ namespace TSG_Library.UFuncs
                 return;
             }
 
-            using (__work_component_.using_reference_set_reset())
+            using (__work_component_.__UsingReferenceSetReset())
             {
-                __work_component_._ReferenceSet("Entire Part");
+                __work_component_.__ReferenceSet("Entire Part");
 
                 var system = __work_part_.CoordinateSystems.CreateCoordinateSystem(
                     _Point3dOrigin,
@@ -385,7 +385,7 @@ namespace TSG_Library.UFuncs
             modelingView1 = (ModelingView)newView;
             modelingView2 = __display_part_.ModelingViews.FindObject(top);
             layout.ReplaceView(modelingView1, modelingView2, true);
-            session_.delete_objects(csys);
+            session_.__DeleteObjects(csys);
         }
 
         private void DetailComponent(Component detailComp)
@@ -400,9 +400,9 @@ namespace TSG_Library.UFuncs
                 return;
             }
 
-            using (session_.using_suppress_display())
+            using (session_.__UsingSuppressDisplay())
             {
-                __display_part_ = detailComp._Prototype();
+                __display_part_ = detailComp.__Prototype();
 
                 try
                 {
@@ -411,7 +411,7 @@ namespace TSG_Library.UFuncs
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
 
                 try
@@ -424,7 +424,7 @@ namespace TSG_Library.UFuncs
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
 
                 if(__display_part_.Layers.GetState(111) != State.WorkLayer)
@@ -485,7 +485,7 @@ namespace TSG_Library.UFuncs
                                 .ToList();
 
                             if(deleteNote.Count > 0)
-                                session_.delete_objects(deleteNote.ToArray());
+                                session_.__DeleteObjects(deleteNote.ToArray());
 
                             foreach (Body solidBody in __display_part_.Bodies)
                             {
@@ -537,7 +537,7 @@ namespace TSG_Library.UFuncs
                         }
                         catch (Exception ex)
                         {
-                            ex._PrintException();
+                            ex.__PrintException();
                         }
 
                     if(chkDetailSheet.Checked)
@@ -574,7 +574,7 @@ namespace TSG_Library.UFuncs
                                 .ToList();
 
                             if(deleteView.Count > 0)
-                                session_.delete_objects(deleteView.ToArray());
+                                session_.__DeleteObjects(deleteView.ToArray());
 
                             string[] drillChart = null;
 
@@ -593,7 +593,7 @@ namespace TSG_Library.UFuncs
                         }
                         catch (Exception ex)
                         {
-                            ex._PrintException();
+                            ex.__PrintException();
                         }
 
                     if(chkUpdateViews.Checked)
@@ -621,7 +621,7 @@ namespace TSG_Library.UFuncs
                         }
                         catch (Exception ex)
                         {
-                            ex._PrintException();
+                            ex.__PrintException();
                         }
 
                     if(!chkDelete4Views.Checked)
@@ -637,7 +637,7 @@ namespace TSG_Library.UFuncs
                     }
                     catch (Exception ex)
                     {
-                        ex._PrintException();
+                        ex.__PrintException();
                     }
 
                     // delete existing 4-VIEW
@@ -647,7 +647,7 @@ namespace TSG_Library.UFuncs
                         .ToList();
 
                     if(deleteView1.Count > 0)
-                        session_.delete_objects(deleteView1.ToArray());
+                        session_.__DeleteObjects(deleteView1.ToArray());
                 }
             }
         }
@@ -738,7 +738,7 @@ namespace TSG_Library.UFuncs
                         break;
                     case "NXOpen.Line":
                         var line = (Line)dispObj;
-                        extremePoint = line.StartPoint._ToArray();
+                        extremePoint = line.StartPoint.__ToArray();
                         break;
                     default:
                         continue;
@@ -791,27 +791,27 @@ namespace TSG_Library.UFuncs
                     // get minX greatest Y vertex
                     FindEndPoints(ref minX, out var vertex1, out var vertex2);
                     var drfVertex1 = new double[2];
-                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex1._ToArray(), drfVertex1);
+                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex1.__ToArray(), drfVertex1);
                     var drfVertex2 = new double[2];
-                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex2._ToArray(), drfVertex2);
+                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex2.__ToArray(), drfVertex2);
                     minX.DimXvalue = drfVertex1[0] <= drfVertex2[0] ? drfVertex1[0] : drfVertex2[0];
                     minX.ExtPointId = drfVertex1[0] <= drfVertex2[0] ? (int)FirstEndPoint : (int)LastEndPoint;
                     minX.DimYvalue = drfVertex1[1] >= drfVertex2[1] ? drfVertex1[1] : drfVertex2[1];
                     // get maxX greatest Y vertex
                     FindEndPoints(ref maxX, out var vertex3, out var vertex4);
                     var drfVertex3 = new double[2];
-                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex3._ToArray(), drfVertex3);
+                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex3.__ToArray(), drfVertex3);
                     var drfVertex4 = new double[2];
-                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex4._ToArray(), drfVertex4);
+                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex4.__ToArray(), drfVertex4);
                     maxX.DimXvalue = drfVertex3[0] >= drfVertex4[0] ? drfVertex3[0] : drfVertex4[0];
                     maxX.ExtPointId = drfVertex3[0] >= drfVertex4[0] ? (int)FirstEndPoint : (int)LastEndPoint;
                     maxX.DimYvalue = drfVertex3[1] >= drfVertex4[1] ? drfVertex3[1] : drfVertex4[1];
                     // get minY greatest X vertex
                     FindEndPoints(ref minY, out var vertex5, out var vertex6);
                     var drfVertex5 = new double[2];
-                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex5._ToArray(), drfVertex5);
+                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex5.__ToArray(), drfVertex5);
                     var drfVertex6 = new double[2];
-                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex6._ToArray(), drfVertex6);
+                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex6.__ToArray(), drfVertex6);
                     minY.DimXvalue = drfVertex5[0] >= drfVertex6[0] ? drfVertex5[0] : drfVertex6[0];
                     minY.DimYvalue = drfVertex5[0] >= drfVertex6[0]
                         ? drfVertex5[1] <= drfVertex6[1] ? drfVertex5[1] : drfVertex6[1]
@@ -826,9 +826,9 @@ namespace TSG_Library.UFuncs
                     // get maxY greatest X vertex
                     FindEndPoints(ref maxY, out var vertex7, out var vertex8);
                     var drfVertex7 = new double[2];
-                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex7._ToArray(), drfVertex7);
+                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex7.__ToArray(), drfVertex7);
                     var drfVertex8 = new double[2];
-                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex8._ToArray(), drfVertex8);
+                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex8.__ToArray(), drfVertex8);
                     maxY.DimXvalue = drfVertex7[0] >= drfVertex8[0] ? drfVertex7[0] : drfVertex8[0];
                     maxY.DimYvalue = drfVertex7[0] >= drfVertex8[0]
                         ? drfVertex7[1] >= drfVertex8[1] ? drfVertex7[1] : drfVertex8[1]
@@ -847,9 +847,9 @@ namespace TSG_Library.UFuncs
                     // get minY least X vertex
                     FindEndPoints(ref minY, out var vertex1, out var vertex2);
                     var drfVertex1 = new double[2];
-                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex1._ToArray(), drfVertex1);
+                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex1.__ToArray(), drfVertex1);
                     var drfVertex2 = new double[2];
-                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex2._ToArray(), drfVertex2);
+                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex2.__ToArray(), drfVertex2);
                     minY.DimXvalue = drfVertex1[0] <= drfVertex2[0] ? drfVertex1[0] : drfVertex2[0];
                     minY.DimYvalue = drfVertex1[0] <= drfVertex2[0]
                         ? drfVertex1[1] <= drfVertex2[1] ? drfVertex1[1] : drfVertex2[1]
@@ -864,9 +864,9 @@ namespace TSG_Library.UFuncs
                     // get maxY least X vertex
                     FindEndPoints(ref maxY, out var vertex3, out var vertex4);
                     var drfVertex3 = new double[2];
-                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex3._ToArray(), drfVertex3);
+                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex3.__ToArray(), drfVertex3);
                     var drfVertex4 = new double[2];
-                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex4._ToArray(), drfVertex4);
+                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex4.__ToArray(), drfVertex4);
                     if(drfVertex3[0] <= drfVertex4[0])
                         maxY.DimXvalue = drfVertex3[0];
                     else
@@ -1233,7 +1233,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException($"Part: {__work_part_.Leaf}");
+                ex.__PrintException($"Part: {__work_part_.Leaf}");
             }
             finally
             {
@@ -1512,7 +1512,7 @@ namespace TSG_Library.UFuncs
                     } while (scaledWidth < measureWidth || scaledHeight < measureHeight);
 
                 if(__display_part_.Expressions.ToArray().All(expression => expression.Name != "borderScale"))
-                    using (session_.using_do_update("Expression"))
+                    using (session_.__UsingDoUpdate("Expression"))
                     {
                         __work_part_.Expressions.CreateWithUnits($"borderScale={scale}", null);
                     }
@@ -1543,18 +1543,18 @@ namespace TSG_Library.UFuncs
                 {
                     if(chkDrillChart.Checked && drillChart.Length > 0)
                     {
-                        var note = (Note)session_.find_by_name(@"GRUMBLEGRUMBLE");
+                        var note = (Note)session_.__FindByName(@"GRUMBLEGRUMBLE");
 
                         note.SetText(drillChart);
                     }
                     else
                     {
-                        session_.delete_objects(session_.find_by_name(@"GRUMBLEGRUMBLE"));
+                        session_.__DeleteObjects(session_.__FindByName(@"GRUMBLEGRUMBLE"));
                     }
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
 
                 var xDistance = distances[0];
@@ -1652,11 +1652,11 @@ namespace TSG_Library.UFuncs
                 }
 
                 if(addToDelete.Count != 0)
-                    session_.delete_objects(addToDelete.ToArray());
+                    session_.__DeleteObjects(addToDelete.ToArray());
             }
             catch (Exception ex)
             {
-                ex._PrintException(__display_part_.Leaf);
+                ex.__PrintException(__display_part_.Leaf);
             }
         }
     }

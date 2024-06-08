@@ -21,7 +21,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 
             if(!(folder is null))
             {
-                result_node = part.__TreeNode()._SetText($"{part.Leaf} -> not in folder");
+                result_node = part.__TreeNode().__SetText($"{part.Leaf} -> not in folder");
                 return false;
             }
 

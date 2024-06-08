@@ -112,7 +112,7 @@ public static class Program
         }
         catch (Exception ex)
         {
-            ex._PrintException();
+            ex.__PrintException();
         }
     }
 
@@ -124,7 +124,7 @@ public static class Program
         }
         catch (Exception ex)
         {
-            ex._PrintException();
+            ex.__PrintException();
             return UFConstants.UF_UI_SEL_FAILURE;
         }
     }

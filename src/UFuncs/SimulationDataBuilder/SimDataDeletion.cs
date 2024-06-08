@@ -125,7 +125,7 @@ namespace TSG_Library.Utilities
                 if(comp.Prototype is Part part)
                     part.Close(BasePart.CloseWholeTree.False, BasePart.CloseModified.CloseModified, null);
 
-                session_.delete_objects(comp);
+                session_.__DeleteObjects(comp);
             }
         }
     }

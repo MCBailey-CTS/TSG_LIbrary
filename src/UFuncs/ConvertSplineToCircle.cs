@@ -193,7 +193,7 @@ namespace TSG_Library.UFuncs
 
             spline.Blank();
 
-            return segmentTags.Select(__t => __t._To<Curve>()).ToList();
+            return segmentTags.Select(__t => __t.__To<Curve>()).ToList();
         }
     }
 }

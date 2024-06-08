@@ -43,7 +43,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                 body.IsOccurrence
                 && body.OwningComponent != null
                 && IsNotAssemblyHolder_LinkNoAssemblies(body.OwningComponent)
-                && !body.OwningComponent._IsFastener();
+                && !body.OwningComponent.__IsFastener();
 
         public override void execute()
         {
@@ -65,7 +65,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                 return;
 
             foreach (var target in targets)
-                using (session_.using_display_part_reset())
+                using (session_.__usingDisplayPartReset())
                 {
                     try
                     {
@@ -73,7 +73,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
 
                         foreach (var tool in tools)
                         {
-                            var reference_sets = tool._Prototype().GetAllReferenceSets()
+                            var reference_sets = tool.__Prototype().GetAllReferenceSets()
                                 .Where(__r => __r.Name.ToLower().Contains("sub"))
                                 .Where(__r => __r.Name.ToLower().Contains("tool"))
                                 .ToArray();
@@ -84,7 +84,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                                     print_($"Didn't find any sub tool reference sets for {tool.DisplayName}");
                                     continue;
                                 case 1:
-                                    tool._ReferenceSet(reference_sets[0].Name);
+                                    tool.__ReferenceSet(reference_sets[0].Name);
                                     break;
                                 default:
                                     print_($"Found more than one sub tool reference set for {tool.DisplayName}");
@@ -100,7 +100,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                     }
                     catch (Exception ex)
                     {
-                        ex._PrintException();
+                        ex.__PrintException();
                     }
                 }
             //}
@@ -144,7 +144,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                         refset.AddObjectsToReferenceSet(extractedBodies.SelectMany(face => face.GetBodies()).ToArray());
                     }
 
-                if(__display_part_.PartUnits != target.OwningComponent._Prototype().PartUnits)
+                if(__display_part_.PartUnits != target.OwningComponent.__Prototype().PartUnits)
                     continue;
 
                 __work_component_ = target.OwningComponent;
@@ -245,7 +245,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
 
                     var toolBody = bodies[0];
 
-                    if(targetBody._InterferesWith(toolBody))
+                    if(targetBody.__InterferesWith(toolBody))
                         //if (IsInterfering_Link(targetBody, ))
                         booleanFunc(targetBody.OwningPart, targetBody, new[] { toolBody });
                     else
@@ -253,7 +253,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
         }
 
@@ -328,7 +328,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -353,7 +353,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
 
             return false;
@@ -378,14 +378,14 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
         /// <returns>The <see cref="Snap.NX.ExtractFace" /> that was created.</returns>
         public static ExtractFace SpecialWaveLink(Component snapTargetComponent, Body snapToolBody)
         {
-            var objectInPart = snapTargetComponent._Prototype().Tag;
+            var objectInPart = snapTargetComponent.__Prototype().Tag;
             var fromPartOcc = snapToolBody.OwningComponent.Tag;
             var toPartOcc = snapTargetComponent.Tag;
-            var body = snapToolBody._Prototype().Tag;
+            var body = snapToolBody.__Prototype().Tag;
             ufsession_.So.CreateXformAssyCtxt(objectInPart, fromPartOcc, toPartOcc, out var xform);
             ufsession_.Wave.CreateLinkedBody(body, xform, objectInPart, false, out var linkedFeature);
             var extract = (ExtractFace)session_.__GetTaggedObject(linkedFeature);
-            extract._Layer(100);
+            extract.__Layer(100);
             print_($"Created {extract.GetFeatureName()} in {extract.OwningPart.Leaf}");
             return extract;
         }
@@ -425,7 +425,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
 
             return false;
@@ -433,7 +433,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
 
         public static void WaveLinkFasteners(bool blank_tools, string shcs_ref_set, string dwl_ref_set)
         {
-            using (session_.using_display_part_reset())
+            using (session_.__usingDisplayPartReset())
             {
                 try
                 {
@@ -465,7 +465,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                                     if(child._IsJckScrewTsg_() || child._IsJckScrew_())
                                         continue;
 
-                                    using (child.using_reference_set_reset())
+                                    using (child.__UsingReferenceSetReset())
                                     {
                                         var original_ref_set = child.ReferenceSet;
                                         var proto_child_fastener = child.__ProtoChildComp();
@@ -479,7 +479,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                                                 .Where(__r => !string.IsNullOrEmpty(__r))
                                                 .ToArray();
 
-                                            var fastener_ref_set_names = proto_child_fastener._Prototype()
+                                            var fastener_ref_set_names = proto_child_fastener.__Prototype()
                                                 .GetAllReferenceSets()
                                                 .Select(__r => __r.Name)
                                                 .Intersect(ref_sets)
@@ -494,7 +494,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                                                             $"Coulnd't find any valid ref sets for {child.DisplayName}");
                                                     continue;
                                                 case 1:
-                                                    child._ReferenceSet(fastener_ref_set_names[0]);
+                                                    child.__ReferenceSet(fastener_ref_set_names[0]);
                                                     break;
                                                 default:
                                                     print_(
@@ -502,7 +502,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                                                     continue;
                                             }
 
-                                            if(!target._InterferesWith(child))
+                                            if(!target.__InterferesWith(child))
                                             {
                                                 print_(
                                                     $"Could not subtract fastener {child.DisplayName}, no interference.");
@@ -510,23 +510,23 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                                             }
 
                                             var ext = child.__CreateLinkedBody();
-                                            ext._Layer(96);
+                                            ext.__Layer(96);
 
                                             print_("//////////////////");
                                             print_($"Created {ext.GetFeatureName()} in {ext.OwningPart.Leaf}");
-                                            var boolean_feature = target._Subtract(ext.GetBodies());
+                                            var boolean_feature = target.__Subtract(ext.GetBodies());
                                             print_(
                                                 $"Created {boolean_feature.GetFeatureName()} in {ext.OwningPart.Leaf}");
                                         }
                                         catch (Exception ex)
                                         {
-                                            ex._PrintException(child.DisplayName);
+                                            ex.__PrintException(child.DisplayName);
                                         }
                                     }
                                 }
                                 catch (Exception ex)
                                 {
-                                    ex._PrintException();
+                                    ex.__PrintException();
                                 }
 
                             if(blank_tools)
@@ -534,7 +534,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                         }
                         catch (Exception ex)
                         {
-                            ex._PrintException();
+                            ex.__PrintException();
                         }
                 }
                 catch (NothingSelectedException)
@@ -543,7 +543,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
             }
         }
@@ -551,7 +551,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
         public static void WaveLinkBoolean(bool blank_tools, Feature.BooleanType booleanType)
         {
             session_.SetUndoMark(Session.MarkVisibility.Visible, "Assembly Wavelink");
-            using (session_.using_display_part_reset())
+            using (session_.__usingDisplayPartReset())
             using (session_.__UsingRegenerateDisplay())
             {
                 try
@@ -573,16 +573,16 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
 
                     var selectedReferenceSet = formCts.SelectedReferenceSetName;
                     formCts.Dispose();
-                    tools.ToList().ForEach(__c => __c._ReferenceSet(selectedReferenceSet));
+                    tools.ToList().ForEach(__c => __c.__ReferenceSet(selectedReferenceSet));
                     Perform_Link(booleanType, targets, tools, blank_tools);
-                    referenceSets.ToList().ForEach(item => item.snapComponent._ReferenceSet(item.ReferenceSet));
+                    referenceSets.ToList().ForEach(item => item.snapComponent.__ReferenceSet(item.ReferenceSet));
                 }
                 catch (NothingSelectedException)
                 {
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
             }
         }

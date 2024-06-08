@@ -43,7 +43,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
                 return false;
                 ;
             }
@@ -72,7 +72,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
 
             return passed;

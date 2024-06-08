@@ -20,7 +20,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
         {
             var mirroredComp = (Component)dict[originalComp];
 
-            var mirroredPart = mirroredComp._Prototype();
+            var mirroredPart = mirroredComp.__Prototype();
 
             // ReSharper disable once UnusedVariable
             _ = (Feature)dict[originalFeature];
@@ -32,24 +32,24 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             Edge newEndEdge = null;
 
-            var finalStart = originalStartEdge._StartPoint()._MirrorMap(plane, originalComp, mirroredComp);
+            var finalStart = originalStartEdge.__StartPoint().__MirrorMap(plane, originalComp, mirroredComp);
 
-            var finalEnd = originalStartEdge._EndPoint()._MirrorMap(plane, originalComp, mirroredComp);
+            var finalEnd = originalStartEdge.__EndPoint().__MirrorMap(plane, originalComp, mirroredComp);
 
             foreach (var body in mirroredPart.Bodies.ToArray())
             foreach (var e in body.GetEdges())
-                if(e._HasEndPoints(finalStart, finalEnd))
+                if(e.__HasEndPoints(finalStart, finalEnd))
                     newStartEdge = e;
 
             if(!(originalEndEdge is null))
             {
-                finalStart = originalEndEdge._StartPoint()._MirrorMap(plane, originalComp, mirroredComp);
+                finalStart = originalEndEdge.__StartPoint().__MirrorMap(plane, originalComp, mirroredComp);
 
-                finalEnd = originalEndEdge._EndPoint()._MirrorMap(plane, originalComp, mirroredComp);
+                finalEnd = originalEndEdge.__EndPoint().__MirrorMap(plane, originalComp, mirroredComp);
 
                 foreach (var body in mirroredPart.Bodies.ToArray())
                 foreach (var e in body.GetEdges())
-                    if(e._HasEndPoints(finalStart, finalEnd))
+                    if(e.__HasEndPoints(finalStart, finalEnd))
                         newEndEdge = e;
             }
 

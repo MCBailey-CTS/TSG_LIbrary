@@ -25,7 +25,7 @@ namespace TSG_Library.UFuncs
             }
 
             // Need to remove the objects from the reference sets first.
-            SetUndoMark(MarkVisibility.Visible, "StripRefSetter");
+            __SetUndoMark(MarkVisibility.Visible, "StripRefSetter");
 
             var display = __display_part_;
 

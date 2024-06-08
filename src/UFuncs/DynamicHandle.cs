@@ -36,7 +36,7 @@ namespace TSG_Library.Ufuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
 
             return 0;
@@ -57,7 +57,7 @@ namespace TSG_Library.Ufuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
 
             return retValue;
@@ -88,7 +88,7 @@ namespace TSG_Library.Ufuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
 
             return 0;

@@ -26,7 +26,7 @@ namespace TSG_Library.UFuncs
             if(result == DialogResult.No)
                 return;
 
-            using (session_.using_suppress_display())
+            using (session_.__UsingSuppressDisplay())
             {
                 var part = __work_part_;
 
@@ -52,7 +52,7 @@ namespace TSG_Library.UFuncs
                     if(!component.__IsLoaded())
                         continue;
 
-                    __display_part_ = component._Prototype();
+                    __display_part_ = component.__Prototype();
 
                     var bodiesToDelete = __work_part_.Bodies
                         .ToArray()
@@ -69,7 +69,7 @@ namespace TSG_Library.UFuncs
 
                     message += $"{component.DisplayName}: {bodiesToDelete.Length}\n";
 
-                    session_.delete_objects(bodiesToDelete);
+                    session_.__DeleteObjects(bodiesToDelete);
                 }
 
                 if(foundBodies)

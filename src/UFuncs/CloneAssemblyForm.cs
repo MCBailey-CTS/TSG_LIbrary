@@ -37,7 +37,7 @@ namespace TSG_Library.UFuncs
 
             //System.Diagnostics.Debugger.Launch();
 
-            using (session_.using_form_show_hide(this))
+            using (session_.__UsingFormShowHide(this))
             {
                 try
                 {
@@ -97,7 +97,7 @@ namespace TSG_Library.UFuncs
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
                 finally
                 {
@@ -177,7 +177,7 @@ namespace TSG_Library.UFuncs
 
                 ExecuteCloneProg(__folder, op);
 
-                __display_part_ = session_.find_or_open(__folder.file_detail_000(op));
+                __display_part_ = session_.__FindOrOpen(__folder.file_detail_000(op));
 
                 replace_strip_layout_in_display(__folder.file_strip_010, "STRIP", true);
 
@@ -192,15 +192,15 @@ namespace TSG_Library.UFuncs
                 {
                     try
                     {
-                        session_.find_or_open(__folder.path_op_detail(op, "upr")).__SetAsDisplayPart();
+                        session_.__FindOrOpen(__folder.path_op_detail(op, "upr")).__SetAsDisplayPart();
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_($"COMPONENT {__folder.customer_number}-{op}-usp3 1").Suppress();
+                            .__FindComponent($"COMPONENT {__folder.customer_number}-{op}-usp3 1").Suppress();
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_($"COMPONENT {__folder.customer_number}-{op}-usp4 1").Suppress();
+                            .__FindComponent($"COMPONENT {__folder.customer_number}-{op}-usp4 1").Suppress();
                     }
                     catch (Exception ex)
                     {
-                        ex._PrintException();
+                        ex.__PrintException();
                     }
                 }
 
@@ -208,15 +208,15 @@ namespace TSG_Library.UFuncs
                 {
                     try
                     {
-                        session_.find_or_open(__folder.path_op_detail(op, "lwr")).__SetAsDisplayPart();
+                        session_.__FindOrOpen(__folder.path_op_detail(op, "lwr")).__SetAsDisplayPart();
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_($"COMPONENT {__folder.customer_number}-{op}-lsp3 1").Suppress();
+                            .__FindComponent($"COMPONENT {__folder.customer_number}-{op}-lsp3 1").Suppress();
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_($"COMPONENT {__folder.customer_number}-{op}-lsp4 1").Suppress();
+                            .__FindComponent($"COMPONENT {__folder.customer_number}-{op}-lsp4 1").Suppress();
                     }
                     catch (Exception ex)
                     {
-                        ex._PrintException();
+                        ex.__PrintException();
                     }
                 }
 
@@ -227,26 +227,26 @@ namespace TSG_Library.UFuncs
 
                 var dieset_control = $"{__folder.customer_number}-{op}-dieset-control.prt";
 
-                using (session_.using_display_part_reset())
+                using (session_.__usingDisplayPartReset())
                 {
-                    __display_part_ = session_.find_or_open(__folder.file_detail0("010", "002"));
+                    __display_part_ = session_.__FindOrOpen(__folder.file_detail0("010", "002"));
                     __display_part_.Expressions.ChangeInterpartReferences("seed-prog-dieset-control.prt",
                         dieset_control, true, true);
 
-                    __display_part_ = session_.find_or_open(__folder.file_detail0("010", "012"));
+                    __display_part_ = session_.__FindOrOpen(__folder.file_detail0("010", "012"));
                     __display_part_.Expressions.ChangeInterpartReferences("seed-prog-dieset-control.prt",
                         dieset_control, true, true);
 
-                    __display_part_ = session_.find_or_open(__folder.file_detail0("010", "502"));
+                    __display_part_ = session_.__FindOrOpen(__folder.file_detail0("010", "502"));
                     __display_part_.Expressions.ChangeInterpartReferences("seed-prog-dieset-control.prt",
                         dieset_control, true, true);
 
-                    __display_part_ = session_.find_or_open(__folder.file_detail0("010", "512"));
+                    __display_part_ = session_.__FindOrOpen(__folder.file_detail0("010", "512"));
                     __display_part_.Expressions.ChangeInterpartReferences("seed-prog-dieset-control.prt",
                         dieset_control, true, true);
                 }
 
-                using (session_.using_display_part_reset())
+                using (session_.__usingDisplayPartReset())
                 {
                     try
                     {
@@ -256,16 +256,16 @@ namespace TSG_Library.UFuncs
                         }
                         else
                         {
-                            var press_op = op_10_010(press_op_dieset * 10);
+                            var press_op = __Op10To010(press_op_dieset * 10);
 
-                            __display_part_ = session_.find_or_open(dieset_control);
+                            __display_part_ = session_.__FindOrOpen(dieset_control);
                             __display_part_.Expressions.ChangeInterpartReferences("XXXXX-Press-XX-Assembly.prt",
                                 $"{__folder.customer_number}-P{press_op}-Press.prt", true, true);
                         }
                     }
                     catch (Exception ex)
                     {
-                        ex._PrintException();
+                        ex.__PrintException();
                     }
                 }
 
@@ -273,7 +273,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -288,7 +288,7 @@ namespace TSG_Library.UFuncs
 
                     ExecuteCloneLineOp(__folder, op);
 
-                    __display_part_ = session_.find_or_open(__folder.file_detail_000(op));
+                    __display_part_ = session_.__FindOrOpen(__folder.file_detail_000(op));
 
                     try
                     {
@@ -301,7 +301,7 @@ namespace TSG_Library.UFuncs
                     }
                     catch (Exception ex)
                     {
-                        ex._PrintException();
+                        ex.__PrintException();
                     }
 
                     using (new DisplayPartReset())
@@ -311,7 +311,7 @@ namespace TSG_Library.UFuncs
 
                     add_press(__folder, op);
 
-                    session_.find_or_open(__folder.path_op_detail(op, "lsh"))
+                    session_.__FindOrOpen(__folder.path_op_detail(op, "lsh"))
                         .Features
                         .ToArray()
                         .OfType<DatumCsys>()
@@ -322,14 +322,14 @@ namespace TSG_Library.UFuncs
                 Session.GetSession().Parts.SetAllowMultipleDisplayedParts(true);
 
                 foreach (var op in ops)
-                    session_.find_or_open(__folder.file_detail0(op, "000")).__SetActiveDisplay();
+                    session_.__FindOrOpen(__folder.file_detail0(op, "000")).__SetActiveDisplay();
 
                 if(!Directory.Exists(__folder.dir_op("900")))
                     Directory.CreateDirectory(__folder.dir_op("900"));
 
                 ExecuteCloneLine900(__folder);
 
-                session_.find_or_open(__folder.file_detail_000("900")).__SetActiveDisplay();
+                session_.__FindOrOpen(__folder.file_detail_000("900")).__SetActiveDisplay();
 
                 try
                 {
@@ -337,7 +337,7 @@ namespace TSG_Library.UFuncs
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
 
                 using (new DisplayPartReset())
@@ -350,25 +350,25 @@ namespace TSG_Library.UFuncs
                     }
                     catch (Exception ex)
                     {
-                        ex._PrintException();
+                        ex.__PrintException();
                     }
                 }
 
                 using (new DisplayPartReset())
                 {
                     __display_part_.ComponentAssembly.RootComponent.GetChildren()
-                        .Single(__c => __c.Name.Contains("LWR"))._ReferenceSet("BODY");
+                        .Single(__c => __c.Name.Contains("LWR")).__ReferenceSet("BODY");
                     __display_part_.__Fit();
                     __display_part_.ComponentAssembly.RootComponent.GetChildren()
-                        .Single(__c => __c.Name.Contains("UPR"))._ReferenceSet("BODY");
+                        .Single(__c => __c.Name.Contains("UPR")).__ReferenceSet("BODY");
                     __display_part_.__Fit();
                 }
 
                 using (new DisplayPartReset())
                 {
-                    __display_part_ = session_.find_or_open(__folder.file_detail0("900", "upr"));
+                    __display_part_ = session_.__FindOrOpen(__folder.file_detail0("900", "upr"));
 
-                    __display_part_.reference_sets("BODY").RemoveObjectsFromReferenceSet(__display_part_
+                    __display_part_.__ReferenceSets("BODY").RemoveObjectsFromReferenceSet(__display_part_
                         .ComponentAssembly.RootComponent.GetChildren().Where(__c => __c.Name != "STRIP").ToArray());
 
                     __display_part_.__Fit();
@@ -376,9 +376,9 @@ namespace TSG_Library.UFuncs
 
                 using (new DisplayPartReset())
                 {
-                    __display_part_ = session_.find_or_open(__folder.file_detail0("900", "lwr"));
+                    __display_part_ = session_.__FindOrOpen(__folder.file_detail0("900", "lwr"));
 
-                    __display_part_.reference_sets("BODY").AddObjectsToReferenceSet(__display_part_.ComponentAssembly
+                    __display_part_.__ReferenceSets("BODY").AddObjectsToReferenceSet(__display_part_.ComponentAssembly
                         .RootComponent.GetChildren().Where(__c => __c.Name != "STRIP").ToArray());
 
                     __display_part_.__Fit();
@@ -388,13 +388,13 @@ namespace TSG_Library.UFuncs
                 {
                     foreach (var op in ops)
                     {
-                        var part = session_.find_or_open(__folder.file_detail_000(op));
+                        var part = session_.__FindOrOpen(__folder.file_detail_000(op));
 
                         __display_part_ = part;
 
                         const string center_line_of_coil = "CenterLineofCoil";
 
-                        var orig_exp = session_.find_or_open(__folder.file_strip("900"))
+                        var orig_exp = session_.__FindOrOpen(__folder.file_strip("900"))
                             .__FindExpression(center_line_of_coil);
 
                         __display_part_.__CreateInterpartExpression(orig_exp, center_line_of_coil);
@@ -429,11 +429,11 @@ namespace TSG_Library.UFuncs
                 using (new DisplayPartReset())
                 {
                     foreach (var op in ops)
-                        session_.find_or_open(__folder.file_detail_000(op)).__Save();
+                        session_.__FindOrOpen(__folder.file_detail_000(op)).__Save();
 
                     foreach (var part_file in Directory.GetFiles(__folder.dir_op("900"), "*-000.prt",
                                  SearchOption.TopDirectoryOnly))
-                        session_.find_or_open(part_file).__Save();
+                        session_.__FindOrOpen(part_file).__Save();
                 }
 
                 using (new DisplayPartReset())
@@ -451,49 +451,49 @@ namespace TSG_Library.UFuncs
                 //ops
 
 
-                using (session_.using_display_part_reset())
+                using (session_.__usingDisplayPartReset())
                 {
                     foreach (var op in ops)
                     {
                         var dieset_control = $"{__folder.customer_number}-{op}-dieset-control.prt";
 
-                        __display_part_ = session_.find_or_open(__folder.file_detail0(op, "002"));
+                        __display_part_ = session_.__FindOrOpen(__folder.file_detail0(op, "002"));
                         __display_part_.Expressions.ChangeInterpartReferences("seed-prog-dieset-control.prt",
                             dieset_control, true, true);
 
-                        __display_part_ = session_.find_or_open(__folder.file_detail0(op, "012"));
+                        __display_part_ = session_.__FindOrOpen(__folder.file_detail0(op, "012"));
                         __display_part_.Expressions.ChangeInterpartReferences("seed-prog-dieset-control.prt",
                             dieset_control, true, true);
 
-                        __display_part_ = session_.find_or_open(__folder.file_detail0(op, "502"));
+                        __display_part_ = session_.__FindOrOpen(__folder.file_detail0(op, "502"));
                         __display_part_.Expressions.ChangeInterpartReferences("seed-prog-dieset-control.prt",
                             dieset_control, true, true);
 
-                        __display_part_ = session_.find_or_open(__folder.file_detail0(op, "512"));
+                        __display_part_ = session_.__FindOrOpen(__folder.file_detail0(op, "512"));
                         __display_part_.Expressions.ChangeInterpartReferences("seed-prog-dieset-control.prt",
                             dieset_control, true, true);
                     }
                 }
 
-                using (session_.using_display_part_reset())
+                using (session_.__usingDisplayPartReset())
                 {
                     foreach (var op in ops)
                         try
                         {
                             var dieset_control = $"{__folder.customer_number}-{op}-dieset-control.prt";
-                            __display_part_ = session_.find_or_open(dieset_control);
+                            __display_part_ = session_.__FindOrOpen(dieset_control);
                             __display_part_.Expressions.ChangeInterpartReferences("XXXXX-Press-XX-Assembly.prt",
                                 $"{__folder.customer_number}-T{op}-Press.prt", true, true);
                         }
                         catch (Exception ex)
                         {
-                            ex._PrintException($"{__folder.customer_number}-T{op}-Press.prt");
+                            ex.__PrintException($"{__folder.customer_number}-T{op}-Press.prt");
                         }
                 }
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -538,7 +538,7 @@ namespace TSG_Library.UFuncs
                         Directory.CreateDirectory(__folder.dir_op(op));
 
                     ExecuteCloneTranShoe(__folder, op);
-                    __display_part_ = session_.find_or_open(__folder.file_detail_000(op));
+                    __display_part_ = session_.__FindOrOpen(__folder.file_detail_000(op));
 
                     using (new DisplayPartReset())
                     {
@@ -552,7 +552,7 @@ namespace TSG_Library.UFuncs
                     Directory.CreateDirectory(__folder.dir_op(op));
 
                 ExecuteCloneTranOp(__folder, op);
-                __display_part_ = session_.find_or_open(__folder.file_detail_000(op));
+                __display_part_ = session_.__FindOrOpen(__folder.file_detail_000(op));
                 __display_part_.__RightClickOpenAssemblyWhole();
 
                 try
@@ -562,15 +562,15 @@ namespace TSG_Library.UFuncs
                     else if(op == "010")
                         replace_strip_layout_in_display(__folder.file_strip_900, "STRIP", true);
                     else
-                        replace_strip_layout_in_display(__folder.file_layout_t(op_020_010(op)), "LAYOUT", true);
+                        replace_strip_layout_in_display(__folder.file_layout_t(__Op020To010(op)), "LAYOUT", true);
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
 
                 const string center_line_of_coil = "CenterLineofCoil";
-                var orig_exp = session_.find_or_open(__folder.file_strip("900")).__FindExpression(center_line_of_coil);
+                var orig_exp = session_.__FindOrOpen(__folder.file_strip("900")).__FindExpression(center_line_of_coil);
                 __display_part_.__CreateInterpartExpression(orig_exp, center_line_of_coil);
                 var exp = __display_part_.__FindExpression("datum_plane_12_offset");
                 exp.OwningPart.Expressions.EditExpression(exp, center_line_of_coil);
@@ -584,7 +584,7 @@ namespace TSG_Library.UFuncs
 
             foreach (var op in all_ops_and_shoes)
             {
-                var p = session_.find_or_open(__folder.file_detail0(op, "000"));
+                var p = session_.__FindOrOpen(__folder.file_detail0(op, "000"));
 
                 __display_part_ = p;
 
@@ -619,41 +619,41 @@ namespace TSG_Library.UFuncs
                 ExecuteCloneTranAssemblyOp(__folder.dir_op("900"), tran_assembly_op);
 
                 //NXOpen.Session.GetSession().set_active_display(session_.find_or_open(__folder.path_detail1("900", assembly_op, "000")));
-                __display_part_ = session_.find_or_open(__folder.path_detail1("900", assembly_op, "000"));
+                __display_part_ = session_.__FindOrOpen(__folder.path_detail1("900", assembly_op, "000"));
 
                 var upr_assembly =
-                    __display_part_.ComponentAssembly.RootComponent.find_component_(
+                    __display_part_.ComponentAssembly.RootComponent.__FindComponent(
                         $"COMPONENT {__folder.customer_number}-{assembly_op}-upr 1");
 
                 var lwr_assembly =
-                    __display_part_.ComponentAssembly.RootComponent.find_component_(
+                    __display_part_.ComponentAssembly.RootComponent.__FindComponent(
                         $"COMPONENT {__folder.customer_number}-{assembly_op}-lwr 1");
 
                 var feed_direction =
                     int.Parse(
-                        $"{session_.find_or_open(__folder.file_strip_900).__FindExpression("FeedDirection").Value}");
+                        $"{session_.__FindOrOpen(__folder.file_strip_900).__FindExpression("FeedDirection").Value}");
 
                 var origin = feed_direction > 0
                     ? new Point3d(10, 0, 0)
                     : new Point3d(-10, 0, 0);
 
-                __display_part_ = upr_assembly._Prototype();
+                __display_part_ = upr_assembly.__Prototype();
 
                 foreach (var tran_op in tran_ops)
                     __display_part_.__AddComponent(__folder.path_detail1("900", tran_op, "usp"), origin: origin);
 
-                __display_part_ = lwr_assembly._Prototype();
+                __display_part_ = lwr_assembly.__Prototype();
 
                 foreach (var tran_op in tran_ops)
                     __display_part_.__AddComponent(__folder.path_detail1("900", tran_op, "lsp"), origin: origin);
 
-                lwr_assembly._Prototype().__AddComponent(__folder.path_detail1("900", key, "lsh"));
+                lwr_assembly.__Prototype().__AddComponent(__folder.path_detail1("900", key, "lsh"));
 
-                upr_assembly._Prototype().__AddComponent(__folder.path_detail1("900", key, "ush"));
+                upr_assembly.__Prototype().__AddComponent(__folder.path_detail1("900", key, "ush"));
 
                 var tmep = __folder.path_detail1("900", assembly_op, "000");
 
-                __display_part_ = session_.find_or_open(tmep);
+                __display_part_ = session_.__FindOrOpen(tmep);
 
                 if(File.Exists(__folder.file_strip_900))
                     replace_strip_layout_in_display(__folder.file_strip_900, "STRIP", true);
@@ -661,28 +661,28 @@ namespace TSG_Library.UFuncs
 
             ExecuteCloneTran900(__folder);
 
-            __display_part_ = session_.find_or_open(__folder.path_detail1("900", "900", "000"));
+            __display_part_ = session_.__FindOrOpen(__folder.path_detail1("900", "900", "000"));
 
             try
             {
                 __display_part_.ComponentAssembly.RootComponent
-                    .find_component_("COMPONENT seed-tran-op-lsp 1")
-                    .delete_self_and_constraints();
+                    .__FindComponent("COMPONENT seed-tran-op-lsp 1")
+                    .__DeleteSelfAndConstraints();
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
 
             try
             {
                 __display_part_.ComponentAssembly.RootComponent
-                    .find_component_("COMPONENT seed-tran-op-usp 1")
-                    .delete_self_and_constraints();
+                    .__FindComponent("COMPONENT seed-tran-op-usp 1")
+                    .__DeleteSelfAndConstraints();
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
 
             using (new DisplayPartReset())
@@ -704,10 +704,10 @@ namespace TSG_Library.UFuncs
 
             foreach (var key in __dict.Keys)
             {
-                session_.find_or_open(__folder.file_detail0(key, "000")).__Save();
+                session_.__FindOrOpen(__folder.file_detail0(key, "000")).__Save();
 
                 foreach (var op in __dict[key])
-                    session_.find_or_open(__folder.file_detail0(op, "000")).__Save();
+                    session_.__FindOrOpen(__folder.file_detail0(op, "000")).__Save();
             }
 
 
@@ -728,7 +728,7 @@ namespace TSG_Library.UFuncs
 
             foreach (var __file in Directory.GetFiles(__folder.dir_op("900"), "*-000.prt",
                          SearchOption.TopDirectoryOnly))
-                session_.find_or_open(__file).__Save();
+                session_.__FindOrOpen(__file).__Save();
 
             foreach (var __child in __display_part_.ComponentAssembly.RootComponent.GetChildren())
             {
@@ -736,7 +736,7 @@ namespace TSG_Library.UFuncs
 
                 if(__child.DisplayName.EndsWith("lwr") || __child.DisplayName.EndsWith("upr"))
                 {
-                    __child._ReferenceSet("BODY");
+                    __child.__ReferenceSet("BODY");
 
                     if(__child.DisplayName.EndsWith("upr"))
                         __child.__Layer(101);
@@ -760,7 +760,7 @@ namespace TSG_Library.UFuncs
 
                     var is_lower = leaf.EndsWith("lwr");
                     var path_upr_lwr_assembly_holder = __file;
-                    __display_part_ = session_.find_or_open(path_upr_lwr_assembly_holder);
+                    __display_part_ = session_.__FindOrOpen(path_upr_lwr_assembly_holder);
 
                     if(is_lower)
                         ConstrainLSH(__folder, start_with_strip);
@@ -774,11 +774,11 @@ namespace TSG_Library.UFuncs
                 foreach (var __c in __display_part_.ComponentAssembly.RootComponent.GetChildren())
                     if(__c.DisplayName.ToLower().EndsWith("-lwr") || __c.DisplayName.ToLower().EndsWith("-upr"))
                     {
-                        __c._ReferenceSet("MATE");
+                        __c.__ReferenceSet("MATE");
                         constrain_xy(__c, $"{__c.DisplayName}-XY");
                         constrain_xz(__c, $"{__c.DisplayName}-XZ");
                         constrain_yz(__c, $"{__c.DisplayName}-YZ");
-                        __c._ReferenceSet("BODY");
+                        __c.__ReferenceSet("BODY");
                     }
             }
 
@@ -795,14 +795,14 @@ namespace TSG_Library.UFuncs
                     if(!leaf.EndsWith("lwr") && !leaf.EndsWith("upr"))
                         continue;
 
-                    __display_part_ = session_.find_or_open(__file);
+                    __display_part_ = session_.__FindOrOpen(__file);
 
                     foreach (var __c in __display_part_.ComponentAssembly.RootComponent.GetChildren())
                     {
                         if(__c.DisplayName.ToLower().Contains("strip"))
                             continue;
 
-                        __c._ReferenceSet("BODY");
+                        __c.__ReferenceSet("BODY");
                         __display_part_.GetAllReferenceSets().Single(__r => __r.Name == "BODY")
                             .AddObjectsToReferenceSet(new[] { __c });
                     }
@@ -824,9 +824,9 @@ namespace TSG_Library.UFuncs
                     if(!leaf.EndsWith("lwr") && !leaf.EndsWith("upr"))
                         continue;
 
-                    __display_part_ = session_.find_or_open(__file);
+                    __display_part_ = session_.__FindOrOpen(__file);
 
-                    foreach (var exp in session_.find_or_open(__file).Expressions.ToArray())
+                    foreach (var exp in session_.__FindOrOpen(__file).Expressions.ToArray())
                     {
                         var match = Regex.Match(exp.GetFormula(), "^(?<name>T\\d{3}[XYZ])$");
 
@@ -858,7 +858,7 @@ namespace TSG_Library.UFuncs
             using (new DisplayPartReset())
             {
                 const string center_line_of_coil = "CenterLineofCoil";
-                var orig_exp = session_.find_or_open(__folder.file_strip("900")).__FindExpression(center_line_of_coil);
+                var orig_exp = session_.__FindOrOpen(__folder.file_strip("900")).__FindExpression(center_line_of_coil);
                 __display_part_.__CreateInterpartExpression(orig_exp, center_line_of_coil);
                 var exp = __display_part_.__FindExpression("datum_plane_12_offset");
                 exp.SetFormula(center_line_of_coil);
@@ -877,11 +877,11 @@ namespace TSG_Library.UFuncs
             using (new DisplayPartReset())
             {
                 foreach (var op in all_ops_and_shoes)
-                    session_.find_or_open(__folder.file_detail_000(op)).__Save();
+                    session_.__FindOrOpen(__folder.file_detail_000(op)).__Save();
 
                 foreach (var part_file in Directory.GetFiles(__folder.dir_op("900"), "*-000.prt",
                              SearchOption.TopDirectoryOnly))
-                    session_.find_or_open(part_file).__Save();
+                    session_.__FindOrOpen(part_file).__Save();
             }
 
             print_("/////////////////////////////////////");
@@ -903,7 +903,7 @@ namespace TSG_Library.UFuncs
                         if(!leaf.EndsWith("lwr") && !leaf.EndsWith("upr"))
                             continue;
 
-                        __display_part_ = session_.find_or_open(__file);
+                        __display_part_ = session_.__FindOrOpen(__file);
 
                         var lsp_usp_comps = __display_part_.ComponentAssembly.RootComponent.GetChildren()
                             .Where(__c =>
@@ -913,11 +913,11 @@ namespace TSG_Library.UFuncs
 
                         __display_part_.ComponentAssembly.ReplaceReferenceSetInOwners("MATE", lsp_usp_comps);
 
-                        var p010x_exp = session_.find_or_open(__folder.file_strip("900")).__FindExpression("P010X");
+                        var p010x_exp = session_.__FindOrOpen(__folder.file_strip("900")).__FindExpression("P010X");
                         __display_part_.__CreateInterpartExpression(p010x_exp, "P010X");
-                        var p010y_exp = session_.find_or_open(__folder.file_strip("900")).__FindExpression("P010Y");
+                        var p010y_exp = session_.__FindOrOpen(__folder.file_strip("900")).__FindExpression("P010Y");
                         __display_part_.__CreateInterpartExpression(p010y_exp, "P010Y");
-                        var p010z_exp = session_.find_or_open(__folder.file_strip("900")).__FindExpression("P010Z");
+                        var p010z_exp = session_.__FindOrOpen(__folder.file_strip("900")).__FindExpression("P010Z");
                         __display_part_.__CreateInterpartExpression(p010z_exp, "P010Z");
 
                         foreach (var child in lsp_usp_comps)
@@ -940,59 +940,59 @@ namespace TSG_Library.UFuncs
                             if(op == "010")
                             {
                                 __display_part_.__ConstrainOccProtoDistance(
-                                    child._AbsOccDatumPlaneYZ(),
+                                    child.__AbsOccDatumPlaneYZ(),
                                     __display_part_.__AbsoluteDatumCsys().__DatumPlaneYZ(),
                                     "P010X");
 
                                 __display_part_.__ConstrainOccProtoDistance(
-                                    child._AbsOccDatumPlaneXZ(),
+                                    child.__AbsOccDatumPlaneXZ(),
                                     __display_part_.__AbsoluteDatumCsys().__DatumPlaneXZ(),
                                     "P010Y");
 
                                 __display_part_.__ConstrainOccProtoDistance(
-                                    child._AbsOccDatumPlaneXY(),
+                                    child.__AbsOccDatumPlaneXY(),
                                     __display_part_.__AbsoluteDatumCsys().__DatumPlaneXY(),
                                     "P010Z");
 
                                 continue;
                             }
 
-                            var prev = op_020_010(op);
+                            var prev = __Op020To010(op);
 
                             try
                             {
                                 __display_part_.__ConstrainOccProtoDistance(
-                                    child._AbsOccDatumPlaneYZ(),
+                                    child.__AbsOccDatumPlaneYZ(),
                                     __display_part_.__AbsoluteDatumCsys().__DatumPlaneYZ(),
                                     $"T{prev}X");
                             }
                             catch (Exception ex)
                             {
-                                ex._PrintException();
+                                ex.__PrintException();
                             }
 
                             try
                             {
                                 __display_part_.__ConstrainOccProtoDistance(
-                                    child._AbsOccDatumPlaneXZ(),
+                                    child.__AbsOccDatumPlaneXZ(),
                                     __display_part_.__AbsoluteDatumCsys().__DatumPlaneXZ(),
                                     $"T{prev}Y");
                             }
                             catch (Exception ex)
                             {
-                                ex._PrintException($"T{prev}Y - {__display_part_.Leaf} - {child.DisplayName}");
+                                ex.__PrintException($"T{prev}Y - {__display_part_.Leaf} - {child.DisplayName}");
                             }
 
                             try
                             {
                                 __display_part_.__ConstrainOccProtoDistance(
-                                    child._AbsOccDatumPlaneXY(),
+                                    child.__AbsOccDatumPlaneXY(),
                                     __display_part_.__AbsoluteDatumCsys().__DatumPlaneXY(),
                                     $"T{prev}Z");
                             }
                             catch (Exception ex)
                             {
-                                ex._PrintException();
+                                ex.__PrintException();
                             }
                         }
 
@@ -1027,7 +1027,7 @@ namespace TSG_Library.UFuncs
                         if(!leaf.EndsWith("lwr") && !leaf.EndsWith("upr"))
                             continue;
 
-                        __display_part_ = session_.find_or_open(__file);
+                        __display_part_ = session_.__FindOrOpen(__file);
 
                         var lsp_usp_comps = __display_part_.ComponentAssembly.RootComponent.GetChildren()
                             .Where(__c =>
@@ -1050,42 +1050,42 @@ namespace TSG_Library.UFuncs
 
                             var op = match.Groups["op"].Value;
 
-                            var prev = op_020_010(op);
+                            var prev = __Op020To010(op);
 
                             try
                             {
                                 __display_part_.__ConstrainOccProtoDistance(
-                                    child._AbsOccDatumPlaneYZ(),
+                                    child.__AbsOccDatumPlaneYZ(),
                                     __display_part_.__AbsoluteDatumCsys().__DatumPlaneYZ(),
                                     $"T{op}X");
                             }
                             catch (Exception ex)
                             {
-                                ex._PrintException();
+                                ex.__PrintException();
                             }
 
                             try
                             {
                                 __display_part_.__ConstrainOccProtoDistance(
-                                    child._AbsOccDatumPlaneXZ(),
+                                    child.__AbsOccDatumPlaneXZ(),
                                     __display_part_.__AbsoluteDatumCsys().__DatumPlaneXZ(),
                                     $"T{op}Y");
                             }
                             catch (Exception ex)
                             {
-                                ex._PrintException();
+                                ex.__PrintException();
                             }
 
                             try
                             {
                                 __display_part_.__ConstrainOccProtoDistance(
-                                    child._AbsOccDatumPlaneXY(),
+                                    child.__AbsOccDatumPlaneXY(),
                                     __display_part_.__AbsoluteDatumCsys().__DatumPlaneXY(),
                                     $"T{op}Z");
                             }
                             catch (Exception ex)
                             {
-                                ex._PrintException();
+                                ex.__PrintException();
                             }
                         }
 
@@ -1111,7 +1111,7 @@ namespace TSG_Library.UFuncs
             }
 
 
-            using (session_.using_display_part_reset())
+            using (session_.__usingDisplayPartReset())
             {
                 foreach (var op in all_ops_and_shoes)
                 {
@@ -1120,19 +1120,19 @@ namespace TSG_Library.UFuncs
 
                     var dieset_control = $"{__folder.customer_number}-{op}-dieset-control.prt";
 
-                    __display_part_ = session_.find_or_open(__folder.file_detail0(op, "002"));
+                    __display_part_ = session_.__FindOrOpen(__folder.file_detail0(op, "002"));
                     __display_part_.Expressions.ChangeInterpartReferences("seed-prog-dieset-control.prt",
                         dieset_control, true, true);
 
-                    __display_part_ = session_.find_or_open(__folder.file_detail0(op, "012"));
+                    __display_part_ = session_.__FindOrOpen(__folder.file_detail0(op, "012"));
                     __display_part_.Expressions.ChangeInterpartReferences("seed-prog-dieset-control.prt",
                         dieset_control, true, true);
 
-                    __display_part_ = session_.find_or_open(__folder.file_detail0(op, "502"));
+                    __display_part_ = session_.__FindOrOpen(__folder.file_detail0(op, "502"));
                     __display_part_.Expressions.ChangeInterpartReferences("seed-prog-dieset-control.prt",
                         dieset_control, true, true);
 
-                    __display_part_ = session_.find_or_open(__folder.file_detail0(op, "512"));
+                    __display_part_ = session_.__FindOrOpen(__folder.file_detail0(op, "512"));
                     __display_part_.Expressions.ChangeInterpartReferences("seed-prog-dieset-control.prt",
                         dieset_control, true, true);
                 }
@@ -1144,7 +1144,7 @@ namespace TSG_Library.UFuncs
 
             foreach (var op in all_ops_and_shoes.Append("900"))
             foreach (var part000 in Directory.GetFiles(__folder.dir_op(op), "*-000.prt", SearchOption.TopDirectoryOnly))
-                session_.find_or_open(part000).__Save(true);
+                session_.__FindOrOpen(part000).__Save(true);
 
             print_("Designer will have to link up presses to proper dieset control manualy.");
         }
@@ -1159,7 +1159,7 @@ namespace TSG_Library.UFuncs
                 {
                     if(!__file.ToLower().Contains("press"))
                         continue;
-                    __press_parts.Add(session_.find_or_open(__file));
+                    __press_parts.Add(session_.__FindOrOpen(__file));
                 }
 
                 __display_part_.ComponentAssembly.AddComponents(
@@ -1183,23 +1183,23 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
         private static void ConstrainOpsToLwrUpr(GFolder __folder, string[] ops, string lwrupr, int layer)
         {
             var feed_direction =
-                int.Parse($"{session_.find_or_open(__folder.file_strip_900).__FindExpression("FeedDirection").Value}");
+                int.Parse($"{session_.__FindOrOpen(__folder.file_strip_900).__FindExpression("FeedDirection").Value}");
 
             var origin = feed_direction > 0
                 ? new Point3d(10, 0, 0)
                 : new Point3d(-10, 0, 0);
 
-            __display_part_ = session_.find_or_open(__folder.file_detail0("900", lwrupr));
+            __display_part_ = session_.__FindOrOpen(__folder.file_detail0("900", lwrupr));
             __display_part_.ComponentAssembly.RootComponent.GetChildren()
                 .Single(__c => __c.Name == "STRIP")
-                ._ReferenceSet("BODY");
+                .__ReferenceSet("BODY");
 
             foreach (var op in ops)
             {
@@ -1213,7 +1213,7 @@ namespace TSG_Library.UFuncs
                 var new_interpart_exp_y = $"T{op}Y";
                 var new_interpart_exp_z = $"T{op}Z";
                 var builder = __display_part_.Expressions.CreateInterpartExpressionsBuilder();
-                var strip = session_.find_or_open(__folder.file_strip_900);
+                var strip = session_.__FindOrOpen(__folder.file_strip_900);
                 try
                 {
                     ConstrainStripInterpartExpressions(new_interpart_exp_x, new_interpart_exp_y, new_interpart_exp_z,
@@ -1221,19 +1221,19 @@ namespace TSG_Library.UFuncs
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
 
                 constrain_xy1(comp_lwr, new_interpart_exp_z, "XY");
                 constraint_xz_1(comp_lwr, new_interpart_exp_y, "XZ");
                 NewMethod21(comp_lwr, new_interpart_exp_x, "YZ");
-                comp_lwr._ReferenceSet("BODY");
+                comp_lwr.__ReferenceSet("BODY");
             }
         }
 
         private static void NewMethod21(Component comp_lwr, string new_interpart_exp_x, string suffix)
         {
-            var datum_plane1 = comp_lwr._AbsOccDatumPlaneYZ();
+            var datum_plane1 = comp_lwr.__AbsOccDatumPlaneYZ();
 
             var datum_plane2 = __display_part_.__AbsoluteDatumCsys().__DatumPlaneYZ();
 
@@ -1242,14 +1242,14 @@ namespace TSG_Library.UFuncs
 
         private static void constraint_xz_1(Component comp_lwr, string new_interpart_exp_y, string suffix)
         {
-            var datum_plane1 = comp_lwr._AbsOccDatumPlaneXZ();
+            var datum_plane1 = comp_lwr.__AbsOccDatumPlaneXZ();
             var datum_plane2 = __display_part_.__AbsoluteDatumCsys().__DatumPlaneXZ();
             ConstrainUnits(comp_lwr, new_interpart_exp_y, datum_plane1, datum_plane2, suffix);
         }
 
         private static void constrain_xy1(Component comp_lwr, string new_interpart_exp_z, string suffix)
         {
-            var datum_plane1 = comp_lwr._AbsOccDatumPlaneXY();
+            var datum_plane1 = comp_lwr.__AbsOccDatumPlaneXY();
 
             var datum_plane2 = __display_part_.__AbsoluteDatumCsys().__DatumPlaneXY();
 
@@ -1282,8 +1282,8 @@ namespace TSG_Library.UFuncs
         public static void replace_strip_layout_in_display(string path, string name, bool replace_all)
         {
             __display_part_.ComponentAssembly.RootComponent
-                .find_component_("COMPONENT seed-strip-layout 1")
-                .replace_component(path, name, replace_all);
+                .__FindComponent("COMPONENT seed-strip-layout 1")
+                .__ReplaceComponent(path, name, replace_all);
         }
 
         public static void delete_unit_fasteners(GFolder __folder, string op, bool units_mm)
@@ -1292,14 +1292,14 @@ namespace TSG_Library.UFuncs
             {
                 var __current = __display_part_;
 
-                using (session_.using_display_part_reset())
+                using (session_.__usingDisplayPartReset())
                 {
                     Part[] __parallels =
                     {
-                        session_.find_or_open($"{__folder.customer_number}-{op}-002"),
-                        session_.find_or_open($"{__folder.customer_number}-{op}-012"),
-                        session_.find_or_open($"{__folder.customer_number}-{op}-502"),
-                        session_.find_or_open($"{__folder.customer_number}-{op}-512")
+                        session_.__FindOrOpen($"{__folder.customer_number}-{op}-002"),
+                        session_.__FindOrOpen($"{__folder.customer_number}-{op}-012"),
+                        session_.__FindOrOpen($"{__folder.customer_number}-{op}-502"),
+                        session_.__FindOrOpen($"{__folder.customer_number}-{op}-512")
                     };
 
                     foreach (var __par in __parallels)
@@ -1352,9 +1352,9 @@ namespace TSG_Library.UFuncs
                     }
                 }
 
-                using (session_.using_display_part_reset())
+                using (session_.__usingDisplayPartReset())
                 {
-                    session_.find_or_open($"{__folder.customer_number}-{op}-lwrplate").__SetAsDisplayPart();
+                    session_.__FindOrOpen($"{__folder.customer_number}-{op}-lwrplate").__SetAsDisplayPart();
 
                     var theSession = Session.GetSession();
 
@@ -1578,9 +1578,9 @@ namespace TSG_Library.UFuncs
                     }
                 }
 
-                using (session_.using_display_part_reset())
+                using (session_.__usingDisplayPartReset())
                 {
-                    session_.find_or_open($"{__folder.customer_number}-{op}-uprplate").__SetAsDisplayPart();
+                    session_.__FindOrOpen($"{__folder.customer_number}-{op}-uprplate").__SetAsDisplayPart();
 
                     var theSession = Session.GetSession();
 
@@ -1806,97 +1806,97 @@ namespace TSG_Library.UFuncs
                     }
                 }
 
-                using (session_.using_display_part_reset())
+                using (session_.__usingDisplayPartReset())
                 {
-                    session_.find_or_open(__folder.file_detail0(op, "lsh")).__SetActiveDisplay();
+                    session_.__FindOrOpen(__folder.file_detail0(op, "lsh")).__SetActiveDisplay();
 
                     if(units_mm)
                     {
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_("COMPONENT Smart Demountable Guide Pin English 4")
-                            .delete_self_and_constraints();
+                            .__FindComponent("COMPONENT Smart Demountable Guide Pin English 4")
+                            .__DeleteSelfAndConstraints();
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_("COMPONENT Smart Demountable Guide Pin English 3")
-                            .delete_self_and_constraints();
+                            .__FindComponent("COMPONENT Smart Demountable Guide Pin English 3")
+                            .__DeleteSelfAndConstraints();
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_("COMPONENT Smart Demountable Guide Pin English 2")
-                            .delete_self_and_constraints();
+                            .__FindComponent("COMPONENT Smart Demountable Guide Pin English 2")
+                            .__DeleteSelfAndConstraints();
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_("COMPONENT Smart Demountable Guide Pin English 1")
-                            .delete_self_and_constraints();
+                            .__FindComponent("COMPONENT Smart Demountable Guide Pin English 1")
+                            .__DeleteSelfAndConstraints();
 
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_("COMPONENT Smart Demountable Bushing English 4")
-                            .delete_self_and_constraints();
+                            .__FindComponent("COMPONENT Smart Demountable Bushing English 4")
+                            .__DeleteSelfAndConstraints();
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_("COMPONENT Smart Demountable Bushing English 3")
-                            .delete_self_and_constraints();
+                            .__FindComponent("COMPONENT Smart Demountable Bushing English 3")
+                            .__DeleteSelfAndConstraints();
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_("COMPONENT Smart Demountable Bushing English 2")
-                            .delete_self_and_constraints();
+                            .__FindComponent("COMPONENT Smart Demountable Bushing English 2")
+                            .__DeleteSelfAndConstraints();
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_("COMPONENT Smart Demountable Bushing English 1")
-                            .delete_self_and_constraints();
+                            .__FindComponent("COMPONENT Smart Demountable Bushing English 1")
+                            .__DeleteSelfAndConstraints();
 
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_("COMPONENT Smart TSG-E-StopBlock-specify hgt-groove 4")
-                            .delete_self_and_constraints();
+                            .__FindComponent("COMPONENT Smart TSG-E-StopBlock-specify hgt-groove 4")
+                            .__DeleteSelfAndConstraints();
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_("COMPONENT Smart TSG-E-StopBlock-specify hgt-groove 3")
-                            .delete_self_and_constraints();
+                            .__FindComponent("COMPONENT Smart TSG-E-StopBlock-specify hgt-groove 3")
+                            .__DeleteSelfAndConstraints();
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_("COMPONENT Smart TSG-E-StopBlock-specify hgt-groove 2")
-                            .delete_self_and_constraints();
+                            .__FindComponent("COMPONENT Smart TSG-E-StopBlock-specify hgt-groove 2")
+                            .__DeleteSelfAndConstraints();
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_("COMPONENT Smart TSG-E-StopBlock-specify hgt-groove 1")
-                            .delete_self_and_constraints();
+                            .__FindComponent("COMPONENT Smart TSG-E-StopBlock-specify hgt-groove 1")
+                            .__DeleteSelfAndConstraints();
                     }
                     else
                     {
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_("COMPONENT Smart Demountable Guide Pin Metric 4")
-                            .delete_self_and_constraints();
+                            .__FindComponent("COMPONENT Smart Demountable Guide Pin Metric 4")
+                            .__DeleteSelfAndConstraints();
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_("COMPONENT Smart Demountable Guide Pin Metric 3")
-                            .delete_self_and_constraints();
+                            .__FindComponent("COMPONENT Smart Demountable Guide Pin Metric 3")
+                            .__DeleteSelfAndConstraints();
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_("COMPONENT Smart Demountable Guide Pin Metric 2")
-                            .delete_self_and_constraints();
+                            .__FindComponent("COMPONENT Smart Demountable Guide Pin Metric 2")
+                            .__DeleteSelfAndConstraints();
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_("COMPONENT Smart Demountable Guide Pin Metric 1")
-                            .delete_self_and_constraints();
+                            .__FindComponent("COMPONENT Smart Demountable Guide Pin Metric 1")
+                            .__DeleteSelfAndConstraints();
 
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_("COMPONENT Smart Demountable Bushing Metric 4")
-                            .delete_self_and_constraints();
+                            .__FindComponent("COMPONENT Smart Demountable Bushing Metric 4")
+                            .__DeleteSelfAndConstraints();
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_("COMPONENT Smart Demountable Bushing Metric 3")
-                            .delete_self_and_constraints();
+                            .__FindComponent("COMPONENT Smart Demountable Bushing Metric 3")
+                            .__DeleteSelfAndConstraints();
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_("COMPONENT Smart Demountable Bushing Metric 2")
-                            .delete_self_and_constraints();
+                            .__FindComponent("COMPONENT Smart Demountable Bushing Metric 2")
+                            .__DeleteSelfAndConstraints();
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_("COMPONENT Smart Demountable Bushing Metric 1")
-                            .delete_self_and_constraints();
+                            .__FindComponent("COMPONENT Smart Demountable Bushing Metric 1")
+                            .__DeleteSelfAndConstraints();
 
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_("COMPONENT Smart TSG-M-StopBlock-specify hgt-groove 4")
-                            .delete_self_and_constraints();
+                            .__FindComponent("COMPONENT Smart TSG-M-StopBlock-specify hgt-groove 4")
+                            .__DeleteSelfAndConstraints();
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_("COMPONENT Smart TSG-M-StopBlock-specify hgt-groove 3")
-                            .delete_self_and_constraints();
+                            .__FindComponent("COMPONENT Smart TSG-M-StopBlock-specify hgt-groove 3")
+                            .__DeleteSelfAndConstraints();
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_("COMPONENT Smart TSG-M-StopBlock-specify hgt-groove 2")
-                            .delete_self_and_constraints();
+                            .__FindComponent("COMPONENT Smart TSG-M-StopBlock-specify hgt-groove 2")
+                            .__DeleteSelfAndConstraints();
                         __display_part_.ComponentAssembly.RootComponent
-                            .find_component_("COMPONENT Smart TSG-M-StopBlock-specify hgt-groove 1")
-                            .delete_self_and_constraints();
+                            .__FindComponent("COMPONENT Smart TSG-M-StopBlock-specify hgt-groove 1")
+                            .__DeleteSelfAndConstraints();
                     }
                 }
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -1915,7 +1915,7 @@ namespace TSG_Library.UFuncs
                     return;
                 }
 
-                var __press_part = session_.find_or_open(press_path);
+                var __press_part = session_.__FindOrOpen(press_path);
 
                 var __press = __display_part_.ComponentAssembly.AddComponent(
                     __press_part,
@@ -1932,7 +1932,7 @@ namespace TSG_Library.UFuncs
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
 
                 constrain_xy(__press, "PRESS-XY");
@@ -1943,7 +1943,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -1960,7 +1960,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
 
             foreach (var __child in __display_part_.ComponentAssembly.RootComponent.GetChildren())
@@ -1972,7 +1972,7 @@ namespace TSG_Library.UFuncs
                     .Replace($"{__folder.customer_number}-", "")
                     .Replace("-lsp", "");
 
-                var datum_csys = __child._Prototype().__AbsoluteDatumCsys();
+                var datum_csys = __child.__Prototype().__AbsoluteDatumCsys();
 
                 string new_interpart_exp_x;
                 string new_interpart_exp_y;
@@ -1981,7 +1981,7 @@ namespace TSG_Library.UFuncs
                 var exp_op = actual_op;
 
                 if(start_with_strip)
-                    exp_op = op_020_010(actual_op);
+                    exp_op = __Op020To010(actual_op);
 
                 if(actual_op == "010" && start_with_strip)
                 {
@@ -2000,7 +2000,7 @@ namespace TSG_Library.UFuncs
 
                 // clone transfer
 
-                var strip = session_.find_or_open(__folder.file_strip_900);
+                var strip = session_.__FindOrOpen(__folder.file_strip_900);
 
                 try
                 {
@@ -2009,7 +2009,7 @@ namespace TSG_Library.UFuncs
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
             }
         }
@@ -2027,7 +2027,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
 
             foreach (var __child in __display_part_.ComponentAssembly.RootComponent.GetChildren())
@@ -2039,7 +2039,7 @@ namespace TSG_Library.UFuncs
                     .Replace($"{__folder.customer_number}-", "")
                     .Replace("-usp", "");
 
-                var datum_csys = __child._Prototype().__AbsoluteDatumCsys();
+                var datum_csys = __child.__Prototype().__AbsoluteDatumCsys();
 
 
                 string new_interpart_exp_x;
@@ -2049,7 +2049,7 @@ namespace TSG_Library.UFuncs
                 var exp_op = actual_op;
 
                 if(start_with_strip)
-                    exp_op = op_020_010(actual_op);
+                    exp_op = __Op020To010(actual_op);
 
                 if(actual_op == "010" && start_with_strip)
                 {
@@ -2066,7 +2066,7 @@ namespace TSG_Library.UFuncs
 
                 var builder = __display_part_.Expressions.CreateInterpartExpressionsBuilder();
 
-                var strip = session_.find_or_open(__folder.file_strip_900);
+                var strip = session_.__FindOrOpen(__folder.file_strip_900);
                 try
                 {
                     ConstrainStripInterpartExpressions(new_interpart_exp_x, new_interpart_exp_y, new_interpart_exp_z,
@@ -2074,7 +2074,7 @@ namespace TSG_Library.UFuncs
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
             }
         }
@@ -2098,7 +2098,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -2106,14 +2106,14 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var datum_plane1 = __press._AbsOccDatumPlaneXY();
+                var datum_plane1 = __press.__AbsOccDatumPlaneXY();
                 var datum_plane2 = __work_part_.__AbsoluteDatumCsys().__DatumPlaneXY();
                 var constraint = __display_part_.__ConstrainOccProtoDistance(datum_plane1, datum_plane2, "0");
                 constraint.SetName(constraint_name);
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -2121,14 +2121,14 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var datum_plane1 = __press._AbsOccDatumPlaneXZ();
+                var datum_plane1 = __press.__AbsOccDatumPlaneXZ();
                 var datum_plane2 = __work_part_.__AbsoluteDatumCsys().__DatumPlaneXZ();
                 var constraint = __display_part_.__ConstrainOccProtoDistance(datum_plane1, datum_plane2, "0");
                 constraint.SetName(constraint_name);
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -2136,14 +2136,14 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var datum_plane1 = __press._AbsOccDatumPlaneYZ();
+                var datum_plane1 = __press.__AbsOccDatumPlaneYZ();
                 var datum_plane2 = __work_part_.__AbsoluteDatumCsys().__DatumPlaneYZ();
                 var constraint = __display_part_.__ConstrainOccProtoDistance(datum_plane1, datum_plane2, "0");
                 constraint.SetName(constraint_name);
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -2155,7 +2155,7 @@ namespace TSG_Library.UFuncs
 
             // constrains the yz planes
             var constraint_yz = __display_part_.__ConstrainOccProtoDistance(
-                press_comp._AbsOccDatumPlaneYZ(),
+                press_comp.__AbsOccDatumPlaneYZ(),
                 strip_csys0.__DatumPlaneYZ(),
                 "0.0");
             constraint_yz.SetName($"PRESS-{prefix}{op_str}-YZ");
@@ -2177,7 +2177,7 @@ namespace TSG_Library.UFuncs
                 .ElementAt(1)
                 .GetEntities()[0];
             var constraint_xz = __display_part_.__ConstrainOccProtoDistance(
-                (DatumPlane)press_comp.find_occurrence(proto_press_csys.__DatumPlaneYZ()),
+                (DatumPlane)press_comp.__FindOccurrence(proto_press_csys.__DatumPlaneYZ()),
                 (DatumPlane)__entity,
                 "0.0");
             constraint_xz.SetName($"PRESS-{prefix}{op_str}-XZ");
@@ -2193,7 +2193,7 @@ namespace TSG_Library.UFuncs
             DatumPlane plane)
         {
             var constraint_yz = __display_part_.__ConstrainOccProtoDistance(
-                press_comp._AbsOccDatumPlaneYZ(),
+                press_comp.__AbsOccDatumPlaneYZ(),
                 plane,
                 "0.0");
             constraint_yz.SetName($"PRESS-{prefix}{op_str}-YZ");
@@ -2204,7 +2204,7 @@ namespace TSG_Library.UFuncs
             DatumCsys strip_csys0)
         {
             var constraint_xy = __display_part_.__ConstrainOccProtoDistance(
-                press_comp._AbsOccDatumPlaneXY(),
+                press_comp.__AbsOccDatumPlaneXY(),
                 strip_csys0.__DatumPlaneXY(),
                 "0.0");
             constraint_xy.SetName($"PRESS-{prefix}{op_str}-XY");
@@ -2241,7 +2241,7 @@ namespace TSG_Library.UFuncs
                     ), componentName: comp_name);
 
                 // gets the first feature in the layout_comp.prototype and casts it to a DatumCsysFeature_
-                var proto_layout_csys = layout_comp._Prototype()
+                var proto_layout_csys = layout_comp.__Prototype()
                     .Features
                     .OfType<DatumCsys>()
                     .First();
@@ -2250,7 +2250,7 @@ namespace TSG_Library.UFuncs
                 var strip_csys = __display_part_.Features.OfType<DatumCsys>().First();
 
                 var datum_plane_xy1 = proto_layout_csys.__DatumPlaneXY();
-                var __plane_occ = (DatumPlane)layout_comp.find_occurrence(datum_plane_xy1);
+                var __plane_occ = (DatumPlane)layout_comp.__FindOccurrence(datum_plane_xy1);
                 var datum_plane_xy = strip_csys.__DatumPlaneXY();
                 NewMethod24(comp_name, expression_z, __plane_occ, datum_plane_xy);
 
@@ -2263,7 +2263,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -2292,7 +2292,7 @@ namespace TSG_Library.UFuncs
             DatumCsys strip_csys)
         {
             var comp_dist_const_yz = __display_part_.__ConstrainOccProtoDistance(
-                layout_comp._AbsOccDatumPlaneYZ(),
+                layout_comp.__AbsOccDatumPlaneYZ(),
                 strip_csys.__DatumPlaneYZ(),
                 expression_x.Name);
 
@@ -2308,7 +2308,7 @@ namespace TSG_Library.UFuncs
             DatumCsys proto_layout_csys,
             DatumCsys strip_csys)
         {
-            var layout_occ_plane = layout_comp._AbsOccDatumPlaneXZ();
+            var layout_occ_plane = layout_comp.__AbsOccDatumPlaneXZ();
             var constraint_xz = __display_part_.__ConstrainOccProtoDistance(
                 layout_occ_plane,
                 strip_csys.__DatumPlaneXZ(),
@@ -2332,12 +2332,12 @@ namespace TSG_Library.UFuncs
                 .Select(exp => exp)
                 .ToArray();
 
-            using (Session.GetSession().using_display_part_reset())
+            using (Session.GetSession().__usingDisplayPartReset())
             {
-                __display_part_ = layout_comp._Prototype();
+                __display_part_ = layout_comp.__Prototype();
                 var builder = __display_part_.Expressions.CreateInterpartExpressionsBuilder();
 
-                using (session_.using_builder_destroyer(builder))
+                using (session_.__UsingBuilderDestroyer(builder))
                 {
                     builder.SetExpressions(source, inter_expression.ToArray());
                     builder.Commit();
@@ -2365,7 +2365,7 @@ namespace TSG_Library.UFuncs
 
             while (true)
             {
-                var op_str = op_10_010(op_int);
+                var op_str = __Op10To010(op_int);
                 var press_path = $"{layout_folder}\\{cust_num}-{prefix}{op_str}-Press.prt";
 
                 try
@@ -2385,10 +2385,10 @@ namespace TSG_Library.UFuncs
                         out _);
 
                     __display_part_.Layers.SetState(256, State.WorkLayer);
-                    var proto_press_csys = press_comp._Prototype().__AbsoluteDatumCsys();
+                    var proto_press_csys = press_comp.__Prototype().__AbsoluteDatumCsys();
                     var strip_csys0 = __display_part_.__AbsoluteDatumCsys();
                     NewMethod43(prefix, op_str, press_comp, proto_press_csys, strip_csys0);
-                    press_comp._ReferenceSet("BODY");
+                    press_comp.__ReferenceSet("BODY");
                     break;
                 }
                 finally
@@ -2537,7 +2537,7 @@ namespace TSG_Library.UFuncs
 
             clone.Terminate();
 
-            session_.find_or_open(__folder.path_op_detail("010", "casting-text"));
+            session_.__FindOrOpen(__folder.path_op_detail("010", "casting-text"));
         }
 
         public static void ExecuteCloneLine900(GFolder __folder)

@@ -77,7 +77,7 @@ namespace TSG_Library.UFuncs
                 // We want to ignore any sort of assembly part.
                 // This takes care of the issue where nothing was being un blanked because the assembly holders almost always don't have 
                 // a material attribute and so they end up being blanked off which blanks their sub assembly off.
-                if(part.Leaf._IsAssemblyHolder())
+                if(part.Leaf.__IsAssemblyHolder())
                     continue;
 
                 // If the part doesn't have a {MATERIAL} attribute then we want to blank the occurrences of 
@@ -111,7 +111,7 @@ namespace TSG_Library.UFuncs
             {
                 ufsession_.Ui.SetPrompt($"Unblanking {++counter} of {_blankedOffObjects.Count}");
 
-                if(obj._ToTaggedObject() is DisplayableObject disp)
+                if(obj.__ToTaggedObject() is DisplayableObject disp)
                     disp.Unblank();
             }
         }

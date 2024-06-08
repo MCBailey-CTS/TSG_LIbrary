@@ -336,7 +336,7 @@ MATERIAL
                 ufsession_.Wave.AskLinkedFeatureInfo(linkedGeom, out var linkedFeatureInfo);
 
                 if(linkedFeatureInfo.source_part_name == null ||
-                   !linkedFeatureInfo.source_part_name._IsShcs()) continue;
+                   !linkedFeatureInfo.source_part_name.__IsShcs()) continue;
                 dictionary.Add(face, linkedFeatureInfo.source_part_name);
             }
 

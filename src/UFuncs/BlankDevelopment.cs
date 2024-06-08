@@ -49,8 +49,8 @@ namespace TSG_Library.UFuncs
             var section1 = __work_part_.Sections.CreateSection(0.0095, 0.01, 0.5);
             var builder = __work_part_.Features.CreateCurvelengthBuilder(null);
 
-            using (session_.using_do_update("Edit Curve Length"))
-            using (session_.using_builder_destroyer(builder))
+            using (session_.__UsingDoUpdate("Edit Curve Length"))
+            using (session_.__UsingBuilderDestroyer(builder))
             {
                 builder.Section = section1;
                 builder.DistanceTolerance = 0.01;

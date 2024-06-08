@@ -115,7 +115,7 @@ namespace TSG_Library.UFuncs
                                     .Where(dwg => dwg.Name == "BURNOUT")
                                     .Cast<NXObject>()
                                     .ToList();
-                                session_.delete_objects(deleteView.ToArray());
+                                session_.__DeleteObjects(deleteView.ToArray());
                             }
                     }
                 }
@@ -125,7 +125,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 

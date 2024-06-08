@@ -117,7 +117,7 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -170,7 +170,7 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
             finally
             {

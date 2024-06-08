@@ -165,7 +165,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
             finally
             {
@@ -578,7 +578,7 @@ namespace TSG_Library.UFuncs
                     return;
             }
 
-            var dummyPart = session_.find_or_open(DummyPath);
+            var dummyPart = session_.__FindOrOpen(DummyPath);
 
             Prompt($"Adding dummy file to {part.Leaf}.");
 
@@ -718,7 +718,7 @@ namespace TSG_Library.UFuncs
 
             var step = session_.DexManager.CreateStepCreator();
 
-            using (session_.using_builder_destroyer(step))
+            using (session_.__UsingBuilderDestroyer(step))
             {
                 step.ExportDestination = BaseCreator.ExportDestinationOption.NativeFileSystem;
 
@@ -751,7 +751,7 @@ namespace TSG_Library.UFuncs
             if(File.Exists(filePath))
                 throw new Exception($"PDF '{filePath}' already exists.");
 
-            var part = session_.find_or_open(partPath);
+            var part = session_.__FindOrOpen(partPath);
 
             //We can use SingleOrDefault here because NX will prevent the naming of two drawing sheets the exact same string.
             var sheet = part.DrawingSheets
@@ -765,7 +765,7 @@ namespace TSG_Library.UFuncs
 
             var pdfBuilder = part.PlotManager.CreatePrintPdfbuilder();
 
-            using (session_.using_builder_destroyer(pdfBuilder))
+            using (session_.__UsingBuilderDestroyer(pdfBuilder))
             {
                 pdfBuilder.Scale = 1.0;
                 pdfBuilder.Size = PrintPDFBuilder.SizeOption.ScaleFactor;
@@ -844,7 +844,7 @@ namespace TSG_Library.UFuncs
                             }
                             catch (Exception ex)
                             {
-                                ex._PrintException();
+                                ex.__PrintException();
                             }
 
                         printBuilder1.SourceBuilder.SetSheets(new NXObject[] { sheets[0] });

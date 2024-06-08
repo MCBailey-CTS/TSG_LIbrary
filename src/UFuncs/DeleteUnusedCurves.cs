@@ -20,7 +20,7 @@ namespace TSG_Library.UFuncs
     {
         public override void execute()
         {
-            using (session_.using_do_update())
+            using (session_.__UsingDoUpdate())
             {
                 var selCurves = Selection.SelectCurves();
                 var delCurves = new List<Tag>();

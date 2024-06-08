@@ -20,18 +20,18 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
         {
             var mirrorFeature = (OffsetFace)dict[originalFeature];
             var mirrorComponent = (Component)dict[originalComp];
-            var builder = originalComp._Prototype().Features.CreateOffsetFaceBuilder(originalFeature);
+            var builder = originalComp.__Prototype().Features.CreateOffsetFaceBuilder(originalFeature);
             DisplayableObject[] originalObjects;
 
-            using (session_.using_builder_destroyer(builder))
+            using (session_.__UsingBuilderDestroyer(builder))
             {
                 originalObjects = builder.FaceCollector.GetObjects().Cast<DisplayableObject>().ToArray();
             }
 
-            _WorkPart = mirrorComponent._Prototype();
-            builder = mirrorComponent._Prototype().Features.CreateOffsetFaceBuilder(mirrorFeature);
+            _WorkPart = mirrorComponent.__Prototype();
+            builder = mirrorComponent.__Prototype().Features.CreateOffsetFaceBuilder(mirrorFeature);
 
-            using (session_.using_builder_destroyer(builder))
+            using (session_.__UsingBuilderDestroyer(builder))
             {
                 IList<SelectionIntentRule> mirrorRules = new List<SelectionIntentRule>();
 
@@ -48,7 +48,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                             var mirrorFace = (Face)dict[originalFace];
 
-                            SelectionIntentRule mirrorRule = mirrorComponent._Prototype().ScRuleFactory
+                            SelectionIntentRule mirrorRule = mirrorComponent.__Prototype().ScRuleFactory
                                 .CreateRuleFaceDumb(new[] { mirrorFace });
 
                             mirrorRules.Add(mirrorRule);

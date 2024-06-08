@@ -39,7 +39,7 @@ namespace TSG_Library.UFuncs
             foreach (var __c in components)
                 try
                 {
-                    var __prototype = __c._Prototype();
+                    var __prototype = __c.__Prototype();
 
                     if(!__prototype.__HasDynamicBlock())
                         continue;
@@ -50,7 +50,7 @@ namespace TSG_Library.UFuncs
 
                     AddFastenersForm1.SetWcsToWorkPart();
 
-                    session_.set_display_to_work();
+                    session_.__SetDisplayToWork();
 
                     var expected_z = __display_part_.WCS.CoordinateSystem.Origin.Z;
 
@@ -59,7 +59,7 @@ namespace TSG_Library.UFuncs
                         if(!(__member is Face __face))
                             continue;
 
-                        if(!__face._IsPlanar())
+                        if(!__face.__IsPlanar())
                             continue;
 
                         var __edge_positions = __face.GetEdges().SelectMany(__e =>
@@ -71,7 +71,7 @@ namespace TSG_Library.UFuncs
                         if(!__edge_positions.All(__pos => System.Math.Abs(expected_z - __pos.Z) < .001))
                             continue;
 
-                        using (session_.using_display_part_reset())
+                        using (session_.__usingDisplayPartReset())
                         {
                             __display_part_ = (Part)__c.Prototype;
 
@@ -79,9 +79,9 @@ namespace TSG_Library.UFuncs
 
                             var __proto_face = (Face)__face.Prototype;
 
-                            var z = __proto_face._EdgePositions().Select(__p => __p.Z).First();
+                            var z = __proto_face.__EdgePositions().Select(__p => __p.Z).First();
 
-                            var edge_pos = __proto_face._EdgePositions().ToArray();
+                            var edge_pos = __proto_face.__EdgePositions().ToArray();
 
                             var average_x = edge_pos.Select(__p => __p.X).Average();
                             var average_y = edge_pos.Select(__p => __p.Y).Average();
@@ -166,7 +166,7 @@ namespace TSG_Library.UFuncs
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException(__c.DisplayName);
+                    ex.__PrintException(__c.DisplayName);
                 }
         }
     }

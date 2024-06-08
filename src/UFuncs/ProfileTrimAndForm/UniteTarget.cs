@@ -26,7 +26,7 @@ namespace TSG_Library.UFuncs
             //double maxZ = double.MinValue;
             //foreach (Face_ face1 in validFaces)
             //{
-            //    double other = NXOpen.CartesianCoordinateSystem.MapCsysToCsys(face1.edges.First().start_point, abs, coordSystem).z;
+            //    double other = NXOpen.CartesianCoordinateSystem.__MapCsysToCsys(face1.edges.First().start_point, abs, coordSystem).z;
             //    if (other > maxZ)
             //        maxFace = face1;
             //}

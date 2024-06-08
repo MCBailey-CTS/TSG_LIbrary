@@ -22,14 +22,14 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             IDictionary<TaggedObject, TaggedObject> dict)
         {
             var mirroredComp = (Component)dict[originalComp];
-            var mirroredPart = mirroredComp._Prototype();
+            var mirroredPart = mirroredComp.__Prototype();
             ((EdgeBodyRule)originalRule).GetData(out var originalBody);
             var mirroredPositions = new List<Point3d>();
 
             foreach (var originalEdge in originalBody.GetEdges())
             {
-                var finalStart = originalEdge._StartPoint()._MirrorMap(plane, originalComp, mirroredComp);
-                var finalEnd = originalEdge._EndPoint()._MirrorMap(plane, originalComp, mirroredComp);
+                var finalStart = originalEdge.__StartPoint().__MirrorMap(plane, originalComp, mirroredComp);
+                var finalEnd = originalEdge.__EndPoint().__MirrorMap(plane, originalComp, mirroredComp);
                 mirroredPositions.Add(finalEnd);
                 mirroredPositions.Add(finalStart);
             }
@@ -43,8 +43,8 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                 foreach (var bodyEdge in tempMirroredBody.GetEdges())
                 {
-                    bodyPositions.Add(bodyEdge._StartPoint());
-                    bodyPositions.Add(bodyEdge._EndPoint());
+                    bodyPositions.Add(bodyEdge.__StartPoint());
+                    bodyPositions.Add(bodyEdge.__EndPoint());
                 }
 
                 bodyPositions = bodyPositions.DistinctBy(__p => __p.__ToHashCode()).ToList();

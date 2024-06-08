@@ -23,7 +23,7 @@ namespace TSG_Library.UFuncs
         {
             var compList = Selection.SelectManyComponents();
 
-            using (session_.using_display_part_reset())
+            using (session_.__usingDisplayPartReset())
             {
                 foreach (var comp in compList)
                 {
@@ -36,13 +36,13 @@ namespace TSG_Library.UFuncs
 
                     // if body exists on layer 50, delete body
 
-                    var bodies_on_layer_50 = comp._Prototype().Bodies
+                    var bodies_on_layer_50 = comp.__Prototype().Bodies
                         .ToArray()
                         .Where(__b => __b.IsSolidBody)
                         .Where(__b => __b.Layer == LAYER)
                         .ToArray();
 
-                    var solid_bodies_layer_1 = comp._Prototype().Bodies
+                    var solid_bodies_layer_1 = comp.__Prototype().Bodies
                         .ToArray()
                         .Where(__b => __b.IsSolidBody)
                         .Where(__b => __b.Layer == 1)
@@ -62,9 +62,11 @@ namespace TSG_Library.UFuncs
 
                     var date = $"{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day}";
 
-                    var layer_50_bodies = comp._Prototype().Layers.GetAllObjectsOnLayer(LAYER).OfType<Body>().ToArray();
-                    comp._Prototype().Layers.CopyObjects(LAYER, solid_bodies_layer_1);
-                    var new_layer_50_bodies = comp._Prototype().Layers.GetAllObjectsOnLayer(LAYER)
+                    var layer_50_bodies =comp.__Prototype()
+                    .Layers
+                    .GetAllObjectsOnLayer(LAYER).OfType<Body>().ToArray();
+                    comp.__Prototype().Layers.CopyObjects(LAYER, solid_bodies_layer_1);
+                    var new_layer_50_bodies = comp.__Prototype().Layers.GetAllObjectsOnLayer(LAYER)
                         .Except(layer_50_bodies).OfType<Body>().ToList();
 
                     foreach (var body in new_layer_50_bodies)
@@ -77,15 +79,15 @@ namespace TSG_Library.UFuncs
 
                     try
                     {
-                        comp._Prototype().reference_sets("BODY")
+                        comp.__Prototype().__ReferenceSets("BODY")
                             .RemoveObjectsFromReferenceSet(new_layer_50_bodies.ToArray());
                     }
                     catch (Exception ex)
                     {
-                        ex._PrintException();
+                        ex.__PrintException();
                     }
 
-                    comp._Prototype().Layers.MoveDisplayableObjects(LAYER + 1, layer_50_bodies);
+                    comp.__Prototype().Layers.MoveDisplayableObjects(LAYER + 1, layer_50_bodies);
 
                     foreach (var body in bodies_on_layer_50)
                     {
@@ -93,16 +95,16 @@ namespace TSG_Library.UFuncs
                         body.LineFont = DisplayableObject.ObjectFont.Phantom;
                         body.RedisplayObject();
                         print_(
-                            $"Copied solid body to {comp._Prototype().Features.GetAssociatedFeature(body).GetFeatureName()} in part {comp.DisplayName}");
+                            $"Copied solid body to {comp.__Prototype().Features.GetAssociatedFeature(body).GetFeatureName()} in part {comp.DisplayName}");
                     }
 
                     try
                     {
-                        comp._Prototype().reference_sets("BODY").RemoveObjectsFromReferenceSet(bodies_on_layer_50);
+                        comp.__Prototype().__ReferenceSets("BODY").RemoveObjectsFromReferenceSet(bodies_on_layer_50);
                     }
                     catch (Exception ex)
                     {
-                        ex._PrintException();
+                        ex.__PrintException();
                     }
                 }
             }

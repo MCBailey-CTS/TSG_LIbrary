@@ -29,7 +29,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
 
         private void buttonShortTapReam_Click(object sender, EventArgs e)
         {
-            using (session_.using_form_show_hide(this))
+            using (session_.__UsingFormShowHide(this))
             {
                 WaveLinkFasteners(chkBlankTools.Checked, Refset_ShortTap, Refset_ReamShort);
             }
@@ -37,7 +37,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
 
         private void buttonTapReam_Click(object sender, EventArgs e)
         {
-            using (session_.using_form_show_hide(this))
+            using (session_.__UsingFormShowHide(this))
             {
                 WaveLinkFasteners(chkBlankTools.Checked, Refset_Tap, Refset_Ream);
             }
@@ -45,7 +45,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
 
         private void buttonTap_Click(object sender, EventArgs e)
         {
-            using (session_.using_form_show_hide(this))
+            using (session_.__UsingFormShowHide(this))
             {
                 WaveLinkFasteners(chkBlankTools.Checked, Refset_Tap, null);
             }
@@ -53,7 +53,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
 
         private void buttonReam_Click(object sender, EventArgs e)
         {
-            using (session_.using_form_show_hide(this))
+            using (session_.__UsingFormShowHide(this))
             {
                 WaveLinkFasteners(chkBlankTools.Checked, null, Refset_Ream);
             }
@@ -61,7 +61,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
 
         private void buttonShortTap_Click(object sender, EventArgs e)
         {
-            using (session_.using_form_show_hide(this))
+            using (session_.__UsingFormShowHide(this))
             {
                 WaveLinkFasteners(chkBlankTools.Checked, Refset_ShortTap, null);
             }
@@ -69,7 +69,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
 
         private void buttonReamShort_Click(object sender, EventArgs e)
         {
-            using (session_.using_form_show_hide(this))
+            using (session_.__UsingFormShowHide(this))
             {
                 WaveLinkFasteners(chkBlankTools.Checked, null, Refset_ReamShort);
             }
@@ -77,7 +77,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
 
         private void buttonClrHole_Click(object sender, EventArgs e)
         {
-            using (session_.using_form_show_hide(this))
+            using (session_.__UsingFormShowHide(this))
             {
                 WaveLinkFasteners(chkBlankTools.Checked, Refset_ClrHole, Refset_ClrHole);
             }
@@ -85,7 +85,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
 
         private void buttonCbore_Click(object sender, EventArgs e)
         {
-            using (session_.using_form_show_hide(this))
+            using (session_.__UsingFormShowHide(this))
             {
                 WaveLinkFasteners(chkBlankTools.Checked, null, null);
             }
@@ -93,7 +93,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
 
         private void buttonSubTool_Click(object sender, EventArgs e)
         {
-            using (session_.using_form_show_hide(this))
+            using (session_.__UsingFormShowHide(this))
             {
                 WavelinkSubtool();
             }
@@ -101,7 +101,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
 
         private void buttonSubtract_Click(object sender, EventArgs e)
         {
-            using (session_.using_form_show_hide(this))
+            using (session_.__UsingFormShowHide(this))
             {
                 WaveLinkBoolean(chkBlankTools.Checked, Feature.BooleanType.Subtract);
             }
@@ -109,7 +109,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
 
         private void buttonUnite_Click(object sender, EventArgs e)
         {
-            using (session_.using_form_show_hide(this))
+            using (session_.__UsingFormShowHide(this))
             {
                 WaveLinkBoolean(chkBlankTools.Checked, Feature.BooleanType.Unite);
             }
@@ -117,7 +117,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
 
         private void buttonLink_Click(object sender, EventArgs e)
         {
-            using (session_.using_form_show_hide(this))
+            using (session_.__UsingFormShowHide(this))
             {
                 WaveLinkBoolean(chkBlankTools.Checked, Feature.BooleanType.Create);
             }
@@ -125,7 +125,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
 
         private void buttonIntersect_Click(object sender, EventArgs e)
         {
-            using (session_.using_form_show_hide(this))
+            using (session_.__UsingFormShowHide(this))
             {
                 WaveLinkBoolean(chkBlankTools.Checked, Feature.BooleanType.Intersect);
             }

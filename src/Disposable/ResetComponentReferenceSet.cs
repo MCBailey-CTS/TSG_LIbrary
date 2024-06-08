@@ -19,12 +19,12 @@ namespace TSG_Library.Disposable
         {
             __reference_set = component.ReferenceSet;
             __component = component;
-            __component._ReferenceSet(reference_set);
+            __component.__ReferenceSet(reference_set);
         }
 
         public void Dispose()
         {
-            __component._ReferenceSet(__reference_set);
+            __component.__ReferenceSet(__reference_set);
         }
     }
 }

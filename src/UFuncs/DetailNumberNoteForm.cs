@@ -129,7 +129,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -137,11 +137,11 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                Main1(WcsOrientation._AxisZ()._Unit());
+                Main1(WcsOrientation.__AxisZ().__Unit());
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -152,19 +152,19 @@ namespace TSG_Library.UFuncs
                 var targetFace = interferingFaces[i];
                 var toolFace = interferingFaces[i + 1];
 
-                if(!targetFace._IsPlanar())
+                if(!targetFace.__IsPlanar())
                     continue;
 
-                if(!toolFace._IsPlanar())
+                if(!toolFace.__IsPlanar())
                     continue;
 
-                var targetVector = targetFace._NormalVector()._Unit();
-                var toolVector = toolFace._NormalVector()._Unit();
+                var targetVector = targetFace.__NormalVector().__Unit();
+                var toolVector = toolFace.__NormalVector().__Unit();
 
-                if(!targetVector._IsEqualTo(expectedTargetVector))
+                if(!targetVector.__IsEqualTo(expectedTargetVector))
                     continue;
 
-                if(!toolVector._IsEqualTo(expectedTargetVector._Negate()))
+                if(!toolVector.__IsEqualTo(expectedTargetVector.__Negate()))
                     continue;
 
                 CreateNote0(detail, targetFace, toolFace);
@@ -187,7 +187,7 @@ namespace TSG_Library.UFuncs
                     return;
                 }
 
-                var target_face_normal = targetFace._NormalVector();
+                var target_face_normal = targetFace.__NormalVector();
 
                 var selectedToolComponents = SelectToolComponents();
 
@@ -308,7 +308,7 @@ namespace TSG_Library.UFuncs
             TheUFSession.Mtx3.InitializeZ(vec, matrix);
             var xVec = new Vector3d(matrix[0], matrix[1], matrix[2]);
             var yVec = new Vector3d(matrix[3], matrix[4], matrix[5]);
-            return xVec._ToMatrix3x3(yVec);
+            return xVec.__ToMatrix3x3(yVec);
         }
 
         private static double[] SumEdgePositions(IEnumerable<Point3d> edgePositions)
@@ -341,7 +341,7 @@ namespace TSG_Library.UFuncs
 
         public void CreateNote0(string detailNumber, Face targetFace, Face toolFace)
         {
-            var edgePositions = toolFace._EdgePositions().ToList();
+            var edgePositions = toolFace.__EdgePositions().ToList();
 
             var edgeSums = SumEdgePositions(edgePositions.ToArray());
 
@@ -349,25 +349,25 @@ namespace TSG_Library.UFuncs
 
             var originInAbsolute = new Point3d(edgeSums[0] / count, edgeSums[1] / count, edgeSums[2] / count);
 
-            var compOrigin = targetFace.OwningComponent._Origin();
+            var compOrigin = targetFace.OwningComponent.__Origin();
 
-            var compOrientation = targetFace.OwningComponent._Orientation();
+            var compOrientation = targetFace.OwningComponent.__Orientation();
 
             __display_part_.WCS.SetOriginAndMatrix(compOrigin, compOrientation);
 
-            var origin = originInAbsolute._ToArray();
+            var origin = originInAbsolute.__ToArray();
 
             var originInTarget = new double[3];
 
             TheUFSession.Csys.MapPoint(UF_CSYS_ROOT_COORDS, origin, UF_CSYS_ROOT_WCS_COORDS, originInTarget);
 
-            var faceVector = targetFace._NormalVector();
+            var faceVector = targetFace.__NormalVector();
 
             var orientation = CreateOrientationFromZVector(faceVector);
 
             __display_part_ = (Part)((Face)targetFace.Prototype).OwningPart;
 
-            var text = __work_part_.__CreateTextFeature(detailNumber, originInTarget._ToPoint3d(), orientation, LENGTH,
+            var text = __work_part_.__CreateTextFeature(detailNumber, originInTarget.__ToPoint3d(), orientation, LENGTH,
                 HEIGHT, FONT, SCRIPT);
 
             var splines = text.GetEntities().OfType<Spline>().ToList();

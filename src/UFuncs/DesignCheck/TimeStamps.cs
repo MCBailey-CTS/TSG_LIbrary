@@ -31,12 +31,12 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
                 try
                 {
                     if(!(feature is ExtractFace extract_face)
-                       || !extract_face._IsLinkedBody())
+                       || !extract_face.__IsLinkedBody())
                         continue;
 
                     var builder = extract_face.__OwningPart().Features.CreateExtractFaceBuilder(extract_face);
 
-                    using (session_.using_builder_destroyer(builder))
+                    using (session_.__UsingBuilderDestroyer(builder))
                     {
                         if(!builder.FixAtCurrentTimestamp)
                             continue;
@@ -51,7 +51,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
 
             return part_node;

@@ -21,7 +21,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
         {
             var mirroredComp = (Component)dict[originalComp];
 
-            var mirroredPart = mirroredComp._Prototype();
+            var mirroredPart = mirroredComp.__Prototype();
 
             var mirroredFeature = (Feature)dict[originalFeature];
 
@@ -37,7 +37,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                 originalFeature.Suppress();
 
-                var originalOwningFeature = originalComp._Prototype().Features.GetParentFeatureOfBody(originalBody);
+                var originalOwningFeature = originalComp.__Prototype().Features.GetParentFeatureOfBody(originalBody);
 
                 var mirrorOwningFeature = (BodyFeature)dict[originalOwningFeature];
 
@@ -51,11 +51,11 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
                 mirrorBody = (Body)dict[originalBody];
             }
 
-            var newStart = originalStartEdge._StartPoint()._MirrorMap(plane, originalComp, mirroredComp);
+            var newStart = originalStartEdge.__StartPoint().__MirrorMap(plane, originalComp, mirroredComp);
 
-            var newEnd = originalStartEdge._EndPoint()._MirrorMap(plane, originalComp, mirroredComp);
+            var newEnd = originalStartEdge.__EndPoint().__MirrorMap(plane, originalComp, mirroredComp);
 
-            var mirrorEdge = mirrorBody.GetEdges().FirstOrDefault(edge => edge._HasEndPoints(newStart, newEnd));
+            var mirrorEdge = mirrorBody.GetEdges().FirstOrDefault(edge => edge.__HasEndPoints(newStart, newEnd));
 
             if(mirrorEdge is null)
                 throw new InvalidOperationException("Could not find mirror edge");

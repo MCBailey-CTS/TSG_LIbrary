@@ -36,7 +36,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -48,7 +48,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -104,7 +104,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
                 return;
             }
             finally
@@ -142,29 +142,29 @@ namespace TSG_Library.UFuncs
                 foreach (var child in __display_part_.ComponentAssembly.RootComponent.GetChildren())
                     if(child.Name.EndsWith("-WORK"))
                     {
-                        child._Prototype().__AddComponent(
-                            sim_comp._Prototype().FullPath,
+                        child.__Prototype().__AddComponent(
+                            sim_comp.__Prototype().FullPath,
                             "Empty",
-                            origin: sim_comp._Origin(),
-                            orientation: sim_comp._Orientation(),
+                            origin: sim_comp.__Origin(),
+                            orientation: sim_comp.__Orientation(),
                             componentName: child.Name.Replace("-WORK", "-SIMULATION"),
                             layer: 8
                         );
 
                         __display_part_.__AddComponent(
-                            sim_comp._Prototype().FullPath,
+                            sim_comp.__Prototype().FullPath,
                             origin: new Point3d(
-                                sim_comp._Origin().X + child._Origin().X,
-                                sim_comp._Origin().Y + child._Origin().Y,
-                                sim_comp._Origin().Z + child._Origin().Z),
-                            orientation: sim_comp._Orientation(),
+                                sim_comp.__Origin().X + child.__Origin().X,
+                                sim_comp.__Origin().Y + child.__Origin().Y,
+                                sim_comp.__Origin().Z + child.__Origin().Z),
+                            orientation: sim_comp.__Orientation(),
                             componentName: child.Name.Replace("-WORK", "-SIMULATION"),
                             layer: 8);
                     }
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -192,7 +192,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -437,11 +437,11 @@ namespace TSG_Library.UFuncs
 
         public static void move_station(int op, int op_next, string cust_num, string selected_prefix)
         {
-            var __old_op = op_10_010(op);
-            var __next_op = op_10_010(op_next);
+            var __old_op = __Op10To010(op);
+            var __next_op = __Op10To010(op_next);
             var leaf = $"{cust_num}-{selected_prefix}{__old_op}-Layout";
             //    # new_leaf =
-            var old_part = session_.find_or_open(leaf);
+            var old_part = session_.__FindOrOpen(leaf);
             var old_file_path = old_part.FullPath;
             var new_file_path = old_file_path.Replace(leaf, $"{cust_num}-{selected_prefix}{__next_op}-Layout");
             __work_part_ = old_part;
@@ -467,7 +467,7 @@ namespace TSG_Library.UFuncs
                     }
                     catch (Exception ex)
                     {
-                        ex._PrintException();
+                        ex.__PrintException();
                     }
                 }
             }
@@ -477,7 +477,7 @@ namespace TSG_Library.UFuncs
         {
             var selected_comp = Selection.SelectSingleComponent();
 
-            var selected_part_path = selected_comp._Prototype().FullPath;
+            var selected_part_path = selected_comp.__Prototype().FullPath;
 
             var __match0 = Regex.Match(selected_comp.DisplayName,
                 "^(?<cust_num>\\d{6})-(?<prefix>[TP])(?<detail>\\d{3})-Layout$");
@@ -521,13 +521,13 @@ namespace TSG_Library.UFuncs
             else
             {
                 var new_part_file = selected_part_path.Replace(
-                    $"-{__prefix}{op_10_010(selected_op)}-Layout",
-                    $"-{__prefix}{op_10_010(selected_op - 10)}-Layout");
+                    $"-{__prefix}{__Op10To010(selected_op)}-Layout",
+                    $"-{__prefix}{__Op10To010(selected_op - 10)}-Layout");
                 File.Copy(new_part_file, selected_part_path);
             }
 
 
-            var op_str = op_10_010(selected_op);
+            var op_str = __Op10To010(selected_op);
 
             if(__prefix == "P")
             {
@@ -543,10 +543,10 @@ namespace TSG_Library.UFuncs
 
                     if(max_op > 0)
                     {
-                        var max_op_str = op_10_010(max_op);
+                        var max_op_str = __Op10To010(max_op);
                         var __comp = __display_part_.ComponentAssembly.RootComponent.GetChildren()
-                            .Single(__c => __c.Name == $"P{op_10_010(max_op)}-TRANSFER");
-                        __comp.delete_self_and_constraints();
+                            .Single(__c => __c.Name == $"P{__Op10To010(max_op)}-TRANSFER");
+                        __comp.__DeleteSelfAndConstraints();
                     }
                 }
             }
@@ -616,14 +616,14 @@ namespace TSG_Library.UFuncs
             var selected_prefix = __match0.Groups["prefix"].Value;
             var selected_op = int.Parse(__match0.Groups["detail"].Value);
             var selected_display_name = selected_comp.DisplayName;
-            var selected_full_path = selected_comp._Prototype().FullPath;
+            var selected_full_path = selected_comp.__Prototype().FullPath;
 
-            var selected_part = selected_comp._Prototype();
+            var selected_part = selected_comp.__Prototype();
             File.Delete(selected_part.FullPath);
 
-            uf_.Assem.AskOccsOfPart(__display_part_.Tag, selected_comp._Prototype().Tag, out var part_occs);
+            uf_.Assem.AskOccsOfPart(__display_part_.Tag, selected_comp.__Prototype().Tag, out var part_occs);
             for (var i = 0; i < part_occs.Length; i++)
-                ((Component)session_.__GetTaggedObject(part_occs[i])).delete_self_and_constraints();
+                ((Component)session_.__GetTaggedObject(part_occs[i])).__DeleteSelfAndConstraints();
 
             selected_part.__Close();
 
@@ -654,7 +654,7 @@ namespace TSG_Library.UFuncs
                 var paths = __display_part_.ComponentAssembly.RootComponent.GetChildren()
                     .Where(__c => __c.__IsLoaded())
                     .Where(__c => Regex.IsMatch(__c.Name, "^P(?<op>\\d\\d\\d)-"))
-                    .Select(__c => __c._Prototype().FullPath)
+                    .Select(__c => __c.__Prototype().FullPath)
                     .ToArray();
 
                 var children = __display_part_.ComponentAssembly.RootComponent.GetChildren()
@@ -662,7 +662,7 @@ namespace TSG_Library.UFuncs
                     .Where(__n => __n.StartsWith("P0"))
                     .ToArray();
 
-                var max_op = op_10_010(prog_ops.Max());
+                var max_op = __Op10To010(prog_ops.Max());
 
                 var new_path = selected_full_path.Replace(selected_display_name, $"{cust_num}-P{max_op}-Layout");
 
@@ -684,7 +684,7 @@ namespace TSG_Library.UFuncs
                 .Where(child => child.Layer == 254)
                 .Where(child => child.Name.ToUpper().Contains("SIMULATION"))
                 .ToList()
-                .ForEach(child => session_.delete_objects(child));
+                .ForEach(child => session_.__DeleteObjects(child));
         }
 
         public static void create(GFolder __folder, int __transfer_layouts, int __tran_presses, int __prog_layouts,
@@ -713,13 +713,13 @@ namespace TSG_Library.UFuncs
 
 
             if(File.Exists(__folder.file_strip("010")))
-                session_.find_or_open(__folder.file_strip("010")).__AddComponent(
+                session_.__FindOrOpen(__folder.file_strip("010")).__AddComponent(
                     __folder.path_simulation,
                     componentName: "SIMULATION-STRIP",
                     layer: 8);
 
             if(File.Exists(__folder.file_strip("900")))
-                session_.find_or_open(__folder.file_strip("900")).__AddComponent(
+                session_.__FindOrOpen(__folder.file_strip("900")).__AddComponent(
                     __folder.path_simulation,
                     componentName: "SIMULATION-STRIP",
                     layer: 8);
@@ -736,11 +736,11 @@ namespace TSG_Library.UFuncs
                     __part.__Save();
 
             if(File.Exists(__folder.file_strip("010")))
-                session_.Parts.SetActiveDisplay(session_.find_or_open(__folder.file_strip("010")),
+                session_.Parts.SetActiveDisplay(session_.__FindOrOpen(__folder.file_strip("010")),
                     DisplayPartOption.AllowAdditional, PartDisplayPartWorkPartOption.SameAsDisplay, out _);
 
             if(File.Exists(__folder.file_strip("900")))
-                session_.Parts.SetActiveDisplay(session_.find_or_open(__folder.file_strip("900")),
+                session_.Parts.SetActiveDisplay(session_.__FindOrOpen(__folder.file_strip("900")),
                     DisplayPartOption.AllowAdditional, PartDisplayPartWorkPartOption.SameAsDisplay, out _);
 
             __display_part_.Layers.WorkLayer = 1;
@@ -754,7 +754,7 @@ namespace TSG_Library.UFuncs
                 .Where(__child => __child.DisplayName.StartsWith($"{__folder.customer_number}-P"))
                 .Where(__child => __child.DisplayName.EndsWith("-Press"))
                 .ToList()
-                .ForEach(__child => __child.delete_self_and_constraints());
+                .ForEach(__child => __child.__DeleteSelfAndConstraints());
         }
 
         public static void clone_non_offline_die(GFolder __folder, int __transfer_layouts, int __tran_presses,
@@ -762,45 +762,45 @@ namespace TSG_Library.UFuncs
         {
             var strip_tran_path = __folder.file_strip(op);
             ExecuteCloneStrip(__folder, strip_tran_path);
-            Session.GetSession().find_or_open(strip_tran_path);
+            Session.GetSession().__FindOrOpen(strip_tran_path);
 
             // add the prog layout-stations
             for (var i = 10; i < (__prog_layouts + 1) * 10; i += 10)
                 try
                 {
-                    prog_work_lifted(__folder, op_10_010(i), "P");
+                    prog_work_lifted(__folder, __Op10To010(i), "P");
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
 
             // adds a P{last}-TRANSFER component if this is a transfer die and has prog stations
             if(__transfer_layouts > 0 && __prog_layouts > 0)
                 try
                 {
-                    var op_str = op_10_010(__prog_layouts * 10);
+                    var op_str = __Op10To010(__prog_layouts * 10);
                     var layout_path = __folder.file_layout_p(op_str);
                     if(!File.Exists(layout_path))
                         File.Copy(XXXXXX_OP_XXX_Layout, layout_path);
                     //prog_work(op_str, layout_path, "P");
                     //prog_lifted(op_str, layout_path, "P");
-                    prog_P_TRANSFER(op_10_010(__prog_layouts * 10), layout_path, "P");
+                    prog_P_TRANSFER(__Op10To010(__prog_layouts * 10), layout_path, "P");
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
 
             // add the transfer layout-stations
             for (var i = 10; i < (__transfer_layouts + 1) * 10; i += 10)
                 try
                 {
-                    tran_work_lifted_transfer(__folder, op_10_010(i), "T");
+                    tran_work_lifted_transfer(__folder, __Op10To010(i), "T");
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
 
             // add the prog press-stations
@@ -811,7 +811,7 @@ namespace TSG_Library.UFuncs
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
 
             // add the transfer press-stations
@@ -824,7 +824,7 @@ namespace TSG_Library.UFuncs
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
         }
 
@@ -922,11 +922,11 @@ namespace TSG_Library.UFuncs
             if(!File.Exists(strip_tran_path))
                 File.Copy(XXXXX_Strip, strip_tran_path);
 
-            __display_part_ = session_.find_or_open(strip_tran_path);
+            __display_part_ = session_.__FindOrOpen(strip_tran_path);
 
             // add the transfer layout-stations
             for (var i = 10; i < (__transfer_layouts + 1) * 10; i += 10)
-                tran_work_lifted_transfer(__folder, op_10_010(i), "T");
+                tran_work_lifted_transfer(__folder, __Op10To010(i), "T");
 
             // add the transfer press-stations
             for (var i = 10; i < (__tran_presses + 1) * 10; i += 10)
@@ -934,27 +934,27 @@ namespace TSG_Library.UFuncs
 
             try
             {
-                session_.find_or_open(__folder.path_strip_flange);
+                session_.__FindOrOpen(__folder.path_strip_flange);
 
-                var obj = __display_part_.ComponentAssembly.RootComponent.find_component_(
+                var obj = __display_part_.ComponentAssembly.RootComponent.__FindComponent(
                     $"COMPONENT {__folder.customer_number}-Strip Flange Carrier_Tracking Tab 1");
 
-                session_.delete_objects(obj);
+                session_.__DeleteObjects(obj);
             }
             catch (Exception ex)
             {
-                ex._PrintException("Failed to delete strip flange");
+                ex.__PrintException("Failed to delete strip flange");
             }
 
             __display_part_.__Save();
 
             if(!File.Exists(strip_prog_path))
                 File.Copy(XXXXX_Strip, strip_prog_path);
-            __display_part_ = session_.find_or_open(strip_prog_path);
+            __display_part_ = session_.__FindOrOpen(strip_prog_path);
 
             // add the prog layout-stations
             for (var i = 10; i < (__prog_layouts + 1) * 10; i += 10)
-                prog_work_lifted(__folder, op_10_010(i), "P");
+                prog_work_lifted(__folder, __Op10To010(i), "P");
 
             // add the prog press-stations
             for (var i = 10; i < (__prog_presses + 1) * 10; i += 10)

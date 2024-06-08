@@ -63,7 +63,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException($"{(Type)e.Node.Tag}");
+                ex.__PrintException($"{(Type)e.Node.Tag}");
             }
         }
 

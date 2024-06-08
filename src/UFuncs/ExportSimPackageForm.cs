@@ -113,14 +113,14 @@ namespace TSG_Library.UFuncs
                             {
                                 var leaf = displayName.Contains("master")
                                     ? comp.Name
-                                    : comp._Prototype().Leaf;
+                                    : comp.__Prototype().Leaf;
 
                                 var compPath = $"{directory}\\{leaf}.prt";
 
                                 if(File.Exists(compPath))
                                     File.Delete(compPath);
 
-                                File.Copy(comp._Prototype().FullPath, compPath);
+                                File.Copy(comp.__Prototype().FullPath, compPath);
 
                                 print_(File.Exists(compPath)
                                     ? $"Successfully created \"{compPath}\"."
@@ -128,10 +128,10 @@ namespace TSG_Library.UFuncs
                             }
                             catch (Exception ex)
                             {
-                                ex._PrintException();
+                                ex.__PrintException();
                             }
 
-                        var exportFileNoExtension = $"{directory}\\{comp._Prototype().Leaf}";
+                        var exportFileNoExtension = $"{directory}\\{comp.__Prototype().Leaf}";
 
                         try
                         {
@@ -142,11 +142,11 @@ namespace TSG_Library.UFuncs
                                    || displayName.Contains("profile")
                                    || displayName.Contains($"{customerNumber}-b"))
                               )
-                                Iges(comp._Prototype().FullPath, $"{exportFileNoExtension}.igs", true);
+                                Iges(comp.__Prototype().FullPath, $"{exportFileNoExtension}.igs", true);
                         }
                         catch (Exception ex)
                         {
-                            ex._PrintException();
+                            ex.__PrintException();
                         }
 
                         try
@@ -157,17 +157,17 @@ namespace TSG_Library.UFuncs
                                    || displayName.ToLower().Contains("refdata")
                                    || displayName.ToLower().Contains("master"))
                               )
-                                Export.Stp(comp._Prototype().FullPath, $"{exportFileNoExtension}.stp",
+                                Export.Stp(comp.__Prototype().FullPath, $"{exportFileNoExtension}.stp",
                                     "U:\\nxFiles\\Step Translator\\214ug.def");
                         }
                         catch (Exception ex)
                         {
-                            ex._PrintException();
+                            ex.__PrintException();
                         }
                     }
                     catch (Exception ex)
                     {
-                        ex._PrintException();
+                        ex.__PrintException();
                     }
 
                 // Deletes the log files created.
@@ -209,7 +209,7 @@ namespace TSG_Library.UFuncs
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
 
                 try
@@ -229,12 +229,12 @@ namespace TSG_Library.UFuncs
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
             finally
             {
@@ -251,7 +251,7 @@ namespace TSG_Library.UFuncs
 
                 var igesCreator = Session.GetSession().DexManager.CreateIgesCreator();
 
-                using (session_.using_builder_destroyer(igesCreator))
+                using (session_.__UsingBuilderDestroyer(igesCreator))
                 {
                     igesCreator.ExportModelData = true;
                     igesCreator.ExportFrom = IgesCreator.ExportFromOption.ExistingPart;
@@ -279,7 +279,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException("Error when creating Iges file for " + partPath);
+                ex.__PrintException("Error when creating Iges file for " + partPath);
             }
         }
 

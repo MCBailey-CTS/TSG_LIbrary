@@ -26,9 +26,9 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             var mirroredComp = (Component)dict[originalComp];
 
             // ReSharper disable once UnusedVariable
-            var mirroredPart = mirroredComp._Prototype();
+            var mirroredPart = mirroredComp.__Prototype();
 
-            var originalPart = originalComp._Prototype();
+            var originalPart = originalComp.__Prototype();
 
             //originalFeature.Suppress();
 

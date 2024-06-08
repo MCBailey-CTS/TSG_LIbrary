@@ -104,7 +104,7 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
             var castingBody = faceFromResult.GetBody();
 
             // Gets the bodies that make up the {extrusionCore}.
-            return castingBody._Subtract(extrusionCore.GetBodies());
+            return castingBody.__Subtract(extrusionCore.GetBodies());
         }
 
         public void CleanUp(
@@ -195,41 +195,41 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
 
             // Gets the edge whose mid point is equal to the {closestPosition}.
             var midpointEdge = linearEdges.Single(edge =>
-                edge._StartPoint().__MidPoint(edge._EndPoint())._IsEqualTo(closestPosition));
+                edge.__StartPoint().__MidPoint(edge.__EndPoint()).__IsEqualTo(closestPosition));
 
-            var vec_edge = midpointEdge._NormalVector();
+            var vec_edge = midpointEdge.__NormalVector();
 
-            var matrix = vec_edge._ToMatrix3x3(selectedPosition._Subtract(closestPosition));
+            var matrix = vec_edge.__ToMatrix3x3(selectedPosition.__Subtract(closestPosition));
 
             __display_part_.WCS.SetOriginAndMatrix(closestPosition, matrix);
 
             // Gets the mappedMidpoint.
             var outputCoords = new double[3];
 
-            UFSession.GetUFSession().Csys.MapPoint(UF_CSYS_ROOT_COORDS, closestPosition._ToArray(),
+            UFSession.GetUFSession().Csys.MapPoint(UF_CSYS_ROOT_COORDS, closestPosition.__ToArray(),
                 UF_CSYS_ROOT_WCS_COORDS, outputCoords);
 
             Point3d mappedCenterPoint;
 
             if((Units)owningPart.PartUnits == units)
                 // The {DiameterUnits} for this creator matches the units of the {owningPart}.
-                mappedCenterPoint = outputCoords._ToPoint3d()._Add(new Vector3d(0, diameter / 2, 0));
+                mappedCenterPoint = outputCoords.__ToPoint3d().__Add(new Vector3d(0, diameter / 2, 0));
 
             else if(owningPart.PartUnits == BasePart.Units.Inches)
-                mappedCenterPoint = outputCoords._ToPoint3d()._Add(new Vector3d(0, diameter / 25.4 / 2, 0));
+                mappedCenterPoint = outputCoords.__ToPoint3d().__Add(new Vector3d(0, diameter / 25.4 / 2, 0));
             else
-                mappedCenterPoint = outputCoords._ToPoint3d()._Add(new Vector3d(0, diameter * 25.4 / 2, 0));
+                mappedCenterPoint = outputCoords.__ToPoint3d().__Add(new Vector3d(0, diameter * 25.4 / 2, 0));
 
             // Maps the {mappedCenterPoint} back to absolute coordinates to get the actual location of the center point.
             outputCoords = new double[3];
 
-            UFSession.GetUFSession().Csys.MapPoint(UF_CSYS_ROOT_WCS_COORDS, mappedCenterPoint._ToArray(),
+            UFSession.GetUFSession().Csys.MapPoint(UF_CSYS_ROOT_WCS_COORDS, mappedCenterPoint.__ToArray(),
                 UF_CSYS_ROOT_COORDS, outputCoords);
 
             // Gets the normal of the {selectedFace}.
-            var normalVector = selectedFace._NormalVector();
+            var normalVector = selectedFace.__NormalVector();
 
-            return CreateCircle(owningPart, outputCoords._ToPoint3d(), normalVector, units, diameter);
+            return CreateCircle(owningPart, outputCoords.__ToPoint3d(), normalVector, units, diameter);
         }
 
 #pragma warning disable IDE0051 // Remove unused private members

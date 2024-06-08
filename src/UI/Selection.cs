@@ -184,7 +184,7 @@ namespace TSG_Library.Ui
             {
                 try
                 {
-                    if(!(_object._ToTaggedObject() is TSource source_obj))
+                    if(!(_object.__ToTaggedObject() is TSource source_obj))
                         return UF_UI_SEL_REJECT;
 
                     if(!pred(source_obj))
@@ -194,7 +194,7 @@ namespace TSG_Library.Ui
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
 
                 return UF_UI_SEL_REJECT;
@@ -217,12 +217,12 @@ namespace TSG_Library.Ui
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                     return UF_UI_SEL_FAILURE;
                 }
             }
 
-            using (session_.using_lock_ui_from_custom())
+            using (session_.__UsingLockUiFromCustom())
             {
                 var cursor = new double[3];
 
@@ -248,7 +248,7 @@ namespace TSG_Library.Ui
                 }
 
 
-                var __obj = __object._To<TSource>();
+                var __obj = __object.__To<TSource>();
 
                 if(__obj is DisplayableObject disp)
                     disp.Unhighlight();
@@ -267,7 +267,7 @@ namespace TSG_Library.Ui
             {
                 try
                 {
-                    if(!(_object._ToTaggedObject() is TSource source_obj))
+                    if(!(_object.__ToTaggedObject() is TSource source_obj))
                         return UF_UI_SEL_REJECT;
 
                     if(pred is null)
@@ -280,7 +280,7 @@ namespace TSG_Library.Ui
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
 
                 return UF_UI_SEL_REJECT;
@@ -303,12 +303,12 @@ namespace TSG_Library.Ui
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                     return UF_UI_SEL_FAILURE;
                 }
             }
 
-            using (session_.using_lock_ui_from_custom())
+            using (session_.__UsingLockUiFromCustom())
             {
                 var cursor = new double[3];
 
@@ -329,7 +329,7 @@ namespace TSG_Library.Ui
                         break;
                 }
 
-                var objs = objects.Select(__o => __o._To<TSource>()).ToArray();
+                var objs = objects.Select(__o => __o.__To<TSource>()).ToArray();
 
                 objs.OfType<DisplayableObject>().ToList().ForEach(__o => __o.Unhighlight());
 

@@ -48,7 +48,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -78,7 +78,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
             finally
             {
@@ -104,7 +104,7 @@ namespace TSG_Library.UFuncs
                         if(!(feat is ExtractFace link))
                             continue;
 
-                        if(!link._IsLinkedBody())
+                        if(!link.__IsLinkedBody())
                             continue;
 
                         uf.Wave.IsLinkBroken(link.Tag, out var is_broken);
@@ -125,21 +125,21 @@ namespace TSG_Library.UFuncs
 
                         var from_comp = (Component)session_.__GetTaggedObject(from_part_occ);
 
-                        var origin = point._ToPoint3d();
+                        var origin = point.__ToPoint3d();
 
-                        if(!from_comp._Origin()._IsEqualTo(origin))
+                        if(!from_comp.__Origin().__IsEqualTo(origin))
                             continue;
 
-                        session_.delete_objects(link);
+                        session_.__DeleteObjects(link);
                     }
                     catch (Exception ex)
                     {
-                        ex._PrintException();
+                        ex.__PrintException();
                     }
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
             finally
             {
@@ -222,7 +222,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -241,7 +241,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
             finally
             {
@@ -280,7 +280,7 @@ namespace TSG_Library.UFuncs
 
         private void ButtonSelectComponent_Click(object sender, EventArgs e)
         {
-            using (session_.using_form_show_hide(this))
+            using (session_.__UsingFormShowHide(this))
             {
                 try
                 {
@@ -310,7 +310,7 @@ namespace TSG_Library.UFuncs
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
             }
         }
@@ -466,7 +466,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
             finally
             {
@@ -477,7 +477,7 @@ namespace TSG_Library.UFuncs
 
         private void BtnOtherOk_Click(object sender, EventArgs e)
         {
-            using (session_.using_form_show_hide(this))
+            using (session_.__UsingFormShowHide(this))
             {
                 try
                 {
@@ -503,7 +503,7 @@ namespace TSG_Library.UFuncs
 
                     foreach (var child in originalWorkComponent.GetChildren())
                     {
-                        var protoPartOcc = _GetProtoPartOcc(originalWorkComponent._Prototype(), child);
+                        var protoPartOcc = _GetProtoPartOcc(originalWorkComponent.__Prototype(), child);
 
                         switch (protoPartOcc.Layer)
                         {
@@ -511,14 +511,14 @@ namespace TSG_Library.UFuncs
                             case Layer_ShcsHandlingWireTap:
                                 break;
                             default:
-                                child._ReferenceSet(protoPartOcc.ReferenceSet);
+                                child.__ReferenceSet(protoPartOcc.ReferenceSet);
                                 break;
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
                 finally
                 {
@@ -552,12 +552,12 @@ namespace TSG_Library.UFuncs
                     }
                     catch (Exception ex)
                     {
-                        ex._PrintException();
+                        ex.__PrintException();
                     }
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -594,7 +594,7 @@ namespace TSG_Library.UFuncs
 
             var current = __child.ReferenceSet;
 
-            __child._ReferenceSet(subtract_ref_set);
+            __child.__ReferenceSet(subtract_ref_set);
 
             var tool_bodies = __child.__Members()
                 .OfType<Body>()
@@ -613,7 +613,7 @@ namespace TSG_Library.UFuncs
 
             if(results.All(__res => __res != 1))
             {
-                __child._ReferenceSet(current);
+                __child.__ReferenceSet(current);
                 return;
             }
 
@@ -643,13 +643,13 @@ namespace TSG_Library.UFuncs
 
             if(__child.Layer == 99 && subtract_att != "HANDLING" && subtract_att != "WIRE_TAP")
             {
-                __child._ReferenceSet("BODY");
+                __child.__ReferenceSet("BODY");
                 __work_part_.GetAllReferenceSets().Single(__r => __r.Name == "BODY")
                     .AddObjectsToReferenceSet(new[] { __child });
             }
             else
             {
-                __child._ReferenceSet("Empty");
+                __child.__ReferenceSet("Empty");
                 __work_part_.__FindReferenceSet("BODY").RemoveObjectsFromReferenceSet(new[] { __child });
             }
         }
@@ -782,7 +782,7 @@ namespace TSG_Library.UFuncs
                 new[] { 99, 98, 97 }.ToList().ForEach(i => __display_part_.Layers.SetState(i, State.Selectable));
 
             var wireTapScrew =
-                session_.find_or_open(@"G:\0Library\Fasteners\Metric\SocketHeadCapScrews\008\8mm-shcs-020.prt");
+                session_.__FindOrOpen(@"G:\0Library\Fasteners\Metric\SocketHeadCapScrews\008\8mm-shcs-020.prt");
             __display_part_.WCS.Rotate(WCS.Axis.XAxis, 90.0);
             var savedCsys = __display_part_.WCS.Save();
             var rotateOrientation = savedCsys.Orientation.Element;
@@ -807,7 +807,7 @@ namespace TSG_Library.UFuncs
             const string subtract = "subtract";
             component1.SetInstanceUserAttribute(subtract, -1, "WIRE_TAP", NXOpen.Update.Option.Now);
             component2.SetInstanceUserAttribute(subtract, -1, "WIRE_TAP", NXOpen.Update.Option.Now);
-            session_.delete_objects(savedCsys);
+            session_.__DeleteObjects(savedCsys);
         }
 
         private void BtnWireTaps_Click(object sender, EventArgs e)
@@ -844,7 +844,7 @@ namespace TSG_Library.UFuncs
                     try
                     {
                         cmbReferenceSet.Enabled = true;
-                        var fastener_part = session_.find_or_open(selected_value);
+                        var fastener_part = session_.__FindOrOpen(selected_value);
 
                         if(chkSubstitute.Checked)
                         {
@@ -912,7 +912,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
             finally
             {
@@ -963,48 +963,48 @@ namespace TSG_Library.UFuncs
                     99,
                     out _);
 
-                session_.delete_objects(csys);
+                session_.__DeleteObjects(csys);
 
                 if(MoveComponentWithMouse(addedFastener) != UF_UI_PICK_RESPONSE)
                 {
-                    session_.delete_objects(addedFastener);
+                    session_.__DeleteObjects(addedFastener);
                     return;
                 }
 
                 var first_jigJack = addedFastener;
-                var proto_csys = __work_part_.CoordinateSystems.CreateCoordinateSystem(addedFastener._Origin(),
-                    addedFastener._Orientation(), false);
+                var proto_csys = __work_part_.CoordinateSystems.CreateCoordinateSystem(addedFastener.__Origin(),
+                    addedFastener.__Orientation(), false);
 
                 if(__work_component_ is null)
                 {
                     proto_csys.GetDirections(out var xDir, out var yDir);
-                    __display_part_.WCS.SetOriginAndMatrix(proto_csys.Origin, xDir._ToMatrix3x3(yDir));
-                    session_.delete_objects(proto_csys);
+                    __display_part_.WCS.SetOriginAndMatrix(proto_csys.Origin, xDir.__ToMatrix3x3(yDir));
+                    session_.__DeleteObjects(proto_csys);
                 }
                 else
                 {
                     var occ_csys = (CartesianCoordinateSystem)__work_component_.FindOccurrence(proto_csys);
                     occ_csys.GetDirections(out var xDir, out var yDir);
-                    __display_part_.WCS.SetOriginAndMatrix(occ_csys.Origin, xDir._ToMatrix3x3(yDir));
-                    session_.delete_objects(proto_csys);
+                    __display_part_.WCS.SetOriginAndMatrix(occ_csys.Origin, xDir.__ToMatrix3x3(yDir));
+                    session_.__DeleteObjects(proto_csys);
                 }
 
                 var reference_set = cmbReferenceSet.Text;
                 addedFastener.SetInstanceUserAttribute("subtract", -1, reference_set, NXOpen.Update.Option.Now);
                 cmbGridSpacing.SelectedValue = 1.000;
-                PlaceFasteners(addedFastener._Prototype(), false);
+                PlaceFasteners(addedFastener.__Prototype(), false);
                 cmbGridSpacing.SelectedValue = 0.125;
 
                 if(__work_component_ is null)
                 {
-                    first_jigJack._ReferenceSet("BODY_EDGE");
+                    first_jigJack.__ReferenceSet("BODY_EDGE");
                 }
                 else
                 {
                     var instance = ufsession_.Assem.AskInstOfPartOcc(first_jigJack.Tag);
                     var other = ufsession_.Assem.AskPartOccOfInst(__work_component_.Tag, instance);
                     var comp = (Component)session_.GetObjectManager().GetTaggedObject(other);
-                    comp._ReferenceSet("BODY_EDGE");
+                    comp.__ReferenceSet("BODY_EDGE");
                 }
             }
             finally
@@ -1044,7 +1044,7 @@ namespace TSG_Library.UFuncs
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
 
                 //cmbGridSpacing.SelectedValue = __display_part_.Preferences.Workplane.GetRectangularUniformGridSize().MajorGridSpacing;
@@ -1080,7 +1080,7 @@ namespace TSG_Library.UFuncs
                 while (true)
                 {
                     __display_part_.WCS.CoordinateSystem.GetDirections(out var xDir, out var yDir);
-                    var ori = xDir._ToMatrix3x3(yDir);
+                    var ori = xDir.__ToMatrix3x3(yDir);
 
                     //addedFastener = __work_part_.ComponentAssembly.AddComponent(
                     //    fastener_part,
@@ -1102,7 +1102,7 @@ namespace TSG_Library.UFuncs
 
                     if(MoveComponentWithMouse(addedFastener) != UF_UI_PICK_RESPONSE)
                     {
-                        session_.delete_objects(addedFastener);
+                        session_.__DeleteObjects(addedFastener);
                         break;
                     }
 
@@ -1124,7 +1124,7 @@ namespace TSG_Library.UFuncs
                     }
                 }
 
-                session_.delete_objects(csys);
+                session_.__DeleteObjects(csys);
             }
             finally
             {
@@ -1169,9 +1169,9 @@ namespace TSG_Library.UFuncs
                 var shcs = fastener_part.FullPath;
                 var dowel = actual_dwl;
                 var jigJack = jack;
-                var shcs_part = session_.find_or_open(shcs);
-                var dowel_part = session_.find_or_open(dowel);
-                var jigjack_part = session_.find_or_open(jigJack);
+                var shcs_part = session_.__FindOrOpen(shcs);
+                var dowel_part = session_.__FindOrOpen(dowel);
+                var jigjack_part = session_.__FindOrOpen(jigJack);
 
                 if(chkCycleAdd.Checked)
                     PlaceFasteners(shcs_part);
@@ -1187,7 +1187,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -1283,8 +1283,8 @@ namespace TSG_Library.UFuncs
         {
             var __handle = GCHandle.Alloc(snapComponent);
 
-            using (session_.using_gc_handle(__handle))
-            using (session_.using_lock_ui_from_custom())
+            using (session_.__UsingGCHandle(__handle))
+            using (session_.__UsingLockUiFromCustom())
             {
                 var screenPos = new double[3];
                 ufsession_.Ui.SpecifyScreenPosition("Move Object", MotionCallback, (IntPtr)__handle, screenPos,
@@ -1295,7 +1295,7 @@ namespace TSG_Library.UFuncs
 
         private void BtnChangeRefSet_Click(object sender, EventArgs e)
         {
-            using (session_.using_form_show_hide(this))
+            using (session_.__UsingFormShowHide(this))
             {
                 try
                 {
@@ -1303,7 +1303,7 @@ namespace TSG_Library.UFuncs
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
             }
         }
@@ -1337,39 +1337,39 @@ namespace TSG_Library.UFuncs
                 reference_set_names.Remove("MODEL");
 
                 // all shcs metric
-                if(fasteners.All(__fast => __fast._IsShcs()) &&
+                if(fasteners.All(__fast => __fast.__IsShcs()) &&
                    fasteners.All(__fast => __fast.Name.ToLower().Contains("mm")))
                 {
                     reference_set_names.Add("HANDLING");
                 }
 
                 // all shcs english
-                else if(fasteners.All(__fast => __fast._IsShcs()) &&
+                else if(fasteners.All(__fast => __fast.__IsShcs()) &&
                         fasteners.All(__fast => !__fast.Name.ToLower().Contains("mm")))
                 {
                     reference_set_names.Add("HANDLING");
                 }
 
                 // all dwl metric
-                else if(fasteners.All(__fast => __fast._IsDwl()) &&
+                else if(fasteners.All(__fast => __fast.__IsDwl()) &&
                         fasteners.All(__fast => __fast.Name.ToLower().Contains("mm")))
                 {
                     reference_set_names.Add("TOOLING");
                 }
 
                 // all dwl english
-                else if(fasteners.All(__fast => __fast._IsDwl()) &&
+                else if(fasteners.All(__fast => __fast.__IsDwl()) &&
                         fasteners.All(__fast => !__fast.Name.ToLower().Contains("mm")))
                 {
                     reference_set_names.Add("TOOLING");
                 }
 
                 // all jack screw 
-                else if(fasteners.All(__fast => __fast._IsJckScrew()))
+                else if(fasteners.All(__fast => __fast.__IsJckScrew()))
                 {
                 }
                 // all jack screw tsg
-                else if(fasteners.All(__fast => __fast._IsJckScrewTsg()))
+                else if(fasteners.All(__fast => __fast.__IsJckScrewTsg()))
                 {
                 }
                 else
@@ -1379,10 +1379,10 @@ namespace TSG_Library.UFuncs
                 }
 
                 var selected_ref_set =
-                    session_.select_menu_item_14gt("Select Reference Set", reference_set_names.ToArray());
+                    session_.__SelectMenuItem14gt("Select Reference Set", reference_set_names.ToArray());
 
                 foreach (var selected_fastener in fasteners)
-                    using (session_.using_display_part_reset())
+                    using (session_.__usingDisplayPartReset())
                     {
                         Component actual_fastener;
 
@@ -1391,9 +1391,9 @@ namespace TSG_Library.UFuncs
                         {
                             var instance = ufsession_.Assem.AskInstOfPartOcc(selected_fastener.Tag);
                             var actual_tag = ufsession_.Assem.AskPartOccOfInst(
-                                __work_component_._Prototype().ComponentAssembly.RootComponent.Tag, instance);
+                                __work_component_.__Prototype().ComponentAssembly.RootComponent.Tag, instance);
                             actual_fastener = (Component)session_.__GetTaggedObject(actual_tag);
-                            __display_part_ = actual_fastener.Parent._Prototype();
+                            __display_part_ = actual_fastener.Parent.__Prototype();
                         }
                         else
                         {
@@ -1424,13 +1424,13 @@ namespace TSG_Library.UFuncs
                                 ufsession_.So.AskPointOfXform(xform, point);
                                 var from_comp = (Component)session_.GetObjectManager().GetTaggedObject(from_part_occ);
 
-                                if(!from_comp._Origin()._IsEqualTo(point))
+                                if(!from_comp.__Origin().__IsEqualTo(point))
                                     return;
 
                                 if(from_part_occ != actual_fastener.Tag)
                                     return;
 
-                                session_.delete_objects(__k);
+                                session_.__DeleteObjects(__k);
                                 actual_fastener.SetInstanceUserAttribute("subtract", -1, selected_ref_set,
                                     NXOpen.Update.Option.Now);
                                 WaveIn(actual_fastener, __display_part_.__SingleSolidBodyOnLayer1());
@@ -1442,7 +1442,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -1497,7 +1497,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -1518,7 +1518,7 @@ namespace TSG_Library.UFuncs
                 modelingView2 = __work_part_.ModelingViews.FindObject(top);
                 layout.ReplaceView(modelingView1, modelingView2, true);
                 var tempView = __work_part_.ModelingViews.FindObject(plan);
-                session_.delete_objects(tempView);
+                session_.__DeleteObjects(tempView);
             }
 
             ufsession_.View.SetViewMatrix("", 3, csys.Tag, null);
@@ -1526,7 +1526,7 @@ namespace TSG_Library.UFuncs
                 (ModelingView)__display_part_.Views.SaveAs(__display_part_.ModelingViews.WorkView, plan, false, false);
             modelingView2 = __display_part_.ModelingViews.FindObject(top);
             __display_part_.Layouts.FindObject(l1).ReplaceView(modelingView1, modelingView2, true);
-            session_.delete_objects(csys);
+            session_.__DeleteObjects(csys);
         }
 
         public static ExtractFace GetLinkedBody(Part owningPart, Component child)
@@ -1559,7 +1559,7 @@ namespace TSG_Library.UFuncs
                 throw new ArgumentException("Can only wave out immediate children.");
 
             var linkedBody = GetLinkedBody(owningPart, child);
-            session_.delete_objects(linkedBody);
+            session_.__DeleteObjects(linkedBody);
         }
 
         public static void WaveOut()
@@ -1575,16 +1575,16 @@ namespace TSG_Library.UFuncs
                         if(__child.IsSuppressed)
                             continue;
 
-                        if(!__child._IsFastener())
+                        if(!__child.__IsFastener())
                             continue;
 
                         var link = GetLinkedBody(__work_part_, __child);
                         WaveOut(__child);
-                        session_.delete_objects(link);
+                        session_.__DeleteObjects(link);
                     }
                     catch (Exception ex)
                     {
-                        ex._PrintException();
+                        ex.__PrintException();
                     }
 
                 return;
@@ -1595,7 +1595,7 @@ namespace TSG_Library.UFuncs
                 if(child.IsSuppressed)
                     continue;
 
-                if(!child._IsFastener())
+                if(!child.__IsFastener())
                     continue;
 
                 var protoPartOcc = _GetProtoPartOcc(__work_part_, child);
@@ -1611,7 +1611,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -1654,15 +1654,15 @@ namespace TSG_Library.UFuncs
 
                     if(selected.IsOccurrence)
                     {
-                        var proto_selected = selected._Prototype();
-                        var part = selected.OwningComponent._Prototype();
+                        var proto_selected = selected.__Prototype();
+                        var part = selected.OwningComponent.__Prototype();
 
                         if(!part.__HasDynamicBlock())
                         {
                             __work_component_ = selected.OwningComponent;
                             __work_component_.__Translucency(75);
-                            __display_part_.WCS.SetOriginAndMatrix(__work_component_._Origin(),
-                                __work_component_._Orientation());
+                            __display_part_.WCS.SetOriginAndMatrix(__work_component_.__Origin(),
+                                __work_component_.__Orientation());
                             print_("Part does not have a dynamic block. You will need to move the csys manually.");
                             return;
                         }
@@ -1670,13 +1670,13 @@ namespace TSG_Library.UFuncs
                         var origin = part.__DynamicBlock().__Origin();
                         var orientation = part.__DynamicBlock().__Orientation();
                         var csys = part.CoordinateSystems.CreateCoordinateSystem(origin, orientation, false);
-                        selected.OwningComponent._Prototype().__FindReferenceSet("BODY")
+                        selected.OwningComponent.__Prototype().__FindReferenceSet("BODY")
                             .AddObjectsToReferenceSet(new[] { csys });
                         var occ_csys = (CartesianCoordinateSystem)selected.OwningComponent.FindOccurrence(csys);
                         __display_part_.WCS.SetCoordinateSystemCartesianAtCsys(occ_csys);
                         __work_component_ = selected.OwningComponent;
                         __work_component_.__Translucency(75);
-                        session_.delete_objects(occ_csys, csys);
+                        session_.__DeleteObjects(occ_csys, csys);
                     }
                     else if(__work_part_.__HasDynamicBlock())
                     {
@@ -1722,14 +1722,14 @@ namespace TSG_Library.UFuncs
                 __display_part_.CoordinateSystems.CreateCoordinateSystem(_Point3dOrigin, _Matrix3x3Identity, true);
 
             var compCsys = __display_part_.CoordinateSystems.CreateCoordinateSystem(
-                __work_component_._Origin(),
-                __work_component_._Orientation(),
+                __work_component_.__Origin(),
+                __work_component_.__Orientation(),
                 true);
 
             var newOrigin = origin.__MapCsysToCsys(compCsys, absCsys);
-            var newXVec = __work_component_._Orientation()._AxisX().__MapCsysToCsys(compCsys, absCsys);
-            var newYVec = __work_component_._Orientation()._AxisY().__MapCsysToCsys(compCsys, absCsys);
-            var newOrientation = newXVec._ToMatrix3x3(newYVec);
+            var newXVec = __work_component_.__Orientation().__AxisX().__MapCsysToCsys(compCsys, absCsys);
+            var newYVec = __work_component_.__Orientation().__AxisY().__MapCsysToCsys(compCsys, absCsys);
+            var newOrientation = newXVec.__ToMatrix3x3(newYVec);
             __display_part_.WCS.SetOriginAndMatrix(newOrigin, newOrientation);
         }
 

@@ -22,7 +22,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                using (session_.using_display_part_reset())
+                using (session_.__usingDisplayPartReset())
                 {
                     var originalWorkPart = __work_part_;
                     var refSetName = new List<string>();
@@ -90,7 +90,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
     }

@@ -61,7 +61,7 @@ namespace TSG_Library.UFuncs
                 ButtonDetail = txtButton.Text;
                 PunchDetail = txtPunch.Text;
                 RetainerDetail = txtRetainer.Text;
-                using (session_.using_display_part_reset())
+                using (session_.__usingDisplayPartReset())
                 {
                     if(chkAssembly.Checked)
                         SameAssembly(rdoMetric.Checked, chkButton.Checked, chkPunch.Checked, chkRetainer.Checked);
@@ -72,7 +72,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
             finally
             {
@@ -471,8 +471,8 @@ namespace TSG_Library.UFuncs
             var directory = Path.GetDirectoryName(__display_part_.FullPath);
 
             var details = (from file in Directory.GetFiles(directory, "*.prt", SearchOption.TopDirectoryOnly)
-                where file._IsDetail()
-                let detailNumber = file._AskDetailNumber()
+                where file.__IsDetail()
+                let detailNumber = file.__AskDetailNumber()
                 select new { file, detailNumber }).ToArray();
 
             if(string.IsNullOrEmpty(ButtonDetail))
@@ -486,7 +486,7 @@ namespace TSG_Library.UFuncs
                                 throw new InvalidOperationException("Could not find a detail with # \'" + ButtonDetail +
                                                                     "\' in folderWithCtsNumber \'" + directory + "\'.");
 
-                var tempPart = session_.find_or_open(argDetail.file);
+                var tempPart = session_.__FindOrOpen(argDetail.file);
 
                 if(!tempPart.HasUserAttribute("LIBRARY", NXObject.AttributeType.String, -1))
                     throw new InvalidOperationException("The selected part does not have a \'LIBRARY\' attribute.");
@@ -515,7 +515,7 @@ namespace TSG_Library.UFuncs
                                 throw new InvalidOperationException("Could not find a detail with # \'" + PunchDetail +
                                                                     "\' in folderWithCtsNumber \'" + directory + "\'.");
 
-                var tempPart = session_.find_or_open(argDetail.file);
+                var tempPart = session_.__FindOrOpen(argDetail.file);
 
                 if(!tempPart.HasUserAttribute("LIBRARY", NXObject.AttributeType.String, -1))
                     throw new InvalidOperationException("The selected part does not have a \'LIBRARY\' attribute.");
@@ -548,7 +548,7 @@ namespace TSG_Library.UFuncs
                                                                     RetainerDetail + "\' in folderWithCtsNumber \'" +
                                                                     directory + "\'.");
 
-                var tempPart = session_.find_or_open(argDetail.file);
+                var tempPart = session_.__FindOrOpen(argDetail.file);
 
                 if(!tempPart.HasUserAttribute("LIBRARY", NXObject.AttributeType.String, -1))
                     throw new InvalidOperationException("The selected part does not have a \'LIBRARY\' attribute.");
@@ -605,30 +605,30 @@ namespace TSG_Library.UFuncs
                 throw new InvalidOperationException("The current displayed part does not reside within a GFolder.");
             var op = nameMatch.Groups[1].Value;
             var uspLspNumberAsInteger = int.Parse(nameMatch.Groups[2].Value);
-            var uspLspPart = session_.find_or_open(_display_part_DisplayName);
+            var uspLspPart = session_.__FindOrOpen(_display_part_DisplayName);
 
             /////////////////////////////////////////////
             /////////////////////////////////////////////
 
-            SetUndoMark(MarkVisibility.Visible, "FastClass");
+            __SetUndoMark(MarkVisibility.Visible, "FastClass");
 
             try
             {
                 var faces = Ui.Selection.SelectManyFaces();
 
-                var dictionaryShape = faces.ToILookIDict(face => face.GetStringUserAttribute("PIERCED_TYPE", -1));
+                var dictionaryShape = faces.__ToILookIDict(face => face.GetStringUserAttribute("PIERCED_TYPE", -1));
 
                 foreach (var keyShape in dictionaryShape.Keys)
                 {
                     var shapeFaces = dictionaryShape[keyShape];
                     // Revision • 1.2 – 2017 / 12 / 07
-                    var dictionaryP = shapeFaces.ToILookIDict(face =>
+                    var dictionaryP = shapeFaces.__ToILookIDict(face =>
                         System.Math.Round(face.GetRealUserAttribute("PIERCED_P", -1), 4));
                     foreach (var keyP in dictionaryP.Keys)
                     {
                         var pFaces = dictionaryP[keyP];
                         // Revision • 1.2 – 2017 / 12 / 07
-                        var dictionaryW = pFaces.ToILookIDict(face =>
+                        var dictionaryW = pFaces.__ToILookIDict(face =>
                             System.Math.Round(face.GetRealUserAttribute("PIERCED_W", -1), 4));
                         foreach (var keyW in dictionaryW.Keys)
                         {
@@ -658,7 +658,7 @@ namespace TSG_Library.UFuncs
                                 Component button = null, punch = null, retainer = null;
                                 var layoutComponent = faceW.OwningComponent;
                                 var originalRefset = layoutComponent.ReferenceSet;
-                                layoutComponent._ReferenceSet(PierceProperties.SlugRefsetName);
+                                layoutComponent.__ReferenceSet(PierceProperties.SlugRefsetName);
                                 var expression = __display_part_.Expressions
                                     .ToArray()
                                     .SingleOrDefault(tempExpression => tempExpression.Name == "e");
@@ -691,7 +691,7 @@ namespace TSG_Library.UFuncs
                                     listComps.Add(punch);
 
                                 ChangeRefsets("BODY", listComps.ToArray());
-                                layoutComponent._ReferenceSet(originalRefset);
+                                layoutComponent.__ReferenceSet(originalRefset);
                             }
                         }
                     }
@@ -741,24 +741,24 @@ namespace TSG_Library.UFuncs
             /////////////////////////////////////////////
             /////////////////////////////////////////////
 
-            SetUndoMark(MarkVisibility.Visible, "FastClass");
+            __SetUndoMark(MarkVisibility.Visible, "FastClass");
             try
             {
                 var faces = Ui.Selection.SelectManyFaces();
 
-                var dictionaryShape = faces.ToILookIDict(face => face.GetStringUserAttribute("PIERCED_TYPE", -1));
+                var dictionaryShape = faces.__ToILookIDict(face => face.GetStringUserAttribute("PIERCED_TYPE", -1));
 
                 foreach (var keyShape in dictionaryShape.Keys)
                 {
                     var shapeFaces = dictionaryShape[keyShape];
                     // Revision • 1.2 – 2017 / 12 / 01
-                    var dictionaryP = shapeFaces.ToILookIDict(face =>
+                    var dictionaryP = shapeFaces.__ToILookIDict(face =>
                         System.Math.Round(face.GetRealUserAttribute("PIERCED_P", -1), 4));
                     foreach (var keyP in dictionaryP.Keys)
                     {
                         var pFaces = dictionaryP[keyP];
                         // Revision • 1.2 – 2017 / 12 / 01
-                        var dictionaryW = pFaces.ToILookIDict(face =>
+                        var dictionaryW = pFaces.__ToILookIDict(face =>
                             System.Math.Round(face.GetRealUserAttribute("PIERCED_W", -1), 4));
                         foreach (var keyW in dictionaryW.Keys)
                         {
@@ -809,7 +809,7 @@ namespace TSG_Library.UFuncs
                                 Component button = null, punch = null, retainer = null;
                                 var layoutComponent = faceW.OwningComponent;
                                 var originalRefset = layoutComponent.ReferenceSet;
-                                layoutComponent._ReferenceSet(PierceProperties.SlugRefsetName);
+                                layoutComponent.__ReferenceSet(PierceProperties.SlugRefsetName);
                                 var expression = __display_part_.Expressions
                                     .ToArray()
                                     .SingleOrDefault(tempExpression => tempExpression.Name == "e");
@@ -843,7 +843,7 @@ namespace TSG_Library.UFuncs
                                     listComps.Add(punch);
 
                                 ChangeRefsets("BODY", listComps.ToArray());
-                                layoutComponent._ReferenceSet(originalRefset);
+                                layoutComponent.__ReferenceSet(originalRefset);
                             }
                         }
                     }
@@ -910,7 +910,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -927,7 +927,7 @@ namespace TSG_Library.UFuncs
         private static void ChangeRefsets(string refsetName, params Component[] components)
         {
             components?.Where(component => component != null).ToList()
-                .ForEach(component => component._ReferenceSet(refsetName));
+                .ForEach(component => component.__ReferenceSet(refsetName));
         }
 
         private static string GetNewPartPath(string partOfThePath, string originalPartPath,
@@ -963,7 +963,7 @@ namespace TSG_Library.UFuncs
             var xAxis = layout.__Members().OfType<DatumAxis>().Single(axis => axis.Name == "PIERCED_AXIS_X_" + integer);
             var yAxis = layout.__Members().OfType<DatumAxis>().Single(axis => axis.Name == "PIERCED_AXIS_Y_" + integer);
             var zAxis = layout.__Members().OfType<DatumAxis>().Single(axis => axis.Name == "PIERCED_AXIS_Z_" + integer);
-            var orientation = xAxis.Direction._ToMatrix3x3(yAxis.Direction);
+            var orientation = xAxis.Direction.__ToMatrix3x3(yAxis.Direction);
             var newOrigin = xAxis.Origin;
             if(zOffsetExpression != null)
                 newOrigin = new Point3d(xAxis.Origin.X, xAxis.Origin.Y, xAxis.Origin.Z + zOffsetExpression.Value);
@@ -986,22 +986,22 @@ namespace TSG_Library.UFuncs
             addedComponent.SetUserAttribute(PierceProperties.Pierced_Type, -1,
                 snapFace.GetStringUserAttribute(PierceProperties.Pierced_Type, -1), NXOpen.Update.Option.Now);
 
-            addedComponent._ReferenceSet(referenceSet);
+            addedComponent.__ReferenceSet(referenceSet);
 
             using (new ReferenceSetReset(addedComponent))
             {
-                addedComponent._ReferenceSet("BODY");
-                var owningPart = addedComponent.OwningComponent._Prototype();
+                addedComponent.__ReferenceSet("BODY");
+                var owningPart = addedComponent.OwningComponent.__Prototype();
                 var bodyReferenceSet = owningPart.__FindReferenceSetOrNull("BODY");
                 bodyReferenceSet?.AddObjectsToReferenceSet(new NXObject[] { addedComponent });
             }
 
             var zAxisComponent = addedComponent.__Members()
                 .OfType<DatumAxis>()
-                .Single(axis => axis.Direction._IsEqualTo(_Vector3dZ()));
+                .Single(axis => axis.Direction.__IsEqualTo(__Vector3dZ()));
 
             var constraint = Constraints.CreateAlign(__work_part_, zAxisComponent, zAxis);
-            session_.delete_objects(constraint);
+            session_.__DeleteObjects(constraint);
 
             if(!addedComponent.GetStringUserAttribute("LIBRARY", -1).ToLower().Contains("retainer"))
                 _addedComponents.Add(new Tuple<Component, Face>(addedComponent, snapFace));
@@ -1028,7 +1028,7 @@ namespace TSG_Library.UFuncs
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
                 finally
                 {
@@ -1178,7 +1178,7 @@ namespace TSG_Library.UFuncs
                     false);
                 componentNetwork.Solve();
                 positioner.ClearNetwork();
-                session_.delete_objects(componentNetwork);
+                session_.__DeleteObjects(componentNetwork);
                 positioner.EndAssemblyConstraints();
                 return constraint.GetDisplayedConstraint();
             }

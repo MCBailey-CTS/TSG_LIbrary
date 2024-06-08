@@ -22,7 +22,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
         {
             var mirroredComp = (Component)dict[originalComp];
 
-            var mirroredPart = mirroredComp._Prototype();
+            var mirroredPart = mirroredComp.__Prototype();
 
             var mirroredFeature = (Feature)dict[originalFeature];
 
@@ -33,8 +33,8 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             IList<Face> newFaces = (from originalFace in originalFaces
                 select (
                     from originalEdge in originalFace.GetEdges()
-                    let finalStart = originalEdge._StartPoint()._MirrorMap(plane, originalComp, mirroredComp)
-                    let finalEnd = originalEdge._EndPoint()._MirrorMap(plane, originalComp, mirroredComp)
+                    let finalStart = originalEdge.__StartPoint().__MirrorMap(plane, originalComp, mirroredComp)
+                    let finalEnd = originalEdge.__EndPoint().__MirrorMap(plane, originalComp, mirroredComp)
                     select new Tuple<Point3d, Point3d>(finalStart, finalEnd)).ToList()
                 into edgePoints
                 from mirrorBody in mirroredPart.Bodies.ToArray()

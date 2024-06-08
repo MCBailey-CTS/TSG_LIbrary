@@ -25,16 +25,16 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             var mirroredComp = (Component)dict[originalComp];
 
-            if(!mirroredLinkedBody._IsBroken())
+            if(!mirroredLinkedBody.__IsBroken())
                 return;
 
             var originalLinkedBody = (ExtractFace)originalFeature;
 
             // Check to see if they are both broken. Then we can continue.
-            if(originalLinkedBody._IsBroken())
+            if(originalLinkedBody.__IsBroken())
                 return;
 
-            var xform = originalLinkedBody._XFormTag();
+            var xform = originalLinkedBody.__XFormTag();
 
             _UFSession.So.AskAssyCtxtPartOcc(xform, originalComp.Tag, out var fromPartOcc);
 
@@ -59,7 +59,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             using (new ReferenceSetReset(parent))
             {
-                parent._ReferenceSet("Entire Part");
+                parent.__ReferenceSet("Entire Part");
 
                 ILibraryComponent[] libComps =
                 {
@@ -88,9 +88,9 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                 using (new ReferenceSetReset(fromComp))
                 {
-                    fromComp._ReferenceSet("Entire Part");
+                    fromComp.__ReferenceSet("Entire Part");
 
-                    _WorkPart = originalComp._Prototype();
+                    _WorkPart = originalComp.__Prototype();
 
                     Body[] bodies;
 

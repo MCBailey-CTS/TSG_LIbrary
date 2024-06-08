@@ -20,7 +20,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
         {
             var mirroredComp = (Component)dict[originalComp];
 
-            var mirroredPart = mirroredComp._Prototype();
+            var mirroredPart = mirroredComp.__Prototype();
 
             var mirroredFeature = (Feature)dict[originalFeature];
 
@@ -38,15 +38,15 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             foreach (var originalEdge in originalEdges)
             {
-                var finalStart = originalEdge._StartPoint()._MirrorMap(plane, originalComp, mirroredComp);
+                var finalStart = originalEdge.__StartPoint().__MirrorMap(plane, originalComp, mirroredComp);
 
-                var finalEnd = originalEdge._EndPoint()._MirrorMap(plane, originalComp, mirroredComp);
+                var finalEnd = originalEdge.__EndPoint().__MirrorMap(plane, originalComp, mirroredComp);
 
                 mirroredPart.Curves.CreateLine(finalStart, finalEnd);
 
                 foreach (var body in mirroredPart.Bodies.ToArray())
                 foreach (var e in body.GetEdges())
-                    if(e._HasEndPoints(finalStart, finalEnd))
+                    if(e.__HasEndPoints(finalStart, finalEnd))
                         newEdges.Add(e);
             }
 

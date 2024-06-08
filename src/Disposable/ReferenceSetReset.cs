@@ -34,7 +34,7 @@ namespace TSG_Library.Disposable
         {
             foreach (var keyComponent in _compStringDictionary.Keys)
             {
-                keyComponent._ReferenceSet(_compStringDictionary[keyComponent]);
+                keyComponent.__ReferenceSet(_compStringDictionary[keyComponent]);
                 keyComponent.RedisplayObject();
             }
         }

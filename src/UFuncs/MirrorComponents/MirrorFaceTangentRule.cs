@@ -21,7 +21,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
         {
             var mirroredComp = (Component)dict[originalComp];
 
-            var mirroredPart = mirroredComp._Prototype();
+            var mirroredPart = mirroredComp.__Prototype();
 
             var mirroredFeature = (Feature)dict[originalFeature];
 
@@ -33,13 +33,13 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 #pragma warning restore 618
 
             IList<Tuple<Point3d, Point3d>> expectedStartFaceEdgePoints = (from edge in originalStartFace.GetEdges()
-                let mirrorStart = edge._StartPoint()._MirrorMap(plane, originalComp, mirroredComp)
-                let mirrorEnd = edge._EndPoint()._MirrorMap(plane, originalComp, mirroredComp)
+                let mirrorStart = edge.__StartPoint().__MirrorMap(plane, originalComp, mirroredComp)
+                let mirrorEnd = edge.__EndPoint().__MirrorMap(plane, originalComp, mirroredComp)
                 select Tuple.Create(mirrorStart, mirrorEnd)).ToList();
 
             IList<Tuple<Point3d, Point3d>> expectedEndFaceEdgePoints = (from edge in originalEndFace.GetEdges()
-                let mirrorStart = edge._StartPoint()._MirrorMap(plane, originalComp, mirroredComp)
-                let mirrorEnd = edge._EndPoint()._MirrorMap(plane, originalComp, mirroredComp)
+                let mirrorStart = edge.__StartPoint().__MirrorMap(plane, originalComp, mirroredComp)
+                let mirrorEnd = edge.__EndPoint().__MirrorMap(plane, originalComp, mirroredComp)
                 select Tuple.Create(mirrorStart, mirrorEnd)).ToList();
 
             Face mirrorStartFace = null;

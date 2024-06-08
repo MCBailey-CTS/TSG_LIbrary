@@ -142,7 +142,7 @@ namespace TSG_Library.Utilities
             }
             catch (Exception ex)
             {
-                ex._PrintException($"Exception caught for GFolder '{workPart.FullPath}'");
+                ex.__PrintException($"Exception caught for GFolder '{workPart.FullPath}'");
                 return null;
             }
         }

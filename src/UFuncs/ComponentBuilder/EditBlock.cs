@@ -186,7 +186,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -233,7 +233,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -382,7 +382,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -436,7 +436,7 @@ namespace TSG_Library.UFuncs
             {
                 buttonEditConstruction.Enabled = true;
                 buttonEndEditConstruction.Enabled = false;
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -675,7 +675,7 @@ namespace TSG_Library.UFuncs
             catch (Exception ex)
             {
                 EnableForm();
-                ex._PrintException();
+                ex.__PrintException();
                 ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
                 ufsession_.Disp.RegenerateDisplay();
             }
@@ -917,7 +917,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
             finally
             {
@@ -1189,7 +1189,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
 
             EnableForm();
@@ -1986,7 +1986,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
 
             ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
@@ -2389,7 +2389,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
 
             Show();
@@ -2638,7 +2638,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
 
             Show();
@@ -3103,7 +3103,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
 
             Show();
@@ -3257,7 +3257,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -3370,7 +3370,7 @@ namespace TSG_Library.UFuncs
             {
                 ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
                 ufsession_.Disp.RegenerateDisplay();
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -3732,7 +3732,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -3771,7 +3771,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -3911,7 +3911,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -3945,7 +3945,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -4198,7 +4198,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
                 ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
                 ufsession_.Disp.RegenerateDisplay();
             }
@@ -4462,7 +4462,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -4862,7 +4862,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
     }

@@ -42,16 +42,16 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             foreach (var tuple in edgePoints)
             {
-                if(edge0._HasEndPoints(tuple.Item1, tuple.Item2))
+                if(edge0.__HasEndPoints(tuple.Item1, tuple.Item2))
                     matchedEdges.Add(edge0);
 
-                if(edge1._HasEndPoints(tuple.Item1, tuple.Item2))
+                if(edge1.__HasEndPoints(tuple.Item1, tuple.Item2))
                     matchedEdges.Add(edge1);
 
-                if(edge2._HasEndPoints(tuple.Item1, tuple.Item2))
+                if(edge2.__HasEndPoints(tuple.Item1, tuple.Item2))
                     matchedEdges.Add(edge2);
 
-                if(edge3._HasEndPoints(tuple.Item1, tuple.Item2))
+                if(edge3.__HasEndPoints(tuple.Item1, tuple.Item2))
                     matchedEdges.Add(edge3);
             }
 
@@ -71,7 +71,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
                 var mirroredComp = (Component)dict[originalComp];
 
                 // ReSharper disable once UnusedVariable
-                var mirroredPart = mirroredComp._Prototype();
+                var mirroredPart = mirroredComp.__Prototype();
 
                 var mirroredFeature = (Feature)dict[originalFeature];
 

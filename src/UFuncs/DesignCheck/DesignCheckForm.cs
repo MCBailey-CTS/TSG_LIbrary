@@ -227,7 +227,7 @@ namespace TSG_Library.UFuncs
                         catch (Exception ex)
                         {
                             exceptions_node.Nodes.Add(part.__TreeNode());
-                            ex._PrintException();
+                            ex.__PrintException();
                         }
 
                     check_node.Text = $"{check_node.Text} -> P: {passed_node.Nodes.Count}, " +
@@ -239,7 +239,7 @@ namespace TSG_Library.UFuncs
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
         }
 
@@ -334,7 +334,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
             finally
             {
@@ -359,7 +359,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 

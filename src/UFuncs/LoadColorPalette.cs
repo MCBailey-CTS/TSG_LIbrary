@@ -63,7 +63,7 @@ namespace TSG_Library.UFuncs
             try
             {
                 foreach (var child in __display_part_.ComponentAssembly.RootComponent.GetChildren()
-                             .Where(__c => __c.__IsLoaded()).Select(__c => __c._Prototype()).Distinct())
+                             .Where(__c => __c.__IsLoaded()).Select(__c => __c.__Prototype()).Distinct())
                     try
                     {
                         __display_part_ = child;
@@ -72,7 +72,7 @@ namespace TSG_Library.UFuncs
                     }
                     catch (Exception ex)
                     {
-                        ex._PrintException();
+                        ex.__PrintException();
                     }
 
                 //ComponentAssembly c = displayPart.ComponentAssembly;
@@ -84,7 +84,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
                 //session_.ListingWindow.WriteLine("Failed: " & e.ToString);
             }
             //session_.ListingWindow.Close();
@@ -114,7 +114,7 @@ namespace TSG_Library.UFuncs
                     }
                     catch (Exception ex)
                     {
-                        ex._PrintException();
+                        ex.__PrintException();
                     }
 
                 // child.SetName(child.Prototype.OwningPart.Leaf.ToUpper);

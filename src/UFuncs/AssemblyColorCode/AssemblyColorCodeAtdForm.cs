@@ -49,7 +49,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -269,7 +269,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
             finally
             {
@@ -279,7 +279,7 @@ namespace TSG_Library.UFuncs
 
         private void ButtonInheritColor_Click(object sender, EventArgs e)
         {
-            using (session_.using_form_show_hide(this))
+            using (session_.__UsingFormShowHide(this))
             {
                 try
                 {
@@ -305,7 +305,7 @@ namespace TSG_Library.UFuncs
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
             }
         }

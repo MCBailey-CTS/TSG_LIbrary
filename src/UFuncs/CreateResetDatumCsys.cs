@@ -61,7 +61,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -81,7 +81,7 @@ namespace TSG_Library.UFuncs
                 }
 
                 var cartesianCoordinateSystem1 = displayPart.WCS.Save();
-                using (session_.using_suppress_display())
+                using (session_.__UsingSuppressDisplay())
                 {
                     ufsession_.Disp.SetDisplay(UFConstants.UF_DISP_SUPPRESS_DISPLAY);
 
@@ -114,7 +114,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
             finally
             {
@@ -190,7 +190,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
                 displayPart.Views.UpdateDisplay();
             }
         }
@@ -312,7 +312,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
 
                 ufsession_.Part.SetDisplayPart(originalDisplayPart.Tag);
                 ufsession_.Assem.SetWorkPart(originalDisplayPart.Tag);
@@ -382,7 +382,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
                 ufsession_.Disp.SetDisplay(UFConstants.UF_DISP_UNSUPPRESS_DISPLAY);
                 displayPart.Views.Regenerate();
             }
@@ -453,7 +453,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -578,7 +578,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -589,7 +589,7 @@ namespace TSG_Library.UFuncs
                 foreach (var child in assembly.GetChildren())
                 {
                     if(child.IsSuppressed) continue;
-                    var isValid = child.DisplayName._IsDetail();
+                    var isValid = child.DisplayName.__IsDetail();
 
                     if(isValid)
                     {
@@ -619,7 +619,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
     }

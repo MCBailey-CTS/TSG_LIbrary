@@ -72,7 +72,7 @@ namespace TSG_Library.UFuncs
             catch (Exception ex)
             {
                 errors++;
-                ex._PrintException();
+                ex.__PrintException();
             }
 
             try
@@ -108,7 +108,7 @@ namespace TSG_Library.UFuncs
             catch (Exception ex)
             {
                 errors++;
-                ex._PrintException();
+                ex.__PrintException();
             }
 
             try
@@ -140,7 +140,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
                 errors++;
             }
 
@@ -173,7 +173,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
                 errors++;
             }
 
@@ -206,7 +206,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
                 errors++;
             }
 
@@ -239,7 +239,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
                 errors++;
             }
 
@@ -272,7 +272,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
                 errors++;
             }
 
@@ -305,7 +305,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
                 errors++;
             }
 
@@ -338,7 +338,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
                 errors++;
             }
 

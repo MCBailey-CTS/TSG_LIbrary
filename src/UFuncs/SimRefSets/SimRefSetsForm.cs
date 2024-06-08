@@ -33,11 +33,11 @@ namespace TSG_Library.UFuncs
 
         private void Button_Selected(object sender, EventArgs e)
         {
-            using (session_.using_form_show_hide(this))
+            using (session_.__UsingFormShowHide(this))
             {
                 try
                 {
-                    SetUndoMark(MarkVisibility.Visible, "SimRefSetMaker");
+                    __SetUndoMark(MarkVisibility.Visible, "SimRefSetMaker");
 
                     Component[] nxComponents;
 
@@ -68,7 +68,7 @@ namespace TSG_Library.UFuncs
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
             }
         }
@@ -131,7 +131,7 @@ namespace TSG_Library.UFuncs
                         switch (result)
                         {
                             case DialogResult.Yes:
-                                session_.delete_objects(alreadyNamedRefSet);
+                                session_.__DeleteObjects(alreadyNamedRefSet);
                                 if(__work_part_.GetAllReferenceSets().Any(set => set.Name == newRefSetName))
                                     print_("Reference Set " + newRefSetName + " was unable to be deleted");
                                 else
@@ -161,7 +161,7 @@ namespace TSG_Library.UFuncs
 
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
         }
 

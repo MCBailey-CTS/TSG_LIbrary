@@ -44,7 +44,7 @@ namespace TSG_Library.UFuncs
 
                     if(selComponents.Count != 0)
                     {
-                        using (session_.using_display_part_reset())
+                        using (session_.__usingDisplayPartReset())
                         {
                             foreach (var comp in selComponents.Select(__c => __c))
                             {
@@ -125,7 +125,7 @@ namespace TSG_Library.UFuncs
                                 }
 
                                 if(addToDelete.Count != 0)
-                                    session_.delete_objects(addToDelete.ToArray());
+                                    session_.__DeleteObjects(addToDelete.ToArray());
 
                                 // get scale expression value
                                 var scale = 1.00;
@@ -164,7 +164,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 

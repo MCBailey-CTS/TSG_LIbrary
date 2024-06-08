@@ -34,7 +34,7 @@ namespace TSG_Library.UFuncs
             var freeEdges = edges.Where(edge => edge.GetFaces().Length == 1).ToArray();
 
             // Gets the curve representation of the {freeEdges}.
-            var freeEdgeCurves = freeEdges.Select(edge => edge._ToCurve()).ToArray();
+            var freeEdgeCurves = freeEdges.Select(edge => edge.__ToCurve()).ToArray();
 
             // Sets all the free edge curves to the current work layer.
             foreach (var curve in freeEdgeCurves)

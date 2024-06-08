@@ -277,7 +277,7 @@ namespace TSG_Library.UFuncs
                     Reset();
                 else if(sender == btnCreate)
                     foreach (var master in _selectedMasters)
-                        using (session_.using_display_part_reset())
+                        using (session_.__usingDisplayPartReset())
                         {
                             CreateData(master.Item1, master.Item2, txtDataLevel.Text, txtPLevel.Text,
                                 chkMakeStp.Checked);
@@ -285,7 +285,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -413,7 +413,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -530,7 +530,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -548,7 +548,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
 
             Show();
@@ -657,7 +657,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException("Error when creating Step file for " + partPath);
+                ex.__PrintException("Error when creating Step file for " + partPath);
             }
         }
 
@@ -683,10 +683,10 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                TheUFSession.So.CreateXformAssyCtxt(master._Prototype().Tag, NXOpen.Tag.Null, master.Tag,
+                TheUFSession.So.CreateXformAssyCtxt(master.__Prototype().Tag, NXOpen.Tag.Null, master.Tag,
                     out var xform);
 
-                TheUFSession.Wave.CreateLinkedBody(simulationBody.Tag, xform, master._Prototype().Tag, false,
+                TheUFSession.Wave.CreateLinkedBody(simulationBody.Tag, xform, master.__Prototype().Tag, false,
                     out var linkedFeature);
 
                 UFSession.GetUFSession().Modl.Update();

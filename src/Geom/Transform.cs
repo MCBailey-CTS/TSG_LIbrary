@@ -103,7 +103,7 @@ namespace TSG_Library.Geom
         public static Transform CreateRotation(Point3d basePoint, Vector3d axis, double angle)
         {
             var array = new double[12];
-            ufsession_.Trns.CreateRotationMatrix(basePoint._ToArray(), axis._ToArray(), ref angle, array, out var _);
+            ufsession_.Trns.CreateRotationMatrix(basePoint.__ToArray(), axis.__ToArray(), ref angle, array, out var _);
             return new Transform(array);
         }
 
@@ -117,7 +117,7 @@ namespace TSG_Library.Geom
         /// </remarks>
         public static Transform CreateRotation(Point3d basePoint, double angle)
         {
-            return CreateRotation(basePoint, _Vector3dZ(), angle);
+            return CreateRotation(basePoint, __Vector3dZ(), angle);
         }
 
         /// <summary>Creates a transform that performs rotation defined by an orientation</summary>
@@ -188,7 +188,7 @@ namespace TSG_Library.Geom
         {
             var array = new double[12];
             var type = 2;
-            ufsession_.Trns.CreateScalingMatrix(ref type, scaleFactors, basePoint._ToArray(), array, out var _);
+            ufsession_.Trns.CreateScalingMatrix(ref type, scaleFactors, basePoint.__ToArray(), array, out var _);
             return new Transform(array);
         }
 
@@ -206,7 +206,7 @@ namespace TSG_Library.Geom
             var array = new double[12];
             var type = 1;
             var scales = new double[3] { scaleFactor, 1.0, 1.0 };
-            uFSession.Trns.CreateScalingMatrix(ref type, scales, basePoint._ToArray(), array, out var _);
+            uFSession.Trns.CreateScalingMatrix(ref type, scales, basePoint.__ToArray(), array, out var _);
             return new Transform(array);
         }
 

@@ -64,7 +64,7 @@ namespace TSG_Library.Utilities
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 

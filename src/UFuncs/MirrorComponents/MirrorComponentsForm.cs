@@ -115,7 +115,7 @@ namespace TSG_Library.UFuncs
                 {
                     _UFSession.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
 
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
 
                 var keys = mirrorDict.Keys.OfType<Component>().ToArray();
@@ -186,7 +186,7 @@ namespace TSG_Library.UFuncs
             }
             catch (NXException ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
 
                 return false;
             }
@@ -252,9 +252,9 @@ namespace TSG_Library.UFuncs
 
             mirrorDict.Add(copyComponent, compToAdd);
 
-            var oFeatures = copyComponent._Prototype().Features.ToArray();
+            var oFeatures = copyComponent.__Prototype().Features.ToArray();
 
-            var nFeatures = compToAdd._Prototype().Features.ToArray();
+            var nFeatures = compToAdd.__Prototype().Features.ToArray();
 
             for (var i = 0; i < oFeatures.Length; i++)
                 mirrorDict.Add(oFeatures[i], nFeatures[i]);
@@ -360,7 +360,7 @@ namespace TSG_Library.UFuncs
 
                 UpdateSessionParts();
 
-                if(!mirrorComp._Origin()._IsEqualTo(_Point3dOrigin))
+                if(!mirrorComp.__Origin().__IsEqualTo(_Point3dOrigin))
                 {
                     NewMethod26(mirrorComp);
                     continue;
@@ -462,8 +462,8 @@ namespace TSG_Library.UFuncs
 
         private void NewMethod25(Component mirrorComp, bool isBlockComp)
         {
-            var planeOrigin = mirrorPlane.Origin._Array();
-            var planeNormal = mirrorPlane.Normal._ToArray();
+            var planeOrigin = mirrorPlane.Origin.__Array();
+            var planeNormal = mirrorPlane.Normal.__ToArray();
             Tag selectedPlane;
 
             if(isBlockComp)
@@ -792,8 +792,8 @@ namespace TSG_Library.UFuncs
             var height = blockFeatureBuilder1.Height.RightHandSide;
             var blkOrigin = __display_part_.WCS.Origin;
             var blkOrientation = __display_part_.WCS.CoordinateSystem.Orientation.Element;
-            var xAxis = blkOrientation._AxisX();
-            var yAxis = blkOrientation._AxisY();
+            var xAxis = blkOrientation.__AxisX();
+            var yAxis = blkOrientation.__AxisY();
             var blkFeatBuilderPoint = _WorkPart.Points.CreatePoint(blkOrigin);
             blkFeatBuilderPoint.SetCoordinates(blkOrigin);
             blockFeatureBuilder1.OriginPoint = blkFeatBuilderPoint;
@@ -806,9 +806,9 @@ namespace TSG_Library.UFuncs
         private void NewMethod8(double[] mirrorMatrix, List<Tag> mirrorMove, BlockFeatureBuilder blockFeatureBuilder2)
         {
             blockFeatureBuilder2.GetOrientation(out var xAxis, out var yAxis);
-            var initOrigin = blockFeatureBuilder2.Origin._Array();
-            var xVector = xAxis._ToArray();
-            var yVector = yAxis._ToArray();
+            var initOrigin = blockFeatureBuilder2.Origin.__Array();
+            var xVector = xAxis.__ToArray();
+            var yVector = yAxis.__ToArray();
             var initMatrix = new double[9];
             _UFSession.Mtx3.Initialize(xVector, yVector, initMatrix);
             _UFSession.Csys.CreateMatrix(initMatrix, out var tempMatrix);
@@ -827,8 +827,8 @@ namespace TSG_Library.UFuncs
             var height = blockFeatureBuilder2.Height.RightHandSide;
             var blkOrigin = mirrorCsys1.Origin;
             var blkOrientation = mirrorCsys1.Orientation.Element;
-            var xAxis1 = blkOrientation._AxisX();
-            var yAxis1 = blkOrientation._AxisY();
+            var xAxis1 = blkOrientation.__AxisX();
+            var yAxis1 = blkOrientation.__AxisY();
             var blkFeatBuilderPoint = _WorkPart.Points.CreatePoint(blkOrigin);
             blkFeatBuilderPoint.SetCoordinates(blkOrigin);
             blockFeatureBuilder2.OriginPoint = blkFeatBuilderPoint;
@@ -1057,13 +1057,13 @@ namespace TSG_Library.UFuncs
 
                 Debugger.Launch();
 
-                var originalPart = originalComp._Prototype();
+                var originalPart = originalComp.__Prototype();
 
-                var mirroredPart = mirroredComp._Prototype();
+                var mirroredPart = mirroredComp.__Prototype();
 
-                originalComp._Prototype().Features.SuppressFeatures(originalComp._Prototype().Features.GetFeatures());
+                originalComp.__Prototype().Features.SuppressFeatures(originalComp.__Prototype().Features.GetFeatures());
 
-                mirroredComp._Prototype().Features.SuppressFeatures(mirroredComp._Prototype().Features.GetFeatures());
+                mirroredComp.__Prototype().Features.SuppressFeatures(mirroredComp.__Prototype().Features.GetFeatures());
 
                 var originalBodies = originalPart.Bodies.ToArray();
 
@@ -1132,7 +1132,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
             finally
             {

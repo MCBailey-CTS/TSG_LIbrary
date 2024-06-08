@@ -45,7 +45,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -90,7 +90,7 @@ namespace TSG_Library.UFuncs
                 catch (Exception ex)
                 {
                     comboBoxVersion.Text = "";
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
             }
 
@@ -135,7 +135,7 @@ namespace TSG_Library.UFuncs
             catch (Exception ex)
             {
                 comboBoxVersion.Text = "";
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -227,7 +227,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
 
             //Set FILENAME Part Attribute to name builder 
@@ -241,7 +241,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -404,7 +404,7 @@ namespace TSG_Library.UFuncs
             //Handle this exception somehow - Duane
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 

@@ -13,34 +13,34 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
     {
         public Point3d MirrorMap(Point3d position, Surface.Plane plane, Component fromComponent, Component toComponent)
         {
-            __display_part_.WCS.SetOriginAndMatrix(fromComponent._Origin(), fromComponent._Orientation());
+            __display_part_.WCS.SetOriginAndMatrix(fromComponent.__Origin(), fromComponent.__Orientation());
 
-            var newStart = MapWcsToAcs(position)._MirrorMap(plane, fromComponent, toComponent);
+            var newStart = __MapWcsToAcs(position).__MirrorMap(plane, fromComponent, toComponent);
 
-            __display_part_.WCS.SetOriginAndMatrix(toComponent._Origin(), toComponent._Orientation());
+            __display_part_.WCS.SetOriginAndMatrix(toComponent.__Origin(), toComponent.__Orientation());
 
-            return MapAcsToWcs(newStart);
+            return __MapAcsToWcs(newStart);
         }
 
         public Vector3d MirrorMap(Vector3d vector, Surface.Plane plane, Component fromComponent, Component toComponent)
         {
-            __display_part_.WCS.SetOriginAndMatrix(fromComponent._Origin(), fromComponent._Orientation());
+            __display_part_.WCS.SetOriginAndMatrix(fromComponent.__Origin(), fromComponent.__Orientation());
 
-            var newStart = MapWcsToAcs(vector)._MirrorMap(plane, fromComponent, toComponent);
+            var newStart = __MapWcsToAcs(vector).__MirrorMap(plane, fromComponent, toComponent);
 
-            __display_part_.WCS.SetOriginAndMatrix(toComponent._Origin(), toComponent._Orientation());
+            __display_part_.WCS.SetOriginAndMatrix(toComponent.__Origin(), toComponent.__Orientation());
 
-            return MapAcsToWcs(newStart);
+            return __MapAcsToWcs(newStart);
         }
 
         public Matrix3x3 MirrorMap(Matrix3x3 orientation, Surface.Plane plane, Component fromComponent,
             Component toComponent)
         {
-            var newXVector = MirrorMap(orientation._AxisY(), plane, fromComponent, toComponent);
+            var newXVector = MirrorMap(orientation.__AxisY(), plane, fromComponent, toComponent);
 
-            var newYVector = MirrorMap(orientation._AxisX(), plane, fromComponent, toComponent);
+            var newYVector = MirrorMap(orientation.__AxisX(), plane, fromComponent, toComponent);
 
-            return newXVector._ToMatrix3x3(newYVector);
+            return newXVector.__ToMatrix3x3(newYVector);
         }
 
         public abstract string FeatureType { get; }
@@ -71,16 +71,16 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             foreach (var tuple in edgePoints)
             {
-                if(edge0._HasEndPoints(tuple.Item1, tuple.Item2))
+                if(edge0.__HasEndPoints(tuple.Item1, tuple.Item2))
                     matchedEdges.Add(edge0);
 
-                if(edge1._HasEndPoints(tuple.Item1, tuple.Item2))
+                if(edge1.__HasEndPoints(tuple.Item1, tuple.Item2))
                     matchedEdges.Add(edge1);
 
-                if(edge2._HasEndPoints(tuple.Item1, tuple.Item2))
+                if(edge2.__HasEndPoints(tuple.Item1, tuple.Item2))
                     matchedEdges.Add(edge2);
 
-                if(edge3._HasEndPoints(tuple.Item1, tuple.Item2))
+                if(edge3.__HasEndPoints(tuple.Item1, tuple.Item2))
                     matchedEdges.Add(edge3);
             }
 

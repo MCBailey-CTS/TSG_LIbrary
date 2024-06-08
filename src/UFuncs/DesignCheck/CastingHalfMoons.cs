@@ -100,7 +100,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 
             // Checks to make sure that the normal of all the half moon faces is parallel to the absolute XY plane of the displayed snapPart.
             if(allHalfMoonFacesInPart.Any(halfMoonFace =>
-                   !halfMoonFace._NormalVector()._IsPerpendicularTo(_Vector3dZ())))
+                   !halfMoonFace.__NormalVector().__IsPerpendicularTo(__Vector3dZ())))
             {
                 //yield
                 //    return new DesignCheckResult(false, part, this,

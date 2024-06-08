@@ -74,7 +74,7 @@ namespace TSG_Library.UFuncs
 
                 var workPlane1 = __display_part_.Preferences.Workplane;
 
-                using (session_.using_form_show_hide(this))
+                using (session_.__UsingFormShowHide(this))
                 {
                     try
                     {
@@ -84,7 +84,7 @@ namespace TSG_Library.UFuncs
                     }
                     catch (Exception ex)
                     {
-                        ex._PrintException();
+                        ex.__PrintException();
                     }
                     finally
                     {
@@ -95,7 +95,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -191,7 +191,7 @@ namespace TSG_Library.UFuncs
         {
             Importer importer1 = __work_part_.ImportManager.CreatePartImporter();
 
-            using (session_.using_builder_destroyer(importer1))
+            using (session_.__UsingBuilderDestroyer(importer1))
             {
                 var partImporter1 = (PartImporter)importer1;
                 partImporter1.FileName = path;

@@ -108,7 +108,7 @@ namespace TSG_Library.UFuncs
             }
             catch (NXException ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -162,7 +162,7 @@ namespace TSG_Library.UFuncs
             }
             catch (NXException ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -259,7 +259,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -389,7 +389,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
     }

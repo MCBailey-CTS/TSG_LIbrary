@@ -79,7 +79,7 @@ namespace TSG_Library.UFuncs
                     if(part.IsFullyLoaded)
                         continue;
 
-                    session_.find_or_open(part.FullPath);
+                    session_.__FindOrOpen(part.FullPath);
                 }
 
                 if(displayPart.ComponentAssembly.RootComponent is null)
@@ -103,7 +103,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -126,7 +126,7 @@ namespace TSG_Library.UFuncs
                 var openAssembly = openFileDialog1.FileName;
                 assemblyPart = openFileDialog1.FileName;
                 displayPathText = assemblyPart;
-                session_.find_or_open(openAssembly);
+                session_.__FindOrOpen(openAssembly);
                 labelAssmText.Text = openAssembly;
                 var total = session_.Parts.ToArray().Length + 1;
                 var count = 1;
@@ -140,7 +140,7 @@ namespace TSG_Library.UFuncs
                     if(part.IsFullyLoaded)
                         continue;
 
-                    session_.find_or_open(part.FullPath);
+                    session_.__FindOrOpen(part.FullPath);
                 }
 
                 foreach (Part part in session_.Parts)
@@ -152,7 +152,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -221,13 +221,13 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
         private void CloseAssembly(string fileName)
         {
-            session_.find_or_open(fileName).__Close(true, true);
+            session_.__FindOrOpen(fileName).__Close(true, true);
         }
 
         private void SetSessionLoadOptions()
@@ -335,7 +335,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 

@@ -18,7 +18,7 @@ namespace TSG_Library.UFuncs
 
         public Face TopFace { get; }
 
-        public Point3d Origin => Polyline.First()._StartPoint();
+        public Point3d Origin => Polyline.First().__StartPoint();
 
         [Obsolete(nameof(NotImplementedException))]
         public SlugObj(Extrude extrudeSp, Vector3d vector, ISet<Curve> polyline) : this()
@@ -29,16 +29,16 @@ namespace TSG_Library.UFuncs
             Polyline = polyline;
 
             var validFaces = extrudeSp.GetFaces()
-                .Where(face => face._IsPlanar())
+                .Where(face => face.__IsPlanar())
                 .Where(face =>
-                    vector._IsEqualTo(face._NormalVector()) || vector._IsEqualTo(face._NormalVector()._Negate()))
+                    vector.__IsEqualTo(face.__NormalVector()) || vector.__IsEqualTo(face.__NormalVector().__Negate()))
                 .ToArray();
 
             var coordSystem = __work_part_.__CreateCsys(vector);
-            var abs = __work_part_.__CreateCsys(_Vector3dZ());
+            var abs = __work_part_.__CreateCsys(__Vector3dZ());
 
             TopFace = (Face)validFaces.MaxBy(face1 =>
-                face1.GetEdges().First()._StartPoint().__MapCsysToCsys(abs, coordSystem).Z);
+                face1.GetEdges().First().__StartPoint().__MapCsysToCsys(abs, coordSystem).Z);
             Face maxFace = null;
             var maxZ = double.MinValue;
 

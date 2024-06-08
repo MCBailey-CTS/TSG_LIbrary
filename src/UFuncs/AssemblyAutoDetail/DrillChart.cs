@@ -82,7 +82,7 @@ namespace TSG_Library.UFuncUtilities.AssemblyAutoDetailUtilities
                 dict[diameter].Item2.Add(face);
             }
 
-            session_.delete_objects(__display_part_.Layers.GetAllObjectsOnLayer(230).OfType<Note>().ToArray());
+            session_.__DeleteObjects(__display_part_.Layers.GetAllObjectsOnLayer(230).OfType<Note>().ToArray());
 
             var letter = 'A';
 
@@ -126,7 +126,7 @@ namespace TSG_Library.UFuncUtilities.AssemblyAutoDetailUtilities
 
                     TheUFSession.Modl.AskFaceData(face.Tag, out var _, point, dir, box, out var _, out _, out _);
 
-                    using (session_.using_do_update())
+                    using (session_.__UsingDoUpdate())
                     {
                         using (var letteringPreferences1 =
                                __work_part_.Annotations.Preferences.GetLetteringPreferences())
@@ -139,7 +139,7 @@ namespace TSG_Library.UFuncUtilities.AssemblyAutoDetailUtilities
 
                             var note1 = __work_part_.Annotations.CreateNote(
                                 new[] { $"{letter}" },
-                                point._ToPoint3d(),
+                                point.__ToPoint3d(),
                                 AxisOrientation.Horizontal,
                                 letteringPreferences1,
                                 userSymbolPreferences1);
@@ -153,7 +153,7 @@ namespace TSG_Library.UFuncUtilities.AssemblyAutoDetailUtilities
 
                             var draftingNoteBuilder1 = __work_part_.Annotations.CreateDraftingNoteBuilder(note1);
 
-                            using (session_.using_builder_destroyer(draftingNoteBuilder1))
+                            using (session_.__UsingBuilderDestroyer(draftingNoteBuilder1))
                             {
                                 draftingNoteBuilder1.Style.LetteringStyle.GeneralTextSize = .125;
                                 draftingNoteBuilder1.Commit();

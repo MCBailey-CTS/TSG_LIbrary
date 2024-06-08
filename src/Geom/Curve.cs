@@ -41,7 +41,7 @@ namespace TSG_Library.Geom
             public Ray(Point3d origin, Vector3d axis)
             {
                 Origin = origin;
-                Axis = axis._Unit();
+                Axis = axis.__Unit();
             }
 
             /// <summary> A vector along the ray (a unit vector) </summary>
@@ -57,7 +57,7 @@ namespace TSG_Library.Geom
             public Vector3d Axis
             {
                 get => axis;
-                set => axis = value._Unit();
+                set => axis = value.__Unit();
             }
 
             /// <summary> A position on the ray</summary>
@@ -119,14 +119,14 @@ namespace TSG_Library.Geom
             public Vector3d AxisX
             {
                 get => axisX;
-                set => axisX = value._Unit();
+                set => axisX = value.__Unit();
             }
 
             /// <summary> A unit vector along the Y-axis of the arc (where angle = 90)</summary>
             public Vector3d AxisY
             {
                 get => axisY;
-                set => axisY = value._Unit();
+                set => axisY = value.__Unit();
             }
 
             /// <summary> The radius of the arc</summary>
@@ -152,14 +152,14 @@ namespace TSG_Library.Geom
             /// </remarks>
             public static Arc Fillet(Point3d p0, Point3d pa, Point3d p1, double radius)
             {
-                var vector = p0._Subtract(pa)._Unit();
-                var vector2 = p1._Subtract(pa)._Unit();
-                var vector3 = vector._Add(vector2)._Unit();
-                var num = vector._Angle(vector2) / 2.0;
+                var vector = p0.__Subtract(pa).__Unit();
+                var vector2 = p1.__Subtract(pa).__Unit();
+                var vector3 = vector.__Add(vector2).__Unit();
+                var num = vector.__Angle(vector2) / 2.0;
                 var num2 = radius / Math.SinD(num);
-                var center = vector3._Multiply(num2)._Add(pa);
-                var vector4 = vector3._Negate();
-                var vector5 = vector2._Subtract(vector)._Unit();
+                var center = vector3.__Multiply(num2).__Add(pa);
+                var vector4 = vector3.__Negate();
+                var vector5 = vector2.__Subtract(vector).__Unit();
                 var num3 = 90.0 - num;
                 var startAngle = 0.0 - num3;
                 var endAngle = num3;

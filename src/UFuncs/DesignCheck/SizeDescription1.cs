@@ -66,7 +66,7 @@ namespace TSG_Library.Utilities
 
                 var nMatrix = part.NXMatrices.Create(dynamicBlock.__Orientation());
 
-                var origin = dynamicBlock.__Origin()._ToArray();
+                var origin = dynamicBlock.__Origin().__ToArray();
 
                 ufsession_.Csys.CreateTempCsys(origin, nMatrix.Tag, out var tagCsys);
                 var minCorner = new double[3];
@@ -153,7 +153,7 @@ namespace TSG_Library.Utilities
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
 
                 message1 = "Not valid";
 

@@ -83,7 +83,7 @@ namespace TSG_Library.UFuncs
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
 
                 try
@@ -109,7 +109,7 @@ namespace TSG_Library.UFuncs
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
 
                 try
@@ -137,12 +137,12 @@ namespace TSG_Library.UFuncs
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
             finally
             {
@@ -211,11 +211,11 @@ namespace TSG_Library.UFuncs
                 _dict.Remove(datumAxis);
 
                 var newDatumAxis = datumAxis.__OwningPart()
-                    .__CreateFixedDatumAxis(datumAxis.Origin, datumAxis.Direction._Negate());
+                    .__CreateFixedDatumAxis(datumAxis.Origin, datumAxis.Direction.__Negate());
 
                 _dict.Add(newDatumAxis, curves);
 
-                session_.delete_objects(datumAxis);
+                session_.__DeleteObjects(datumAxis);
 
                 foreach (var curve in curves)
                 {
@@ -234,7 +234,7 @@ namespace TSG_Library.UFuncs
 
             private void Selected(Curve curve)
             {
-                if(!curve._IsClosed())
+                if(!curve.__IsClosed())
                 {
                     curve.Unhighlight();
                     return;
@@ -250,8 +250,8 @@ namespace TSG_Library.UFuncs
                     return;
 
                 conic.GetOrientation(out var center, out var xDirection, out var yDirection);
-                var orientation = xDirection._ToMatrix3x3(yDirection);
-                var datumAxis = conic.__OwningPart().__CreateFixedDatumAxis(center, orientation._AxisZ());
+                var orientation = xDirection.__ToMatrix3x3(yDirection);
+                var datumAxis = conic.__OwningPart().__CreateFixedDatumAxis(center, orientation.__AxisZ());
                 _dict.Add(datumAxis, new HashSet<Curve>(new[] { conic }));
                 selectedObjects++;
                 _dictColors.Add(conic, conic.Color);
@@ -272,17 +272,17 @@ namespace TSG_Library.UFuncs
                 if(snap_curves.Length < 3)
                     throw new InvalidOperationException("Selected a set of curves that has less than 3 curves.");
 
-                var a_vec = snap_curves[0]._StartPoint()._Subtract(snap_curves[0]._EndPoint());
-                var b_vec = snap_curves[1]._StartPoint()._Subtract(snap_curves[1]._EndPoint());
+                var a_vec = snap_curves[0].__StartPoint().__Subtract(snap_curves[0].__EndPoint());
+                var b_vec = snap_curves[1].__StartPoint().__Subtract(snap_curves[1].__EndPoint());
                 var cross_vec = b_vec.__Cross(a_vec);
 
                 var __all_on_plane = true;
 
                 for (var i = 2; i < snap_curves.Length; i++)
                 {
-                    var c_vec = snap_curves[i]._StartPoint()._Subtract(snap_curves[i]._EndPoint());
+                    var c_vec = snap_curves[i].__StartPoint().__Subtract(snap_curves[i].__EndPoint());
 
-                    UFSession.GetUFSession().Vec3.Dot(cross_vec._ToArray(), c_vec._ToArray(), out var dot_product);
+                    UFSession.GetUFSession().Vec3.Dot(cross_vec.__ToArray(), c_vec.__ToArray(), out var dot_product);
 
                     if(System.Math.Abs(dot_product) < 0.0001)
                         continue;
@@ -372,7 +372,7 @@ namespace TSG_Library.UFuncs
                     _selectedCurves.Remove(curve);
                 }
 
-                session_.delete_objects(connectedDatumAxis);
+                session_.__DeleteObjects(connectedDatumAxis);
 
                 _dict.Remove(connectedDatumAxis);
 
@@ -397,7 +397,7 @@ namespace TSG_Library.UFuncs
                     _selectedCurves.Remove(curve);
                 }
 
-                session_.delete_objects(connectedDatumAxis);
+                session_.__DeleteObjects(connectedDatumAxis);
 
                 _dict.Remove(connectedDatumAxis);
                 UFSession.GetUFSession().Modl.Update();
@@ -540,10 +540,10 @@ namespace TSG_Library.UFuncs
                         var curveSet = pair.Value;
 
                         if(returnFag)
-                            yield return new Tuple<Vector3d, ISet<Curve>>(datumAxis.Direction._Negate(), curveSet);
+                            yield return new Tuple<Vector3d, ISet<Curve>>(datumAxis.Direction.__Negate(), curveSet);
 
 
-                        session_.delete_objects(datumAxis);
+                        session_.__DeleteObjects(datumAxis);
 
                         foreach (var curve in curveSet)
                             curve.__Color(_dictColors[curve]);

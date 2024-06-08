@@ -44,7 +44,7 @@ namespace TSG_Library.Utilities
             bool print4Views = false,
             bool isChange = false)
         {
-            using (session_.using_display_part_reset())
+            using (session_.__usingDisplayPartReset())
             {
                 try
                 {
@@ -106,7 +106,7 @@ namespace TSG_Library.Utilities
                         }
                         catch (Exception ex)
                         {
-                            ex._PrintException();
+                            ex.__PrintException();
                         }
 
                     if(exportDirectory != null)
@@ -143,14 +143,14 @@ namespace TSG_Library.Utilities
                         {
                             // Sets up the strip.
                             if(isRto || stpDetails || zipAssembly)
-                                using (session_.using_display_part_reset())
+                                using (session_.__usingDisplayPartReset())
                                 {
                                     SetUpStrip(folder);
                                 }
                         }
                         catch (Exception ex)
                         {
-                            ex._PrintException();
+                            ex.__PrintException();
                         }
 
                         UpdateParts(
@@ -182,7 +182,7 @@ namespace TSG_Library.Utilities
 
                         // Prints the parts with 4-Views.
                         if(print4Views)
-                            using (session_.using_display_part_reset())
+                            using (session_.__usingDisplayPartReset())
                             {
                                 PrintPdfs(exportDict["PDF_4-VIEW"]);
                             }
@@ -209,7 +209,7 @@ namespace TSG_Library.Utilities
                                 }
                                 catch (Exception ex)
                                 {
-                                    ex._PrintException();
+                                    ex.__PrintException();
                                 }
 
                         // If this is a RTO then 
@@ -231,7 +231,7 @@ namespace TSG_Library.Utilities
                                 }
                                 catch (Exception ex)
                                 {
-                                    ex._PrintException();
+                                    ex.__PrintException();
                                 }
                         else if(zipAssembly)
                             try
@@ -247,7 +247,7 @@ namespace TSG_Library.Utilities
                             }
                             catch (Exception ex)
                             {
-                                ex._PrintException();
+                                ex.__PrintException();
                             }
 
                         //// Gets the processes that create stp see 3d data.
@@ -357,7 +357,7 @@ namespace TSG_Library.Utilities
                                 }
                                 catch (Exception ex)
                                 {
-                                    ex._PrintException();
+                                    ex.__PrintException();
                                 }
 
                         var expectedFiles = new HashSet<string>(dict.Keys);
@@ -403,7 +403,7 @@ namespace TSG_Library.Utilities
                             }
                             catch (Exception ex)
                             {
-                                ex._PrintException();
+                                ex.__PrintException();
                             }
 
                         // Checks to make sure that any expected data files were actually created.
@@ -593,7 +593,7 @@ namespace TSG_Library.Utilities
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
         }
 
@@ -613,7 +613,7 @@ namespace TSG_Library.Utilities
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
 
             return allPassed;
@@ -667,7 +667,7 @@ namespace TSG_Library.Utilities
 
         public static void CreateCasting(Part part, GFolder folder)
         {
-            using (session_.using_display_part_reset())
+            using (session_.__usingDisplayPartReset())
             {
                 __display_part_ = part;
 
@@ -686,7 +686,7 @@ namespace TSG_Library.Utilities
                     if(File.Exists(step_path))
                         File.Delete(step_path);
 
-                    using (session_.using_lock_ug_updates())
+                    using (session_.__UsingLockUgUpdates())
 
                     {
                         foreach (var child in __display_part_.ComponentAssembly.RootComponent.GetChildren())
@@ -753,7 +753,7 @@ namespace TSG_Library.Utilities
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
 
 
@@ -802,7 +802,7 @@ namespace TSG_Library.Utilities
 
             part.Close(BasePart.CloseWholeTree.False, BasePart.CloseModified.CloseModified, null);
 
-            session_.find_or_open(FullPath);
+            session_.__FindOrOpen(FullPath);
         }
 
         public static void SetLayersInBlanksAndLayoutsAndAddDummies(Part snapStrip010)
@@ -810,7 +810,7 @@ namespace TSG_Library.Utilities
             if(!Regex.IsMatch(snapStrip010.Leaf, Regex_Strip, RegexOptions.IgnoreCase))
                 throw new ArgumentException(@"Must be an op 010 strip.", nameof(snapStrip010));
 
-            using (session_.using_display_part_reset())
+            using (session_.__usingDisplayPartReset())
             {
                 var blankNameRegex = new Regex("^BLANK-([0-9]{1,})$");
 
@@ -903,7 +903,7 @@ namespace TSG_Library.Utilities
                     return;
             }
 
-            var dummyPart = session_.find_or_open(DummyPath);
+            var dummyPart = session_.__FindOrOpen(DummyPath);
             TheUFSession.Ui.SetPrompt($"Adding dummy file to {part.Leaf}.");
             __work_part_.ComponentAssembly.AddComponent(dummyPart, "Entire Part", "DUMMY", _Point3dOrigin,
                 _Matrix3x3Identity, 1, out _);
@@ -988,7 +988,7 @@ namespace TSG_Library.Utilities
                         }
                         catch (Exception ex)
                         {
-                            ex._PrintException();
+                            ex.__PrintException();
                         }
                 }
 
@@ -996,7 +996,7 @@ namespace TSG_Library.Utilities
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -1045,7 +1045,7 @@ namespace TSG_Library.Utilities
                 if(!match.Success)
                     continue;
 
-                if(part.Leaf._IsAssemblyHolder())
+                if(part.Leaf.__IsAssemblyHolder())
                     continue;
 
                 if(part.Leaf.EndsWith("000"))
@@ -1086,7 +1086,7 @@ namespace TSG_Library.Utilities
             bool paraCasting, IEnumerable<Part> castingParts,
             Component[] selected_components)
         {
-            using (session_.using_display_part_reset())
+            using (session_.__usingDisplayPartReset())
             {
                 ISet<Part> selected_parts =
                     new HashSet<Part>(selected_components.Select(__c => __c.Prototype).OfType<Part>());
@@ -1144,7 +1144,7 @@ namespace TSG_Library.Utilities
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -1178,7 +1178,7 @@ namespace TSG_Library.Utilities
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -1224,7 +1224,7 @@ namespace TSG_Library.Utilities
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
 
             TheUFSession.Ui.SetPrompt("All processes have finished.");
@@ -1232,7 +1232,7 @@ namespace TSG_Library.Utilities
 
         public static void UpdateParts(params Part[] parts)
         {
-            var validParts = parts.Where(part => !part.Leaf._IsAssemblyHolder()).DistinctBy(part => part.Leaf)
+            var validParts = parts.Where(part => !part.Leaf.__IsAssemblyHolder()).DistinctBy(part => part.Leaf)
                 .ToArray();
 
             for (var i = 0; i < validParts.Length; i++)
@@ -1248,7 +1248,7 @@ namespace TSG_Library.Utilities
                         // If it is a casting then it cannot contain a child that is a lift lug and set to entire part.
                         if((from child in part.ComponentAssembly.RootComponent.GetChildren()
                                where child.Prototype is Part
-                               where child._Prototype().FullPath.Contains("LiftLugs")
+                               where child.__Prototype().FullPath.Contains("LiftLugs")
                                where child.ReferenceSet != Refset_Empty
                                select child)
                            .Any(child => child.ReferenceSet == Refset_EntirePart))
@@ -1278,7 +1278,7 @@ namespace TSG_Library.Utilities
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException(validParts[i].Leaf);
+                    ex.__PrintException(validParts[i].Leaf);
                 }
         }
 
@@ -1289,9 +1289,9 @@ namespace TSG_Library.Utilities
                 var strip_010 = folder.file_strip("010");
 
                 if(File.Exists(strip_010))
-                    session_.find_or_open(strip_010);
+                    session_.__FindOrOpen(strip_010);
 
-                var op010Strip = session_.find_or_open(strip_010);
+                var op010Strip = session_.__FindOrOpen(strip_010);
 
                 SetLayersInBlanksAndLayoutsAndAddDummies(op010Strip);
 
@@ -1301,7 +1301,7 @@ namespace TSG_Library.Utilities
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -1310,7 +1310,7 @@ namespace TSG_Library.Utilities
             var filePaths = new HashSet<string>();
 
             foreach (var component in GetAssembly(snapPart.ComponentAssembly.RootComponent))
-                filePaths.Add(component._Prototype().FullPath);
+                filePaths.Add(component.__Prototype().FullPath);
 
             return Create7ZipProcess(zipPath, filePaths.ToArray());
         }
@@ -1338,7 +1338,7 @@ namespace TSG_Library.Utilities
 
         public static void PrintPdfs(IEnumerable<Part> partsWith4Views)
         {
-            using (session_.using_suppress_display())
+            using (session_.__UsingSuppressDisplay())
             {
                 try
                 {
@@ -1348,7 +1348,7 @@ namespace TSG_Library.Utilities
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
             }
         }
@@ -1480,7 +1480,7 @@ namespace TSG_Library.Utilities
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -1504,7 +1504,7 @@ namespace TSG_Library.Utilities
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -1618,12 +1618,12 @@ namespace TSG_Library.Utilities
                             "drawingSheetName");
 
             __display_part_ = part;
-            session_.set_display_to_work();
+            session_.__SetDisplayToWork();
             SetLayers();
 
             var pdfBuilder = part.PlotManager.CreatePrintPdfbuilder();
 
-            using (session_.using_builder_destroyer(pdfBuilder))
+            using (session_.__UsingBuilderDestroyer(pdfBuilder))
             {
                 pdfBuilder.Scale = 1.0;
                 pdfBuilder.Size = PrintPDFBuilder.SizeOption.ScaleFactor;
@@ -1660,11 +1660,11 @@ namespace TSG_Library.Utilities
             if(!File.Exists(partPath))
                 throw new FileNotFoundException("Could not find file location \"" + partPath + "\".");
 
-            session_.find_or_open(partPath);
+            session_.__FindOrOpen(partPath);
 
             var stepCreator = Session.GetSession().DexManager.CreateStepCreator();
 
-            using (session_.using_builder_destroyer(stepCreator))
+            using (session_.__UsingBuilderDestroyer(stepCreator))
             {
                 stepCreator.ExportAs = StepCreator.ExportAsOption.Ap214;
                 stepCreator.SettingsFile = settings_file;
@@ -1693,7 +1693,7 @@ namespace TSG_Library.Utilities
             if(File.Exists(filePath))
                 throw new ArgumentOutOfRangeException("output_path", "DWG \"" + filePath + "\" already exists.");
 
-            var part = session_.find_or_open(partPath);
+            var part = session_.__FindOrOpen(partPath);
 
             var sheet = part.DrawingSheets
                             .ToArray()
@@ -1713,7 +1713,7 @@ namespace TSG_Library.Utilities
             }
 
             var dxfdwgCreator1 = session_.DexManager.CreateDxfdwgCreator();
-            using (session_.using_builder_destroyer(dxfdwgCreator1))
+            using (session_.__UsingBuilderDestroyer(dxfdwgCreator1))
             {
                 dxfdwgCreator1.ExportData = DxfdwgCreator.ExportDataOption.Drawing;
                 dxfdwgCreator1.AutoCADRevision = DxfdwgCreator.AutoCADRevisionOptions.R2004;

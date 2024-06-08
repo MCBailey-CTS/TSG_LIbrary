@@ -39,7 +39,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
                     newRules.Add(BaseMirrorRule.MirrorRule(oldRule, originalFeature, plane, originalComp, dict));
             }
 
-            _WorkPart = mirroredComp._Prototype();
+            _WorkPart = mirroredComp.__Prototype();
 
             var markId1 = session_.SetUndoMark(Session.MarkVisibility.Visible, "Redefine Feature");
 

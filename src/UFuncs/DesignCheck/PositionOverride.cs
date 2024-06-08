@@ -27,7 +27,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 
             foreach (var child in part.ComponentAssembly.RootComponent.GetChildren())
                 if(child.GetPositionOverrideType() != PositionOverrideType.Explicit)
-                    part_node.Nodes.Add(child._TreeNode());
+                    part_node.Nodes.Add(child.__TreeNode());
 
             return part_node;
         }

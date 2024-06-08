@@ -21,9 +21,9 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
         {
             var mirroredComp = (Component)dict[originalComp];
 
-            var mirroredPart = mirroredComp._Prototype();
+            var mirroredPart = mirroredComp.__Prototype();
 
-            var originalPart = originalComp._Prototype();
+            var originalPart = originalComp.__Prototype();
 
             originalFeature.Suppress();
 
@@ -41,9 +41,9 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             using (new Destroyer(builder))
             {
-                mirrorOrigin = builder.Direction.Origin._MirrorMap(plane, originalComp, mirroredComp);
+                mirrorOrigin = builder.Direction.Origin.__MirrorMap(plane, originalComp, mirroredComp);
 
-                mirrorVector = builder.Direction.Vector._MirrorMap(plane, originalComp, mirroredComp);
+                mirrorVector = builder.Direction.Vector.__MirrorMap(plane, originalComp, mirroredComp);
 
                 builder.Section.GetSectionData(out var originalSectionDatas);
 
@@ -73,7 +73,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
                                 if(mirrorFaces.Count == 0)
                                     throw new MirrorException("Extrude: EdgeBoundaryRule did not have enough faces.");
 
-                                mirrorRules.Add(mirroredComp._Prototype().ScRuleFactory
+                                mirrorRules.Add(mirroredComp.__Prototype().ScRuleFactory
                                     .CreateRuleEdgeBoundary(mirrorFaces.ToArray()));
 
                                 break;
@@ -86,17 +86,17 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             if(mirrorRules.Count == 0)
                 throw new MirrorException("Did not have enough rules for a commit.");
 
-            _WorkPart = mirroredComp._Prototype();
+            _WorkPart = mirroredComp.__Prototype();
 
             builder = mirroredPart.Features.CreateExtrudeBuilder(mirroredFeature);
 
             using (new Destroyer(builder))
             {
-                var point = mirroredComp._Prototype().Points.CreatePoint(mirrorOrigin);
+                var point = mirroredComp.__Prototype().Points.CreatePoint(mirrorOrigin);
 
-                builder.Direction = mirroredComp._Prototype().Directions.CreateDirection(point, mirrorVector);
+                builder.Direction = mirroredComp.__Prototype().Directions.CreateDirection(point, mirrorVector);
 
-                builder.Section = mirroredComp._Prototype().Sections.CreateSection();
+                builder.Section = mirroredComp.__Prototype().Sections.CreateSection();
 
                 builder.Section.AddToSection(mirrorRules.ToArray(), null, null, null, _Point3dOrigin,
                     Section.Mode.Create);

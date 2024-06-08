@@ -206,7 +206,7 @@ namespace TSG_Library.UFuncs
 
                 var partsInBom = _selectedComponents
                     .Where(__c => __c.__IsLoaded())
-                    .Select(component => component._Prototype())
+                    .Select(component => component.__Prototype())
                     .Distinct()
                     .ToArray();
 
@@ -241,7 +241,7 @@ namespace TSG_Library.UFuncs
 
                     var fasteners = part.ComponentAssembly.RootComponent.GetChildren()
                         .Where(__c => !__c.IsSuppressed)
-                        .Where(__c => __c._IsFastener())
+                        .Where(__c => __c.__IsFastener())
                         .ToArray();
 
                     var metric_fasteners = fasteners.Where(__f => __f.DisplayName.ToLower().Contains("mm")).ToArray();
@@ -297,7 +297,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
             finally
             {
@@ -346,7 +346,7 @@ namespace TSG_Library.UFuncs
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException(part.Leaf);
+                    ex.__PrintException(part.Leaf);
                 }
 
             return allPassed;
@@ -471,7 +471,7 @@ namespace TSG_Library.UFuncs
                 foreach (var key in dict_parts.Keys)
                     try
                     {
-                        var part = session_.find_or_open($"{folder.customer_number}-{dict_parts[key].Data}");
+                        var part = session_.__FindOrOpen($"{folder.customer_number}-{dict_parts[key].Data}");
                         var description = dict_sizes[key].Data;
 
                         if(!chkMM.Checked)
@@ -512,7 +512,7 @@ namespace TSG_Library.UFuncs
                         if(!match.Success)
                             continue;
 
-                        var box = solidBody._Box3d();
+                        var box = solidBody.__Box3d();
                         var x = double.Parse(match.Groups["num0"].Value) *
                                 25.4; //  Math.Abs(box.MaxX - box.MinX) * 25.4;
                         var y = double.Parse(match.Groups["num1"].Value) * 25.4; //Math.Abs(box.MaxY - box.MinY) * 25.4;
@@ -523,7 +523,7 @@ namespace TSG_Library.UFuncs
                     }
                     catch (Exception ex)
                     {
-                        ex._PrintException($"{key}");
+                        ex.__PrintException($"{key}");
                     }
 
                 var workSheet = excelApp.WorkBookActiveSheet(expectedStocklistPath);
@@ -545,15 +545,15 @@ namespace TSG_Library.UFuncs
                     if(comp1.IsSuppressed)
                         continue;
 
-                    if(!comp1._Prototype().FullPath.ToLower().Contains("fastener"))
+                    if(!comp1.__Prototype().FullPath.ToLower().Contains("fastener"))
                         continue;
 
-                    if(comp1._Prototype().FullPath.ToLower().Contains("jck"))
+                    if(comp1.__Prototype().FullPath.ToLower().Contains("jck"))
                         continue;
 
                     var fast_inst = UFSession.GetUFSession().Assem.AskInstOfPartOcc(comp1.Tag);
 
-                    var root = comp1.Parent._Prototype().ComponentAssembly.RootComponent;
+                    var root = comp1.Parent.__Prototype().ComponentAssembly.RootComponent;
 
                     var original_inst = UFSession.GetUFSession().Assem.AskPartOccOfInst(root.Tag, fast_inst);
 
@@ -637,7 +637,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
             finally
             {
@@ -647,7 +647,7 @@ namespace TSG_Library.UFuncs
 
         private void ButtonLoadCastings_Click(object sender, EventArgs e)
         {
-            using (session_.using_form_show_hide(this))
+            using (session_.__UsingFormShowHide(this))
             {
                 try
                 {
@@ -676,7 +676,7 @@ namespace TSG_Library.UFuncs
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
             }
         }
@@ -757,7 +757,7 @@ namespace TSG_Library.UFuncs
         /// </summary>
         private static bool IsNameValid(Component comp)
         {
-            return comp.DisplayName._IsDetail() && int.TryParse(comp.Name, out _) && comp.Name.Length == 3;
+            return comp.DisplayName.__IsDetail() && int.TryParse(comp.Name, out _) && comp.Name.Length == 3;
         }
 
         private static bool IsAssemNameValid(Component comp)

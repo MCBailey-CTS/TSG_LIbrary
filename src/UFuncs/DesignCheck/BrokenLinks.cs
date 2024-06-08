@@ -23,8 +23,8 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
                 try
                 {
                     if(!(feature is ExtractFace extract_face)
-                       || !extract_face._IsLinkedBody()
-                       || !extract_face._IsBroken())
+                       || !extract_face.__IsLinkedBody()
+                       || !extract_face.__IsBroken())
                         continue;
 
                     var extract_face_node = new TreeNode(extract_face.GetFeatureName())
@@ -38,7 +38,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
 
             return passed;

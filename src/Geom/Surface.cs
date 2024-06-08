@@ -329,7 +329,7 @@ namespace TSG_Library.Geom
             public Vector3d AxisVector
             {
                 get => axisVector;
-                set => axisVector = value._Unit();
+                set => axisVector = value.__Unit();
             }
 
             /// <summary>Axis point of the conical surface</summary>
@@ -362,7 +362,7 @@ namespace TSG_Library.Geom
             public Vector3d AxisVector
             {
                 get => axisVector;
-                set => axisVector = value._Unit();
+                set => axisVector = value.__Unit();
             }
 
             /// <summary>Axis point of the cylindrical surface</summary>
@@ -388,7 +388,7 @@ namespace TSG_Library.Geom
             public Vector3d Direction
             {
                 get => direction;
-                set => direction = value._Unit();
+                set => direction = value.__Unit();
             }
         }
 
@@ -430,7 +430,7 @@ namespace TSG_Library.Geom
             public Plane(Point3d point, Vector3d normal)
             {
                 Normal = normal;
-                D = point._Subtract(_Point3dOrigin)._Multiply(Normal);
+                D = point.__Subtract(_Point3dOrigin).__Multiply(Normal);
             }
 
             /// <summary>Constructs a plane from algebraic coefficients (a*x + b*y + c*z = d)</summary>
@@ -442,8 +442,8 @@ namespace TSG_Library.Geom
             public Plane(double a, double b, double c, double d)
             {
                 var vector = new Vector3d(a, b, c);
-                var num = vector._Norm();
-                Normal = vector._Divide(num);
+                var num = vector.__Norm();
+                Normal = vector.__Divide(num);
                 D = d / num;
             }
 
@@ -493,7 +493,7 @@ namespace TSG_Library.Geom
             public Vector3d Normal
             {
                 get => normal;
-                set => normal = value._Unit();
+                set => normal = value.__Unit();
             }
 
             /// <summary> Signed distance from origin to plane, measured along the plane normal</summary>
@@ -505,7 +505,7 @@ namespace TSG_Library.Geom
             ///     </para>
             ///     This is the point on the plane that is closest to the origin.
             /// </remarks>
-            public Point3d Origin => Normal._Multiply(D)._Add(_Point3dOrigin);
+            public Point3d Origin => Normal.__Multiply(D).__Add(_Point3dOrigin);
         }
 
         /// <summary>Represents a non-persistent revolved surface -- not stored in NX</summary>
@@ -526,7 +526,7 @@ namespace TSG_Library.Geom
             public Vector3d AxisVector
             {
                 get => axisVector;
-                set => axisVector = value._Unit();
+                set => axisVector = value.__Unit();
             }
 
             /// <summary>Axis point of the revolved surface</summary>
@@ -574,7 +574,7 @@ namespace TSG_Library.Geom
             public Vector3d AxisVector
             {
                 get => axisVector;
-                set => axisVector = value._Unit();
+                set => axisVector = value.__Unit();
             }
 
             /// <summary>Axis point of the toroidal surface</summary>

@@ -165,7 +165,7 @@ namespace TSG_Library.UFuncs
                 var tsgNum = cmbData.Text;
 
                 if(!CheckName(partName, "" + cmbEngineeringLevel.SelectedItem, (string)cmbOperation.SelectedItem,
-                       SimActive, NameBuilder, tsgNum))
+                       __SimActive, NameBuilder, tsgNum))
                     return;
 
 
@@ -215,7 +215,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -314,7 +314,7 @@ namespace TSG_Library.UFuncs
 
             var simDir = $"{Path.GetFileNameWithoutExtension(folder.dir_job)}-{cmbData.Text}";
 
-            var simPathSimDir = $"{SimActive}\\{simDir}";
+            var simPathSimDir = $"{__SimActive}\\{simDir}";
 
             if(!Directory.Exists(simPathSimDir))
                 Directory.CreateDirectory(simPathSimDir);
@@ -397,7 +397,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException("Error when creating Step file for " + partPath);
+                ex.__PrintException("Error when creating Step file for " + partPath);
             }
         }
 
@@ -434,7 +434,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException("Error when creating Iges file for " + igesPath);
+                ex.__PrintException("Error when creating Iges file for " + igesPath);
             }
         }
 
@@ -521,13 +521,13 @@ namespace TSG_Library.UFuncs
                     return;
                 }
 
-                var newMaxVersion = $"v{(versions.Max() + 1)._PadInt(2)}";
+                var newMaxVersion = $"v{(versions.Max() + 1).__PadInt(2)}";
                 if(cmbVersion.Items.OfType<string>().Contains(newMaxVersion))
                     cmbVersion.SelectedItem = newMaxVersion;
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
         }
 
@@ -541,7 +541,7 @@ namespace TSG_Library.UFuncs
             }
             catch (Exception ex)
             {
-                ex._PrintException();
+                ex.__PrintException();
             }
             finally
             {
@@ -583,7 +583,7 @@ namespace TSG_Library.UFuncs
 
         public static void AddNewSurface(string compSurfacePath, string comboBoxText, string nameBuilder)
         {
-            var basePart1 = session_.find_or_open(compSurfacePath);
+            var basePart1 = session_.__FindOrOpen(compSurfacePath);
 
             var layer = 1;
 
@@ -653,7 +653,7 @@ namespace TSG_Library.UFuncs
             if(dResult != DialogResult.OK)
                 return false;
 
-            var part = session_.find_or_open(childrenComps[0].DisplayName);
+            var part = session_.__FindOrOpen(childrenComps[0].DisplayName);
 
             var partFilePath = part.FullPath;
 
@@ -661,7 +661,7 @@ namespace TSG_Library.UFuncs
 
             File.Delete(partFilePath);
 
-            session_.delete_objects(childrenComps);
+            session_.__DeleteObjects(childrenComps);
 
             var folder = GFolder.create_or_null(__work_part_);
 
@@ -759,7 +759,7 @@ namespace TSG_Library.UFuncs
                 var list = new List<object>();
 
                 for (var index = 1; index <= 20; index++)
-                    list.Add($"tsg{index._PadInt(3)}");
+                    list.Add($"tsg{index.__PadInt(3)}");
 
                 return list.ToArray();
             }

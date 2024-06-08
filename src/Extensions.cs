@@ -27,11 +27,10 @@ using Curve = NXOpen.Curve;
 using Type = NXOpen.GeometricUtilities.Type;
 using Unit = TSG_Library.Enum.Unit;
 using static NXOpen.UF.UFConstants;
-using TSG_Library.Attributes;
 
 namespace TSG_Library
 {
-    [ExtensionsAspect]
+    //[ExtensionsAspect]
     public static class Extensions
     {
         public const string DetailNameRegex = @"^(?<jobNum>\d+)-(?<opNum>\d+)-(?<detailName>[0-9-A-Za-z]+)$";
@@ -46,6 +45,11 @@ namespace TSG_Library
         private const int upperA = 65;
 
         private const int upperZ = 90;
+
+        //[IgnoreExtensionAspect]
+        static Extensions()
+        {
+        }
 
 
         //
@@ -157,19 +161,19 @@ namespace TSG_Library
         }
 
 
-        internal static Section CreateSection(params Point[] points)
+        internal static Section __CreateSection(params Point[] points)
         {
             var part = __work_part_;
             var section = part.Sections.CreateSection(ChainingTolerance, DistanceTolerance, AngleTolerance);
             section.AllowSelfIntersection(false);
             section.SetAllowedEntityTypes(Section.AllowTypes.CurvesAndPoints);
-            var rules = CreateSelectionIntentRule(points);
+            var rules = __CreateSelectionIntentRule(points);
             section.AddToSection(rules, points[0], null, null, _Point3dOrigin, Section.Mode.Create);
             return section;
         }
 
 
-        internal static SelectionIntentRule[] CreateSelectionIntentRule(params ICurve[] icurves)
+        internal static SelectionIntentRule[] __CreateSelectionIntentRule(params ICurve[] icurves)
         {
             var list = new List<SelectionIntentRule>();
 
@@ -296,8 +300,8 @@ namespace TSG_Library
                 num2 = System.Math.Min(val4, num2);
             }
 
-            var position = ray.Origin._Add(ray.Axis._Multiply(num));
-            var position2 = ray.Origin._Add(ray.Axis._Multiply(num2));
+            var position = ray.Origin.__Add(ray.Axis.__Multiply(num));
+            var position2 = ray.Origin.__Add(ray.Axis.__Multiply(num2));
             return new Point3d[2] { position, position2 };
             throw new NotImplementedException();
         }
@@ -339,10 +343,10 @@ namespace TSG_Library
         ///     </para>
         /// </remarks>
         [Obsolete(nameof(NotImplementedException))]
-        public static Arc _Copy(this Arc arc)
+        public static Arc __Copy(this Arc arc)
         {
             var xform = Transform.CreateTranslation(0.0, 0.0, 0.0);
-            return arc._Copy(xform);
+            return arc.__Copy(xform);
         }
 
         /// <summary>Transforms/copies an NX.Arc</summary>
@@ -353,7 +357,7 @@ namespace TSG_Library
         ///     instead
         /// </exception>
         [Obsolete(nameof(NotImplementedException))]
-        public static Arc _Copy(this Arc arc, Transform xform)
+        public static Arc __Copy(this Arc arc, Transform xform)
         {
             //NXOpen.TaggedObject taggedObject = ((NXObject)NXOpenArc).Copy(xform);
             //NXOpen.Ellipse ellipse = taggedObject as NXOpen.Ellipse;
@@ -372,7 +376,7 @@ namespace TSG_Library
         /// <returns>An array of <see cref="NXOpen.Arc">NXOpen.Arc</see> objects</returns>
         /// <remarks>The function will create new arcs by dividing the original one.</remarks>
         [Obsolete(nameof(NotImplementedException))]
-        public static Arc[] Divide(params double[] parameters)
+        public static Arc[] __Divide(params double[] parameters)
         {
             //Curve[] curveArray = base.Divide(parameters);
             //return ArcArray(curveArray);
@@ -385,7 +389,7 @@ namespace TSG_Library
         /// <returns>An array of two <see cref="NXOpen.Arc">NXOpen.Arc</see> objects</returns>
         /// <remarks>The function will create two new arcs by dividing the original one.</remarks>
         [Obsolete(nameof(NotImplementedException))]
-        public static Arc[] Divide(ICurve boundingCurve, Point3d helpPoint)
+        public static Arc[] __Divide(ICurve boundingCurve, Point3d helpPoint)
         {
             //Curve[] curveArray = base.Divide(boundingCurve, helpPoint);
             //return ArcArray(curveArray);
@@ -399,7 +403,7 @@ namespace TSG_Library
         /// <returns>An array of two <see cref="NXOpen.Arc">NXOpen.Arc</see> objects</returns>
         /// <remarks>The function will create two new arcs by dividing the original one.</remarks>
         [Obsolete(nameof(NotImplementedException))]
-        public static Arc[] Divide(Face face, Point3d helpPoint)
+        public static Arc[] __Divide(Face face, Point3d helpPoint)
         {
             //Curve[] curveArray = base.Divide(face, helpPoint);
             //return ArcArray(curveArray);
@@ -412,7 +416,7 @@ namespace TSG_Library
         /// <returns>An array of two <see cref="NXOpen.Arc">NXOpen.Arc</see> objects</returns>
         /// <remarks>The function will create two new arcs by dividing the original one</remarks>
         [Obsolete(nameof(NotImplementedException))]
-        public static Arc[] Divide(Surface.Plane geomPlane, Point3d helpPoint)
+        public static Arc[] __Divide(Surface.Plane geomPlane, Point3d helpPoint)
         {
             //Curve[] curveArray = base.Divide(geomPlane, helpPoint);
             //return ArcArray(curveArray);
@@ -421,18 +425,19 @@ namespace TSG_Library
 
         /// To avoid having four identical copies of the same code
         [Obsolete(nameof(NotImplementedException))]
-        private static Arc[] ArcArray(Curve[] curveArray)
+        private static Arc[] __ArcArray(Curve[] curveArray)
         {
             var array = new Arc[curveArray.Length];
-            for (var i = 0; i < curveArray.Length; i++) array[i] = (Arc)curveArray[i];
+
+            for (var i = 0; i < curveArray.Length; i++)
+                array[i] = (Arc)curveArray[i];
 
             return array;
-            throw new NotImplementedException();
         }
 
         #region Builder
 
-        public static Destroyer _using_builder(this Builder builder)
+        public static Destroyer __UsingBuilder(this Builder builder)
         {
             return new Destroyer(builder);
         }
@@ -478,7 +483,7 @@ namespace TSG_Library
 
         #region Conic
 
-        public static void Temp(this Conic obj)
+        public static void __Temp(this Conic obj)
         {
             //obj.CenterPoint
             //obj.GetOrientation
@@ -497,7 +502,7 @@ namespace TSG_Library
         #region Ellipse
 
         [Obsolete]
-        public static Arc Help()
+        public static Arc __Help()
         {
             throw new NotImplementedException();
         }
@@ -506,7 +511,7 @@ namespace TSG_Library
 
         #region Int
 
-        public static string _PadInt(this int integer, int padLength)
+        public static string __PadInt(this int integer, int padLength)
         {
             if (integer < 0)
                 throw new ArgumentOutOfRangeException(nameof(integer), @"You cannot pad a negative integer.");
@@ -524,7 +529,7 @@ namespace TSG_Library
                 integerString = $"0{integerString}";
 
                 if (counter++ > 100)
-                    throw new TimeoutException(nameof(_PadInt));
+                    throw new TimeoutException(nameof(__PadInt));
             }
 
             return integerString;
@@ -544,7 +549,7 @@ namespace TSG_Library
         #region Parabola
 
         [Obsolete]
-        public static Parabola _Copy(this Parabola parabola)
+        public static Parabola __Copy(this Parabola parabola)
         {
             //if (parabola.IsOccurrence)
             //    throw new ArgumentException($@"Cannot copy {nameof(parabola)} that is an occurrence.", nameof(parabola));
@@ -570,7 +575,7 @@ namespace TSG_Library
 
         #region ScCollector
 
-        public static void Temp(this ScCollector scCollector)
+        public static void __Temp(this ScCollector scCollector)
         {
             scCollector.CopyCollector();
             //scCollector.Destroy
@@ -608,7 +613,7 @@ namespace TSG_Library
         //public void ReleaseDeleteProtection
 
 
-        public static void Temp(this SmartObject obj)
+        public static void __Temp(this SmartObject obj)
         {
             //obj.CenterPoint
             //obj.GetOrientation
@@ -626,7 +631,7 @@ namespace TSG_Library
 
         #region Spline
 
-        public static Spline _Copy(this Spline spline)
+        public static Spline __Copy(this Spline spline)
         {
             //if (spline.OwningPart.Tag != _WorkPart.Tag)
             //    throw new ArgumentException($@"Cannot copy {nameof(spline)}.", nameof(spline));
@@ -642,7 +647,7 @@ namespace TSG_Library
 
         #region TreeNode
 
-        public static TreeNode _SetText(this TreeNode node, string text)
+        public static TreeNode __SetText(this TreeNode node, string text)
         {
             node.Text = text;
             return node;
@@ -650,41 +655,13 @@ namespace TSG_Library
 
         #endregion
 
-        public class ComparerPoint3d : EqualityComparer<Point3d>
-        {
-            private readonly double __tolerance;
-
-            public ComparerPoint3d(double tolerance = .001)
-            {
-                __tolerance = tolerance;
-            }
-
-            public override bool Equals(Point3d x, Point3d y)
-            {
-                return Math.Abs(x.X - y.X) < __tolerance
-                       && Math.Abs(x.Y - y.Y) < __tolerance
-                       && Math.Abs(x.Z - y.Z) < __tolerance;
-            }
-
-            public override int GetHashCode(Point3d obj)
-            {
-                var hash = 17;
-
-                hash = hash * 23 + obj.X.GetHashCode();
-                hash = hash * 23 + obj.Y.GetHashCode();
-                hash = hash * 23 + obj.Z.GetHashCode();
-
-                return hash;
-            }
-        }
-
 
         #region WCS
 
         public static Matrix3x3 __Orientation(this WCS wcs)
         {
             wcs.CoordinateSystem.GetDirections(out var xDir, out var yDir);
-            return xDir._ToMatrix3x3(yDir);
+            return xDir.__ToMatrix3x3(yDir);
         }
 
 
@@ -695,17 +672,17 @@ namespace TSG_Library
 
         public static Vector3d __AxisX(this WCS wcs)
         {
-            return wcs.CoordinateSystem.__Orientation().Element._AxisX();
+            return wcs.CoordinateSystem.__Orientation().Element.__AxisX();
         }
 
         public static Vector3d __AxisY(this WCS wcs)
         {
-            return wcs.CoordinateSystem.__Orientation().Element._AxisY();
+            return wcs.CoordinateSystem.__Orientation().Element.__AxisY();
         }
 
         public static Vector3d __AxisZ(this WCS wcs)
         {
-            return wcs.CoordinateSystem.__Orientation().Element._AxisZ();
+            return wcs.CoordinateSystem.__Orientation().Element.__AxisZ();
         }
 
         #endregion
@@ -756,12 +733,12 @@ namespace TSG_Library
         #region DatumAxisFeature
 
         [Obsolete(nameof(NotImplementedException))]
-        public static DatumAxisFeature _Mirror(
+        public static DatumAxisFeature __Mirror(
             this DatumAxisFeature original,
             Surface.Plane plane)
         {
             _ = original.DatumAxis.__Origin().__Mirror(plane);
-            _ = original.DatumAxis.Direction._Mirror(plane);
+            _ = original.DatumAxis.Direction.__Mirror(plane);
             _ = original.__OwningPart().Features.CreateDatumAxisBuilder(null);
 
             //using(session_.using_builder_destroyer(builder))
@@ -773,7 +750,7 @@ namespace TSG_Library
         }
 
         [Obsolete(nameof(NotImplementedException))]
-        public static DatumAxisFeature _Mirror(
+        public static DatumAxisFeature __Mirror(
             this DatumAxisFeature datumAxisFeature,
             Surface.Plane plane,
             Component from,
@@ -789,14 +766,14 @@ namespace TSG_Library
         /// <summary>Map a vector from Absolute coordinates to Work coordinates</summary>
         /// <param name="absVector">The components of the given vector wrt the Absolute Coordinate System (ACS)</param>
         /// <returns>The components of the given vector wrt the Work Coordinate System (WCS)</returns>
-        public static Vector3d MapAcsToWcs(Vector3d absVector)
+        public static Vector3d __MapAcsToWcs(Vector3d absVector)
         {
             var axisX = __display_part_.WCS.__AxisX();
             var axisY = __display_part_.WCS.__AxisY();
             var axisZ = __display_part_.WCS.__AxisZ();
-            var _x = axisX._Multiply(absVector);
-            var _y = axisY._Multiply(absVector);
-            var _z = axisZ._Multiply(absVector);
+            var _x = axisX.__Multiply(absVector);
+            var _y = axisY.__Multiply(absVector);
+            var _z = axisZ.__Multiply(absVector);
             return new Vector3d(_x, _y, _z);
         }
 
@@ -810,25 +787,25 @@ namespace TSG_Library
         public static Vector3d __MapCsysToCsys(this Vector3d inputVector,
             CartesianCoordinateSystem inputCsys, CartesianCoordinateSystem outputCsys)
         {
-            var axisX = inputCsys.__Orientation().Element._AxisX();
-            var axisY = inputCsys.__Orientation().Element._AxisY();
-            var axisZ = inputCsys.__Orientation().Element._AxisZ();
+            var axisX = inputCsys.__Orientation().Element.__AxisX();
+            var axisY = inputCsys.__Orientation().Element.__AxisY();
+            var axisZ = inputCsys.__Orientation().Element.__AxisZ();
             var _x = inputVector.X.__Multiply(axisX);
             var _y = inputVector.Y.__Multiply(axisY);
             var _z = inputVector.Z.__Multiply(axisZ);
             var vector = _x.__Add(_y, _z);
-            var x = vector._Multiply(outputCsys.__Orientation().Element._AxisX());
-            var y = vector._Multiply(outputCsys.__Orientation().Element._AxisY());
-            var z = vector._Multiply(outputCsys.__Orientation().Element._AxisZ());
+            var x = vector.__Multiply(outputCsys.__Orientation().Element.__AxisX());
+            var y = vector.__Multiply(outputCsys.__Orientation().Element.__AxisY());
+            var z = vector.__Multiply(outputCsys.__Orientation().Element.__AxisZ());
             return new Vector3d(x, y, z);
         }
 
         public static Vector3d __Add(this Vector3d vector, params Vector3d[] vectors)
         {
-            var result = vector._Copy();
+            var result = vector.__Copy();
 
             foreach (var v in vectors)
-                result = result._Add(v);
+                result = result.__Add(v);
 
             return result;
         }
@@ -843,7 +820,7 @@ namespace TSG_Library
         ///         As is well known, order matters: Cross(u,v) = - Cross(v,u)
         ///     </para>
         /// </remarks>
-        public static Vector3d Cross(this Vector3d u, Vector3d v)
+        public static Vector3d __Cross(this Vector3d u, Vector3d v)
         {
             return new Vector3d(u.Y * v.Z - u.Z * v.Y, u.Z * v.X - u.X * v.Z, u.X * v.Y - u.Y * v.X);
         }
@@ -858,9 +835,9 @@ namespace TSG_Library
         ///         of the returned vector will be NaN (not a number).
         ///     </para>
         /// </remarks>
-        public static Vector3d _UnitCross(this Vector3d u, Vector3d v)
+        public static Vector3d __UnitCross(this Vector3d u, Vector3d v)
         {
-            return u.__Cross(v)._Unit();
+            return u.__Cross(v).__Unit();
         }
 
         /// <summary>Unitizes a given vector</summary>
@@ -872,21 +849,21 @@ namespace TSG_Library
         ///         of the returned vector will be NaN (not a number).
         ///     </para>
         /// </remarks>
-        public static Vector3d _Unit(this Vector3d u)
+        public static Vector3d __Unit(this Vector3d u)
         {
-            var num = 1.0 / u._Norm();
+            var num = 1.0 / u.__Norm();
             return new Vector3d(num * u.X, num * u.Y, num * u.Z);
         }
 
         /// <summary>Calculates the norm squared (length squared) of a vector</summary>
         /// <param name="u">The vector</param>
         /// <returns>Norm (length) squared of vector</returns>
-        public static double _Norm2(this Vector3d u)
+        public static double __Norm2(this Vector3d u)
         {
             return u.X * u.X + u.Y * u.Y + u.Z * u.Z;
         }
 
-        public static Vector3d _Divide(this Vector3d vector, double divisor)
+        public static Vector3d __Divide(this Vector3d vector, double divisor)
         {
             return new Vector3d(vector.X / divisor, vector.Y / divisor, vector.Z / divisor);
         }
@@ -894,20 +871,20 @@ namespace TSG_Library
         /// <summary>Calculates the norm (length) of a vector</summary>
         /// <param name="u">The vector</param>
         /// <returns>Norm (length) of vector</returns>
-        public static double _Norm(this Vector3d u)
+        public static double __Norm(this Vector3d u)
         {
             return Math.Sqrt(u.X * u.X + u.Y * u.Y + u.Z * u.Z);
         }
 
-        public static Matrix3x3 _ToMatrix3x3(this Vector3d axisZ)
+        public static Matrix3x3 __ToMatrix3x3(this Vector3d axisZ)
         {
             var u = !(System.Math.Abs(axisZ.X) < System.Math.Abs(axisZ.Y))
                 ? new Vector3d(0.0, 1.0, 0.0)
                 : new Vector3d(1.0, 0.0, 0.0);
 
-            axisZ = axisZ._Unit();
-            var v = u.__Cross(axisZ)._Unit();
-            var vector = axisZ.__Cross(v)._Unit();
+            axisZ = axisZ.__Unit();
+            var v = u.__Cross(axisZ).__Unit();
+            var vector = axisZ.__Cross(v).__Unit();
             return new Matrix3x3
             {
                 Xx = v.X,
@@ -922,14 +899,14 @@ namespace TSG_Library
             };
         }
 
-        public static Vector3d _Mirror(this Vector3d vector, Surface.Plane plane)
+        public static Vector3d __Mirror(this Vector3d vector, Surface.Plane plane)
         {
             var transform = Transform.CreateReflection(plane);
-            return vector._Copy(transform);
+            return vector.__Copy(transform);
         }
 
         [Obsolete(nameof(NotImplementedException))]
-        public static Vector3d _Mirror(
+        public static Vector3d __Mirror(
             this Vector3d vector,
             Surface.Plane plane,
             Component from,
@@ -938,14 +915,14 @@ namespace TSG_Library
             throw new NotImplementedException();
         }
 
-        public static Matrix3x3 _ToMatrix3x3(this Vector3d xDir, Vector3d yDir)
+        public static Matrix3x3 __ToMatrix3x3(this Vector3d xDir, Vector3d yDir)
         {
             var array = new double[9];
-            ufsession_.Mtx3.Initialize(xDir._ToArray(), yDir._ToArray(), array);
-            return array._ToMatrix3x3();
+            ufsession_.Mtx3.Initialize(xDir.__ToArray(), yDir.__ToArray(), array);
+            return array.__ToMatrix3x3();
         }
 
-        public static Matrix3x3 _ToMatrix3x3(this Vector3d axisX, Vector3d axisY,
+        public static Matrix3x3 __ToMatrix3x3(this Vector3d axisX, Vector3d axisY,
             Vector3d axisZ)
         {
             var element = default(Matrix3x3);
@@ -961,30 +938,30 @@ namespace TSG_Library
             return element;
         }
 
-        public static Vector3d _AskPerpendicular(this Vector3d vec)
+        public static Vector3d __AskPerpendicular(this Vector3d vec)
         {
             var __vec_perp = new double[3];
-            ufsession_.Vec3.AskPerpendicular(vec._ToArray(), __vec_perp);
+            ufsession_.Vec3.AskPerpendicular(vec.__ToArray(), __vec_perp);
             return new Vector3d(__vec_perp[0], __vec_perp[1], __vec_perp[2]);
         }
 
-        public static Vector3d _Add(this Vector3d vec0, Vector3d vec1)
+        public static Vector3d __Add(this Vector3d vec0, Vector3d vec1)
         {
             return new Vector3d(vec0.X + vec1.X, vec0.Y + vec1.Y, vec0.Z + vec1.Z);
         }
 
-        public static Vector3d _Subtract(this Vector3d vec0, Vector3d vec1)
+        public static Vector3d __Subtract(this Vector3d vec0, Vector3d vec1)
         {
-            var negate = vec1._Negate();
-            return vec0._Add(negate);
+            var negate = vec1.__Negate();
+            return vec0.__Add(negate);
         }
 
-        public static Vector3d _Negate(this Vector3d vec0)
+        public static Vector3d __Negate(this Vector3d vec0)
         {
             return new Vector3d(-vec0.X, -vec0.Y, -vec0.Z);
         }
 
-        public static double[] _Array(this Vector3d vector)
+        public static double[] __Array(this Vector3d vector)
         {
             return new[] { vector.X, vector.Y, vector.Z };
         }
@@ -993,21 +970,21 @@ namespace TSG_Library
         /// <param name="u">First vector</param>
         /// <param name="v">Second vector</param>
         /// <returns>The angle, theta, in degrees, where 0 ≤ theta ≤ 180</returns>
-        public static double _Angle(this Vector3d u, Vector3d v)
+        public static double __Angle(this Vector3d u, Vector3d v)
         {
-            var val = u._Unit()._Multiply(v._Unit());
+            var val = u.__Unit().__Multiply(v.__Unit());
             val = System.Math.Min(1.0, val);
             val = System.Math.Max(-1.0, val);
             return System.Math.Acos(val) * 180.0 / System.Math.PI;
         }
 
-        public static bool _IsPerpendicularTo(this Vector3d vec1, Vector3d vec2, double tolerance = .0001)
+        public static bool __IsPerpendicularTo(this Vector3d vec1, Vector3d vec2, double tolerance = .0001)
         {
-            ufsession_.Vec3.IsPerpendicular(vec1._ToArray(), vec2._ToArray(), tolerance, out var result);
+            ufsession_.Vec3.IsPerpendicular(vec1.__ToArray(), vec2.__ToArray(), tolerance, out var result);
             return result == 1;
         }
 
-        public static double[] _ToArray(this Vector3d vector3d)
+        public static double[] __ToArray(this Vector3d vector3d)
         {
             return new[] { vector3d.X, vector3d.Y, vector3d.Z };
         }
@@ -1022,7 +999,7 @@ namespace TSG_Library
         //
         // Returns:
         //     A transformed copy of the original input vector
-        public static Vector3d _Copy(this Vector3d vector, Transform xform)
+        public static Vector3d __Copy(this Vector3d vector, Transform xform)
         {
             var matrix = xform.Matrix;
             var x = vector.X;
@@ -1037,14 +1014,14 @@ namespace TSG_Library
         /// <summary>Copies a vector</summary>
         /// <param name="vector">The vector copy from</param>
         /// <returns>A copy of the original input vector</returns>
-        public static Vector3d _Copy(this Vector3d vector)
+        public static Vector3d __Copy(this Vector3d vector)
         {
             return new Vector3d(vector.X, vector.Y, vector.Z);
         }
 
-        public static bool _IsEqual(this Vector3d vec0, Vector3d vec1, double tolerance = .001)
+        public static bool __IsEqual(this Vector3d vec0, Vector3d vec1, double tolerance = .001)
         {
-            ufsession_.Vec3.IsEqual(vec0._ToArray(), vec1._ToArray(), tolerance, out var is_equal);
+            ufsession_.Vec3.IsEqual(vec0.__ToArray(), vec1.__ToArray(), tolerance, out var is_equal);
 
             switch (is_equal)
             {
@@ -1057,10 +1034,10 @@ namespace TSG_Library
             }
         }
 
-        public static bool _IsEqualTo(this Vector3d vector1, Vector3d vector2, double tolerance = .01)
+        public static bool __IsEqualTo(this Vector3d vector1, Vector3d vector2, double tolerance = .01)
         {
             // Compares the two vectors. If they are equal, then {isEqual} == 1, else {isEqual} == 0.
-            ufsession_.Vec3.IsEqual(vector1._ToArray(), vector2._ToArray(), tolerance, out var isEqual);
+            ufsession_.Vec3.IsEqual(vector1.__ToArray(), vector2.__ToArray(), tolerance, out var isEqual);
 
             switch (isEqual)
             {
@@ -1082,11 +1059,11 @@ namespace TSG_Library
         /// <param name="x_vec">Vector for the X-direction of matrix</param>
         /// <param name="y_vec">Vector for theYX-direction of matrix</param>
         /// <returns>The resulting matrix.</returns>
-        public static Matrix3x3 _Initialize(this Vector3d x_vec, Vector3d y_vec)
+        public static Matrix3x3 __Initialize(this Vector3d x_vec, Vector3d y_vec)
         {
             var mtx = new double[9];
-            ufsession_.Mtx3.Initialize(x_vec._ToArray(), y_vec._ToArray(), mtx);
-            return mtx._ToMatrix3x3();
+            ufsession_.Mtx3.Initialize(x_vec.__ToArray(), y_vec.__ToArray(), mtx);
+            return mtx.__ToMatrix3x3();
         }
 
         /// <summary>
@@ -1095,11 +1072,11 @@ namespace TSG_Library
         /// </summary>
         /// <param name="x_vec">Vector for the X-direction of matrix</param>
         /// <returns>The resulting matrix.</returns>
-        public static Matrix3x3 _InitializeX(Vector3d x_vec)
+        public static Matrix3x3 __InitializeX(Vector3d x_vec)
         {
             var mtx = new double[9];
-            ufsession_.Mtx3.InitializeX(x_vec._ToArray(), mtx);
-            return mtx._ToMatrix3x3();
+            ufsession_.Mtx3.InitializeX(x_vec.__ToArray(), mtx);
+            return mtx.__ToMatrix3x3();
         }
 
         /// <summary>
@@ -1108,16 +1085,16 @@ namespace TSG_Library
         /// </summary>
         /// <param name="z_vec">Vector for the Z-direction of matrix</param>
         /// <returns>The resulting matrix.</returns>
-        public static Matrix3x3 _InitializeZ(Vector3d z_vec)
+        public static Matrix3x3 __InitializeZ(Vector3d z_vec)
         {
             var mtx = new double[9];
-            ufsession_.Mtx3.InitializeZ(z_vec._ToArray(), mtx);
-            return mtx._ToMatrix3x3();
+            ufsession_.Mtx3.InitializeZ(z_vec.__ToArray(), mtx);
+            return mtx.__ToMatrix3x3();
         }
 
-        public static Point3d _Add(this Vector3d vector, Point3d point)
+        public static Point3d __Add(this Vector3d vector, Point3d point)
         {
-            return point._Add(vector);
+            return point.__Add(vector);
         }
 
         /// <summary>Map a vector from Work coordinates to Absolute coordinates</summary>
@@ -1129,57 +1106,50 @@ namespace TSG_Library
         ///         use this function to "map" them to the ACS before using them in SNAP functions.
         ///     </para>
         /// </remarks>
-        public static Vector3d MapWcsToAcs(Vector3d workVector)
+        public static Vector3d __MapWcsToAcs(Vector3d workVector)
         {
             var axisX = __display_part_.WCS.__AxisX();
             var axisY = __display_part_.WCS.__AxisY();
             var axisZ = __display_part_.WCS.__AxisZ();
-            return axisX._Multiply(workVector.X)._Add(axisY._Multiply(workVector.Y))
-                ._Add(axisZ._Multiply(workVector.Z));
+            return axisX.__Multiply(workVector.X).__Add(axisY.__Multiply(workVector.Y))
+                .__Add(axisZ.__Multiply(workVector.Z));
         }
 
-        public static Vector3d _Multiply(this Vector3d vector3d, double scale)
+        public static Vector3d __Multiply(this Vector3d vector3d, double scale)
         {
             var scaled_vec = new double[3];
-            ufsession_.Vec3.Scale(scale, vector3d._ToArray(), scaled_vec);
-            return scaled_vec._ToVector3d();
+            ufsession_.Vec3.Scale(scale, vector3d.__ToArray(), scaled_vec);
+            return scaled_vec.__ToVector3d();
         }
 
-        public static double _Multiply(this Vector3d __vec0, Vector3d __vec1)
+        public static double __Multiply(this Vector3d __vec0, Vector3d __vec1)
         {
             return __vec0.X * __vec1.X + __vec0.Y * __vec1.Y + __vec0.Z * __vec1.Z;
         }
 
-        public static Matrix3x3 MapWcsToAcs(Matrix3x3 orientation)
+        public static Matrix3x3 __MapWcsToAcs(Matrix3x3 orientation)
         {
-            var axisX = MapWcsToAcs(orientation._AxisX());
-            var axisY = MapWcsToAcs(orientation._AxisY());
-            return axisX._ToMatrix3x3(axisY);
+            var axisX = __MapWcsToAcs(orientation.__AxisX());
+            var axisY = __MapWcsToAcs(orientation.__AxisY());
+            return axisX.__ToMatrix3x3(axisY);
         }
 
-        public static Vector3d _MirrorMap(this Vector3d vector, Surface.Plane plane,
+        public static Vector3d __MirrorMap(this Vector3d vector, Surface.Plane plane,
             Component fromComponent, Component toComponent)
         {
-            var origin = fromComponent._Origin();
-            var orientation = fromComponent._Orientation();
+            var origin = fromComponent.__Origin();
+            var orientation = fromComponent.__Orientation();
             __display_part_.WCS.SetOriginAndMatrix(origin, orientation);
-            var newStart = MapWcsToAcs(vector);
-            __display_part_.WCS.SetOriginAndMatrix(toComponent._Origin(), toComponent._Orientation());
-            return MapAcsToWcs(newStart);
+            var newStart = __MapWcsToAcs(vector);
+            __display_part_.WCS.SetOriginAndMatrix(toComponent.__Origin(), toComponent.__Orientation());
+            return __MapAcsToWcs(newStart);
         }
 
-        public static Matrix3x3 _Mtx3_Initialize(Vector3d x_vec, Vector3d y_vec)
+        public static Matrix3x3 __Mtx3Initialize(Vector3d x_vec, Vector3d y_vec)
         {
             var matrix = new double[9];
-            ufsession_.Mtx3.Initialize(x_vec._ToArray(), y_vec._ToArray(), matrix);
-            return matrix._ToMatrix3x3();
-        }
-
-        public static Vector3d __Cross(this Vector3d vec1, Vector3d vec2)
-        {
-            var cross_product = new double[3];
-            ufsession_.Vec3.Cross(vec1._ToArray(), vec2._ToArray(), cross_product);
-            return cross_product._ToVector3d();
+            ufsession_.Mtx3.Initialize(x_vec.__ToArray(), y_vec.__ToArray(), matrix);
+            return matrix.__ToMatrix3x3();
         }
 
         #endregion
@@ -1207,7 +1177,7 @@ namespace TSG_Library
             basePart.__AssertIsWorkPart();
             var builder = basePart.Features.CreateConeBuilder(null);
 
-            using (session_.using_builder_destroyer(builder))
+            using (session_.__UsingBuilderDestroyer(builder))
             {
                 builder.BooleanOption.Type = BooleanOperation.BooleanType.Create;
                 builder.Type = ConeBuilder.Types.DiametersAndHeight;
@@ -1266,7 +1236,7 @@ namespace TSG_Library
             __display_part_.WCS.__Orientation(matrix);
             var builder = __work_part_.Features.CreateBlockFeatureBuilder(null);
 
-            using (session_.using_builder_destroyer(builder))
+            using (session_.__UsingBuilderDestroyer(builder))
             {
                 builder.Type = BlockFeatureBuilder.Types.OriginAndEdgeLengths;
                 builder.BooleanOption.Type = BooleanOperation.BooleanType.Create;
@@ -1290,9 +1260,9 @@ namespace TSG_Library
         public static Arc __CreateCircle(this BasePart basePart, Point3d center,
             Vector3d axisZ, double radius)
         {
-            var orientation = axisZ._ToMatrix3x3();
-            var axisX = orientation._AxisX();
-            var axisY = orientation._AxisY();
+            var orientation = axisZ.__ToMatrix3x3();
+            var axisX = orientation.__AxisX();
+            var axisY = orientation.__AxisY();
             return basePart.__CreateArc(center, axisX, axisY, radius, 0.0, 360.0);
         }
 
@@ -1306,20 +1276,20 @@ namespace TSG_Library
             Point3d p3)
         {
             basePart.__AssertIsWorkPart();
-            var vector = p2._Subtract(p1);
-            var vector2 = p3._Subtract(p1);
-            var num = vector._Multiply(vector);
-            var num2 = vector._Multiply(vector2);
-            var num3 = vector2._Multiply(vector2);
+            var vector = p2.__Subtract(p1);
+            var vector2 = p3.__Subtract(p1);
+            var num = vector.__Multiply(vector);
+            var num2 = vector.__Multiply(vector2);
+            var num3 = vector2.__Multiply(vector2);
             var num4 = num * num3 - num2 * num2;
             var num5 = (num * num3 - num2 * num3) / (2.0 * num4);
             var num6 = (num * num3 - num * num2) / (2.0 * num4);
-            var vector3 = vector._Multiply(num5)._Add(vector2._Multiply(num6));
-            var center = vector3._Add(p1);
-            var radius = vector3._Norm();
-            var orientation = vector.__Cross(vector2)._ToMatrix3x3();
-            var axisX = orientation._AxisX();
-            var axisY = orientation._AxisY();
+            var vector3 = vector.__Multiply(num5).__Add(vector2.__Multiply(num6));
+            var center = vector3.__Add(p1);
+            var radius = vector3.__Norm();
+            var orientation = vector.__Cross(vector2).__ToMatrix3x3();
+            var axisX = orientation.__AxisX();
+            var axisY = orientation.__AxisY();
             return basePart.__CreateArc(center, axisX, axisY, radius, 0.0, 360.0);
         }
 
@@ -1332,7 +1302,7 @@ namespace TSG_Library
             Point3d origin, NXMatrix matrix)
         {
             basePart.__AssertIsWorkPart();
-            var array = origin._ToArray();
+            var array = origin.__ToArray();
             ufsession_.Csys.CreateCsys(array, matrix.Tag, out var csys_id);
             var objectFromTag = (NXObject)session_.__GetTaggedObject(csys_id);
             var coordinateSystem = (CoordinateSystem)objectFromTag;
@@ -1357,8 +1327,8 @@ namespace TSG_Library
             Vector3d axisZ)
         {
             basePart.__AssertIsWorkPart();
-            var array = origin._ToArray();
-            var matrix = __work_part_.NXMatrices.Create(axisX._ToMatrix3x3(axisY, axisZ));
+            var array = origin.__ToArray();
+            var matrix = __work_part_.NXMatrices.Create(axisX.__ToMatrix3x3(axisY, axisZ));
             var nXOpenTag = matrix.Tag;
             ufsession_.Csys.CreateCsys(array, nXOpenTag, out var csys_id);
             var objectFromTag = (NXObject)session_.__GetTaggedObject(csys_id);
@@ -1435,7 +1405,7 @@ namespace TSG_Library
 
 
         [Obsolete(nameof(NotImplementedException))]
-        public static Point3d _Mirror(
+        public static Point3d __Mirror(
             this Point3d point,
             Surface.Plane plane,
             Component from,
@@ -1445,16 +1415,16 @@ namespace TSG_Library
         }
 
 
-        public static Point3d _MirrorMap(this Point3d position, Surface.Plane plane,
+        public static Point3d __MirrorMap(this Point3d position, Surface.Plane plane,
             Component fromComponent, Component toComponent)
         {
-            __display_part_.WCS.SetOriginAndMatrix(fromComponent._Origin(), fromComponent._Orientation());
+            __display_part_.WCS.SetOriginAndMatrix(fromComponent.__Origin(), fromComponent.__Orientation());
 
-            var newStart = MapWcsToAcs(position);
+            var newStart = __MapWcsToAcs(position);
 
-            __display_part_.WCS.SetOriginAndMatrix(toComponent._Origin(), toComponent._Orientation());
+            __display_part_.WCS.SetOriginAndMatrix(toComponent.__Origin(), toComponent.__Orientation());
 
-            return MapAcsToWcs(newStart);
+            return __MapAcsToWcs(newStart);
         }
 
         public static int __ToHashCode(this Point3d p)
@@ -1474,21 +1444,21 @@ namespace TSG_Library
             CoordinateSystem outputCsys)
         {
             var origin = inputCsys.Origin;
-            var axisX = inputCsys.__Orientation().Element._AxisX();
-            var axisY = inputCsys.__Orientation().Element._AxisY();
-            var axisZ = inputCsys.__Orientation().Element._AxisZ();
-            var _x = axisX._Multiply(inputCoords.X);
-            var _y = axisY._Multiply(inputCoords.Y);
-            var _z = axisZ._Multiply(inputCoords.Z);
-            var position = origin._Add(_x)._Add(_y)._Add(_z);
-            var vector = position._Subtract(outputCsys.Origin);
-            var x = vector._Multiply(outputCsys.__Orientation().Element._AxisX());
-            var y = vector._Multiply(outputCsys.__Orientation().Element._AxisY());
-            var z = vector._Multiply(outputCsys.__Orientation().Element._AxisZ());
+            var axisX = inputCsys.__Orientation().Element.__AxisX();
+            var axisY = inputCsys.__Orientation().Element.__AxisY();
+            var axisZ = inputCsys.__Orientation().Element.__AxisZ();
+            var _x = axisX.__Multiply(inputCoords.X);
+            var _y = axisY.__Multiply(inputCoords.Y);
+            var _z = axisZ.__Multiply(inputCoords.Z);
+            var position = origin.__Add(_x).__Add(_y).__Add(_z);
+            var vector = position.__Subtract(outputCsys.Origin);
+            var x = vector.__Multiply(outputCsys.__Orientation().Element.__AxisX());
+            var y = vector.__Multiply(outputCsys.__Orientation().Element.__AxisY());
+            var z = vector.__Multiply(outputCsys.__Orientation().Element.__AxisZ());
             return new Point3d(x, y, z);
         }
 
-        public static Point3d _Add(this Point3d point, Vector3d vector)
+        public static Point3d __Add(this Point3d point, Vector3d vector)
         {
             var x = point.X + vector.X;
             var y = point.Y + vector.Y;
@@ -1497,7 +1467,7 @@ namespace TSG_Library
         }
 
 
-        public static Vector3d _Subtract(this Point3d start, Point3d end)
+        public static Vector3d __Subtract(this Point3d start, Point3d end)
         {
             var x = start.X - end.X;
             var y = start.Y - end.Y;
@@ -1506,7 +1476,7 @@ namespace TSG_Library
         }
 
         [Obsolete(nameof(NotImplementedException))]
-        public static Point3d _Subtract(this Point3d start, Vector3d end)
+        public static Point3d __Subtract(this Point3d start, Vector3d end)
         {
             //double x = start.X - end.X;
             //double y = start.Y - end.Y;
@@ -1526,7 +1496,7 @@ namespace TSG_Library
             var part = __work_part_;
             var datumAxisBuilder = part.Features.CreateDatumAxisBuilder(null);
 
-            using (session_.using_builder_destroyer(datumAxisBuilder))
+            using (session_.__UsingBuilderDestroyer(datumAxisBuilder))
             {
                 datumAxisBuilder.Type = DatumAxisBuilder.Types.PointAndDir;
                 var vector = part.Directions.CreateDirection(origin, direction,
@@ -1551,7 +1521,7 @@ namespace TSG_Library
             var part = __work_part_;
             var datumAxisBuilder = part.Features.CreateDatumAxisBuilder(null);
 
-            using (session_.using_builder_destroyer(datumAxisBuilder))
+            using (session_.__UsingBuilderDestroyer(datumAxisBuilder))
             {
                 datumAxisBuilder.Type = DatumAxisBuilder.Types.TwoPoints;
                 datumAxisBuilder.IsAssociative = true;
@@ -1564,7 +1534,7 @@ namespace TSG_Library
         }
 
         [Obsolete(nameof(NotImplementedException))]
-        private static double ArcPercentage(ICurve curve, Point3d point1, Point3d point2)
+        private static double __ArcPercentage(ICurve curve, Point3d point1, Point3d point2)
         {
             //double arc_length = 0.0;
             //double num = curve.MaxU - curve.MinU;
@@ -1593,9 +1563,9 @@ namespace TSG_Library
             var part = __work_part_;
             var builder = part.Features.CreateDatumCsysBuilder(null);
 
-            using (session_.using_builder_destroyer(builder))
+            using (session_.__UsingBuilderDestroyer(builder))
             {
-                var xform = part.Xforms.CreateXform(origin, matrix._AxisX(), matrix._AxisY(),
+                var xform = part.Xforms.CreateXform(origin, matrix.__AxisX(), matrix.__AxisY(),
                     SmartObject.UpdateOption.WithinModeling, 1.0);
                 var csys =
                     part.CoordinateSystems.CreateCoordinateSystem(xform,
@@ -1615,26 +1585,15 @@ namespace TSG_Library
         internal static DatumCsys __CreateDatumCsys(this BasePart basePart,
             Point3d origin, Vector3d axisX, Vector3d axisY)
         {
-            return basePart.__CreateDatumCsys(origin, axisX._ToMatrix3x3(axisY));
+            return basePart.__CreateDatumCsys(origin, axisX.__ToMatrix3x3(axisY));
         }
-
-        /// <summary>Creates a datum axis from two points</summary>
-        /// <param name="startPoint">The start point of the datum axis</param>
-        /// <param name="endPoint">The end point of the datum axis</param>
-        /// <returns> A <see cref="T:Snap.NX.DatumAxis">Snap.NX.DatumAxis</see> object</returns>
-        [Obsolete(nameof(NotImplementedException))]
-        public static DatumAxisFeature DatumAxis(Point3d startPoint, Point3d endPoint)
-        {
-            return __work_part_.__CreateDatumAxis(startPoint, endPoint);
-        }
-
 
         /// <summary>Creates a Snap.NX.DatumPlane feature from a given position and orientation</summary>
         /// <param name="origin">Origin of the datum plane</param>
         /// <param name="orientation">Orientation of the datum plane</param>
         /// <returns> A <see cref="T:Snap.NX.DatumPlane">Snap.NX.DatumPlane</see> object</returns>
         [Obsolete]
-        public static DatumPlaneFeature DatumPlane(Point3d origin, Matrix3x3 orientation)
+        public static DatumPlaneFeature __DatumPlane(Point3d origin, Matrix3x3 orientation)
         {
             //return __CreateFixedDatumPlane(origin, orientation);
             throw new NotImplementedException();
@@ -1694,11 +1653,11 @@ namespace TSG_Library
             basePart.__AssertIsWorkPart();
             var vector = new Vector3d(width / 2.0, 0.0, 0.0);
             var vector2 = new Vector3d(0.0, height / 2.0, 0.0);
-            var position = center._Add(vector)._Subtract(vector2); // center + vector - vector2;
-            var position2 = center._Add(vector)._Add(vector2);
-            var position3 = center._Subtract(vector)._Add(vector2);
-            var position4 = center._Subtract(vector)._Subtract(vector2);
-            return __work_part_.PolyLine(position, position2, position3, position4, position);
+            var position = center.__Add(vector).__Subtract(vector2); // center + vector - vector2;
+            var position2 = center.__Add(vector).__Add(vector2);
+            var position3 = center.__Subtract(vector).__Add(vector2);
+            var position4 = center.__Subtract(vector).__Subtract(vector2);
+            return __work_part_.__PolyLine(position, position2, position3, position4, position);
         }
 
         /// <summary>Creates a rectangle from two diagonal points</summary>
@@ -1706,7 +1665,7 @@ namespace TSG_Library
         /// <param name="topRight">The point at the (xmax, ymax) corner</param>
         /// <returns>Array of four lines</returns>
         [Obsolete(nameof(NotImplementedException))]
-        public static Line[] Rectangle(Point3d bottomLeft, Point3d topRight)
+        public static Line[] __Rectangle(Point3d bottomLeft, Point3d topRight)
         {
             //NXOpen.Point3d center = (bottomLeft + topRight) / 2.0;
             //double width = topRight.X - bottomLeft.X;
@@ -1724,13 +1683,13 @@ namespace TSG_Library
         /// <remarks>
         ///     The i-th line has startPoint = points[i] and endPoint = points[i+1].
         /// </remarks>
-        public static Line[] PolyLine(this BasePart basePart, params Point3d[] points)
+        public static Line[] __PolyLine(this BasePart basePart, params Point3d[] points)
         {
             var num = points.Length;
             var array = new Line[num - 1];
 
             for (var i = 0; i < num - 1; i++)
-                array[i] = Line(points[i], points[i + 1]);
+                array[i] = __CreateLine(points[i], points[i + 1]);
 
             return array;
         }
@@ -1753,30 +1712,30 @@ namespace TSG_Library
         /// </summary>
         /// <param name="points"></param>
         /// <returns></returns>
-        public static Line[] Polygon(params Point3d[] points)
+        public static Line[] __Polygon(params Point3d[] points)
         {
             var num = points.Length;
             var array = new Line[num];
-            for (var i = 0; i < num - 1; i++) array[i] = Line(points[i], points[i + 1]);
+            for (var i = 0; i < num - 1; i++) array[i] = __CreateLine(points[i], points[i + 1]);
 
-            array[num - 1] = Line(points[num - 1], points[0]);
+            array[num - 1] = __CreateLine(points[num - 1], points[0]);
             return array;
         }
 
 
-        public static bool _IsEqualTo(this Point3d point3d, Point3d other)
+        public static bool __IsEqualTo(this Point3d point3d, Point3d other)
         {
-            return point3d._IsEqualTo(other._ToArray());
+            return point3d.__IsEqualTo(other.__ToArray());
         }
 
-        public static bool _IsEqualTo(this Point3d point3d, double[] array)
+        public static bool __IsEqualTo(this Point3d point3d, double[] array)
         {
             return Math.Abs(point3d.X - array[0]) < .001
                    && Math.Abs(point3d.Y - array[1]) < .001
                    && Math.Abs(point3d.Z - array[2]) < .001;
         }
 
-        public static double[] _ToArray(this Point3d point3d)
+        public static double[] __ToArray(this Point3d point3d)
         {
             return new[] { point3d.X, point3d.Y, point3d.Z };
         }
@@ -1793,7 +1752,7 @@ namespace TSG_Library
         // Returns:
         //     The projected position
         [Obsolete(nameof(NotImplementedException))]
-        public static Point3d Project(this Point3d point, Surface.Plane plane)
+        public static Point3d __Project(this Point3d point, Surface.Plane plane)
         {
             //Vector normal = plane.Normal;
             //Vector vector =  (point - plane.Origin) * normal * normal;
@@ -1812,7 +1771,7 @@ namespace TSG_Library
         // Returns:
         //     The projected position
         [Obsolete(nameof(NotImplementedException))]
-        public static Point3d Project(this Point3d point, Geom.Curve.Ray ray)
+        public static Point3d __Project(this Point3d point, Geom.Curve.Ray ray)
         {
             //Vector axis = ray.Axis;
             //double num = (this - ray.Origin) * axis;
@@ -1820,7 +1779,7 @@ namespace TSG_Library
             throw new NotImplementedException();
         }
 
-        public static double[] _Array(this Point3d point)
+        public static double[] __Array(this Point3d point)
         {
             return new[] { point.X, point.Y, point.Z };
         }
@@ -1849,7 +1808,7 @@ namespace TSG_Library
         ///     </para>
         /// </remarks>
         [Obsolete(nameof(NotImplementedException))]
-        public static Line LineTangent(Point3d basePoint, ICurve icurve, Point3d helpPoint)
+        public static Line __CreateLineTangent(Point3d basePoint, ICurve icurve, Point3d helpPoint)
         {
             //IsLinearCurve(icurve);
             //if (Compute.Distance(basePoint, (Snap.NX.NXObject)icurve) < 1E-05)
@@ -1910,37 +1869,37 @@ namespace TSG_Library
         ///         use this function to "map" them to the ACS before using them in SNAP functions.
         ///     </para>
         /// </remarks>
-        public static Point3d MapWcsToAcs(Point3d workCoords)
+        public static Point3d __MapWcsToAcs(Point3d workCoords)
         {
             var input_csys = 3;
             var output_csys = 1;
             var numArray = new double[3];
-            ufsession_.Csys.MapPoint(input_csys, workCoords._ToArray(), output_csys, numArray);
-            return numArray._ToPoint3d();
+            ufsession_.Csys.MapPoint(input_csys, workCoords.__ToArray(), output_csys, numArray);
+            return numArray.__ToPoint3d();
         }
 
 
         /// <summary>Map a position from Absolute coordinates to Work coordinates</summary>
         /// <param name="absCoords">The coordinates of the given point wrt the Absolute Coordinate System (ACS)</param>
         /// <returns>The coordinates of the given point wrt the Work Coordinate System (WCS)</returns>
-        public static Point3d MapAcsToWcs(Point3d absCoords)
+        public static Point3d __MapAcsToWcs(Point3d absCoords)
         {
             var output_csys = 3;
             var input_csys = 1;
             var numArray = new double[3];
-            ufsession_.Csys.MapPoint(input_csys, absCoords._ToArray(), output_csys, numArray);
-            return numArray._ToPoint3d();
+            ufsession_.Csys.MapPoint(input_csys, absCoords.__ToArray(), output_csys, numArray);
+            return numArray.__ToPoint3d();
         }
 
 
         public static double __Distance(this Point3d p, Point3d q)
         {
-            return p._Subtract(q)._Norm();
+            return p.__Subtract(q).__Norm();
         }
 
         public static double __Distance2(this Point3d p, Point3d q)
         {
-            return p._Subtract(q)._Norm2();
+            return p.__Subtract(q).__Norm2();
         }
 
         public static Point3d __MidPoint(this Point3d p, Point3d q)
@@ -1956,21 +1915,21 @@ namespace TSG_Library
         #region Rules
 
         [Obsolete(nameof(NotImplementedException))]
-        public static BodyDumbRule _Mirror(
+        public static BodyDumbRule __Mirror(
             this BodyDumbRule bodyDumbRule,
             Surface.Plane plane)
         {
             throw new NotImplementedException();
         }
 
-        public static Body[] _Data(this BodyDumbRule rule)
+        public static Body[] __Data(this BodyDumbRule rule)
         {
             rule.GetData(out var bodies);
             return bodies;
         }
 
         [Obsolete(nameof(NotImplementedException))]
-        public static BodyDumbRule _Mirror(
+        public static BodyDumbRule __Mirror(
             this BodyDumbRule bodyDumbRule,
             Surface.Plane plane,
             Component from,
@@ -1994,7 +1953,7 @@ namespace TSG_Library
         }
 
 
-        public static void Rule(this BasePart basePart)
+        public static void __Rule(this BasePart basePart)
         {
             //basePart.ScRuleFactory.
             //basePart.ScRuleFactory.
@@ -2433,7 +2392,7 @@ namespace TSG_Library
             var part = __work_part_;
             var cylinderBuilder = part.Features.CreateCylinderBuilder(null);
 
-            using (session_.using_builder_destroyer(cylinderBuilder))
+            using (session_.__UsingBuilderDestroyer(cylinderBuilder))
             {
                 cylinderBuilder.Type = CylinderBuilder.Types.AxisDiameterAndHeight;
                 cylinderBuilder.BooleanOption.Type = BooleanOperation.BooleanType.Create;
@@ -2473,12 +2432,12 @@ namespace TSG_Library
 
         public static string __AskDetailOp(this BasePart part)
         {
-            return part.Leaf._AskDetailOp();
+            return part.Leaf.__AskDetailOp();
         }
 
         public static bool __IsPartDetail(this BasePart part)
         {
-            return part.Leaf._IsPartDetail();
+            return part.Leaf.__IsPartDetail();
         }
 
 
@@ -2605,7 +2564,7 @@ namespace TSG_Library
             var part = __work_part_;
             var builder = part.Features.CreateBooleanBuilder(null);
 
-            using (session_.using_builder_destroyer(builder))
+            using (session_.__UsingBuilderDestroyer(builder))
             {
                 builder.Operation = booleanType;
                 builder.Target = target;
@@ -2665,7 +2624,7 @@ namespace TSG_Library
             __display_part_.WCS.__Orientation(matrix);
             var builder = part.Features.CreateBlockFeatureBuilder(null);
 
-            using (session_.using_builder_destroyer(builder))
+            using (session_.__UsingBuilderDestroyer(builder))
             {
                 builder.Type = BlockFeatureBuilder.Types.TwoPointsAndHeight;
                 builder.BooleanOption.Type = BooleanOperation.BooleanType.Create;
@@ -2686,16 +2645,16 @@ namespace TSG_Library
             basePart.__AssertIsWorkPart();
             var part = __work_part_;
             var wcsOrientation = __wcs_.Orientation.Element;
-            __wcs_.SetDirections(matrix._AxisX(), matrix._AxisY());
+            __wcs_.SetDirections(matrix.__AxisX(), matrix.__AxisY());
             var builder = part.Features.CreateBlockFeatureBuilder(null);
 
-            using (session_.using_builder_destroyer(builder))
+            using (session_.__UsingBuilderDestroyer(builder))
             {
                 builder.Type = BlockFeatureBuilder.Types.DiagonalPoints;
                 builder.BooleanOption.Type = BooleanOperation.BooleanType.Create;
                 builder.SetTwoDiagonalPoints(originPoint, cornerPoint);
                 var block = (Block)builder.Commit();
-                __wcs_.SetDirections(wcsOrientation._AxisX(), Wcs.__Orientation().Element._AxisY());
+                __wcs_.SetDirections(wcsOrientation.__AxisX(), Wcs.__Orientation().Element.__AxisY());
                 return block;
             }
         }
@@ -2833,7 +2792,7 @@ namespace TSG_Library
             var part = __work_part_;
             var chamferBuilder = part.Features.CreateChamferBuilder(null);
 
-            using (session_.using_builder_destroyer(chamferBuilder))
+            using (session_.__UsingBuilderDestroyer(chamferBuilder))
             {
                 chamferBuilder.Option = ChamferBuilder.ChamferOption.SymmetricOffsets;
 
@@ -2874,7 +2833,7 @@ namespace TSG_Library
             var part = __work_part_;
             var chamferBuilder = part.Features.CreateChamferBuilder(null);
 
-            using (session_.using_builder_destroyer(chamferBuilder))
+            using (session_.__UsingBuilderDestroyer(chamferBuilder))
             {
                 chamferBuilder.Option = ChamferBuilder.ChamferOption.TwoOffsets;
                 chamferBuilder.Method = offsetFaces
@@ -2906,7 +2865,7 @@ namespace TSG_Library
             var part = __work_part_;
             var chamferBuilder = part.Features.CreateChamferBuilder(null);
 
-            using (session_.using_builder_destroyer(chamferBuilder))
+            using (session_.__UsingBuilderDestroyer(chamferBuilder))
             {
                 chamferBuilder.Option = ChamferBuilder.ChamferOption.OffsetAndAngle;
                 chamferBuilder.FirstOffset = distance.ToString();
@@ -2938,7 +2897,7 @@ namespace TSG_Library
             basePart.__AssertIsWorkPart();
             var datumAxisBuilder = __work_part_.Features.CreateDatumAxisBuilder(null);
 
-            using (session_.using_builder_destroyer(datumAxisBuilder))
+            using (session_.__UsingBuilderDestroyer(datumAxisBuilder))
             {
                 datumAxisBuilder.Type = DatumAxisBuilder.Types.OnCurveVector;
                 datumAxisBuilder.ArcLength.IsPercentUsed = true;
@@ -2965,7 +2924,7 @@ namespace TSG_Library
             var part = __work_part_;
             var edgeBlendBuilder = part.Features.CreateEdgeBlendBuilder(null);
 
-            using (session_.using_builder_destroyer(edgeBlendBuilder))
+            using (session_.__UsingBuilderDestroyer(edgeBlendBuilder))
             {
                 _ = edgeBlendBuilder.LimitsListData;
                 var scCollector = part.ScCollectors.CreateCollector();
@@ -3009,7 +2968,7 @@ namespace TSG_Library
             var part = __work_part_;
             var builder = part.Features.CreateExtractFaceBuilder(null);
 
-            using (session_.using_builder_destroyer(builder))
+            using (session_.__UsingBuilderDestroyer(builder))
             {
                 builder.FaceOption = ExtractFaceBuilder.FaceOptionType.FaceChain;
                 var array = new Face[faces.Length];
@@ -3035,7 +2994,7 @@ namespace TSG_Library
             part.__AssertIsWorkPart();
             var builder = part.Features.CreateExtrudeBuilder(null);
 
-            using (session_.using_builder_destroyer(builder))
+            using (session_.__UsingBuilderDestroyer(builder))
             {
                 SelectionIntentRule[] rules = { part.ScRuleFactory.CreateRuleCurveDumb(curves) };
                 builder.Section = __display_part_.Sections.CreateSection();
@@ -3066,9 +3025,9 @@ namespace TSG_Library
             Tag csysId;
 
             if (makeTemporary)
-                ufsession_.Csys.CreateTempCsys(origin._ToArray(), matrix.Tag, out csysId);
+                ufsession_.Csys.CreateTempCsys(origin.__ToArray(), matrix.Tag, out csysId);
             else
-                ufsession_.Csys.CreateCsys(origin._ToArray(), matrix.Tag, out csysId);
+                ufsession_.Csys.CreateCsys(origin.__ToArray(), matrix.Tag, out csysId);
 
             return (CartesianCoordinateSystem)NXObjectManager.Get(csysId);
         }
@@ -3091,7 +3050,7 @@ namespace TSG_Library
             var part = __work_part_;
             var offsetCurveBuilder = part.Features.CreateOffsetCurveBuilder(null);
 
-            using (session_.using_builder_destroyer(offsetCurveBuilder))
+            using (session_.__UsingBuilderDestroyer(offsetCurveBuilder))
             {
                 offsetCurveBuilder.Type = OffsetCurveBuilder.Types.Draft;
                 offsetCurveBuilder.InputCurvesOptions.InputCurveOption =
@@ -3102,7 +3061,7 @@ namespace TSG_Library
                 offsetCurveBuilder.DraftAngle.RightHandSide = angle;
                 offsetCurveBuilder.ReverseDirection = reverseDirection;
                 var section = offsetCurveBuilder.CurvesToOffset;
-                section.AddICurve(icurve);
+                section.__AddICurve(icurve);
                 var feature = offsetCurveBuilder.CommitFeature();
                 offsetCurveBuilder.CurvesToOffset.CleanMappingData();
                 return feature as OffsetCurve;
@@ -3119,7 +3078,7 @@ namespace TSG_Library
             part.__AssertIsWorkPart();
             var edgeBlendBuilder = part.Features.CreateEdgeBlendBuilder(null);
 
-            using (session_.using_builder_destroyer(edgeBlendBuilder))
+            using (session_.__UsingBuilderDestroyer(edgeBlendBuilder))
             {
                 var scCollector = part.ScCollectors.CreateCollector();
                 var edges = new Edge[1] { edge };
@@ -3205,7 +3164,7 @@ namespace TSG_Library
             var part = __work_part_;
             var tubeBuilder = part.Features.CreateTubeBuilder(null);
 
-            using (session_.using_builder_destroyer(tubeBuilder))
+            using (session_.__UsingBuilderDestroyer(tubeBuilder))
             {
                 tubeBuilder.Tolerance = DistanceTolerance;
                 tubeBuilder.OuterDiameter.RightHandSide = outerDiameter.ToString();
@@ -3216,7 +3175,7 @@ namespace TSG_Library
                     tubeBuilder.OutputOption = TubeBuilder.Output.SingleSegment;
 
                 var section = tubeBuilder.PathSection;
-                section.AddICurve(spine);
+                section.__AddICurve(spine);
                 tubeBuilder.BooleanOption.Type = BooleanOperation.BooleanType.Create;
                 var tube = (Tube)tubeBuilder.CommitFeature();
                 return tube;
@@ -3306,7 +3265,7 @@ namespace TSG_Library
             var point = basePart.__CreatePoint(point3D);
             var builder = basePart.BaseFeatures.CreatePointFeatureBuilder(null);
 
-            using (session_.using_builder_destroyer(builder))
+            using (session_.__UsingBuilderDestroyer(builder))
             {
                 builder.Point = point;
                 return (PointFeature)builder.Commit();
@@ -3354,7 +3313,7 @@ namespace TSG_Library
         public static DatumAxis __CreateFixedDatumAxis(this BasePart part, Point3d origin,
             Vector3d vector)
         {
-            return part.Datums.CreateFixedDatumAxis(origin, origin._Add(vector));
+            return part.Datums.CreateFixedDatumAxis(origin, origin.__Add(vector));
         }
 
 
@@ -3372,7 +3331,7 @@ namespace TSG_Library
             var part = __work_part_;
             var offsetFaceBuilder = part.Features.CreateOffsetFaceBuilder(null);
 
-            using (session_.using_builder_destroyer(offsetFaceBuilder))
+            using (session_.__UsingBuilderDestroyer(offsetFaceBuilder))
             {
                 offsetFaceBuilder.Distance.RightHandSide = distance.ToString();
                 var array = new SelectionIntentRule[faces.Length];
@@ -3423,14 +3382,14 @@ namespace TSG_Library
             icurve2.__IsPlanar();
             var value = icurve1.__Parameter(icurve1.__StartPoint());
             var plane = new Surface.Plane(icurve1.__StartPoint(), icurve1.__Binormal(value));
-            helpPoint1 = helpPoint1.Project(plane);
-            helpPoint2 = helpPoint2.Project(plane);
+            helpPoint1 = helpPoint1.__Project(plane);
+            helpPoint2 = helpPoint2.__Project(plane);
             var workPart = __work_part_;
             AssociativeLine associativeLine = null;
             var associativeLineBuilder =
                 workPart.BaseFeatures.CreateAssociativeLineBuilder(associativeLine);
 
-            using (session_.using_builder_destroyer(associativeLineBuilder))
+            using (session_.__UsingBuilderDestroyer(associativeLineBuilder))
             {
                 associativeLineBuilder.StartPointOptions = AssociativeLineBuilder.StartOption.Tangent;
                 associativeLineBuilder.StartTangent.SetValue(icurve1, null, helpPoint1);
@@ -3514,7 +3473,7 @@ namespace TSG_Library
             var part = __work_part_;
             var offsetCurveBuilder = part.Features.CreateOffsetCurveBuilder(null);
 
-            using (session_.using_builder_destroyer(offsetCurveBuilder))
+            using (session_.__UsingBuilderDestroyer(offsetCurveBuilder))
             {
                 offsetCurveBuilder.Type = OffsetCurveBuilder.Types.Distance;
                 offsetCurveBuilder.InputCurvesOptions.InputCurveOption =
@@ -3531,7 +3490,7 @@ namespace TSG_Library
                 var section = offsetCurveBuilder.CurvesToOffset;
 
                 for (var i = 0; i < curves.Length; i++)
-                    section.AddICurve(curves);
+                    section.__AddICurve(curves);
 
                 var feature = offsetCurveBuilder.CommitFeature();
                 return feature as OffsetCurve;
@@ -3564,7 +3523,7 @@ namespace TSG_Library
             var part = __work_part_;
             var offsetCurveBuilder = part.Features.CreateOffsetCurveBuilder(null);
 
-            using (session_.using_builder_destroyer(offsetCurveBuilder))
+            using (session_.__UsingBuilderDestroyer(offsetCurveBuilder))
             {
                 offsetCurveBuilder.Type = OffsetCurveBuilder.Types.Draft;
                 offsetCurveBuilder.InputCurvesOptions.InputCurveOption =
@@ -3576,7 +3535,7 @@ namespace TSG_Library
                 var section = offsetCurveBuilder.CurvesToOffset;
 
                 for (var i = 0; i < icurves.Length; i++)
-                    section.AddICurve(icurves);
+                    section.__AddICurve(icurves);
 
                 var feature = offsetCurveBuilder.CommitFeature();
                 offsetCurveBuilder.CurvesToOffset.CleanMappingData();
@@ -3611,7 +3570,7 @@ namespace TSG_Library
             var part = __work_part_;
             var offsetCurveBuilder = part.Features.CreateOffsetCurveBuilder(null);
 
-            using (session_.using_builder_destroyer(offsetCurveBuilder))
+            using (session_.__UsingBuilderDestroyer(offsetCurveBuilder))
             {
                 offsetCurveBuilder.Type = OffsetCurveBuilder.Types.Distance;
                 offsetCurveBuilder.InputCurvesOptions.InputCurveOption =
@@ -3622,7 +3581,7 @@ namespace TSG_Library
                 offsetCurveBuilder.CurvesToOffset.AllowSelfIntersection(true);
                 offsetCurveBuilder.OffsetDistance.RightHandSide = distance.ToString();
                 var section = offsetCurveBuilder.CurvesToOffset;
-                section.AddICurve(curves);
+                section.__AddICurve(curves);
 #pragma warning disable CS0618 // Type or member is obsolete
                 offsetCurveBuilder.ReverseDirection =
                     __IsReverseDirection(offsetCurveBuilder, curves, helpPoint, helpVector);
@@ -3661,7 +3620,7 @@ namespace TSG_Library
             var part = __work_part_;
             var offsetCurveBuilder = part.Features.CreateOffsetCurveBuilder(null);
 
-            using (session_.using_builder_destroyer(offsetCurveBuilder))
+            using (session_.__UsingBuilderDestroyer(offsetCurveBuilder))
             {
                 offsetCurveBuilder.Type = OffsetCurveBuilder.Types.Draft;
                 offsetCurveBuilder.InputCurvesOptions.InputCurveOption =
@@ -3670,7 +3629,7 @@ namespace TSG_Library
                 offsetCurveBuilder.DraftHeight.RightHandSide = height.ToString();
                 offsetCurveBuilder.DraftAngle.RightHandSide = angle.ToString();
                 var section = offsetCurveBuilder.CurvesToOffset;
-                section.AddICurve(curves);
+                section.__AddICurve(curves);
 #pragma warning disable CS0618 // Type or member is obsolete
                 offsetCurveBuilder.ReverseDirection =
                     __IsReverseDirection(offsetCurveBuilder, curves, helpPoint, helpVector);
@@ -3710,7 +3669,7 @@ namespace TSG_Library
             var part = __work_part_;
             var offsetCurveBuilder = part.Features.CreateOffsetCurveBuilder(null);
 
-            using (session_.using_builder_destroyer(offsetCurveBuilder))
+            using (session_.__UsingBuilderDestroyer(offsetCurveBuilder))
             {
                 offsetCurveBuilder.Type = OffsetCurveBuilder.Types.Distance;
                 offsetCurveBuilder.InputCurvesOptions.InputCurveOption =
@@ -3720,7 +3679,7 @@ namespace TSG_Library
                 offsetCurveBuilder.ReverseDirection = reverseDirection;
                 offsetCurveBuilder.PointOnOffsetPlane = point;
                 var section = offsetCurveBuilder.CurvesToOffset;
-                section.AddICurve(icurve);
+                section.__AddICurve(icurve);
                 var feature = offsetCurveBuilder.CommitFeature();
                 offsetCurveBuilder.CurvesToOffset.CleanMappingData();
                 return feature as OffsetCurve;
@@ -3745,7 +3704,7 @@ namespace TSG_Library
         {
             basePart.__AssertIsWorkPart();
             var curve_objs = new Tag[2] { curve1.Tag, curve2.Tag };
-            var array = center._ToArray();
+            var array = center.__ToArray();
             var array2 = new int[3];
             var arc_opts = new int[3];
             if (doTrim)
@@ -3781,7 +3740,7 @@ namespace TSG_Library
             var part = __work_part_;
             var trimBody2Builder = part.Features.CreateTrimBody2Builder(null);
 
-            using (session_.using_builder_destroyer(trimBody2Builder))
+            using (session_.__UsingBuilderDestroyer(trimBody2Builder))
             {
                 trimBody2Builder.Tolerance = DistanceTolerance;
                 trimBody2Builder.BooleanTool.ExtrudeRevolveTool.ToolSection.DistanceTolerance = DistanceTolerance;
@@ -3812,7 +3771,7 @@ namespace TSG_Library
             var part = __work_part_;
             var trimBody2Builder = part.Features.CreateTrimBody2Builder(null);
 
-            using (session_.using_builder_destroyer(trimBody2Builder))
+            using (session_.__UsingBuilderDestroyer(trimBody2Builder))
             {
                 trimBody2Builder.Tolerance = DistanceTolerance;
                 trimBody2Builder.BooleanTool.ExtrudeRevolveTool.ToolSection.DistanceTolerance = DistanceTolerance;
@@ -4061,12 +4020,12 @@ namespace TSG_Library
             var part = __work_part_;
             var boundedPlaneBuilder = part.Features.CreateBoundedPlaneBuilder(null);
 
-            using (boundedPlaneBuilder._using_builder())
+            using (boundedPlaneBuilder.__UsingBuilder())
             {
                 boundedPlaneBuilder.BoundingCurves.SetAllowedEntityTypes(Section.AllowTypes.OnlyCurves);
                 boundedPlaneBuilder.BoundingCurves.AllowSelfIntersection(false);
                 var section = boundedPlaneBuilder.BoundingCurves;
-                section.AddICurve(boundingCurves);
+                section.__AddICurve(boundingCurves);
                 return (BoundedPlane)boundedPlaneBuilder.Commit();
             }
         }
@@ -4339,9 +4298,9 @@ namespace TSG_Library
             double angle2)
         {
             basePart.__AssertIsWorkPart();
-            var radians1 = DegreesToRadians(angle1);
-            var radians2 = DegreesToRadians(angle2);
-            var ori = axisX._ToMatrix3x3(axisY);
+            var radians1 = __DegreesToRadians(angle1);
+            var radians2 = __DegreesToRadians(angle2);
+            var ori = axisX.__ToMatrix3x3(axisY);
             var matrix = basePart.NXMatrices.Create(ori);
             return basePart.Curves.CreateArc(center, matrix, radius, radians1, radians2);
         }
@@ -4469,7 +4428,7 @@ namespace TSG_Library
             part.__AssertIsWorkPart();
             var trimBody2Builder = part.Features.CreateTrimBody2Builder(null);
 
-            using (session_.using_builder_destroyer(trimBody2Builder))
+            using (session_.__UsingBuilderDestroyer(trimBody2Builder))
             {
                 trimBody2Builder.Tolerance = DistanceTolerance;
                 trimBody2Builder.BooleanTool.ExtrudeRevolveTool.ToolSection.DistanceTolerance = DistanceTolerance;
@@ -4548,7 +4507,7 @@ namespace TSG_Library
         {
             var __origin = origin ?? _Point3dOrigin;
             var __orientation = orientation ?? _Matrix3x3Identity;
-            return part.__AddComponent(session_.find_or_open(path), referenceSet, componentName, __origin,
+            return part.__AddComponent(session_.__FindOrOpen(path), referenceSet, componentName, __origin,
                 __orientation, layer);
         }
 
@@ -4587,8 +4546,8 @@ namespace TSG_Library
             double angle2)
         {
             basePart.__AssertIsWorkPart();
-            var startAngle = DegreesToRadians(angle1);
-            var endAngle = DegreesToRadians(angle2);
+            var startAngle = __DegreesToRadians(angle1);
+            var endAngle = __DegreesToRadians(angle2);
             return __work_part_.Curves.CreateArc(center, axisX, axisY, radius, startAngle, endAngle);
         }
 
@@ -4659,7 +4618,7 @@ namespace TSG_Library
 
         public static CoordinateSystem __CreateCsys(this BasePart basePart, Vector3d vector3D)
         {
-            var orientation = basePart.__CreateNXMatrix(vector3D._ToMatrix3x3());
+            var orientation = basePart.__CreateNXMatrix(vector3D.__ToMatrix3x3());
 
             return basePart.__CreateCoordinateSystem(_Point3dOrigin, orientation);
         }
@@ -4674,19 +4633,19 @@ namespace TSG_Library
             Surface.Plane plane)
         {
             var origin = block.__Origin().__Mirror(plane);
-            var orientation = block.__Orientation()._Mirror(plane);
+            var orientation = block.__Orientation().__Mirror(plane);
             var length = block.__Width();
             var width = block.__Length();
             var height = block.__Height();
             var builder = block.__OwningPart().Features.CreateBlockFeatureBuilder(null);
 
-            using (session_.using_builder_destroyer(builder))
+            using (session_.__UsingBuilderDestroyer(builder))
             {
                 builder.Length.Value = length;
                 builder.Width.Value = width;
                 builder.Height.Value = height;
                 builder.Origin = origin;
-                builder.SetOrientation(orientation._AxisX(), orientation._AxisY());
+                builder.SetOrientation(orientation.__AxisX(), orientation.__AxisY());
                 return (Block)builder.Commit();
             }
         }
@@ -4705,7 +4664,7 @@ namespace TSG_Library
         {
             var builder = block.OwningPart.Features.CreateBlockFeatureBuilder(block);
 
-            using (session_.using_builder_destroyer(builder))
+            using (session_.__UsingBuilderDestroyer(builder))
             {
                 return builder.Origin;
             }
@@ -4715,10 +4674,10 @@ namespace TSG_Library
         {
             var builder = block.OwningPart.Features.CreateBlockFeatureBuilder(block);
 
-            using (session_.using_builder_destroyer(builder))
+            using (session_.__UsingBuilderDestroyer(builder))
             {
                 builder.GetOrientation(out var xAxis, out var yAxis);
-                return xAxis._ToMatrix3x3(yAxis);
+                return xAxis.__ToMatrix3x3(yAxis);
             }
         }
 
@@ -4727,7 +4686,7 @@ namespace TSG_Library
             var
                 builder = block.__OwningPart().Features.CreateBlockFeatureBuilder(block);
 
-            using (session_.using_builder_destroyer(builder))
+            using (session_.__UsingBuilderDestroyer(builder))
             {
                 return builder.Length.Value;
             }
@@ -4738,7 +4697,7 @@ namespace TSG_Library
             var
                 builder = block.__OwningPart().Features.CreateBlockFeatureBuilder(block);
 
-            using (session_.using_builder_destroyer(builder))
+            using (session_.__UsingBuilderDestroyer(builder))
             {
                 return builder.Width.Value;
             }
@@ -4749,7 +4708,7 @@ namespace TSG_Library
             var
                 builder = block.__OwningPart().Features.CreateBlockFeatureBuilder(block);
 
-            using (session_.using_builder_destroyer(builder))
+            using (session_.__UsingBuilderDestroyer(builder))
             {
                 return builder.Height.Value;
             }
@@ -4759,7 +4718,7 @@ namespace TSG_Library
 
         #region Body
 
-        public static void NXOpen_Body(Body body)
+        public static void __NXOpenBody(Body body)
         {
             //body.Density
             //body.GetEdges
@@ -4772,41 +4731,41 @@ namespace TSG_Library
             //body.OwningPart.Features.GetParentFeatureOfBody
         }
 
-        public static Box3d _Box3d(this Body body)
+        public static Box3d __Box3d(this Body body)
         {
             var array = new double[3];
             var array2 = new double[3, 3];
             var array3 = new double[3];
             var tag = body.Tag;
             ufsession_.Modl.AskBoundingBoxExact(tag, Tag.Null, array, array2, array3);
-            var position = array._ToPoint3d();
+            var position = array.__ToPoint3d();
             var vector = new Vector3d(array2[0, 0], array2[0, 1], array2[0, 2]);
             var vector2 = new Vector3d(array2[1, 0], array2[1, 1], array2[1, 2]);
             var vector3 = new Vector3d(array2[2, 0], array2[2, 1], array2[2, 2]);
-            var maxXYZ = position._Add(vector._Multiply(array3[0]))._Add(vector2._Multiply(array3[1]))
-                ._Add(vector3._Multiply(array3[2]));
+            var maxXYZ = position.__Add(vector.__Multiply(array3[0])).__Add(vector2.__Multiply(array3[1]))
+                .__Add(vector3.__Multiply(array3[2]));
             return new Box3d(position, maxXYZ);
         }
 
-        public static BooleanFeature _Subtract(this Body target, params Body[] toolBodies)
+        public static BooleanFeature __Subtract(this Body target, params Body[] toolBodies)
         {
             return target.OwningPart.__CreateBoolean(target, toolBodies, Feature.BooleanType.Subtract);
         }
 
-        public static Body _Prototype(this Body body)
+        public static Body __Prototype(this Body body)
         {
             return (Body)body.Prototype;
         }
 
-        public static bool _InterferesWith(this Body target, Component component)
+        public static bool __InterferesWith(this Body target, Component component)
         {
             if (target.OwningPart.Tag != component.OwningPart.Tag)
                 throw new ArgumentException("Body and component are not in the same assembly.");
 
-            return target._InterferesWith(component.solid_body_memebers());
+            return target.__InterferesWith(component.__SolidBodyMembers());
         }
 
-        public static bool _InterferesWith(this Body target, params Body[] toolBodies)
+        public static bool __InterferesWith(this Body target, params Body[] toolBodies)
         {
             //if (toolBodies.Any(__b=>__b.OwningPart.Tag != target.OwningPart.Tag))
             //    throw new ArgumentException("At least one tool body is not in the same assembly as the target body.");
@@ -4826,13 +4785,13 @@ namespace TSG_Library
 
         #region CartesianCoordinateSystem
 
-        public static DatumPlane _DatumPlaneXZ(this CartesianCoordinateSystem datumCsys)
+        public static DatumPlane __DatumPlaneXZ(this CartesianCoordinateSystem datumCsys)
         {
             ufsession_.Modl.AskDatumCsysComponents(datumCsys.Tag, out _, out _, out _, out var dplanes);
             return (DatumPlane)session_.__GetTaggedObject(dplanes[2]);
         }
 
-        public static DatumPlane _DatumPlaneYZ(this CartesianCoordinateSystem datumCsys)
+        public static DatumPlane __DatumPlaneYZ(this CartesianCoordinateSystem datumCsys)
         {
             ufsession_.Modl.AskDatumCsysComponents(datumCsys.Tag, out _, out _, out _, out var dplanes);
             return (DatumPlane)session_.__GetTaggedObject(dplanes[1]);
@@ -4843,7 +4802,7 @@ namespace TSG_Library
         #region Chamfer
 
         [Obsolete(nameof(NotImplementedException))]
-        public static Chamfer _Mirror(
+        public static Chamfer __Mirror(
             this Chamfer chamfer,
             Surface.Plane plane)
         {
@@ -4851,7 +4810,7 @@ namespace TSG_Library
         }
 
         [Obsolete(nameof(NotImplementedException))]
-        public static Chamfer _Mirror(
+        public static Chamfer __Mirror(
             this Chamfer chamfer,
             Surface.Plane plane,
             Component from,
@@ -4865,13 +4824,13 @@ namespace TSG_Library
         #region Collections
 
         [Obsolete(nameof(NotImplementedException))]
-        public static IDictionary<double, List<Face>> ToILookIDict<T, K>(
+        public static IDictionary<double, List<Face>> __ToILookIDict<T, K>(
             this IEnumerable<T> obj, Func<T, K> value)
         {
             throw new NotImplementedException();
         }
 
-        public static IDictionary<TKey, List<TValue>> ToILookIDict<TKey, TValue>(
+        public static IDictionary<TKey, List<TValue>> __ToILookIDict<TKey, TValue>(
             this IEnumerable<TValue> source,
             Func<TValue, TKey> keySelector,
             IEqualityComparer<TKey> keyComparer = null)
@@ -4961,7 +4920,7 @@ namespace TSG_Library
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
             } while (tag != 0);
 
@@ -4976,7 +4935,7 @@ namespace TSG_Library
         public static Component __ProtoChildComp(this Component component)
         {
             var instance = component.__InstanceTag();
-            var root_component = component.OwningComponent._Prototype().ComponentAssembly.RootComponent.Tag;
+            var root_component = component.OwningComponent.__Prototype().ComponentAssembly.RootComponent.Tag;
             var proto_child_fastener_tag = ufsession_.Assem.AskPartOccOfInst(root_component, instance);
             return (Component)session_.__GetTaggedObject(proto_child_fastener_tag);
         }
@@ -4985,7 +4944,7 @@ namespace TSG_Library
         {
             var builder = __work_part_.BaseFeatures.CreateWaveLinkBuilder(null);
 
-            using (session_.using_builder_destroyer(builder))
+            using (session_.__UsingBuilderDestroyer(builder))
             {
                 builder.ExtractFaceBuilder.ParentPart = ExtractFaceBuilder.ParentPartType.OtherPart;
                 builder.Type = WaveLinkBuilder.Types.BodyLink;
@@ -4995,7 +4954,7 @@ namespace TSG_Library
                     ExtractFaceBuilder.FeatureOptionType.OneFeatureForAllBodies;
                 var bodies1 = new Body[1];
                 var bodyDumbRule1 =
-                    __work_part_.ScRuleFactory.CreateRuleBodyDumb(child.solid_body_memebers(), false);
+                    __work_part_.ScRuleFactory.CreateRuleBodyDumb(child.__SolidBodyMembers(), false);
                 var rules1 = new SelectionIntentRule[1];
                 rules1[0] = bodyDumbRule1;
                 scCollector1.ReplaceRules(rules1, false);
@@ -5004,22 +4963,22 @@ namespace TSG_Library
             }
         }
 
-        public static bool _IsJckScrewTsg(this Component part)
+        public static bool __IsJckScrewTsg(this Component part)
         {
             return part.DisplayName.ToLower().EndsWith("-jck-screw-tsg");
         }
 
-        public static bool _IsDwl(this Component part)
+        public static bool __IsDwl(this Component part)
         {
             return part.DisplayName.ToLower().Contains("-dwl-");
         }
 
-        public static bool _IsJckScrew(this Component part)
+        public static bool __IsJckScrew(this Component part)
         {
             return part.DisplayName.ToLower().EndsWith("-jck-screw");
         }
 
-        public static NXObject find_occurrence(this Component component, NXObject proto)
+        public static NXObject __FindOccurrence(this Component component, NXObject proto)
         {
             return component.FindOccurrence(proto);
         }
@@ -5029,30 +4988,30 @@ namespace TSG_Library
         //    component.DirectOwner.ReplaceReferenceSet(component, reference_set);
         //}
 
-        public static CartesianCoordinateSystem _AbsoluteCsysOcc(this Component component)
+        public static CartesianCoordinateSystem __AbsoluteCsysOcc(this Component component)
         {
-            return (CartesianCoordinateSystem)component.FindOccurrence(component._Prototype().__AbsoluteCsys());
+            return (CartesianCoordinateSystem)component.FindOccurrence(component.__Prototype().__AbsoluteCsys());
         }
 
-        public static DatumPlane _AbsOccDatumPlaneXY(this Component component)
+        public static DatumPlane __AbsOccDatumPlaneXY(this Component component)
         {
-            return (DatumPlane)component.FindOccurrence(component._Prototype().__AbsoluteDatumCsys()
+            return (DatumPlane)component.FindOccurrence(component.__Prototype().__AbsoluteDatumCsys()
                 .__DatumPlaneXY());
         }
 
-        public static DatumPlane _AbsOccDatumPlaneXZ(this Component component)
+        public static DatumPlane __AbsOccDatumPlaneXZ(this Component component)
         {
-            return (DatumPlane)component.FindOccurrence(component._Prototype().__AbsoluteDatumCsys()
+            return (DatumPlane)component.FindOccurrence(component.__Prototype().__AbsoluteDatumCsys()
                 .__DatumPlaneXZ());
         }
 
-        public static DatumPlane _AbsOccDatumPlaneYZ(this Component component)
+        public static DatumPlane __AbsOccDatumPlaneYZ(this Component component)
         {
-            return (DatumPlane)component.FindOccurrence(component._Prototype().__AbsoluteDatumCsys()
+            return (DatumPlane)component.FindOccurrence(component.__Prototype().__AbsoluteDatumCsys()
                 .__DatumPlaneYZ());
         }
 
-        public static Component find_component_(this Component component,
+        public static Component __FindComponent(this Component component,
             string __journal_identifier)
         {
             try
@@ -5068,30 +5027,30 @@ namespace TSG_Library
         }
 
 
-        public static Component _InstOfPartOcc(this Component component)
+        public static Component __InstOfPartOcc(this Component component)
         {
             var instance = ufsession_.Assem.AskInstOfPartOcc(component.Tag);
             return (Component)session_.__GetTaggedObject(instance);
         }
 
 
-        public static bool _IsShcs(this Component component)
+        public static bool __IsShcs(this Component component)
         {
-            return component.DisplayName._IsShcs();
+            return component.DisplayName.__IsShcs();
         }
 
-        public static bool _IsFastener(this Component component)
+        public static bool __IsFastener(this Component component)
         {
-            return component.DisplayName._IsFastener();
+            return component.DisplayName.__IsFastener();
         }
 
-        public static void replace_component(this Component component, string path, string name,
+        public static void __ReplaceComponent(this Component component, string path, string name,
             bool replace_all)
         {
             var replace_builder =
                 __work_part_.AssemblyManager.CreateReplaceComponentBuilder();
 
-            using (session_.using_builder_destroyer(replace_builder))
+            using (session_.__UsingBuilderDestroyer(replace_builder))
             {
                 replace_builder.ComponentNameType =
                     ReplaceComponentBuilder.ComponentNameOption.AsSpecified;
@@ -5106,14 +5065,14 @@ namespace TSG_Library
             }
         }
 
-        public static void delete_self_and_constraints(this Component component)
+        public static void __DeleteSelfAndConstraints(this Component component)
         {
             var constraints = component.GetConstraints();
 
             if (constraints.Length > 0)
-                session_.delete_objects(constraints);
+                session_.__DeleteObjects(constraints);
 
-            session_.delete_objects(component);
+            session_.__DeleteObjects(component);
         }
 
 
@@ -5122,27 +5081,27 @@ namespace TSG_Library
             return $"{component._AssemblyPath().Aggregate("{ ", (str, cmp) => $"{str}{cmp.DisplayName}, ")}}}";
         }
 
-        public static IDisposable using_reference_set_reset(this Component component)
+        public static IDisposable __UsingReferenceSetReset(this Component component)
         {
             return new ReferenceSetReset(component);
         }
 
-        public static Part __prototype(this Component comp)
+        public static Part __Prototype(this Component comp)
         {
-            return comp._Prototype();
+            return comp.__Prototype();
         }
 
-        public static ReferenceSet[] __reference_sets(this Part part)
+        public static ReferenceSet[] __ReferenceSets(this Part part)
         {
             return part.GetAllReferenceSets();
         }
 
-        public static ReferenceSet reference_sets(this Part part, string refset_name)
+        public static ReferenceSet __ReferenceSets(this Part part, string refset_name)
         {
             return part.GetAllReferenceSets().Single(__ref => __ref.Name == refset_name);
         }
 
-        public static Component _ToComponent(this Tag __tag)
+        public static Component __ToComponent(this Tag __tag)
         {
             return (Component)session_.__GetTaggedObject(__tag);
         }
@@ -5158,7 +5117,7 @@ namespace TSG_Library
         }
 
 
-        public static void NXOpen_Assemblies_Component(Component component)
+        public static void __NXOpenAssembliesComponent(Component component)
         {
             //component.DisplayName
             //component.FindObject
@@ -5204,17 +5163,17 @@ namespace TSG_Library
         //}
 
 
-        public static bool _IsLeaf(this Component component)
+        public static bool __IsLeaf(this Component component)
         {
             return component.GetChildren().Length == 0;
         }
 
-        public static bool _IsRoot(this Component component)
+        public static bool __IsRoot(this Component component)
         {
             return component.Parent is null;
         }
 
-        public static void _ReferenceSet(this Component component, string referenceSetTitle)
+        public static void __ReferenceSet(this Component component, string referenceSetTitle)
         {
             if (!(component.Prototype is Part part))
                 throw new ArgumentException($"The given component \"{component.DisplayName}\" is not loaded.");
@@ -5237,12 +5196,12 @@ namespace TSG_Library
             }
         }
 
-        public static Part _Prototype(this Component component)
-        {
-            return (Part)component.Prototype;
-        }
+        //public static Part __Prototype(this Component component)
+        //{
+        //    return (Part)component.Prototype;
+        //}
 
-        public static Body[] solid_body_memebers(this Component component)
+        public static Body[] __SolidBodyMembers(this Component component)
         {
             return component.__Members()
                 .OfType<Body>()
@@ -5250,23 +5209,23 @@ namespace TSG_Library
                 .ToArray();
         }
 
-        public static TreeNode _TreeNode(this Component component)
+        public static TreeNode __TreeNode(this Component component)
         {
             return new TreeNode(component.DisplayName) { Tag = component };
         }
 
-        public static Matrix3x3 _Orientation(this Component component)
+        public static Matrix3x3 __Orientation(this Component component)
         {
             component.GetPosition(out _, out var orientation);
             return orientation;
         }
 
-        public static void _SetWcsToComponent(this Component component)
+        public static void __SetWcsToComponent(this Component component)
         {
-            __display_part_.WCS.SetOriginAndMatrix(component._Origin(), component._Orientation());
+            __display_part_.WCS.SetOriginAndMatrix(component.__Origin(), component.__Orientation());
         }
 
-        public static Point3d _Origin(this Component component)
+        public static Point3d __Origin(this Component component)
         {
             component.GetPosition(out var origin, out _);
             return origin;
@@ -6339,19 +6298,19 @@ namespace TSG_Library
 
         #region CoordinateSystem
 
-        public static Vector3d _AxisX(this CoordinateSystem coordinateSystem)
+        public static Vector3d __AxisX(this CoordinateSystem coordinateSystem)
         {
-            return coordinateSystem.Orientation.Element._AxisX();
+            return coordinateSystem.Orientation.Element.__AxisX();
         }
 
-        public static Vector3d _AxisY(this CoordinateSystem coordinateSystem)
+        public static Vector3d __AxisY(this CoordinateSystem coordinateSystem)
         {
-            return coordinateSystem.Orientation.Element._AxisY();
+            return coordinateSystem.Orientation.Element.__AxisY();
         }
 
-        public static Vector3d _AxisZ(this CoordinateSystem coordinateSystem)
+        public static Vector3d __AxisZ(this CoordinateSystem coordinateSystem)
         {
-            return coordinateSystem.Orientation.Element._AxisZ();
+            return coordinateSystem.Orientation.Element.__AxisZ();
         }
 
         public static void __GetDirections(this CoordinateSystem obj)
@@ -6391,14 +6350,6 @@ namespace TSG_Library
 
         #endregion
 
-        #region Csys
-
-        //ufsession_.Csys.AskCsysInfo
-        //ufsession_.Csys.AskMatrixOfObject
-        //ufsession_.Csys.AskMatrixValues
-        //ufsession_.Csys.AskWcs
-
-        #endregion
 
         #region Curve
 
@@ -6412,7 +6363,7 @@ namespace TSG_Library
         ///     The vector returned is usually not a unit vector. In fact, it may even have zero<br />
         ///     length, in certain unusual cases.
         /// </remarks>
-        public static Vector3d Derivative(this Curve curve, double value)
+        public static Vector3d __Derivative(this Curve curve, double value)
         {
             var eval = ufsession_.Eval;
             eval.Initialize2(curve.Tag, out var evaluator);
@@ -6423,8 +6374,8 @@ namespace TSG_Library
             value /= Factor;
             eval.Evaluate(evaluator, 1, value, point, array3);
             eval.Free(evaluator);
-            var vector = array3._ToVector3d();
-            return vector._Divide(Factor);
+            var vector = array3.__ToVector3d();
+            return vector.__Divide(Factor);
         }
 
         //
@@ -6448,7 +6399,7 @@ namespace TSG_Library
         public static double __Parameter(this Curve curve, Point3d point)
         {
             var nXOpenTag = curve.Tag;
-            var array = point._ToArray();
+            var array = point.__ToArray();
             var direction = 1;
             var offset = 0.0;
             var tolerance = 0.0001;
@@ -6458,58 +6409,59 @@ namespace TSG_Library
             return (1.0 - parameter) * curve.__MinU() + parameter * curve.__MaxU();
         }
 
-        //
-        // Summary:
-        //     The lower-limit parameter value (at the start-point of the curve)
-        //
-        // Remarks:
-        //     If c is a curve, then c.Position(c.MinU) = c.StartPoint
-        public static double __MinU(this Curve curve)
-        {
-            var eval = ufsession_.Eval;
-            eval.Initialize2(curve.Tag, out var evaluator);
-            var array = new double[2] { 0.0, 1.0 };
-            eval.AskLimits(evaluator, array);
-            eval.Free(evaluator);
-            return Factor * array[0];
-        }
+        ////
+        //// Summary:
+        ////     The lower-limit parameter value (at the start-point of the curve)
+        ////
+        //// Remarks:
+        ////     If c is a curve, then c.Position(c.MinU) = c.StartPoint
+        //public static double __MinU(this Curve curve)
+        //{
+        //    var eval = ufsession_.Eval;
+        //    eval.Initialize2(curve.Tag, out var evaluator);
+        //    var array = new double[2] { 0.0, 1.0 };
+        //    eval.AskLimits(evaluator, array);
+        //    eval.Free(evaluator);
+        //    return Factor * array[0];
+        //}
 
-        //
-        // Summary:
-        //     The upper-limit parameter value (at the end-point of the curve)
-        //
-        // Remarks:
-        //     If c is a curve, then c.Position(c.MaxU) = c.EndPoint
-        public static double __MaxU(this Curve curve)
-        {
-            var eval = ufsession_.Eval;
-            eval.Initialize2(curve.Tag, out var evaluator);
-            var array = new double[2] { 0.0, 1.0 };
-            eval.AskLimits(evaluator, array);
-            eval.Free(evaluator);
-            return Factor * array[1];
-        }
+        ////
+        //// Summary:
+        ////     The upper-limit parameter value (at the end-point of the curve)
+        ////
+        //// Remarks:
+        ////     If c is a curve, then c.Position(c.MaxU) = c.EndPoint
+        //public static double __MaxU(this Curve curve)
+        //{
+        //    var eval = ufsession_.Eval;
+        //    eval.Initialize2(curve.Tag, out var evaluator);
+        //    var array = new double[2] { 0.0, 1.0 };
+        //    eval.AskLimits(evaluator, array);
+        //    eval.Free(evaluator);
+        //    return Factor * array[1];
+        //}
 
-        public static Curve _Copy(this Curve curve)
+        public static Curve __Copy(this Curve curve)
         {
             switch (curve)
             {
                 case Line line:
-                    return line._Copy();
+                    return line.__Copy();
                 case Arc arc:
 #pragma warning disable CS0618 // Type or member is obsolete
-                    return arc._Copy();
+                    return arc.__Copy();
 #pragma warning restore CS0618 // Type or member is obsolete
                 case Ellipse ellipse:
-                    return ellipse._Copy();
+                    return ellipse.__Copy();
                 case Parabola parabola:
 #pragma warning disable CS0612 // Type or member is obsolete
-                    return parabola._Copy();
+                    return parabola.__Copy();
 #pragma warning restore CS0612 // Type or member is obsolete
                 case Hyperbola hyperbola:
-                    return hyperbola._Copy();
+                    //return hyperbola.__Copy();
+                    throw new NotImplementedException();
                 case Spline spline:
-                    return spline._Copy();
+                    return spline.__Copy();
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -6530,7 +6482,7 @@ namespace TSG_Library
         //     If you want to calculate several points on a curve, the PositionArray functions
         //     might be more useful. The following example shows how the Position function can
         //     be used to calculate a sequence of points along a curve.
-        public static Point3d Position(this Curve curve, double value)
+        public static Point3d __Position(this Curve curve, double value)
         {
             //using(session_.using_evaluator(curve.Tag))
             //{
@@ -6546,7 +6498,7 @@ namespace TSG_Library
             value /= Factor;
             eval.Evaluate(evaluator, 0, value, array2, derivatives);
             eval.Free(evaluator);
-            return array2._ToPoint3d();
+            return array2.__ToPoint3d();
         }
 
         //
@@ -6566,10 +6518,10 @@ namespace TSG_Library
         //     The function will throw an NXOpen.NXException, if the copy operation cannot be
         //     performed.
         [Obsolete(nameof(NotImplementedException))]
-        public static Curve[] Copy(this Curve curve, params Curve[] original)
+        public static Curve[] __Copy(this Curve curve, params Curve[] original)
         {
             var array = new Curve[original.Length];
-            for (var i = 0; i < original.Length; i++) array[i] = original[i].Copy();
+            for (var i = 0; i < original.Length; i++) array[i] = original[i].__Copy();
 
             return array;
         }
@@ -6585,7 +6537,7 @@ namespace TSG_Library
         //   upperParam:
         //     The upper-limit parameter value
         [Obsolete(nameof(NotImplementedException))]
-        public static void Trim(this Curve curve, double lowerParam, double upperParam)
+        public static void __CreateTrim(this Curve curve, double lowerParam, double upperParam)
         {
             //Part workPart = __work_part_;
             //TrimCurve trimCurve = null;
@@ -6635,7 +6587,7 @@ namespace TSG_Library
         //     be more convenient, in many cases. Links to these functions are provided in the
         //     "See Also" section below.
         [Obsolete(nameof(NotImplementedException))]
-        public static Curve[] Divide(this Curve curve, params double[] parameters)
+        public static Curve[] __Divide(this Curve curve, params double[] parameters)
         {
             //Curve curve = Copy();
             //Part workPart = __work_part_;
@@ -6692,7 +6644,7 @@ namespace TSG_Library
         //     be more convenient, in many cases. Links to these functions are provided in the
         //     "See Also" section below.
         [Obsolete(nameof(NotImplementedException))]
-        public static Curve[] Divide(this Curve curve, ICurve boundingCurve,
+        public static Curve[] __Divide(this Curve curve, ICurve boundingCurve,
             Point3d helpPoint)
         {
             //Compute.IntersectionResult intersectionResult = Compute.IntersectInfo(this, boundingCurve, helpPoint);
@@ -6723,7 +6675,7 @@ namespace TSG_Library
         //     be more convenient, in many cases. Links to these functions are provided in the
         //     "See Also" section below.
         [Obsolete(nameof(NotImplementedException))]
-        public static Curve[] Divide(this Curve curve, Face face, Point3d helpPoint)
+        public static Curve[] __Divide(this Curve curve, Face face, Point3d helpPoint)
         {
             //Compute.IntersectionResult intersectionResult = Compute.IntersectInfo(this, face, helpPoint);
             //return Divide(intersectionResult.CurveParameter);
@@ -6753,7 +6705,7 @@ namespace TSG_Library
         //     be more convenient, in many cases. Links to these functions are provided in the
         //     "See Also" section below.
         [Obsolete(nameof(NotImplementedException))]
-        public static Curve[] Divide(this Curve curve, /* Surface.Plane geomPlane,*/
+        public static Curve[] __Divide(this Curve curve, /* Surface.Plane geomPlane,*/
             Point3d helpPoint)
         {
             //Compute.IntersectionResult intersectionResult = Compute.IntersectInfo(this, geomPlane, helpPoint);
@@ -6761,7 +6713,7 @@ namespace TSG_Library
             throw new NotImplementedException();
         }
 
-        public static bool _IsClosed(this Curve curve)
+        public static bool __IsClosed(this Curve curve)
         {
             var result = ufsession_.Modl.AskCurveClosed(curve.Tag);
 
@@ -6795,7 +6747,7 @@ namespace TSG_Library
         /// <summary>The lower u-value (at the start point of the curve)</summary>
         /// <param name="curve">The curve</param>
         /// <returns>The value at the start of the curve</returns>
-        public static double _MinU(this Curve curve)
+        public static double __MinU(this Curve curve)
         {
             var eval = ufsession_.Eval;
             eval.Initialize2(curve.Tag, out var evaluator);
@@ -6808,7 +6760,7 @@ namespace TSG_Library
         /// <summary>The upper u-value (at the start point of the curve)</summary>
         /// <param name="curve">The curve</param>
         /// <returns>The value at the end of the curve</returns>
-        public static double _MaxU(this Curve curve)
+        public static double __MaxU(this Curve curve)
         {
             var eval = ufsession_.Eval;
             eval.Initialize2(curve.Tag, out var evaluator);
@@ -6818,46 +6770,46 @@ namespace TSG_Library
             return 1.0 * array[1];
         }
 
-        /// <summary>Calculates a point on the icurve at a given parameter value</summary>
-        /// <param name="curve">The curve</param>
-        /// <param name="value">The parameter value</param>
-        /// <returns>The <see cref="NXOpen.Point3d" /></returns>
-        public static Point3d _Position(this Curve curve, double value)
+        ///// <summary>Calculates a point on the icurve at a given parameter value</summary>
+        ///// <param name="curve">The curve</param>
+        ///// <param name="value">The parameter value</param>
+        ///// <returns>The <see cref="NXOpen.Point3d" /></returns>
+        //public static Point3d _Position(this Curve curve, double value)
+        //{
+        //    var eval = ufsession_.Eval;
+        //    eval.Initialize2(curve.Tag, out var evaluator);
+        //    var array = new double[3];
+        //    var array2 = array;
+        //    var array3 = new double[3];
+        //    var derivatives = array3;
+        //    value /= 1.0;
+        //    eval.Evaluate(evaluator, 0, value, array2, derivatives);
+        //    eval.Free(evaluator);
+        //    return array2.__ToPoint3d();
+        //}
+
+        public static Point3d __StartPoint(this Curve curve)
         {
-            var eval = ufsession_.Eval;
-            eval.Initialize2(curve.Tag, out var evaluator);
-            var array = new double[3];
-            var array2 = array;
-            var array3 = new double[3];
-            var derivatives = array3;
-            value /= 1.0;
-            eval.Evaluate(evaluator, 0, value, array2, derivatives);
-            eval.Free(evaluator);
-            return array2._ToPoint3d();
+            return curve.__Position(curve.__MinU());
         }
 
-        public static Point3d _StartPoint(this Curve curve)
+        public static Point3d __EndPoint(this Curve curve)
         {
-            return curve._Position(curve._MinU());
+            return curve.__Position(curve.__MaxU());
         }
 
-        public static Point3d _EndPoint(this Curve curve)
+        public static Point3d __MidPoint(this Curve curve)
         {
-            return curve._Position(curve._MaxU());
-        }
-
-        public static Point3d _MidPoint(this Curve curve)
-        {
-            var max = curve._MaxU();
-            var min = curve._MinU();
+            var max = curve.__MaxU();
+            var min = curve.__MinU();
             var diff = max - min;
             var quotient = diff / 2;
             var total = max - quotient;
-            return curve._Position(total);
+            return curve.__Position(total);
         }
 
         [Obsolete(nameof(NotImplementedException))]
-        public static void /* Box3d*/ Box(this Curve curve)
+        public static void /* Box3d*/ __Box(this Curve curve)
         {
             //double[] array = new double[3];
             //double[,] array2 = new double[3, 3];
@@ -6873,19 +6825,19 @@ namespace TSG_Library
             throw new NotImplementedException();
         }
 
-        public static bool IsClosed(this Curve curve)
-        {
-            ufsession_.Modl.AskCurvePeriodicity(curve.Tag, out var status);
-            switch (status)
-            {
-                case 0:
-                    return false;
-                case 1:
-                    return true;
-                default:
-                    throw NXException.Create(status);
-            }
-        }
+        //public static bool __IsClosed(this Curve curve)
+        //{
+        //    ufsession_.Modl.AskCurvePeriodicity(curve.Tag, out var status);
+        //    switch (status)
+        //    {
+        //        case 0:
+        //            return false;
+        //        case 1:
+        //            return true;
+        //        default:
+        //            throw NXException.Create(status);
+        //    }
+        //}
 
         //
         // Summary:
@@ -6908,7 +6860,7 @@ namespace TSG_Library
         //     which may be undesirable.
         //
         //     The normal is the cross product of the binormal and the tangent: N = B*T
-        public static Vector3d Normal(this Curve curve, double value)
+        public static Vector3d __Normal(this Curve curve, double value)
         {
             //UFEval eval = ufsession_.Eval;
             //eval.Initialize2(NXOpenTag, out var evaluator);
@@ -6945,7 +6897,7 @@ namespace TSG_Library
         //
         //     The binormal is the cross product of the tangent and the normal: B = Cross(T,N).
         [Obsolete(nameof(NotImplementedException))]
-        public static Vector3d Binormal(this Curve curve, double value)
+        public static Vector3d __Binormal(this Curve curve, double value)
         {
             //UFEval eval = ufsession_.Eval;
             //eval.Initialize2(NXOpenTag, out var evaluator);
@@ -6979,7 +6931,7 @@ namespace TSG_Library
         //     Curvature is the reciprocal of radius of curvature. So, on a straight line, curvature
         //     is zero and radius of curvature is infinite. On a circle of radius 5, curvature
         //     is 0.2 (and radius of curvature is 5, of course).
-        public static double Curvature(this Curve curve, double value)
+        public static double __Curvature(this Curve curve, double value)
         {
             //Vector[] array = Derivatives(value, 2);
             //double num = Vector.Norm(Vector.Cross(array[1], array[2]));
@@ -6989,39 +6941,39 @@ namespace TSG_Library
             throw new NotImplementedException();
         }
 
-        //
-        // Summary:
-        //     Calculates the parameter value at a point on the curve
-        //
-        // Parameters:
-        //   point:
-        //     The point
-        //
-        // Returns:
-        //     Parameter value at the point (not unitized)
-        //
-        // Remarks:
-        //     The Parameter function and the Position function are designed to work together
-        //     smoothly -- each of these functions is the "reverse" of the other. So, if c is
-        //     any curve and t is any parameter value, then
-        //
-        //     c.Parameter(c.Position(t)) = t
-        //
-        //     Also, if p is any point on the curve c, then
-        //
-        //     c.Position(c.Parameter(p)) = p
-        public static double Parameter(this Curve curve, Point3d point)
-        {
-            var nXOpenTag = curve.Tag;
-            var array = point._ToArray();
-            var direction = 1;
-            var offset = 0.0;
-            var tolerance = 0.0001;
-            var point_along_curve = new double[3];
-            ufsession_.Modl.AskPointAlongCurve2(array, nXOpenTag, offset, direction, tolerance, point_along_curve,
-                out var parameter);
-            return (1.0 - parameter) * curve._MinU() + parameter * curve._MaxU();
-        }
+        ////
+        //// Summary:
+        ////     Calculates the parameter value at a point on the curve
+        ////
+        //// Parameters:
+        ////   point:
+        ////     The point
+        ////
+        //// Returns:
+        ////     Parameter value at the point (not unitized)
+        ////
+        //// Remarks:
+        ////     The Parameter function and the Position function are designed to work together
+        ////     smoothly -- each of these functions is the "reverse" of the other. So, if c is
+        ////     any curve and t is any parameter value, then
+        ////
+        ////     c.Parameter(c.Position(t)) = t
+        ////
+        ////     Also, if p is any point on the curve c, then
+        ////
+        ////     c.Position(c.Parameter(p)) = p
+        //public static double __Parameter(this Curve curve, Point3d point)
+        //{
+        //    var nXOpenTag = curve.Tag;
+        //    var array = point._ToArray();
+        //    var direction = 1;
+        //    var offset = 0.0;
+        //    var tolerance = 0.0001;
+        //    var point_along_curve = new double[3];
+        //    ufsession_.Modl.AskPointAlongCurve2(array, nXOpenTag, offset, direction, tolerance, point_along_curve,
+        //        out var parameter);
+        //    return (1.0 - parameter) * curve.__MinU() + parameter * curve.__MaxU();
+        //}
 
         /// <summary>
         ///     Calculates the parameter value defined by an arclength step along a curve
@@ -7036,14 +6988,14 @@ namespace TSG_Library
         ///     may be positive or negative.
         /// </remarks>
         /// <returns>The curve parameter value at the far end of the step</returns>
-        public static double Parameter(this Curve curve, double baseParameter, double arclength)
+        public static double __Parameter(this Curve curve, double baseParameter, double arclength)
         {
             var direction = 1;
 
             if (arclength < 0.0)
                 direction = -1;
 
-            var array = curve.Position(baseParameter)._ToArray();
+            var array = curve.__Position(baseParameter).__ToArray();
             var tolerance = 0.0001;
             var point_along_curve = new double[3];
             var uFSession = ufsession_;
@@ -7057,7 +7009,7 @@ namespace TSG_Library
                 point_along_curve,
                 out var parameter);
 
-            return parameter * (curve._MaxU() - curve._MinU()) + curve._MinU();
+            return parameter * (curve.__MaxU() - curve.__MinU()) + curve.__MinU();
         }
 
         //
@@ -7079,28 +7031,28 @@ namespace TSG_Library
         //
         //     You can input arclength values outside the range 0 to 1, and this will return
         //     parameter values corresponding to points on the extension of the curve.
-        public static double Parameter(this Curve curve, double arclengthFraction)
+        public static double __Parameter(this Curve curve, double arclengthFraction)
         {
             var arclength = curve.GetLength() * arclengthFraction;
-            return curve.Parameter(curve._MinU(), arclength);
+            return curve.__Parameter(curve.__MinU(), arclength);
         }
 
-        //
-        // Summary:
-        //     Copies an NX.Curve (with a null transform)
-        //
-        // Returns:
-        //     A copy of the input curve
-        //
-        // Remarks:
-        //     The new curve will be on the same layer as the original one.
-        [Obsolete(nameof(NotImplementedException))]
-        public static Curve Copy(this Curve curve)
-        {
-            //Transform xform = Transform.CreateTranslation(0.0, 0.0, 0.0);
-            //return Copy(xform);
-            throw new NotImplementedException();
-        }
+        ////
+        //// Summary:
+        ////     Copies an NX.Curve (with a null transform)
+        ////
+        //// Returns:
+        ////     A copy of the input curve
+        ////
+        //// Remarks:
+        ////     The new curve will be on the same layer as the original one.
+        //[Obsolete(nameof(NotImplementedException))]
+        //public static Curve __Copy(this Curve curve)
+        //{
+        //    //Transform xform = Transform.CreateTranslation(0.0, 0.0, 0.0);
+        //    //return Copy(xform);
+        //    throw new NotImplementedException();
+        //}
 
 
         //
@@ -7118,7 +7070,7 @@ namespace TSG_Library
         //     Calling this function is typically around 3× as fast as calling the Curve.Position
         //     function in a loop.
         [Obsolete(nameof(NotImplementedException))]
-        public static Point3d[] _PositionArray(this Curve curve, double[] values)
+        public static Point3d[] __PositionArray(this Curve curve, double[] values)
         {
             throw new NotImplementedException();
             //UFEval eval = ufsession_.Eval;
@@ -7156,7 +7108,7 @@ namespace TSG_Library
         // Remarks:
         //     This function successfully calculates a unit tangent vector even in those (rare)
         //     cases where the derivative vector of the curve has zero length.
-        public static Vector3d Tangent(this Curve curve, double value)
+        public static Vector3d __Tangent(this Curve curve, double value)
         {
             var eval = ufsession_.Eval;
             eval.Initialize2(curve.Tag, out var evaluator);
@@ -7171,12 +7123,12 @@ namespace TSG_Library
             value /= Factor;
             eval.EvaluateUnitVectors(evaluator, value, point, array3, normal, binormal);
             eval.Free(evaluator);
-            return array3._ToVector3d();
+            return array3.__ToVector3d();
         }
 
 
         [Obsolete(nameof(NotImplementedException))]
-        public static Curve _Mirror(
+        public static Curve __Mirror(
             this Curve original,
             Surface.Plane plane)
         {
@@ -7186,7 +7138,7 @@ namespace TSG_Library
         }
 
         [Obsolete(nameof(NotImplementedException))]
-        public static Curve _Mirror(
+        public static Curve __Mirror(
             this Curve bodyDumbRule,
             Surface.Plane plane,
             Component from,
@@ -7244,7 +7196,7 @@ namespace TSG_Library
 
         #region DoubleArray
 
-        private static Matrix3x3 _ToMatrix3x3(this double[] array)
+        private static Matrix3x3 __ToMatrix3x3(this double[] array)
         {
             return new Matrix3x3
             {
@@ -7260,43 +7212,43 @@ namespace TSG_Library
             };
         }
 
-        public static Point3d _ToPoint3d(this double[] array)
+        public static Point3d __ToPoint3d(this double[] array)
         {
             return new Point3d(array[0], array[1], array[2]);
         }
 
-        public static Vector3d _ToVector3d(this double[] array)
+        public static Vector3d __ToVector3d(this double[] array)
         {
             return new Vector3d(array[0], array[1], array[2]);
         }
 
         public static Vector3d __Multiply(this double d, Vector3d vector)
         {
-            return vector._Multiply(d);
+            return vector.__Multiply(d);
         }
 
         #endregion
 
         #region Edge
 
-        public static Point3d _StartPoint(this Edge edge)
+        public static Point3d __StartPoint(this Edge edge)
         {
             edge.GetVertices(out var vertex1, out _);
             return vertex1;
         }
 
-        public static Point3d _EndPoint(this Edge edge)
+        public static Point3d __EndPoint(this Edge edge)
         {
             edge.GetVertices(out _, out var vertex2);
             return vertex2;
         }
 
-        public static Vector3d _NormalVector(this Edge edge)
+        public static Vector3d __NormalVector(this Edge edge)
         {
             if (edge.SolidEdgeType != Edge.EdgeType.Linear)
                 throw new ArgumentException("Cannot ask for the vector of a non linear edge");
 
-            return edge._StartPoint()._Subtract(edge._EndPoint());
+            return edge.__StartPoint().__Subtract(edge.__EndPoint());
         }
 
         /// <summary>
@@ -7305,18 +7257,18 @@ namespace TSG_Library
         /// <remarks>{[0]=StartPoint, [1]=EndPoint}</remarks>
         /// <param name="edge">The edge to get the positions from.</param>
         /// <returns>The edge positions.</returns>
-        public static bool _HasEndPoints(this Edge edge, Point3d pos1, Point3d pos2)
+        public static bool __HasEndPoints(this Edge edge, Point3d pos1, Point3d pos2)
         {
-            if (edge._StartPoint()._IsEqualTo(pos1) && edge._EndPoint()._IsEqualTo(pos2))
+            if (edge.__StartPoint().__IsEqualTo(pos1) && edge.__EndPoint().__IsEqualTo(pos2))
                 return true;
 
-            if (edge._StartPoint()._IsEqualTo(pos2) && edge._EndPoint()._IsEqualTo(pos1))
+            if (edge.__StartPoint().__IsEqualTo(pos2) && edge.__EndPoint().__IsEqualTo(pos1))
                 return true;
 
             return false;
         }
 
-        public static Curve _ToCurve(this Edge edge)
+        public static Curve __ToCurve(this Edge edge)
         {
             ufsession_.Modl.CreateCurveFromEdge(edge.Tag, out var ugcrv_id);
             return (Curve)session_.__GetTaggedObject(ugcrv_id);
@@ -7325,7 +7277,7 @@ namespace TSG_Library
         //
         // Summary:
         //     The lower u-value -- the parameter value at the start-point of the edge
-        public static double _MinU(this Edge edge)
+        public static double __MinU(this Edge edge)
         {
             var eval = ufsession_.Eval;
             eval.Initialize2(edge.Tag, out var evaluator);
@@ -7338,7 +7290,7 @@ namespace TSG_Library
         //
         // Summary:
         //     The upper u-value -- the parameter value at the end-point of the edge
-        public static double _MaxU(this Edge edge)
+        public static double __MaxU(this Edge edge)
         {
             var eval = ufsession_.Eval;
             eval.Initialize2(edge.Tag, out var evaluator);
@@ -7384,7 +7336,7 @@ namespace TSG_Library
         //     is zero and radius of curvature is infinite. On a circle of radius 5, curvature
         //     is 0.2 (and radius of curvature is 5, of course).
         [Obsolete]
-        public static double Curvature(double value)
+        public static double __Curvature(double value)
         {
             //Vector[] array = Derivatives(value, 2);
             //double num = Vector.Norm(Vector.Cross(array[1], array[2]));
@@ -7509,31 +7461,31 @@ namespace TSG_Library
             throw new NotImplementedException();
         }
 
-        //
-        // Summary:
-        //     The lower u-value -- the parameter value at the start-point of the edge
-        public static double __MinU(this Edge edge)
-        {
-            var eval = ufsession_.Eval;
-            eval.Initialize2(edge.Tag, out var evaluator);
-            var array = new double[2] { 0.0, 1.0 };
-            eval.AskLimits(evaluator, array);
-            eval.Free(evaluator);
-            return Factor * array[0];
-        }
+        ////
+        //// Summary:
+        ////     The lower u-value -- the parameter value at the start-point of the edge
+        //public static double __MinU(this Edge edge)
+        //{
+        //    var eval = ufsession_.Eval;
+        //    eval.Initialize2(edge.Tag, out var evaluator);
+        //    var array = new double[2] { 0.0, 1.0 };
+        //    eval.AskLimits(evaluator, array);
+        //    eval.Free(evaluator);
+        //    return Factor * array[0];
+        //}
 
-        //
-        // Summary:
-        //     The upper u-value -- the parameter value at the end-point of the edge
-        public static double __MaxU(this Edge edge)
-        {
-            var eval = ufsession_.Eval;
-            eval.Initialize2(edge.Tag, out var evaluator);
-            var array = new double[2] { 0.0, 1.0 };
-            eval.AskLimits(evaluator, array);
-            eval.Free(evaluator);
-            return Factor * array[1];
-        }
+        ////
+        //// Summary:
+        ////     The upper u-value -- the parameter value at the end-point of the edge
+        //public static double __MaxU(this Edge edge)
+        //{
+        //    var eval = ufsession_.Eval;
+        //    eval.Initialize2(edge.Tag, out var evaluator);
+        //    var array = new double[2] { 0.0, 1.0 };
+        //    eval.AskLimits(evaluator, array);
+        //    eval.Free(evaluator);
+        //    return Factor * array[1];
+        //}
 
         //
         // Summary:
@@ -7562,7 +7514,7 @@ namespace TSG_Library
             value /= Factor;
             eval.EvaluateUnitVectors(evaluator, value, point, tangent, normal, array);
             eval.Free(evaluator);
-            return array._ToVector3d();
+            return array.__ToVector3d();
         }
 
         #endregion
@@ -7570,7 +7522,7 @@ namespace TSG_Library
         #region EdgeBlend
 
         [Obsolete(nameof(NotImplementedException))]
-        public static EdgeBlend _Mirror(
+        public static EdgeBlend __Mirror(
             this EdgeBlend edgeBlend,
             Surface.Plane plane)
         {
@@ -7578,7 +7530,7 @@ namespace TSG_Library
         }
 
         [Obsolete(nameof(NotImplementedException))]
-        public static EdgeBlend _Mirror(
+        public static EdgeBlend __Mirror(
             this EdgeBlend edgeBlend,
             Surface.Plane plane,
             Component from,
@@ -7591,12 +7543,12 @@ namespace TSG_Library
 
         #region Exception
 
-        public static void _PrintException(this Exception ex)
+        public static void __PrintException(this Exception ex)
         {
-            ex._PrintException(null);
+            ex.__PrintException(null);
         }
 
-        public static void _PrintException(this Exception ex, string userMessage)
+        public static void __PrintException(this Exception ex, string userMessage)
         {
             _ = ex.GetType();
             _ = ex.Message;
@@ -7670,18 +7622,18 @@ namespace TSG_Library
         #region ExtractFace
 
         [Obsolete]
-        public static void _Layer(this ExtractFace ext)
+        public static void __Layer(this ExtractFace ext)
         {
             throw new NotImplementedException();
         }
 
         [Obsolete]
-        public static void _Layer(this ExtractFace ext, int layer)
+        public static void __Layer(this ExtractFace ext, int layer)
         {
             throw new NotImplementedException();
         }
 
-        public static bool _IsLinkedBody(this ExtractFace extractFace)
+        public static bool __IsLinkedBody(this ExtractFace extractFace)
         {
             return extractFace.FeatureType == "LINKED_BODY";
         }
@@ -7692,13 +7644,13 @@ namespace TSG_Library
         /// <remarks>Returns true if {extractFace} is broken, false otherwise.</remarks>
         /// <param name="nxExtractFace">The extractFace.</param>
         /// <returns>True or false.</returns>
-        public static bool _IsBroken(this ExtractFace nxExtractFace)
+        public static bool __IsBroken(this ExtractFace nxExtractFace)
         {
             UFSession.GetUFSession().Wave.IsLinkBroken(nxExtractFace.Tag, out var isBroken);
             return isBroken;
         }
 
-        public static Tag _XFormTag(this ExtractFace extractFace)
+        public static Tag __XFormTag(this ExtractFace extractFace)
         {
             ufsession_.Wave.AskLinkXform(extractFace.Tag, out var xform);
             return xform;
@@ -7709,7 +7661,7 @@ namespace TSG_Library
         #region Extrude
 
         [Obsolete(nameof(NotImplementedException))]
-        public static Extrude _Mirror(
+        public static Extrude __Mirror(
             this Extrude extrude,
             Surface.Plane plane)
         {
@@ -7717,7 +7669,7 @@ namespace TSG_Library
         }
 
         [Obsolete(nameof(NotImplementedException))]
-        public static Extrude _Mirror(
+        public static Extrude __Mirror(
             this Extrude extrude,
             Surface.Plane plane,
             Component from,
@@ -7730,7 +7682,7 @@ namespace TSG_Library
 
         #region Face
 
-        public static Point3d[] _EdgePositions(this Face __face)
+        public static Point3d[] __EdgePositions(this Face __face)
         {
             //List<NXOpen.Point3d> points = new List<NXOpen.Point3d>();
 
@@ -7748,7 +7700,7 @@ namespace TSG_Library
         }
 
 
-        public static Vector3d _NormalVector(this Face __face)
+        public static Vector3d __NormalVector(this Face __face)
         {
             var point = new double[3];
             var dir = new double[3];
@@ -7759,7 +7711,7 @@ namespace TSG_Library
             if (type != 22)
                 throw new InvalidOperationException("Cannot ask for the normal of a non planar face");
 
-            return dir._ToVector3d();
+            return dir.__ToVector3d();
         }
 
         //
@@ -7799,7 +7751,7 @@ namespace TSG_Library
             throw new NotImplementedException();
         }
 
-        public static bool _IsPlanar(this Face face)
+        public static bool __IsPlanar(this Face face)
         {
             return face.SolidFaceType == Face.FaceType.Planar;
         }
@@ -7829,11 +7781,11 @@ namespace TSG_Library
         //     Note that this function finds parameter values on the underlying surface of the
         //     face. So, the values returned may correspond to a surface point that is actually
         //     outside the face.
-        public static double[] Parameters(this Face face, Point3d point)
+        public static double[] __Parameters(this Face face, Point3d point)
         {
             var evalsf = ufsession_.Evalsf;
             evalsf.Initialize2(face.Tag, out var evaluator);
-            var array = point._ToArray();
+            var array = point.__ToArray();
             var srf_pos = default(UFEvalsf.Pos3);
             evalsf.FindClosestPoint(evaluator, array, out srf_pos);
             evalsf.Free(out evaluator);
@@ -7987,24 +7939,26 @@ namespace TSG_Library
         /// <param name="fileNew"></param>
         /// <param name="templateType"></param>
         /// <returns></returns>
-        private static string GetAppName(FileNew fileNew, Templates templateType)
+        private static string __GetAppName(FileNew fileNew, Templates templateType)
         {
             var result = "GatewayTemplate";
-            if (templateType == Templates.AeroSheetMetal) result = SafeAppName(fileNew, "AeroSheetMetalTemplate");
+            if (templateType == Templates.AeroSheetMetal) result = __SafeAppName(fileNew, "AeroSheetMetalTemplate");
 
-            if (templateType == Templates.Assembly) result = SafeAppName(fileNew, "AssemblyTemplate");
+            if (templateType == Templates.Assembly) result = __SafeAppName(fileNew, "AssemblyTemplate");
 
-            if (templateType == Templates.Modeling) result = SafeAppName(fileNew, "ModelTemplate");
+            if (templateType == Templates.Modeling) result = __SafeAppName(fileNew, "ModelTemplate");
 
-            if (templateType == Templates.NXSheetMetal) result = SafeAppName(fileNew, "NXSheetMetalTemplate");
+            if (templateType == Templates.NXSheetMetal) result = __SafeAppName(fileNew, "NXSheetMetalTemplate");
 
-            if (templateType == Templates.RoutingElectrical) result = SafeAppName(fileNew, "RoutingElectricalTemplate");
+            if (templateType == Templates.RoutingElectrical)
+                result = __SafeAppName(fileNew, "RoutingElectricalTemplate");
 
-            if (templateType == Templates.RoutingLogical) result = SafeAppName(fileNew, "RoutingLogicalTemplate");
+            if (templateType == Templates.RoutingLogical) result = __SafeAppName(fileNew, "RoutingLogicalTemplate");
 
-            if (templateType == Templates.RoutingMechanical) result = SafeAppName(fileNew, "RoutingMechanicalTemplate");
+            if (templateType == Templates.RoutingMechanical)
+                result = __SafeAppName(fileNew, "RoutingMechanicalTemplate");
 
-            if (templateType == Templates.ShapeStudio) result = SafeAppName(fileNew, "StudioTemplate");
+            if (templateType == Templates.ShapeStudio) result = __SafeAppName(fileNew, "StudioTemplate");
 
             return result;
         }
@@ -8031,58 +7985,59 @@ namespace TSG_Library
         /// <param name="templateType"></param>
         /// <param name="unit"></param>
         /// <returns></returns>
-        private static string GetTemplateFileName(FileNew fileNew, Templates templateType, Units unit)
+        private static string __GetTemplateFileName(FileNew fileNew, Templates templateType, Units unit)
         {
             var result = "Blank";
             if (unit == Units.MilliMeters)
             {
                 if (templateType == Templates.AeroSheetMetal)
-                    result = SafeTemplateName(fileNew, "aero-sheet-metal-mm-template.prt");
+                    result = __SafeTemplateName(fileNew, "aero-sheet-metal-mm-template.prt");
 
-                if (templateType == Templates.Assembly) result = SafeTemplateName(fileNew, "assembly-mm-template.prt");
+                if (templateType == Templates.Assembly) result = __SafeTemplateName(fileNew, "assembly-mm-template.prt");
 
                 if (templateType == Templates.Modeling)
-                    result = SafeTemplateName(fileNew, "model-plain-1-mm-template.prt");
+                    result = __SafeTemplateName(fileNew, "model-plain-1-mm-template.prt");
 
                 if (templateType == Templates.NXSheetMetal)
-                    result = SafeTemplateName(fileNew, "sheet-metal-mm-template.prt");
+                    result = __SafeTemplateName(fileNew, "sheet-metal-mm-template.prt");
 
                 if (templateType == Templates.RoutingElectrical)
-                    result = SafeTemplateName(fileNew, "routing-elec-mm-template.prt");
+                    result = __SafeTemplateName(fileNew, "routing-elec-mm-template.prt");
 
                 if (templateType == Templates.RoutingLogical)
-                    result = SafeTemplateName(fileNew, "routing-logical-mm-template.prt");
+                    result = __SafeTemplateName(fileNew, "routing-logical-mm-template.prt");
 
                 if (templateType == Templates.RoutingMechanical)
-                    result = SafeTemplateName(fileNew, "routing-mech-mm-template.prt");
+                    result = __SafeTemplateName(fileNew, "routing-mech-mm-template.prt");
 
                 if (templateType == Templates.ShapeStudio)
-                    result = SafeTemplateName(fileNew, "shape-studio-mm-template.prt");
+                    result = __SafeTemplateName(fileNew, "shape-studio-mm-template.prt");
             }
             else
             {
                 if (templateType == Templates.AeroSheetMetal)
-                    result = SafeTemplateName(fileNew, "aero-sheet-metal-inch-template.prt");
+                    result = __SafeTemplateName(fileNew, "aero-sheet-metal-inch-template.prt");
 
-                if (templateType == Templates.Assembly) result = SafeTemplateName(fileNew, "assembly-inch-template.prt");
+                if (templateType == Templates.Assembly)
+                    result = __SafeTemplateName(fileNew, "assembly-inch-template.prt");
 
                 if (templateType == Templates.Modeling)
-                    result = SafeTemplateName(fileNew, "model-plain-1-inch-template.prt");
+                    result = __SafeTemplateName(fileNew, "model-plain-1-inch-template.prt");
 
                 if (templateType == Templates.NXSheetMetal)
-                    result = SafeTemplateName(fileNew, "sheet-metal-inch-template.prt");
+                    result = __SafeTemplateName(fileNew, "sheet-metal-inch-template.prt");
 
                 if (templateType == Templates.RoutingElectrical)
-                    result = SafeTemplateName(fileNew, "routing-elec-inch-template.prt");
+                    result = __SafeTemplateName(fileNew, "routing-elec-inch-template.prt");
 
                 if (templateType == Templates.RoutingLogical)
-                    result = SafeTemplateName(fileNew, "routing-logical-inch-template.prt");
+                    result = __SafeTemplateName(fileNew, "routing-logical-inch-template.prt");
 
                 if (templateType == Templates.RoutingMechanical)
-                    result = SafeTemplateName(fileNew, "routing-mech-inch-template.prt");
+                    result = __SafeTemplateName(fileNew, "routing-mech-inch-template.prt");
 
                 if (templateType == Templates.ShapeStudio)
-                    result = SafeTemplateName(fileNew, "shape-studio-inch-template.prt");
+                    result = __SafeTemplateName(fileNew, "shape-studio-inch-template.prt");
             }
 
             return result;
@@ -8106,7 +8061,7 @@ namespace TSG_Library
         /// <param name="fileNew"></param>
         /// <param name="testName"></param>
         /// <returns></returns>
-        private static string SafeAppName(FileNew fileNew, string testName)
+        private static string __SafeAppName(FileNew fileNew, string testName)
         {
             var applicationNames = fileNew.GetApplicationNames();
             var result = "GatewayTemplate";
@@ -8133,7 +8088,7 @@ namespace TSG_Library
         /// <param name="fileNew"></param>
         /// <param name="testName"></param>
         /// <returns></returns>
-        private static string SafeTemplateName(FileNew fileNew, string testName)
+        private static string __SafeTemplateName(FileNew fileNew, string testName)
         {
             var availableTemplates = fileNew.GetAvailableTemplates();
             var result = "Blank";
@@ -8292,78 +8247,108 @@ namespace TSG_Library
             }
         };
 
-        public static UI TheUISession = UI.GetUI();
+        public static UI TheUISession =>
+            //[IgnoreExtensionAspect]
+            UI.GetUI();
 
+        internal static UFSession ufsession_ =>
+            //[IgnoreExtensionAspect]
+            UFSession.GetUFSession();
 
-        internal static readonly UFSession ufsession_ = UFSession.GetUFSession();
+        public static Session session_ =>
+            //[IgnoreExtensionAspect]
+            GetSession();
 
-        public static Session session_ = GetSession();
-
-        public static double Factor => 1.0;
+        public static double Factor =>
+            //[IgnoreExtensionAspect]
+            1.0;
 
         public static Point3d _Point3dOrigin
         {
-            get { return new[] { 0d, 0d, 0d }._ToPoint3d(); }
+            //[IgnoreExtensionAspect]
+            get { return new[] { 0d, 0d, 0d }.__ToPoint3d(); }
         }
 
         public static Matrix3x3 _Matrix3x3Identity
         {
+            //[IgnoreExtensionAspect]
             get
             {
                 var array = new double[9];
                 ufsession_.Mtx3.Identity(array);
-                return array._ToMatrix3x3();
+                return array.__ToMatrix3x3();
             }
         }
 
         /// <summary>
         ///     Multiply by this number to convert Part Units to Millimeters (1 or 25.4)
         /// </summary>
-        internal static double PartUnitsToMillimeters => MillimetersPerUnit;
+        //[IgnoreExtensionAspect]
+        internal static double PartUnitsToMillimeters =>
+            //[IgnoreExtensionAspect]
+            MillimetersPerUnit;
 
         /// <summary>
         ///     Multiply by this number to convert Millimeters to Part Units (1 or 0.04)
         /// </summary>
-        internal static double MillimetersToPartUnits => 1.0 / PartUnitsToMillimeters;
+        //[IgnoreExtensionAspect]
+        internal static double MillimetersToPartUnits =>
+            //[IgnoreExtensionAspect]
+            1.0 / PartUnitsToMillimeters;
 
         /// <summary>
         ///     Multiply by this number to convert Part Units to Inches (1 or 0.04)
         /// </summary>
-        internal static double PartUnitsToInches => InchesPerUnit;
+        internal static double PartUnitsToInches =>
+            //[IgnoreExtensionAspect]
+            InchesPerUnit;
 
         /// <summary>
         ///     Multiply by this number to convert Inches to Part Units (either 1 or 25.4)
         /// </summary>
-        internal static double InchesToPartUnits => 1.0 / PartUnitsToInches;
+        internal static double InchesToPartUnits =>
+            //[IgnoreExtensionAspect]
+            1.0 / PartUnitsToInches;
 
         //
         // Summary:
         //     Multiply by this number to convert Part Units to Meters, to go to Parasolid (0.001
         //     or 0.0254)
-        internal static double PartUnitsToMeters => 0.001 * PartUnitsToMillimeters;
+        internal static double PartUnitsToMeters =>
+            //[IgnoreExtensionAspect]
+            0.001 * PartUnitsToMillimeters;
 
         //
         // Summary:
         //     Multiply by this number to convert Meters to Part Units, when coming from Parasolid
         //     (1000 or 40)
-        internal static double MetersToPartUnits => 1000.0 * MillimetersToPartUnits;
+        internal static double MetersToPartUnits =>
+            //[IgnoreExtensionAspect]
+            1000.0 * MillimetersToPartUnits;
 
         //
         // Summary:
         //     Multiply by this number to convert Part Units to Points (for font sizes)
-        internal static double PartUnitsToPoints => PartUnitsToInches * 72.0;
+
+        internal static double PartUnitsToPoints =>
+            //[IgnoreExtensionAspect]
+            PartUnitsToInches * 72.0;
 
         //
         // Summary:
-        //     Multiply by this number to convert Points to Part Units (for font sizes)
-        internal static double PointsToPartUnits => 1.0 / 72.0 * InchesToPartUnits;
+        //     Multiply by this number to convert Points to Part Units (for font sizes)        
+        internal static double PointsToPartUnits =>
+            //[IgnoreExtensionAspect]
+            1.0 / 72.0 * InchesToPartUnits;
 
 
         /// <summary>
         ///     Returns the current workComponent origin in terms of the current DisplayPart.
         ///     If the workPart equals the current displayPart then returns the Absolute Origin.
         /// </summary>
+
         public static Point3d WorkCompOrigin => throw
+            //[IgnoreExtensionAspect]
             //if (TSG_Library.Extensions.__work_part_.Tag == TSG_Library.Extensions.DisplayPart.Tag) return BaseOrigin;
             //if (!(NXOpen.Session.GetSession().Parts.WorkComponent != null)) throw new System.Exception("NullWorkComponentException");
             //return NXOpen.Assemblies.Component.Wrap(NXOpen.Session.GetSession().Parts.WorkComponent.Tag).Position;
@@ -8371,53 +8356,70 @@ namespace TSG_Library
 
         //"CTS Office MFC on ctsfps1.cts.toolingsystemsgroup.com";
 
-        public static string PrinterCts { get; } = _printerCts;
+        public static string __PrinterCts =>
+            //[IgnoreExtensionAspect]
+            _printerCts;
 
-        public static string SimActive { get; } = _simActive;
+        public static string __SimActive =>
+            //[IgnoreExtensionAspect]
+            _simActive;
 
-
+        //[IgnoreExtensionAspect]
         public static Part __display_part_
         {
+            //[IgnoreExtensionAspect]
             get => GetSession().Parts.Display;
-
+            //[IgnoreExtensionAspect]
             set => GetSession().Parts.SetDisplay(value, false, false, out _);
         }
 
+        //[IgnoreExtensionAspect]
         public static Part __work_part_
         {
+            //[IgnoreExtensionAspect]
             get => GetSession().Parts.Work;
-
+            //[IgnoreExtensionAspect]
             set => GetSession().Parts.SetWork(value);
         }
 
         public static Part _WorkPart
         {
+            //[IgnoreExtensionAspect]
             get => GetSession().Parts.Work;
-
+            //[IgnoreExtensionAspect]
             set => GetSession().Parts.SetWork(value);
         }
 
-        public static UFSession _UFSession => ufsession_;
+        public static UFSession _UFSession =>
+            //[IgnoreExtensionAspect]
+            ufsession_;
 
-        public static UI uisession_ => UI.GetUI();
+        public static UI uisession_ =>
+            //[IgnoreExtensionAspect]
+            UI.GetUI();
 
+        //[IgnoreExtensionAspect]
         public static CartesianCoordinateSystem __wcs_
         {
+            //[IgnoreExtensionAspect]
             get
             {
                 ufsession_.Csys.AskWcs(out var wcs_id);
                 return (CartesianCoordinateSystem)session_.__GetTaggedObject(wcs_id);
             }
+            //[IgnoreExtensionAspect]
             set => ufsession_.Csys.SetWcs(value.Tag);
         }
 
-
+        //[IgnoreExtensionAspect]
         public static Component __work_component_
         {
+            //[IgnoreExtensionAspect]
             get => GetSession().Parts.WorkComponent is null
                 ? null
                 : GetSession().Parts.WorkComponent;
 
+            //[IgnoreExtensionAspect]
             set => GetSession().Parts.SetWorkComponent(
                 value,
                 PartCollection.RefsetOption.Current,
@@ -8426,12 +8428,17 @@ namespace TSG_Library
         }
 
 
-        public static UFSession uf_ => ufsession_;
+        public static UFSession uf_ =>
+            //[IgnoreExtensionAspect]
+            ufsession_;
 
-        public static UFSession TheUFSession { get; } = ufsession_;
+        public static UFSession TheUFSession =>
+            //[IgnoreExtensionAspect]
+            ufsession_;
 
         public static string TodaysDate
         {
+            //[IgnoreExtensionAspect]
             get
             {
                 var day = DateTime.Today.Day < 10
@@ -8444,9 +8451,13 @@ namespace TSG_Library
             }
         }
 
-        public static int __process_id => Process.GetCurrentProcess().Id;
+        public static int __process_id =>
+            //[IgnoreExtensionAspect]
+            Process.GetCurrentProcess().Id;
 
-        public static string __user_name => Environment.UserName;
+        public static string __user_name =>
+            //[IgnoreExtensionAspect]
+            Environment.UserName;
 
 
         /// <summary>The work layer (the layer on which newly-created objects should be placed)</summary>
@@ -8457,7 +8468,9 @@ namespace TSG_Library
         /// </remarks>
         public static int WorkLayer
         {
+            //[IgnoreExtensionAspect]
             get => __work_part_.Layers.WorkLayer;
+            //[IgnoreExtensionAspect]
             set => __work_part_.Layers.WorkLayer = value;
         }
 
@@ -8470,7 +8483,9 @@ namespace TSG_Library
         ///     <para>If UnitType == Millimeter, then MillimetersPerUnit = 1.</para>
         ///     <para>If UnitType == Inch, then MillimetersPerUnit = 25.4</para>
         /// </remarks>
-        public static double MillimetersPerUnit => UnitType != Unit.Millimeter ? 25.4 : 1.0;
+        public static double MillimetersPerUnit =>
+            //[IgnoreExtensionAspect]
+            UnitType != Unit.Millimeter ? 25.4 : 1.0;
 
         /// <summary>Inches per part unit (either 1 or roughly 0.04)</summary>
         /// <remarks>
@@ -8480,7 +8495,9 @@ namespace TSG_Library
         ///     <para>If UnitType = Millimeter, then InchesPerUnit = 0.0393700787402</para>
         ///     <para>If UnitType = Inch, then InchesPerUnit = 1.</para>
         /// </remarks>
-        public static double InchesPerUnit => UnitType != Unit.Millimeter ? 1.0 : 5.0 / sbyte.MaxValue;
+        public static double InchesPerUnit =>
+            //[IgnoreExtensionAspect]
+            UnitType != Unit.Millimeter ? 1.0 : 5.0 / sbyte.MaxValue;
 
         /// <summary>Distance tolerance</summary>
         /// <remarks>
@@ -8495,7 +8512,9 @@ namespace TSG_Library
         /// </remarks>
         public static double DistanceTolerance
         {
+            //[IgnoreExtensionAspect]
             get => __work_part_.Preferences.Modeling.DistanceToleranceData;
+            //[IgnoreExtensionAspect]
             set => __work_part_.Preferences.Modeling.DistanceToleranceData = value;
         }
 
@@ -8516,7 +8535,9 @@ namespace TSG_Library
         /// </remarks>
         public static double AngleTolerance
         {
+            //[IgnoreExtensionAspect]
             get => __work_part_.Preferences.Modeling.AngleToleranceData;
+            //[IgnoreExtensionAspect]
             set => __work_part_.Preferences.Modeling.AngleToleranceData = value;
         }
 
@@ -8527,7 +8548,9 @@ namespace TSG_Library
         ///         so that's what we use here.
         ///     </para>
         /// </remarks>
-        internal static double ChainingTolerance => 0.95 * DistanceTolerance;
+        internal static double ChainingTolerance =>
+            //[IgnoreExtensionAspect]
+            0.95 * DistanceTolerance;
 
         /// <summary>
         ///     If true, indicates that the modeling mode is set to History mode
@@ -8546,7 +8569,9 @@ namespace TSG_Library
         /// </remarks>
         public static bool HistoryMode
         {
+            //[IgnoreExtensionAspect]
             get => __work_part_.Preferences.Modeling.GetHistoryMode();
+            //[IgnoreExtensionAspect]
             set
             {
                 if (value)
@@ -8567,6 +8592,7 @@ namespace TSG_Library
         /// </remarks>
         public static Unit UnitType
         {
+            //[IgnoreExtensionAspect]
             get
             {
                 var workPart = __work_part_;
@@ -8581,6 +8607,7 @@ namespace TSG_Library
         /// </summary>
         public static CartesianCoordinateSystem Wcs
         {
+            //[IgnoreExtensionAspect]
             get
             {
                 var uFSession = ufsession_;
@@ -8589,6 +8616,7 @@ namespace TSG_Library
                 var csys = (CartesianCoordinateSystem)objectFromTag;
                 return csys;
             }
+            //[IgnoreExtensionAspect]
             set
             {
                 var nXOpenTag = value.Tag;
@@ -8599,7 +8627,9 @@ namespace TSG_Library
         //
         // Summary:
         //     The orientation of the Wcs of the work part
-        public static Matrix3x3 WcsOrientation => __wcs_.Orientation.Element;
+        public static Matrix3x3 WcsOrientation =>
+            //[IgnoreExtensionAspect]
+            __wcs_.Orientation.Element;
 
         //set
         //{
@@ -8610,45 +8640,51 @@ namespace TSG_Library
         /// <summary>
         /// </summary>
         public static CartesianCoordinateSystem WcsCoordinateSystem =>
+            //[IgnoreExtensionAspect]
             GetSession()
                 .Parts.Display.CoordinateSystems
                 .CreateCoordinateSystem(Wcs.Origin, __display_part_.WCS.__Orientation(), true);
 
-        public static Vector3d _Vector3dX()
+        public static Vector3d __Vector3dX()
         {
-            return new[] { 1d, 0d, 0d }._ToVector3d();
+            return new[] { 1d, 0d, 0d }.__ToVector3d();
         }
 
-        public static Vector3d _Vector3dY()
+        public static Vector3d __Vector3dY()
         {
-            return new[] { 0d, 1d, 0d }._ToVector3d();
+            return new[] { 0d, 1d, 0d }.__ToVector3d();
         }
 
-        public static Vector3d _Vector3dZ()
+        public static Vector3d __Vector3dZ()
         {
-            return new[] { 0d, 0d, 1d }._ToVector3d();
+            return new[] { 0d, 0d, 1d }.__ToVector3d();
         }
 
+        //[IgnoreExtensionAspect]
         public static void print_(object __object)
         {
             print_($"{__object}");
         }
 
+        //[IgnoreExtensionAspect]
         public static void prompt_(string message)
         {
             uf_.Ui.SetPrompt(message);
         }
 
+        //[IgnoreExtensionAspect]
         public static void print_(bool __bool)
         {
             print_($"{__bool}");
         }
 
+        //[IgnoreExtensionAspect]
         public static void print_(int __int)
         {
             print_($"{__int}");
         }
 
+        //[IgnoreExtensionAspect]
         public static void print_(string message)
         {
             var lw = GetSession().ListingWindow;
@@ -8698,7 +8734,7 @@ namespace TSG_Library
         ///         information about Undo marks.
         ///     </para>
         /// </remarks>
-        public static UndoMarkId SetUndoMark(MarkVisibility markVisibility, string name)
+        public static UndoMarkId __SetUndoMark(MarkVisibility markVisibility, string name)
         {
             return GetSession().SetUndoMark(markVisibility, name);
         }
@@ -8714,7 +8750,7 @@ namespace TSG_Library
         ///         will try again to find the mark based on its name.
         ///     </para>
         /// </remarks>
-        public static void DeleteUndoMark(UndoMarkId markId, string markName)
+        public static void __DeleteUndoMark(UndoMarkId markId, string markName)
         {
             GetSession().DeleteUndoMark(markId, markName);
         }
@@ -8730,12 +8766,12 @@ namespace TSG_Library
         ///         will try again to find the mark based on its name.
         ///     </para>
         /// </remarks>
-        public static void UndoToMark(UndoMarkId markId, string markName)
+        public static void __UndoToMark(UndoMarkId markId, string markName)
         {
             GetSession().UndoToMark(markId, markName);
         }
 
-        public static string op_10_010(int __op)
+        public static string __Op10To010(int __op)
         {
             if (__op == 0)
                 return "000";
@@ -8746,15 +8782,15 @@ namespace TSG_Library
             return $"{__op}";
         }
 
-        public static string op_020_010(string __op)
+        public static string __Op020To010(string __op)
         {
-            return op_10_010(int.Parse(__op) - 10);
+            return __Op10To010(int.Parse(__op) - 10);
         }
 
         /// <summary>Get the number of objects on a specified layer</summary>
         /// <param name="layer">The layer number</param>
         /// <returns>The number of objects on the specified layer</returns>
-        public static int LayerObjectCount(int layer)
+        public static int __LayerObjectCount(int layer)
         {
             return __work_part_.Layers.GetAllObjectsOnLayer(layer).Length;
         }
@@ -8762,7 +8798,7 @@ namespace TSG_Library
         /// <summary>Converts degrees to radians</summary>
         /// <param name="angle">An angle measured in degrees</param>
         /// <returns>The same angle measured in radians</returns>
-        public static double DegreesToRadians(double angle)
+        public static double __DegreesToRadians(double angle)
         {
             return angle * Math.PI / 180.0;
         }
@@ -8770,7 +8806,7 @@ namespace TSG_Library
         /// <summary>Converts radians to degrees</summary>
         /// <param name="angle">An angle measured in radians</param>
         /// <returns>The same angle measured in degrees</returns>
-        public static double RadiansToDegrees(double angle)
+        public static double __RadiansToDegrees(double angle)
         {
             return angle * 180.0 / Math.PI;
         }
@@ -8783,17 +8819,19 @@ namespace TSG_Library
 
         #region ICurve
 
+        [Obsolete]
         public static double __Parameter(this ICurve icurve, Point3d point)
         {
-            switch (icurve)
-            {
-                case Curve __curve__:
-                    return __Parameter(__curve__, point);
-                case Edge __edge__:
-                    return __Parameter(__edge__, point);
-                default:
-                    throw new ArgumentException("Unknown curve type");
-            }
+            throw new NotImplementedException();
+            //switch (icurve)
+            //{
+            //    case Curve __curve__:
+            //        return __Parameter(__curve__, point);
+            //    case Edge __edge__:
+            //        return __Parameter(__edge__, point);
+            //    default:
+            //        throw new ArgumentException("Unknown curve type");
+            //}
         }
 
         [Obsolete(nameof(NotImplementedException))]
@@ -8841,7 +8879,7 @@ namespace TSG_Library
             value /= Factor;
             eval.EvaluateUnitVectors(evaluator, value, point, tangent, normal, array5);
             eval.Free(evaluator);
-            return array5._ToVector3d();
+            return array5.__ToVector3d();
         }
 
         public static Tag __Tag(this ICurve curve)
@@ -8901,12 +8939,12 @@ namespace TSG_Library
 
         #region IntegerArray
 
-        public static Point3d _ToPoint3d(this int[] array)
+        public static Point3d __ToPoint3d(this int[] array)
         {
             return new Point3d(array[0], array[1], array[2]);
         }
 
-        public static Vector3d _ToVector3d(this int[] array)
+        public static Vector3d __ToVector3d(this int[] array)
         {
             return new Vector3d(array[0], array[1], array[2]);
         }
@@ -8921,7 +8959,7 @@ namespace TSG_Library
         #region Line
 
         [Obsolete(nameof(NotImplementedException))]
-        public static Line _Mirror(
+        public static Line __Mirror(
             this Line line,
             Surface.Plane plane)
         {
@@ -8931,20 +8969,20 @@ namespace TSG_Library
         }
 
 
-        public static Line _Copy(this Line line)
+        public static Line __Copy(this Line line)
         {
             if (line.IsOccurrence)
                 throw new ArgumentException($@"Cannot copy {nameof(line)} that is an occurrence.", nameof(line));
 
-            return line.__OwningPart().Curves.CreateLine(line._StartPoint(), line._EndPoint());
+            return line.__OwningPart().Curves.CreateLine(line.__StartPoint(), line.__EndPoint());
         }
 
-        public static Point3d _StartPoint(this Line line)
+        public static Point3d __StartPoint(this Line line)
         {
             return line.StartPoint;
         }
 
-        public static Point3d _EndPoint(this Line line)
+        public static Point3d __EndPoint(this Line line)
         {
             return line.EndPoint;
         }
@@ -8958,9 +8996,9 @@ namespace TSG_Library
         /// <param name="y1">Y-coordinate of end   point</param>
         /// <param name="z1">Z-coordinate of end   point</param>
         /// <returns>A <see cref="T:Snap.NX.Line">Snap.NX.Line</see> object</returns>
-        public static Line Line(double x0, double y0, double z0, double x1, double y1, double z1)
+        public static Line __CreateLine(double x0, double y0, double z0, double x1, double y1, double z1)
         {
-            return Line(new Point3d(x0, y0, z0), new Point3d(x1, y1, z1));
+            return __CreateLine(new Point3d(x0, y0, z0), new Point3d(x1, y1, z1));
         }
 
         /// <summary>Construct a line, given x,y coordinates of its end-points (z assumed zero)</summary>
@@ -8969,43 +9007,18 @@ namespace TSG_Library
         /// <param name="x1">X-coordinate of end   point</param>
         /// <param name="y1">Y-coordinate of end   point</param>
         /// <returns>A <see cref="T:Snap.NX.Line">Snap.NX.Line</see> object</returns>
-        public static Line Line(double x0, double y0, double x1, double y1)
+        public static Line __CreateLine(double x0, double y0, double x1, double y1)
         {
-            return Line(new Point3d(x0, y0, 0.0), new Point3d(x1, y1, 0.0));
+            return __CreateLine(new Point3d(x0, y0, 0.0), new Point3d(x1, y1, 0.0));
         }
 
         /// <summary>Creates a line between two positions</summary>
         /// <param name="p0">NXOpen.Point3d for start of line</param>
         /// <param name="p1">NXOpen.Point3d for end of line</param>
         /// <returns>A <see cref="T:Snap.NX.Line">Snap.NX.Line</see> object</returns>
-        public static Line Line(Point3d p0, Point3d p1)
+        public static Line __CreateLine(Point3d p0, Point3d p1)
         {
             return __work_part_.Curves.CreateLine(p0, p1);
-        }
-
-        /// <summary>Creates a line between two points (NX.Point objects)</summary>
-        /// <param name="pt0">Point at start of line</param>
-        /// <param name="pt1">Point at end of line</param>
-        /// <returns>A <see cref="T:Snap.NX.Line">Snap.NX.Line</see> object</returns>
-        public static Line Line(Point pt0, Point pt1)
-        {
-            return CreateLine(pt0.Coordinates.X, pt0.Coordinates.Y, pt0.Coordinates.Z, pt1.Coordinates.X,
-                pt1.Coordinates.Y, pt1.Coordinates.Z);
-        }
-
-        /// <summary>Creates an NX.Line object</summary>
-        /// <param name="x0">X-coordinate of start point</param>
-        /// <param name="y0">Y-coordinate of start point</param>
-        /// <param name="z0">Z-coordinate of start point</param>
-        /// <param name="x1">X-coordinate of end point</param>
-        /// <param name="y1">Y-coordinate of end point</param>
-        /// <param name="z1">Z-coordinate of end point</param>
-        /// <returns>An NX.Line object</returns>
-        internal static Line CreateLine(double x0, double y0, double z0, double x1, double y1, double z1)
-        {
-            var startPoint = new Point3d(x0, y0, z0);
-            var endPoint = new Point3d(x1, y1, z1);
-            return __work_part_.Curves.CreateLine(startPoint, endPoint);
         }
 
         #endregion
@@ -9056,6 +9069,7 @@ namespace TSG_Library
         ///     Returns the mask for an NXOpen.Assemblies.Component.
         /// </summary>
         public static UFUi.Mask ComponentMask =>
+            //[IgnoreExtensionAspect]
             new UFUi.Mask
             {
                 object_type = UF_component_type,
@@ -9065,6 +9079,7 @@ namespace TSG_Library
 
         public static UFUi.Mask BodyMask
         {
+            //[IgnoreExtensionAspect]
             get
             {
                 var mask1 = new UFUi.Mask
@@ -9084,49 +9099,49 @@ namespace TSG_Library
         /// <param name="inputCsys">The input coordinate system.</param>
         /// <param name="outputCsys">The output coordinate system.</param>
         /// <returns>The components of the Orientation with the output coordinate system.</returns>
-        public static Matrix3x3 MapCsysToCsys(
+        public static Matrix3x3 __MapCsysToCsys(
             Matrix3x3 orientation,
             CartesianCoordinateSystem inputCsys,
             CartesianCoordinateSystem outputCsys)
         {
 #pragma warning disable CS0612 // Type or member is obsolete
-            var mappedXVector = __MapCsysToCsys(orientation._AxisX(), inputCsys, outputCsys);
-            var mappedYVector = __MapCsysToCsys(orientation._AxisY(), inputCsys, outputCsys);
+            var mappedXVector = __MapCsysToCsys(orientation.__AxisX(), inputCsys, outputCsys);
+            var mappedYVector = __MapCsysToCsys(orientation.__AxisY(), inputCsys, outputCsys);
 #pragma warning restore CS0612 // Type or member is obsolete
-            return mappedXVector._ToMatrix3x3(mappedYVector);
+            return mappedXVector.__ToMatrix3x3(mappedYVector);
         }
 
 
-        public static Matrix3x3 _MirrorMap(this Matrix3x3 orientation, Surface.Plane plane,
+        public static Matrix3x3 __MirrorMap(this Matrix3x3 orientation, Surface.Plane plane,
             Component fromComponent, Component toComponent)
         {
-            var newXVector = _MirrorMap(orientation._AxisY(), plane, fromComponent, toComponent);
+            var newXVector = __MirrorMap(orientation.__AxisY(), plane, fromComponent, toComponent);
 
-            var newYVector = _MirrorMap(orientation._AxisX(), plane, fromComponent, toComponent);
+            var newYVector = __MirrorMap(orientation.__AxisX(), plane, fromComponent, toComponent);
 
-            return newXVector._ToMatrix3x3(newYVector);
+            return newXVector.__ToMatrix3x3(newYVector);
         }
 
-        public static Vector3d _AxisY(this Matrix3x3 matrix)
+        public static Vector3d __AxisY(this Matrix3x3 matrix)
         {
             return new Vector3d(matrix.Yx, matrix.Yy, matrix.Yz);
         }
 
-        public static Vector3d _AxisZ(this Matrix3x3 matrix)
+        public static Vector3d __AxisZ(this Matrix3x3 matrix)
         {
             return new Vector3d(matrix.Zx, matrix.Zy, matrix.Zz);
         }
 
         public static Matrix3x3 __MapAcsToWcs(this Matrix3x3 __ori)
         {
-            var x_vec = MapAcsToWcs(__ori._AxisX())._ToArray();
-            var y_vec = MapAcsToWcs(__ori._AxisY())._ToArray();
-            var z_vec = MapAcsToWcs(__ori._AxisZ())._ToArray();
-            return x_vec.Concat(y_vec).Concat(z_vec).ToArray()._ToMatrix3x3();
+            var x_vec = __MapAcsToWcs(__ori.__AxisX()).__ToArray();
+            var y_vec = __MapAcsToWcs(__ori.__AxisY()).__ToArray();
+            var z_vec = __MapAcsToWcs(__ori.__AxisZ()).__ToArray();
+            return x_vec.Concat(y_vec).Concat(z_vec).ToArray().__ToMatrix3x3();
         }
 
 
-        public static double[] _Array(this Matrix3x3 matrix)
+        public static double[] __Array(this Matrix3x3 matrix)
         {
             return new[]
             {
@@ -9136,20 +9151,20 @@ namespace TSG_Library
             };
         }
 
-        public static Vector3d _AxisX(this Matrix3x3 matrix)
+        public static Vector3d __AxisX(this Matrix3x3 matrix)
         {
             return new Vector3d(matrix.Xx, matrix.Xy, matrix.Xz);
         }
 
-        public static Matrix3x3 _Mirror(this Matrix3x3 matrix, Surface.Plane plane)
+        public static Matrix3x3 __Mirror(this Matrix3x3 matrix, Surface.Plane plane)
         {
-            var new_y = matrix._AxisX()._Mirror(plane);
-            var new_x = matrix._AxisY()._Mirror(plane);
-            return new_x._ToMatrix3x3(new_y);
+            var new_y = matrix.__AxisX().__Mirror(plane);
+            var new_x = matrix.__AxisY().__Mirror(plane);
+            return new_x.__ToMatrix3x3(new_y);
         }
 
         [Obsolete(nameof(NotImplementedException))]
-        public static Matrix3x3 _Mirror(
+        public static Matrix3x3 __Mirror(
             this Matrix3x3 vector,
             Surface.Plane plane,
             Component from,
@@ -9159,14 +9174,14 @@ namespace TSG_Library
         }
 
 
-        public static Matrix3x3 _Copy(this Matrix3x3 matrix)
+        public static Matrix3x3 __Copy(this Matrix3x3 matrix)
         {
             var mtx_dst = new double[9];
-            ufsession_.Mtx3.Copy(matrix._Array(), mtx_dst);
-            return mtx_dst._ToMatrix3x3();
+            ufsession_.Mtx3.Copy(matrix.__Array(), mtx_dst);
+            return mtx_dst.__ToMatrix3x3();
         }
 
-        public static double[,] _ToTwoDimArray(this Matrix3x3 matrix)
+        public static double[,] __ToTwoDimArray(this Matrix3x3 matrix)
         {
             return new double[3, 3]
             {
@@ -9176,15 +9191,11 @@ namespace TSG_Library
             };
         }
 
-        public static double _Determinant(this Matrix3x3 matrix)
+        public static double __Determinant(this Matrix3x3 matrix)
         {
-            ufsession_.Mtx3.Determinant(matrix._Array(), out var determinant);
+            ufsession_.Mtx3.Determinant(matrix.__Array(), out var determinant);
             return determinant;
         }
-
-        #endregion
-
-        #region Modl
 
         #endregion
 
@@ -9198,7 +9209,7 @@ namespace TSG_Library
             nxobject.DeleteUserAttribute(NXObject.AttributeType.String, title, true, update_option);
         }
 
-        public static void NXOpen_NXObject(NXObject nxobject)
+        public static void __NXOpenNXObject(NXObject nxobject)
         {
             //nxobject.DeleteUserAttribute
             //nxobject.DeleteUserAttributes
@@ -9315,7 +9326,7 @@ namespace TSG_Library
         #region Section
 
         [Obsolete(nameof(NotImplementedException))]
-        public static Section _Mirror(
+        public static Section __Mirror(
             this Section section,
             Surface.Plane plane)
         {
@@ -9323,7 +9334,7 @@ namespace TSG_Library
         }
 
         [Obsolete(nameof(NotImplementedException))]
-        public static Section _Mirror(
+        public static Section __Mirror(
             this Section section,
             Surface.Plane plane,
             Component from,
@@ -9353,14 +9364,14 @@ namespace TSG_Library
         //    return list.ToArray();
         //}
 
-        internal static void AddICurve(this Section section, params ICurve[] icurves)
+        internal static void __AddICurve(this Section section, params ICurve[] icurves)
         {
             var nXOpenSection = section;
             nXOpenSection.AllowSelfIntersection(false);
 
             for (var i = 0; i < icurves.Length; i++)
             {
-                var rules = CreateSelectionIntentRule(icurves[i]);
+                var rules = __CreateSelectionIntentRule(icurves[i]);
 
                 nXOpenSection.AddToSection(
                     rules,
@@ -9373,7 +9384,7 @@ namespace TSG_Library
             }
         }
 
-        internal static SelectionIntentRule[] CreateSelectionIntentRule(params Point[] points)
+        internal static SelectionIntentRule[] __CreateSelectionIntentRule(params Point[] points)
         {
             var array = new Point[points.Length];
 
@@ -9385,11 +9396,11 @@ namespace TSG_Library
         }
 
 
-        internal static void AddPoints(this Section section, params Point[] points)
+        internal static void __AddPoints(this Section section, params Point[] points)
         {
             var nXOpenSection = section;
             nXOpenSection.AllowSelfIntersection(false);
-            var rules = CreateSelectionIntentRule(points);
+            var rules = __CreateSelectionIntentRule(points);
 
             nXOpenSection.AddToSection(
                 rules,
@@ -9401,7 +9412,7 @@ namespace TSG_Library
                 false);
         }
 
-        public static void Temp(this Section obj)
+        public static void __Temp(this Section obj)
         {
             //obj.AddChainBetweenIntersectionPoints
             //obj.
@@ -9410,17 +9421,6 @@ namespace TSG_Library
         #endregion
 
         #region Session
-
-        /// <summary>Creates a new part</summary>
-        /// <param name="pathName">The full path of the new part</param>
-        /// <param name="templateType">The type of template to be used</param>
-        /// <param name="unitType">The type of the unit</param>
-        /// <returns>A <see cref="T:Snap.NX.Part">Snap.NX.Part</see> object</returns>
-        public static Part Part(string pathName, Templates templateType, Units unitType)
-        {
-            return CreatePart(pathName, templateType, unitType);
-        }
-
 
         //
         // Summary:
@@ -9444,18 +9444,18 @@ namespace TSG_Library
         /// <param name="templateType"></param>
         /// <param name="unitType"></param>
         /// <returns></returns>
-        internal static Part CreatePart(string pathName, Templates templateType, Units unitType)
+        internal static Part __CreatePart(string pathName, Templates templateType, Units unitType)
         {
             var nXOpenPart = __work_part_;
             var nXOpenPart2 = __display_part_;
             var fileNew = session_.Parts.FileNew();
-            fileNew.ApplicationName = GetAppName(fileNew, templateType);
-            fileNew.TemplateFileName = GetTemplateFileName(fileNew, templateType, unitType);
+            fileNew.ApplicationName = __GetAppName(fileNew, templateType);
+            fileNew.TemplateFileName = __GetTemplateFileName(fileNew, templateType, unitType);
             fileNew.UseBlankTemplate = fileNew.TemplateFileName == "Blank";
 
             fileNew.Units = unitType == Units.MilliMeters
-                ? NXOpen.Part.Units.Millimeters
-                : NXOpen.Part.Units.Inches;
+                ? Part.Units.Millimeters
+                : Part.Units.Inches;
 
             fileNew.NewFileName = pathName;
             fileNew.MasterFileName = "";
@@ -9472,12 +9472,12 @@ namespace TSG_Library
             return (Part)nXObject;
         }
 
-        public static LockUiFromCustom using_lock_ui_from_custom(this Session _)
+        public static LockUiFromCustom __UsingLockUiFromCustom(this Session _)
         {
             return new LockUiFromCustom();
         }
 
-        public static string select_menu_item_14gt(this Session session_, string title, string[] items)
+        public static string __SelectMenuItem14gt(this Session session_, string title, string[] items)
         {
             IList<string[]> separated = new List<string[]>();
 
@@ -9487,7 +9487,7 @@ namespace TSG_Library
             const int max = 14;
 
             if (items.Length == max)
-                using (session_.using_lock_ui_from_custom())
+                using (session_.__UsingLockUiFromCustom())
                 {
                     var picked_item = ufsession_.Ui.DisplayMenu(
                         title,
@@ -9566,7 +9566,7 @@ namespace TSG_Library
             var current_set_index = 0;
 
             while (true)
-                using (session_.using_lock_ui_from_custom())
+                using (session_.__UsingLockUiFromCustom())
                 {
                     var picked_item = ufsession_.Ui.DisplayMenu(
                         title,
@@ -9629,12 +9629,12 @@ namespace TSG_Library
                 }
         }
 
-        public static DoUpdate using_do_update(this Session _)
+        public static DoUpdate __UsingDoUpdate(this Session _)
         {
             return new DoUpdate();
         }
 
-        public static DoUpdate using_do_update(this Session _, string undo_text)
+        public static DoUpdate __UsingDoUpdate(this Session _, string undo_text)
         {
             return new DoUpdate(undo_text);
         }
@@ -9645,7 +9645,7 @@ namespace TSG_Library
         //    return (NXOpen.CartesianCoordinateSystem)session_._GetTaggedObject(csys_id);
         //}
 
-        public static IDisposable using_form_show_hide(this Session _, Form __form,
+        public static IDisposable __UsingFormShowHide(this Session _, Form __form,
             bool hide_form = true)
         {
             if (hide_form)
@@ -9657,7 +9657,7 @@ namespace TSG_Library
         //public static IDisposable using_form_show_hide(this NXOpen.Session _, System.Windows.Forms.Form __form)
         //    => new FormHideShow(__form);
 
-        public static Part find_or_open(this Session session, string __path_or_leaf)
+        public static Part __FindOrOpen(this Session session, string __path_or_leaf)
         {
             try
             {
@@ -9676,49 +9676,55 @@ namespace TSG_Library
             }
         }
 
-        public static void _SaveAll(this Session session)
+        public static void __SaveAll(this Session session)
         {
             session.Parts.SaveAll(out _, out _);
             ;
         }
 
-        public static void _CloseAll(this Session _)
+        public static void __CloseAll(this Session _)
         {
             ufsession_.Part.CloseAll();
         }
 
 
-        public static void set_display_to_work(this Session _)
+        public static void __SetDisplayToWork(this Session _)
         {
             __work_part_ = __display_part_;
         }
 
-        public static bool work_is_display(this Session _)
+        public static bool __WorkIsDisplay(this Session _)
         {
             return __display_part_.Tag == __work_part_.Tag;
         }
 
-        public static bool work_is_not_display(this Session session)
+        public static bool __IsAssemblyHolder(this string str)
         {
-            return !session.work_is_display();
+            return str.__IsLsh() || str.__IsUsh() || str.__IsLwr() || str.__IsUpr() || str.__IsLsp() || str.__IsUsp() ||
+                   str.__Is000();
         }
 
-        public static Destroyer using_builder_destroyer(this Session _, Builder __builder)
+        public static bool __WorkIsNotDisplay(this Session session)
+        {
+            return !session.__WorkIsDisplay();
+        }
+
+        public static Destroyer __UsingBuilderDestroyer(this Session _, Builder __builder)
         {
             return new Destroyer(__builder);
         }
 
-        public static DisplayPartReset using_display_part_reset(this Session _)
+        public static DisplayPartReset __usingDisplayPartReset(this Session _)
         {
             return new DisplayPartReset();
         }
 
-        public static SuppressDisplayReset using_suppress_display(this Session _)
+        public static SuppressDisplayReset __UsingSuppressDisplay(this Session _)
         {
             return new SuppressDisplayReset();
         }
 
-        public static IDisposable using_lock_ug_updates(this Session _)
+        public static IDisposable __UsingLockUgUpdates(this Session _)
         {
             return new LockUpdates();
         }
@@ -9730,7 +9736,7 @@ namespace TSG_Library
 
         public static void __DeleteObjects(this Session session_, params Tag[] __objects_to_delete)
         {
-            delete_objects(session_, __objects_to_delete.Select(session_.__GetTaggedObject).ToArray());
+            __DeleteObjects(session_, __objects_to_delete.Select(session_.__GetTaggedObject).ToArray());
         }
 
         public static TaggedObject __GetTaggedObject(this Session session, Tag tag)
@@ -9768,7 +9774,7 @@ namespace TSG_Library
                 cursor, out view);
         }
 
-        public static void _SelectSingleObject(
+        public static void __SelectSingleObject(
             this Session session,
             UFUi.SelInitFnT init_proc,
             IntPtr user_data,
@@ -9789,17 +9795,17 @@ namespace TSG_Library
                 out _);
         }
 
-        public static Initialize2EvaluatorFree using_evaluator(this Session _, Tag tag)
+        public static Initialize2EvaluatorFree __UsingEvaluator(this Session _, Tag tag)
         {
             return new Initialize2EvaluatorFree(tag);
         }
 
-        public static TaggedObject find_by_name(this Session session, string __name)
+        public static TaggedObject __FindByName(this Session session, string __name)
         {
-            return session.find_all_by_name(__name).First();
+            return session.__FindAllByName(__name).First();
         }
 
-        public static IEnumerable<TaggedObject> find_all_by_name(this Session _, string __name)
+        public static IEnumerable<TaggedObject> __FindAllByName(this Session _, string __name)
         {
             var __tag = Tag.Null;
 
@@ -9812,7 +9818,7 @@ namespace TSG_Library
             } while (__tag != Tag.Null);
         }
 
-        public static void delete_objects(this Session session_,
+        public static void __DeleteObjects(this Session session_,
             params TaggedObject[] __objects_to_delete)
         {
             var mark =
@@ -9849,7 +9855,7 @@ namespace TSG_Library
 
         //private static readonly NXOpen.UF.UFSession uf = NXOpen.UF.ufsession_.GetUFSession();
 
-        public static IDisposable using_gc_handle(this Session _, GCHandle __handle)
+        public static IDisposable __UsingGCHandle(this Session _, GCHandle __handle)
         {
             return new GCHandleFree(__handle);
         }
@@ -9862,7 +9868,7 @@ namespace TSG_Library
             "Data Source=tsgapps2.toolingsystemsgroup.com;Initial Catalog=CTSAPP;User ID=CTSAPP;Password=RI4SU9d2JxH8LcrxSDPS";
 
 
-        public static object ExecuteScalar(string command_text)
+        public static object __ExecuteScalar(string command_text)
         {
             using (var cnn = new SqlConnection(conn_str))
             {
@@ -9880,12 +9886,12 @@ namespace TSG_Library
             }
         }
 
-        public static int ExecuteScalarInt(string command_text)
+        public static int __ExecuteScalarInt(string command_text)
         {
-            return Convert.ToInt32(Convert.ToDecimal(ExecuteScalar(command_text)));
+            return Convert.ToInt32(Convert.ToDecimal(__ExecuteScalar(command_text)));
         }
 
-        public static SqlDataReader ExecuteDatReader(string command_text)
+        public static SqlDataReader __ExecuteDataReader(string command_text)
         {
             using (var cnn = new SqlConnection(conn_str))
             {
@@ -9907,7 +9913,7 @@ namespace TSG_Library
 
         #region String
 
-        private static bool FastenerInfo(string file, string regex, out string diameter, out string length)
+        private static bool __FastenerInfo(string file, string regex, out string diameter, out string length)
         {
             if (file.Contains("\\"))
                 file = Path.GetFileNameWithoutExtension(file);
@@ -9930,98 +9936,116 @@ namespace TSG_Library
             return true;
         }
 
-
+        //[IgnoreExtensionAspect]
         public static bool _IsBlhcs_(this string leaf_or_display_name)
         {
             return leaf_or_display_name.ToLower().Contains("0375-bhcs-062")
                    || leaf_or_display_name.ToLower().Contains("10mm-bhcs-016");
         }
 
+        //[IgnoreExtensionAspect]
         public static bool _IsLayout_(this string leaf_or_display_name)
         {
             return leaf_or_display_name.ToLower().Contains("-layout");
         }
 
+        //[IgnoreExtensionAspect]
         public static bool _IsShcs_(this string leaf)
         {
             return leaf.ToLower().Contains("-shcs-");
         }
 
+        //[IgnoreExtensionAspect]
         public static bool _IsShcs_(this Component component)
         {
             return component.DisplayName._IsShcs_();
         }
 
+        //[IgnoreExtensionAspect]
         public static bool _IsShcs_(this Part part)
         {
             return part.Leaf._IsShcs_();
         }
 
+        //[IgnoreExtensionAspect]
         public static bool _IsDwl_(this string leaf)
         {
             return leaf.ToLower().Contains("-dwl-");
         }
 
+        //[IgnoreExtensionAspect]
         public static bool _IsDwl_(this Component component)
         {
             return component.DisplayName._IsDwl_();
         }
 
+        //[IgnoreExtensionAspect]
         public static bool _IsDwl_(this Part part)
         {
             return part.Leaf._IsDwl_();
         }
 
+        //[IgnoreExtensionAspect]
         public static bool _IsJckScrew_(this string leaf)
         {
             return !leaf._IsJckScrewTsg_() && leaf.ToLower().Contains("-jck-screw-");
         }
 
+        //[IgnoreExtensionAspect]
         public static bool _IsJckScrew_(this Component component)
         {
             return component.DisplayName._IsJckScrew_();
         }
 
+        //[IgnoreExtensionAspect]
         public static bool _IsJckScrew_(this Part part)
         {
             return part.Leaf._IsJckScrew_();
         }
 
+        //[IgnoreExtensionAspect]
         public static bool _IsJckScrewTsg_(this string leaf)
         {
             return leaf.ToLower().Contains("-jck-screw-tsg");
         }
 
+        //[IgnoreExtensionAspect]
         public static bool _IsJckScrewTsg_(this Component component)
         {
             return component.DisplayName._IsJckScrewTsg_();
         }
 
+        //[IgnoreExtensionAspect]
         public static bool _IsJckScrewTsg_(this Part part)
         {
             return part.Leaf._IsJckScrewTsg_();
         }
 
+        //[IgnoreExtensionAspect]
         public static bool _IsLhcs_(this string leaf)
         {
             return leaf.ToLower().Contains("-lhcs-");
         }
 
+        //[IgnoreExtensionAspect]
         public static bool _IsSss_(this string leaf)
         {
             return leaf.ToLower().Contains("-sss-");
         }
 
+        //[IgnoreExtensionAspect]
         public static bool _IsBhcs_(this string leaf)
         {
             return leaf.ToLower().Contains("-bhcs-");
         }
 
+        //[IgnoreExtensionAspect]
         public static bool _IsFhcs_(this string leaf)
         {
             return leaf.ToLower().Contains("-fhcs-");
         }
 
+        //[IgnoreExtensionAspect]
         public static bool _IsFastener_(this string leaf_or_display_name)
         {
             return leaf_or_display_name._IsShcs_()
@@ -10030,9 +10054,10 @@ namespace TSG_Library
                    || leaf_or_display_name._IsJckScrewTsg_();
         }
 
+        //[IgnoreExtensionAspect]
         public static bool _IsFastenerExtended_(this string leaf_or_display_name)
         {
-            return leaf_or_display_name._IsFastener()
+            return leaf_or_display_name.__IsFastener()
                    || leaf_or_display_name._IsLhcs_()
                    || leaf_or_display_name._IsSss_()
                    || leaf_or_display_name._IsBhcs_()
@@ -10040,7 +10065,7 @@ namespace TSG_Library
                    || leaf_or_display_name._IsBlhcs_();
         }
 
-        public static string _AskDetailNumber(this string file)
+        public static string __AskDetailNumber(this string file)
         {
             var leaf = Path.GetFileNameWithoutExtension(file);
             var match = Regex.Match(leaf, "^\\d+-\\d+-(?<detail>\\d+)$");
@@ -10051,87 +10076,87 @@ namespace TSG_Library
             return match.Groups["detail"].Value;
         }
 
-        public static bool _IsShcs(this string file)
+        public static bool __IsShcs(this string file)
         {
-            return file._IsShcs(out _);
+            return file.__IsShcs(out _);
         }
 
-        public static bool _IsDwl(this string file)
+        public static bool __IsDwl(this string file)
         {
-            return file._IsDwl(out _);
+            return file.__IsDwl(out _);
         }
 
-        public static bool _IsJckScrew(this string file)
+        public static bool __IsJckScrew(this string file)
         {
-            return file._IsJckScrew(out _);
+            return file.__IsJckScrew(out _);
         }
 
-        public static bool _IsJckScrewTsg(this string file)
+        public static bool __IsJckScrewTsg(this string file)
         {
-            return file._IsJckScrewTsg(out _);
+            return file.__IsJckScrewTsg(out _);
         }
 
-        public static bool _IsShcs(
+        public static bool __IsShcs(
             this string file,
             out string diameter,
             out string length)
         {
-            return FastenerInfo(file, Regex_Shcs, out diameter, out length);
+            return __FastenerInfo(file, Regex_Shcs, out diameter, out length);
         }
 
-        public static bool _IsDwl(
+        public static bool __IsDwl(
             this string file,
             out string diameter,
             out string length)
         {
-            return FastenerInfo(file, Regex_Dwl, out diameter, out length);
+            return __FastenerInfo(file, Regex_Dwl, out diameter, out length);
         }
 
-        public static bool _IsFastener(this string file)
+        public static bool __IsFastener(this string file)
         {
-            return file._IsFastener(out _);
+            return file.__IsFastener(out _);
         }
 
-        public static bool _IsShcs(
+        public static bool __IsShcs(
             this string file,
             out string diameter)
         {
-            return file._IsShcs(out diameter, out _);
+            return file.__IsShcs(out diameter, out _);
         }
 
-        public static bool _IsDwl(
+        public static bool __IsDwl(
             this string file,
             out string diameter)
         {
-            return file._IsDwl(out diameter, out _);
+            return file.__IsDwl(out diameter, out _);
         }
 
-        public static bool _IsJckScrew(
+        public static bool __IsJckScrew(
             this string file,
             out string diameter)
         {
-            return FastenerInfo(file, Regex_JckScrew, out diameter, out _);
+            return __FastenerInfo(file, Regex_JckScrew, out diameter, out _);
         }
 
-        public static bool _IsJckScrewTsg(
+        public static bool __IsJckScrewTsg(
             this string file,
             out string diameter)
         {
-            return FastenerInfo(file, Regex_JckScrewTsg, out diameter, out _);
+            return __FastenerInfo(file, Regex_JckScrewTsg, out diameter, out _);
         }
 
-        public static bool _IsFastener(this string file, out string diameter)
+        public static bool __IsFastener(this string file, out string diameter)
         {
-            if (file._IsShcs(out diameter))
+            if (file.__IsShcs(out diameter))
                 return true;
 
-            if (file._IsDwl(out diameter))
+            if (file.__IsDwl(out diameter))
                 return true;
 
-            return file._IsJckScrew(out diameter) || file._IsJckScrewTsg(out diameter);
+            return file.__IsJckScrew(out diameter) || file.__IsJckScrewTsg(out diameter);
         }
 
-        public static bool _IsLoaded(this string partName)
+        public static bool __IsLoaded(this string partName)
         {
             var status = ufsession_.Part.IsLoaded(partName);
 
@@ -10147,7 +10172,7 @@ namespace TSG_Library
             }
         }
 
-        public static bool _IsDetail(this string str)
+        public static bool __IsDetail(this string str)
         {
             var leaf = Path.GetFileNameWithoutExtension(str);
 
@@ -10158,7 +10183,7 @@ namespace TSG_Library
         }
 
 
-        public static string _AskDetailOp(this string path)
+        public static string __AskDetailOp(this string path)
         {
             var leaf = Path.GetFileNameWithoutExtension(path);
 
@@ -10171,100 +10196,100 @@ namespace TSG_Library
         }
 
 
-        public static bool IsAssemblyHolder(string str)
-        {
-            if (string.IsNullOrEmpty(str))
-                return false;
+        //public static bool __IsAssemblyHolder(string str)
+        //{
+        //    if (string.IsNullOrEmpty(str))
+        //        return false;
 
-            str = Path.GetFileNameWithoutExtension(str);
-            var startIndex = str.LastIndexOf('-');
+        //    str = Path.GetFileNameWithoutExtension(str);
+        //    var startIndex = str.LastIndexOf('-');
 
-            if (startIndex < 0)
-                return false;
+        //    if (startIndex < 0)
+        //        return false;
 
-            var str1 = str.Substring(startIndex);
+        //    var str1 = str.Substring(startIndex);
 
-            var strArray1 = new string[5]
-            {
-                "lwr",
-                "upr",
-                "lsh",
-                "ush",
-                "000"
-            };
+        //    var strArray1 = new string[5]
+        //    {
+        //        "lwr",
+        //        "upr",
+        //        "lsh",
+        //        "ush",
+        //        "000"
+        //    };
 
-            var strArray2 = new string[2] { "lsp", "usp" };
-            return strArray1.Any(str1.EndsWith) ||
-                   strArray2.Any(str1.Contains);
-        }
+        //    var strArray2 = new string[2] { "lsp", "usp" };
+        //    return strArray1.Any(str1.EndsWith) ||
+        //           strArray2.Any(str1.Contains);
+        //}
 
-        public static bool IsFastener(string path)
-        {
-            return IsScrew(path) || IsDowel(path) || IsJigJackTsg(path) || IsJigJack(path);
-        }
+        //public static bool __IsFastener(string path)
+        //{
+        //    return IsScrew(path) || IsDowel(path) || IsJigJackTsg(path) || IsJigJack(path);
+        //}
 
-        public static bool IsScrew(string path)
-        {
-            return path.Contains("shcs");
-        }
+        //public static bool __IsScrew(string path)
+        //{
+        //    return path.Contains("shcs");
+        //}
 
-        public static bool IsDowel(string path)
-        {
-            return path.Contains("dwl");
-        }
+        //public static bool IsDowel(string path)
+        //{
+        //    return path.Contains("dwl");
+        //}
 
-        public static bool IsJigJack(string path)
-        {
-            return path.Contains("jck-screw") && !path.Contains("tsg");
-        }
+        //public static bool IsJigJack(string path)
+        //{
+        //    return path.Contains("jck-screw") && !path.Contains("tsg");
+        //}
 
-        public static bool IsJigJackTsg(string path)
-        {
-            return path.Contains("jck-screw-tsg");
-        }
+        //public static bool IsJigJackTsg(string path)
+        //{
+        //    return path.Contains("jck-screw-tsg");
+        //}
 
-        public static bool _IsPartDetail(this string partLeaf)
+        public static bool __IsPartDetail(this string partLeaf)
         {
             return Regex.IsMatch(partLeaf, DetailNumberRegex);
         }
 
-        public static bool _IsAssemblyHolder(this string str)
-        {
-            return str._IsLsh() || str._IsUsh() || str._IsLwr() || str._IsUpr() || str._IsLsp() || str._IsUsp() ||
-                   str._Is000();
-        }
+        //public static bool __IsAssemblyHolder(this string str)
+        //{
+        //    return str._IsLsh() || str._IsUsh() || str._IsLwr() || str._IsUpr() || str._IsLsp() || str._IsUsp() ||
+        //           str._Is000();
+        //}
 
-        public static bool _IsLsh(this string str)
+        public static bool __IsLsh(this string str)
         {
             return Regex.IsMatch(str, Regex_Lsh, RegexOptions.IgnoreCase);
         }
 
-        public static bool _IsUsh(this string str)
+        public static bool __IsUsh(this string str)
         {
             return Regex.IsMatch(str, Regex_Ush, RegexOptions.IgnoreCase);
         }
 
-        public static bool _IsLsp(this string str)
+        public static bool __IsLsp(this string str)
         {
             return Regex.IsMatch(str, Regex_Lsp, RegexOptions.IgnoreCase);
         }
 
-        public static bool _IsUsp(this string str)
+        public static bool __IsUsp(this string str)
         {
             return Regex.IsMatch(str, Regex_Usp, RegexOptions.IgnoreCase);
         }
 
-        public static bool _IsLwr(this string str)
+        public static bool __IsLwr(this string str)
         {
             return Regex.IsMatch(str, Regex_Lwr, RegexOptions.IgnoreCase);
         }
 
-        public static bool _IsUpr(this string str)
+        public static bool __IsUpr(this string str)
         {
             return Regex.IsMatch(str, Regex_Upr, RegexOptions.IgnoreCase);
         }
 
-        public static bool _Is000(this string str)
+        public static bool __Is000(this string str)
         {
             return Regex.IsMatch(str, Regex_Op000Holder, RegexOptions.IgnoreCase);
         }
@@ -10273,14 +10298,14 @@ namespace TSG_Library
 
         #region Tag
 
-        public static TaggedObject _ToTaggedObject(this Tag tag)
+        public static TaggedObject __ToTaggedObject(this Tag tag)
         {
             return session_.GetObjectManager().GetTaggedObject(tag);
         }
 
-        public static TSource _To<TSource>(this Tag tag) where TSource : TaggedObject
+        public static TSource __To<TSource>(this Tag tag) where TSource : TaggedObject
         {
-            return (TSource)tag._ToTaggedObject();
+            return (TSource)tag.__ToTaggedObject();
         }
 
         #endregion

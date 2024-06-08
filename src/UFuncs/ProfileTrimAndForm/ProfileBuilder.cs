@@ -175,7 +175,7 @@ namespace TSG_Library.Utilities
                 }
                 catch (Exception ex)
                 {
-                    ex._PrintException();
+                    ex.__PrintException();
                 }
         }
 
@@ -202,21 +202,21 @@ namespace TSG_Library.Utilities
             //        NXOpen.CoordinateSystem tempCsys = dictionary[key.Key].First().Vector.CreateCoordinateSystem();
             //        List<Position_ > mappedPositions = dictionary[key.Key].SelectMany(obj => obj.Polyline)
             //            .SelectMany(curve => new[] { curve._StartPoint(), curve._EndPoint() })
-            //            .Select(position => NXOpen.CartesianCoordinateSystem.MapCsysToCsys(position, absCoord, tempCsys))
+            //            .Select(position => NXOpen.CartesianCoordinateSystem.__MapCsysToCsys(position, absCoord, tempCsys))
             //            .ToList();
             //        mappedPositions.AddRange(
             //            from curve in dictionary[key.Key].SelectMany(slugObj => slugObj.Polyline).OfType<NXOpen.Arc>()
-            //            select NXOpen.CartesianCoordinateSystem.MapCsysToCsys(curve._OriginCenter(), absCoord, tempCsys));
+            //            select NXOpen.CartesianCoordinateSystem.__MapCsysToCsys(curve._OriginCenter(), absCoord, tempCsys));
 
             //        double maxZValue = mappedPositions.Select(position => position.Z).Max() + 500;
             //        double minYValue = mappedPositions.Select(position => position.Y).Min() - 50;
             //        double maxYValue = mappedPositions.Select(position => position.Y).Max() + 50;
             //        double minXValue = mappedPositions.Select(position => position.X).Min() - 50;
             //        double maxXValue = mappedPositions.Select(position => position.X).Max() + 50;
-            //        Position_ cornerBottomLeft = NXOpen.CartesianCoordinateSystem.MapCsysToCsys(new Position_ (minXValue, minYValue, maxZValue), tempCsys, absCoord);
-            //        Position_ cornerTopLeft = NXOpen.CartesianCoordinateSystem.MapCsysToCsys(new Position_ (minXValue, maxYValue, maxZValue), tempCsys, absCoord);
-            //        Position_ cornerBottomRight = NXOpen.CartesianCoordinateSystem.MapCsysToCsys(new Position_ (maxXValue, minYValue, maxZValue), tempCsys, absCoord);
-            //        Position_ cornerTopRight = NXOpen.CartesianCoordinateSystem.MapCsysToCsys(new Position_ (maxXValue, maxYValue, maxZValue), tempCsys, absCoord);
+            //        Position_ cornerBottomLeft = NXOpen.CartesianCoordinateSystem.__MapCsysToCsys(new Position_ (minXValue, minYValue, maxZValue), tempCsys, absCoord);
+            //        Position_ cornerTopLeft = NXOpen.CartesianCoordinateSystem.__MapCsysToCsys(new Position_ (minXValue, maxYValue, maxZValue), tempCsys, absCoord);
+            //        Position_ cornerBottomRight = NXOpen.CartesianCoordinateSystem.__MapCsysToCsys(new Position_ (maxXValue, minYValue, maxZValue), tempCsys, absCoord);
+            //        Position_ cornerTopRight = NXOpen.CartesianCoordinateSystem.__MapCsysToCsys(new Position_ (maxXValue, maxYValue, maxZValue), tempCsys, absCoord);
             //        NXOpen.Line[] retainerLines = new NXOpen.Line[]
             //        {
             //            session_.create.Line(cornerBottomLeft, cornerBottomRight),
@@ -270,7 +270,7 @@ namespace TSG_Library.Utilities
         {
             var extrudeBuilder = __work_part_.Features.CreateExtrudeBuilder(null);
 
-            using (session_.using_builder_destroyer(extrudeBuilder))
+            using (session_.__UsingBuilderDestroyer(extrudeBuilder))
             {
                 extrudeBuilder.Section = __work_part_.Sections.CreateSection(0d, 0d, 0d);
                 extrudeBuilder.BooleanOperation.Type = BooleanOperation.BooleanType.Create;
