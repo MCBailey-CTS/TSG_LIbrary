@@ -99,31 +99,18 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                //Snap.UI.Selection.Dialog selection = Snap.UI.Selection.SelectObject("Select Face");
-                //selection.AllowMultiple = false;
-                //selection.Title = "Select Face";
-                //selection.Scope = Snap.UI.Selection.Dialog.SelectionScope.AnyInAssembly;
-                //selection.KeepHighlighted = false;
-                //selection.IncludeFeatures = false;
-                //selection.SetFilter(Snap.NX.ObjectTypes.Type.Face, Snap.NX.ObjectTypes.SubType.FacePlane);
+                var selectedFace = TSG_Library.Ui.Selection.SelectSingleFace();
 
-                //Snap.UI.Selection.Result result = selection.Show();
+                if (selectedFace is null)
+                    return;
 
-                //if ((int)result.Response != 5)
-                //    return;
+                NXOpen.Vector3d normal = selectedFace.__NormalVector();
 
-                //if (result.Objects.Length < 1)
-                //    return;
+                NXOpen.Matrix3x3 orientation = normal.__ToMatrix3x3();
 
-                //NXOpen.Face selectedFace = (NXOpen.Face)result.Object.NXOpenTaggedObject;
+                NXOpen.Point3d origin = selectedFace.GetEdges()[0].__StartPoint();
 
-                //NXOpen.Vector3d normal = selectedFace._NormalVector();
-
-                //NXOpen.Matrix3x3 orientation = normal._ToMatrix3x3();
-
-                //NXOpen.Point3d origin = selectedFace.GetEdges()[0].__StartPoint();
-
-                //__display_part_.WCS.SetOriginAndMatrix(origin, orientation);
+                __display_part_.WCS.SetOriginAndMatrix(origin, orientation);
 
                 throw new NotImplementedException();
             }
@@ -152,19 +139,19 @@ namespace TSG_Library.UFuncs
                 var targetFace = interferingFaces[i];
                 var toolFace = interferingFaces[i + 1];
 
-                if(!targetFace.__IsPlanar())
+                if (!targetFace.__IsPlanar())
                     continue;
 
-                if(!toolFace.__IsPlanar())
+                if (!toolFace.__IsPlanar())
                     continue;
 
                 var targetVector = targetFace.__NormalVector().__Unit();
                 var toolVector = toolFace.__NormalVector().__Unit();
 
-                if(!targetVector.__IsEqualTo(expectedTargetVector))
+                if (!targetVector.__IsEqualTo(expectedTargetVector))
                     continue;
 
-                if(!toolVector.__IsEqualTo(expectedTargetVector.__Negate()))
+                if (!toolVector.__IsEqualTo(expectedTargetVector.__Negate()))
                     continue;
 
                 CreateNote0(detail, targetFace, toolFace);
@@ -181,7 +168,7 @@ namespace TSG_Library.UFuncs
                 var targetFace = SelectPlanarFace();
 
                 // for now the target face must be an occurrence
-                if(!targetFace.IsOccurrence)
+                if (!targetFace.IsOccurrence)
                 {
                     print_("Please select an occurrence face");
                     return;
@@ -202,7 +189,7 @@ namespace TSG_Library.UFuncs
 
                     var detail = GetDetailName(interferingFaces[1].OwningComponent);
 
-                    if(TryCreateNote(detail, expectedTargetVector, interferingFaces))
+                    if (TryCreateNote(detail, expectedTargetVector, interferingFaces))
                     {
                         solid_body_layer_1_proto.OwningComponent.Blank();
 
@@ -223,7 +210,9 @@ namespace TSG_Library.UFuncs
         }
 
 
+#pragma warning disable IDE0051 // Remove unused private members
         private static Body[] SelectSolidBodies()
+#pragma warning restore IDE0051 // Remove unused private members
         {
             var mask = new MaskTriple(UF_solid_type, 0, UF_UI_SEL_FEATURE_BODY);
 
@@ -240,7 +229,9 @@ namespace TSG_Library.UFuncs
             return selectedObjects.Cast<Body>().ToArray();
         }
 
+#pragma warning disable IDE0051 // Remove unused private members
         private static Body SelectSolidBody()
+#pragma warning restore IDE0051 // Remove unused private members
         {
             var mask = new MaskTriple(UF_solid_type, 0, UF_UI_SEL_FEATURE_BODY);
 
@@ -378,7 +369,7 @@ namespace TSG_Library.UFuncs
 
             ReferenceSet refset;
 
-            if(__display_part_.__HasReferenceSet(REFERENCE_SET))
+            if (__display_part_.__HasReferenceSet(REFERENCE_SET))
             {
                 refset = __display_part_.__FindReferenceSet(REFERENCE_SET);
             }
@@ -400,7 +391,7 @@ namespace TSG_Library.UFuncs
         {
             foreach (var line in lines)
             {
-                if(!line.StartsWith(key))
+                if (!line.StartsWith(key))
                     continue;
 
                 var index = line.IndexOf('=');
@@ -415,7 +406,7 @@ namespace TSG_Library.UFuncs
         {
             foreach (var line in lines)
             {
-                if(!line.StartsWith(key))
+                if (!line.StartsWith(key))
                     continue;
 
                 var index = line.IndexOf('=');
@@ -430,7 +421,7 @@ namespace TSG_Library.UFuncs
         {
             foreach (var line in lines)
             {
-                if(!line.StartsWith(key))
+                if (!line.StartsWith(key))
                     continue;
 
                 var index = line.IndexOf('=');

@@ -2,6 +2,7 @@
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
+using TSG_Library;
 
 namespace TSG_Library.Disposable
 {
@@ -81,54 +82,54 @@ namespace TSG_Library.Disposable
             _builder = builder;
         }
 
-        public Destroyer(ExtractFace feature, out ExtractFaceBuilder builder)
-        {
-            builder = feature.__OwningPart().Features.CreateExtractFaceBuilder(feature);
+        // public Destroyer(ExtractFace feature, out ExtractFaceBuilder builder)
+        // {
+        //     builder = feature.__OwningPart().Features.CreateExtractFaceBuilder(feature);
 
-            _builder = builder;
-        }
+        //     _builder = builder;
+        // }
 
-        public Destroyer(Block feature, out BlockFeatureBuilder builder)
-        {
-            builder = feature.__OwningPart().Features.CreateBlockFeatureBuilder(feature);
+        // public Destroyer(Block feature, out BlockFeatureBuilder builder)
+        // {
+        //     builder = feature.__OwningPart().Features.CreateBlockFeatureBuilder(feature);
 
-            _builder = builder;
-        }
+        //     _builder = builder;
+        // }
 
-        public Destroyer(DeleteFace feature, out DeleteFaceBuilder builder)
-        {
-            builder = feature.__OwningPart().Features.CreateDeleteFaceBuilder(feature);
+        // public Destroyer(DeleteFace feature, out DeleteFaceBuilder builder)
+        // {
+        //     builder = feature.__OwningPart().Features.CreateDeleteFaceBuilder(feature);
 
-            _builder = builder;
-        }
+        //     _builder = builder;
+        // }
 
-        public Destroyer(Extrude feature, out ExtrudeBuilder builder)
-        {
-            builder = feature.__OwningPart().Features.CreateExtrudeBuilder(feature);
+        // public Destroyer(Extrude feature, out ExtrudeBuilder builder)
+        // {
+        //     builder = feature.__OwningPart().Features.CreateExtrudeBuilder(feature);
 
-            _builder = builder;
-        }
+        //     _builder = builder;
+        // }
 
-        public Destroyer(EdgeBlend feature, out EdgeBlendBuilder builder)
-        {
-            builder = feature.__OwningPart().Features.CreateEdgeBlendBuilder(feature);
+        // public Destroyer(EdgeBlend feature, out EdgeBlendBuilder builder)
+        // {
+        //     builder = feature.__OwningPart().Features.CreateEdgeBlendBuilder(feature);
 
-            _builder = builder;
-        }
+        //     _builder = builder;
+        // }
 
-        public Destroyer(Chamfer feature, out ChamferBuilder builder)
-        {
-            builder = feature.__OwningPart().Features.CreateChamferBuilder(feature);
+        // public Destroyer(Chamfer feature, out ChamferBuilder builder)
+        // {
+        //     builder = feature.__OwningPart().Features.CreateChamferBuilder(feature);
 
-            _builder = builder;
-        }
+        //     _builder = builder;
+        // }
 
-        public Destroyer(OffsetFace feature, out OffsetFaceBuilder builder)
-        {
-            builder = feature.__OwningPart().Features.CreateOffsetFaceBuilder(feature);
+        // public Destroyer(OffsetFace feature, out OffsetFaceBuilder builder)
+        // {
+        //     builder = feature.__OwningPart().Features.CreateOffsetFaceBuilder(feature);
 
-            _builder = builder;
-        }
+        //     _builder = builder;
+        // }
 
 
         public Destroyer(Part part, out CreateNewComponentBuilder builder)

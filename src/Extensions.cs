@@ -27,6 +27,7 @@ using Curve = NXOpen.Curve;
 using Type = NXOpen.GeometricUtilities.Type;
 using Unit = TSG_Library.Enum.Unit;
 using static NXOpen.UF.UFConstants;
+using MoreLinq;
 
 namespace TSG_Library
 {
@@ -655,7 +656,6 @@ namespace TSG_Library
 
         #endregion
 
-
         #region WCS
 
         public static Matrix3x3 __Orientation(this WCS wcs)
@@ -771,10 +771,10 @@ namespace TSG_Library
             var axisX = __display_part_.WCS.__AxisX();
             var axisY = __display_part_.WCS.__AxisY();
             var axisZ = __display_part_.WCS.__AxisZ();
-            var _x = axisX.__Multiply(absVector);
-            var _y = axisY.__Multiply(absVector);
-            var _z = axisZ.__Multiply(absVector);
-            return new Vector3d(_x, _y, _z);
+            var x = axisX.__Multiply(absVector);
+            var y = axisY.__Multiply(absVector);
+            var z = axisZ.__Multiply(absVector);
+            return new Vector3d(x, y, z);
         }
 
         /// <summary>
@@ -790,13 +790,13 @@ namespace TSG_Library
             var axisX = inputCsys.__Orientation().Element.__AxisX();
             var axisY = inputCsys.__Orientation().Element.__AxisY();
             var axisZ = inputCsys.__Orientation().Element.__AxisZ();
-            var _x = inputVector.X.__Multiply(axisX);
-            var _y = inputVector.Y.__Multiply(axisY);
-            var _z = inputVector.Z.__Multiply(axisZ);
-            var vector = _x.__Add(_y, _z);
-            var x = vector.__Multiply(outputCsys.__Orientation().Element.__AxisX());
-            var y = vector.__Multiply(outputCsys.__Orientation().Element.__AxisY());
-            var z = vector.__Multiply(outputCsys.__Orientation().Element.__AxisZ());
+            var x = inputVector.X.__Multiply(axisX);
+            var y = inputVector.Y.__Multiply(axisY);
+            var z = inputVector.Z.__Multiply(axisZ);
+            var vector = x.__Add(y, z);
+            x = vector.__Multiply(outputCsys.__Orientation().Element.__AxisX());
+            y = vector.__Multiply(outputCsys.__Orientation().Element.__AxisY());
+            z = vector.__Multiply(outputCsys.__Orientation().Element.__AxisZ());
             return new Vector3d(x, y, z);
         }
 
@@ -1056,13 +1056,13 @@ namespace TSG_Library
         ///     orthogonal to the x-direction vector before taking the cross product<br />
         ///     (x_vec X y_vec) to generate the z-direction vector.
         /// </summary>
-        /// <param name="x_vec">Vector for the X-direction of matrix</param>
-        /// <param name="y_vec">Vector for theYX-direction of matrix</param>
+        /// <param name="xVec">Vector for the X-direction of matrix</param>
+        /// <param name="yVec">Vector for theYX-direction of matrix</param>
         /// <returns>The resulting matrix.</returns>
-        public static Matrix3x3 __Initialize(this Vector3d x_vec, Vector3d y_vec)
+        public static Matrix3x3 __Initialize(this Vector3d xVec, Vector3d yVec)
         {
             var mtx = new double[9];
-            ufsession_.Mtx3.Initialize(x_vec.__ToArray(), y_vec.__ToArray(), mtx);
+            ufsession_.Mtx3.Initialize(xVec.__ToArray(), yVec.__ToArray(), mtx);
             return mtx.__ToMatrix3x3();
         }
 
@@ -1070,12 +1070,12 @@ namespace TSG_Library
         ///     Returns a 3x3 matrix with the given X-direction vector and having<br />
         ///     arbitrary Y- and Z-direction vectors.
         /// </summary>
-        /// <param name="x_vec">Vector for the X-direction of matrix</param>
+        /// <param name="xVec">Vector for the X-direction of matrix</param>
         /// <returns>The resulting matrix.</returns>
-        public static Matrix3x3 __InitializeX(Vector3d x_vec)
+        public static Matrix3x3 __InitializeX(Vector3d xVec)
         {
             var mtx = new double[9];
-            ufsession_.Mtx3.InitializeX(x_vec.__ToArray(), mtx);
+            ufsession_.Mtx3.InitializeX(xVec.__ToArray(), mtx);
             return mtx.__ToMatrix3x3();
         }
 
@@ -1122,9 +1122,9 @@ namespace TSG_Library
             return scaled_vec.__ToVector3d();
         }
 
-        public static double __Multiply(this Vector3d __vec0, Vector3d __vec1)
+        public static double __Multiply(this Vector3d vec0, Vector3d vec1)
         {
-            return __vec0.X * __vec1.X + __vec0.Y * __vec1.Y + __vec0.Z * __vec1.Z;
+            return vec0.X * vec1.X + vec0.Y * vec1.Y + vec0.Z * vec1.Z;
         }
 
         public static Matrix3x3 __MapWcsToAcs(Matrix3x3 orientation)
@@ -1982,126 +1982,126 @@ namespace TSG_Library
             return basePart.ScRuleFactory.CreateRuleBodyDumb(bodies);
         }
 
-        public static void __CreateRuleBodyFeature(this BasePart basePart)
-        {
-        }
+        //public static void __CreateRuleBodyFeature(this BasePart basePart)
+        //{
+        //}
 
-        public static void __CreateRuleBodyGroup(this BasePart basePart)
-        {
-        }
+        //public static void __CreateRuleBodyGroup(this BasePart basePart)
+        //{
+        //}
 
-        public static void __CreateRuleCurveChain(this BasePart basePart)
-        {
-        }
+        //public static void __CreateRuleCurveChain(this BasePart basePart)
+        //{
+        //}
 
-        public static void __CreateRuleCurveDumb(this BasePart basePart)
-        {
-        }
+        //public static void __CreateRuleCurveDumb(this BasePart basePart)
+        //{
+        //}
 
-        public static void __CreateRuleCurveDumbFromPoints(this BasePart basePart)
-        {
-        }
+        //public static void __CreateRuleCurveDumbFromPoints(this BasePart basePart)
+        //{
+        //}
 
-        public static void __CreateRuleCurveFeature(this BasePart basePart)
-        {
-        }
+        //public static void __CreateRuleCurveFeature(this BasePart basePart)
+        //{
+        //}
 
-        public static void __CreateRuleCurveFeatureChain(this BasePart basePart)
-        {
-        }
+        //public static void __CreateRuleCurveFeatureChain(this BasePart basePart)
+        //{
+        //}
 
-        public static void __CreateRuleCurveFeatureTangent(this BasePart basePart)
-        {
-        }
+        //public static void __CreateRuleCurveFeatureTangent(this BasePart basePart)
+        //{
+        //}
 
-        public static void __CreateRuleCurveGroup(this BasePart basePart)
-        {
-        }
+        //public static void __CreateRuleCurveGroup(this BasePart basePart)
+        //{
+        //}
 
-        public static void __CreateRuleCurveTangent(this BasePart basePart)
-        {
-        }
+        //public static void __CreateRuleCurveTangent(this BasePart basePart)
+        //{
+        //}
 
-        public static void __CreateRuleEdgeBody(this BasePart basePart)
-        {
-        }
+        //public static void __CreateRuleEdgeBody(this BasePart basePart)
+        //{
+        //}
 
-        public static void __CreateRuleEdgeBoundary(this BasePart basePart)
-        {
-        }
+        //public static void __CreateRuleEdgeBoundary(this BasePart basePart)
+        //{
+        //}
 
-        [Obsolete]
-        public static EdgeChainRule __CreateRuleEdgeChain(this BasePart basePart)
-        {
-            throw new NotImplementedException();
-        }
+        //[Obsolete]
+        //public static EdgeChainRule __CreateRuleEdgeChain(this BasePart basePart)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        [Obsolete]
-        public static EdgeDumbRule __CreateRuleEdgeDumb(this BasePart basePart)
-        {
-            throw new NotImplementedException();
-        }
+        //[Obsolete]
+        //public static EdgeDumbRule __CreateRuleEdgeDumb(this BasePart basePart)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public static void __CreateRuleEdgeFace(this BasePart basePart)
-        {
-        }
+        //public static void __CreateRuleEdgeFace(this BasePart basePart)
+        //{
+        //}
 
-        public static void __CreateRuleEdgeFeature(this BasePart basePart)
-        {
-        }
+        //public static void __CreateRuleEdgeFeature(this BasePart basePart)
+        //{
+        //}
 
-        public static void __CreateRuleEdgeIntersect(this BasePart basePart)
-        {
-        }
+        //public static void __CreateRuleEdgeIntersect(this BasePart basePart)
+        //{
+        //}
 
 
-        public static void __CreateRuleEdgeMultipleSeedTangent(this BasePart basePart)
-        {
-        }
+        //public static void __CreateRuleEdgeMultipleSeedTangent(this BasePart basePart)
+        //{
+        //}
 
-        public static void __CreateRuleEdgeSheetBoundary(this BasePart basePart)
-        {
-        }
+        //public static void __CreateRuleEdgeSheetBoundary(this BasePart basePart)
+        //{
+        //}
 
-        public static void __CreateRuleEdgeTangent(this BasePart basePart)
-        {
-        }
+        //public static void __CreateRuleEdgeTangent(this BasePart basePart)
+        //{
+        //}
 
-        public static void __CreateRuleEdgeVertex(this BasePart basePart)
-        {
-        }
+        //public static void __CreateRuleEdgeVertex(this BasePart basePart)
+        //{
+        //}
 
-        public static void __CreateRuleEdgeVertexTangent(this BasePart basePart)
-        {
-        }
+        //public static void __CreateRuleEdgeVertexTangent(this BasePart basePart)
+        //{
+        //}
 
-        public static void __CreateRuleFaceAdjacent(this BasePart basePart)
-        {
-        }
+        //public static void __CreateRuleFaceAdjacent(this BasePart basePart)
+        //{
+        //}
 
-        public static void __CreateRuleFaceAllBlend(this BasePart basePart)
-        {
-        }
+        //public static void __CreateRuleFaceAllBlend(this BasePart basePart)
+        //{
+        //}
 
-        public static void __CreateRuleFaceAndAdjacentFaces(this BasePart basePart)
-        {
-        }
+        //public static void __CreateRuleFaceAndAdjacentFaces(this BasePart basePart)
+        //{
+        //}
 
-        public static void __CreateRuleFaceBody(this BasePart basePart)
-        {
-        }
+        //public static void __CreateRuleFaceBody(this BasePart basePart)
+        //{
+        //}
 
-        public static void __CreateRuleFaceBossPocket(this BasePart basePart)
-        {
-        }
+        //public static void __CreateRuleFaceBossPocket(this BasePart basePart)
+        //{
+        //}
 
-        public static void __CreateRuleFaceConnectedBlend(this BasePart basePart)
-        {
-        }
+        //public static void __CreateRuleFaceConnectedBlend(this BasePart basePart)
+        //{
+        //}
 
-        public static void __CreateRuleFaceDatum(this BasePart basePart)
-        {
-        }
+        //public static void __CreateRuleFaceDatum(this BasePart basePart)
+        //{
+        //}
 
         public static FaceDumbRule __CreateRuleFaceDumb(this BasePart basePart,
             params Face[] faces)
@@ -2495,16 +2495,13 @@ namespace TSG_Library
                 $"Could not find modeling view in part \"{part.Leaf}\" with name \"{modelingViewName}\".");
         }
 
-        [Obsolete]
         public static IEnumerable<BasePart> __DescendantParts(this BasePart nxPart)
         {
-            //return nxPart.ComponentAssembly?.RootComponent._Descendants(true, true, true)
-            //            .Where(__c => __c._IsLoaded())
-            //            .Select(__c => __c._Prototype())
-            //            .DistinctBy(__p => __p.Tag)
-            //            ??
-            //            new NXOpen.BasePart[] { nxPart };
-            throw new NotImplementedException();
+            return nxPart.ComponentAssembly.RootComponent.__Descendants(true, true)
+                .DistinctBy(__c => __c.DisplayName)
+                .Select(__c => __c.Prototype)
+                .OfType<BasePart>()
+                .ToArray();
         }
 
         public static bool __IsCasting(this BasePart part)
@@ -4823,12 +4820,20 @@ namespace TSG_Library
 
         #region Collections
 
-        [Obsolete(nameof(NotImplementedException))]
-        public static IDictionary<double, List<Face>> __ToILookIDict<T, K>(
-            this IEnumerable<T> obj, Func<T, K> value)
-        {
-            throw new NotImplementedException();
-        }
+        //[Obsolete(nameof(NotImplementedException))]
+        //public static IDictionary<double, List<Face>> __ToILookIDict<T, K>(
+        //    this IEnumerable<T> objects, Func<T, K> value)
+        //{
+        //    var dict = new Dictionary<double, List<Face>>();
+
+        //    foreach(var obj in objects)
+        //    {
+
+        //    }
+
+
+        //    throw new NotImplementedException();
+        //}
 
         public static IDictionary<TKey, List<TValue>> __ToILookIDict<TKey, TValue>(
             this IEnumerable<TValue> source,
@@ -7621,16 +7626,15 @@ namespace TSG_Library
 
         #region ExtractFace
 
-        [Obsolete]
-        public static void __Layer(this ExtractFace ext)
+        public static int __Layer(this ExtractFace ext)
         {
-            throw new NotImplementedException();
+            return ext.GetBodies()[0].Layer;
         }
 
-        [Obsolete]
         public static void __Layer(this ExtractFace ext, int layer)
         {
-            throw new NotImplementedException();
+            foreach (var body in ext.GetBodies())
+                body.__Layer(layer);
         }
 
         public static bool __IsLinkedBody(this ExtractFace extractFace)
@@ -7786,8 +7790,7 @@ namespace TSG_Library
             var evalsf = ufsession_.Evalsf;
             evalsf.Initialize2(face.Tag, out var evaluator);
             var array = point.__ToArray();
-            var srf_pos = default(UFEvalsf.Pos3);
-            evalsf.FindClosestPoint(evaluator, array, out srf_pos);
+            evalsf.FindClosestPoint(evaluator, array, out UFEvalsf.Pos3 srf_pos);
             evalsf.Free(out evaluator);
             var uv = srf_pos.uv;
 #pragma warning disable CS0618 // Type or member is obsolete
@@ -7800,6 +7803,7 @@ namespace TSG_Library
         #endregion
 
         #region Feature
+
 
         public static string __FeatureType(Feature feat)
         {
@@ -8596,8 +8600,7 @@ namespace TSG_Library
             get
             {
                 var workPart = __work_part_;
-                var part_units = 0;
-                ufsession_.Part.AskUnits(workPart.Tag, out part_units);
+                ufsession_.Part.AskUnits(workPart.Tag, out var part_units);
                 return part_units == 1 ? Unit.Millimeter : Unit.Inch;
             }
         }
@@ -8819,19 +8822,17 @@ namespace TSG_Library
 
         #region ICurve
 
-        [Obsolete]
         public static double __Parameter(this ICurve icurve, Point3d point)
         {
-            throw new NotImplementedException();
-            //switch (icurve)
-            //{
-            //    case Curve __curve__:
-            //        return __Parameter(__curve__, point);
-            //    case Edge __edge__:
-            //        return __Parameter(__edge__, point);
-            //    default:
-            //        throw new ArgumentException("Unknown curve type");
-            //}
+            switch (icurve)
+            {
+                case Curve __curve__:
+                    return __curve__.__Parameter(point);
+                case Edge __edge__:
+                    return __edge__.__Parameter(point);
+                default:
+                    throw new ArgumentException("Unknown curve type");
+            }
         }
 
         [Obsolete(nameof(NotImplementedException))]

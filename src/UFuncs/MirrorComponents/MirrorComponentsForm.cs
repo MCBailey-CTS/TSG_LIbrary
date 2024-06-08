@@ -838,7 +838,7 @@ namespace TSG_Library.UFuncs
             blockFeatureBuilder2.CommitFeature();
         }
 
-        public static Feature WaveLinkDatumPlane(DatumPlane selectedDatum)
+        private static Feature WaveLinkDatumPlane(DatumPlane selectedDatum)
         {
             var builder = _WorkPart.BaseFeatures.CreateWaveLinkBuilder(null);
 
@@ -854,7 +854,7 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        public static void NewMethod22(List<Tag> mirrorMove)
+        private static void NewMethod22(List<Tag> mirrorMove)
         {
             foreach (Feature mirrorFeat in _WorkPart.Features)
             {
@@ -869,7 +869,7 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        public static void NewMethod33(out List<Component> fasteners, out List<Point3d> fastenerOrigins,
+        private static void NewMethod33(out List<Component> fasteners, out List<Point3d> fastenerOrigins,
             out List<Matrix3x3> fastenerMatrix)
         {
             fasteners = new List<Component>();
@@ -899,7 +899,7 @@ namespace TSG_Library.UFuncs
                     yield return curve.Tag;
         }
 
-        public static void
+        private static void
             TransformObjects(List<Tag> objs,
                 double[] reflectionMatrix) //, IDictionary<NXOpen.TaggedObject, NXOpen.TaggedObject> mirrorDict)
         {

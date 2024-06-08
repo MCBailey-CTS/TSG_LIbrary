@@ -358,8 +358,7 @@ namespace TSG_Library
             var nXOpenTag = icurve1.__Tag();
             var nXOpenTag2 = icurve2.__Tag();
             var array = nearPoint.__ToArray();
-            var out_info = default(UFCurve.IntersectInfo);
-            ufsession_.Curve.Intersect(nXOpenTag, nXOpenTag2, array, out out_info);
+            ufsession_.Curve.Intersect(nXOpenTag, nXOpenTag2, array, out UFCurve.IntersectInfo out_info);
             out_info.curve_parm = IcurveParameter(icurve1, out_info.curve_parm);
             out_info.entity_parms[0] = IcurveParameter(icurve2, out_info.entity_parms[0]);
             return IntersectionResult.Create(out_info);
@@ -417,8 +416,7 @@ namespace TSG_Library
             var markId = session_.SetUndoMark(Session.MarkVisibility.Invisible, "TmpIntersectMark_999");
             ufsession_.Modl.CreatePlane(array2, array, out var plane_tag);
             var array3 = nearPoint.__ToArray();
-            var out_info = default(UFCurve.IntersectInfo);
-            ufsession_.Curve.Intersect(nXOpenTag, plane_tag, array3, out out_info);
+            ufsession_.Curve.Intersect(nXOpenTag, plane_tag, array3, out UFCurve.IntersectInfo out_info);
             session_.UndoToMark(markId, "TmpIntersectMark_999");
             out_info.curve_parm = IcurveParameter(icurve, out_info.curve_parm);
             return IntersectionResult.Create(out_info);
@@ -452,8 +450,7 @@ namespace TSG_Library
         {
             var nXOpenTag = icurve.__Tag();
             var array = nearPoint.__ToArray();
-            var out_info = default(UFCurve.IntersectInfo);
-            ufsession_.Curve.Intersect(nXOpenTag, face.Tag, array, out out_info);
+            ufsession_.Curve.Intersect(nXOpenTag, face.Tag, array, out UFCurve.IntersectInfo out_info);
             out_info.curve_parm = IcurveParameter(icurve, out_info.curve_parm);
 #pragma warning disable CS0618 // Type or member is obsolete
             out_info.entity_parms = new double[2]
@@ -492,14 +489,13 @@ namespace TSG_Library
         [Obsolete("Need to check what type of face first. Look at Snap")]
         public static IntersectionResult IntersectInfo(Curve.Ray ray, Face face, Point3d nearPoint)
         {
-            var markId = session_.SetUndoMark(Session.MarkVisibility.Invisible, "TmpIntersectMark_999");
-            var array = ClipRay(ray);
-            var line = __work_part_.Curves.CreateLine(array[0], array[1]);
-            var array2 = nearPoint.__ToArray();
-            var out_info = default(UFCurve.IntersectInfo);
-            ufsession_.Curve.Intersect(line.__Tag(), face.Tag, array2, out out_info);
-            session_.UndoToMark(markId, "TmpIntersectMark_999");
-            var intersectionResult = IntersectionResult.Create(out_info);
+            //var markId = session_.SetUndoMark(Session.MarkVisibility.Invisible, "TmpIntersectMark_999");
+            //var array = ClipRay(ray);
+            //var line = __work_part_.Curves.CreateLine(array[0], array[1]);
+            //var array2 = nearPoint.__ToArray();
+            //ufsession_.Curve.Intersect(line.__Tag(), face.Tag, array2, out UFCurve.IntersectInfo out_info);
+            //session_.UndoToMark(markId, "TmpIntersectMark_999");
+            //var intersectionResult = IntersectionResult.Create(out_info);
 
             //if (intersectionResult != null)
             //{
@@ -725,8 +721,7 @@ namespace TSG_Library
             var array = ClipRay(ray);
             var line = __work_part_.Curves.CreateLine(array[0], array[1]);
             var array2 = nearPoint.__ToArray();
-            var out_info = default(UFCurve.IntersectInfo);
-            ufsession_.Curve.Intersect(line.Tag, body.Tag, array2, out out_info);
+            ufsession_.Curve.Intersect(line.Tag, body.Tag, array2, out UFCurve.IntersectInfo out_info);
             session_.UndoToMark(markId, "TmpIntersectMark_999");
             var intersectionResult = IntersectionResult.Create(out_info);
 
