@@ -794,10 +794,10 @@ namespace TSG_Library
             var y = inputVector.Y.__Multiply(axisY);
             var z = inputVector.Z.__Multiply(axisZ);
             var vector = x.__Add(y, z);
-            x = vector.__Multiply(outputCsys.__Orientation().Element.__AxisX());
-            y = vector.__Multiply(outputCsys.__Orientation().Element.__AxisY());
-            z = vector.__Multiply(outputCsys.__Orientation().Element.__AxisZ());
-            return new Vector3d(x, y, z);
+            var x0 = vector.__Multiply(outputCsys.__Orientation().Element.__AxisX());
+            var y0 = vector.__Multiply(outputCsys.__Orientation().Element.__AxisY());
+            var z0 = vector.__Multiply(outputCsys.__Orientation().Element.__AxisZ());
+            return new Vector3d(x0, y0, z0);
         }
 
         public static Vector3d __Add(this Vector3d vector, params Vector3d[] vectors)
@@ -5946,7 +5946,7 @@ namespace TSG_Library
         ///         <description>customerNum</description>
         ///     </item>
         /// </list>
-        public const string Regex_Simulation = @"^(?<customerNum>\d+)-simulation$";
+        internal const string Regex_Simulation = @"^(?<customerNum>\d+)-simulation$";
 
 
         /// <summary>The regular expression pattern that matches either a metric or an english socket set screw (sss).</summary>
