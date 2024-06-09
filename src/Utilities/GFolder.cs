@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text.RegularExpressions;
 using NXOpen;
+using TSG_Library.Extensions;
 
 namespace TSG_Library.Utilities
 {

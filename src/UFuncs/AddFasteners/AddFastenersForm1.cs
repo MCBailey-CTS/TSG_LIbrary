@@ -15,8 +15,8 @@ using TSG_Library.Attributes;
 using TSG_Library.Disposable;
 using TSG_Library.Exceptions;
 using TSG_Library.Properties;
+using static TSG_Library.Extensions.__Extensions_;
 using static NXOpen.UF.UFConstants;
-using static TSG_Library.Extensions;
 using Selection = TSG_Library.Ui.Selection;
 
 namespace TSG_Library.UFuncs

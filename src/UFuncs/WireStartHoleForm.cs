@@ -6,7 +6,7 @@ using NXOpen.Preferences;
 using TSG_Library.Attributes;
 using TSG_Library.Properties;
 using static TSG_Library.UFuncs._UFunc;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.__Extensions_;
 
 namespace TSG_Library.UFuncs
 {

@@ -1,5 +1,6 @@
 ﻿using System;
 using NXOpen;
+using TSG_Library.Extensions;
 
 namespace TSG_Library.Geom
 {

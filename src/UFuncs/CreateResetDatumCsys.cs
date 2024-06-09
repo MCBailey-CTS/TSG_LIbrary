@@ -8,7 +8,7 @@ using NXOpen.Assemblies;
 using NXOpen.Features;
 using NXOpen.Layer;
 using NXOpen.UF;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.__Extensions_;
 using Selection = TSG_Library.Ui.Selection;
 
 namespace TSG_Library.UFuncs

@@ -10,7 +10,7 @@ using NXOpen.Assemblies;
 using NXOpen.UF;
 using TSG_Library.Attributes;
 using TSG_Library.Utilities;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.__Extensions_;
 using Point = System.Drawing.Point;
 using Selection = TSG_Library.Ui.Selection;
 

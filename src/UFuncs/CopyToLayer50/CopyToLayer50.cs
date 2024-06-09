@@ -2,7 +2,7 @@
 using System.Linq;
 using NXOpen;
 using TSG_Library.Attributes;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.__Extensions_;
 using Selection = TSG_Library.Ui.Selection;
 
 namespace TSG_Library.UFuncs
@@ -62,9 +62,9 @@ namespace TSG_Library.UFuncs
 
                     var date = $"{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day}";
 
-                    var layer_50_bodies =comp.__Prototype()
-                    .Layers
-                    .GetAllObjectsOnLayer(LAYER).OfType<Body>().ToArray();
+                    var layer_50_bodies = comp.__Prototype()
+                        .Layers
+                        .GetAllObjectsOnLayer(LAYER).OfType<Body>().ToArray();
                     comp.__Prototype().Layers.CopyObjects(LAYER, solid_bodies_layer_1);
                     var new_layer_50_bodies = comp.__Prototype().Layers.GetAllObjectsOnLayer(LAYER)
                         .Except(layer_50_bodies).OfType<Body>().ToList();

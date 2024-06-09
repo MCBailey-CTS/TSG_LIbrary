@@ -126,7 +126,64 @@
     <Compile Include="src\Exceptions\NothingSelectedException.cs" />
     <Compile Include="src\Exceptions\NullWorkComponentException.cs" />
     <Compile Include="src\Exceptions\PartIsNotWorkOrDisplayException.cs" />
-    <Compile Include="src\Extensions.cs" />
+    <Compile Include="src\Extensions\Arc.cs" />
+    <Compile Include="src\Extensions\BasePart.cs" />
+    <Compile Include="src\Extensions\Block.cs" />
+    <Compile Include="src\Extensions\Body.cs" />
+    <Compile Include="src\Extensions\Builder.cs" />
+    <Compile Include="src\Extensions\CartesianCoordinateSystem.cs" />
+    <Compile Include="src\Extensions\Chamfer.cs" />
+    <Compile Include="src\Extensions\Collections.cs" />
+    <Compile Include="src\Extensions\Component.cs" />
+    <Compile Include="src\Extensions\ComponentAssembly.cs" />
+    <Compile Include="src\Extensions\ComponentConstraint.cs" />
+    <Compile Include="src\Extensions\Conic.cs" />
+    <Compile Include="src\Extensions\Constants.cs" />
+    <Compile Include="src\Extensions\ConstraintReference.cs" />
+    <Compile Include="src\Extensions\CoordinateSystem.cs" />
+    <Compile Include="src\Extensions\Curve.cs" />
+    <Compile Include="src\Extensions\DatumAxis.cs" />
+    <Compile Include="src\Extensions\DatumAxisFeature.cs" />
+    <Compile Include="src\Extensions\DatumCsys.cs" />
+    <Compile Include="src\Extensions\Dimension.cs" />
+    <Compile Include="src\Extensions\DisplayableObject.cs" />
+    <Compile Include="src\Extensions\DoubleArray.cs" />
+    <Compile Include="src\Extensions\Edge.cs" />
+    <Compile Include="src\Extensions\EdgeBlend.cs" />
+    <Compile Include="src\Extensions\Ellipse.cs" />
+    <Compile Include="src\Extensions\Exception.cs" />
+    <Compile Include="src\Extensions\ExtractFace.cs" />
+    <Compile Include="src\Extensions\Extrude.cs" />
+    <Compile Include="src\Extensions\Face.cs" />
+    <Compile Include="src\Extensions\Feature.cs" />
+    <Compile Include="src\Extensions\FileNew.cs" />
+    <Compile Include="src\Extensions\Globals.cs" />
+    <Compile Include="src\Extensions\ICurve.cs" />
+    <Compile Include="src\Extensions\Int.cs" />
+    <Compile Include="src\Extensions\IntegerArray.cs" />
+    <Compile Include="src\Extensions\Line.cs" />
+    <Compile Include="src\Extensions\Masks.cs" />
+    <Compile Include="src\Extensions\Matrix3x3.cs" />
+    <Compile Include="src\Extensions\NXMatrix.cs" />
+    <Compile Include="src\Extensions\NXObject.cs" />
+    <Compile Include="src\Extensions\Obj.cs" />
+    <Compile Include="src\Extensions\Part.cs" />
+    <Compile Include="src\Extensions\Point3d.cs" />
+    <Compile Include="src\Extensions\Rules.cs" />
+    <Compile Include="src\Extensions\ScCollector.cs" />
+    <Compile Include="src\Extensions\Section.cs" />
+    <Compile Include="src\Extensions\Session.cs" />
+    <Compile Include="src\Extensions\SmartObject.cs" />
+    <Compile Include="src\Extensions\Spline.cs" />
+    <Compile Include="src\Extensions\Sql.cs" />
+    <Compile Include="src\Extensions\String.cs" />
+    <Compile Include="src\Extensions\Tag.cs" />
+    <Compile Include="src\Extensions\TreeNode.cs" />
+    <Compile Include="src\Extensions\Trns.cs" />
+    <Compile Include="src\Extensions\Vector3d.cs" />
+    <Compile Include="src\Extensions\Wcs.cs" />
+    <Compile Include="src\Extensions\__Extensions_.cs" />
+    <Compile Include="src\Extensions_.cs" />
     <Compile Include="src\Geom\Box3d.cs" />
     <Compile Include="src\Geom\Curve.cs" />
     <Compile Include="src\Geom\Surface.cs" />
@@ -666,6 +723,7 @@
   <ItemGroup>
     <None Include="Resources\NXSigningResource.res" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

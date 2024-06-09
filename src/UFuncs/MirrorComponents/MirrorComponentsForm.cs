@@ -14,7 +14,7 @@ using TSG_Library.Disposable;
 using TSG_Library.Geom;
 using TSG_Library.Properties;
 using TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.__Extensions_;
 using static NXOpen.UF.UFConstants;
 using Curve = NXOpen.Curve;
 

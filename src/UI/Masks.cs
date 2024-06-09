@@ -1,6 +1,7 @@
 ﻿using System;
 using NXOpen;
 using NXOpen.UF;
+using TSG_Library.Extensions;
 using static NXOpen.UF.UFConstants;
 
 namespace TSG_Library.Utilities

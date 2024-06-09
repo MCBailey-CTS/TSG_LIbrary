@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NXOpen.Assemblies;
+using TSG_Library.Extensions;
 
 namespace TSG_Library.Disposable
 {

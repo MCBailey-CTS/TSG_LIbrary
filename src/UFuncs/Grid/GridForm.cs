@@ -6,7 +6,7 @@ using MoreLinq;
 using NXOpen;
 using NXOpen.Preferences;
 using TSG_Library.Attributes;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.__Extensions_;
 using Part = NXOpen.Part;
 
 namespace TSG_Library.UFuncs

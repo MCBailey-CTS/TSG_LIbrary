@@ -17,7 +17,7 @@ using TSG_Library.Properties;
 using TSG_Library.Utilities;
 using static TSG_Library.Utilities.GFolder;
 using static TSG_Library.UFuncs._UFunc;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.__Extensions_;
 
 namespace TSG_Library.UFuncs
 {

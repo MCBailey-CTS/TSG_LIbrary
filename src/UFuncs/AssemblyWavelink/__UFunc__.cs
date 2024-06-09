@@ -7,9 +7,10 @@ using NXOpen.Assemblies;
 using NXOpen.Features;
 using NXOpen.UF;
 using TSG_Library.Exceptions;
+using TSG_Library.Extensions;
 using TSG_Library.Forms;
 using TSG_Library.Utilities;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.__Extensions_;
 using static NXOpen.Selection;
 using Selection = TSG_Library.Ui.Selection;
 
@@ -218,13 +219,13 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
             switch (buttonsBooleans)
             {
                 case Feature.BooleanType.Subtract:
-                    booleanFunc = Extensions.__CreateSubtract;
+                    booleanFunc = __Extensions_.__CreateSubtract;
                     break;
                 case Feature.BooleanType.Unite:
-                    booleanFunc = Extensions.__CreateUnite;
+                    booleanFunc = __Extensions_.__CreateUnite;
                     break;
                 case Feature.BooleanType.Intersect:
-                    booleanFunc = Extensions.__CreateIntersect;
+                    booleanFunc = __Extensions_.__CreateIntersect;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(buttonsBooleans), buttonsBooleans, null);

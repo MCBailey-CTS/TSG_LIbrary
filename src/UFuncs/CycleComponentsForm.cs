@@ -16,7 +16,7 @@ using TSG_Library.Ui;
 using TSG_Library.Utilities;
 using static NXOpen.UF.UFConstants;
 using static TSG_Library.UFuncs._UFunc;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.__Extensions_;
 using Selection = TSG_Library.Ui.Selection;
 using View = NXOpen.View;
 

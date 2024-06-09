@@ -4,7 +4,7 @@ using NXOpen.Assemblies;
 using NXOpen.UF;
 using TSG_Library.Attributes;
 using static NXOpen.Session;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.__Extensions_;
 
 namespace TSG_Library.UFuncs
 {

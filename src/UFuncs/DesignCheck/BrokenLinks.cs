@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Features;
+using TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 {

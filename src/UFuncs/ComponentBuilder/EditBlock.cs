@@ -13,7 +13,7 @@ using NXOpen.Utilities;
 using NXOpenUI;
 using TSG_Library.Properties;
 using TSG_Library.Utilities;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.__Extensions_;
 using static NXOpen.UF.UFConstants;
 using Part = NXOpen.Part;
 

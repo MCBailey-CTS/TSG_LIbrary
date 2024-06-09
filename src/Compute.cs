@@ -2,13 +2,24 @@
 using NXOpen;
 using NXOpen.UF;
 using TSG_Library.Geom;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.__Extensions_;
 using Curve = TSG_Library.Geom.Curve;
 
 namespace TSG_Library
 {
     internal class Compute
     {
+        internal static Unit GetUnit(string abbreviation)
+        {
+            var unitCollection = __work_part_.UnitCollection;
+            Unit result = null;
+            foreach (Unit item in unitCollection)
+                if(item.Symbol == abbreviation)
+                    return item;
+
+            return result;
+        }
+
         //
         // Summary:
         //     Computes the closest points on two given objects (curves, edges, faces, or bodies)
@@ -358,7 +369,7 @@ namespace TSG_Library
             var nXOpenTag = icurve1.__Tag();
             var nXOpenTag2 = icurve2.__Tag();
             var array = nearPoint.__ToArray();
-            ufsession_.Curve.Intersect(nXOpenTag, nXOpenTag2, array, out UFCurve.IntersectInfo out_info);
+            ufsession_.Curve.Intersect(nXOpenTag, nXOpenTag2, array, out var out_info);
             out_info.curve_parm = IcurveParameter(icurve1, out_info.curve_parm);
             out_info.entity_parms[0] = IcurveParameter(icurve2, out_info.entity_parms[0]);
             return IntersectionResult.Create(out_info);
@@ -416,7 +427,7 @@ namespace TSG_Library
             var markId = session_.SetUndoMark(Session.MarkVisibility.Invisible, "TmpIntersectMark_999");
             ufsession_.Modl.CreatePlane(array2, array, out var plane_tag);
             var array3 = nearPoint.__ToArray();
-            ufsession_.Curve.Intersect(nXOpenTag, plane_tag, array3, out UFCurve.IntersectInfo out_info);
+            ufsession_.Curve.Intersect(nXOpenTag, plane_tag, array3, out var out_info);
             session_.UndoToMark(markId, "TmpIntersectMark_999");
             out_info.curve_parm = IcurveParameter(icurve, out_info.curve_parm);
             return IntersectionResult.Create(out_info);
@@ -450,7 +461,7 @@ namespace TSG_Library
         {
             var nXOpenTag = icurve.__Tag();
             var array = nearPoint.__ToArray();
-            ufsession_.Curve.Intersect(nXOpenTag, face.Tag, array, out UFCurve.IntersectInfo out_info);
+            ufsession_.Curve.Intersect(nXOpenTag, face.Tag, array, out var out_info);
             out_info.curve_parm = IcurveParameter(icurve, out_info.curve_parm);
 #pragma warning disable CS0618 // Type or member is obsolete
             out_info.entity_parms = new double[2]
@@ -721,7 +732,7 @@ namespace TSG_Library
             var array = ClipRay(ray);
             var line = __work_part_.Curves.CreateLine(array[0], array[1]);
             var array2 = nearPoint.__ToArray();
-            ufsession_.Curve.Intersect(line.Tag, body.Tag, array2, out UFCurve.IntersectInfo out_info);
+            ufsession_.Curve.Intersect(line.Tag, body.Tag, array2, out var out_info);
             session_.UndoToMark(markId, "TmpIntersectMark_999");
             var intersectionResult = IntersectionResult.Create(out_info);
 

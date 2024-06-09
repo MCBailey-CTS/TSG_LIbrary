@@ -19,7 +19,7 @@ using TSG_Library.Properties;
 using TSG_Library.UFuncUtilities.AssemblyAutoDetailUtilities;
 using TSG_Library.Ui;
 using TSG_Library.Utilities;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.__Extensions_;
 using static TSG_Library.UFuncs._UFunc;
 using static TSG_Library.UFuncs.CtsDimensionData.EndPointAssociativity;
 using DecimalPointCharacter = NXOpen.Annotations.DecimalPointCharacter;

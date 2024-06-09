@@ -5,7 +5,7 @@ using NXOpen.Features;
 using NXOpen.UserDefinedObjects;
 using NXOpen.Utilities;
 using TSG_Library.UFuncs;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.__Extensions_;
 
 namespace TSG_Library.Attributes
 {

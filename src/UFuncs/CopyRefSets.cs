@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NXOpen;
 using TSG_Library.Attributes;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.__Extensions_;
 using static NXOpen.UF.UFConstants;
 using Selection = TSG_Library.Ui.Selection;
 

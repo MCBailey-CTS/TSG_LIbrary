@@ -2,7 +2,6 @@
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
-using TSG_Library;
 
 namespace TSG_Library.Disposable
 {

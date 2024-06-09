@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Assemblies;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.__Extensions_;
 using Selection = TSG_Library.Ui.Selection;
 
 namespace TSG_Library.Utilities

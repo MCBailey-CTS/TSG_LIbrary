@@ -8,7 +8,7 @@ using TSG_Library.Attributes;
 using TSG_Library.Properties;
 using TSG_Library.Utilities;
 using static TSG_Library.UFuncs._UFunc;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.__Extensions_;
 using static NXOpen.UF.UFConstants;
 using static NXOpen.Session;
 using Point = System.Drawing.Point;

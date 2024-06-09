@@ -12,7 +12,7 @@ using TSG_Library.Disposable;
 using TSG_Library.Properties;
 using static NXOpen.Selection;
 using static NXOpen.UF.UFConstants;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.__Extensions_;
 using static TSG_Library.UFuncs._UFunc;
 using Assembly = System.Reflection.Assembly;
 using Selection = TSG_Library.Ui.Selection;
@@ -99,16 +99,16 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var selectedFace = TSG_Library.Ui.Selection.SelectSingleFace();
+                var selectedFace = Selection.SelectSingleFace();
 
-                if (selectedFace is null)
+                if(selectedFace is null)
                     return;
 
-                NXOpen.Vector3d normal = selectedFace.__NormalVector();
+                var normal = selectedFace.__NormalVector();
 
-                NXOpen.Matrix3x3 orientation = normal.__ToMatrix3x3();
+                var orientation = normal.__ToMatrix3x3();
 
-                NXOpen.Point3d origin = selectedFace.GetEdges()[0].__StartPoint();
+                var origin = selectedFace.GetEdges()[0].__StartPoint();
 
                 __display_part_.WCS.SetOriginAndMatrix(origin, orientation);
 
@@ -139,19 +139,19 @@ namespace TSG_Library.UFuncs
                 var targetFace = interferingFaces[i];
                 var toolFace = interferingFaces[i + 1];
 
-                if (!targetFace.__IsPlanar())
+                if(!targetFace.__IsPlanar())
                     continue;
 
-                if (!toolFace.__IsPlanar())
+                if(!toolFace.__IsPlanar())
                     continue;
 
                 var targetVector = targetFace.__NormalVector().__Unit();
                 var toolVector = toolFace.__NormalVector().__Unit();
 
-                if (!targetVector.__IsEqualTo(expectedTargetVector))
+                if(!targetVector.__IsEqualTo(expectedTargetVector))
                     continue;
 
-                if (!toolVector.__IsEqualTo(expectedTargetVector.__Negate()))
+                if(!toolVector.__IsEqualTo(expectedTargetVector.__Negate()))
                     continue;
 
                 CreateNote0(detail, targetFace, toolFace);
@@ -168,7 +168,7 @@ namespace TSG_Library.UFuncs
                 var targetFace = SelectPlanarFace();
 
                 // for now the target face must be an occurrence
-                if (!targetFace.IsOccurrence)
+                if(!targetFace.IsOccurrence)
                 {
                     print_("Please select an occurrence face");
                     return;
@@ -189,7 +189,7 @@ namespace TSG_Library.UFuncs
 
                     var detail = GetDetailName(interferingFaces[1].OwningComponent);
 
-                    if (TryCreateNote(detail, expectedTargetVector, interferingFaces))
+                    if(TryCreateNote(detail, expectedTargetVector, interferingFaces))
                     {
                         solid_body_layer_1_proto.OwningComponent.Blank();
 
@@ -369,7 +369,7 @@ namespace TSG_Library.UFuncs
 
             ReferenceSet refset;
 
-            if (__display_part_.__HasReferenceSet(REFERENCE_SET))
+            if(__display_part_.__HasReferenceSet(REFERENCE_SET))
             {
                 refset = __display_part_.__FindReferenceSet(REFERENCE_SET);
             }
@@ -391,7 +391,7 @@ namespace TSG_Library.UFuncs
         {
             foreach (var line in lines)
             {
-                if (!line.StartsWith(key))
+                if(!line.StartsWith(key))
                     continue;
 
                 var index = line.IndexOf('=');
@@ -406,7 +406,7 @@ namespace TSG_Library.UFuncs
         {
             foreach (var line in lines)
             {
-                if (!line.StartsWith(key))
+                if(!line.StartsWith(key))
                     continue;
 
                 var index = line.IndexOf('=');
@@ -421,7 +421,7 @@ namespace TSG_Library.UFuncs
         {
             foreach (var line in lines)
             {
-                if (!line.StartsWith(key))
+                if(!line.StartsWith(key))
                     continue;
 
                 var index = line.IndexOf('=');

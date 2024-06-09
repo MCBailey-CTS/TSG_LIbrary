@@ -4,6 +4,7 @@ using System.Linq;
 using NXOpen;
 using NXOpen.UF;
 using TSG_Library.Attributes;
+using TSG_Library.Extensions;
 using Selection = TSG_Library.Ui.Selection;
 
 namespace TSG_Library.UFuncs

@@ -5,7 +5,7 @@ using NXOpen;
 using NXOpen.UF;
 using TSG_Library.Attributes;
 using TSG_Library.UFuncs;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.__Extensions_;
 
 public static class Program
 {

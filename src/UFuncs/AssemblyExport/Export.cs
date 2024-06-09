@@ -12,7 +12,7 @@ using NXOpen.Drawings;
 using NXOpen.Layer;
 using NXOpen.UF;
 using TSG_Library.Disposable;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.__Extensions_;
 
 namespace TSG_Library.Utilities
 {

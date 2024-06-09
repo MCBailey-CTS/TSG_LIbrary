@@ -4,7 +4,7 @@ using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
 using TSG_Library.Geom;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.__Extensions_;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 {
