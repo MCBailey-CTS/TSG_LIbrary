@@ -55,6 +55,21 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
         public DCResult PerformCheck(Part part, out TreeNode result_node)
         {
             result_node = part.__TreeNode();
+
+            if(!part.__IsPartDetail())
+            {
+                result_node.Nodes.Add("Is not a part detail");
+                return DCResult.ignore;
+            }
+
+            if(!part.__HasAttribute("MATERIAL"))
+            {
+                result_node.Nodes.Add("No MATERIAL attribute");
+                return DCResult.ignore;
+            }
+
+
+            result_node = part.__TreeNode();
             return DCResult.fail;
 
             //if (part.ComponentAssembly.RootComponent.GetChildren().Length == 0)
