@@ -248,7 +248,7 @@ namespace TSG_Library.UFuncs
                 IDesignCheck[] checkers =
                 {
                     //new BrokenLinks(),
-                    //new Burnouts(),
+                    new Burnouts(),
                     //new BushingsAndPins(),
                     //new CastingChildren(),
                     //new CastingHalfMoons(),

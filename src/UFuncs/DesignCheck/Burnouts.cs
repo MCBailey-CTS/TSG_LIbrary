@@ -19,28 +19,31 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
             "4140 PLT"
         };
 
-        //public bool IsPartValidForCheck(Part part, out string message)
-        //{
-        //    message = "";
-        //    if(!part.__HasAttribute(Burnouts_Titles_1))
-        //        return false;
-
-        //    var value = part.GetUserAttributeAsString(Burnouts_Titles_1, NXObject.AttributeType.String, -1).ToUpper();
-        //    return Burnouts_Values_1.Any(__m => __m.ToUpper() == value);
-        //}
-
         public DCResult PerformCheck(Part part, out TreeNode result_node)
         {
             result_node = part.__TreeNode();
-            return DCResult.fail;
-        }
 
-        public TreeNode PerformCheck(Part part)
-        {
-            var part_node = part.__TreeNode();
-            var passed = part.DrawingSheets.ToArray().Any(__s => __s.Name.ToUpper() == Burnouts_DrawingSheetName);
-            part_node.Text = $"{part_node.Text} -> {passed}";
-            return part_node;
+            if (!part.__HasDrawingSheet(Burnouts_DrawingSheetName))
+            {
+                result_node.Nodes.Add($"Did not have a drawing sheet named {Burnouts_DrawingSheetName}");
+                return DCResult.ignore;
+            }
+
+            if (!part.__HasAttribute(Burnouts_Titles_1))
+            {
+                result_node.Nodes.Add($"Did not have attribute {Burnouts_Titles_1}");
+                return DCResult.fail;
+            }
+
+            var attValue = part.__GetAttribute(Burnouts_Titles_1);
+
+            if (Burnouts_Values_1.All(__v => __v.ToUpper() != attValue.ToUpper()))
+            {
+                result_node.Nodes.Add($"Invalid BURNOUT MATERIAL: {attValue}");
+                return DCResult.fail;
+            }
+
+            return DCResult.pass;
         }
     }
 }
