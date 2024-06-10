@@ -175,7 +175,6 @@ namespace TSG_Library.UFuncs
             InitializeComponent();
         }
 
-
         public void Execute(IDesignCheck[] checkers, params Component[] components_to_check)
         {
             var unloaded_components = components_to_check.Where(__c => !(__c.Prototype is Part)).ToArray();
@@ -201,28 +200,23 @@ namespace TSG_Library.UFuncs
                     foreach (var part in loaded_parts)
                         try
                         {
-                            if(!check.IsPartValidForCheck(part, out var message))
+                            switch (check.PerformCheck(part, out var result_node))
                             {
-                                ignored_node.Nodes.Add(part.__TreeNode());
-                                continue;
+                                case DCResult.pass:
+                                    passed_node.Nodes.Add(result_node);
+                                    break;
+                                case DCResult.fail:
+                                    failed_node.Nodes.Add(result_node);
+                                    break;
+                                case DCResult.ignore:
+                                    ignored_node.Nodes.Add(result_node);
+                                    break;
+                                case DCResult.exception:
+                                    exceptions_node.Nodes.Add(result_node);
+                                    break;
+                                default:
+                                    throw new InvalidOperationException("Unknown ");
                             }
-
-                            if(check.PerformCheck(part, out var result_node))
-                                passed_node.Nodes.Add(result_node);
-                            else
-                                failed_node.Nodes.Add(result_node);
-
-                            //var objects_to_test = check.Get
-
-                            // Need to change PerformCheck to return a bool, and a message.
-
-                            // create separate static method to use.
-
-                            //check.PerformCheck(part);
-
-                            //print_("1");
-
-                            //check_node.Nodes.Add(check.PerformCheck(part));
                         }
                         catch (Exception ex)
                         {
@@ -243,7 +237,6 @@ namespace TSG_Library.UFuncs
                 }
         }
 
-
         private void DesignCheckForm_Load(object sender, EventArgs e)
         {
             Location = Settings.Default.design_check_window_location;
@@ -254,25 +247,25 @@ namespace TSG_Library.UFuncs
 #pragma warning disable CS0612 // Type or member is obsolete
                 IDesignCheck[] checkers =
                 {
-                    new BrokenLinks(),
-                    new Burnouts(),
-                    new BushingsAndPins(),
-                    new CastingChildren(),
-                    new CastingHalfMoons(),
-                    new CBoreDepths(),
+                    //new BrokenLinks(),
+                    //new Burnouts(),
+                    //new BushingsAndPins(),
+                    //new CastingChildren(),
+                    //new CastingHalfMoons(),
+                    //new CBoreDepths(),
                     new ComponentNames(),
-                    new DescriptionNXAttribute(),
-                    new Dimensions(),
-                    new FolderLocations(),
-                    new InterpartExpressions(),
-                    new JigJacks(),
-                    new LinkedBodyParents(),
-                    new PositionOverride(),
-                    new SizeDescription(),
-                    new SmartRevisions(),
-                    new SuppressedFeatures(),
-                    new TimeStamps(),
-                    new WireTaperNotes()
+                    //new DescriptionNXAttribute(),
+                    //new Dimensions(),
+                    //new FolderLocations(),
+                    //new InterpartExpressions(),
+                    //new JigJacks(),
+                    //new LinkedBodyParents(),
+                    //new PositionOverride(),
+                    //new SizeDescription(),
+                    //new SmartRevisions(),
+                    //new SuppressedFeatures(),
+                    //new TimeStamps(),
+                    //new WireTaperNotes()
                 };
 #pragma warning restore CS0612 // Type or member is obsolete
 

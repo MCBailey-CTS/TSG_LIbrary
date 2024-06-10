@@ -69,7 +69,9 @@ public static class Program
             //CheckPostSHarp();
             //print_("AFTER");
 
-            print_("hello world");
+            //print_("hello world");
+
+            new DesignCheckForm().Show();
 
             return;
 

@@ -29,33 +29,33 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
             "S0030"
         };
 
-        public bool IsPartValidForCheck(Part part, out string message)
-        {
-            message = "";
-            if(!part.__IsPartDetail())
-                return false;
+        //public bool IsPartValidForCheck(Part part, out string message)
+        //{
+        //    message = "";
+        //    if(!part.__IsPartDetail())
+        //        return false;
 
-            if(!part.__HasAttribute("MATERIAL"))
-            {
-                message = $"Part {part.Leaf} doesn't have a MATERIAL attribute";
-                return false;
-            }
-            //throw new InvalidOperationException($"Part {part.Leaf} doesn't have a MATERIAL attribute");
+        //    if(!part.__HasAttribute("MATERIAL"))
+        //    {
+        //        message = $"Part {part.Leaf} doesn't have a MATERIAL attribute";
+        //        return false;
+        //    }
+        //    //throw new InvalidOperationException($"Part {part.Leaf} doesn't have a MATERIAL attribute");
 
-            var material_value = part.__GetAttribute("MATERIAL").ToUpper();
+        //    var material_value = part.__GetAttribute("MATERIAL").ToUpper();
 
-            return CASTING_MATERIALS_VALUES.Any(__value => __value.ToUpper() == material_value);
-        }
+        //    return CASTING_MATERIALS_VALUES.Any(__value => __value.ToUpper() == material_value);
+        //}
 
         //public TreeNode PerformCheck(NXOpen.Part part)
         //{
         //}
 
         [Obsolete]
-        public bool PerformCheck(Part part, out TreeNode result_node)
+        public DCResult PerformCheck(Part part, out TreeNode result_node)
         {
             result_node = part.__TreeNode();
-            return false;
+            return DCResult.fail;
 
             //if (part.ComponentAssembly.RootComponent.GetChildren().Length == 0)
             //    return null;

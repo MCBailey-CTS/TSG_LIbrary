@@ -166,7 +166,7 @@ namespace TSG_Library.Extensions
 
         public static Session session_ =>
             //[IgnoreExtensionAspect]
-            session_;
+            NXOpen.Session.GetSession();
 
         public static double Factor =>
             //[IgnoreExtensionAspect]

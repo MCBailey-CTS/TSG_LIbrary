@@ -9,16 +9,16 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
     [Obsolete]
     public class PositionOverride : IDesignCheck
     {
-        public bool IsPartValidForCheck(Part part, out string message)
-        {
-            message = "";
-            return !(part.ComponentAssembly.RootComponent is null);
-        }
+        //public bool IsPartValidForCheck(Part part, out string message)
+        //{
+        //    message = "";
+        //    return !(part.ComponentAssembly.RootComponent is null);
+        //}
 
-        public bool PerformCheck(Part part, out TreeNode result_node)
+        public DCResult PerformCheck(Part part, out TreeNode result_node)
         {
             result_node = part.__TreeNode();
-            return false;
+            return DCResult.fail;
         }
 
         [Obsolete]

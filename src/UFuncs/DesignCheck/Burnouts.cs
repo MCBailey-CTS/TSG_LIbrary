@@ -19,20 +19,20 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
             "4140 PLT"
         };
 
-        public bool IsPartValidForCheck(Part part, out string message)
-        {
-            message = "";
-            if(!part.__HasAttribute(Burnouts_Titles_1))
-                return false;
+        //public bool IsPartValidForCheck(Part part, out string message)
+        //{
+        //    message = "";
+        //    if(!part.__HasAttribute(Burnouts_Titles_1))
+        //        return false;
 
-            var value = part.GetUserAttributeAsString(Burnouts_Titles_1, NXObject.AttributeType.String, -1).ToUpper();
-            return Burnouts_Values_1.Any(__m => __m.ToUpper() == value);
-        }
+        //    var value = part.GetUserAttributeAsString(Burnouts_Titles_1, NXObject.AttributeType.String, -1).ToUpper();
+        //    return Burnouts_Values_1.Any(__m => __m.ToUpper() == value);
+        //}
 
-        public bool PerformCheck(Part part, out TreeNode result_node)
+        public DCResult PerformCheck(Part part, out TreeNode result_node)
         {
             result_node = part.__TreeNode();
-            return false;
+            return DCResult.fail;
         }
 
         public TreeNode PerformCheck(Part part)

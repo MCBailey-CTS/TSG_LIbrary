@@ -35,22 +35,22 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
         //    return part_node;
         //}
 
-        public bool IsPartValidForCheck(Part part, out string message)
-        {
-            message = "";
-            try
-            {
-                return !(GFolder.create_or_null(part) is null);
-            }
-            catch (Exception ex)
-            {
-                ex.__PrintException();
-                return false;
-                ;
-            }
-        }
+        //public bool IsPartValidForCheck(Part part, out string message)
+        //{
+        //    message = "";
+        //    try
+        //    {
+        //        return !(GFolder.create_or_null(part) is null);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ex.__PrintException();
+        //        return false;
+        //        ;
+        //    }
+        //}
 
-        public bool PerformCheck(Part part, out TreeNode result_node)
+        public DCResult PerformCheck(Part part, out TreeNode result_node)
         {
             var folder = GFolder.create(part.FullPath);
             result_node = new TreeNode(part.Leaf) { Tag = part };
@@ -76,7 +76,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
                     ex.__PrintException();
                 }
 
-            return passed;
+            return DCResult.fail;
         }
     }
 }

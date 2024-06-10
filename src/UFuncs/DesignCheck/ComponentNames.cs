@@ -19,10 +19,10 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
             return true;
         }
 
-        public bool PerformCheck(Part part, out TreeNode result_node)
+        public DCResult PerformCheck(Part part, out TreeNode result_node)
         {
             result_node = part.__TreeNode();
-            return false;
+            return DCResult.fail;
         }
 
         [Obsolete]

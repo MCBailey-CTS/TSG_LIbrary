@@ -9,21 +9,21 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
     [Obsolete]
     public class FolderLocations : IDesignCheck
     {
-        public bool IsPartValidForCheck(Part part, out string message)
-        {
-            message = "";
-            return true;
-        }
+        //public bool IsPartValidForCheck(Part part, out string message)
+        //{
+        //    message = "";
+        //    return true;
+        //}
 
 
-        public bool PerformCheck(Part part, out TreeNode result_node)
+        public DCResult PerformCheck(Part part, out TreeNode result_node)
         {
             var folder = GFolder.create_or_null(part);
 
             if(!(folder is null))
             {
                 result_node = part.__TreeNode().__SetText($"{part.Leaf} -> not in folder");
-                return false;
+                return DCResult.fail;
             }
 
             string[] regexes =
@@ -37,11 +37,11 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
                 if(part.FullPath.ToLower().StartsWith(str.ToLower()))
                 {
                     result_node = part.__TreeNode();
-                    return true;
+                    return DCResult.pass;
                 }
 
             result_node = part.__TreeNode();
-            return false;
+            return DCResult.fail;
         }
     }
 }

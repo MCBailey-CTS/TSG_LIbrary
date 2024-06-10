@@ -8,16 +8,16 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
     [Obsolete]
     public class WireTaperNotes : IDesignCheck
     {
-        public bool IsPartValidForCheck(Part part, out string message)
-        {
-            message = "";
-            return part.__HasAttribute("WTN") && part.__GetAttribute("WTN") == "YES";
-        }
+        //public bool IsPartValidForCheck(Part part, out string message)
+        //{
+        //    message = "";
+        //    return part.__HasAttribute("WTN") && part.__GetAttribute("WTN") == "YES";
+        //}
 
-        public bool PerformCheck(Part part, out TreeNode result_node)
+        public DCResult PerformCheck(Part part, out TreeNode result_node)
         {
             result_node = part.__TreeNode();
-            return false;
+            return DCResult.fail;
         }
 
         public TreeNode PerformCheck(Part part)

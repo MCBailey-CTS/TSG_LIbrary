@@ -8,17 +8,9 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 {
     public class BrokenLinks : IDesignCheck
     {
-        public bool IsPartValidForCheck(Part part, out string message)
-        {
-            message = "valid";
-            return part.__IsPartDetail();
-        }
-
-        public bool PerformCheck(Part part, out TreeNode result_node)
+        public DCResult PerformCheck(Part part, out TreeNode result_node)
         {
             result_node = new TreeNode(part.Leaf) { Tag = part };
-
-            var passed = true;
 
             foreach (var feature in part.Features.ToArray())
                 try
@@ -33,8 +25,6 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
                         Tag = extract_face
                     };
 
-                    passed = false;
-
                     result_node.Nodes.Add(extract_face_node);
                 }
                 catch (Exception ex)
@@ -42,7 +32,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
                     ex.__PrintException();
                 }
 
-            return passed;
+            return DCResult.fail;
         }
     }
 }
