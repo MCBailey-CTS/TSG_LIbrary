@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using NXOpen;
+using NXOpen.Preferences;
 using NXOpen.UF;
 using TSG_Library.Disposable;
 using TSG_Library.Enum;
@@ -57,13 +58,33 @@ namespace TSG_Library.Extensions
             var nXObject = fileNew.Commit();
             fileNew.Destroy();
 
-            if(nXOpenPart != null)
+            if (nXOpenPart != null)
             {
                 __work_part_ = nXOpenPart;
                 __display_part_ = nXOpenPart2;
             }
 
             return (Part)nXObject;
+        }
+
+        public static void __SetWorkPlane(this Session _, double gridSpace, bool snapToGrid, bool showGrid)
+        {
+            var workPlane1 = __display_part_.Preferences.Workplane;
+
+            if (workPlane1 is null)
+                return;
+
+            workPlane1.GridType = WorkPlane.Grid.Rectangular;
+            workPlane1.GridIsNonUniform = false;
+            var gridSize1 = new WorkPlane.GridSize(gridSpace, 1, 1);
+            workPlane1.SetRectangularUniformGridSize(gridSize1);
+            workPlane1.ShowGrid = showGrid;
+            workPlane1.ShowLabels = false;
+            workPlane1.SnapToGrid = snapToGrid;
+            workPlane1.GridOnTop = false;
+            workPlane1.RectangularShowMajorLines = false;
+            workPlane1.PolarShowMajorLines = false;
+            workPlane1.GridColor = 7;
         }
 
         public static LockUiFromCustom __UsingLockUiFromCustom(this Session _)
@@ -80,7 +101,7 @@ namespace TSG_Library.Extensions
             const string __next__ = "...NEXT...";
             const int max = 14;
 
-            if(items.Length == max)
+            if (items.Length == max)
                 using (session_.__UsingLockUiFromCustom())
                 {
                     var picked_item = ufsession_.Ui.DisplayMenu(
@@ -141,7 +162,7 @@ namespace TSG_Library.Extensions
 
                 var end_index = set_of_items.Length - 1;
 
-                if(list_items.Count < max)
+                if (list_items.Count < max)
                 {
                     set_of_items = new string[list_items.Count];
                     end_index = list_items.Count;
@@ -173,7 +194,7 @@ namespace TSG_Library.Extensions
                         case 0:
                             throw new Exception("Picked item was 0");
                         case 1:
-                            if(current_set_index > 0)
+                            if (current_set_index > 0)
                                 current_set_index--;
                             continue;
                         case 2:
@@ -205,13 +226,13 @@ namespace TSG_Library.Extensions
                         case 17:
                             return separated[current_set_index][12];
                         case 18:
-                            if(separated[current_set_index][13] == __next__ && current_set_index + 1 < separated.Count)
+                            if (separated[current_set_index][13] == __next__ && current_set_index + 1 < separated.Count)
                             {
                                 current_set_index++;
                                 continue;
                             }
 
-                            if(current_set_index + 1 == separated.Count)
+                            if (current_set_index + 1 == separated.Count)
                                 continue;
 
                             return separated[current_set_index][13];
@@ -242,7 +263,7 @@ namespace TSG_Library.Extensions
         public static IDisposable __UsingFormShowHide(this Session _, Form __form,
             bool hide_form = true)
         {
-            if(hide_form)
+            if (hide_form)
                 __form.Hide();
 
             return new FormHideShow(__form);
@@ -255,7 +276,7 @@ namespace TSG_Library.Extensions
         {
             try
             {
-                if(ufsession_.Part.IsLoaded(__path_or_leaf) == 0)
+                if (ufsession_.Part.IsLoaded(__path_or_leaf) == 0)
                     return session.Parts.Open(__path_or_leaf, out _);
 
                 return (Part)session.Parts.FindObject(__path_or_leaf);
@@ -341,7 +362,7 @@ namespace TSG_Library.Extensions
         public static PartCollection.SdpsStatus __SetActiveDisplay(this Session session_,
             Part __part)
         {
-            if(session_.Parts.AllowMultipleDisplayedParts != PartCollection.MultipleDisplayedPartStatus.Enabled)
+            if (session_.Parts.AllowMultipleDisplayedParts != PartCollection.MultipleDisplayedPartStatus.Enabled)
                 throw new Exception("Session does not allow multiple displayed parts");
 
             return session_.Parts.SetActiveDisplay(
@@ -407,7 +428,7 @@ namespace TSG_Library.Extensions
             {
                 ufsession_.Obj.CycleByName(__name, ref __tag);
 
-                if(__tag != Tag.Null)
+                if (__tag != Tag.Null)
                     yield return session_.__GetTaggedObject(__tag);
             } while (__tag != Tag.Null);
         }

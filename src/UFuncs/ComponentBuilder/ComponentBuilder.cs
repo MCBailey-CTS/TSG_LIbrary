@@ -154,36 +154,15 @@ namespace TSG_Library.UFuncs
 
         private void SetWorkPlane(bool snapToGrid)
         {
-            try
-            {
-                UpdateSessionParts();
-                var workPlane1 = _displayPart.Preferences.Workplane;
-
-                if (workPlane1 is null)
-                    return;
-
-                workPlane1.GridType = WorkPlane.Grid.Rectangular;
-                workPlane1.GridIsNonUniform = false;
-                var gridSize1 = new WorkPlane.GridSize(GridSpace, 1, 1);
-                workPlane1.SetRectangularUniformGridSize(gridSize1);
-                workPlane1.ShowGrid = false;
-                workPlane1.ShowLabels = false;
-                workPlane1.SnapToGrid = snapToGrid;
-                workPlane1.GridOnTop = false;
-                workPlane1.RectangularShowMajorLines = false;
-                workPlane1.PolarShowMajorLines = false;
-                workPlane1.GridColor = 7;
-            }
-            catch (Exception ex)
-            {
-                ex.__PrintException();
-            }
+            UpdateSessionParts();
+            session_.__SetWorkPlane(GridSpace, snapToGrid, false);
         }
-
 
         public int Startup()
         {
-            if (_registered != 0) return 0;
+            if (_registered != 0)
+                return 0;
+
             var mForm = this;
             _idWorkPartChanged1 = session_.Parts.AddWorkPartChangedHandler(mForm.WorkPartChanged1);
             _registered = 1;
@@ -492,7 +471,6 @@ namespace TSG_Library.UFuncs
             }
         }
 
-
         private void CheckBoxGrind_CheckedChanged(object sender, EventArgs e)
         {
             var flag = checkBoxGrind.Checked;
@@ -569,7 +547,7 @@ namespace TSG_Library.UFuncs
                 using (session_.__UsingSuppressDisplay())
                 {
                     __display_part_ = (Part)editComponent.Prototype;
-                    
+
                     using (session_.__UsingDoUpdate("Delete Reference Set"))
                     {
                         var allRefSets = _displayPart.GetAllReferenceSets();
@@ -628,28 +606,24 @@ namespace TSG_Library.UFuncs
             {
                 session_.Preferences.EmphasisVisualization.WorkPartEmphasis = true;
                 session_.Preferences.Assemblies.WorkPartDisplayAsEntirePart = false;
-                var editObjectDisplay = session_.DisplayManager.NewDisplayModification();
-                editObjectDisplay.ApplyToAllFaces = true;
-                editObjectDisplay.NewTranslucency = 0;
-                DisplayableObject[] compObject = { session_.Parts.WorkComponent };
-                editObjectDisplay.Apply(compObject);
-                editObjectDisplay.Dispose();
-                session_.Parts.WorkComponent.RedisplayObject();
+                __work_component_.__Translucency(0);
                 _displayPart.Layers.WorkLayer = 1;
                 _isNameReset = true;
                 textBoxDetailNumber.Enabled = true;
                 comboBoxCompName.Enabled = false;
                 comboBoxCompName.SelectedIndex = -1;
-                var markId1 = session_.SetUndoMark(Session.MarkVisibility.Invisible, "Delete Reference Set");
-                Component[] setRefComp = { session_.Parts.WorkComponent };
-                _displayPart.ComponentAssembly.ReplaceReferenceSetInOwners("BODY", setRefComp);
-                var allRefSets = _workPart.GetAllReferenceSets();
-                foreach (var namedRefSet in allRefSets)
-                    if (namedRefSet.Name == "EDIT")
-                        _workPart.DeleteReferenceSet(namedRefSet);
-                session_.UpdateManager.DoUpdate(markId1);
-                session_.Parts.SetDisplay(_originalDisplayPart, false, false, out var partLoadStatus1);
-                session_.Parts.SetWork(_originalWorkPart);
+
+                using (session_.__UsingDoUpdate("Delete Reference Set"))
+                {
+                    _displayPart.ComponentAssembly.ReplaceReferenceSetInOwners("BODY", new[] { __work_component_ });
+                    var allRefSets = _workPart.GetAllReferenceSets();
+
+                    foreach (var namedRefSet in allRefSets)
+                        if (namedRefSet.Name == "EDIT")
+                            _workPart.DeleteReferenceSet(namedRefSet);
+                }
+                __display_part_ = _originalDisplayPart;
+                __work_part_ = _originalWorkPart;
                 buttonEditConstruction.Enabled = true;
                 buttonEndEditConstruction.Enabled = false;
                 buttonEditBlock.Enabled = true;
@@ -677,7 +651,13 @@ namespace TSG_Library.UFuncs
                 checkBoxUpperComp.Checked = false;
                 _displayPart.WCS.SetOriginAndMatrix(_Point3dOrigin, _Matrix3x3Identity);
                 var bodies = SelectMultipleBodies();
-                if (bodies.Count <= 0) return;
+
+                if (bodies.Count <= 0)
+                {
+                    updateSessionButton.PerformClick();
+                    return;
+                }
+
                 foreach (var selectedBody in bodies)
                 {
                     selectedBody.Unhighlight();
@@ -685,66 +665,15 @@ namespace TSG_Library.UFuncs
                     var minCorner = new double[3];
                     var directions = new double[3, 3];
                     var distances = new double[3];
-                    ufsession_.Modl.AskBoundingBoxExact(selectedBody.Tag, _displayPart.WCS.CoordinateSystem.Tag,
-                        minCorner, directions, distances);
-                    if (_workPart.PartUnits == BasePart.Units.Millimeters)
-                    {
-                        isMetric = true;
-                        for (var i = 0; i < distances.Length; i++) distances[i] /= 25.4d;
-                    }
-
-                    for (var i = 0; i < 3; i++)
-                    {
-                        var roundValue = Math.Round(distances[i], 3);
-                        var truncateValue = Math.Truncate(roundValue);
-                        var fractionValue = roundValue - truncateValue;
-                        if (Math.Abs(fractionValue) > Tolerance)
-                            for (var ii = .125; ii <= 1; ii += .125)
-                            {
-                                if (!(fractionValue <= ii)) continue;
-                                var roundedFraction = ii;
-                                var finalValue = truncateValue + roundedFraction;
-                                distances[i] = finalValue;
-                                break;
-                            }
-                        else
-                            distances[i] = roundValue;
-                    }
-
-                    for (var i = 0; i < 3; i++)
-                    {
-                        var isNegative = false;
-                        if (minCorner[i] < 0)
-                        {
-                            minCorner[i] *= -1;
-                            isNegative = true;
-                        }
-
-                        var roundValue = Math.Round(minCorner[i], 3);
-                        var truncateValue = Math.Truncate(roundValue);
-                        var fractionValue = roundValue - truncateValue;
-                        if (Math.Abs(fractionValue) > Tolerance)
-                            for (var ii = .125; ii <= 1; ii += .125)
-                            {
-                                if (!(fractionValue <= ii)) continue;
-                                var roundedFraction = ii;
-                                var finalValue = truncateValue + roundedFraction;
-                                if (isNegative) minCorner[i] = finalValue * -1;
-                                else minCorner[i] = finalValue;
-                                break;
-                            }
-                        else
-                            minCorner[i] = roundValue;
-                    }
+                    ufsession_.Modl.AskBoundingBoxExact(selectedBody.Tag, _displayPart.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
+                    isMetric = ConvertUnits(distances);
+                    NewMethod1(distances);
+                    NewMethod(minCorner);
 
                     if (isMetric)
-                    {
                         AuotLowrMetric(minCorner, distances);
-                    }
                     else
-                    {
                         AutoLwrEnglish(minCorner, distances);
-                    }
                 }
 
                 updateSessionButton.PerformClick();
@@ -754,6 +683,7 @@ namespace TSG_Library.UFuncs
                 ex.__PrintException();
             }
         }
+
 
         private void AutoLwrEnglish(double[] minCorner, double[] distances)
         {
@@ -797,64 +727,14 @@ namespace TSG_Library.UFuncs
                         var distances = new double[3];
                         ufsession_.Modl.AskBoundingBoxExact(selectedBody.Tag, _displayPart.WCS.CoordinateSystem.Tag,
                             minCorner, directions, distances);
-                        if (_workPart.PartUnits == BasePart.Units.Millimeters)
-                        {
-                            isMetric = true;
-                            for (var i = 0; i < distances.Length; i++) distances[i] /= 25.4d;
-                        }
-
-                        for (var i = 0; i < 3; i++)
-                        {
-                            var roundValue = Math.Round(distances[i], 3);
-                            var truncateValue = Math.Truncate(roundValue);
-                            var fractionValue = roundValue - truncateValue;
-                            if (Math.Abs(fractionValue) > Tolerance)
-                                for (var ii = .125; ii <= 1; ii += .125)
-                                {
-                                    if (!(fractionValue <= ii)) continue;
-                                    var roundedFraction = ii;
-                                    var finalValue = truncateValue + roundedFraction;
-                                    distances[i] = finalValue;
-                                    break;
-                                }
-                            else
-                                distances[i] = roundValue;
-                        }
-
-                        for (var i = 0; i < 3; i++)
-                        {
-                            var isNegative = false;
-                            if (minCorner[i] < 0)
-                            {
-                                minCorner[i] *= -1;
-                                isNegative = true;
-                            }
-
-                            var roundValue = Math.Round(minCorner[i], 3);
-                            var truncateValue = Math.Truncate(roundValue);
-                            var fractionValue = roundValue - truncateValue;
-                            if (Math.Abs(fractionValue) > Tolerance)
-                                for (var ii = .125; ii <= 1; ii += .125)
-                                {
-                                    if (!(fractionValue <= ii)) continue;
-                                    var roundedFraction = ii;
-                                    var finalValue = truncateValue + roundedFraction;
-                                    if (isNegative) minCorner[i] = finalValue * -1;
-                                    else minCorner[i] = finalValue;
-                                    break;
-                                }
-                            else
-                                minCorner[i] = roundValue;
-                        }
+                        isMetric = ConvertUnits(distances);
+                        NewMethod4(distances);
+                        NewMethod5(minCorner);
 
                         if (isMetric)
-                        {
                             AutoUpperMetric(minCorner, distances);
-                        }
                         else
-                        {
                             AutoUpperEnglish(minCorner, distances);
-                        }
                     }
 
                     updateSessionButton.PerformClick();
@@ -867,6 +747,7 @@ namespace TSG_Library.UFuncs
                 ex.__PrintException();
             }
         }
+
 
         private void AutoUpperEnglish(double[] minCorner, double[] distances)
         {
@@ -909,7 +790,10 @@ namespace TSG_Library.UFuncs
                 var bodies = SelectMultipleBodies();
 
                 if (bodies.Count <= 0)
+                {
+                    updateSessionButton.PerformClick();
                     return;
+                }
 
                 foreach (var selectedBody in bodies)
                 {
@@ -924,72 +808,14 @@ namespace TSG_Library.UFuncs
 
                     ufsession_.Modl.AskBoundingBoxExact(selectedBody.Tag, _displayPart.WCS.CoordinateSystem.Tag,
                         minCorner, directions, distances);
-
-                    if (_workPart.PartUnits == BasePart.Units.Millimeters)
-                    {
-                        isMetric = true;
-
-                        for (var i = 0; i < distances.Length; i++)
-                            distances[i] /= 25.4d;
-                    }
-
-                    for (var i = 0; i < 3; i++)
-                    {
-                        var roundValue = Math.Round(distances[i], 3);
-                        var truncateValue = Math.Truncate(roundValue);
-                        var fractionValue = roundValue - truncateValue;
-                        if (Math.Abs(fractionValue) > Tolerance)
-                            for (var ii = .125; ii <= 1; ii += .125)
-                            {
-                                if (!(fractionValue <= ii)) continue;
-                                var roundedFraction = ii;
-                                var finalValue = truncateValue + roundedFraction;
-                                distances[i] = finalValue;
-                                break;
-                            }
-                        else
-                            distances[i] = roundValue;
-                    }
-
-                    for (var i = 0; i < 3; i++)
-                    {
-                        var isNegative = false;
-
-                        if (minCorner[i] < 0)
-                        {
-                            minCorner[i] *= -1;
-                            isNegative = true;
-                        }
-
-                        var roundValue = Math.Round(minCorner[i], 3);
-                        var truncateValue = Math.Truncate(roundValue);
-                        var fractionValue = roundValue - truncateValue;
-                        if (Math.Abs(fractionValue) > Tolerance)
-                            for (var ii = .125; ii <= 1; ii += .125)
-                            {
-                                if (!(fractionValue <= ii)) continue;
-                                var roundedFraction = ii;
-                                var finalValue = truncateValue + roundedFraction;
-
-                                if (isNegative)
-                                    minCorner[i] = finalValue * -1;
-                                else
-                                    minCorner[i] = finalValue;
-
-                                break;
-                            }
-                        else
-                            minCorner[i] = roundValue;
-                    }
+                    isMetric = ConvertUnits(distances);
+                    NewMethod7(distances);
+                    NewMethod8(minCorner);
 
                     if (isMetric)
-                    {
                         LowerRetainerMetric(minCorner, distances);
-                    }
                     else
-                    {
                         LowerRetainerEnglish(minCorner, distances);
-                    }
                 }
 
                 updateSessionButton.PerformClick();
@@ -1004,18 +830,11 @@ namespace TSG_Library.UFuncs
         {
             var selectedName = comboBoxCompName.SelectedIndex;
             var selctedMaterial = listBoxMaterial.SelectedIndex;
-
             // settings for trim
-
             var blankCompOrigin = new Point3d(minCorner[0] - .625, minCorner[1] - .625, -3.26);
-
             SetComponentColor();
-
-            CreateComponent(blankCompOrigin, (distances[0] + 1.25).ToString(),
-                (distances[1] + 1.25).ToString(), "3.50");
-
+            CreateComponent(blankCompOrigin, (distances[0] + 1.25).ToString(), (distances[1] + 1.25).ToString(), "3.50");
             //settings for retainer
-
             var nameIndex = -1;
 
             foreach (CtsAttributes compName in comboBoxCompName.Items)
@@ -1023,7 +842,6 @@ namespace TSG_Library.UFuncs
                     nameIndex = comboBoxCompName.Items.IndexOf(compName);
 
             comboBoxCompName.SelectedIndex = nameIndex;
-
             var materialIndex = -1;
 
             foreach (CtsAttributes compMaterial in listBoxMaterial.Items)
@@ -1031,16 +849,10 @@ namespace TSG_Library.UFuncs
                     materialIndex = listBoxMaterial.Items.IndexOf(compMaterial);
 
             listBoxMaterial.SetSelected(materialIndex, true);
-
             blankCompOrigin = new Point3d(minCorner[0] - 1.25, minCorner[1] - 1.25, -3.26);
-
             SetComponentColor();
-
-            CreateComponent(blankCompOrigin, (distances[0] + 2.50).ToString(),
-                (distances[1] + 2.50).ToString(), "1.375");
-
+            CreateComponent(blankCompOrigin, (distances[0] + 2.50).ToString(), (distances[1] + 2.50).ToString(), "1.375");
             // settings for backing  plate
-
             nameIndex = -1;
 
             foreach (CtsAttributes compName in comboBoxCompName.Items)
@@ -1048,7 +860,6 @@ namespace TSG_Library.UFuncs
                     nameIndex = comboBoxCompName.Items.IndexOf(compName);
 
             comboBoxCompName.SelectedIndex = nameIndex;
-
             materialIndex = -1;
 
             foreach (CtsAttributes compMaterial in listBoxMaterial.Items)
@@ -1056,14 +867,9 @@ namespace TSG_Library.UFuncs
                     materialIndex = listBoxMaterial.Items.IndexOf(compMaterial);
 
             listBoxMaterial.SetSelected(materialIndex, true);
-
             blankCompOrigin = new Point3d(minCorner[0] - 1.25, minCorner[1] - 1.25, -3.50);
-
             SetComponentColor();
-
-            CreateComponent(blankCompOrigin, (distances[0] + 2.50).ToString(),
-                (distances[1] + 2.50).ToString(), ".24");
-
+            CreateComponent(blankCompOrigin, (distances[0] + 2.50).ToString(), (distances[1] + 2.50).ToString(), ".24");
             comboBoxCompName.SelectedIndex = selectedName;
             listBoxMaterial.SelectedIndex = selctedMaterial;
         }
@@ -1175,71 +981,14 @@ namespace TSG_Library.UFuncs
                     ufsession_.Modl.AskBoundingBoxExact(selectedBody.Tag, _displayPart.WCS.CoordinateSystem.Tag,
                         minCorner, directions, distances);
 
-                    if (_workPart.PartUnits == BasePart.Units.Millimeters)
-                    {
-                        isMetric = true;
-
-                        for (var i = 0; i < distances.Length; i++)
-                            distances[i] /= 25.4d;
-                    }
-
-                    for (var i = 0; i < 3; i++)
-                    {
-                        var roundValue = Math.Round(distances[i], 3);
-                        var truncateValue = Math.Truncate(roundValue);
-                        var fractionValue = roundValue - truncateValue;
-                        if (Math.Abs(fractionValue) > Tolerance)
-                            for (var ii = .125; ii <= 1; ii += .125)
-                            {
-                                if (!(fractionValue <= ii)) continue;
-                                var roundedFraction = ii;
-                                var finalValue = truncateValue + roundedFraction;
-                                distances[i] = finalValue;
-                                break;
-                            }
-                        else
-                            distances[i] = roundValue;
-                    }
-
-                    for (var i = 0; i < 3; i++)
-                    {
-                        var isNegative = false;
-
-                        if (minCorner[i] < 0)
-                        {
-                            minCorner[i] *= -1;
-                            isNegative = true;
-                        }
-
-                        var roundValue = Math.Round(minCorner[i], 3);
-                        var truncateValue = Math.Truncate(roundValue);
-                        var fractionValue = roundValue - truncateValue;
-                        if (Math.Abs(fractionValue) > Tolerance)
-                            for (var ii = .125; ii <= 1; ii += .125)
-                            {
-                                if (!(fractionValue <= ii)) continue;
-                                var roundedFraction = ii;
-                                var finalValue = truncateValue + roundedFraction;
-
-                                if (isNegative)
-                                    minCorner[i] = finalValue * -1;
-                                else
-                                    minCorner[i] = finalValue;
-
-                                break;
-                            }
-                        else
-                            minCorner[i] = roundValue;
-                    }
+                    isMetric = ConvertUnits(distances);
+                    NewMethod10(distances);
+                    NewMethod11(minCorner);
 
                     if (isMetric)
-                    {
                         UpperRetainerMetric(minCorner, distances);
-                    }
                     else
-                    {
                         UpperRetainerEnglish(minCorner, distances);
-                    }
                 }
 
                 updateSessionButton.PerformClick();
@@ -1251,6 +1000,7 @@ namespace TSG_Library.UFuncs
                 ex.__PrintException();
             }
         }
+
 
         private void UpperRetainerEnglish(double[] minCorner, double[] distances)
         {
@@ -2484,7 +2234,9 @@ namespace TSG_Library.UFuncs
             {
                 try
                 {
-                    if (_changeColorComponent == null) return;
+                    if (_changeColorComponent is null)
+                        return;
+
                     ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
                     var dispComp = (BasePart)_changeColorComponent.Prototype;
@@ -2585,15 +2337,15 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        //  Lee T. added code to color bottom face yellow
-
         private void ColorBaseFace(Body block, bool upperComponent)
         {
             var bodyFaces = block.GetFaces();
 
             foreach (var bFace in bodyFaces)
             {
-                if (bFace.SolidFaceType != Face.FaceType.Planar) continue;
+                if (bFace.SolidFaceType != Face.FaceType.Planar) 
+                    continue;
+
                 double[] vec1 =
                 {
                     _displayPart.WCS.CoordinateSystem.Orientation.Element.Zx,
@@ -2605,25 +2357,29 @@ namespace TSG_Library.UFuncs
                 var vec2 = new double[3];
                 var box = new double[6];
                 int isEqualVec;
-
-                ufsession_.Modl.AskFaceData(bFace.Tag, out var type, point, vec2, box, out var radius1, out var radData,
-                    out var normDir);
-
+                ufsession_.Modl.AskFaceData(bFace.Tag, out _, point, vec2, box, out _, out _, out _);
                 ufsession_.Vec3.IsParallel(vec1, vec2, .001, out var isParallel);
 
-                if (isParallel != 1) continue;
+                if (isParallel != 1) 
+                    continue;
+
                 if (upperComponent)
                 {
                     ufsession_.Vec3.IsEqual(vec1, vec2, .001, out isEqualVec);
 
-                    if (isEqualVec != 1) continue;
+                    if (isEqualVec != 1) 
+                        continue;
+
                     bFace.Color = 6;
                     bFace.RedisplayObject();
                 }
                 else
                 {
                     ufsession_.Vec3.IsEqual(vec1, vec2, .001, out isEqualVec);
-                    if (isEqualVec != 0) continue;
+
+                    if (isEqualVec != 0) 
+                        continue;
+
                     bFace.Color = 6;
                     bFace.RedisplayObject();
                 }
@@ -2648,13 +2404,13 @@ namespace TSG_Library.UFuncs
                 status = ufsession_.Part.IsLoaded(filePath);
             }
 
-            if (compNameIncrement.Length != 3) 
+            if (compNameIncrement.Length != 3)
                 return false;
 
-            if (!isConverted) 
+            if (!isConverted)
                 return false;
 
-            if (compNameResult <= 0 || compNameResult >= 991) 
+            if (compNameResult <= 0 || compNameResult >= 991)
                 return false;
 
             if (_isNameReset)
@@ -2678,7 +2434,7 @@ namespace TSG_Library.UFuncs
                 return true;
             }
 
-            if (compNameResult <= 100) 
+            if (compNameResult <= 100)
                 return false;
 
             textBoxDetailNumber.Text = compNameResult.ToString();
@@ -2697,14 +2453,14 @@ namespace TSG_Library.UFuncs
         {
             UpdateSessionParts();
 
-            //if (!IsNameValid(wp))
-            //{
-            //    textBoxDetailNumber.Clear();
-            //    UpdateFormText();
-            //    InitializeMainForm();
-            //    NameCheckFailed();
-            //    return;
-            //}
+            if (!IsNameValid(wp))
+            {
+                textBoxDetailNumber.Clear();
+                UpdateFormText();
+                InitializeMainForm();
+                NameCheckFailed();
+                return;
+            }
 
             UpdateFormText();
             InitializeMainForm();
@@ -2721,11 +2477,7 @@ namespace TSG_Library.UFuncs
                 .Distinct()
                 .Select(__n => Regex.Match(__n, "^\\d+-\\d+-(?<detail>\\d+)$"))
                 .Where(__m => __m.Success)
-                .Select(__m =>
-                {
-                    print_(__m.Groups["detail"].Value);
-                    return __m.Groups["detail"].Value;
-                })
+                .Select(__m => __m.Groups["detail"].Value)
                 .Select(int.Parse)
                 .ToList();
 
@@ -2875,21 +2627,17 @@ namespace TSG_Library.UFuncs
             buttonAutoLwr.Enabled = false;
             buttonUprRetAssm.Enabled = false;
             buttonLwrRetAssm.Enabled = false;
-
             // create list of grind tolerances
-
             comboBoxTolerance.Items.Clear();
 
             foreach (var grindTol in _compTolerances)
                 comboBoxTolerance.Items.Add(grindTol);
+
             comboBoxTolerance.SelectedIndex = -1;
             comboBoxTolerance.Enabled = false;
-
             // create list of component names
-
             int selectedName;
             selectedName = comboBoxCompName.SelectedIndex;
-
             comboBoxCompName.Items.Clear();
 
             foreach (var name in _compNames)
@@ -2899,7 +2647,6 @@ namespace TSG_Library.UFuncs
                 comboBoxCompName.SelectedIndex = selectedName;
 
             // create list of material types
-
             listBoxMaterial.Items.Clear();
             textBoxUserMaterial.Text = string.Empty;
 
@@ -2914,7 +2661,6 @@ namespace TSG_Library.UFuncs
             textBoxDetailNumber.Enabled = false;
             comboBoxCompName.Enabled = false;
             listBoxMaterial.Enabled = false;
-
             checkBoxBurnout.Checked = false;
             checkBoxBurnout.Enabled = false;
             checkBoxGrind.Checked = false;
@@ -2928,7 +2674,6 @@ namespace TSG_Library.UFuncs
             comboBoxTolerance.Text = string.Empty;
             comboBoxTolerance.SelectedIndex = -1;
             comboBoxTolerance.Enabled = false;
-
             buttonEditConstruction.Enabled = true;
             saveAsButton.Enabled = false;
             copyButton.Enabled = false;
@@ -2942,7 +2687,6 @@ namespace TSG_Library.UFuncs
             comboBoxCompName.Enabled = false;
             listBoxMaterial.SelectedIndex = -1;
             listBoxMaterial.Enabled = false;
-
             checkBoxBurnout.Checked = false;
             checkBoxBurnout.Enabled = false;
             checkBoxGrind.Checked = false;
@@ -2956,7 +2700,6 @@ namespace TSG_Library.UFuncs
             comboBoxTolerance.Text = string.Empty;
             comboBoxTolerance.SelectedIndex = -1;
             comboBoxTolerance.Enabled = false;
-
             buttonEditConstruction.Enabled = true;
             saveAsButton.Enabled = true;
             copyButton.Enabled = true;
@@ -3010,9 +2753,7 @@ namespace TSG_Library.UFuncs
 
                 if (extractBody != null)
                     referenceSet2.AddObjectsToReferenceSet(objects2);
-
-                int nErrs1;
-                nErrs1 = session_.UpdateManager.DoUpdate(markId1);
+                _ = session_.UpdateManager.DoUpdate(markId1);
             }
             else
             {
@@ -3153,86 +2894,8 @@ namespace TSG_Library.UFuncs
         private void SetWcsToWorkPart(Component compRefCsys)
         {
             session_.SetUndoMark(Session.MarkVisibility.Visible, "SetWcsToWorkPart");
-            if (compRefCsys != null)
-            {
-                var compBase = (BasePart)compRefCsys.Prototype;
 
-                session_.Parts.SetDisplay(compBase, false, false, out var setDispLoadStatus);
-                setDispLoadStatus.Dispose();
-                UpdateSessionParts();
-
-                var isBlockComp = false;
-
-                foreach (Feature featBlk in _workPart.Features)
-                {
-                    if (featBlk.FeatureType != "BLOCK") continue;
-                    if (featBlk.Name != "DYNAMIC BLOCK") continue;
-                    isBlockComp = true;
-
-                    var block1 = (Block)featBlk;
-
-                    var blockFeatureBuilderMatch = _workPart.Features.CreateBlockFeatureBuilder(block1);
-                    var bOrigin = blockFeatureBuilderMatch.Origin;
-                    blockFeatureBuilderMatch.GetOrientation(out var xAxis, out var yAxis);
-
-                    double[] initOrigin = { bOrigin.X, bOrigin.Y, bOrigin.Z };
-                    double[] xVector = { xAxis.X, xAxis.Y, xAxis.Z };
-                    double[] yVector = { yAxis.X, yAxis.Y, yAxis.Z };
-                    var initMatrix = new double[9];
-                    ufsession_.Mtx3.Initialize(xVector, yVector, initMatrix);
-                    ufsession_.Csys.CreateMatrix(initMatrix, out var tempMatrix);
-                    ufsession_.Csys.CreateTempCsys(initOrigin, tempMatrix, out var tempCsys);
-                    var setTempCsys = (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
-
-                    _displayPart.WCS.SetOriginAndMatrix(setTempCsys.Origin, setTempCsys.Orientation.Element);
-
-                    var featBlkCsys = _displayPart.WCS.Save();
-                    featBlkCsys.SetName("EDITCSYS");
-                    featBlkCsys.Layer = 254;
-
-                    NXObject[] addToBody = { featBlkCsys };
-
-                    foreach (var bRefSet in _displayPart.GetAllReferenceSets())
-                        if (bRefSet.Name == "BODY")
-                            bRefSet.AddObjectsToReferenceSet(addToBody);
-
-                    session_.Parts.SetDisplay(_originalDisplayPart, false, false, out var setDispLoadStatus1);
-                    setDispLoadStatus1.Dispose();
-
-                    session_.Parts.SetWorkComponent(compRefCsys, out var partLoadStatusWorkComp);
-                    partLoadStatusWorkComp.Dispose();
-                    UpdateSessionParts();
-
-                    foreach (CartesianCoordinateSystem wpCsys in _workPart.CoordinateSystems)
-                    {
-                        if (wpCsys.Layer != 254) continue;
-                        if (wpCsys.Name != "EDITCSYS") continue;
-                        var csysOccurrence = session_.Parts.WorkComponent.FindOccurrence(wpCsys);
-
-                        var editCsys = (CartesianCoordinateSystem)csysOccurrence;
-
-                        if (editCsys != null)
-                            _displayPart.WCS.SetOriginAndMatrix(editCsys.Origin, editCsys.Orientation.Element);
-
-                        var markDeleteObjs = session_.SetUndoMark(Session.MarkVisibility.Invisible, "");
-
-                        session_.UpdateManager.AddToDeleteList(wpCsys);
-
-                        session_.UpdateManager.DoUpdate(markDeleteObjs);
-                    }
-                }
-
-                if (isBlockComp) return;
-                {
-                    session_.Parts.SetDisplay(_originalDisplayPart, false, false, out var setDispLoadStatus1);
-                    setDispLoadStatus1.Dispose();
-
-                    session_.Parts.SetWorkComponent(compRefCsys, out var partLoadStatusWorkComp);
-                    partLoadStatusWorkComp.Dispose();
-                    UpdateSessionParts();
-                }
-            }
-            else
+            if (compRefCsys is null)
             {
                 foreach (Feature featBlk in _workPart.Features)
                 {
@@ -3251,6 +2914,85 @@ namespace TSG_Library.UFuncs
                     var setTempCsys = (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
                     _displayPart.WCS.SetOriginAndMatrix(setTempCsys.Origin, setTempCsys.Orientation.Element);
                 }
+
+                return;
+            }
+
+            var compBase = (BasePart)compRefCsys.Prototype;
+
+            session_.Parts.SetDisplay(compBase, false, false, out var setDispLoadStatus);
+            setDispLoadStatus.Dispose();
+            UpdateSessionParts();
+
+            var isBlockComp = false;
+
+            foreach (Feature featBlk in _workPart.Features)
+            {
+                if (featBlk.FeatureType != "BLOCK") continue;
+                if (featBlk.Name != "DYNAMIC BLOCK") continue;
+                isBlockComp = true;
+
+                var block1 = (Block)featBlk;
+
+                var blockFeatureBuilderMatch = _workPart.Features.CreateBlockFeatureBuilder(block1);
+                var bOrigin = blockFeatureBuilderMatch.Origin;
+                blockFeatureBuilderMatch.GetOrientation(out var xAxis, out var yAxis);
+
+                double[] initOrigin = { bOrigin.X, bOrigin.Y, bOrigin.Z };
+                double[] xVector = { xAxis.X, xAxis.Y, xAxis.Z };
+                double[] yVector = { yAxis.X, yAxis.Y, yAxis.Z };
+                var initMatrix = new double[9];
+                ufsession_.Mtx3.Initialize(xVector, yVector, initMatrix);
+                ufsession_.Csys.CreateMatrix(initMatrix, out var tempMatrix);
+                ufsession_.Csys.CreateTempCsys(initOrigin, tempMatrix, out var tempCsys);
+                var setTempCsys = (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
+
+                _displayPart.WCS.SetOriginAndMatrix(setTempCsys.Origin, setTempCsys.Orientation.Element);
+
+                var featBlkCsys = _displayPart.WCS.Save();
+                featBlkCsys.SetName("EDITCSYS");
+                featBlkCsys.Layer = 254;
+
+                NXObject[] addToBody = { featBlkCsys };
+
+                foreach (var bRefSet in _displayPart.GetAllReferenceSets())
+                    if (bRefSet.Name == "BODY")
+                        bRefSet.AddObjectsToReferenceSet(addToBody);
+
+                session_.Parts.SetDisplay(_originalDisplayPart, false, false, out var setDispLoadStatus1);
+                setDispLoadStatus1.Dispose();
+
+                session_.Parts.SetWorkComponent(compRefCsys, out var partLoadStatusWorkComp);
+                partLoadStatusWorkComp.Dispose();
+                UpdateSessionParts();
+
+                foreach (CartesianCoordinateSystem wpCsys in _workPart.CoordinateSystems)
+                {
+                    if (wpCsys.Layer != 254) continue;
+                    if (wpCsys.Name != "EDITCSYS") continue;
+                    var csysOccurrence = session_.Parts.WorkComponent.FindOccurrence(wpCsys);
+
+                    var editCsys = (CartesianCoordinateSystem)csysOccurrence;
+
+                    if (editCsys != null)
+                        _displayPart.WCS.SetOriginAndMatrix(editCsys.Origin, editCsys.Orientation.Element);
+
+                    var markDeleteObjs = session_.SetUndoMark(Session.MarkVisibility.Invisible, "");
+
+                    session_.UpdateManager.AddToDeleteList(wpCsys);
+
+                    session_.UpdateManager.DoUpdate(markDeleteObjs);
+                }
+            }
+
+            if (isBlockComp) return;
+            {
+                session_.Parts.SetDisplay(_originalDisplayPart, false, false, out var setDispLoadStatus1);
+                setDispLoadStatus1.Dispose();
+
+                session_.Parts.SetWorkComponent(compRefCsys, out var partLoadStatusWorkComp);
+                partLoadStatusWorkComp.Dispose();
+                UpdateSessionParts();
             }
         }
 
@@ -3271,11 +3013,15 @@ namespace TSG_Library.UFuncs
             var mask = new Selection.MaskTriple[1];
             mask[0] = new Selection.MaskTriple(UF_solid_type, UF_solid_body_subtype, 0);
             var bodySelection = new List<Body>();
+
             var sel = TheUISession.SelectionManager.SelectTaggedObjects("Select Bodies", "Select Bodies",
                 Selection.SelectionScope.AnyInAssembly,
                 Selection.SelectionAction.ClearAndEnableSpecific,
                 false, false, mask, out var selectedBodyArray);
-            if (sel != Selection.Response.Ok) return bodySelection;
+
+            if (sel != Selection.Response.Ok)
+                return bodySelection;
+
             bodySelection.AddRange(selectedBodyArray.Cast<Body>());
             return bodySelection;
         }
@@ -3287,9 +3033,11 @@ namespace TSG_Library.UFuncs
             var sel = TheUISession.SelectionManager.SelectTaggedObject(prompt, prompt,
                 Selection.SelectionScope.AnyInAssembly,
                 Selection.SelectionAction.ClearAndEnableSpecific,
-                false, false, mask, out var selectedComp, out var cursor);
+                false, false, mask, out var selectedComp, out _);
+
             if (!((sel == Selection.Response.ObjectSelected) | (sel == Selection.Response.ObjectSelectedByName)))
                 return null;
+
             var compSelection = (Component)selectedComp;
             return compSelection;
         }
@@ -3348,6 +3096,249 @@ namespace TSG_Library.UFuncs
         private void chkDigits_CheckedChanged(object sender, EventArgs e)
         {
             WorkPartChanged1(__work_part_);
+        }
+
+        private static void NewMethod1(double[] distances)
+        {
+            for (var i = 0; i < 3; i++)
+            {
+                var roundValue = Math.Round(distances[i], 3);
+                var truncateValue = Math.Truncate(roundValue);
+                var fractionValue = roundValue - truncateValue;
+                if (Math.Abs(fractionValue) <= Tolerance)
+                {
+                    distances[i] = roundValue;
+                    continue;
+                }
+
+                for (var ii = .125; ii <= 1; ii += .125)
+                {
+                    if (!(fractionValue <= ii))
+                        continue;
+
+                    var roundedFraction = ii;
+                    var finalValue = truncateValue + roundedFraction;
+                    distances[i] = finalValue;
+                    break;
+                }
+            }
+        }
+
+        private static void NewMethod(double[] minCorner)
+        {
+            for (var i = 0; i < 3; i++)
+            {
+                var isNegative = false;
+
+                if (minCorner[i] < 0)
+                {
+                    minCorner[i] *= -1;
+                    isNegative = true;
+                }
+
+                var roundValue = Math.Round(minCorner[i], 3);
+                var truncateValue = Math.Truncate(roundValue);
+                var fractionValue = roundValue - truncateValue;
+
+                if (Math.Abs(fractionValue) <= Tolerance)
+                {
+                    minCorner[i] = roundValue;
+                    continue;
+                }
+
+                for (var ii = .125; ii <= 1; ii += .125)
+                {
+                    if (!(fractionValue <= ii))
+                        continue;
+
+                    var roundedFraction = ii;
+                    var finalValue = truncateValue + roundedFraction;
+
+                    if (isNegative)
+                        minCorner[i] = finalValue * -1;
+                    else
+                        minCorner[i] = finalValue;
+
+                    break;
+                }
+            }
+        }
+
+
+        private static bool ConvertUnits(double[] distances)
+        {
+            if (_workPart.PartUnits != BasePart.Units.Millimeters)
+                return false;
+
+            for (var i = 0; i < distances.Length; i++)
+                distances[i] /= 25.4d;
+
+            return true;
+        }
+
+
+        private static void NewMethod5(double[] minCorner)
+        {
+            for (var i = 0; i < 3; i++)
+            {
+                var isNegative = false;
+                if (minCorner[i] < 0)
+                {
+                    minCorner[i] *= -1;
+                    isNegative = true;
+                }
+
+                var roundValue = Math.Round(minCorner[i], 3);
+                var truncateValue = Math.Truncate(roundValue);
+                var fractionValue = roundValue - truncateValue;
+                if (Math.Abs(fractionValue) > Tolerance)
+                    for (var ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (!(fractionValue <= ii)) continue;
+                        var roundedFraction = ii;
+                        var finalValue = truncateValue + roundedFraction;
+                        if (isNegative) minCorner[i] = finalValue * -1;
+                        else minCorner[i] = finalValue;
+                        break;
+                    }
+                else
+                    minCorner[i] = roundValue;
+            }
+        }
+
+        private static void NewMethod4(double[] distances)
+        {
+            for (var i = 0; i < 3; i++)
+            {
+                var roundValue = Math.Round(distances[i], 3);
+                var truncateValue = Math.Truncate(roundValue);
+                var fractionValue = roundValue - truncateValue;
+                if (Math.Abs(fractionValue) > Tolerance)
+                    for (var ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (!(fractionValue <= ii)) continue;
+                        var roundedFraction = ii;
+                        var finalValue = truncateValue + roundedFraction;
+                        distances[i] = finalValue;
+                        break;
+                    }
+                else
+                    distances[i] = roundValue;
+            }
+        }
+
+
+
+
+        private static void NewMethod8(double[] minCorner)
+        {
+            for (var i = 0; i < 3; i++)
+            {
+                var isNegative = false;
+
+                if (minCorner[i] < 0)
+                {
+                    minCorner[i] *= -1;
+                    isNegative = true;
+                }
+
+                var roundValue = Math.Round(minCorner[i], 3);
+                var truncateValue = Math.Truncate(roundValue);
+                var fractionValue = roundValue - truncateValue;
+                if (Math.Abs(fractionValue) > Tolerance)
+                    for (var ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (!(fractionValue <= ii)) continue;
+                        var roundedFraction = ii;
+                        var finalValue = truncateValue + roundedFraction;
+
+                        if (isNegative)
+                            minCorner[i] = finalValue * -1;
+                        else
+                            minCorner[i] = finalValue;
+
+                        break;
+                    }
+                else
+                    minCorner[i] = roundValue;
+            }
+        }
+
+        private static void NewMethod7(double[] distances)
+        {
+            for (var i = 0; i < 3; i++)
+            {
+                var roundValue = Math.Round(distances[i], 3);
+                var truncateValue = Math.Truncate(roundValue);
+                var fractionValue = roundValue - truncateValue;
+                if (Math.Abs(fractionValue) > Tolerance)
+                    for (var ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (!(fractionValue <= ii)) continue;
+                        var roundedFraction = ii;
+                        var finalValue = truncateValue + roundedFraction;
+                        distances[i] = finalValue;
+                        break;
+                    }
+                else
+                    distances[i] = roundValue;
+            }
+        }
+
+
+        private static void NewMethod11(double[] minCorner)
+        {
+            for (var i = 0; i < 3; i++)
+            {
+                var isNegative = false;
+
+                if (minCorner[i] < 0)
+                {
+                    minCorner[i] *= -1;
+                    isNegative = true;
+                }
+
+                var roundValue = Math.Round(minCorner[i], 3);
+                var truncateValue = Math.Truncate(roundValue);
+                var fractionValue = roundValue - truncateValue;
+                if (Math.Abs(fractionValue) > Tolerance)
+                    for (var ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (!(fractionValue <= ii)) continue;
+                        var roundedFraction = ii;
+                        var finalValue = truncateValue + roundedFraction;
+
+                        if (isNegative)
+                            minCorner[i] = finalValue * -1;
+                        else
+                            minCorner[i] = finalValue;
+
+                        break;
+                    }
+                else
+                    minCorner[i] = roundValue;
+            }
+        }
+
+        private static void NewMethod10(double[] distances)
+        {
+            for (var i = 0; i < 3; i++)
+            {
+                var roundValue = Math.Round(distances[i], 3);
+                var truncateValue = Math.Truncate(roundValue);
+                var fractionValue = roundValue - truncateValue;
+                if (Math.Abs(fractionValue) > Tolerance)
+                    for (var ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (!(fractionValue <= ii)) continue;
+                        var roundedFraction = ii;
+                        var finalValue = truncateValue + roundedFraction;
+                        distances[i] = finalValue;
+                        break;
+                    }
+                else
+                    distances[i] = roundValue;
+            }
         }
     }
 }
