@@ -92,10 +92,9 @@ namespace TSG_Library.UFuncs
             LoadGridSizes();
 
 
-            if (string.IsNullOrEmpty(comboBoxGrid.Text))
-                if (!(session_.Parts.Work is null))
-                    comboBoxGrid.SelectedItem =
-                        session_.Parts.Work.PartUnits == BasePart.Units.Inches ? "0.250" : "6.35";
+            if (string.IsNullOrEmpty(comboBoxGrid.Text) && !(session_.Parts.Work is null))
+                comboBoxGrid.SelectedItem =
+                    session_.Parts.Work.PartUnits == BasePart.Units.Inches ? "0.250" : "6.35";
 
             listBoxMaterial.Enabled = false;
             groupBoxColor.Enabled = false;
@@ -148,7 +147,6 @@ namespace TSG_Library.UFuncs
                 if (gridSetting != Settings.Default.udoComponentBuilderGridIncrement)
                     continue;
 
-
                 var gridIndex = comboBoxGrid.Items.IndexOf(gridSetting);
                 comboBoxGrid.SelectedIndex = gridIndex;
             }
@@ -160,7 +158,10 @@ namespace TSG_Library.UFuncs
             {
                 UpdateSessionParts();
                 var workPlane1 = _displayPart.Preferences.Workplane;
-                if (workPlane1 == null) return;
+
+                if (workPlane1 is null)
+                    return;
+
                 workPlane1.GridType = WorkPlane.Grid.Rectangular;
                 workPlane1.GridIsNonUniform = false;
                 var gridSize1 = new WorkPlane.GridSize(GridSpace, 1, 1);
@@ -207,8 +208,9 @@ namespace TSG_Library.UFuncs
                         __work_component_ = session_.Parts.Work.ComponentAssembly.RootComponent;
                     else
                         return;
+
                 var ass = Check(__work_component_);
-                // ReSharper disable once SwitchStatementMissingSomeCases
+
                 switch (ass)
                 {
                     case AssemblyComponent.Lower:
@@ -230,15 +232,27 @@ namespace TSG_Library.UFuncs
         {
             while (true)
             {
-                if (component == null || component.IsSuppressed) return AssemblyComponent.None;
+                if (component is null || component.IsSuppressed)
+                    return AssemblyComponent.None;
+
                 var displayName = component.DisplayName.ToUpper();
-                if (displayName.Contains("LWR") || displayName.Contains("LSP") || displayName.Contains("LSH") ||
-                   displayName.Contains("LAD") || displayName.Contains("LFTR"))
+
+                if (displayName.Contains("LWR")
+                    || displayName.Contains("LSP")
+                    || displayName.Contains("LSH")
+                    || displayName.Contains("LAD")
+                    || displayName.Contains("LFTR"))
                     return AssemblyComponent.Lower;
-                if (displayName.Contains("UPR") || displayName.Contains("USP") || displayName.Contains("USH") ||
-                   displayName.Contains("UAD"))
+
+                if (displayName.Contains("UPR")
+                    || displayName.Contains("USP")
+                    || displayName.Contains("USH")
+                    || displayName.Contains("UAD"))
                     return AssemblyComponent.Upper;
-                if (component.Parent is null) return AssemblyComponent.None;
+
+                if (component.Parent is null)
+                    return AssemblyComponent.None;
+
                 component = component.Parent;
             }
         }
@@ -278,9 +292,14 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if (textBoxDetailNumber.Text.Length == 0) return;
+                if (textBoxDetailNumber.Text.Length == 0)
+                    return;
+
                 var isConverted = int.TryParse(textBoxDetailNumber.Text, out var compName);
-                if (!isConverted) return;
+
+                if (!isConverted)
+                    return;
+
                 comboBoxCompName.Enabled = compName > 0 && compName < 991;
             }
             catch (Exception ex)
@@ -305,44 +324,50 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if (listBoxMaterial.SelectedIndex != -1)
-                {
-                    var flag = listBoxMaterial.Text == "HRS PLT" || listBoxMaterial.Text == "4140 PLT" ||
-                               listBoxMaterial.Text == "HRS";
-                    comboBoxTolerance.SelectedIndex = flag ? 0 : -1;
-                    checkBoxGrind.Enabled = flag;
-                    checkBoxGrind.Checked = flag;
-                    checkBoxBurnDirX.Enabled = flag;
-                    checkBoxBurnDirY.Enabled = flag;
-                    checkBoxBurnDirZ.Enabled = flag;
-                    checkBoxBurnDirZ.Checked = flag;
-                    comboBoxTolerance.Enabled = flag;
-                    groupBoxColor.Enabled = true;
-                    textBoxUserMaterial.Text = string.Empty;
-                    changeColorCheckBox.Checked = false;
-                    changeColorCheckBox.Enabled = false;
-                    buttonAutoUpr.Enabled = true;
-                    buttonAutoLwr.Enabled = true;
-                    buttonUprRetAssm.Enabled = true;
-                    buttonLwrRetAssm.Enabled = true;
-                    checkBoxBurnout.Enabled = flag;
-                    checkBoxBurnout.Checked = flag;
-                    if (!flag) return;
-                    var boolFlag = listBoxMaterial.Text != "HRS PLT" && listBoxMaterial.Text != "4140 PLT";
-                    if (listBoxMaterial.Text != "HRS PLT" && listBoxMaterial.Text != "4140 PLT")
-                    {
-                        checkBoxBurnDirZ.Checked = false;
-                        checkBoxGrind.Checked = false;
-                    }
-
-                    checkBoxBurnout.Enabled = !boolFlag;
-                    checkBoxBurnout.Checked = !boolFlag;
-                }
-                else
+                if (listBoxMaterial.SelectedIndex == -1)
                 {
                     groupBoxColor.Enabled = false;
                     changeColorCheckBox.Enabled = true;
+                    return;
                 }
+
+                var flag = listBoxMaterial.Text == "HRS PLT"
+                || listBoxMaterial.Text == "4140 PLT"
+                || listBoxMaterial.Text == "HRS";
+
+                comboBoxTolerance.SelectedIndex = flag ? 0 : -1;
+                checkBoxGrind.Enabled = flag;
+                checkBoxGrind.Checked = flag;
+                checkBoxBurnDirX.Enabled = flag;
+                checkBoxBurnDirY.Enabled = flag;
+                checkBoxBurnDirZ.Enabled = flag;
+                checkBoxBurnDirZ.Checked = flag;
+                comboBoxTolerance.Enabled = flag;
+                groupBoxColor.Enabled = true;
+                textBoxUserMaterial.Text = string.Empty;
+                changeColorCheckBox.Checked = false;
+                changeColorCheckBox.Enabled = false;
+                buttonAutoUpr.Enabled = true;
+                buttonAutoLwr.Enabled = true;
+                buttonUprRetAssm.Enabled = true;
+                buttonLwrRetAssm.Enabled = true;
+                checkBoxBurnout.Enabled = flag;
+                checkBoxBurnout.Checked = flag;
+
+                if (!flag)
+                    return;
+
+                var boolFlag = listBoxMaterial.Text != "HRS PLT"
+                    && listBoxMaterial.Text != "4140 PLT";
+
+                if (listBoxMaterial.Text != "HRS PLT" && listBoxMaterial.Text != "4140 PLT")
+                {
+                    checkBoxBurnDirZ.Checked = false;
+                    checkBoxGrind.Checked = false;
+                }
+
+                checkBoxBurnout.Enabled = !boolFlag;
+                checkBoxBurnout.Checked = !boolFlag;
             }
             catch (Exception ex)
             {
@@ -356,18 +381,21 @@ namespace TSG_Library.UFuncs
             {
                 var flag = textBoxUserMaterial.Text.Length != 0;
                 listBoxMaterial.Enabled = !flag;
+
                 if (flag)
                 {
                     listBoxMaterial.SelectedIndex = -1;
-                    if (!textBoxDetailNumber.Enabled || comboBoxCompName.SelectedIndex == -1 ||
-                       textBoxUserMaterial.Text == string.Empty) return;
+
+                    if (!textBoxDetailNumber.Enabled
+                        || comboBoxCompName.SelectedIndex == -1
+                        || textBoxUserMaterial.Text == string.Empty)
+                        return;
+
                     groupBoxColor.Enabled = true;
                     changeColorCheckBox.Checked = false;
                 }
                 else
-                {
                     groupBoxColor.Enabled = false;
-                }
 
                 changeColorCheckBox.Enabled = !flag;
             }
@@ -437,21 +465,26 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if (changeColorCheckBox.Checked)
-                {
-                    _changeColorComponent = SelectOneComponent("Select Component to Color");
-                    if (_changeColorComponent == null) return;
-                    groupBoxColor.Enabled = true;
-                    comboBoxCompName.SelectedIndex = -1;
-                    listBoxMaterial.SelectedIndex = -1;
-                    comboBoxCompName.Enabled = false;
-                    listBoxMaterial.Enabled = false;
-                }
-                else
+                if (!changeColorCheckBox.Checked)
                 {
                     groupBoxColor.Enabled = false;
-                    if (textBoxDetailNumber.Text.Length != 0) comboBoxCompName.Enabled = true;
+
+                    if (textBoxDetailNumber.Text.Length != 0)
+                        comboBoxCompName.Enabled = true;
+
+                    return;
                 }
+
+                _changeColorComponent = SelectOneComponent("Select Component to Color");
+
+                if (_changeColorComponent is null)
+                    return;
+
+                groupBoxColor.Enabled = true;
+                comboBoxCompName.SelectedIndex = -1;
+                listBoxMaterial.SelectedIndex = -1;
+                comboBoxCompName.Enabled = false;
+                listBoxMaterial.Enabled = false;
             }
             catch (Exception ex)
             {
@@ -517,64 +550,64 @@ namespace TSG_Library.UFuncs
                 buttonEditBlock.Enabled = false;
                 changeColorCheckBox.Enabled = false;
                 buttonExit.Enabled = false;
-                // Session.GetSession().Preferences.ScreenVisualization.
-                //NXOpen.Preferences.SessionVisualizationEmphasis ses = new SessionVisualizationEmphasis(Session.GetSession());
                 session_.Preferences.EmphasisVisualization.WorkPartEmphasis = true;
                 session_.Preferences.Assemblies.WorkPartDisplayAsEntirePart = false;
                 UpdateSessionParts();
                 UpdateOriginalParts();
                 var editComponent = SelectOneComponent("Select Component to edit construction");
-                if (editComponent == null) return;
+
+                if (editComponent is null)
+                    return;
+
                 var assmUnits = _displayPart.PartUnits;
                 var compBase = (BasePart)editComponent.Prototype;
                 var compUnits = compBase.PartUnits;
-                if (compUnits != assmUnits) return;
-                ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
-                var addRefSetPart = (Part)editComponent.Prototype;
-                session_.Parts.SetDisplay(addRefSetPart, false, false, out var partLoadSetDisp1);
-                partLoadSetDisp1.Dispose();
-                UpdateSessionParts();
-                var markId1 = session_.SetUndoMark(Session.MarkVisibility.Invisible, "Delete Reference Set");
-                var allRefSets = _displayPart.GetAllReferenceSets();
-                foreach (var namedRefSet in allRefSets)
-                    if (namedRefSet.Name == "EDIT")
-                        _workPart.DeleteReferenceSet(namedRefSet);
-                session_.UpdateManager.DoUpdate(markId1);
-                var markIdEditRefSet =
-                    session_.SetUndoMark(Session.MarkVisibility.Invisible, "Create New Reference Set");
-                var editRefSet = _workPart.CreateReferenceSet();
-                var removeComps = editRefSet.AskAllDirectMembers();
-                editRefSet.RemoveObjectsFromReferenceSet(removeComps);
-                editRefSet.SetAddComponentsAutomatically(false, false);
-                editRefSet.SetName("EDIT");
-                var constructionObjects = new List<NXObject>();
-                for (var i = 1; i < 11; i++) constructionObjects.AddRange(_displayPart.Layers.GetAllObjectsOnLayer(i));
-                constructionObjects.AddRange(
-                    from CartesianCoordinateSystem csys in _displayPart.CoordinateSystems
-                    where csys.Layer == 254
-                    where csys.Name == "EDITCSYS"
-                    select csys);
-                editRefSet.AddObjectsToReferenceSet(constructionObjects.ToArray());
-                session_.UpdateManager.DoUpdate(markIdEditRefSet);
-                session_.Parts.SetDisplay(_originalDisplayPart, false, false, out var partLoadSetDisp2);
-                partLoadSetDisp2.Dispose();
-                UpdateSessionParts();
-                ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
-                ufsession_.Disp.RegenerateDisplay();
-                session_.Parts.SetWork((Part)editComponent.Prototype);
-                session_.Parts.SetWorkComponent(editComponent, PartCollection.RefsetOption.Current,
-                    PartCollection.WorkComponentOption.Visible,
-                    out var partLoadStatus3);
-                partLoadStatus3.Dispose();
+
+                if (compUnits != assmUnits)
+                    return;
+
+                using (session_.__UsingSuppressDisplay())
+                {
+                    __display_part_ = (Part)editComponent.Prototype;
+                    
+                    using (session_.__UsingDoUpdate("Delete Reference Set"))
+                    {
+                        var allRefSets = _displayPart.GetAllReferenceSets();
+
+                        foreach (var namedRefSet in allRefSets)
+                            if (namedRefSet.Name == "EDIT")
+                                _workPart.DeleteReferenceSet(namedRefSet);
+                    }
+
+                    using (session_.__UsingDoUpdate("Create New Reference Set"))
+                    {
+                        var editRefSet = _workPart.CreateReferenceSet();
+                        var removeComps = editRefSet.AskAllDirectMembers();
+                        editRefSet.RemoveObjectsFromReferenceSet(removeComps);
+                        editRefSet.SetAddComponentsAutomatically(false, false);
+                        editRefSet.SetName("EDIT");
+                        var constructionObjects = new List<NXObject>();
+
+                        for (var i = 1; i < 11; i++)
+                            constructionObjects.AddRange(_displayPart.Layers.GetAllObjectsOnLayer(i));
+
+                        constructionObjects.AddRange(
+                            from CartesianCoordinateSystem csys in _displayPart.CoordinateSystems
+                            where csys.Layer == 254
+                            where csys.Name == "EDITCSYS"
+                            select csys);
+
+                        editRefSet.AddObjectsToReferenceSet(constructionObjects.ToArray());
+                    }
+
+                    __display_part_ = _originalDisplayPart;
+                    UpdateSessionParts();
+                }
+
+                __work_component_ = editComponent;
                 UpdateSessionParts();
                 SetWcsToWorkPart(editComponent);
-                var editObjectDisplay = session_.DisplayManager.NewDisplayModification();
-                editObjectDisplay.ApplyToAllFaces = true;
-                editObjectDisplay.NewTranslucency = 75;
-                DisplayableObject[] compObject = { session_.Parts.WorkComponent };
-                editObjectDisplay.Apply(compObject);
-                editObjectDisplay.Dispose();
-                session_.Parts.WorkComponent.RedisplayObject();
+                __work_component_.__Translucency(75);
                 Component[] setRefComp = { editComponent };
                 _displayPart.ComponentAssembly.ReplaceReferenceSetInOwners("EDIT", setRefComp);
                 _displayPart.Layers.WorkLayer = 3;
@@ -706,23 +739,11 @@ namespace TSG_Library.UFuncs
 
                     if (isMetric)
                     {
-                        for (var i = 0; i < 3; i++)
-                        {
-                            minCorner[i] *= 25.4;
-                            distances[i] *= 25.4;
-                        }
-
-                        var blankCompOrigin = new Point3d(minCorner[0] - 31.75, minCorner[1] - 31.75, -38.1);
-                        SetComponentColor();
-                        CreateComponent(blankCompOrigin, (distances[0] + 63.5).ToString(),
-                            (distances[1] + 63.5).ToString(), "38.1");
+                        AuotLowrMetric(minCorner, distances);
                     }
                     else
                     {
-                        var blankCompOrigin = new Point3d(minCorner[0] - 1.25, minCorner[1] - 1.25, -1.50);
-                        SetComponentColor();
-                        CreateComponent(blankCompOrigin, (distances[0] + 2.50).ToString(),
-                            (distances[1] + 2.50).ToString(), "1.50");
+                        AutoLwrEnglish(minCorner, distances);
                     }
                 }
 
@@ -732,6 +753,28 @@ namespace TSG_Library.UFuncs
             {
                 ex.__PrintException();
             }
+        }
+
+        private void AutoLwrEnglish(double[] minCorner, double[] distances)
+        {
+            var blankCompOrigin = new Point3d(minCorner[0] - 1.25, minCorner[1] - 1.25, -1.50);
+            SetComponentColor();
+            CreateComponent(blankCompOrigin, (distances[0] + 2.50).ToString(),
+                (distances[1] + 2.50).ToString(), "1.50");
+        }
+
+        private void AuotLowrMetric(double[] minCorner, double[] distances)
+        {
+            for (var i = 0; i < 3; i++)
+            {
+                minCorner[i] *= 25.4;
+                distances[i] *= 25.4;
+            }
+
+            var blankCompOrigin = new Point3d(minCorner[0] - 31.75, minCorner[1] - 31.75, -38.1);
+            SetComponentColor();
+            CreateComponent(blankCompOrigin, (distances[0] + 63.5).ToString(),
+                (distances[1] + 63.5).ToString(), "38.1");
         }
 
         private void ButtonAutoUpr_Click(object sender, EventArgs e)
@@ -806,25 +849,11 @@ namespace TSG_Library.UFuncs
 
                         if (isMetric)
                         {
-                            for (var i = 0; i < 3; i++)
-                            {
-                                minCorner[i] *= 25.4;
-                                distances[i] *= 25.4;
-                            }
-
-                            var blankCompOrigin = new Point3d(minCorner[0] - 31.75, minCorner[1] + 31.75 + distances[1],
-                                88.9);
-                            SetComponentColor();
-                            CreateComponent(blankCompOrigin, (distances[0] + 63.5).ToString(),
-                                (distances[1] + 63.5).ToString(), "38.1");
+                            AutoUpperMetric(minCorner, distances);
                         }
                         else
                         {
-                            var blankCompOrigin = new Point3d(minCorner[0] - 1.25, minCorner[1] + 1.25 + distances[1],
-                                3.50);
-                            SetComponentColor();
-                            CreateComponent(blankCompOrigin, (distances[0] + 2.50).ToString(),
-                                (distances[1] + 2.50).ToString(), "1.50");
+                            AutoUpperEnglish(minCorner, distances);
                         }
                     }
 
@@ -837,6 +866,30 @@ namespace TSG_Library.UFuncs
             {
                 ex.__PrintException();
             }
+        }
+
+        private void AutoUpperEnglish(double[] minCorner, double[] distances)
+        {
+            var blankCompOrigin = new Point3d(minCorner[0] - 1.25, minCorner[1] + 1.25 + distances[1],
+                                            3.50);
+            SetComponentColor();
+            CreateComponent(blankCompOrigin, (distances[0] + 2.50).ToString(),
+                (distances[1] + 2.50).ToString(), "1.50");
+        }
+
+        private void AutoUpperMetric(double[] minCorner, double[] distances)
+        {
+            for (var i = 0; i < 3; i++)
+            {
+                minCorner[i] *= 25.4;
+                distances[i] *= 25.4;
+            }
+
+            var blankCompOrigin = new Point3d(minCorner[0] - 31.75, minCorner[1] + 31.75 + distances[1],
+                88.9);
+            SetComponentColor();
+            CreateComponent(blankCompOrigin, (distances[0] + 63.5).ToString(),
+                (distances[1] + 63.5).ToString(), "38.1");
         }
 
         private void ButtonLwrRetAssm_Click(object sender, EventArgs e)
@@ -855,7 +908,9 @@ namespace TSG_Library.UFuncs
 
                 var bodies = SelectMultipleBodies();
 
-                if (bodies.Count <= 0) return;
+                if (bodies.Count <= 0)
+                    return;
+
                 foreach (var selectedBody in bodies)
                 {
                     selectedBody.Unhighlight();
@@ -929,143 +984,11 @@ namespace TSG_Library.UFuncs
 
                     if (isMetric)
                     {
-                        for (var i = 0; i < 3; i++)
-                        {
-                            minCorner[i] *= 25.4;
-                            distances[i] *= 25.4;
-                        }
-
-                        var selectedName = comboBoxCompName.SelectedIndex;
-                        var selctedMaterial = listBoxMaterial.SelectedIndex;
-
-                        // settings for trim
-
-                        var blankCompOrigin = new Point3d(minCorner[0] - 15.875, minCorner[1] - 15.875, -82.804);
-
-                        SetComponentColor();
-
-                        CreateComponent(blankCompOrigin, (distances[0] + 31.75).ToString(),
-                            (distances[1] + 31.75).ToString(), "88.9");
-
-                        //settings for retainer
-
-                        var nameIndex = -1;
-
-                        foreach (CtsAttributes compName in comboBoxCompName.Items)
-                            if (compName.AttrValue == "RETAINER")
-                                nameIndex = comboBoxCompName.Items.IndexOf(compName);
-
-                        comboBoxCompName.SelectedIndex = nameIndex;
-
-                        var materialIndex = -1;
-
-                        foreach (CtsAttributes compMaterial in listBoxMaterial.Items)
-                            if (compMaterial.AttrValue == "4140")
-                                materialIndex = listBoxMaterial.Items.IndexOf(compMaterial);
-
-                        listBoxMaterial.SetSelected(materialIndex, true);
-
-                        blankCompOrigin = new Point3d(minCorner[0] - 31.75, minCorner[1] - 31.75, -82.804);
-
-                        SetComponentColor();
-
-                        CreateComponent(blankCompOrigin, (distances[0] + 63.5).ToString(),
-                            (distances[1] + 63.5).ToString(), "31.75");
-
-                        // settings for backing  plate
-
-                        nameIndex = -1;
-
-                        foreach (CtsAttributes compName in comboBoxCompName.Items)
-                            if (compName.AttrValue == "BLOCK")
-                                nameIndex = comboBoxCompName.Items.IndexOf(compName);
-
-                        comboBoxCompName.SelectedIndex = nameIndex;
-
-                        materialIndex = -1;
-
-                        foreach (CtsAttributes compMaterial in listBoxMaterial.Items)
-                            if (compMaterial.AttrValue == "O1 GS")
-                                materialIndex = listBoxMaterial.Items.IndexOf(compMaterial);
-
-                        listBoxMaterial.SetSelected(materialIndex, true);
-
-                        blankCompOrigin = new Point3d(minCorner[0] - 31.75, minCorner[1] - 31.75, -88.9);
-
-                        SetComponentColor();
-
-                        CreateComponent(blankCompOrigin, (distances[0] + 63.5).ToString(),
-                            (distances[1] + 63.5).ToString(), "6.096");
-
-                        comboBoxCompName.SelectedIndex = selectedName;
-                        listBoxMaterial.SelectedIndex = selctedMaterial;
+                        LowerRetainerMetric(minCorner, distances);
                     }
                     else
                     {
-                        var selectedName = comboBoxCompName.SelectedIndex;
-                        var selctedMaterial = listBoxMaterial.SelectedIndex;
-
-                        // settings for trim
-
-                        var blankCompOrigin = new Point3d(minCorner[0] - .625, minCorner[1] - .625, -3.26);
-
-                        SetComponentColor();
-
-                        CreateComponent(blankCompOrigin, (distances[0] + 1.25).ToString(),
-                            (distances[1] + 1.25).ToString(), "3.50");
-
-                        //settings for retainer
-
-                        var nameIndex = -1;
-
-                        foreach (CtsAttributes compName in comboBoxCompName.Items)
-                            if (compName.AttrValue == "RETAINER")
-                                nameIndex = comboBoxCompName.Items.IndexOf(compName);
-
-                        comboBoxCompName.SelectedIndex = nameIndex;
-
-                        var materialIndex = -1;
-
-                        foreach (CtsAttributes compMaterial in listBoxMaterial.Items)
-                            if (compMaterial.AttrValue == "4140")
-                                materialIndex = listBoxMaterial.Items.IndexOf(compMaterial);
-
-                        listBoxMaterial.SetSelected(materialIndex, true);
-
-                        blankCompOrigin = new Point3d(minCorner[0] - 1.25, minCorner[1] - 1.25, -3.26);
-
-                        SetComponentColor();
-
-                        CreateComponent(blankCompOrigin, (distances[0] + 2.50).ToString(),
-                            (distances[1] + 2.50).ToString(), "1.375");
-
-                        // settings for backing  plate
-
-                        nameIndex = -1;
-
-                        foreach (CtsAttributes compName in comboBoxCompName.Items)
-                            if (compName.AttrValue == "BLOCK")
-                                nameIndex = comboBoxCompName.Items.IndexOf(compName);
-
-                        comboBoxCompName.SelectedIndex = nameIndex;
-
-                        materialIndex = -1;
-
-                        foreach (CtsAttributes compMaterial in listBoxMaterial.Items)
-                            if (compMaterial.AttrValue == "O1 GS")
-                                materialIndex = listBoxMaterial.Items.IndexOf(compMaterial);
-
-                        listBoxMaterial.SetSelected(materialIndex, true);
-
-                        blankCompOrigin = new Point3d(minCorner[0] - 1.25, minCorner[1] - 1.25, -3.50);
-
-                        SetComponentColor();
-
-                        CreateComponent(blankCompOrigin, (distances[0] + 2.50).ToString(),
-                            (distances[1] + 2.50).ToString(), ".24");
-
-                        comboBoxCompName.SelectedIndex = selectedName;
-                        listBoxMaterial.SelectedIndex = selctedMaterial;
+                        LowerRetainerEnglish(minCorner, distances);
                     }
                 }
 
@@ -1075,6 +998,148 @@ namespace TSG_Library.UFuncs
             {
                 ex.__PrintException();
             }
+        }
+
+        private void LowerRetainerEnglish(double[] minCorner, double[] distances)
+        {
+            var selectedName = comboBoxCompName.SelectedIndex;
+            var selctedMaterial = listBoxMaterial.SelectedIndex;
+
+            // settings for trim
+
+            var blankCompOrigin = new Point3d(minCorner[0] - .625, minCorner[1] - .625, -3.26);
+
+            SetComponentColor();
+
+            CreateComponent(blankCompOrigin, (distances[0] + 1.25).ToString(),
+                (distances[1] + 1.25).ToString(), "3.50");
+
+            //settings for retainer
+
+            var nameIndex = -1;
+
+            foreach (CtsAttributes compName in comboBoxCompName.Items)
+                if (compName.AttrValue == "RETAINER")
+                    nameIndex = comboBoxCompName.Items.IndexOf(compName);
+
+            comboBoxCompName.SelectedIndex = nameIndex;
+
+            var materialIndex = -1;
+
+            foreach (CtsAttributes compMaterial in listBoxMaterial.Items)
+                if (compMaterial.AttrValue == "4140")
+                    materialIndex = listBoxMaterial.Items.IndexOf(compMaterial);
+
+            listBoxMaterial.SetSelected(materialIndex, true);
+
+            blankCompOrigin = new Point3d(minCorner[0] - 1.25, minCorner[1] - 1.25, -3.26);
+
+            SetComponentColor();
+
+            CreateComponent(blankCompOrigin, (distances[0] + 2.50).ToString(),
+                (distances[1] + 2.50).ToString(), "1.375");
+
+            // settings for backing  plate
+
+            nameIndex = -1;
+
+            foreach (CtsAttributes compName in comboBoxCompName.Items)
+                if (compName.AttrValue == "BLOCK")
+                    nameIndex = comboBoxCompName.Items.IndexOf(compName);
+
+            comboBoxCompName.SelectedIndex = nameIndex;
+
+            materialIndex = -1;
+
+            foreach (CtsAttributes compMaterial in listBoxMaterial.Items)
+                if (compMaterial.AttrValue == "O1 GS")
+                    materialIndex = listBoxMaterial.Items.IndexOf(compMaterial);
+
+            listBoxMaterial.SetSelected(materialIndex, true);
+
+            blankCompOrigin = new Point3d(minCorner[0] - 1.25, minCorner[1] - 1.25, -3.50);
+
+            SetComponentColor();
+
+            CreateComponent(blankCompOrigin, (distances[0] + 2.50).ToString(),
+                (distances[1] + 2.50).ToString(), ".24");
+
+            comboBoxCompName.SelectedIndex = selectedName;
+            listBoxMaterial.SelectedIndex = selctedMaterial;
+        }
+
+        private void LowerRetainerMetric(double[] minCorner, double[] distances)
+        {
+            for (var i = 0; i < 3; i++)
+            {
+                minCorner[i] *= 25.4;
+                distances[i] *= 25.4;
+            }
+
+            var selectedName = comboBoxCompName.SelectedIndex;
+            var selctedMaterial = listBoxMaterial.SelectedIndex;
+
+            // settings for trim
+
+            var blankCompOrigin = new Point3d(minCorner[0] - 15.875, minCorner[1] - 15.875, -82.804);
+
+            SetComponentColor();
+
+            CreateComponent(blankCompOrigin, (distances[0] + 31.75).ToString(),
+                (distances[1] + 31.75).ToString(), "88.9");
+
+            //settings for retainer
+
+            var nameIndex = -1;
+
+            foreach (CtsAttributes compName in comboBoxCompName.Items)
+                if (compName.AttrValue == "RETAINER")
+                    nameIndex = comboBoxCompName.Items.IndexOf(compName);
+
+            comboBoxCompName.SelectedIndex = nameIndex;
+
+            var materialIndex = -1;
+
+            foreach (CtsAttributes compMaterial in listBoxMaterial.Items)
+                if (compMaterial.AttrValue == "4140")
+                    materialIndex = listBoxMaterial.Items.IndexOf(compMaterial);
+
+            listBoxMaterial.SetSelected(materialIndex, true);
+
+            blankCompOrigin = new Point3d(minCorner[0] - 31.75, minCorner[1] - 31.75, -82.804);
+
+            SetComponentColor();
+
+            CreateComponent(blankCompOrigin, (distances[0] + 63.5).ToString(),
+                (distances[1] + 63.5).ToString(), "31.75");
+
+            // settings for backing  plate
+
+            nameIndex = -1;
+
+            foreach (CtsAttributes compName in comboBoxCompName.Items)
+                if (compName.AttrValue == "BLOCK")
+                    nameIndex = comboBoxCompName.Items.IndexOf(compName);
+
+            comboBoxCompName.SelectedIndex = nameIndex;
+
+            materialIndex = -1;
+
+            foreach (CtsAttributes compMaterial in listBoxMaterial.Items)
+                if (compMaterial.AttrValue == "O1 GS")
+                    materialIndex = listBoxMaterial.Items.IndexOf(compMaterial);
+
+            listBoxMaterial.SetSelected(materialIndex, true);
+
+            blankCompOrigin = new Point3d(minCorner[0] - 31.75, minCorner[1] - 31.75, -88.9);
+
+            SetComponentColor();
+
+            CreateComponent(blankCompOrigin, (distances[0] + 63.5).ToString(),
+                (distances[1] + 63.5).ToString(), "6.096");
+
+            comboBoxCompName.SelectedIndex = selectedName;
+            listBoxMaterial.SelectedIndex = selctedMaterial;
         }
 
         private void ButtonUprRetAssm_Click(object sender, EventArgs e)
@@ -1093,229 +1158,91 @@ namespace TSG_Library.UFuncs
 
                 var bodies = SelectMultipleBodies();
 
-                if (bodies.Count > 0)
+                if (bodies.Count <= 0)
+                    return;
+
+                foreach (var selectedBody in bodies)
                 {
-                    foreach (var selectedBody in bodies)
+                    selectedBody.Unhighlight();
+
+                    // get bounding box info
+
+                    var isMetric = false;
+                    var minCorner = new double[3];
+                    var directions = new double[3, 3];
+                    var distances = new double[3];
+
+                    ufsession_.Modl.AskBoundingBoxExact(selectedBody.Tag, _displayPart.WCS.CoordinateSystem.Tag,
+                        minCorner, directions, distances);
+
+                    if (_workPart.PartUnits == BasePart.Units.Millimeters)
                     {
-                        selectedBody.Unhighlight();
+                        isMetric = true;
 
-                        // get bounding box info
-
-                        var isMetric = false;
-                        var minCorner = new double[3];
-                        var directions = new double[3, 3];
-                        var distances = new double[3];
-
-                        ufsession_.Modl.AskBoundingBoxExact(selectedBody.Tag, _displayPart.WCS.CoordinateSystem.Tag,
-                            minCorner, directions, distances);
-
-                        if (_workPart.PartUnits == BasePart.Units.Millimeters)
-                        {
-                            isMetric = true;
-
-                            for (var i = 0; i < distances.Length; i++)
-                                distances[i] /= 25.4d;
-                        }
-
-                        for (var i = 0; i < 3; i++)
-                        {
-                            var roundValue = Math.Round(distances[i], 3);
-                            var truncateValue = Math.Truncate(roundValue);
-                            var fractionValue = roundValue - truncateValue;
-                            if (Math.Abs(fractionValue) > Tolerance)
-                                for (var ii = .125; ii <= 1; ii += .125)
-                                {
-                                    if (!(fractionValue <= ii)) continue;
-                                    var roundedFraction = ii;
-                                    var finalValue = truncateValue + roundedFraction;
-                                    distances[i] = finalValue;
-                                    break;
-                                }
-                            else
-                                distances[i] = roundValue;
-                        }
-
-                        for (var i = 0; i < 3; i++)
-                        {
-                            var isNegative = false;
-
-                            if (minCorner[i] < 0)
-                            {
-                                minCorner[i] *= -1;
-                                isNegative = true;
-                            }
-
-                            var roundValue = Math.Round(minCorner[i], 3);
-                            var truncateValue = Math.Truncate(roundValue);
-                            var fractionValue = roundValue - truncateValue;
-                            if (Math.Abs(fractionValue) > Tolerance)
-                                for (var ii = .125; ii <= 1; ii += .125)
-                                {
-                                    if (!(fractionValue <= ii)) continue;
-                                    var roundedFraction = ii;
-                                    var finalValue = truncateValue + roundedFraction;
-
-                                    if (isNegative)
-                                        minCorner[i] = finalValue * -1;
-                                    else
-                                        minCorner[i] = finalValue;
-
-                                    break;
-                                }
-                            else
-                                minCorner[i] = roundValue;
-                        }
-
-                        if (isMetric)
-                        {
-                            for (var i = 0; i < 3; i++)
-                            {
-                                minCorner[i] *= 25.4;
-                                distances[i] *= 25.4;
-                            }
-
-                            var selectedName = comboBoxCompName.SelectedIndex;
-                            var selctedMaterial = listBoxMaterial.SelectedIndex;
-
-                            // settings for trim
-
-                            var blankCompOrigin = new Point3d(minCorner[0] - 15.875,
-                                minCorner[1] + 15.875 + distances[1], 82.804);
-
-                            SetComponentColor();
-
-                            CreateComponent(blankCompOrigin, (distances[0] + 31.75).ToString(),
-                                (distances[1] + 31.75).ToString(), "88.9");
-
-                            //settings for retainer
-
-                            var nameIndex = -1;
-
-                            foreach (CtsAttributes compName in comboBoxCompName.Items)
-                                if (compName.AttrValue == "RETAINER")
-                                    nameIndex = comboBoxCompName.Items.IndexOf(compName);
-
-                            comboBoxCompName.SelectedIndex = nameIndex;
-
-                            var materialIndex = -1;
-
-                            foreach (CtsAttributes compMaterial in listBoxMaterial.Items)
-                                if (compMaterial.AttrValue == "4140")
-                                    materialIndex = listBoxMaterial.Items.IndexOf(compMaterial);
-
-                            listBoxMaterial.SetSelected(materialIndex, true);
-
-                            blankCompOrigin = new Point3d(minCorner[0] - 31.75, minCorner[1] + 31.75 + distances[1],
-                                82.804);
-
-                            SetComponentColor();
-
-                            CreateComponent(blankCompOrigin, (distances[0] + 63.5).ToString(),
-                                (distances[1] + 63.5).ToString(), "31.75");
-
-                            // settings for backing  plate
-
-                            nameIndex = -1;
-
-                            foreach (CtsAttributes compName in comboBoxCompName.Items)
-                                if (compName.AttrValue == "BLOCK")
-                                    nameIndex = comboBoxCompName.Items.IndexOf(compName);
-
-                            comboBoxCompName.SelectedIndex = nameIndex;
-
-                            materialIndex = -1;
-
-                            foreach (CtsAttributes compMaterial in listBoxMaterial.Items)
-                                if (compMaterial.AttrValue == "O1 GS")
-                                    materialIndex = listBoxMaterial.Items.IndexOf(compMaterial);
-
-                            listBoxMaterial.SetSelected(materialIndex, true);
-
-                            blankCompOrigin = new Point3d(minCorner[0] - 31.75, minCorner[1] + 31.75 + distances[1],
-                                88.9);
-
-                            SetComponentColor();
-
-                            CreateComponent(blankCompOrigin, (distances[0] + 63.5).ToString(),
-                                (distances[1] + 63.5).ToString(), "6.096");
-
-                            comboBoxCompName.SelectedIndex = selectedName;
-                            listBoxMaterial.SelectedIndex = selctedMaterial;
-                        }
-                        else
-                        {
-                            var selectedName = comboBoxCompName.SelectedIndex;
-                            var selctedMaterial = listBoxMaterial.SelectedIndex;
-
-                            // settings for trim
-
-                            var blankCompOrigin = new Point3d(minCorner[0] - .625, minCorner[1] + .625 + distances[1],
-                                3.26);
-
-                            SetComponentColor();
-
-                            CreateComponent(blankCompOrigin, (distances[0] + 1.25).ToString(),
-                                (distances[1] + 1.25).ToString(), "3.50");
-
-                            //settings for retainer
-
-                            var nameIndex = -1;
-
-                            foreach (CtsAttributes compName in comboBoxCompName.Items)
-                                if (compName.AttrValue == "RETAINER")
-                                    nameIndex = comboBoxCompName.Items.IndexOf(compName);
-
-                            comboBoxCompName.SelectedIndex = nameIndex;
-
-                            var materialIndex = -1;
-
-                            foreach (CtsAttributes compMaterial in listBoxMaterial.Items)
-                                if (compMaterial.AttrValue == "4140")
-                                    materialIndex = listBoxMaterial.Items.IndexOf(compMaterial);
-
-                            listBoxMaterial.SetSelected(materialIndex, true);
-
-                            blankCompOrigin = new Point3d(minCorner[0] - 1.25, minCorner[1] + 1.25 + distances[1],
-                                3.26);
-
-                            SetComponentColor();
-
-                            CreateComponent(blankCompOrigin, (distances[0] + 2.50).ToString(),
-                                (distances[1] + 2.50).ToString(), "1.25");
-
-                            // settings for backing  plate
-
-                            nameIndex = -1;
-
-                            foreach (CtsAttributes compName in comboBoxCompName.Items)
-                                if (compName.AttrValue == "BLOCK")
-                                    nameIndex = comboBoxCompName.Items.IndexOf(compName);
-
-                            comboBoxCompName.SelectedIndex = nameIndex;
-
-                            materialIndex = -1;
-
-                            foreach (CtsAttributes compMaterial in listBoxMaterial.Items)
-                                if (compMaterial.AttrValue == "O1 GS")
-                                    materialIndex = listBoxMaterial.Items.IndexOf(compMaterial);
-
-                            listBoxMaterial.SetSelected(materialIndex, true);
-
-                            blankCompOrigin = new Point3d(minCorner[0] - 1.25, minCorner[1] + 1.25 + distances[1],
-                                3.50);
-
-                            SetComponentColor();
-
-                            CreateComponent(blankCompOrigin, (distances[0] + 2.50).ToString(),
-                                (distances[1] + 2.50).ToString(), ".24");
-
-                            comboBoxCompName.SelectedIndex = selectedName;
-                            listBoxMaterial.SelectedIndex = selctedMaterial;
-                        }
+                        for (var i = 0; i < distances.Length; i++)
+                            distances[i] /= 25.4d;
                     }
 
-                    updateSessionButton.PerformClick();
+                    for (var i = 0; i < 3; i++)
+                    {
+                        var roundValue = Math.Round(distances[i], 3);
+                        var truncateValue = Math.Truncate(roundValue);
+                        var fractionValue = roundValue - truncateValue;
+                        if (Math.Abs(fractionValue) > Tolerance)
+                            for (var ii = .125; ii <= 1; ii += .125)
+                            {
+                                if (!(fractionValue <= ii)) continue;
+                                var roundedFraction = ii;
+                                var finalValue = truncateValue + roundedFraction;
+                                distances[i] = finalValue;
+                                break;
+                            }
+                        else
+                            distances[i] = roundValue;
+                    }
+
+                    for (var i = 0; i < 3; i++)
+                    {
+                        var isNegative = false;
+
+                        if (minCorner[i] < 0)
+                        {
+                            minCorner[i] *= -1;
+                            isNegative = true;
+                        }
+
+                        var roundValue = Math.Round(minCorner[i], 3);
+                        var truncateValue = Math.Truncate(roundValue);
+                        var fractionValue = roundValue - truncateValue;
+                        if (Math.Abs(fractionValue) > Tolerance)
+                            for (var ii = .125; ii <= 1; ii += .125)
+                            {
+                                if (!(fractionValue <= ii)) continue;
+                                var roundedFraction = ii;
+                                var finalValue = truncateValue + roundedFraction;
+
+                                if (isNegative)
+                                    minCorner[i] = finalValue * -1;
+                                else
+                                    minCorner[i] = finalValue;
+
+                                break;
+                            }
+                        else
+                            minCorner[i] = roundValue;
+                    }
+
+                    if (isMetric)
+                    {
+                        UpperRetainerMetric(minCorner, distances);
+                    }
+                    else
+                    {
+                        UpperRetainerEnglish(minCorner, distances);
+                    }
                 }
+
+                updateSessionButton.PerformClick();
 
                 checkBoxUpperComp.Checked = false;
             }
@@ -1323,6 +1250,154 @@ namespace TSG_Library.UFuncs
             {
                 ex.__PrintException();
             }
+        }
+
+        private void UpperRetainerEnglish(double[] minCorner, double[] distances)
+        {
+            var selectedName = comboBoxCompName.SelectedIndex;
+            var selctedMaterial = listBoxMaterial.SelectedIndex;
+
+            // settings for trim
+
+            var blankCompOrigin = new Point3d(minCorner[0] - .625, minCorner[1] + .625 + distances[1],
+                3.26);
+
+            SetComponentColor();
+
+            CreateComponent(blankCompOrigin, (distances[0] + 1.25).ToString(),
+                (distances[1] + 1.25).ToString(), "3.50");
+
+            //settings for retainer
+
+            var nameIndex = -1;
+
+            foreach (CtsAttributes compName in comboBoxCompName.Items)
+                if (compName.AttrValue == "RETAINER")
+                    nameIndex = comboBoxCompName.Items.IndexOf(compName);
+
+            comboBoxCompName.SelectedIndex = nameIndex;
+
+            var materialIndex = -1;
+
+            foreach (CtsAttributes compMaterial in listBoxMaterial.Items)
+                if (compMaterial.AttrValue == "4140")
+                    materialIndex = listBoxMaterial.Items.IndexOf(compMaterial);
+
+            listBoxMaterial.SetSelected(materialIndex, true);
+
+            blankCompOrigin = new Point3d(minCorner[0] - 1.25, minCorner[1] + 1.25 + distances[1],
+                3.26);
+
+            SetComponentColor();
+
+            CreateComponent(blankCompOrigin, (distances[0] + 2.50).ToString(),
+                (distances[1] + 2.50).ToString(), "1.25");
+
+            // settings for backing  plate
+
+            nameIndex = -1;
+
+            foreach (CtsAttributes compName in comboBoxCompName.Items)
+                if (compName.AttrValue == "BLOCK")
+                    nameIndex = comboBoxCompName.Items.IndexOf(compName);
+
+            comboBoxCompName.SelectedIndex = nameIndex;
+
+            materialIndex = -1;
+
+            foreach (CtsAttributes compMaterial in listBoxMaterial.Items)
+                if (compMaterial.AttrValue == "O1 GS")
+                    materialIndex = listBoxMaterial.Items.IndexOf(compMaterial);
+
+            listBoxMaterial.SetSelected(materialIndex, true);
+
+            blankCompOrigin = new Point3d(minCorner[0] - 1.25, minCorner[1] + 1.25 + distances[1],
+                3.50);
+
+            SetComponentColor();
+
+            CreateComponent(blankCompOrigin, (distances[0] + 2.50).ToString(),
+                (distances[1] + 2.50).ToString(), ".24");
+
+            comboBoxCompName.SelectedIndex = selectedName;
+            listBoxMaterial.SelectedIndex = selctedMaterial;
+        }
+
+        private void UpperRetainerMetric(double[] minCorner, double[] distances)
+        {
+            for (var i = 0; i < 3; i++)
+            {
+                minCorner[i] *= 25.4;
+                distances[i] *= 25.4;
+            }
+
+            var selectedName = comboBoxCompName.SelectedIndex;
+            var selctedMaterial = listBoxMaterial.SelectedIndex;
+
+            // settings for trim
+
+            var blankCompOrigin = new Point3d(minCorner[0] - 15.875,
+                minCorner[1] + 15.875 + distances[1], 82.804);
+
+            SetComponentColor();
+
+            CreateComponent(blankCompOrigin, (distances[0] + 31.75).ToString(),
+                (distances[1] + 31.75).ToString(), "88.9");
+
+            //settings for retainer
+
+            var nameIndex = -1;
+
+            foreach (CtsAttributes compName in comboBoxCompName.Items)
+                if (compName.AttrValue == "RETAINER")
+                    nameIndex = comboBoxCompName.Items.IndexOf(compName);
+
+            comboBoxCompName.SelectedIndex = nameIndex;
+
+            var materialIndex = -1;
+
+            foreach (CtsAttributes compMaterial in listBoxMaterial.Items)
+                if (compMaterial.AttrValue == "4140")
+                    materialIndex = listBoxMaterial.Items.IndexOf(compMaterial);
+
+            listBoxMaterial.SetSelected(materialIndex, true);
+
+            blankCompOrigin = new Point3d(minCorner[0] - 31.75, minCorner[1] + 31.75 + distances[1],
+                82.804);
+
+            SetComponentColor();
+
+            CreateComponent(blankCompOrigin, (distances[0] + 63.5).ToString(),
+                (distances[1] + 63.5).ToString(), "31.75");
+
+            // settings for backing  plate
+
+            nameIndex = -1;
+
+            foreach (CtsAttributes compName in comboBoxCompName.Items)
+                if (compName.AttrValue == "BLOCK")
+                    nameIndex = comboBoxCompName.Items.IndexOf(compName);
+
+            comboBoxCompName.SelectedIndex = nameIndex;
+
+            materialIndex = -1;
+
+            foreach (CtsAttributes compMaterial in listBoxMaterial.Items)
+                if (compMaterial.AttrValue == "O1 GS")
+                    materialIndex = listBoxMaterial.Items.IndexOf(compMaterial);
+
+            listBoxMaterial.SetSelected(materialIndex, true);
+
+            blankCompOrigin = new Point3d(minCorner[0] - 31.75, minCorner[1] + 31.75 + distances[1],
+                88.9);
+
+            SetComponentColor();
+
+            CreateComponent(blankCompOrigin, (distances[0] + 63.5).ToString(),
+                (distances[1] + 63.5).ToString(), "6.096");
+
+            comboBoxCompName.SelectedIndex = selectedName;
+            listBoxMaterial.SelectedIndex = selctedMaterial;
         }
 
         private void SaveAsButton_Click(object sender, EventArgs e)
@@ -1549,59 +1624,51 @@ namespace TSG_Library.UFuncs
             try
             {
                 session_.SetUndoMark(Session.MarkVisibility.Visible, "Copy Component");
+                var copyComponent = SelectOneComponent("Select Component to Copy");
 
-                try
+                if (copyComponent is null)
+                    return;
+
+                var part = (Part)copyComponent.Prototype;
+                var next = 0;
+                var originalPath = part.FullPath;
+                var copyPath = $"{part.FullPath.Remove(part.FullPath.Length - 4)}({next}).prt";
+
+                while (File.Exists(copyPath))
                 {
-                    var copyComponent = SelectOneComponent("Select Component to Copy");
-
-                    if (copyComponent == null) return;
-                    var part = (Part)copyComponent.Prototype;
-
-                    var next = 0;
-                    var originalPath = part.FullPath;
-                    var copyPath = part.FullPath.Remove(part.FullPath.Length - 4) + string.Format("({0})", next) +
-                                   ".prt";
-
-                    while (File.Exists(copyPath))
-                    {
-                        next += 1;
-                        copyPath = part.FullPath.Remove(part.FullPath.Length - 4) + string.Format("({0})", next) +
-                                   ".prt";
-                    }
-
-                    var indexOf = _workPart.FullPath.LastIndexOf("\\");
-                    var compare1 = _workPart.FullPath.Remove(indexOf + 1);
-                    var compare2 = copyPath.Remove(indexOf + 1);
-
-                    if (compare1 == compare2)
-                        if (File.Exists(originalPath))
-                        {
-                            File.Copy(originalPath, copyPath);
-
-
-                            var basePart1 = session_.Parts.OpenBase(copyPath, out var partLoadStatus1);
-                            partLoadStatus1.Dispose();
-                            var partToAdd = (Part)basePart1;
-                            copyComponent.GetPosition(out var origin, out var orientation);
-
-                            var layer = copyComponent.Layer;
-                            _workPart.ComponentAssembly.AddComponent(partToAdd, "BODY", copyComponent.DisplayName,
-                                origin, orientation, layer,
-                                out var partLoadStatus2);
-                            partLoadStatus2.Dispose();
-                        }
-                        else
-                        {
-                            MessageBox.Show("Save the original file to the assembly before making a copy");
-                        }
-                    else
-                        MessageBox.Show(
-                            "The selected component is not from the work part directory. \n                   Save As before making a copy.");
+                    next += 1;
+                    copyPath = $"{part.FullPath.Remove(part.FullPath.Length - 4)}({next}).prt";
                 }
-                catch (NXException ex)
+
+                var indexOf = _workPart.FullPath.LastIndexOf("\\");
+                var compare1 = _workPart.FullPath.Remove(indexOf + 1);
+                var compare2 = copyPath.Remove(indexOf + 1);
+
+                if (compare1 != compare2)
                 {
-                    UI.GetUI().NXMessageBox.Show("Caught exception", NXMessageBox.DialogType.Error, ex.Message);
+                    MessageBox.Show(
+                        "The selected component is not from the work part directory. \n                   Save As before making a copy.");
+                    return;
                 }
+
+                if (!File.Exists(originalPath))
+                {
+                    MessageBox.Show("Save the original file to the assembly before making a copy");
+                    return;
+                }
+
+                File.Copy(originalPath, copyPath);
+                var basePart1 = session_.Parts.OpenBase(copyPath, out var partLoadStatus1);
+                partLoadStatus1.Dispose();
+                var partToAdd = (Part)basePart1;
+                copyComponent.GetPosition(out var origin, out var orientation);
+                var layer = copyComponent.Layer;
+
+                _workPart.ComponentAssembly.AddComponent(partToAdd, "BODY", copyComponent.DisplayName,
+                    origin, orientation, layer,
+                    out var partLoadStatus2);
+
+                partLoadStatus2.Dispose();
             }
             catch (Exception ex)
             {
@@ -2570,19 +2637,26 @@ namespace TSG_Library.UFuncs
             var next = compNameResult;
             var originalPath = _originalWorkPart.FullPath;
             var indexLastDash = originalPath.LastIndexOf("-");
-            var filePath = _originalWorkPart.FullPath.Remove(indexLastDash + 1) + compNameIncrement + ".prt";
+            var filePath = $"{_originalWorkPart.FullPath.Remove(indexLastDash + 1)}{compNameIncrement}.prt";
             var status = ufsession_.Part.IsLoaded(filePath);
+
             while (File.Exists(filePath) || status == 1)
             {
                 next += 1;
                 compNameIncrement = next.ToString().PadLeft(3, '0');
-                filePath = _originalWorkPart.FullPath.Remove(indexLastDash + 1) + compNameIncrement + ".prt";
+                filePath = $"{_originalWorkPart.FullPath.Remove(indexLastDash + 1)}{compNameIncrement}.prt";
                 status = ufsession_.Part.IsLoaded(filePath);
             }
 
-            if (compNameIncrement.Length != 3) return false;
-            if (!isConverted) return false;
-            if (compNameResult <= 0 || compNameResult >= 991) return false;
+            if (compNameIncrement.Length != 3) 
+                return false;
+
+            if (!isConverted) 
+                return false;
+
+            if (compNameResult <= 0 || compNameResult >= 991) 
+                return false;
+
             if (_isNameReset)
             {
                 _isNameReset = false;
@@ -2591,6 +2665,7 @@ namespace TSG_Library.UFuncs
             }
 
             compNameResult += 1;
+
             if ((compNameResult > 0) & (compNameResult < 10))
             {
                 textBoxDetailNumber.Text = "00" + compNameResult;
@@ -2603,7 +2678,9 @@ namespace TSG_Library.UFuncs
                 return true;
             }
 
-            if (compNameResult <= 100) return false;
+            if (compNameResult <= 100) 
+                return false;
+
             textBoxDetailNumber.Text = compNameResult.ToString();
             return true;
         }
@@ -2613,7 +2690,6 @@ namespace TSG_Library.UFuncs
             var indexOf = _workPart.FullPath.LastIndexOf("\\");
             var fullName = _workPart.FullPath.Substring(indexOf + 1);
             var formatName = fullName.Substring(0, fullName.Length - 4);
-
             Text = formatName;
         }
 
@@ -3275,3 +3351,4 @@ namespace TSG_Library.UFuncs
         }
     }
 }
+// 3292
