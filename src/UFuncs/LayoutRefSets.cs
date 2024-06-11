@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using MoreLinq;
 using NXOpen;
-using NXOpen.UF;
-using NXOpen_;
 using TSG_Library.Attributes;
 using TSG_Library.Extensions;
-using Ufuncs0.Utilities;
 using static TSG_Library.Extensions.__Extensions_;
 
 namespace TSG_Library.UFuncs
@@ -20,17 +16,17 @@ namespace TSG_Library.UFuncs
         {
             if (__display_part_ is null)
             {
-                Globals.print_("There is no displayed part loaded");
+                print_("There is no displayed part loaded");
                 return;
             }
 
             session_.SetUndoMark(Session.MarkVisibility.Visible, "LayoutRefsets");
-            
+
             string text = __display_part_.Leaf.ToLower();
 
             if (!text.EndsWith("-layout"))
             {
-                Globals.print_("Layout Refset can only be used on layouts.");
+                print_("Layout Refset can only be used on layouts.");
                 return;
             }
 
@@ -38,7 +34,6 @@ namespace TSG_Library.UFuncs
 
             try
             {
-                prompt_("Loading refset BODY");
                 List<DisplayableObject> list = new List<DisplayableObject>();
                 list.AddRange(__display_part_.Curves.ToArray());
                 list.AddRange(__display_part_.Points.ToArray());
@@ -47,7 +42,7 @@ namespace TSG_Library.UFuncs
                               where body.IsSolidBody
                               select body);
 
-                NXObject[] array = NewMethod(list);
+                NXObject[] array = NewMethod1(list, 10);
 
                 if (array.Length != 0)
                 {
@@ -58,188 +53,106 @@ namespace TSG_Library.UFuncs
                         referenceSet.SetName("BODY");
                     }
 
-                    prompt_("Adding layer 10 bodies with slugs to BODY");
                     referenceSet.AddObjectsToReferenceSet(array);
                 }
             }
             catch (Exception ex)
             {
                 num++;
-                ex._PrintException();
+                ex.__PrintException();
             }
 
             try
             {
-                prompt_("Loading refset BODY_NO_SLUG");
                 List<DisplayableObject> list2 = new List<DisplayableObject>();
                 list2.AddRange(__display_part_.Points.ToArray());
                 list2.AddRange(from body in __display_part_.Bodies.ToArray()
                                where body.IsSolidBody
                                where body.Color != 75
                                select body);
-                NXObject[] array2 = NewMethod1(list2);
-                if (array2.Length != 0)
-                {
-                    ReferenceSet referenceSet2 = __display_part_.GetAllReferenceSets().SingleOrDefault((ReferenceSet set) => set.Name == "BODY_NO_SLUG");
-                    if (referenceSet2 == null)
-                    {
-                        referenceSet2 = __display_part_.CreateReferenceSet();
-                        referenceSet2.SetName("BODY_NO_SLUG");
-                    }
 
-                    referenceSet2.AddObjectsToReferenceSet(array2);
-                }
+                NXObject[] array2 = NewMethod1(list2, 10);
             }
             catch (Exception ex2)
             {
                 num++;
-                ex2._PrintException();
+                ex2.__PrintException();
             }
 
             try
             {
-                NXObject[] array3 = NewMethod2();
-                if (array3.Length != 0)
-                {
-                    ReferenceSet referenceSet3 = __display_part_.GetAllReferenceSets().SingleOrDefault((ReferenceSet refset) => refset.Name == "LWR-3D");
-                    if (referenceSet3 == null)
-                    {
-                        referenceSet3 = __display_part_.CreateReferenceSet();
-                        referenceSet3.SetName("LWR-3D");
-                    }
-
-                    referenceSet3.AddObjectsToReferenceSet(array3);
-                }
+                NXObject[] array3 = FindBodiesOnLayerInDisplayPart(12);
+                MakeRefSet(array3, "LWR-3D");
             }
             catch (Exception ex3)
             {
-                ex3._PrintException();
+                ex3.__PrintException();
                 num++;
             }
 
             try
             {
-                NXObject[] array4 = NewMethod3();
-                if (array4.Length != 0)
-                {
-                    ReferenceSet referenceSet4 = __display_part_.GetAllReferenceSets().SingleOrDefault((ReferenceSet refset) => refset.Name == "UPR-3D");
-                    if (referenceSet4 == null)
-                    {
-                        referenceSet4 = __display_part_.CreateReferenceSet();
-                        referenceSet4.SetName("UPR-3D");
-                    }
-
-                    referenceSet4.AddObjectsToReferenceSet(array4);
-                }
+                NXObject[] array4 = FindBodiesOnLayerInDisplayPart(13);
+                MakeRefSet(array4, "UPR-3D");
             }
             catch (Exception ex4)
             {
-                ex4._PrintException();
+                ex4.__PrintException();
                 num++;
             }
 
             try
             {
-                NXObject[] array5 = NewMethod4();
-                if (array5.Length != 0)
-                {
-                    ReferenceSet referenceSet5 = __display_part_.GetAllReferenceSets().SingleOrDefault((ReferenceSet refset) => refset.Name == "PAD-3D");
-                    if (referenceSet5 == null)
-                    {
-                        referenceSet5 = __display_part_.CreateReferenceSet();
-                        referenceSet5.SetName("PAD-3D");
-                    }
-
-                    referenceSet5.AddObjectsToReferenceSet(array5);
-                }
+                NXObject[] array5 = FindBodiesOnLayerInDisplayPart(14);
+                MakeRefSet(array5, "PAD-3D");
             }
             catch (Exception ex5)
             {
-                ex5._PrintException();
+                ex5.__PrintException();
                 num++;
             }
 
             try
             {
-                NXObject[] array6 = NewMethod5();
-                if (array6.Length != 0)
-                {
-                    ReferenceSet referenceSet6 = __display_part_.GetAllReferenceSets().SingleOrDefault((ReferenceSet refset) => refset.Name == "LWR-PROFILE");
-                    if (referenceSet6 == null)
-                    {
-                        referenceSet6 = __display_part_.CreateReferenceSet();
-                        referenceSet6.SetName("LWR-PROFILE");
-                    }
-
-                    referenceSet6.AddObjectsToReferenceSet(array6);
-                }
+                NXObject[] array6 = FindBodiesOnLayerInDisplayPart(15);
+                MakeRefSet(array6, "LWR-PROFILE");
             }
             catch (Exception ex6)
             {
-                ex6._PrintException();
+                ex6.__PrintException();
                 num++;
             }
 
             try
             {
-                NXObject[] array7 = NewMethod6();
-                if (array7.Length != 0)
-                {
-                    ReferenceSet referenceSet7 = __display_part_.GetAllReferenceSets().SingleOrDefault((ReferenceSet refset) => refset.Name == "UPR-PROFILE");
-                    if (referenceSet7 == null)
-                    {
-                        referenceSet7 = __display_part_.CreateReferenceSet();
-                        referenceSet7.SetName("UPR-PROFILE");
-                    }
-
-                    referenceSet7.AddObjectsToReferenceSet(array7);
-                }
+                NXObject[] array7 = FindBodiesOnLayerInDisplayPart(16);
+                MakeRefSet(array7, "UPR-PROFILE");
             }
             catch (Exception ex7)
             {
-                ex7._PrintException();
+                ex7.__PrintException();
                 num++;
             }
 
             try
             {
-                NXObject[] array8 = NewMethod7();
-                if (array8.Length != 0)
-                {
-                    ReferenceSet referenceSet8 = __display_part_.GetAllReferenceSets().SingleOrDefault((ReferenceSet refset) => refset.Name == "PAD-PROFILE");
-                    if (referenceSet8 == null)
-                    {
-                        referenceSet8 = __display_part_.CreateReferenceSet();
-                        referenceSet8.SetName("PAD-PROFILE");
-                    }
-
-                    referenceSet8.AddObjectsToReferenceSet(array8);
-                }
+                NXObject[] array8 = FindBodiesOnLayerInDisplayPart(17);
+                MakeRefSet(array8, "PAD-PROFILE");
             }
             catch (Exception ex8)
             {
-                ex8._PrintException();
+                ex8.__PrintException();
                 num++;
             }
 
             try
             {
-                NXObject[] array9 = NewMethod8();
-                if (array9.Length != 0)
-                {
-                    ReferenceSet referenceSet9 = __display_part_.GetAllReferenceSets().SingleOrDefault((ReferenceSet refset) => refset.Name == "INCOMING_BODY");
-                    if (referenceSet9 == null)
-                    {
-                        referenceSet9 = __display_part_.CreateReferenceSet();
-                        referenceSet9.SetName("INCOMING_BODY");
-                    }
-
-                    referenceSet9.AddObjectsToReferenceSet(array9);
-                }
+                NXObject[] array9 = FindBodiesOnLayerInDisplayPart(9);
+                MakeRefSet(array9, "INCOMING_BODY");
             }
             catch (Exception ex9)
             {
-                ex9._PrintException();
+                ex9.__PrintException();
                 num++;
             }
 
@@ -257,81 +170,34 @@ namespace TSG_Library.UFuncs
             print_($"Layout Ref Sets completed with {num} error(s)");
         }
 
-        private static NXObject[] NewMethod8()
+        private static void MakeRefSet(NXObject[] array9, string ref_set)
+        {
+            if (array9.Length != 0)
+            {
+                ReferenceSet referenceSet9 = __display_part_.GetAllReferenceSets().SingleOrDefault((ReferenceSet refset) => refset.Name == ref_set);
+                if (referenceSet9 == null)
+                {
+                    referenceSet9 = __display_part_.CreateReferenceSet();
+                    referenceSet9.SetName(ref_set);
+                }
+
+                referenceSet9.AddObjectsToReferenceSet(array9);
+            }
+        }
+
+        private static NXObject[] FindBodiesOnLayerInDisplayPart(int layer)
         {
             return (from body in __display_part_.Bodies.ToArray()
                     where body.IsSolidBody
                     where !body.IsOccurrence
-                    where body.Layer == 9
+                    where body.Layer == layer
                     select body).Cast<NXObject>().ToArray();
         }
 
-        private static NXObject[] NewMethod7()
-        {
-            return (from body in __display_part_.Bodies.ToArray()
-                    where body.IsSolidBody
-                    where !body.IsOccurrence
-                    where body.Layer == 17
-                    select body).Cast<NXObject>().ToArray();
-        }
-
-        private static NXObject[] NewMethod6()
-        {
-            return (from body in __display_part_.Bodies.ToArray()
-                    where body.IsSolidBody
-                    where !body.IsOccurrence
-                    where body.Layer == 16
-                    select body).Cast<NXObject>().ToArray();
-        }
-
-        private static NXObject[] NewMethod5()
-        {
-            return (from body in __display_part_.Bodies.ToArray()
-                    where body.IsSolidBody
-                    where !body.IsOccurrence
-                    where body.Layer == 15
-                    select body).Cast<NXObject>().ToArray();
-        }
-
-        private static NXObject[] NewMethod4()
-        {
-            return (from body in __display_part_.Bodies.ToArray()
-                    where body.IsSolidBody
-                    where !body.IsOccurrence
-                    where body.Layer == 14
-                    select body).Cast<NXObject>().ToArray();
-        }
-
-        private static NXObject[] NewMethod3()
-        {
-            return (from body in __display_part_.Bodies.ToArray()
-                    where body.IsSolidBody
-                    where !body.IsOccurrence
-                    where body.Layer == 13
-                    select body).Cast<NXObject>().ToArray();
-        }
-
-        private static NXObject[] NewMethod2()
-        {
-            return (from body in __display_part_.Bodies.ToArray()
-                    where body.IsSolidBody
-                    where !body.IsOccurrence
-                    where body.Layer == 12
-                    select body).Cast<NXObject>().ToArray();
-        }
-
-        private static NXObject[] NewMethod1(List<DisplayableObject> list2)
+        private static NXObject[] NewMethod1(List<DisplayableObject> list2, int layer)
         {
             return (from obj in list2
-                    where obj.Layer == 10
-                    where !obj.IsOccurrence
-                    select obj).Cast<NXObject>().ToArray();
-        }
-
-        private static NXObject[] NewMethod(List<DisplayableObject> list)
-        {
-            return (from obj in list
-                    where obj.Layer == 10
+                    where obj.Layer == layer
                     where !obj.IsOccurrence
                     select obj).Cast<NXObject>().ToArray();
         }
