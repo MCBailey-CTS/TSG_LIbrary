@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+using MoreLinq;
 using NXOpen;
 using NXOpen.UF;
+using NXOpen_;
 using TSG_Library.Attributes;
+using TSG_Library.Extensions;
+using Ufuncs0.Utilities;
 using static TSG_Library.Extensions.__Extensions_;
 
 namespace TSG_Library.UFuncs
@@ -11,523 +16,325 @@ namespace TSG_Library.UFuncs
     [UFunc(ufunc_layout_ref_sets)]
     internal class LayoutRefSets : _UFunc
     {
-        private static void Prompt(string message)
-        {
-            UFSession.GetUFSession().Ui.SetPrompt(message);
-        }
-
         public override void execute()
         {
-            if(Session.GetSession().Parts.Display is null)
+            if (__display_part_ is null)
             {
-                print_("There is no displayed part loaded");
+                Globals.print_("There is no displayed part loaded");
                 return;
             }
 
             session_.SetUndoMark(Session.MarkVisibility.Visible, "LayoutRefsets");
+            
+            string text = __display_part_.Leaf.ToLower();
 
-            var display = __display_part_;
-
-            var leaf = display.Leaf.ToLower();
-
-            if(!leaf.EndsWith("-layout"))
+            if (!text.EndsWith("-layout"))
             {
-                print_("Layout Refset can only be used on layouts.");
+                Globals.print_("Layout Refset can only be used on layouts.");
                 return;
             }
 
-            var errors = 0;
+            int num = 0;
 
             try
             {
-                // BODY
-                Prompt("Loading refset BODY");
+                prompt_("Loading refset BODY");
+                List<DisplayableObject> list = new List<DisplayableObject>();
+                list.AddRange(__display_part_.Curves.ToArray());
+                list.AddRange(__display_part_.Points.ToArray());
 
-                var objects = new List<DisplayableObject>();
+                list.AddRange(from body in __display_part_.Bodies.ToArray()
+                              where body.IsSolidBody
+                              select body);
 
-                objects.AddRange(__display_part_.Curves.ToArray());
-                objects.AddRange(__display_part_.Points.ToArray());
-                objects.AddRange(__display_part_.Bodies.ToArray().Where(body => body.IsSolidBody));
+                NXObject[] array = NewMethod(list);
 
-                var objects_to_add = objects.Where(obj => obj.Layer == 10)
-                    .Where(obj => !obj.IsOccurrence)
-                    .Cast<NXObject>()
-                    .ToArray();
-
-                if(objects_to_add.Length > 0)
+                if (array.Length != 0)
                 {
-                    var body_refset = display.GetAllReferenceSets().SingleOrDefault(set => set.Name == "BODY");
-
-                    if(body_refset is null)
+                    ReferenceSet referenceSet = __display_part_.GetAllReferenceSets().SingleOrDefault((ReferenceSet set) => set.Name == "BODY");
+                    if (referenceSet == null)
                     {
-                        body_refset = display.CreateReferenceSet();
-                        body_refset.SetName("BODY");
+                        referenceSet = __display_part_.CreateReferenceSet();
+                        referenceSet.SetName("BODY");
                     }
 
-                    Prompt("Adding layer 10 bodies with slugs to BODY");
-
-                    body_refset.AddObjectsToReferenceSet(objects_to_add);
+                    prompt_("Adding layer 10 bodies with slugs to BODY");
+                    referenceSet.AddObjectsToReferenceSet(array);
                 }
             }
             catch (Exception ex)
             {
-                errors++;
-                ex.__PrintException();
+                num++;
+                ex._PrintException();
             }
 
             try
             {
-                // BODY_NO_SLUG
-                Prompt("Loading refset BODY_NO_SLUG");
-
-                var objects = new List<DisplayableObject>();
-
-                objects.AddRange(__display_part_.Points.ToArray());
-                objects.AddRange(__display_part_.Bodies.ToArray().Where(body => body.IsSolidBody)
-                    .Where(body => body.Color != 75));
-
-                var objects_to_add = objects.Where(obj => obj.Layer == 10)
-                    .Where(obj => !obj.IsOccurrence)
-                    .Cast<NXObject>()
-                    .ToArray();
-
-                if(objects_to_add.Length > 0)
+                prompt_("Loading refset BODY_NO_SLUG");
+                List<DisplayableObject> list2 = new List<DisplayableObject>();
+                list2.AddRange(__display_part_.Points.ToArray());
+                list2.AddRange(from body in __display_part_.Bodies.ToArray()
+                               where body.IsSolidBody
+                               where body.Color != 75
+                               select body);
+                NXObject[] array2 = NewMethod1(list2);
+                if (array2.Length != 0)
                 {
-                    var body_no_slug_refset =
-                        display.GetAllReferenceSets().SingleOrDefault(set => set.Name == "BODY_NO_SLUG");
-
-                    if(body_no_slug_refset is null)
+                    ReferenceSet referenceSet2 = __display_part_.GetAllReferenceSets().SingleOrDefault((ReferenceSet set) => set.Name == "BODY_NO_SLUG");
+                    if (referenceSet2 == null)
                     {
-                        body_no_slug_refset = display.CreateReferenceSet();
-                        body_no_slug_refset.SetName("BODY_NO_SLUG");
+                        referenceSet2 = __display_part_.CreateReferenceSet();
+                        referenceSet2.SetName("BODY_NO_SLUG");
                     }
 
-                    body_no_slug_refset.AddObjectsToReferenceSet(objects_to_add);
+                    referenceSet2.AddObjectsToReferenceSet(array2);
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex2)
             {
-                errors++;
-                ex.__PrintException();
+                num++;
+                ex2._PrintException();
             }
 
             try
             {
-                const string lwr_3d_name = "LWR-3D";
-
-                // offset face pad body
-                var lwr3dObjects = display.Bodies
-                    .ToArray()
-                    .Where(body => body.IsSolidBody)
-                    .Where(body => !body.IsOccurrence)
-                    .Where(body => body.Layer == 12)
-                    .Cast<NXObject>()
-                    .ToArray();
-
-                if(lwr3dObjects.Length > 0)
+                NXObject[] array3 = NewMethod2();
+                if (array3.Length != 0)
                 {
-                    var lwr3dRefset = display.GetAllReferenceSets()
-                        .SingleOrDefault(refset => refset.Name == lwr_3d_name);
-
-                    if(lwr3dRefset is null)
+                    ReferenceSet referenceSet3 = __display_part_.GetAllReferenceSets().SingleOrDefault((ReferenceSet refset) => refset.Name == "LWR-3D");
+                    if (referenceSet3 == null)
                     {
-                        lwr3dRefset = display.CreateReferenceSet();
-                        lwr3dRefset.SetName(lwr_3d_name);
+                        referenceSet3 = __display_part_.CreateReferenceSet();
+                        referenceSet3.SetName("LWR-3D");
                     }
 
-                    lwr3dRefset.AddObjectsToReferenceSet(lwr3dObjects);
+                    referenceSet3.AddObjectsToReferenceSet(array3);
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex3)
             {
-                ex.__PrintException();
-                errors++;
+                ex3._PrintException();
+                num++;
             }
 
             try
             {
-                const string upr_3d_name = "UPR-3D";
-
-                // offset face pad body
-                var upr3dObjects = display.Bodies
-                    .ToArray()
-                    .Where(body => body.IsSolidBody)
-                    .Where(body => !body.IsOccurrence)
-                    .Where(body => body.Layer == 13)
-                    .Cast<NXObject>()
-                    .ToArray();
-
-                if(upr3dObjects.Length > 0)
+                NXObject[] array4 = NewMethod3();
+                if (array4.Length != 0)
                 {
-                    var upr3dRefset = display.GetAllReferenceSets()
-                        .SingleOrDefault(refset => refset.Name == upr_3d_name);
-
-                    if(upr3dRefset is null)
+                    ReferenceSet referenceSet4 = __display_part_.GetAllReferenceSets().SingleOrDefault((ReferenceSet refset) => refset.Name == "UPR-3D");
+                    if (referenceSet4 == null)
                     {
-                        upr3dRefset = display.CreateReferenceSet();
-                        upr3dRefset.SetName(upr_3d_name);
+                        referenceSet4 = __display_part_.CreateReferenceSet();
+                        referenceSet4.SetName("UPR-3D");
                     }
 
-                    upr3dRefset.AddObjectsToReferenceSet(upr3dObjects);
+                    referenceSet4.AddObjectsToReferenceSet(array4);
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex4)
             {
-                ex.__PrintException();
-                errors++;
+                ex4._PrintException();
+                num++;
             }
 
             try
             {
-                const string pad_3d_name = "PAD-3D";
-
-                // offset face pad body
-                var pad3dObjects = display.Bodies
-                    .ToArray()
-                    .Where(body => body.IsSolidBody)
-                    .Where(body => !body.IsOccurrence)
-                    .Where(body => body.Layer == 14)
-                    .Cast<NXObject>()
-                    .ToArray();
-
-                if(pad3dObjects.Length > 0)
+                NXObject[] array5 = NewMethod4();
+                if (array5.Length != 0)
                 {
-                    var pad3dRefset = display.GetAllReferenceSets()
-                        .SingleOrDefault(refset => refset.Name == pad_3d_name);
-
-                    if(pad3dRefset is null)
+                    ReferenceSet referenceSet5 = __display_part_.GetAllReferenceSets().SingleOrDefault((ReferenceSet refset) => refset.Name == "PAD-3D");
+                    if (referenceSet5 == null)
                     {
-                        pad3dRefset = display.CreateReferenceSet();
-                        pad3dRefset.SetName(pad_3d_name);
+                        referenceSet5 = __display_part_.CreateReferenceSet();
+                        referenceSet5.SetName("PAD-3D");
                     }
 
-                    pad3dRefset.AddObjectsToReferenceSet(pad3dObjects);
+                    referenceSet5.AddObjectsToReferenceSet(array5);
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex5)
             {
-                ex.__PrintException();
-                errors++;
+                ex5._PrintException();
+                num++;
             }
 
             try
             {
-                const string pad_3d_name = "LWR-PROFILE";
-
-                // offset face pad body
-                var pad3dObjects = display.Bodies
-                    .ToArray()
-                    .Where(body => body.IsSolidBody)
-                    .Where(body => !body.IsOccurrence)
-                    .Where(body => body.Layer == 15)
-                    .Cast<NXObject>()
-                    .ToArray();
-
-                if(pad3dObjects.Length > 0)
+                NXObject[] array6 = NewMethod5();
+                if (array6.Length != 0)
                 {
-                    var pad3dRefset = display.GetAllReferenceSets()
-                        .SingleOrDefault(refset => refset.Name == pad_3d_name);
-
-                    if(pad3dRefset is null)
+                    ReferenceSet referenceSet6 = __display_part_.GetAllReferenceSets().SingleOrDefault((ReferenceSet refset) => refset.Name == "LWR-PROFILE");
+                    if (referenceSet6 == null)
                     {
-                        pad3dRefset = display.CreateReferenceSet();
-                        pad3dRefset.SetName(pad_3d_name);
+                        referenceSet6 = __display_part_.CreateReferenceSet();
+                        referenceSet6.SetName("LWR-PROFILE");
                     }
 
-                    pad3dRefset.AddObjectsToReferenceSet(pad3dObjects);
+                    referenceSet6.AddObjectsToReferenceSet(array6);
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex6)
             {
-                ex.__PrintException();
-                errors++;
+                ex6._PrintException();
+                num++;
             }
 
             try
             {
-                const string pad_3d_name = "UPR-PROFILE";
-
-                // offset face pad body
-                var pad3dObjects = display.Bodies
-                    .ToArray()
-                    .Where(body => body.IsSolidBody)
-                    .Where(body => !body.IsOccurrence)
-                    .Where(body => body.Layer == 16)
-                    .Cast<NXObject>()
-                    .ToArray();
-
-                if(pad3dObjects.Length > 0)
+                NXObject[] array7 = NewMethod6();
+                if (array7.Length != 0)
                 {
-                    var pad3dRefset = display.GetAllReferenceSets()
-                        .SingleOrDefault(refset => refset.Name == pad_3d_name);
-
-                    if(pad3dRefset is null)
+                    ReferenceSet referenceSet7 = __display_part_.GetAllReferenceSets().SingleOrDefault((ReferenceSet refset) => refset.Name == "UPR-PROFILE");
+                    if (referenceSet7 == null)
                     {
-                        pad3dRefset = display.CreateReferenceSet();
-                        pad3dRefset.SetName(pad_3d_name);
+                        referenceSet7 = __display_part_.CreateReferenceSet();
+                        referenceSet7.SetName("UPR-PROFILE");
                     }
 
-                    pad3dRefset.AddObjectsToReferenceSet(pad3dObjects);
+                    referenceSet7.AddObjectsToReferenceSet(array7);
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex7)
             {
-                ex.__PrintException();
-                errors++;
+                ex7._PrintException();
+                num++;
             }
 
             try
             {
-                const string pad_3d_name = "PAD-PROFILE";
-
-                // offset face pad body
-                var pad3dObjects = display.Bodies
-                    .ToArray()
-                    .Where(body => body.IsSolidBody)
-                    .Where(body => !body.IsOccurrence)
-                    .Where(body => body.Layer == 17)
-                    .Cast<NXObject>()
-                    .ToArray();
-
-                if(pad3dObjects.Length > 0)
+                NXObject[] array8 = NewMethod7();
+                if (array8.Length != 0)
                 {
-                    var pad3dRefset = display.GetAllReferenceSets()
-                        .SingleOrDefault(refset => refset.Name == pad_3d_name);
-
-                    if(pad3dRefset is null)
+                    ReferenceSet referenceSet8 = __display_part_.GetAllReferenceSets().SingleOrDefault((ReferenceSet refset) => refset.Name == "PAD-PROFILE");
+                    if (referenceSet8 == null)
                     {
-                        pad3dRefset = display.CreateReferenceSet();
-                        pad3dRefset.SetName(pad_3d_name);
+                        referenceSet8 = __display_part_.CreateReferenceSet();
+                        referenceSet8.SetName("PAD-PROFILE");
                     }
 
-                    pad3dRefset.AddObjectsToReferenceSet(pad3dObjects);
+                    referenceSet8.AddObjectsToReferenceSet(array8);
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex8)
             {
-                ex.__PrintException();
-                errors++;
+                ex8._PrintException();
+                num++;
             }
 
             try
             {
-                const string pad_3d_name = "INCOMING_BODY";
-
-                // offset face pad body
-                var pad3dObjects = display.Bodies
-                    .ToArray()
-                    .Where(body => body.IsSolidBody)
-                    .Where(body => !body.IsOccurrence)
-                    .Where(body => body.Layer == 9)
-                    .Cast<NXObject>()
-                    .ToArray();
-
-                if(pad3dObjects.Length > 0)
+                NXObject[] array9 = NewMethod8();
+                if (array9.Length != 0)
                 {
-                    var pad3dRefset = display.GetAllReferenceSets()
-                        .SingleOrDefault(refset => refset.Name == pad_3d_name);
-
-                    if(pad3dRefset is null)
+                    ReferenceSet referenceSet9 = __display_part_.GetAllReferenceSets().SingleOrDefault((ReferenceSet refset) => refset.Name == "INCOMING_BODY");
+                    if (referenceSet9 == null)
                     {
-                        pad3dRefset = display.CreateReferenceSet();
-                        pad3dRefset.SetName(pad_3d_name);
+                        referenceSet9 = __display_part_.CreateReferenceSet();
+                        referenceSet9.SetName("INCOMING_BODY");
                     }
 
-                    pad3dRefset.AddObjectsToReferenceSet(pad3dObjects);
+                    referenceSet9.AddObjectsToReferenceSet(array9);
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex9)
             {
-                ex.__PrintException();
-                errors++;
+                ex9._PrintException();
+                num++;
             }
 
+            string[] array10 = new string[9] { "BODY", "BODY_NO_SLUG", "INCOMING_BODY", "PAD-PROFILE", "UPR-PROFILE", "LWR-PROFILE", "PAD-3D", "UPR-3D", "LWR-3D" };
+            string[] array11 = array10;
 
-            string[] temp =
+            foreach (string refset_name in array11)
             {
-                "BODY",
-                "BODY_NO_SLUG",
-                "INCOMING_BODY",
-                "PAD-PROFILE",
-                "UPR-PROFILE",
-                "LWR-PROFILE",
-                "PAD-3D",
-                "UPR-3D",
-                "LWR-3D"
-            };
+                ReferenceSet referenceSet10 = __display_part_.__FindReferenceSetOrNull(refset_name);
 
-            foreach (var refset_name in temp)
-            {
-                var refset = session_.Parts.Display.GetAllReferenceSets()
-                    .SingleOrDefault(__r => __r.Name == refset_name);
-
-                if(refset is null)
-                    continue;
-
-                if(refset.AskAllDirectMembers().Length == 0 && refset.AskMembersInReferenceSet().Length == 0)
-                    refset.OwningPart.DeleteReferenceSet(refset);
+                if (referenceSet10 != null && referenceSet10.AskAllDirectMembers().Length == 0 && referenceSet10.AskMembersInReferenceSet().Length == 0)
+                    referenceSet10.OwningPart.DeleteReferenceSet(referenceSet10);
             }
 
-            UFSession.GetUFSession().Ui.SetStatus($"Layout Ref Sets completed with {errors} error(s)");
+            print_($"Layout Ref Sets completed with {num} error(s)");
         }
 
-        //public override void execute()
-        //{
-        //    try
-        //    {
-        //        CreateOpReferenceSet(TSG_Library.Extensions.__work_part_);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        ex._PrintException();
-        //    }
-        //}
+        private static NXObject[] NewMethod8()
+        {
+            return (from body in __display_part_.Bodies.ToArray()
+                    where body.IsSolidBody
+                    where !body.IsOccurrence
+                    where body.Layer == 9
+                    select body).Cast<NXObject>().ToArray();
+        }
 
+        private static NXObject[] NewMethod7()
+        {
+            return (from body in __display_part_.Bodies.ToArray()
+                    where body.IsSolidBody
+                    where !body.IsOccurrence
+                    where body.Layer == 17
+                    select body).Cast<NXObject>().ToArray();
+        }
 
-        //private const string Op = "OP-";
+        private static NXObject[] NewMethod6()
+        {
+            return (from body in __display_part_.Bodies.ToArray()
+                    where body.IsSolidBody
+                    where !body.IsOccurrence
+                    where body.Layer == 16
+                    select body).Cast<NXObject>().ToArray();
+        }
 
-        ////  private readonly CTS_Library.Op _op;      
-        ////private readonly NXOpen.Part _part;
+        private static NXObject[] NewMethod5()
+        {
+            return (from body in __display_part_.Bodies.ToArray()
+                    where body.IsSolidBody
+                    where !body.IsOccurrence
+                    where body.Layer == 15
+                    select body).Cast<NXObject>().ToArray();
+        }
 
-        ///// <summary>The start of op layers = 10.</summary>       
-        //protected const int RefSetLayerStart = 10;
+        private static NXObject[] NewMethod4()
+        {
+            return (from body in __display_part_.Bodies.ToArray()
+                    where body.IsSolidBody
+                    where !body.IsOccurrence
+                    where body.Layer == 14
+                    select body).Cast<NXObject>().ToArray();
+        }
 
-        ///// <summary>The end of op layers = 249.</summary>       
-        //protected const int RefSetLayerEnd = 249;
+        private static NXObject[] NewMethod3()
+        {
+            return (from body in __display_part_.Bodies.ToArray()
+                    where body.IsSolidBody
+                    where !body.IsOccurrence
+                    where body.Layer == 13
+                    select body).Cast<NXObject>().ToArray();
+        }
 
-        ///// <summary>The color of the slugs that we want to place in the OP-Body-Reference set  = 75.</summary>       
-        //protected const int Color = 75;
+        private static NXObject[] NewMethod2()
+        {
+            return (from body in __display_part_.Bodies.ToArray()
+                    where body.IsSolidBody
+                    where !body.IsOccurrence
+                    where body.Layer == 12
+                    select body).Cast<NXObject>().ToArray();
+        }
 
-        //public static void CreateOpReferenceSet(Part part)
-        //{
-        //    //string op = part._AskOpOrNull();
+        private static NXObject[] NewMethod1(List<DisplayableObject> list2)
+        {
+            return (from obj in list2
+                    where obj.Layer == 10
+                    where !obj.IsOccurrence
+                    select obj).Cast<NXObject>().ToArray();
+        }
 
-        //    var match = Regex.Match(part.Leaf, "-[PTpt](?<op>\\d+)-");
-
-
-        //    if (!match.Success)
-        //        throw new InvalidOperationException($"The resulting op was null from {_WorkPart.Leaf}.");
-
-        //    string op = match.Groups["op"].Value;
-
-        //    if (!int.TryParse(op, out _))
-        //        throw new ArgumentException();
-
-        //    DeleteReferenceSets(part);
-
-        //    CreateAllReferenceSets(part);
-
-        //    AddSlugs(part);
-
-        //}
-
-        //public static void DeleteReferenceSets(Part part)
-        //{
-        //    foreach (ReferenceSet set in part.GetAllReferenceSets())
-        //    {
-        //        if (!set.Name.Contains(Op)) continue;
-        //        print_("Deleted Reference Set: " + set.Name);
-        //        TheUFSession.Obj.DeleteObject(set.Tag);
-        //    }
-        //}
-
-        //public static void CreateAllReferenceSets(Part part)
-        //{
-        //    //bool foundNullCategory = false;
-
-        //    for (int layer = RefSetLayerStart; layer <= RefSetLayerEnd; layer++)
-        //        try
-        //        {
-        //            string layerCat = GetLayerCategory(part, layer);
-
-        //            if (layerCat is null)
-        //            {
-        //                //foundNullCategory = true;
-        //                //print_("");
-        //                continue;
-        //            }
-
-        //            if (layer % 10 == 0)
-        //            {
-        //                CreateReferenceSet(part, layer);
-        //            }
-        //            else if ((layer - 1) % 10 == 0 && layer != 11)
-        //            {
-        //                bool flag1 = GetBodies(part, layer + 4).Length > 0;
-        //                bool flag2 = GetBodies(part, layer + 5).Length > 0;
-        //                bool flag3 = GetBodies(part, layer + 6).Length > 0;
-        //                if (!flag1 || !flag2 || !flag3) continue;
-        //                ReferenceSet noSlugRefset = part.CreateReferenceSet();
-        //                string noSlugName = layerCat.Replace("SLUGS", "NO-SLUGS");
-        //                noSlugRefset.SetName(noSlugName);
-        //                print_("Created Reference Set: " + noSlugName);
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            ex._PrintException($"Layer: {layer}");
-        //        }
-
-        //    //if (foundNullCategory)
-        //    //    print_("\nAt least one layer is missing a layer category.\n");
-
-        //    for (int layer = RefSetLayerStart; layer <= RefSetLayerEnd; layer++)
-        //        if (layer % 10 != 0)
-        //            CreateReferenceSet(part, layer);
-        //}
-
-        //public static void CreateReferenceSet(Part part, int layer)
-        //{
-        //    string layerCat = GetLayerCategory(part, layer);
-        //    try
-        //    {
-        //        if ((layer - 1) % 10 == 0 && layer != 11) return;
-        //        Body[] bodies = GetBodies(part, layer);
-        //        if (bodies.Length <= 0) return;
-        //        if (string.IsNullOrEmpty(layerCat)) return;
-        //        ReferenceSet refset = part.CreateReferenceSet();
-        //        refset.SetName(layerCat);
-        //        refset.AddObjectsToReferenceSet(bodies.Select(x => x).ToArray<NXObject>());
-        //        print_("Created Reference Set: " + layerCat + " with " + bodies.Length + " bodies.");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        ex._PrintException();
-        //    }
-        //}
-
-        //public static void AddSlugs(Part part)
-        //{
-        //    for (int layer = RefSetLayerStart + 1; layer < RefSetLayerEnd; layer += 10)
-        //    {
-        //        string layerCatName = GetLayerCategory(part, layer);
-        //        if (string.IsNullOrEmpty(layerCatName)) continue;
-        //        if (!_WorkPart._HasReferenceSet(layerCatName)) continue;
-        //        ReferenceSet bodyReferenceSet = _WorkPart._FindReferenceSet(layerCatName);
-        //        Body[] bodies = GetBodies(part, layer + 1);
-        //        if (bodies.Length <= 0) return;
-        //        Body[] validBodies = (from body in bodies where body.Color == Color select body).ToArray();
-        //        if (validBodies.Length <= 0) continue;
-        //        bodyReferenceSet.AddObjectsToReferenceSet(validBodies.Select(x => x).ToArray<NXObject>());
-        //        print_(validBodies.Length + " were added to " + layerCatName);
-        //    }
-        //}
-
-        //public static Body[] GetBodies(Part part, int layer)
-        //{
-        //    return (from body in new Part_(part.Tag).Bodies
-        //            where body.ObjectSubType == Snap.NX.ObjectTypes.SubType.BodySolid
-        //            where body.Layer == layer
-        //            select body.NXOpenBody).ToArray();
-        //}
-
-        //public static string GetLayerCategory(Part part, int layer)
-        //{
-        //    IEnumerable<string> list = from category in new Part_(part.Tag).Categories
-        //                               where category.Name.Contains(Op)
-        //                               where category.Layers.Contains(layer)
-        //                               select category.Name;
-        //    return list.FirstOrDefault();
-        //}
+        private static NXObject[] NewMethod(List<DisplayableObject> list)
+        {
+            return (from obj in list
+                    where obj.Layer == 10
+                    where !obj.IsOccurrence
+                    select obj).Cast<NXObject>().ToArray();
+        }
     }
 }
+// 340

@@ -194,6 +194,11 @@ namespace TSG_Library.Extensions
         }
 
 
+        public static Body[] __Bodies(this BasePart basePart)
+        {
+            return basePart.__ToPart().Bodies.ToArray();
+        }
+
         //ufsession_.Part.CheckPartWritable
         //ufsession_.Part.AskUnits
         //ufsession_.Part.AskStatus
