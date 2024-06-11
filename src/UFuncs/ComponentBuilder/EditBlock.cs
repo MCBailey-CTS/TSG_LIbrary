@@ -354,15 +354,8 @@ namespace TSG_Library.UFuncs
 
                         SetWcsToWorkPart(editComponent);
 
-                        DisplayModification editObjectDisplay;
-                        editObjectDisplay = session_.DisplayManager.NewDisplayModification();
-                        editObjectDisplay.ApplyToAllFaces = true;
-                        editObjectDisplay.NewTranslucency = 75;
-                        DisplayableObject[] compObject = { session_.Parts.WorkComponent };
-                        editObjectDisplay.Apply(compObject);
-                        editObjectDisplay.Dispose();
+                        __work_component_.__Translucency(75);
 
-                        session_.Parts.WorkComponent.RedisplayObject();
 
                         Component[] setRefComp = { editComponent };
                         _displayPart.ComponentAssembly.ReplaceReferenceSetInOwners("EDIT", setRefComp);
@@ -393,15 +386,9 @@ namespace TSG_Library.UFuncs
                 session_.Preferences.EmphasisVisualization.WorkPartEmphasis = true;
                 session_.Preferences.Assemblies.WorkPartDisplayAsEntirePart = false;
 
-                DisplayModification editObjectDisplay;
-                editObjectDisplay = session_.DisplayManager.NewDisplayModification();
-                editObjectDisplay.ApplyToAllFaces = true;
-                editObjectDisplay.NewTranslucency = 0;
-                DisplayableObject[] compObject = { session_.Parts.WorkComponent };
-                editObjectDisplay.Apply(compObject);
-                editObjectDisplay.Dispose();
+                
+                __work_component_.__Translucency(0);
 
-                session_.Parts.WorkComponent.RedisplayObject();
 
                 _displayPart.Layers.WorkLayer = 1;
 
@@ -3268,29 +3255,11 @@ namespace TSG_Library.UFuncs
                 // set component translucency
 
                 if(setCompTranslucency != null)
-                {
-                    DisplayModification editObjectDisplay;
-                    editObjectDisplay = session_.DisplayManager.NewDisplayModification();
-                    editObjectDisplay.ApplyToAllFaces = true;
-                    editObjectDisplay.NewTranslucency = 75;
-                    DisplayableObject[] compObject = { setCompTranslucency };
-                    editObjectDisplay.Apply(compObject);
-                    editObjectDisplay.Dispose();
-                }
+                    setCompTranslucency.__Translucency(75);
                 else
-                {
                     foreach (Body dispBody in _workPart.Bodies)
                         if(dispBody.Layer == 1)
-                        {
-                            DisplayModification editObjectDisplay;
-                            editObjectDisplay = session_.DisplayManager.NewDisplayModification();
-                            editObjectDisplay.ApplyToAllFaces = true;
-                            editObjectDisplay.NewTranslucency = 75;
-                            DisplayableObject[] bodyObject = { dispBody };
-                            editObjectDisplay.Apply(bodyObject);
-                            editObjectDisplay.Dispose();
-                        }
-                }
+                            dispBody.__Translucency(75);
 
                 SetWcsToWorkPart(setCompTranslucency);
 

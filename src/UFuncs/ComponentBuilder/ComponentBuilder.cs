@@ -667,8 +667,8 @@ namespace TSG_Library.UFuncs
                     var distances = new double[3];
                     ufsession_.Modl.AskBoundingBoxExact(selectedBody.Tag, _displayPart.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
                     isMetric = ConvertUnits(distances);
-                    NewMethod1(distances);
-                    NewMethod(minCorner);
+                    Distance0(distances);
+                    MinCorner3(minCorner);
 
                     if (isMetric)
                         AuotLowrMetric(minCorner, distances);
@@ -728,8 +728,8 @@ namespace TSG_Library.UFuncs
                         ufsession_.Modl.AskBoundingBoxExact(selectedBody.Tag, _displayPart.WCS.CoordinateSystem.Tag,
                             minCorner, directions, distances);
                         isMetric = ConvertUnits(distances);
-                        NewMethod4(distances);
-                        NewMethod5(minCorner);
+                        Distance0(distances);
+                        MinCorner3(minCorner);
 
                         if (isMetric)
                             AutoUpperMetric(minCorner, distances);
@@ -809,8 +809,8 @@ namespace TSG_Library.UFuncs
                     ufsession_.Modl.AskBoundingBoxExact(selectedBody.Tag, _displayPart.WCS.CoordinateSystem.Tag,
                         minCorner, directions, distances);
                     isMetric = ConvertUnits(distances);
-                    NewMethod7(distances);
-                    NewMethod8(minCorner);
+                    Distance0(distances);
+                    MinCorner3(minCorner);
 
                     if (isMetric)
                         LowerRetainerMetric(minCorner, distances);
@@ -982,8 +982,8 @@ namespace TSG_Library.UFuncs
                         minCorner, directions, distances);
 
                     isMetric = ConvertUnits(distances);
-                    NewMethod10(distances);
-                    NewMethod11(minCorner);
+                    Distance0(distances);
+                    MinCorner3(minCorner);
 
                     if (isMetric)
                         UpperRetainerMetric(minCorner, distances);
@@ -2343,7 +2343,7 @@ namespace TSG_Library.UFuncs
 
             foreach (var bFace in bodyFaces)
             {
-                if (bFace.SolidFaceType != Face.FaceType.Planar) 
+                if (bFace.SolidFaceType != Face.FaceType.Planar)
                     continue;
 
                 double[] vec1 =
@@ -2360,14 +2360,14 @@ namespace TSG_Library.UFuncs
                 ufsession_.Modl.AskFaceData(bFace.Tag, out _, point, vec2, box, out _, out _, out _);
                 ufsession_.Vec3.IsParallel(vec1, vec2, .001, out var isParallel);
 
-                if (isParallel != 1) 
+                if (isParallel != 1)
                     continue;
 
                 if (upperComponent)
                 {
                     ufsession_.Vec3.IsEqual(vec1, vec2, .001, out isEqualVec);
 
-                    if (isEqualVec != 1) 
+                    if (isEqualVec != 1)
                         continue;
 
                     bFace.Color = 6;
@@ -2377,7 +2377,7 @@ namespace TSG_Library.UFuncs
                 {
                     ufsession_.Vec3.IsEqual(vec1, vec2, .001, out isEqualVec);
 
-                    if (isEqualVec != 0) 
+                    if (isEqualVec != 0)
                         continue;
 
                     bFace.Color = 6;
@@ -2522,19 +2522,17 @@ namespace TSG_Library.UFuncs
             bool isValid;
             var lastDirIndex = partToCheck.FullPath.LastIndexOf("\\");
             var subAssemName = partToCheck.FullPath.Substring(lastDirIndex + 1);
-            if (subAssemName.ToLower().Contains("lsp") || subAssemName.ToLower().Contains("usp"))
-                isValid = true;
-            else if (subAssemName.ToLower().Contains("ush") || subAssemName.ToLower().Contains("lsh"))
-                isValid = true;
-            else if (subAssemName.ToLower().Contains("lftr") || subAssemName.ToLower().Contains("lnitro") ||
-                    subAssemName.ToLower().Contains("unitro"))
-                isValid = true;
-            else if (subAssemName.ToLower().Contains("acc") || subAssemName.ToLower().Contains("lair") ||
-                    subAssemName.ToLower().Contains("lele"))
-                isValid = true;
-            else
-                isValid = false;
-            return isValid;
+
+            return subAssemName.ToLower().Contains("lsp")
+                || subAssemName.ToLower().Contains("usp")
+                || subAssemName.ToLower().Contains("ush")
+                || subAssemName.ToLower().Contains("lsh")
+                || subAssemName.ToLower().Contains("lftr")
+                || subAssemName.ToLower().Contains("lnitro")
+                || subAssemName.ToLower().Contains("unitro")
+                || subAssemName.ToLower().Contains("acc")
+                || subAssemName.ToLower().Contains("lair")
+                || subAssemName.ToLower().Contains("lele");
         }
 
         private bool IsSaveAllowed(Component comp)
@@ -2871,18 +2869,29 @@ namespace TSG_Library.UFuncs
         private void CreateAutoSizeUdo()
         {
             var myUdOclass = session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoAutoSizeComponent");
-            if (myUdOclass == null) return;
+
+            if (myUdOclass is null)
+                return;
+
             var currentUdo = _workPart.UserDefinedObjectManager.GetUdosOfClass(myUdOclass);
-            if (currentUdo.Length != 0) return;
+
+            if (currentUdo.Length != 0)
+                return;
+
             BasePart myBasePart = _workPart;
             var myUdOmanager = myBasePart.UserDefinedObjectManager;
             var myUdo = myUdOmanager.CreateUserDefinedObject(myUdOclass);
             var myLinks = new UserDefinedObject.LinkDefinition[1];
             var numBodies = _workPart.Bodies.Cast<Body>().Count(body => body.Layer == 1);
-            if (numBodies != 1) return;
+
+            if (numBodies != 1)
+                return;
+
             foreach (Body body in _workPart.Bodies)
             {
-                if (body.Layer != 1) continue;
+                if (body.Layer != 1)
+                    continue;
+
                 myLinks[0].AssociatedObject = body;
                 myLinks[0].Status = UserDefinedObject.LinkStatus.UpToDate;
                 myUdo.SetLinks(UserDefinedObject.LinkType.Type1, myLinks);
@@ -2968,32 +2977,29 @@ namespace TSG_Library.UFuncs
 
                 foreach (CartesianCoordinateSystem wpCsys in _workPart.CoordinateSystems)
                 {
-                    if (wpCsys.Layer != 254) continue;
-                    if (wpCsys.Name != "EDITCSYS") continue;
-                    var csysOccurrence = session_.Parts.WorkComponent.FindOccurrence(wpCsys);
+                    if (wpCsys.Layer != 254)
+                        continue;
 
+                    if (wpCsys.Name != "EDITCSYS")
+                        continue;
+
+                    var csysOccurrence = session_.Parts.WorkComponent.FindOccurrence(wpCsys);
                     var editCsys = (CartesianCoordinateSystem)csysOccurrence;
 
                     if (editCsys != null)
                         _displayPart.WCS.SetOriginAndMatrix(editCsys.Origin, editCsys.Orientation.Element);
 
-                    var markDeleteObjs = session_.SetUndoMark(Session.MarkVisibility.Invisible, "");
-
-                    session_.UpdateManager.AddToDeleteList(wpCsys);
-
-                    session_.UpdateManager.DoUpdate(markDeleteObjs);
+                    session_.__DeleteObjects(editCsys);
                 }
             }
 
-            if (isBlockComp) return;
-            {
-                session_.Parts.SetDisplay(_originalDisplayPart, false, false, out var setDispLoadStatus1);
-                setDispLoadStatus1.Dispose();
+            if (isBlockComp)
+                return;
 
-                session_.Parts.SetWorkComponent(compRefCsys, out var partLoadStatusWorkComp);
-                partLoadStatusWorkComp.Dispose();
-                UpdateSessionParts();
-            }
+            __display_part_ = _originalDisplayPart;
+            __work_component_ = compRefCsys;
+            session_.Parts.SetDisplay(_originalDisplayPart, false, false, out var setDispLoadStatus1);
+            UpdateSessionParts();
         }
 
         private void UpdateSessionParts()
@@ -3077,7 +3083,6 @@ namespace TSG_Library.UFuncs
             return compData.Count > 0 ? compData : null;
         }
 
-
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             Settings.Default.udoComponentBuilderWindowLocation = Location;
@@ -3098,13 +3103,33 @@ namespace TSG_Library.UFuncs
             WorkPartChanged1(__work_part_);
         }
 
-        private static void NewMethod1(double[] distances)
+        private static bool ConvertUnits(double[] distances)
+        {
+            if (_workPart.PartUnits != BasePart.Units.Millimeters)
+                return false;
+
+            for (var i = 0; i < distances.Length; i++)
+                distances[i] /= 25.4d;
+
+            return true;
+        }
+
+
+        private static void RoundAndTruncate(double number, out double roundValue, out double truncateValue, out double fractionValue)
+        {
+            roundValue = Math.Round(number, 3);
+            truncateValue = Math.Truncate(roundValue);
+            fractionValue = roundValue - truncateValue;
+        }
+
+
+
+        private static void Distance0(double[] distances)
         {
             for (var i = 0; i < 3; i++)
             {
-                var roundValue = Math.Round(distances[i], 3);
-                var truncateValue = Math.Truncate(roundValue);
-                var fractionValue = roundValue - truncateValue;
+                RoundAndTruncate(distances[i], out var roundValue, out var truncateValue, out var fractionValue);
+
                 if (Math.Abs(fractionValue) <= Tolerance)
                 {
                     distances[i] = roundValue;
@@ -3124,7 +3149,7 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        private static void NewMethod(double[] minCorner)
+        private static void MinCorner3(double[] minCorner)
         {
             for (var i = 0; i < 3; i++)
             {
@@ -3136,9 +3161,7 @@ namespace TSG_Library.UFuncs
                     isNegative = true;
                 }
 
-                var roundValue = Math.Round(minCorner[i], 3);
-                var truncateValue = Math.Truncate(roundValue);
-                var fractionValue = roundValue - truncateValue;
+                RoundAndTruncate(minCorner[i], out var roundValue, out var truncateValue, out var fractionValue);
 
                 if (Math.Abs(fractionValue) <= Tolerance)
                 {
@@ -3161,183 +3184,6 @@ namespace TSG_Library.UFuncs
 
                     break;
                 }
-            }
-        }
-
-
-        private static bool ConvertUnits(double[] distances)
-        {
-            if (_workPart.PartUnits != BasePart.Units.Millimeters)
-                return false;
-
-            for (var i = 0; i < distances.Length; i++)
-                distances[i] /= 25.4d;
-
-            return true;
-        }
-
-
-        private static void NewMethod5(double[] minCorner)
-        {
-            for (var i = 0; i < 3; i++)
-            {
-                var isNegative = false;
-                if (minCorner[i] < 0)
-                {
-                    minCorner[i] *= -1;
-                    isNegative = true;
-                }
-
-                var roundValue = Math.Round(minCorner[i], 3);
-                var truncateValue = Math.Truncate(roundValue);
-                var fractionValue = roundValue - truncateValue;
-                if (Math.Abs(fractionValue) > Tolerance)
-                    for (var ii = .125; ii <= 1; ii += .125)
-                    {
-                        if (!(fractionValue <= ii)) continue;
-                        var roundedFraction = ii;
-                        var finalValue = truncateValue + roundedFraction;
-                        if (isNegative) minCorner[i] = finalValue * -1;
-                        else minCorner[i] = finalValue;
-                        break;
-                    }
-                else
-                    minCorner[i] = roundValue;
-            }
-        }
-
-        private static void NewMethod4(double[] distances)
-        {
-            for (var i = 0; i < 3; i++)
-            {
-                var roundValue = Math.Round(distances[i], 3);
-                var truncateValue = Math.Truncate(roundValue);
-                var fractionValue = roundValue - truncateValue;
-                if (Math.Abs(fractionValue) > Tolerance)
-                    for (var ii = .125; ii <= 1; ii += .125)
-                    {
-                        if (!(fractionValue <= ii)) continue;
-                        var roundedFraction = ii;
-                        var finalValue = truncateValue + roundedFraction;
-                        distances[i] = finalValue;
-                        break;
-                    }
-                else
-                    distances[i] = roundValue;
-            }
-        }
-
-
-
-
-        private static void NewMethod8(double[] minCorner)
-        {
-            for (var i = 0; i < 3; i++)
-            {
-                var isNegative = false;
-
-                if (minCorner[i] < 0)
-                {
-                    minCorner[i] *= -1;
-                    isNegative = true;
-                }
-
-                var roundValue = Math.Round(minCorner[i], 3);
-                var truncateValue = Math.Truncate(roundValue);
-                var fractionValue = roundValue - truncateValue;
-                if (Math.Abs(fractionValue) > Tolerance)
-                    for (var ii = .125; ii <= 1; ii += .125)
-                    {
-                        if (!(fractionValue <= ii)) continue;
-                        var roundedFraction = ii;
-                        var finalValue = truncateValue + roundedFraction;
-
-                        if (isNegative)
-                            minCorner[i] = finalValue * -1;
-                        else
-                            minCorner[i] = finalValue;
-
-                        break;
-                    }
-                else
-                    minCorner[i] = roundValue;
-            }
-        }
-
-        private static void NewMethod7(double[] distances)
-        {
-            for (var i = 0; i < 3; i++)
-            {
-                var roundValue = Math.Round(distances[i], 3);
-                var truncateValue = Math.Truncate(roundValue);
-                var fractionValue = roundValue - truncateValue;
-                if (Math.Abs(fractionValue) > Tolerance)
-                    for (var ii = .125; ii <= 1; ii += .125)
-                    {
-                        if (!(fractionValue <= ii)) continue;
-                        var roundedFraction = ii;
-                        var finalValue = truncateValue + roundedFraction;
-                        distances[i] = finalValue;
-                        break;
-                    }
-                else
-                    distances[i] = roundValue;
-            }
-        }
-
-
-        private static void NewMethod11(double[] minCorner)
-        {
-            for (var i = 0; i < 3; i++)
-            {
-                var isNegative = false;
-
-                if (minCorner[i] < 0)
-                {
-                    minCorner[i] *= -1;
-                    isNegative = true;
-                }
-
-                var roundValue = Math.Round(minCorner[i], 3);
-                var truncateValue = Math.Truncate(roundValue);
-                var fractionValue = roundValue - truncateValue;
-                if (Math.Abs(fractionValue) > Tolerance)
-                    for (var ii = .125; ii <= 1; ii += .125)
-                    {
-                        if (!(fractionValue <= ii)) continue;
-                        var roundedFraction = ii;
-                        var finalValue = truncateValue + roundedFraction;
-
-                        if (isNegative)
-                            minCorner[i] = finalValue * -1;
-                        else
-                            minCorner[i] = finalValue;
-
-                        break;
-                    }
-                else
-                    minCorner[i] = roundValue;
-            }
-        }
-
-        private static void NewMethod10(double[] distances)
-        {
-            for (var i = 0; i < 3; i++)
-            {
-                var roundValue = Math.Round(distances[i], 3);
-                var truncateValue = Math.Truncate(roundValue);
-                var fractionValue = roundValue - truncateValue;
-                if (Math.Abs(fractionValue) > Tolerance)
-                    for (var ii = .125; ii <= 1; ii += .125)
-                    {
-                        if (!(fractionValue <= ii)) continue;
-                        var roundedFraction = ii;
-                        var finalValue = truncateValue + roundedFraction;
-                        distances[i] = finalValue;
-                        break;
-                    }
-                else
-                    distances[i] = roundValue;
             }
         }
     }
