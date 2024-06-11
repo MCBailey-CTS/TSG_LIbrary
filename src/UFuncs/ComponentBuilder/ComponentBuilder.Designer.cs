@@ -68,6 +68,7 @@
             this.checkBoxBurnDirY = new System.Windows.Forms.CheckBox();
             this.comboBoxTolerance = new System.Windows.Forms.ComboBox();
             this.checkBoxBurnDirX = new System.Windows.Forms.CheckBox();
+            this.chkDigits = new System.Windows.Forms.CheckBox();
             this.groupBoxColor.SuspendLayout();
             this.groupBoxEditAssembly.SuspendLayout();
             this.groupBoxWorkPlane.SuspendLayout();
@@ -77,7 +78,7 @@
             // 
             // textBoxDetailNumber
             // 
-            this.textBoxDetailNumber.Location = new System.Drawing.Point(12, 44);
+            this.textBoxDetailNumber.Location = new System.Drawing.Point(12, 62);
             this.textBoxDetailNumber.Name = "textBoxDetailNumber";
             this.textBoxDetailNumber.Size = new System.Drawing.Size(100, 20);
             this.textBoxDetailNumber.TabIndex = 1;
@@ -98,7 +99,7 @@
             // 
             this.comboBoxCompName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxCompName.FormattingEnabled = true;
-            this.comboBoxCompName.Location = new System.Drawing.Point(12, 70);
+            this.comboBoxCompName.Location = new System.Drawing.Point(12, 88);
             this.comboBoxCompName.Name = "comboBoxCompName";
             this.comboBoxCompName.Size = new System.Drawing.Size(100, 21);
             this.comboBoxCompName.TabIndex = 2;
@@ -117,7 +118,7 @@
             this.groupBoxColor.Controls.Add(this.buttonDarkDullGreen);
             this.groupBoxColor.Controls.Add(this.buttonObscureDullGreen);
             this.groupBoxColor.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBoxColor.Location = new System.Drawing.Point(118, 44);
+            this.groupBoxColor.Location = new System.Drawing.Point(118, 62);
             this.groupBoxColor.Name = "groupBoxColor";
             this.groupBoxColor.Size = new System.Drawing.Size(86, 150);
             this.groupBoxColor.TabIndex = 5;
@@ -228,7 +229,7 @@
             // 
             this.changeColorCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
             this.changeColorCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.changeColorCheckBox.Location = new System.Drawing.Point(118, 200);
+            this.changeColorCheckBox.Location = new System.Drawing.Point(118, 218);
             this.changeColorCheckBox.Name = "changeColorCheckBox";
             this.changeColorCheckBox.Size = new System.Drawing.Size(86, 23);
             this.changeColorCheckBox.TabIndex = 15;
@@ -257,7 +258,7 @@
             this.groupBoxEditAssembly.Controls.Add(this.copyButton);
             this.groupBoxEditAssembly.Controls.Add(this.saveAsButton);
             this.groupBoxEditAssembly.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBoxEditAssembly.Location = new System.Drawing.Point(15, 473);
+            this.groupBoxEditAssembly.Location = new System.Drawing.Point(15, 491);
             this.groupBoxEditAssembly.Name = "groupBoxEditAssembly";
             this.groupBoxEditAssembly.Size = new System.Drawing.Size(190, 125);
             this.groupBoxEditAssembly.TabIndex = 8;
@@ -335,7 +336,7 @@
             this.groupBoxWorkPlane.Controls.Add(this.buttonViewWcs);
             this.groupBoxWorkPlane.Controls.Add(this.comboBoxGrid);
             this.groupBoxWorkPlane.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBoxWorkPlane.Location = new System.Drawing.Point(12, 335);
+            this.groupBoxWorkPlane.Location = new System.Drawing.Point(12, 353);
             this.groupBoxWorkPlane.Name = "groupBoxWorkPlane";
             this.groupBoxWorkPlane.Size = new System.Drawing.Size(192, 50);
             this.groupBoxWorkPlane.TabIndex = 6;
@@ -356,7 +357,7 @@
             // listBoxMaterial
             // 
             this.listBoxMaterial.FormattingEnabled = true;
-            this.listBoxMaterial.Location = new System.Drawing.Point(12, 97);
+            this.listBoxMaterial.Location = new System.Drawing.Point(12, 115);
             this.listBoxMaterial.Name = "listBoxMaterial";
             this.listBoxMaterial.ScrollAlwaysVisible = true;
             this.listBoxMaterial.Size = new System.Drawing.Size(100, 95);
@@ -365,7 +366,7 @@
             // 
             // textBoxUserMaterial
             // 
-            this.textBoxUserMaterial.Location = new System.Drawing.Point(12, 202);
+            this.textBoxUserMaterial.Location = new System.Drawing.Point(12, 220);
             this.textBoxUserMaterial.Name = "textBoxUserMaterial";
             this.textBoxUserMaterial.Size = new System.Drawing.Size(100, 20);
             this.textBoxUserMaterial.TabIndex = 4;
@@ -374,7 +375,7 @@
             // buttonExit
             // 
             this.buttonExit.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonExit.Location = new System.Drawing.Point(22, 604);
+            this.buttonExit.Location = new System.Drawing.Point(22, 622);
             this.buttonExit.Name = "buttonExit";
             this.buttonExit.Size = new System.Drawing.Size(175, 20);
             this.buttonExit.TabIndex = 11;
@@ -410,7 +411,7 @@
             this.groupBox1.Controls.Add(this.buttonEditBlock);
             this.groupBox1.Controls.Add(this.buttonEditConstruction);
             this.groupBox1.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBox1.Location = new System.Drawing.Point(12, 391);
+            this.groupBox1.Location = new System.Drawing.Point(12, 409);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(192, 76);
             this.groupBox1.TabIndex = 25;
@@ -437,7 +438,7 @@
             this.groupBoxBurnSettings.Controls.Add(this.comboBoxTolerance);
             this.groupBoxBurnSettings.Controls.Add(this.checkBoxBurnDirX);
             this.groupBoxBurnSettings.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBoxBurnSettings.Location = new System.Drawing.Point(12, 229);
+            this.groupBoxBurnSettings.Location = new System.Drawing.Point(12, 247);
             this.groupBoxBurnSettings.Name = "groupBoxBurnSettings";
             this.groupBoxBurnSettings.Size = new System.Drawing.Size(193, 100);
             this.groupBoxBurnSettings.TabIndex = 26;
@@ -517,12 +518,24 @@
             this.checkBoxBurnDirX.UseVisualStyleBackColor = true;
             this.checkBoxBurnDirX.CheckedChanged += new System.EventHandler(this.CheckBoxBurnDirX_CheckedChanged);
             // 
+            // chkDigits
+            // 
+            this.chkDigits.AutoSize = true;
+            this.chkDigits.Location = new System.Drawing.Point(12, 39);
+            this.chkDigits.Name = "chkDigits";
+            this.chkDigits.Size = new System.Drawing.Size(91, 17);
+            this.chkDigits.TabIndex = 27;
+            this.chkDigits.Text = "4 Digit Details";
+            this.chkDigits.UseVisualStyleBackColor = true;
+            this.chkDigits.CheckedChanged += new System.EventHandler(this.chkDigits_CheckedChanged);
+            // 
             // ComponentBuilder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(214, 634);
+            this.ClientSize = new System.Drawing.Size(214, 651);
             this.ControlBox = false;
+            this.Controls.Add(this.chkDigits);
             this.Controls.Add(this.groupBoxBurnSettings);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.changeColorCheckBox);
@@ -594,5 +607,6 @@
         private System.Windows.Forms.Button buttonAutoUpr;
         private System.Windows.Forms.Button buttonLwrRetAssm;
         private System.Windows.Forms.Button buttonUprRetAssm;
+        private System.Windows.Forms.CheckBox chkDigits;
     }
 }

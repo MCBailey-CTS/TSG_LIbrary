@@ -19,6 +19,7 @@ using static TSG_Library.Extensions.__Extensions_;
 using static NXOpen.UF.UFConstants;
 using static TSG_Library.UFuncs._UFunc;
 using Part = NXOpen.Part;
+using MoreLinq;
 
 namespace TSG_Library.UFuncs
 {
@@ -49,7 +50,7 @@ namespace TSG_Library.UFuncs
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            if(_displayPart != null)
+            if (_displayPart != null)
                 WorkPartChanged1(_displayPart);
 
             Location = Settings.Default.udoComponentBuilderWindowLocation;
@@ -91,8 +92,8 @@ namespace TSG_Library.UFuncs
             LoadGridSizes();
 
 
-            if(string.IsNullOrEmpty(comboBoxGrid.Text))
-                if(!(session_.Parts.Work is null))
+            if (string.IsNullOrEmpty(comboBoxGrid.Text))
+                if (!(session_.Parts.Work is null))
                     comboBoxGrid.SelectedItem =
                         session_.Parts.Work.PartUnits == BasePart.Units.Inches ? "0.250" : "6.35";
 
@@ -103,9 +104,11 @@ namespace TSG_Library.UFuncs
 
         private void ComboBoxGrid_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SetWorkPlaneOff();
-            if(comboBoxGrid.Text != @"0.000")
-                SetWorkPlaneOn();
+            SetWorkPlane(false);
+
+            if (comboBoxGrid.Text != @"0.000")
+                SetWorkPlane(true);
+
             Settings.Default.udoComponentBuilderGridIncrement = comboBoxGrid.Text;
             Settings.Default.Save();
         }
@@ -115,7 +118,7 @@ namespace TSG_Library.UFuncs
         {
             comboBoxGrid.Items.Clear();
 
-            if(_displayPart.PartUnits == BasePart.Units.Inches)
+            if (_displayPart.PartUnits == BasePart.Units.Inches)
                 comboBoxGrid.Items.AddRange(new object[]
                 {
                     "0.002",
@@ -142,7 +145,7 @@ namespace TSG_Library.UFuncs
 
             foreach (string gridSetting in comboBoxGrid.Items)
             {
-                if(gridSetting != Settings.Default.udoComponentBuilderGridIncrement)
+                if (gridSetting != Settings.Default.udoComponentBuilderGridIncrement)
                     continue;
 
 
@@ -151,20 +154,20 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        private void SetWorkPlaneOn()
+        private void SetWorkPlane(bool snapToGrid)
         {
             try
             {
                 UpdateSessionParts();
                 var workPlane1 = _displayPart.Preferences.Workplane;
-                if(workPlane1 == null) return;
+                if (workPlane1 == null) return;
                 workPlane1.GridType = WorkPlane.Grid.Rectangular;
                 workPlane1.GridIsNonUniform = false;
                 var gridSize1 = new WorkPlane.GridSize(GridSpace, 1, 1);
                 workPlane1.SetRectangularUniformGridSize(gridSize1);
                 workPlane1.ShowGrid = false;
                 workPlane1.ShowLabels = false;
-                workPlane1.SnapToGrid = true;
+                workPlane1.SnapToGrid = snapToGrid;
                 workPlane1.GridOnTop = false;
                 workPlane1.RectangularShowMajorLines = false;
                 workPlane1.PolarShowMajorLines = false;
@@ -176,35 +179,10 @@ namespace TSG_Library.UFuncs
             }
         }
 
-
-        private void SetWorkPlaneOff()
-        {
-            try
-            {
-                UpdateSessionParts();
-                var workPlane1 = _displayPart.Preferences.Workplane;
-                if(workPlane1 == null) return;
-                workPlane1.GridType = WorkPlane.Grid.Rectangular;
-                workPlane1.GridIsNonUniform = false;
-                var gridSize1 = new WorkPlane.GridSize(GridSpace, 1, 1);
-                workPlane1.SetRectangularUniformGridSize(gridSize1);
-                workPlane1.ShowGrid = false;
-                workPlane1.ShowLabels = false;
-                workPlane1.SnapToGrid = false;
-                workPlane1.GridOnTop = false;
-                workPlane1.RectangularShowMajorLines = false;
-                workPlane1.PolarShowMajorLines = false;
-                workPlane1.GridColor = 7;
-            }
-            catch (Exception ex)
-            {
-                ex.__PrintException();
-            }
-        }
 
         public int Startup()
         {
-            if(_registered != 0) return 0;
+            if (_registered != 0) return 0;
             var mForm = this;
             _idWorkPartChanged1 = session_.Parts.AddWorkPartChangedHandler(mForm.WorkPartChanged1);
             _registered = 1;
@@ -215,7 +193,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if(_isSaveAs == false)
+                if (!_isSaveAs)
                 {
                     UpdateSessionParts();
                     ResetForm(_workPart);
@@ -224,8 +202,8 @@ namespace TSG_Library.UFuncs
                     groupBoxColor.Enabled = false;
                 }
 
-                if(__work_component_ is null)
-                    if(session_.Parts.Work.ComponentAssembly.RootComponent != null)
+                if (__work_component_ is null)
+                    if (session_.Parts.Work.ComponentAssembly.RootComponent != null)
                         __work_component_ = session_.Parts.Work.ComponentAssembly.RootComponent;
                     else
                         return;
@@ -252,15 +230,15 @@ namespace TSG_Library.UFuncs
         {
             while (true)
             {
-                if(component == null || component.IsSuppressed) return AssemblyComponent.None;
+                if (component == null || component.IsSuppressed) return AssemblyComponent.None;
                 var displayName = component.DisplayName.ToUpper();
-                if(displayName.Contains("LWR") || displayName.Contains("LSP") || displayName.Contains("LSH") ||
+                if (displayName.Contains("LWR") || displayName.Contains("LSP") || displayName.Contains("LSH") ||
                    displayName.Contains("LAD") || displayName.Contains("LFTR"))
                     return AssemblyComponent.Lower;
-                if(displayName.Contains("UPR") || displayName.Contains("USP") || displayName.Contains("USH") ||
+                if (displayName.Contains("UPR") || displayName.Contains("USP") || displayName.Contains("USH") ||
                    displayName.Contains("UAD"))
                     return AssemblyComponent.Upper;
-                if(component.Parent is null) return AssemblyComponent.None;
+                if (component.Parent is null) return AssemblyComponent.None;
                 component = component.Parent;
             }
         }
@@ -300,9 +278,9 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if(textBoxDetailNumber.Text.Length == 0) return;
+                if (textBoxDetailNumber.Text.Length == 0) return;
                 var isConverted = int.TryParse(textBoxDetailNumber.Text, out var compName);
-                if(!isConverted) return;
+                if (!isConverted) return;
                 comboBoxCompName.Enabled = compName > 0 && compName < 991;
             }
             catch (Exception ex)
@@ -319,7 +297,7 @@ namespace TSG_Library.UFuncs
 
         private void ComboBoxCompName_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(comboBoxCompName.SelectedIndex != -1)
+            if (comboBoxCompName.SelectedIndex != -1)
                 listBoxMaterial.Enabled = true;
         }
 
@@ -327,7 +305,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if(listBoxMaterial.SelectedIndex != -1)
+                if (listBoxMaterial.SelectedIndex != -1)
                 {
                     var flag = listBoxMaterial.Text == "HRS PLT" || listBoxMaterial.Text == "4140 PLT" ||
                                listBoxMaterial.Text == "HRS";
@@ -349,9 +327,9 @@ namespace TSG_Library.UFuncs
                     buttonLwrRetAssm.Enabled = true;
                     checkBoxBurnout.Enabled = flag;
                     checkBoxBurnout.Checked = flag;
-                    if(!flag) return;
+                    if (!flag) return;
                     var boolFlag = listBoxMaterial.Text != "HRS PLT" && listBoxMaterial.Text != "4140 PLT";
-                    if(listBoxMaterial.Text != "HRS PLT" && listBoxMaterial.Text != "4140 PLT")
+                    if (listBoxMaterial.Text != "HRS PLT" && listBoxMaterial.Text != "4140 PLT")
                     {
                         checkBoxBurnDirZ.Checked = false;
                         checkBoxGrind.Checked = false;
@@ -378,10 +356,10 @@ namespace TSG_Library.UFuncs
             {
                 var flag = textBoxUserMaterial.Text.Length != 0;
                 listBoxMaterial.Enabled = !flag;
-                if(flag)
+                if (flag)
                 {
                     listBoxMaterial.SelectedIndex = -1;
-                    if(!textBoxDetailNumber.Enabled || comboBoxCompName.SelectedIndex == -1 ||
+                    if (!textBoxDetailNumber.Enabled || comboBoxCompName.SelectedIndex == -1 ||
                        textBoxUserMaterial.Text == string.Empty) return;
                     groupBoxColor.Enabled = true;
                     changeColorCheckBox.Checked = false;
@@ -402,56 +380,56 @@ namespace TSG_Library.UFuncs
         private void ButtonObscureDullGreen_Click(object sender, EventArgs e)
         {
             _compColor = new CtsComponentType("OBSCURE DULL GREEN", CtsComponentColor.ObscureDullGreen);
-            if(changeColorCheckBox.Checked) ColorComponent();
+            if (changeColorCheckBox.Checked) ColorComponent();
             else CreateComponent();
         }
 
         private void ButtonAquamarine_Click(object sender, EventArgs e)
         {
             _compColor = new CtsComponentType("AQUAMARINE", CtsComponentColor.AquaMarine);
-            if(changeColorCheckBox.Checked) ColorComponent();
+            if (changeColorCheckBox.Checked) ColorComponent();
             else CreateComponent();
         }
 
         private void ButtonMedAzureBlue_Click(object sender, EventArgs e)
         {
             _compColor = new CtsComponentType("MEDIUM AZURE BLUE", CtsComponentColor.MediumAzureBlue);
-            if(changeColorCheckBox.Checked) ColorComponent();
+            if (changeColorCheckBox.Checked) ColorComponent();
             else CreateComponent();
         }
 
         private void ButtonDarkDullGreen_Click(object sender, EventArgs e)
         {
             _compColor = new CtsComponentType("DARK DULL GREEN", CtsComponentColor.DarkDullGreen);
-            if(changeColorCheckBox.Checked) ColorComponent();
+            if (changeColorCheckBox.Checked) ColorComponent();
             else CreateComponent();
         }
 
         private void ButtonDarkWeakRed_Click(object sender, EventArgs e)
         {
             _compColor = new CtsComponentType("DARK WEAK RED", CtsComponentColor.DarkWeakRed);
-            if(changeColorCheckBox.Checked) ColorComponent();
+            if (changeColorCheckBox.Checked) ColorComponent();
             else CreateComponent();
         }
 
         private void ButtonDarkWeakMagenta_Click(object sender, EventArgs e)
         {
             _compColor = new CtsComponentType("DARK WEAK MAGENTA", CtsComponentColor.DarkWeakMagenta);
-            if(changeColorCheckBox.Checked) ColorComponent();
+            if (changeColorCheckBox.Checked) ColorComponent();
             else CreateComponent();
         }
 
         private void ButtonPurple_Click(object sender, EventArgs e)
         {
             _compColor = new CtsComponentType("PURPLE", CtsComponentColor.Purple);
-            if(changeColorCheckBox.Checked) ColorComponent();
+            if (changeColorCheckBox.Checked) ColorComponent();
             else CreateComponent();
         }
 
         private void ButtonDarkDullBlue_Click(object sender, EventArgs e)
         {
             _compColor = new CtsComponentType("DARK DULL BLUE", CtsComponentColor.DarkDullBlue);
-            if(changeColorCheckBox.Checked) ColorComponent();
+            if (changeColorCheckBox.Checked) ColorComponent();
             else CreateComponent();
         }
 
@@ -459,10 +437,10 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if(changeColorCheckBox.Checked)
+                if (changeColorCheckBox.Checked)
                 {
                     _changeColorComponent = SelectOneComponent("Select Component to Color");
-                    if(_changeColorComponent == null) return;
+                    if (_changeColorComponent == null) return;
                     groupBoxColor.Enabled = true;
                     comboBoxCompName.SelectedIndex = -1;
                     listBoxMaterial.SelectedIndex = -1;
@@ -472,7 +450,7 @@ namespace TSG_Library.UFuncs
                 else
                 {
                     groupBoxColor.Enabled = false;
-                    if(textBoxDetailNumber.Text.Length != 0) comboBoxCompName.Enabled = true;
+                    if (textBoxDetailNumber.Text.Length != 0) comboBoxCompName.Enabled = true;
                 }
             }
             catch (Exception ex)
@@ -486,27 +464,27 @@ namespace TSG_Library.UFuncs
         {
             var flag = checkBoxGrind.Checked;
             comboBoxTolerance.SelectedIndex = flag ? 0 : -1;
-            if(!flag) comboBoxTolerance.Text = string.Empty;
+            if (!flag) comboBoxTolerance.Text = string.Empty;
             comboBoxTolerance.Enabled = flag;
         }
 
         private void CheckBoxBurnDirX_CheckedChanged(object sender, EventArgs e)
         {
-            if(!checkBoxBurnDirX.Checked) return;
+            if (!checkBoxBurnDirX.Checked) return;
             checkBoxBurnDirY.Checked = false;
             checkBoxBurnDirZ.Checked = false;
         }
 
         private void CheckBoxBurnDirY_CheckedChanged(object sender, EventArgs e)
         {
-            if(!checkBoxBurnDirY.Checked) return;
+            if (!checkBoxBurnDirY.Checked) return;
             checkBoxBurnDirX.Checked = false;
             checkBoxBurnDirZ.Checked = false;
         }
 
         private void CheckBoxBurnDirZ_CheckedChanged(object sender, EventArgs e)
         {
-            if(!checkBoxBurnDirZ.Checked) return;
+            if (!checkBoxBurnDirZ.Checked) return;
             checkBoxBurnDirX.Checked = false;
             checkBoxBurnDirY.Checked = false;
         }
@@ -546,11 +524,11 @@ namespace TSG_Library.UFuncs
                 UpdateSessionParts();
                 UpdateOriginalParts();
                 var editComponent = SelectOneComponent("Select Component to edit construction");
-                if(editComponent == null) return;
+                if (editComponent == null) return;
                 var assmUnits = _displayPart.PartUnits;
                 var compBase = (BasePart)editComponent.Prototype;
                 var compUnits = compBase.PartUnits;
-                if(compUnits != assmUnits) return;
+                if (compUnits != assmUnits) return;
                 ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
                 var addRefSetPart = (Part)editComponent.Prototype;
                 session_.Parts.SetDisplay(addRefSetPart, false, false, out var partLoadSetDisp1);
@@ -559,7 +537,7 @@ namespace TSG_Library.UFuncs
                 var markId1 = session_.SetUndoMark(Session.MarkVisibility.Invisible, "Delete Reference Set");
                 var allRefSets = _displayPart.GetAllReferenceSets();
                 foreach (var namedRefSet in allRefSets)
-                    if(namedRefSet.Name == "EDIT")
+                    if (namedRefSet.Name == "EDIT")
                         _workPart.DeleteReferenceSet(namedRefSet);
                 session_.UpdateManager.DoUpdate(markId1);
                 var markIdEditRefSet =
@@ -634,7 +612,7 @@ namespace TSG_Library.UFuncs
                 _displayPart.ComponentAssembly.ReplaceReferenceSetInOwners("BODY", setRefComp);
                 var allRefSets = _workPart.GetAllReferenceSets();
                 foreach (var namedRefSet in allRefSets)
-                    if(namedRefSet.Name == "EDIT")
+                    if (namedRefSet.Name == "EDIT")
                         _workPart.DeleteReferenceSet(namedRefSet);
                 session_.UpdateManager.DoUpdate(markId1);
                 session_.Parts.SetDisplay(_originalDisplayPart, false, false, out var partLoadStatus1);
@@ -666,7 +644,7 @@ namespace TSG_Library.UFuncs
                 checkBoxUpperComp.Checked = false;
                 _displayPart.WCS.SetOriginAndMatrix(_Point3dOrigin, _Matrix3x3Identity);
                 var bodies = SelectMultipleBodies();
-                if(bodies.Count <= 0) return;
+                if (bodies.Count <= 0) return;
                 foreach (var selectedBody in bodies)
                 {
                     selectedBody.Unhighlight();
@@ -676,7 +654,7 @@ namespace TSG_Library.UFuncs
                     var distances = new double[3];
                     ufsession_.Modl.AskBoundingBoxExact(selectedBody.Tag, _displayPart.WCS.CoordinateSystem.Tag,
                         minCorner, directions, distances);
-                    if(_workPart.PartUnits == BasePart.Units.Millimeters)
+                    if (_workPart.PartUnits == BasePart.Units.Millimeters)
                     {
                         isMetric = true;
                         for (var i = 0; i < distances.Length; i++) distances[i] /= 25.4d;
@@ -687,10 +665,10 @@ namespace TSG_Library.UFuncs
                         var roundValue = Math.Round(distances[i], 3);
                         var truncateValue = Math.Truncate(roundValue);
                         var fractionValue = roundValue - truncateValue;
-                        if(Math.Abs(fractionValue) > Tolerance)
+                        if (Math.Abs(fractionValue) > Tolerance)
                             for (var ii = .125; ii <= 1; ii += .125)
                             {
-                                if(!(fractionValue <= ii)) continue;
+                                if (!(fractionValue <= ii)) continue;
                                 var roundedFraction = ii;
                                 var finalValue = truncateValue + roundedFraction;
                                 distances[i] = finalValue;
@@ -703,7 +681,7 @@ namespace TSG_Library.UFuncs
                     for (var i = 0; i < 3; i++)
                     {
                         var isNegative = false;
-                        if(minCorner[i] < 0)
+                        if (minCorner[i] < 0)
                         {
                             minCorner[i] *= -1;
                             isNegative = true;
@@ -712,13 +690,13 @@ namespace TSG_Library.UFuncs
                         var roundValue = Math.Round(minCorner[i], 3);
                         var truncateValue = Math.Truncate(roundValue);
                         var fractionValue = roundValue - truncateValue;
-                        if(Math.Abs(fractionValue) > Tolerance)
+                        if (Math.Abs(fractionValue) > Tolerance)
                             for (var ii = .125; ii <= 1; ii += .125)
                             {
-                                if(!(fractionValue <= ii)) continue;
+                                if (!(fractionValue <= ii)) continue;
                                 var roundedFraction = ii;
                                 var finalValue = truncateValue + roundedFraction;
-                                if(isNegative) minCorner[i] = finalValue * -1;
+                                if (isNegative) minCorner[i] = finalValue * -1;
                                 else minCorner[i] = finalValue;
                                 break;
                             }
@@ -726,7 +704,7 @@ namespace TSG_Library.UFuncs
                             minCorner[i] = roundValue;
                     }
 
-                    if(isMetric)
+                    if (isMetric)
                     {
                         for (var i = 0; i < 3; i++)
                         {
@@ -765,7 +743,7 @@ namespace TSG_Library.UFuncs
                 checkBoxUpperComp.Checked = true;
                 _displayPart.WCS.SetOriginAndMatrix(_Point3dOrigin, _Matrix3x3Identity);
                 var bodies = SelectMultipleBodies();
-                if(bodies.Count > 0)
+                if (bodies.Count > 0)
                 {
                     foreach (var selectedBody in bodies)
                     {
@@ -776,7 +754,7 @@ namespace TSG_Library.UFuncs
                         var distances = new double[3];
                         ufsession_.Modl.AskBoundingBoxExact(selectedBody.Tag, _displayPart.WCS.CoordinateSystem.Tag,
                             minCorner, directions, distances);
-                        if(_workPart.PartUnits == BasePart.Units.Millimeters)
+                        if (_workPart.PartUnits == BasePart.Units.Millimeters)
                         {
                             isMetric = true;
                             for (var i = 0; i < distances.Length; i++) distances[i] /= 25.4d;
@@ -787,10 +765,10 @@ namespace TSG_Library.UFuncs
                             var roundValue = Math.Round(distances[i], 3);
                             var truncateValue = Math.Truncate(roundValue);
                             var fractionValue = roundValue - truncateValue;
-                            if(Math.Abs(fractionValue) > Tolerance)
+                            if (Math.Abs(fractionValue) > Tolerance)
                                 for (var ii = .125; ii <= 1; ii += .125)
                                 {
-                                    if(!(fractionValue <= ii)) continue;
+                                    if (!(fractionValue <= ii)) continue;
                                     var roundedFraction = ii;
                                     var finalValue = truncateValue + roundedFraction;
                                     distances[i] = finalValue;
@@ -803,7 +781,7 @@ namespace TSG_Library.UFuncs
                         for (var i = 0; i < 3; i++)
                         {
                             var isNegative = false;
-                            if(minCorner[i] < 0)
+                            if (minCorner[i] < 0)
                             {
                                 minCorner[i] *= -1;
                                 isNegative = true;
@@ -812,13 +790,13 @@ namespace TSG_Library.UFuncs
                             var roundValue = Math.Round(minCorner[i], 3);
                             var truncateValue = Math.Truncate(roundValue);
                             var fractionValue = roundValue - truncateValue;
-                            if(Math.Abs(fractionValue) > Tolerance)
+                            if (Math.Abs(fractionValue) > Tolerance)
                                 for (var ii = .125; ii <= 1; ii += .125)
                                 {
-                                    if(!(fractionValue <= ii)) continue;
+                                    if (!(fractionValue <= ii)) continue;
                                     var roundedFraction = ii;
                                     var finalValue = truncateValue + roundedFraction;
-                                    if(isNegative) minCorner[i] = finalValue * -1;
+                                    if (isNegative) minCorner[i] = finalValue * -1;
                                     else minCorner[i] = finalValue;
                                     break;
                                 }
@@ -826,7 +804,7 @@ namespace TSG_Library.UFuncs
                                 minCorner[i] = roundValue;
                         }
 
-                        if(isMetric)
+                        if (isMetric)
                         {
                             for (var i = 0; i < 3; i++)
                             {
@@ -877,7 +855,7 @@ namespace TSG_Library.UFuncs
 
                 var bodies = SelectMultipleBodies();
 
-                if(bodies.Count <= 0) return;
+                if (bodies.Count <= 0) return;
                 foreach (var selectedBody in bodies)
                 {
                     selectedBody.Unhighlight();
@@ -892,7 +870,7 @@ namespace TSG_Library.UFuncs
                     ufsession_.Modl.AskBoundingBoxExact(selectedBody.Tag, _displayPart.WCS.CoordinateSystem.Tag,
                         minCorner, directions, distances);
 
-                    if(_workPart.PartUnits == BasePart.Units.Millimeters)
+                    if (_workPart.PartUnits == BasePart.Units.Millimeters)
                     {
                         isMetric = true;
 
@@ -905,10 +883,10 @@ namespace TSG_Library.UFuncs
                         var roundValue = Math.Round(distances[i], 3);
                         var truncateValue = Math.Truncate(roundValue);
                         var fractionValue = roundValue - truncateValue;
-                        if(Math.Abs(fractionValue) > Tolerance)
+                        if (Math.Abs(fractionValue) > Tolerance)
                             for (var ii = .125; ii <= 1; ii += .125)
                             {
-                                if(!(fractionValue <= ii)) continue;
+                                if (!(fractionValue <= ii)) continue;
                                 var roundedFraction = ii;
                                 var finalValue = truncateValue + roundedFraction;
                                 distances[i] = finalValue;
@@ -922,7 +900,7 @@ namespace TSG_Library.UFuncs
                     {
                         var isNegative = false;
 
-                        if(minCorner[i] < 0)
+                        if (minCorner[i] < 0)
                         {
                             minCorner[i] *= -1;
                             isNegative = true;
@@ -931,14 +909,14 @@ namespace TSG_Library.UFuncs
                         var roundValue = Math.Round(minCorner[i], 3);
                         var truncateValue = Math.Truncate(roundValue);
                         var fractionValue = roundValue - truncateValue;
-                        if(Math.Abs(fractionValue) > Tolerance)
+                        if (Math.Abs(fractionValue) > Tolerance)
                             for (var ii = .125; ii <= 1; ii += .125)
                             {
-                                if(!(fractionValue <= ii)) continue;
+                                if (!(fractionValue <= ii)) continue;
                                 var roundedFraction = ii;
                                 var finalValue = truncateValue + roundedFraction;
 
-                                if(isNegative)
+                                if (isNegative)
                                     minCorner[i] = finalValue * -1;
                                 else
                                     minCorner[i] = finalValue;
@@ -949,7 +927,7 @@ namespace TSG_Library.UFuncs
                             minCorner[i] = roundValue;
                     }
 
-                    if(isMetric)
+                    if (isMetric)
                     {
                         for (var i = 0; i < 3; i++)
                         {
@@ -974,7 +952,7 @@ namespace TSG_Library.UFuncs
                         var nameIndex = -1;
 
                         foreach (CtsAttributes compName in comboBoxCompName.Items)
-                            if(compName.AttrValue == "RETAINER")
+                            if (compName.AttrValue == "RETAINER")
                                 nameIndex = comboBoxCompName.Items.IndexOf(compName);
 
                         comboBoxCompName.SelectedIndex = nameIndex;
@@ -982,7 +960,7 @@ namespace TSG_Library.UFuncs
                         var materialIndex = -1;
 
                         foreach (CtsAttributes compMaterial in listBoxMaterial.Items)
-                            if(compMaterial.AttrValue == "4140")
+                            if (compMaterial.AttrValue == "4140")
                                 materialIndex = listBoxMaterial.Items.IndexOf(compMaterial);
 
                         listBoxMaterial.SetSelected(materialIndex, true);
@@ -999,7 +977,7 @@ namespace TSG_Library.UFuncs
                         nameIndex = -1;
 
                         foreach (CtsAttributes compName in comboBoxCompName.Items)
-                            if(compName.AttrValue == "BLOCK")
+                            if (compName.AttrValue == "BLOCK")
                                 nameIndex = comboBoxCompName.Items.IndexOf(compName);
 
                         comboBoxCompName.SelectedIndex = nameIndex;
@@ -1007,7 +985,7 @@ namespace TSG_Library.UFuncs
                         materialIndex = -1;
 
                         foreach (CtsAttributes compMaterial in listBoxMaterial.Items)
-                            if(compMaterial.AttrValue == "O1 GS")
+                            if (compMaterial.AttrValue == "O1 GS")
                                 materialIndex = listBoxMaterial.Items.IndexOf(compMaterial);
 
                         listBoxMaterial.SetSelected(materialIndex, true);
@@ -1041,7 +1019,7 @@ namespace TSG_Library.UFuncs
                         var nameIndex = -1;
 
                         foreach (CtsAttributes compName in comboBoxCompName.Items)
-                            if(compName.AttrValue == "RETAINER")
+                            if (compName.AttrValue == "RETAINER")
                                 nameIndex = comboBoxCompName.Items.IndexOf(compName);
 
                         comboBoxCompName.SelectedIndex = nameIndex;
@@ -1049,7 +1027,7 @@ namespace TSG_Library.UFuncs
                         var materialIndex = -1;
 
                         foreach (CtsAttributes compMaterial in listBoxMaterial.Items)
-                            if(compMaterial.AttrValue == "4140")
+                            if (compMaterial.AttrValue == "4140")
                                 materialIndex = listBoxMaterial.Items.IndexOf(compMaterial);
 
                         listBoxMaterial.SetSelected(materialIndex, true);
@@ -1066,7 +1044,7 @@ namespace TSG_Library.UFuncs
                         nameIndex = -1;
 
                         foreach (CtsAttributes compName in comboBoxCompName.Items)
-                            if(compName.AttrValue == "BLOCK")
+                            if (compName.AttrValue == "BLOCK")
                                 nameIndex = comboBoxCompName.Items.IndexOf(compName);
 
                         comboBoxCompName.SelectedIndex = nameIndex;
@@ -1074,7 +1052,7 @@ namespace TSG_Library.UFuncs
                         materialIndex = -1;
 
                         foreach (CtsAttributes compMaterial in listBoxMaterial.Items)
-                            if(compMaterial.AttrValue == "O1 GS")
+                            if (compMaterial.AttrValue == "O1 GS")
                                 materialIndex = listBoxMaterial.Items.IndexOf(compMaterial);
 
                         listBoxMaterial.SetSelected(materialIndex, true);
@@ -1115,7 +1093,7 @@ namespace TSG_Library.UFuncs
 
                 var bodies = SelectMultipleBodies();
 
-                if(bodies.Count > 0)
+                if (bodies.Count > 0)
                 {
                     foreach (var selectedBody in bodies)
                     {
@@ -1131,7 +1109,7 @@ namespace TSG_Library.UFuncs
                         ufsession_.Modl.AskBoundingBoxExact(selectedBody.Tag, _displayPart.WCS.CoordinateSystem.Tag,
                             minCorner, directions, distances);
 
-                        if(_workPart.PartUnits == BasePart.Units.Millimeters)
+                        if (_workPart.PartUnits == BasePart.Units.Millimeters)
                         {
                             isMetric = true;
 
@@ -1144,10 +1122,10 @@ namespace TSG_Library.UFuncs
                             var roundValue = Math.Round(distances[i], 3);
                             var truncateValue = Math.Truncate(roundValue);
                             var fractionValue = roundValue - truncateValue;
-                            if(Math.Abs(fractionValue) > Tolerance)
+                            if (Math.Abs(fractionValue) > Tolerance)
                                 for (var ii = .125; ii <= 1; ii += .125)
                                 {
-                                    if(!(fractionValue <= ii)) continue;
+                                    if (!(fractionValue <= ii)) continue;
                                     var roundedFraction = ii;
                                     var finalValue = truncateValue + roundedFraction;
                                     distances[i] = finalValue;
@@ -1161,7 +1139,7 @@ namespace TSG_Library.UFuncs
                         {
                             var isNegative = false;
 
-                            if(minCorner[i] < 0)
+                            if (minCorner[i] < 0)
                             {
                                 minCorner[i] *= -1;
                                 isNegative = true;
@@ -1170,14 +1148,14 @@ namespace TSG_Library.UFuncs
                             var roundValue = Math.Round(minCorner[i], 3);
                             var truncateValue = Math.Truncate(roundValue);
                             var fractionValue = roundValue - truncateValue;
-                            if(Math.Abs(fractionValue) > Tolerance)
+                            if (Math.Abs(fractionValue) > Tolerance)
                                 for (var ii = .125; ii <= 1; ii += .125)
                                 {
-                                    if(!(fractionValue <= ii)) continue;
+                                    if (!(fractionValue <= ii)) continue;
                                     var roundedFraction = ii;
                                     var finalValue = truncateValue + roundedFraction;
 
-                                    if(isNegative)
+                                    if (isNegative)
                                         minCorner[i] = finalValue * -1;
                                     else
                                         minCorner[i] = finalValue;
@@ -1188,7 +1166,7 @@ namespace TSG_Library.UFuncs
                                 minCorner[i] = roundValue;
                         }
 
-                        if(isMetric)
+                        if (isMetric)
                         {
                             for (var i = 0; i < 3; i++)
                             {
@@ -1214,7 +1192,7 @@ namespace TSG_Library.UFuncs
                             var nameIndex = -1;
 
                             foreach (CtsAttributes compName in comboBoxCompName.Items)
-                                if(compName.AttrValue == "RETAINER")
+                                if (compName.AttrValue == "RETAINER")
                                     nameIndex = comboBoxCompName.Items.IndexOf(compName);
 
                             comboBoxCompName.SelectedIndex = nameIndex;
@@ -1222,7 +1200,7 @@ namespace TSG_Library.UFuncs
                             var materialIndex = -1;
 
                             foreach (CtsAttributes compMaterial in listBoxMaterial.Items)
-                                if(compMaterial.AttrValue == "4140")
+                                if (compMaterial.AttrValue == "4140")
                                     materialIndex = listBoxMaterial.Items.IndexOf(compMaterial);
 
                             listBoxMaterial.SetSelected(materialIndex, true);
@@ -1240,7 +1218,7 @@ namespace TSG_Library.UFuncs
                             nameIndex = -1;
 
                             foreach (CtsAttributes compName in comboBoxCompName.Items)
-                                if(compName.AttrValue == "BLOCK")
+                                if (compName.AttrValue == "BLOCK")
                                     nameIndex = comboBoxCompName.Items.IndexOf(compName);
 
                             comboBoxCompName.SelectedIndex = nameIndex;
@@ -1248,7 +1226,7 @@ namespace TSG_Library.UFuncs
                             materialIndex = -1;
 
                             foreach (CtsAttributes compMaterial in listBoxMaterial.Items)
-                                if(compMaterial.AttrValue == "O1 GS")
+                                if (compMaterial.AttrValue == "O1 GS")
                                     materialIndex = listBoxMaterial.Items.IndexOf(compMaterial);
 
                             listBoxMaterial.SetSelected(materialIndex, true);
@@ -1284,7 +1262,7 @@ namespace TSG_Library.UFuncs
                             var nameIndex = -1;
 
                             foreach (CtsAttributes compName in comboBoxCompName.Items)
-                                if(compName.AttrValue == "RETAINER")
+                                if (compName.AttrValue == "RETAINER")
                                     nameIndex = comboBoxCompName.Items.IndexOf(compName);
 
                             comboBoxCompName.SelectedIndex = nameIndex;
@@ -1292,7 +1270,7 @@ namespace TSG_Library.UFuncs
                             var materialIndex = -1;
 
                             foreach (CtsAttributes compMaterial in listBoxMaterial.Items)
-                                if(compMaterial.AttrValue == "4140")
+                                if (compMaterial.AttrValue == "4140")
                                     materialIndex = listBoxMaterial.Items.IndexOf(compMaterial);
 
                             listBoxMaterial.SetSelected(materialIndex, true);
@@ -1310,7 +1288,7 @@ namespace TSG_Library.UFuncs
                             nameIndex = -1;
 
                             foreach (CtsAttributes compName in comboBoxCompName.Items)
-                                if(compName.AttrValue == "BLOCK")
+                                if (compName.AttrValue == "BLOCK")
                                     nameIndex = comboBoxCompName.Items.IndexOf(compName);
 
                             comboBoxCompName.SelectedIndex = nameIndex;
@@ -1318,7 +1296,7 @@ namespace TSG_Library.UFuncs
                             materialIndex = -1;
 
                             foreach (CtsAttributes compMaterial in listBoxMaterial.Items)
-                                if(compMaterial.AttrValue == "O1 GS")
+                                if (compMaterial.AttrValue == "O1 GS")
                                     materialIndex = listBoxMaterial.Items.IndexOf(compMaterial);
 
                             listBoxMaterial.SetSelected(materialIndex, true);
@@ -1349,219 +1327,221 @@ namespace TSG_Library.UFuncs
 
         private void SaveAsButton_Click(object sender, EventArgs e)
         {
+            if (_displayPart is null)
+            {
+                print_("No display part");
+                return;
+            }
+
+            var units = new BasePart.Units();
+            var assmUnits = _displayPart.PartUnits;
+
             try
             {
-                var units = new BasePart.Units();
-                var assmUnits = _displayPart.PartUnits;
+                var compSaveAs = SelectOneComponent("Select Component to SaveAs");
 
-                try
+                while (compSaveAs != null)
                 {
-                    var compSaveAs = SelectOneComponent("Select Component to SaveAs");
-
-                    while (compSaveAs != null)
-                        if(IsNameValid(_workPart))
-                        {
-                            var isNumberValid = FormatDetailNumber();
-
-                            var compName = textBoxDetailNumber.Text;
-
-                            if(isNumberValid)
-                            {
-                                if(IsSaveAllowed(compSaveAs))
-                                {
-                                    var selectedPart = (Part)compSaveAs.Prototype;
-                                    units = selectedPart.PartUnits;
-
-                                    if(units == assmUnits)
-                                    {
-                                        _isSaveAs = true;
-
-                                        session_.Parts.SetWork((Part)compSaveAs.Prototype);
-                                        UpdateSessionParts();
-
-                                        var indexOf = _originalWorkPart.FullPath.LastIndexOf("-");
-                                        var fullName = _originalWorkPart.FullPath.Remove(indexOf + 1);
-                                        var saveAs = fullName + compName + ".prt";
-
-                                        var partSaveStatus1 = _workPart.SaveAs(saveAs);
-                                        partSaveStatus1.Dispose();
-
-                                        // Get body ref set of original work part
-
-                                        var cycleRefSet = NXOpen.Tag.Null;
-                                        var bodyRefSet = NXOpen.Tag.Null;
-
-                                        do
-                                        {
-                                            ufsession_.Obj.CycleObjsInPart(_originalWorkPart.Tag, UF_reference_set_type,
-                                                ref cycleRefSet);
-                                            if(cycleRefSet == NXOpen.Tag.Null)
-                                                break;
-                                            ufsession_.Obj.AskName(cycleRefSet, out var name);
-
-                                            if(name == "BODY")
-                                                bodyRefSet = cycleRefSet;
-                                        } while (cycleRefSet != NXOpen.Tag.Null);
-
-                                        // Change name of all occurrences and add to parent assembly "BODY" ref set
-
-                                        var saveAsPart = (Part)compSaveAs.Prototype;
-                                        ufsession_.Assem.AskOccsOfPart(_originalWorkPart.Tag, saveAsPart.Tag,
-                                            out var partOccs);
-                                        foreach (var occurrence in partOccs)
-                                        {
-                                            ufsession_.Obj.SetName(occurrence, compName);
-                                            var partInstance = ufsession_.Assem.AskInstOfPartOcc(occurrence);
-                                            ufsession_.Assem.RenameInstance(partInstance, compName);
-                                        }
-
-                                        if(bodyRefSet != NXOpen.Tag.Null)
-                                            ufsession_.Assem.AddRefSetMembers(bodyRefSet, partOccs.Length, partOccs);
-
-                                        // set attribute for "DETAIL NUMBER" to new component name
-
-                                        foreach (var attr in _workPart.GetUserAttributes())
-                                            if(attr.Title == "DETAIL NUMBER")
-                                                _workPart.SetUserAttribute(attr.Title, -1, compName,
-                                                    NXOpen.Update.Option.Now);
-
-                                        session_.Parts.SetWork(_originalWorkPart);
-
-                                        UpdateSessionParts();
-
-                                        UpdateOriginalParts();
-
-                                        _isNameReset = false;
-
-                                        compSaveAs = SelectOneComponent("Select Component to SaveAs");
-                                    }
-                                    else
-                                    {
-                                        _isSaveAs = true;
-
-                                        ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
-                                        session_.Parts.SetDisplay(selectedPart, false, false, out var partLoadStatus1);
-                                        partLoadStatus1.Dispose();
-                                        UpdateSessionParts();
-
-                                        var indexOf = _originalWorkPart.FullPath.LastIndexOf("-");
-                                        var fullName = _originalWorkPart.FullPath.Remove(indexOf + 1);
-                                        var saveAs = fullName + compName + ".prt";
-
-                                        var partSaveStatus1 = _workPart.SaveAs(saveAs);
-                                        partSaveStatus1.Dispose();
-
-                                        // Get body ref set of original work part
-
-                                        var cycleRefSet = NXOpen.Tag.Null;
-                                        var bodyRefSet = NXOpen.Tag.Null;
-
-                                        do
-                                        {
-                                            ufsession_.Obj.CycleObjsInPart(_originalWorkPart.Tag, UF_reference_set_type,
-                                                ref cycleRefSet);
-                                            if(cycleRefSet == NXOpen.Tag.Null)
-                                                break;
-                                            ufsession_.Obj.AskName(cycleRefSet, out var name);
-
-                                            if(name == "BODY")
-                                                bodyRefSet = cycleRefSet;
-                                        } while (cycleRefSet != NXOpen.Tag.Null);
-
-                                        var saveAsPart = (Part)compSaveAs.Prototype;
-                                        ufsession_.Assem.AskOccsOfPart(_originalWorkPart.Tag, saveAsPart.Tag,
-                                            out var partOccs);
-                                        foreach (var occurrence in partOccs)
-                                        {
-                                            ufsession_.Obj.SetName(occurrence, compName);
-                                            var partInstance = ufsession_.Assem.AskInstOfPartOcc(occurrence);
-                                            ufsession_.Assem.RenameInstance(partInstance, compName);
-                                        }
-
-                                        if(bodyRefSet != NXOpen.Tag.Null)
-                                            ufsession_.Assem.AddRefSetMembers(bodyRefSet, partOccs.Length, partOccs);
-
-                                        // set attribute for "DETAIL NUMBER" to new component name
-
-                                        foreach (var attr in _workPart.GetUserAttributes())
-                                            if(attr.Title == "DETAIL NUMBER")
-                                                _workPart.SetUserAttribute(attr.Title, -1, compName,
-                                                    NXOpen.Update.Option.Now);
-
-                                        session_.Parts.SetDisplay(_originalDisplayPart, false, false,
-                                            out var partLoadStatus2);
-                                        session_.Parts.SetWork(_originalWorkPart);
-                                        partLoadStatus2.Dispose();
-                                        UpdateSessionParts();
-                                        UpdateOriginalParts();
-                                        ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
-                                        ufsession_.Disp.RegenerateDisplay();
-                                        _isNameReset = false;
-
-                                        compSaveAs = SelectOneComponent("Select Component to SaveAs");
-                                    }
-                                }
-                                else
-                                {
-                                    MessageBox.Show(
-                                        "Save As is not allowed on this component " + compSaveAs.DisplayName);
-                                    compSaveAs = null;
-                                    _isNameReset = false;
-                                    _isSaveAs = false;
-                                }
-                            }
-                            else
-                            {
-                                compSaveAs = null;
-                                _isNameReset = false;
-                                _isSaveAs = false;
-                            }
-                        }
-                        else
-                        {
-                            compSaveAs = null;
-                            _isNameReset = false;
-                            _isSaveAs = false;
-                        }
-
-                    ResetForm(_workPart);
-                }
-                catch (NXException ex)
-                {
-                    if(units == assmUnits)
+                    if (!IsNameValid(_workPart))
                     {
-                        ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
-                        ufsession_.Disp.RegenerateDisplay();
-                        session_.Parts.SetWork(_originalWorkPart);
+                        compSaveAs = null;
+                        _isNameReset = false;
+                        _isSaveAs = false;
+                        break;
+                    }
 
-                        UI.GetUI().NXMessageBox.Show("Caught exception", NXMessageBox.DialogType.Error, ex.Message);
+                    var isNumberValid = FormatDetailNumber();
 
-                        UpdateSessionParts();
-                        UpdateOriginalParts();
+                    var compName = textBoxDetailNumber.Text;
 
-                        ResetForm(_workPart);
+                    if (!isNumberValid)
+                    {
+                        compSaveAs = null;
+                        _isNameReset = false;
+                        _isSaveAs = false;
+                        break;
+                    }
+
+                    if (!IsSaveAllowed(compSaveAs))
+                    {
+                        MessageBox.Show(
+                            $"Save As is not allowed on this component {compSaveAs.DisplayName}");
+                        compSaveAs = null;
+                        _isNameReset = false;
+                        _isSaveAs = false;
+                        break;
+                    }
+
+                    var selectedPart = (Part)compSaveAs.Prototype;
+                    units = selectedPart.PartUnits;
+
+                    if (units == assmUnits)
+                    {
+                        SaveAsSameUnits(compSaveAs, compName);
+
+                        compSaveAs = SelectOneComponent("Select Component to SaveAs");
                     }
                     else
                     {
-                        ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
-                        ufsession_.Disp.RegenerateDisplay();
-                        session_.Parts.SetDisplay(_originalDisplayPart, false, false, out var partLoadStatus2);
-                        session_.Parts.SetWork(_originalWorkPart);
-                        partLoadStatus2.Dispose();
+                        SaveAsDiffUnits(compSaveAs, compName, selectedPart);
 
-                        UI.GetUI().NXMessageBox.Show("Caught exception", NXMessageBox.DialogType.Error, ex.Message);
-
-                        UpdateSessionParts();
-                        UpdateOriginalParts();
-
-                        ResetForm(_workPart);
+                        compSaveAs = SelectOneComponent("Select Component to SaveAs");
                     }
                 }
+
             }
             catch (Exception ex)
             {
                 ex.__PrintException();
+                ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
+                ufsession_.Disp.RegenerateDisplay();
+
+                if (units != assmUnits)
+                    session_.Parts.SetDisplay(_originalDisplayPart, false, false, out var partLoadStatus2);
+
+                session_.Parts.SetWork(_originalWorkPart);
+                UI.GetUI().NXMessageBox.Show("Caught exception", NXMessageBox.DialogType.Error, ex.Message);
+                UpdateSessionParts();
+                UpdateOriginalParts();
             }
+            finally
+            {
+
+                try
+                {
+                    ResetForm(_workPart);
+                }
+                catch (Exception ex)
+                {
+                    ex.__PrintException();
+                }
+            }
+        }
+
+        private void SaveAsDiffUnits(Component compSaveAs, string compName, Part selectedPart)
+        {
+            _isSaveAs = true;
+
+            ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
+            session_.Parts.SetDisplay(selectedPart, false, false, out var partLoadStatus1);
+            partLoadStatus1.Dispose();
+            UpdateSessionParts();
+
+            var indexOf = _originalWorkPart.FullPath.LastIndexOf("-");
+            var fullName = _originalWorkPart.FullPath.Remove(indexOf + 1);
+            var saveAs = $"{fullName}{compName}.prt";
+
+            var partSaveStatus1 = _workPart.SaveAs(saveAs);
+            partSaveStatus1.Dispose();
+
+            // Get body ref set of original work part
+
+            var cycleRefSet = NXOpen.Tag.Null;
+            var bodyRefSet = NXOpen.Tag.Null;
+
+            do
+            {
+                ufsession_.Obj.CycleObjsInPart(_originalWorkPart.Tag, UF_reference_set_type,
+                    ref cycleRefSet);
+                if (cycleRefSet == NXOpen.Tag.Null)
+                    break;
+                ufsession_.Obj.AskName(cycleRefSet, out var name);
+
+                if (name == "BODY")
+                    bodyRefSet = cycleRefSet;
+            } while (cycleRefSet != NXOpen.Tag.Null);
+
+            var saveAsPart = (Part)compSaveAs.Prototype;
+            ufsession_.Assem.AskOccsOfPart(_originalWorkPart.Tag, saveAsPart.Tag,
+                out var partOccs);
+            foreach (var occurrence in partOccs)
+            {
+                ufsession_.Obj.SetName(occurrence, compName);
+                var partInstance = ufsession_.Assem.AskInstOfPartOcc(occurrence);
+                ufsession_.Assem.RenameInstance(partInstance, compName);
+            }
+
+            if (bodyRefSet != NXOpen.Tag.Null)
+                ufsession_.Assem.AddRefSetMembers(bodyRefSet, partOccs.Length, partOccs);
+
+            // set attribute for "DETAIL NUMBER" to new component name
+
+            foreach (var attr in _workPart.GetUserAttributes())
+                if (attr.Title == "DETAIL NUMBER")
+                    _workPart.SetUserAttribute(attr.Title, -1, compName,
+                        NXOpen.Update.Option.Now);
+
+            session_.Parts.SetDisplay(_originalDisplayPart, false, false,
+                out var partLoadStatus2);
+            session_.Parts.SetWork(_originalWorkPart);
+            partLoadStatus2.Dispose();
+            UpdateSessionParts();
+            UpdateOriginalParts();
+            ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
+            ufsession_.Disp.RegenerateDisplay();
+            _isNameReset = false;
+        }
+
+        private void SaveAsSameUnits(Component compSaveAs, string compName)
+        {
+            _isSaveAs = true;
+
+            session_.Parts.SetWork((Part)compSaveAs.Prototype);
+            UpdateSessionParts();
+
+            var indexOf = _originalWorkPart.FullPath.LastIndexOf("-");
+            var fullName = _originalWorkPart.FullPath.Remove(indexOf + 1);
+            var saveAs = $"{fullName}{compName}.prt";
+
+            var partSaveStatus1 = _workPart.SaveAs(saveAs);
+            partSaveStatus1.Dispose();
+
+            // Get body ref set of original work part
+
+            var cycleRefSet = NXOpen.Tag.Null;
+            var bodyRefSet = NXOpen.Tag.Null;
+
+            do
+            {
+                ufsession_.Obj.CycleObjsInPart(_originalWorkPart.Tag, UF_reference_set_type,
+                    ref cycleRefSet);
+                if (cycleRefSet == NXOpen.Tag.Null)
+                    break;
+                ufsession_.Obj.AskName(cycleRefSet, out var name);
+
+                if (name == "BODY")
+                    bodyRefSet = cycleRefSet;
+            } while (cycleRefSet != NXOpen.Tag.Null);
+
+            // Change name of all occurrences and add to parent assembly "BODY" ref set
+
+            var saveAsPart = (Part)compSaveAs.Prototype;
+            ufsession_.Assem.AskOccsOfPart(_originalWorkPart.Tag, saveAsPart.Tag,
+                out var partOccs);
+            foreach (var occurrence in partOccs)
+            {
+                ufsession_.Obj.SetName(occurrence, compName);
+                var partInstance = ufsession_.Assem.AskInstOfPartOcc(occurrence);
+                ufsession_.Assem.RenameInstance(partInstance, compName);
+            }
+
+            if (bodyRefSet != NXOpen.Tag.Null)
+                ufsession_.Assem.AddRefSetMembers(bodyRefSet, partOccs.Length, partOccs);
+
+            // set attribute for "DETAIL NUMBER" to new component name
+
+            foreach (var attr in _workPart.GetUserAttributes())
+                if (attr.Title == "DETAIL NUMBER")
+                    _workPart.SetUserAttribute(attr.Title, -1, compName,
+                        NXOpen.Update.Option.Now);
+
+            session_.Parts.SetWork(_originalWorkPart);
+
+            UpdateSessionParts();
+
+            UpdateOriginalParts();
+
+            _isNameReset = false;
         }
 
         private void CopyButton_Click(object sender, EventArgs e)
@@ -1574,7 +1554,7 @@ namespace TSG_Library.UFuncs
                 {
                     var copyComponent = SelectOneComponent("Select Component to Copy");
 
-                    if(copyComponent == null) return;
+                    if (copyComponent == null) return;
                     var part = (Part)copyComponent.Prototype;
 
                     var next = 0;
@@ -1593,8 +1573,8 @@ namespace TSG_Library.UFuncs
                     var compare1 = _workPart.FullPath.Remove(indexOf + 1);
                     var compare2 = copyPath.Remove(indexOf + 1);
 
-                    if(compare1 == compare2)
-                        if(File.Exists(originalPath))
+                    if (compare1 == compare2)
+                        if (File.Exists(originalPath))
                         {
                             File.Copy(originalPath, copyPath);
 
@@ -1646,7 +1626,7 @@ namespace TSG_Library.UFuncs
 
                     var dispUnits = (Part.Units)_displayPart.PartUnits;
 
-                    if(dispUnits == Part.Units.Millimeters)
+                    if (dispUnits == Part.Units.Millimeters)
                     {
                         _displayPart.UnitCollection.SetDefaultDataEntryUnits(UnitCollection.UnitDefaults.GMmNDegC);
                         _displayPart.UnitCollection.SetDefaultObjectInformationUnits(UnitCollection.UnitDefaults
@@ -1675,7 +1655,7 @@ namespace TSG_Library.UFuncs
                     var toleranceIndex = comboBoxTolerance.SelectedIndex;
                     var selectedName = (CtsAttributes)comboBoxCompName.SelectedItem;
                     var selectecMaterial = new CtsAttributes();
-                    if(listBoxMaterial.SelectedIndex == -1)
+                    if (listBoxMaterial.SelectedIndex == -1)
                     {
                         selectecMaterial.AttrName = "MATERIAL";
                         selectecMaterial.AttrValue = textBoxUserMaterial.Text;
@@ -1685,8 +1665,8 @@ namespace TSG_Library.UFuncs
                         selectecMaterial = (CtsAttributes)listBoxMaterial.SelectedItem;
                     }
 
-                    var numberIsValid = FormatDetailNumber();
-                    if(numberIsValid)
+                    //var numberIsValid = FormatDetailNumber();
+                    if (true)
                     {
                         UpdateSessionParts();
                         UpdateOriginalParts();
@@ -1696,10 +1676,10 @@ namespace TSG_Library.UFuncs
                         _displayPart.WCS.SetOriginAndMatrix(_Point3dOrigin, _Matrix3x3Identity);
                         var uprCompOrigin = new Point3d();
                         var uprCompOrientation = new Matrix3x3();
-                        if(checkBoxUpperComp.Checked)
+                        if (checkBoxUpperComp.Checked)
                         {
                             _displayPart.WCS.Rotate(WCS.Axis.XAxis, 180);
-                            if(dispUnits == Part.Units.Inches)
+                            if (dispUnits == Part.Units.Inches)
                             {
                                 uprCompOrigin.X = _Point3dOrigin.X;
                                 uprCompOrigin.Y = _Point3dOrigin.Y;
@@ -1725,7 +1705,7 @@ namespace TSG_Library.UFuncs
                         blockFeatureBuilder1.BooleanOption.SetTargetBodies(targetBodies1);
                         blockFeatureBuilder1.Type = BlockFeatureBuilder.Types.OriginAndEdgeLengths;
                         Point3d originPoint1;
-                        if(checkBoxUpperComp.Checked)
+                        if (checkBoxUpperComp.Checked)
                         {
                             var xAxis = new Vector3d(uprCompOrientation.Xx, uprCompOrientation.Xy,
                                 uprCompOrientation.Xz);
@@ -1734,7 +1714,7 @@ namespace TSG_Library.UFuncs
                             originPoint1 = uprCompOrigin;
                             blockFeatureBuilder1.SetOrientation(xAxis, yAxis);
                         }
-                        else if(dispUnits == Part.Units.Inches)
+                        else if (dispUnits == Part.Units.Inches)
                         {
                             var lwrCompOrigin = new Point3d(_displayPart.WCS.CoordinateSystem.Origin.X,
                                 _displayPart.WCS.CoordinateSystem.Origin.Y,
@@ -1749,7 +1729,7 @@ namespace TSG_Library.UFuncs
                             originPoint1 = lwrCompOrigin;
                         }
 
-                        if(dispUnits == Part.Units.Inches)
+                        if (dispUnits == Part.Units.Inches)
                             blockFeatureBuilder1.SetOriginAndLengths(originPoint1, "4", "4", "1.5");
                         else
                             blockFeatureBuilder1.SetOriginAndLengths(originPoint1, "101.6", "101.6", "38.1");
@@ -1812,11 +1792,11 @@ namespace TSG_Library.UFuncs
 
                         _workPart.Expressions.CreateExpression("String",
                             checkBoxBurnout.Checked ? "Burnout=\"yes\"" : "Burnout=\"no\"");
-                        if(checkBoxGrind.Checked)
+                        if (checkBoxGrind.Checked)
                         {
                             _workPart.Expressions.CreateExpression("String", "Grind=\"yes\"");
 
-                            if(comboBoxTolerance.SelectedIndex != -1)
+                            if (comboBoxTolerance.SelectedIndex != -1)
                                 _workPart.Expressions.CreateExpression("String",
                                     "GrindTolerance=\"" + comboBoxTolerance.Text + "\"");
                             else
@@ -1829,10 +1809,10 @@ namespace TSG_Library.UFuncs
                             _workPart.Expressions.CreateExpression("String", "GrindTolerance=\"none\"");
                         }
 
-                        if(checkBoxBurnDirX.Checked) _workPart.Expressions.CreateExpression("String", "BurnDir=\"X\"");
-                        else if(checkBoxBurnDirY.Checked)
+                        if (checkBoxBurnDirX.Checked) _workPart.Expressions.CreateExpression("String", "BurnDir=\"X\"");
+                        else if (checkBoxBurnDirY.Checked)
                             _workPart.Expressions.CreateExpression("String", "BurnDir=\"Y\"");
-                        else if(checkBoxBurnDirZ.Checked)
+                        else if (checkBoxBurnDirZ.Checked)
                             _workPart.Expressions.CreateExpression("String", "BurnDir=\"Z\"");
                         else _workPart.Expressions.CreateExpression("String", "BurnDir=\"none\"");
                         session_.UpdateManager.DoUpdate(makeExpressions);
@@ -1847,7 +1827,7 @@ namespace TSG_Library.UFuncs
                             extractFaceBuilder1.FixAtCurrentTimestamp = true;
                             Body body2 = null;
                             foreach (Body blkBody in _workPart.Bodies)
-                                if(blkBody.Layer == 1)
+                                if (blkBody.Layer == 1)
                                     body2 = blkBody;
 #pragma warning disable CS0618
                             extractFaceBuilder1.BodyToExtract.Add(body2);
@@ -1861,13 +1841,13 @@ namespace TSG_Library.UFuncs
                         CreateAutoSizeUdo();
                         foreach (Body body in _workPart.Bodies)
                         {
-                            if(body.Layer == 1)
+                            if (body.Layer == 1)
                             {
                                 body.Color = _compColor.ComponentColor;
                                 ColorBaseFace(body, isUpper);
                             }
 
-                            if(body.Layer == 15)
+                            if (body.Layer == 15)
                                 body.Color = (int)CtsSubtoolColor.Yellow;
                         }
 
@@ -1906,10 +1886,10 @@ namespace TSG_Library.UFuncs
                         do
                         {
                             ufsession_.Obj.CycleObjsInPart(_workPart.Tag, UF_reference_set_type, ref cycleRefSet);
-                            if(cycleRefSet == NXOpen.Tag.Null)
+                            if (cycleRefSet == NXOpen.Tag.Null)
                                 break;
                             ufsession_.Obj.AskName(cycleRefSet, out var name);
-                            if(name != "BODY") continue;
+                            if (name != "BODY") continue;
                             Tag[] refSetMembers = { assmComponents[0].Tag };
                             ufsession_.Assem.AddRefSetMembers(cycleRefSet, refSetMembers.Length, refSetMembers);
                             ufsession_.Assem.ReplaceRefset(refSetMembers.Length, refSetMembers, "BODY");
@@ -1917,7 +1897,7 @@ namespace TSG_Library.UFuncs
                     }
 
                     UpdateFormText();
-                    if(userMaterial.Length != 0)
+                    if (userMaterial.Length != 0)
                     {
                         textBoxUserMaterial.Text = userMaterial;
                         comboBoxCompName.SelectedIndex = compNameIndex;
@@ -1956,7 +1936,7 @@ namespace TSG_Library.UFuncs
                         .Where(delFeature => delFeature.Name == "DYNAMIC BLOCK").Cast<NXObject>().ToList();
                     delObjects.AddRange(_workPart.Lines.Cast<Line>().Where(nLine => nLine.Name != string.Empty));
                     delObjects.AddRange(_workPart.Points.Cast<Point>().Where(nPoint => nPoint.Name != string.Empty));
-                    if(delObjects.Count > 0) DeleteNxObjects(delObjects);
+                    if (delObjects.Count > 0) DeleteNxObjects(delObjects);
                 }
             }
             catch (Exception ex)
@@ -1977,7 +1957,7 @@ namespace TSG_Library.UFuncs
                     ufsession_.Ui.AskInfoUnits(out var infoUnits);
                     var dispUnits = (Part.Units)_displayPart.PartUnits;
 
-                    if(dispUnits == Part.Units.Millimeters)
+                    if (dispUnits == Part.Units.Millimeters)
                     {
                         _displayPart.UnitCollection.SetDefaultDataEntryUnits(UnitCollection.UnitDefaults.GMmNDegC);
                         _displayPart.UnitCollection.SetDefaultObjectInformationUnits(UnitCollection.UnitDefaults
@@ -2005,7 +1985,7 @@ namespace TSG_Library.UFuncs
                     var selectedName = (CtsAttributes)comboBoxCompName.SelectedItem;
                     var selectecMaterial = new CtsAttributes();
 
-                    if(listBoxMaterial.SelectedIndex != -1)
+                    if (listBoxMaterial.SelectedIndex != -1)
                     {
                         selectecMaterial = (CtsAttributes)listBoxMaterial.SelectedItem;
                     }
@@ -2016,7 +1996,7 @@ namespace TSG_Library.UFuncs
                     }
 
                     var numberIsValid = FormatDetailNumber();
-                    if(numberIsValid)
+                    if (numberIsValid)
                     {
                         UpdateSessionParts();
                         UpdateOriginalParts();
@@ -2027,7 +2007,7 @@ namespace TSG_Library.UFuncs
                         var uprCompOrigin = new Point3d();
                         var uprCompOrientation = new Matrix3x3();
 
-                        if(checkBoxUpperComp.Checked)
+                        if (checkBoxUpperComp.Checked)
                         {
                             _displayPart.WCS.Rotate(WCS.Axis.XAxis, 180);
 
@@ -2060,7 +2040,7 @@ namespace TSG_Library.UFuncs
 
                         Point3d originPoint1;
 
-                        if(checkBoxUpperComp.Checked)
+                        if (checkBoxUpperComp.Checked)
                         {
                             var xAxis = new Vector3d(uprCompOrientation.Xx, uprCompOrientation.Xy,
                                 uprCompOrientation.Xz);
@@ -2169,7 +2149,7 @@ namespace TSG_Library.UFuncs
 
                         var makeExpressions = session_.SetUndoMark(Session.MarkVisibility.Invisible, "Expression");
 
-                        if(_displayPart.PartUnits == BasePart.Units.Inches)
+                        if (_displayPart.PartUnits == BasePart.Units.Inches)
                         {
                             var unit1 = _workPart.UnitCollection.FindObject("Inch");
 
@@ -2188,11 +2168,11 @@ namespace TSG_Library.UFuncs
 
                         _workPart.Expressions.CreateExpression("String",
                             checkBoxBurnout.Checked ? "Burnout=\"yes\"" : "Burnout=\"no\"");
-                        if(checkBoxGrind.Checked)
+                        if (checkBoxGrind.Checked)
                         {
                             _workPart.Expressions.CreateExpression("String", "Grind=\"yes\"");
 
-                            if(comboBoxTolerance.SelectedIndex != -1)
+                            if (comboBoxTolerance.SelectedIndex != -1)
                                 _workPart.Expressions.CreateExpression("String",
                                     $"GrindTolerance=\"{comboBoxTolerance.Text}\"");
                             else
@@ -2205,11 +2185,11 @@ namespace TSG_Library.UFuncs
                             _workPart.Expressions.CreateExpression("String", "GrindTolerance=\"none\"");
                         }
 
-                        if(checkBoxBurnDirX.Checked)
+                        if (checkBoxBurnDirX.Checked)
                             _workPart.Expressions.CreateExpression("String", "BurnDir=\"X\"");
-                        else if(checkBoxBurnDirY.Checked)
+                        else if (checkBoxBurnDirY.Checked)
                             _workPart.Expressions.CreateExpression("String", "BurnDir=\"Y\"");
-                        else if(checkBoxBurnDirZ.Checked)
+                        else if (checkBoxBurnDirZ.Checked)
                             _workPart.Expressions.CreateExpression("String", "BurnDir=\"Z\"");
                         else
                             _workPart.Expressions.CreateExpression("String", "BurnDir=\"none\"");
@@ -2236,7 +2216,7 @@ namespace TSG_Library.UFuncs
                         Body body2 = null;
 
                         foreach (Body blkBody in _workPart.Bodies)
-                            if(blkBody.Layer == 1)
+                            if (blkBody.Layer == 1)
                                 body2 = blkBody;
 
 #pragma warning disable CS0618
@@ -2261,13 +2241,13 @@ namespace TSG_Library.UFuncs
 
                         foreach (Body body in _workPart.Bodies)
                         {
-                            if(body.Layer == 1)
+                            if (body.Layer == 1)
                             {
                                 body.Color = _compColor.ComponentColor;
                                 ColorBaseFace(body, isUpper);
                             }
 
-                            if(body.Layer == 15)
+                            if (body.Layer == 15)
                                 body.Color = (int)CtsSubtoolColor.Yellow;
                         }
 
@@ -2305,11 +2285,11 @@ namespace TSG_Library.UFuncs
                         do
                         {
                             ufsession_.Obj.CycleObjsInPart(_workPart.Tag, UF_reference_set_type, ref cycleRefSet);
-                            if(cycleRefSet == NXOpen.Tag.Null)
+                            if (cycleRefSet == NXOpen.Tag.Null)
                                 break;
                             ufsession_.Obj.AskName(cycleRefSet, out var name);
 
-                            if(name != "BODY") continue;
+                            if (name != "BODY") continue;
                             Tag[] refSetMembers = { assmComponents[0].Tag };
                             ufsession_.Assem.AddRefSetMembers(cycleRefSet, refSetMembers.Length, refSetMembers);
                             ufsession_.Assem.ReplaceRefset(refSetMembers.Length, refSetMembers, "BODY");
@@ -2318,7 +2298,7 @@ namespace TSG_Library.UFuncs
 
                     UpdateFormText();
 
-                    if(userMaterial.Length != 0)
+                    if (userMaterial.Length != 0)
                     {
                         textBoxUserMaterial.Text = userMaterial;
                         comboBoxCompName.SelectedIndex = compNameIndex;
@@ -2353,7 +2333,7 @@ namespace TSG_Library.UFuncs
                         .Where(delFeature => delFeature.Name == "DYNAMIC BLOCK").Cast<NXObject>().ToList();
                     delObjects.AddRange(_workPart.Lines.Cast<Line>().Where(nLine => nLine.Name != string.Empty));
                     delObjects.AddRange(_workPart.Points.Cast<Point>().Where(nPoint => nPoint.Name != string.Empty));
-                    if(delObjects.Count > 0)
+                    if (delObjects.Count > 0)
                         DeleteNxObjects(delObjects);
                 }
             }
@@ -2437,7 +2417,7 @@ namespace TSG_Library.UFuncs
             {
                 try
                 {
-                    if(_changeColorComponent == null) return;
+                    if (_changeColorComponent == null) return;
                     ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
                     var dispComp = (BasePart)_changeColorComponent.Prototype;
@@ -2448,7 +2428,7 @@ namespace TSG_Library.UFuncs
                     var bodyCollection = _displayPart.Bodies.Cast<Body>().Where(solidBody => solidBody.Layer == 1)
                         .ToList();
 
-                    if(bodyCollection.Count == 1)
+                    if (bodyCollection.Count == 1)
                     {
                         // Get selected solid body feature faces
 
@@ -2457,7 +2437,7 @@ namespace TSG_Library.UFuncs
                         ufsession_.Modl.AskBodyFeats(bodyCollection[0].Tag, out var features);
 
                         ufsession_.Modl.AskFeatType(features[0], out var featureType);
-                        if(featureType == "EXTRUDE" || featureType == "BLOCK" || featureType == "BREP")
+                        if (featureType == "EXTRUDE" || featureType == "BLOCK" || featureType == "BREP")
                         {
                             ufsession_.Modl.AskFeatFaces(features[0], out var facesOfFeature);
 
@@ -2546,7 +2526,7 @@ namespace TSG_Library.UFuncs
 
             foreach (var bFace in bodyFaces)
             {
-                if(bFace.SolidFaceType != Face.FaceType.Planar) continue;
+                if (bFace.SolidFaceType != Face.FaceType.Planar) continue;
                 double[] vec1 =
                 {
                     _displayPart.WCS.CoordinateSystem.Orientation.Element.Zx,
@@ -2564,19 +2544,19 @@ namespace TSG_Library.UFuncs
 
                 ufsession_.Vec3.IsParallel(vec1, vec2, .001, out var isParallel);
 
-                if(isParallel != 1) continue;
-                if(upperComponent)
+                if (isParallel != 1) continue;
+                if (upperComponent)
                 {
                     ufsession_.Vec3.IsEqual(vec1, vec2, .001, out isEqualVec);
 
-                    if(isEqualVec != 1) continue;
+                    if (isEqualVec != 1) continue;
                     bFace.Color = 6;
                     bFace.RedisplayObject();
                 }
                 else
                 {
                     ufsession_.Vec3.IsEqual(vec1, vec2, .001, out isEqualVec);
-                    if(isEqualVec != 0) continue;
+                    if (isEqualVec != 0) continue;
                     bFace.Color = 6;
                     bFace.RedisplayObject();
                 }
@@ -2600,10 +2580,10 @@ namespace TSG_Library.UFuncs
                 status = ufsession_.Part.IsLoaded(filePath);
             }
 
-            if(compNameIncrement.Length != 3) return false;
-            if(!isConverted) return false;
-            if(compNameResult <= 0 || compNameResult >= 991) return false;
-            if(_isNameReset)
+            if (compNameIncrement.Length != 3) return false;
+            if (!isConverted) return false;
+            if (compNameResult <= 0 || compNameResult >= 991) return false;
+            if (_isNameReset)
             {
                 _isNameReset = false;
                 textBoxDetailNumber.Text = compNameIncrement;
@@ -2611,19 +2591,19 @@ namespace TSG_Library.UFuncs
             }
 
             compNameResult += 1;
-            if((compNameResult > 0) & (compNameResult < 10))
+            if ((compNameResult > 0) & (compNameResult < 10))
             {
                 textBoxDetailNumber.Text = "00" + compNameResult;
                 return true;
             }
 
-            if((compNameResult > 9) & (compNameResult < 100))
+            if ((compNameResult > 9) & (compNameResult < 100))
             {
                 textBoxDetailNumber.Text = "0" + compNameResult;
                 return true;
             }
 
-            if(compNameResult <= 100) return false;
+            if (compNameResult <= 100) return false;
             textBoxDetailNumber.Text = compNameResult.ToString();
             return true;
         }
@@ -2640,53 +2620,73 @@ namespace TSG_Library.UFuncs
         private void ResetForm(Part wp)
         {
             UpdateSessionParts();
-            if(IsNameValid(wp))
-            {
-                UpdateFormText();
-                InitializeMainForm();
-                NameCheckPassed();
-                _isNameReset = true;
-                _isSaveAs = false;
-                var names = new List<int>();
-                if(wp.ComponentAssembly.RootComponent == null) return;
-                foreach (var comp in wp.ComponentAssembly.RootComponent.GetChildren())
-                {
-                    string compName;
-                    int testCompName;
-                    bool isConverted;
-                    if(comp.DisplayName.Contains("mirror"))
-                    {
-                        compName = comp.DisplayName.Substring(comp.DisplayName.Length - 10, 3);
-                        isConverted = int.TryParse(compName, out testCompName);
-                        if(isConverted && testCompName > 0 && testCompName < 991)
-                            names.Add(testCompName);
-                    }
-                    else
-                    {
-                        compName = comp.DisplayName.Substring(comp.DisplayName.Length - 3, 3);
-                        isConverted = int.TryParse(compName, out testCompName);
-                        if(isConverted && testCompName > 0 && testCompName < 991)
-                            names.Add(testCompName);
-                    }
-                }
 
-                if(names.Count == 0) return;
-                names.Sort();
-                var lastComponentName = names[names.Count - 1] + 1;
-                if((lastComponentName > 0) & (lastComponentName < 10))
-                    textBoxDetailNumber.Text = "00" + lastComponentName;
-                if((lastComponentName > 9) & (lastComponentName < 100))
-                    textBoxDetailNumber.Text = "0" + lastComponentName;
-                if(lastComponentName > 100)
-                    textBoxDetailNumber.Text = lastComponentName.ToString();
-            }
-            else
+            //if (!IsNameValid(wp))
+            //{
+            //    textBoxDetailNumber.Clear();
+            //    UpdateFormText();
+            //    InitializeMainForm();
+            //    NameCheckFailed();
+            //    return;
+            //}
+
+            UpdateFormText();
+            InitializeMainForm();
+            NameCheckPassed();
+            _isNameReset = true;
+            _isSaveAs = false;
+            //var names = new List<int>();
+
+            if (wp.ComponentAssembly.RootComponent is null)
+                return;
+
+            var names = wp.ComponentAssembly.RootComponent.GetChildren()
+                .Select(__c => __c.DisplayName)
+                .Distinct()
+                .Select(__n => Regex.Match(__n, "^\\d+-\\d+-(?<detail>\\d+)$"))
+                .Where(__m => __m.Success)
+                .Select(__m =>
+                {
+                    print_(__m.Groups["detail"].Value);
+                    return __m.Groups["detail"].Value;
+                })
+                .Select(int.Parse)
+                .ToList();
+
+            print_(names.Count);
+
+            if (names.Count == 0)
+                return;
+
+            names.Sort();
+
+            var lastComponentName = names[names.Count - 1] + 1;
+
+            if (chkDigits.Checked)
             {
-                textBoxDetailNumber.Clear();
-                UpdateFormText();
-                InitializeMainForm();
-                NameCheckFailed();
+                if (lastComponentName > 0 && lastComponentName < 10)
+                    textBoxDetailNumber.Text = $"000{lastComponentName}";
+
+                if (lastComponentName > 9 && lastComponentName < 100)
+                    textBoxDetailNumber.Text = $"00{lastComponentName}";
+
+                if (lastComponentName > 99 && lastComponentName < 1000)
+                    textBoxDetailNumber.Text = $"0{lastComponentName}";
+
+                if (lastComponentName > 1000)
+                    textBoxDetailNumber.Text = $"{lastComponentName}";
+
+                return;
             }
+
+            if ((lastComponentName > 0) & (lastComponentName < 10))
+                textBoxDetailNumber.Text = $"00{lastComponentName}";
+
+            if ((lastComponentName > 9) & (lastComponentName < 100))
+                textBoxDetailNumber.Text = $"0{lastComponentName}";
+
+            if (lastComponentName > 100)
+                textBoxDetailNumber.Text = lastComponentName.ToString();
         }
 
         private bool IsNameValid(Part partToCheck)
@@ -2694,14 +2694,14 @@ namespace TSG_Library.UFuncs
             bool isValid;
             var lastDirIndex = partToCheck.FullPath.LastIndexOf("\\");
             var subAssemName = partToCheck.FullPath.Substring(lastDirIndex + 1);
-            if(subAssemName.ToLower().Contains("lsp") || subAssemName.ToLower().Contains("usp"))
+            if (subAssemName.ToLower().Contains("lsp") || subAssemName.ToLower().Contains("usp"))
                 isValid = true;
-            else if(subAssemName.ToLower().Contains("ush") || subAssemName.ToLower().Contains("lsh"))
+            else if (subAssemName.ToLower().Contains("ush") || subAssemName.ToLower().Contains("lsh"))
                 isValid = true;
-            else if(subAssemName.ToLower().Contains("lftr") || subAssemName.ToLower().Contains("lnitro") ||
+            else if (subAssemName.ToLower().Contains("lftr") || subAssemName.ToLower().Contains("lnitro") ||
                     subAssemName.ToLower().Contains("unitro"))
                 isValid = true;
-            else if(subAssemName.ToLower().Contains("acc") || subAssemName.ToLower().Contains("lair") ||
+            else if (subAssemName.ToLower().Contains("acc") || subAssemName.ToLower().Contains("lair") ||
                     subAssemName.ToLower().Contains("lele"))
                 isValid = true;
             else
@@ -2713,7 +2713,7 @@ namespace TSG_Library.UFuncs
         {
             bool isAllowed;
             var lastDash = comp.DisplayName.LastIndexOf('-');
-            if(lastDash != -1)
+            if (lastDash != -1)
             {
                 var subAssemName = comp.DisplayName.Substring(lastDash + 1, comp.DisplayName.Length - (lastDash + 1));
                 switch (subAssemName)
@@ -2819,7 +2819,7 @@ namespace TSG_Library.UFuncs
             foreach (var name in _compNames)
                 comboBoxCompName.Items.Add(name);
 
-            if(selectedName != -1)
+            if (selectedName != -1)
                 comboBoxCompName.SelectedIndex = selectedName;
 
             // create list of material types
@@ -2897,12 +2897,12 @@ namespace TSG_Library.UFuncs
 
             foreach (var bRef in _workPart.GetAllReferenceSets())
             {
-                if(bRef.Name != "BODY") continue;
+                if (bRef.Name != "BODY") continue;
                 isBodyRefSet = true;
                 referenceSet1 = bRef;
             }
 
-            if(isBodyRefSet)
+            if (isBodyRefSet)
             {
                 var referenceSet2 = _workPart.CreateReferenceSet();
 
@@ -2918,21 +2918,21 @@ namespace TSG_Library.UFuncs
                 Body extractBody = null;
 
                 foreach (Body sBody in _workPart.Bodies)
-                    if(sBody.Layer == 1)
+                    if (sBody.Layer == 1)
                         body1 = sBody;
 
                 objects1[0] = body1;
 
                 foreach (Body exBody in _workPart.Bodies)
-                    if(exBody.Layer == 15)
+                    if (exBody.Layer == 15)
                         extractBody = exBody;
 
                 objects2[0] = extractBody;
 
-                if(body1 != null)
+                if (body1 != null)
                     referenceSet1.AddObjectsToReferenceSet(objects1);
 
-                if(extractBody != null)
+                if (extractBody != null)
                     referenceSet2.AddObjectsToReferenceSet(objects2);
 
                 int nErrs1;
@@ -2958,21 +2958,21 @@ namespace TSG_Library.UFuncs
                 Body extractBody = null;
 
                 foreach (Body sBody in _workPart.Bodies)
-                    if(sBody.Layer == 1)
+                    if (sBody.Layer == 1)
                         body1 = sBody;
 
                 objects1[0] = body1;
 
                 foreach (Body exBody in _workPart.Bodies)
-                    if(exBody.Layer == 15)
+                    if (exBody.Layer == 15)
                         extractBody = exBody;
 
                 objects2[0] = extractBody;
 
-                if(body1 != null)
+                if (body1 != null)
                     referenceSet1.AddObjectsToReferenceSet(objects1);
 
-                if(extractBody != null)
+                if (extractBody != null)
                     referenceSet2.AddObjectsToReferenceSet(objects2);
 
                 session_.UpdateManager.DoUpdate(markId1);
@@ -3054,18 +3054,18 @@ namespace TSG_Library.UFuncs
         private void CreateAutoSizeUdo()
         {
             var myUdOclass = session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoAutoSizeComponent");
-            if(myUdOclass == null) return;
+            if (myUdOclass == null) return;
             var currentUdo = _workPart.UserDefinedObjectManager.GetUdosOfClass(myUdOclass);
-            if(currentUdo.Length != 0) return;
+            if (currentUdo.Length != 0) return;
             BasePart myBasePart = _workPart;
             var myUdOmanager = myBasePart.UserDefinedObjectManager;
             var myUdo = myUdOmanager.CreateUserDefinedObject(myUdOclass);
             var myLinks = new UserDefinedObject.LinkDefinition[1];
             var numBodies = _workPart.Bodies.Cast<Body>().Count(body => body.Layer == 1);
-            if(numBodies != 1) return;
+            if (numBodies != 1) return;
             foreach (Body body in _workPart.Bodies)
             {
-                if(body.Layer != 1) continue;
+                if (body.Layer != 1) continue;
                 myLinks[0].AssociatedObject = body;
                 myLinks[0].Status = UserDefinedObject.LinkStatus.UpToDate;
                 myUdo.SetLinks(UserDefinedObject.LinkType.Type1, myLinks);
@@ -3077,7 +3077,7 @@ namespace TSG_Library.UFuncs
         private void SetWcsToWorkPart(Component compRefCsys)
         {
             session_.SetUndoMark(Session.MarkVisibility.Visible, "SetWcsToWorkPart");
-            if(compRefCsys != null)
+            if (compRefCsys != null)
             {
                 var compBase = (BasePart)compRefCsys.Prototype;
 
@@ -3089,8 +3089,8 @@ namespace TSG_Library.UFuncs
 
                 foreach (Feature featBlk in _workPart.Features)
                 {
-                    if(featBlk.FeatureType != "BLOCK") continue;
-                    if(featBlk.Name != "DYNAMIC BLOCK") continue;
+                    if (featBlk.FeatureType != "BLOCK") continue;
+                    if (featBlk.Name != "DYNAMIC BLOCK") continue;
                     isBlockComp = true;
 
                     var block1 = (Block)featBlk;
@@ -3117,7 +3117,7 @@ namespace TSG_Library.UFuncs
                     NXObject[] addToBody = { featBlkCsys };
 
                     foreach (var bRefSet in _displayPart.GetAllReferenceSets())
-                        if(bRefSet.Name == "BODY")
+                        if (bRefSet.Name == "BODY")
                             bRefSet.AddObjectsToReferenceSet(addToBody);
 
                     session_.Parts.SetDisplay(_originalDisplayPart, false, false, out var setDispLoadStatus1);
@@ -3129,13 +3129,13 @@ namespace TSG_Library.UFuncs
 
                     foreach (CartesianCoordinateSystem wpCsys in _workPart.CoordinateSystems)
                     {
-                        if(wpCsys.Layer != 254) continue;
-                        if(wpCsys.Name != "EDITCSYS") continue;
+                        if (wpCsys.Layer != 254) continue;
+                        if (wpCsys.Name != "EDITCSYS") continue;
                         var csysOccurrence = session_.Parts.WorkComponent.FindOccurrence(wpCsys);
 
                         var editCsys = (CartesianCoordinateSystem)csysOccurrence;
 
-                        if(editCsys != null)
+                        if (editCsys != null)
                             _displayPart.WCS.SetOriginAndMatrix(editCsys.Origin, editCsys.Orientation.Element);
 
                         var markDeleteObjs = session_.SetUndoMark(Session.MarkVisibility.Invisible, "");
@@ -3146,7 +3146,7 @@ namespace TSG_Library.UFuncs
                     }
                 }
 
-                if(isBlockComp) return;
+                if (isBlockComp) return;
                 {
                     session_.Parts.SetDisplay(_originalDisplayPart, false, false, out var setDispLoadStatus1);
                     setDispLoadStatus1.Dispose();
@@ -3160,7 +3160,7 @@ namespace TSG_Library.UFuncs
             {
                 foreach (Feature featBlk in _workPart.Features)
                 {
-                    if(featBlk.FeatureType != "BLOCK" || featBlk.Name != "DYNAMIC BLOCK") continue;
+                    if (featBlk.FeatureType != "BLOCK" || featBlk.Name != "DYNAMIC BLOCK") continue;
                     var block1 = (Block)featBlk;
                     var blockFeatureBuilderMatch = _workPart.Features.CreateBlockFeatureBuilder(block1);
                     var bOrigin = blockFeatureBuilderMatch.Origin;
@@ -3199,7 +3199,7 @@ namespace TSG_Library.UFuncs
                 Selection.SelectionScope.AnyInAssembly,
                 Selection.SelectionAction.ClearAndEnableSpecific,
                 false, false, mask, out var selectedBodyArray);
-            if(sel != Selection.Response.Ok) return bodySelection;
+            if (sel != Selection.Response.Ok) return bodySelection;
             bodySelection.AddRange(selectedBodyArray.Cast<Body>());
             return bodySelection;
         }
@@ -3212,7 +3212,7 @@ namespace TSG_Library.UFuncs
                 Selection.SelectionScope.AnyInAssembly,
                 Selection.SelectionAction.ClearAndEnableSpecific,
                 false, false, mask, out var selectedComp, out var cursor);
-            if(!((sel == Selection.Response.ObjectSelected) | (sel == Selection.Response.ObjectSelectedByName)))
+            if (!((sel == Selection.Response.ObjectSelected) | (sel == Selection.Response.ObjectSelectedByName)))
                 return null;
             var compSelection = (Component)selectedComp;
             return compSelection;
@@ -3248,8 +3248,8 @@ namespace TSG_Library.UFuncs
             var textData = endSplit[0];
             var splitData = Regex.Split(textData, "\r\n");
             var compData = (from sData in splitData
-                where sData != string.Empty
-                select new CtsAttributes { AttrValue = sData }).ToList();
+                            where sData != string.Empty
+                            select new CtsAttributes { AttrValue = sData }).ToList();
             return compData.Count > 0 ? compData : null;
         }
 
@@ -3267,6 +3267,11 @@ namespace TSG_Library.UFuncs
             Lower,
             Upper,
             None
+        }
+
+        private void chkDigits_CheckedChanged(object sender, EventArgs e)
+        {
+            WorkPartChanged1(__work_part_);
         }
     }
 }
