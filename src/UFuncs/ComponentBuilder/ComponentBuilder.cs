@@ -224,13 +224,12 @@ namespace TSG_Library.UFuncs
                     groupBoxColor.Enabled = false;
                 }
 
-                var workComp = session_.Parts.WorkComponent;
-                if(workComp == null)
+                if(__work_component_ is null)
                     if(session_.Parts.Work.ComponentAssembly.RootComponent != null)
-                        workComp = session_.Parts.Work.ComponentAssembly.RootComponent;
+                        __work_component_ = session_.Parts.Work.ComponentAssembly.RootComponent;
                     else
                         return;
-                var ass = Check(workComp);
+                var ass = Check(__work_component_);
                 // ReSharper disable once SwitchStatementMissingSomeCases
                 switch (ass)
                 {

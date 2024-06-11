@@ -71,7 +71,7 @@ public static class Program
 
             //print_("hello world");
 
-            new DesignCheckForm().Show();
+            new ComponentBuilder().Show();
 
             return;
 
