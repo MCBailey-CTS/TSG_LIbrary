@@ -318,77 +318,77 @@ namespace TSG_Library.UFuncs
         ///
 
 
-  private void EditBlockForm_Load(object sender, EventArgs e)
-  {
-      if (Settings.Default.udoComponentBuilderWindowLocation != null)
-          Location = Settings.Default.udoComponentBuilderWindowLocation;
+        private void EditBlockForm_Load(object sender, EventArgs e)
+        {
+            if (Settings.Default.udoComponentBuilderWindowLocation != null)
+                Location = Settings.Default.udoComponentBuilderWindowLocation;
 
-      buttonApply.Enabled = false;
+            buttonApply.Enabled = false;
 
-      LoadGridSizes();
+            LoadGridSizes();
 
-      if (string.IsNullOrEmpty(comboBoxGridBlock.Text))
-          if (!(Session.GetSession().Parts.Work is null))
-              comboBoxGridBlock.SelectedItem = Session.GetSession().Parts.Work.PartUnits == BasePart.Units.Inches
-                  ? "0.250"
-                  : "6.35";
+            if (string.IsNullOrEmpty(comboBoxGridBlock.Text))
+                if (!(Session.GetSession().Parts.Work is null))
+                    comboBoxGridBlock.SelectedItem = Session.GetSession().Parts.Work.PartUnits == BasePart.Units.Inches
+                        ? "0.250"
+                        : "6.35";
 
-      _nonValidNames.Add("strip");
-      _nonValidNames.Add("layout");
-      _nonValidNames.Add("blank");
-      _registered = Startup();
-  }
+            _nonValidNames.Add("strip");
+            _nonValidNames.Add("layout");
+            _nonValidNames.Add("blank");
+            _registered = Startup();
+        }
 
-  private void ButtonExit_Click(object sender, EventArgs e)
-  {
-      session_.Parts.RemoveWorkPartChangedHandler(_idWorkPartChanged1);
-      Close();
-      Settings.Default.udoComponentBuilderWindowLocation = Location;
-      Settings.Default.Save();
+        private void ButtonExit_Click(object sender, EventArgs e)
+        {
+            session_.Parts.RemoveWorkPartChangedHandler(_idWorkPartChanged1);
+            Close();
+            Settings.Default.udoComponentBuilderWindowLocation = Location;
+            Settings.Default.Save();
 
-      using (this)
-          new ComponentBuilder().Show();
-  }
+            using (this)
+                new ComponentBuilder().Show();
+        }
 
-  private void ComboBoxGridBlock_SelectedIndexChanged(object sender, EventArgs e)
-  {
-      if (comboBoxGridBlock.Text == "0.000")
-      {
-          bool isConverted;
-          isConverted = double.TryParse(comboBoxGridBlock.Text, out _gridSpace);
-          SetWorkPlaneOff();
-      }
-      else
-      {
-          SetWorkPlaneOff();
-          bool isConverted;
-          isConverted = double.TryParse(comboBoxGridBlock.Text, out _gridSpace);
-          SetWorkPlaneOn();
-      }
+        private void ComboBoxGridBlock_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBoxGridBlock.Text == "0.000")
+            {
+                bool isConverted;
+                isConverted = double.TryParse(comboBoxGridBlock.Text, out _gridSpace);
+                SetWorkPlaneOff();
+            }
+            else
+            {
+                SetWorkPlaneOff();
+                bool isConverted;
+                isConverted = double.TryParse(comboBoxGridBlock.Text, out _gridSpace);
+                SetWorkPlaneOn();
+            }
 
-      Settings.Default.EditBlockFormGridIncrement = comboBoxGridBlock.Text;
-      Settings.Default.Save();
-  }
-
-
-         private void ButtonEditConstruction_Click(object sender, EventArgs e) => EditConstruction();
-
- private void ButtonEndEditConstruction_Click(object sender, EventArgs e)
- {
-     try
-     {
-         EndEditConstruction();
-     }
-     catch (Exception ex)
-     {
-         buttonEditConstruction.Enabled = true;
-         buttonEndEditConstruction.Enabled = false;
-         ex.__PrintException();
-     }
- }
+            Settings.Default.EditBlockFormGridIncrement = comboBoxGridBlock.Text;
+            Settings.Default.Save();
+        }
 
 
-       
+        private void ButtonEditConstruction_Click(object sender, EventArgs e) => EditConstruction();
+
+        private void ButtonEndEditConstruction_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                EndEditConstruction();
+            }
+            catch (Exception ex)
+            {
+                buttonEditConstruction.Enabled = true;
+                buttonEndEditConstruction.Enabled = false;
+                ex.__PrintException();
+            }
+        }
+
+
+
 
         private void EndEditConstruction()
         {
@@ -396,10 +396,8 @@ namespace TSG_Library.UFuncs
             _displayPart.Layers.WorkLayer = 1;
             Session.UndoMarkId markId1;
             markId1 = session_.SetUndoMark(Session.MarkVisibility.Invisible, "Delete Reference Set");
-
             Component[] setRefComp = { session_.Parts.WorkComponent };
             _displayPart.ComponentAssembly.ReplaceReferenceSetInOwners("BODY", setRefComp);
-
             var allRefSets = _workPart.GetAllReferenceSets();
 
             foreach (var namedRefSet in allRefSets)
@@ -408,16 +406,12 @@ namespace TSG_Library.UFuncs
 
             int nErrs1;
             nErrs1 = session_.UpdateManager.DoUpdate(markId1);
-
             session_.DeleteUndoMark(markId1, "Delete Reference Set");
-
-            session_.Parts.SetDisplay(_originalDisplayPart, false, false, out var partLoadStatus1);
-            session_.Parts.SetWork(_originalWorkPart);
-
+            __display_part_ = _originalDisplayPart;
+            __work_part_ = _originalWorkPart;
             buttonEditConstruction.Enabled = true;
             buttonEndEditConstruction.Enabled = false;
             buttonExit.Enabled = true;
-
             UpdateSessionParts();
             UpdateOriginalParts();
         }
@@ -467,14 +461,14 @@ namespace TSG_Library.UFuncs
 
 
 
- private void ButtonViewWcs_Click(object sender, EventArgs e)
- {
-     UpdateSessionParts();
-     UpdateOriginalParts();
-     CoordinateSystem coordSystem = _displayPart.WCS.CoordinateSystem;
-     var orientation = coordSystem.Orientation.Element;
-     _displayPart.Views.WorkView.Orient(orientation);
- }
+        private void ButtonViewWcs_Click(object sender, EventArgs e)
+        {
+            UpdateSessionParts();
+            UpdateOriginalParts();
+            CoordinateSystem coordSystem = _displayPart.WCS.CoordinateSystem;
+            var orientation = coordSystem.Orientation.Element;
+            _displayPart.Views.WorkView.Orient(orientation);
+        }
         private void ButtonEditMatch_Click(object sender, EventArgs e)
         {
             try
@@ -687,7 +681,7 @@ namespace TSG_Library.UFuncs
         private void ButtonApply_Click(object sender, EventArgs e)
         {
             UpdateDynamicBlock(_updateComponent);
-            session_.Parts.SetWork(_originalWorkPart);
+            __work_part_ = _originalWorkPart;
             UpdateSessionParts();
             UpdateOriginalParts();
             _displayPart.WCS.SetOriginAndMatrix(_workCompOrigin, _workCompOrientation);
@@ -1074,8 +1068,7 @@ namespace TSG_Library.UFuncs
 
                 var matchComponent = editBodyTo.OwningComponent;
                 ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
-                session_.Parts.SetWorkComponent(matchComponent, out var partLoadMatch);
-                partLoadMatch.Dispose();
+                __work_component_ = matchComponent;
                 UpdateSessionParts();
                 isBlockComponent = _workPart.__HasDynamicBlock();
 
@@ -1120,7 +1113,7 @@ namespace TSG_Library.UFuncs
                     blockFeatureBuilderMatchFrom.GetOrientation(out var xAxisMatch,
                         out var yAxisMatch);
 
-                    session_.Parts.SetWork(_displayPart);
+                    __work_part_ = _displayPart; ;
                     UpdateSessionParts();
                     var origin = new double[3];
                     var matrix = new double[9];
@@ -1134,9 +1127,7 @@ namespace TSG_Library.UFuncs
                         ufsession_.Assem.AskInstOfPartOcc(editComponent.Tag);
                     ufsession_.Assem.RepositionInstance(eInstance, origin, matrix);
 
-                    session_.Parts.SetWorkComponent(editComponent,
-                        out var partLoadEditComponent);
-                    partLoadEditComponent.Dispose();
+                    __work_component_ = editComponent;
                     UpdateSessionParts();
 
                     foreach (Feature featDynamic in _workPart.Features)
@@ -1191,7 +1182,7 @@ namespace TSG_Library.UFuncs
                             session_.Preferences.Assemblies
                                 .WorkPartDisplayAsEntirePart = false;
 
-                            session_.Parts.SetWork(_originalWorkPart);
+                            __work_part_ = _originalWorkPart;
                             UpdateSessionParts();
 
                             _displayPart.WCS.Visibility = true;
@@ -1228,8 +1219,7 @@ namespace TSG_Library.UFuncs
                             {
                                 ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
-                                session_.Parts.SetWorkComponent(editComponent, out var partLoadStatusWorkComp);
-                                partLoadStatusWorkComp.Dispose();
+                                __work_component_ = editComponent;
                                 UpdateSessionParts();
 
                                 foreach (Feature featBlk in _workPart.Features)
@@ -1521,16 +1511,9 @@ namespace TSG_Library.UFuncs
                                     }
 
                                     UpdateDynamicBlock(editComponent);
-
-                                    session_.Preferences.EmphasisVisualization.WorkPartEmphasis = false;
-                                    session_.Preferences.Assemblies.WorkPartDisplayAsEntirePart = false;
-
                                     ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
-
-                                    session_.Parts.SetWorkComponent(editComponent, out var partLoadComponent1);
-                                    partLoadComponent1.Dispose();
+                                    __work_component_ = editComponent;
                                     UpdateSessionParts();
-
                                     CreateEditData(editComponent);
                                     pHandle = SelectHandlePoint();
                                 }
@@ -1890,8 +1873,7 @@ namespace TSG_Library.UFuncs
 
                     ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
-                    session_.Parts.SetWorkComponent(editComponent, out var partLoadComponent1);
-                    partLoadComponent1.Dispose();
+                    __work_component_ = editComponent;
                     UpdateSessionParts();
 
                     ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
@@ -2482,8 +2464,7 @@ namespace TSG_Library.UFuncs
 
                 ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
-                session_.Parts.SetWorkComponent(editComponent, out var partLoadComponent1);
-                partLoadComponent1.Dispose();
+                __work_component_ = editComponent;
                 UpdateSessionParts();
 
                 CreateEditData(editComponent);
@@ -2518,8 +2499,7 @@ namespace TSG_Library.UFuncs
 
                     var addRefSetPart = (Part)editComponent.Prototype;
 
-                    session_.Parts.SetDisplay(addRefSetPart, false, false, out var partLoadSetDisp1);
-                    partLoadSetDisp1.Dispose();
+                    __display_part_ = addRefSetPart;
                     UpdateSessionParts();
 
                     Session.UndoMarkId markId1;
@@ -2566,16 +2546,12 @@ namespace TSG_Library.UFuncs
 
                     session_.DeleteUndoMark(markIdEditRefSet, "Create New Reference Set");
 
-                    session_.Parts.SetDisplay(_originalDisplayPart, false, false, out var partLoadSetDisp2);
-                    partLoadSetDisp2.Dispose();
+                    __display_part_ = _originalDisplayPart;
                     UpdateSessionParts();
 
                     ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
                     ufsession_.Disp.RegenerateDisplay();
-                    session_.Parts.SetWork((Part)editComponent.Prototype);
-                    session_.Parts.SetWorkComponent(editComponent, PartCollection.RefsetOption.Current,
-                        PartCollection.WorkComponentOption.Visible, out var partLoadStatus3);
-                    partLoadStatus3.Dispose();
+                    __work_component_ = editComponent;
                     UpdateSessionParts();
 
                     SetWcsToWorkPart(editComponent);
@@ -2624,8 +2600,7 @@ namespace TSG_Library.UFuncs
                             {
                                 ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
-                                session_.Parts.SetWorkComponent(editComponent, out var partLoadStatusWorkComp);
-                                partLoadStatusWorkComp.Dispose();
+                                __work_component_ = editComponent;
                                 UpdateSessionParts();
 
                                 foreach (Feature featBlk in _workPart.Features)
@@ -2670,49 +2645,11 @@ namespace TSG_Library.UFuncs
 
                                     if (pointPrototype.Name.Contains("POS"))
                                     {
-                                        foreach (Point namedPt in _workPart.Points)
-                                            if (namedPt.Name != "")
-                                            {
-                                                if (namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
-                                                    doNotMovePts.Add(namedPt);
-
-                                                else if (namedPt.Name.Contains("Y") &&
-                                                        pointPrototype.Name.Contains("Y"))
-                                                    doNotMovePts.Add(namedPt);
-
-                                                else if (namedPt.Name.Contains("Z") &&
-                                                        pointPrototype.Name.Contains("Z"))
-                                                    doNotMovePts.Add(namedPt);
-                                                else if (namedPt.Name.Contains("BLKORIGIN"))
-                                                    doNotMovePts.Add(namedPt);
-                                                else
-                                                    movePtsHalf.Add(namedPt);
-                                            }
-
-                                        movePtsFull.Add(pointPrototype);
+                                        AlignEdgeDistancePos(pointPrototype, doNotMovePts, movePtsHalf, movePtsFull);
                                     }
                                     else
                                     {
-                                        foreach (Point namedPt in _workPart.Points)
-                                            if (namedPt.Name != "")
-                                            {
-                                                if (namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
-                                                    doNotMovePts.Add(namedPt);
-
-                                                else if (namedPt.Name.Contains("Y") &&
-                                                        pointPrototype.Name.Contains("Y"))
-                                                    doNotMovePts.Add(namedPt);
-
-                                                else if (namedPt.Name.Contains("Z") &&
-                                                        pointPrototype.Name.Contains("Z"))
-                                                    doNotMovePts.Add(namedPt);
-                                                else if (namedPt.Name.Contains("BLKORIGIN"))
-                                                    movePtsFull.Add(namedPt);
-                                                else
-                                                    movePtsHalf.Add(namedPt);
-                                            }
-
-                                        movePtsFull.Add(pointPrototype);
+                                        AlignEdgeDistanceNeg(pointPrototype, doNotMovePts, movePtsHalf, movePtsFull);
                                     }
 
                                     var posXObjs = new List<Line>();
@@ -2796,176 +2733,32 @@ namespace TSG_Library.UFuncs
 
                                             if (pointPrototype.Name == "POSX")
                                             {
-                                                distance = Math.Abs(mappedPoint[0] - mappedBase[0]);
-
-                                                if (mappedBase[0] < mappedPoint[0])
-                                                {
-                                                    distance *= -1;
-                                                    distance += inputDist;
-                                                }
-                                                else
-                                                {
-                                                    distance -= inputDist;
-                                                }
-
-                                                foreach (var posXLine in posXObjs) movePtsFull.Add(posXLine);
-
-                                                foreach (var xAxisLine in allxAxisLines)
-                                                {
-                                                    var mappedEndPoint = MapAbsoluteToWcs(xAxisLine.EndPoint);
-                                                    var addX = new Point3d(mappedEndPoint.X + distance,
-                                                        mappedEndPoint.Y, mappedEndPoint.Z);
-                                                    var mappedAddX = MapWcsToAbsolute(addX);
-                                                    xAxisLine.SetEndPoint(mappedAddX);
-                                                }
-
-                                                MoveObjects(movePtsFull.ToArray(), distance, "X");
-                                                MoveObjects(movePtsHalf.ToArray(), distance / 2, "X");
+                                                distance = AlignEdgeDistancePosX(movePtsHalf, movePtsFull, posXObjs, allxAxisLines, inputDist, mappedBase, mappedPoint);
                                             }
 
                                             if (pointPrototype.Name == "NEGX")
                                             {
-                                                distance = Math.Abs(mappedPoint[0] - mappedBase[0]);
-
-                                                if (mappedBase[0] < mappedPoint[0])
-                                                {
-                                                    distance *= -1;
-                                                    distance += inputDist;
-                                                }
-                                                else
-                                                {
-                                                    distance -= inputDist;
-                                                }
-
-                                                foreach (var addLine in negXObjs) movePtsFull.Add(addLine);
-
-                                                foreach (var xAxisLine in allxAxisLines)
-                                                {
-                                                    var mappedStartPoint = MapAbsoluteToWcs(xAxisLine.StartPoint);
-                                                    var addX = new Point3d(mappedStartPoint.X + distance,
-                                                        mappedStartPoint.Y, mappedStartPoint.Z);
-                                                    var mappedAddX = MapWcsToAbsolute(addX);
-                                                    xAxisLine.SetStartPoint(mappedAddX);
-                                                }
-
-                                                MoveObjects(movePtsFull.ToArray(), distance, "X");
-                                                MoveObjects(movePtsHalf.ToArray(), distance / 2, "X");
+                                                distance = AlignEdgeDistanceNegX(movePtsHalf, movePtsFull, negXObjs, allxAxisLines, inputDist, mappedBase, mappedPoint);
                                             }
 
                                             if (pointPrototype.Name == "POSY")
                                             {
-                                                distance = Math.Abs(mappedPoint[1] - mappedBase[1]);
-
-                                                if (mappedBase[1] < mappedPoint[1])
-                                                {
-                                                    distance *= -1;
-                                                    distance += inputDist;
-                                                }
-                                                else
-                                                {
-                                                    distance -= inputDist;
-                                                }
-
-                                                foreach (var addLine in posYObjs) movePtsFull.Add(addLine);
-
-                                                foreach (var yAxisLine in allyAxisLines)
-                                                {
-                                                    var mappedEndPoint = MapAbsoluteToWcs(yAxisLine.EndPoint);
-                                                    var addY = new Point3d(mappedEndPoint.X,
-                                                        mappedEndPoint.Y + distance, mappedEndPoint.Z);
-                                                    var mappedAddY = MapWcsToAbsolute(addY);
-                                                    yAxisLine.SetEndPoint(mappedAddY);
-                                                }
-
-                                                MoveObjects(movePtsFull.ToArray(), distance, "Y");
-                                                MoveObjects(movePtsHalf.ToArray(), distance / 2, "Y");
+                                                distance = AlignEdgeDistancePosY(movePtsHalf, movePtsFull, posYObjs, allyAxisLines, inputDist, mappedBase, mappedPoint);
                                             }
 
                                             if (pointPrototype.Name == "NEGY")
                                             {
-                                                distance = Math.Abs(mappedPoint[1] - mappedBase[1]);
-
-                                                if (mappedBase[1] < mappedPoint[1])
-                                                {
-                                                    distance *= -1;
-                                                    distance += inputDist;
-                                                }
-                                                else
-                                                {
-                                                    distance -= inputDist;
-                                                }
-
-                                                foreach (var addLine in negYObjs) movePtsFull.Add(addLine);
-
-                                                foreach (var yAxisLine in allyAxisLines)
-                                                {
-                                                    var mappedStartPoint = MapAbsoluteToWcs(yAxisLine.StartPoint);
-                                                    var addY = new Point3d(mappedStartPoint.X,
-                                                        mappedStartPoint.Y + distance, mappedStartPoint.Z);
-                                                    var mappedAddY = MapWcsToAbsolute(addY);
-                                                    yAxisLine.SetStartPoint(mappedAddY);
-                                                }
-
-                                                MoveObjects(movePtsFull.ToArray(), distance, "Y");
-                                                MoveObjects(movePtsHalf.ToArray(), distance / 2, "Y");
+                                                distance = AlignEdgeDistanceNegY(movePtsHalf, movePtsFull, negYObjs, allyAxisLines, inputDist, mappedBase, mappedPoint);
                                             }
 
                                             if (pointPrototype.Name == "POSZ")
                                             {
-                                                distance = Math.Abs(mappedPoint[2] - mappedBase[2]);
-
-                                                if (mappedBase[2] < mappedPoint[2])
-                                                {
-                                                    distance *= -1;
-                                                    distance += inputDist;
-                                                }
-                                                else
-                                                {
-                                                    distance -= inputDist;
-                                                }
-
-                                                foreach (var addLine in posZObjs) movePtsFull.Add(addLine);
-
-                                                foreach (var zAxisLine in allzAxisLines)
-                                                {
-                                                    var mappedEndPoint = MapAbsoluteToWcs(zAxisLine.EndPoint);
-                                                    var addZ = new Point3d(mappedEndPoint.X, mappedEndPoint.Y,
-                                                        mappedEndPoint.Z + distance);
-                                                    var mappedAddZ = MapWcsToAbsolute(addZ);
-                                                    zAxisLine.SetEndPoint(mappedAddZ);
-                                                }
-
-                                                MoveObjects(movePtsFull.ToArray(), distance, "Z");
-                                                MoveObjects(movePtsHalf.ToArray(), distance / 2, "Z");
+                                                distance = AlignEdgeDistancePosZ(movePtsHalf, movePtsFull, posZObjs, allzAxisLines, inputDist, mappedBase, mappedPoint);
                                             }
 
                                             if (pointPrototype.Name == "NEGZ")
                                             {
-                                                distance = Math.Abs(mappedPoint[2] - mappedBase[2]);
-
-                                                if (mappedBase[2] < mappedPoint[2])
-                                                {
-                                                    distance *= -1;
-                                                    distance += inputDist;
-                                                }
-                                                else
-                                                {
-                                                    distance -= inputDist;
-                                                }
-
-                                                foreach (var addLine in negZObjs) movePtsFull.Add(addLine);
-
-                                                foreach (var zAxisLine in allzAxisLines)
-                                                {
-                                                    var mappedStartPoint = MapAbsoluteToWcs(zAxisLine.StartPoint);
-                                                    var addZ = new Point3d(mappedStartPoint.X, mappedStartPoint.Y,
-                                                        mappedStartPoint.Z + distance);
-                                                    var mappedAddZ = MapWcsToAbsolute(addZ);
-                                                    zAxisLine.SetStartPoint(mappedAddZ);
-                                                }
-
-                                                MoveObjects(movePtsFull.ToArray(), distance, "Z");
-                                                MoveObjects(movePtsHalf.ToArray(), distance / 2, "Z");
+                                                distance = AlignEdgeDistanceNegZ(movePtsHalf, movePtsFull, negZObjs, allzAxisLines, inputDist, mappedBase, mappedPoint);
                                             }
                                         }
                                         else
@@ -2977,16 +2770,9 @@ namespace TSG_Library.UFuncs
                                     }
 
                                     UpdateDynamicBlock(editComponent);
-
-                                    session_.Preferences.EmphasisVisualization.WorkPartEmphasis = false;
-                                    session_.Preferences.Assemblies.WorkPartDisplayAsEntirePart = false;
-
                                     ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
-
-                                    session_.Parts.SetWorkComponent(editComponent, out var partLoadComponent1);
-                                    partLoadComponent1.Dispose();
+                                    __work_component_ = editComponent;
                                     UpdateSessionParts();
-
                                     CreateEditData(editComponent);
                                     pHandle = SelectHandlePoint();
                                 }
@@ -3017,6 +2803,228 @@ namespace TSG_Library.UFuncs
             }
         }
 
+        private double AlignEdgeDistanceNegZ(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> negZObjs, List<Line> allzAxisLines, double inputDist, double[] mappedBase, double[] mappedPoint)
+        {
+            var distance = Math.Abs(mappedPoint[2] - mappedBase[2]);
+            if (mappedBase[2] < mappedPoint[2])
+            {
+                distance *= -1;
+                distance += inputDist;
+            }
+            else
+            {
+                distance -= inputDist;
+            }
+
+            foreach (var addLine in negZObjs) movePtsFull.Add(addLine);
+
+            foreach (var zAxisLine in allzAxisLines)
+            {
+                var mappedStartPoint = MapAbsoluteToWcs(zAxisLine.StartPoint);
+                var addZ = new Point3d(mappedStartPoint.X, mappedStartPoint.Y,
+                    mappedStartPoint.Z + distance);
+                var mappedAddZ = MapWcsToAbsolute(addZ);
+                zAxisLine.SetStartPoint(mappedAddZ);
+            }
+
+            MoveObjects(movePtsFull.ToArray(), distance, "Z");
+            MoveObjects(movePtsHalf.ToArray(), distance / 2, "Z");
+            return distance;
+        }
+
+        private double AlignEdgeDistancePosZ(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posZObjs, List<Line> allzAxisLines, double inputDist, double[] mappedBase, double[] mappedPoint)
+        {
+            var distance = Math.Abs(mappedPoint[2] - mappedBase[2]);
+            if (mappedBase[2] < mappedPoint[2])
+            {
+                distance *= -1;
+                distance += inputDist;
+            }
+            else
+            {
+                distance -= inputDist;
+            }
+
+            foreach (var addLine in posZObjs) movePtsFull.Add(addLine);
+
+            foreach (var zAxisLine in allzAxisLines)
+            {
+                var mappedEndPoint = MapAbsoluteToWcs(zAxisLine.EndPoint);
+                var addZ = new Point3d(mappedEndPoint.X, mappedEndPoint.Y,
+                    mappedEndPoint.Z + distance);
+                var mappedAddZ = MapWcsToAbsolute(addZ);
+                zAxisLine.SetEndPoint(mappedAddZ);
+            }
+
+            MoveObjects(movePtsFull.ToArray(), distance, "Z");
+            MoveObjects(movePtsHalf.ToArray(), distance / 2, "Z");
+            return distance;
+        }
+
+        private double AlignEdgeDistanceNegY(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> negYObjs, List<Line> allyAxisLines, double inputDist, double[] mappedBase, double[] mappedPoint)
+        {
+            var distance = Math.Abs(mappedPoint[1] - mappedBase[1]);
+            if (mappedBase[1] < mappedPoint[1])
+            {
+                distance *= -1;
+                distance += inputDist;
+            }
+            else
+            {
+                distance -= inputDist;
+            }
+
+            foreach (var addLine in negYObjs) movePtsFull.Add(addLine);
+
+            foreach (var yAxisLine in allyAxisLines)
+            {
+                var mappedStartPoint = MapAbsoluteToWcs(yAxisLine.StartPoint);
+                var addY = new Point3d(mappedStartPoint.X,
+                    mappedStartPoint.Y + distance, mappedStartPoint.Z);
+                var mappedAddY = MapWcsToAbsolute(addY);
+                yAxisLine.SetStartPoint(mappedAddY);
+            }
+
+            MoveObjects(movePtsFull.ToArray(), distance, "Y");
+            MoveObjects(movePtsHalf.ToArray(), distance / 2, "Y");
+            return distance;
+        }
+
+        private double AlignEdgeDistancePosY(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posYObjs, List<Line> allyAxisLines, double inputDist, double[] mappedBase, double[] mappedPoint)
+        {
+            var distance = Math.Abs(mappedPoint[1] - mappedBase[1]);
+            if (mappedBase[1] < mappedPoint[1])
+            {
+                distance *= -1;
+                distance += inputDist;
+            }
+            else
+            {
+                distance -= inputDist;
+            }
+
+            foreach (var addLine in posYObjs) movePtsFull.Add(addLine);
+
+            foreach (var yAxisLine in allyAxisLines)
+            {
+                var mappedEndPoint = MapAbsoluteToWcs(yAxisLine.EndPoint);
+                var addY = new Point3d(mappedEndPoint.X,
+                    mappedEndPoint.Y + distance, mappedEndPoint.Z);
+                var mappedAddY = MapWcsToAbsolute(addY);
+                yAxisLine.SetEndPoint(mappedAddY);
+            }
+
+            MoveObjects(movePtsFull.ToArray(), distance, "Y");
+            MoveObjects(movePtsHalf.ToArray(), distance / 2, "Y");
+            return distance;
+        }
+
+        private double AlignEdgeDistanceNegX(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> negXObjs, List<Line> allxAxisLines, double inputDist, double[] mappedBase, double[] mappedPoint)
+        {
+            var distance = Math.Abs(mappedPoint[0] - mappedBase[0]);
+            if (mappedBase[0] < mappedPoint[0])
+            {
+                distance *= -1;
+                distance += inputDist;
+            }
+            else
+            {
+                distance -= inputDist;
+            }
+
+            foreach (var addLine in negXObjs) movePtsFull.Add(addLine);
+
+            foreach (var xAxisLine in allxAxisLines)
+            {
+                var mappedStartPoint = MapAbsoluteToWcs(xAxisLine.StartPoint);
+                var addX = new Point3d(mappedStartPoint.X + distance,
+                    mappedStartPoint.Y, mappedStartPoint.Z);
+                var mappedAddX = MapWcsToAbsolute(addX);
+                xAxisLine.SetStartPoint(mappedAddX);
+            }
+
+            MoveObjects(movePtsFull.ToArray(), distance, "X");
+            MoveObjects(movePtsHalf.ToArray(), distance / 2, "X");
+            return distance;
+        }
+
+        private double AlignEdgeDistancePosX(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posXObjs, List<Line> allxAxisLines, double inputDist, double[] mappedBase, double[] mappedPoint)
+        {
+            var distance = Math.Abs(mappedPoint[0] - mappedBase[0]);
+            if (mappedBase[0] < mappedPoint[0])
+            {
+                distance *= -1;
+                distance += inputDist;
+            }
+            else
+            {
+                distance -= inputDist;
+            }
+
+            foreach (var posXLine in posXObjs) movePtsFull.Add(posXLine);
+
+            foreach (var xAxisLine in allxAxisLines)
+            {
+                var mappedEndPoint = MapAbsoluteToWcs(xAxisLine.EndPoint);
+                var addX = new Point3d(mappedEndPoint.X + distance,
+                    mappedEndPoint.Y, mappedEndPoint.Z);
+                var mappedAddX = MapWcsToAbsolute(addX);
+                xAxisLine.SetEndPoint(mappedAddX);
+            }
+
+            MoveObjects(movePtsFull.ToArray(), distance, "X");
+            MoveObjects(movePtsHalf.ToArray(), distance / 2, "X");
+            return distance;
+        }
+
+        private static void AlignEdgeDistanceNeg(Point pointPrototype, List<NXObject> doNotMovePts, List<NXObject> movePtsHalf, List<NXObject> movePtsFull)
+        {
+            foreach (Point namedPt in _workPart.Points)
+                if (namedPt.Name != "")
+                {
+                    if (namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
+                        doNotMovePts.Add(namedPt);
+
+                    else if (namedPt.Name.Contains("Y") &&
+                            pointPrototype.Name.Contains("Y"))
+                        doNotMovePts.Add(namedPt);
+
+                    else if (namedPt.Name.Contains("Z") &&
+                            pointPrototype.Name.Contains("Z"))
+                        doNotMovePts.Add(namedPt);
+                    else if (namedPt.Name.Contains("BLKORIGIN"))
+                        movePtsFull.Add(namedPt);
+                    else
+                        movePtsHalf.Add(namedPt);
+                }
+
+            movePtsFull.Add(pointPrototype);
+        }
+
+        private static void AlignEdgeDistancePos(Point pointPrototype, List<NXObject> doNotMovePts, List<NXObject> movePtsHalf, List<NXObject> movePtsFull)
+        {
+            foreach (Point namedPt in _workPart.Points)
+                if (namedPt.Name != "")
+                {
+                    if (namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
+                        doNotMovePts.Add(namedPt);
+
+                    else if (namedPt.Name.Contains("Y") &&
+                            pointPrototype.Name.Contains("Y"))
+                        doNotMovePts.Add(namedPt);
+
+                    else if (namedPt.Name.Contains("Z") &&
+                            pointPrototype.Name.Contains("Z"))
+                        doNotMovePts.Add(namedPt);
+                    else if (namedPt.Name.Contains("BLKORIGIN"))
+                        doNotMovePts.Add(namedPt);
+                    else
+                        movePtsHalf.Add(namedPt);
+                }
+
+            movePtsFull.Add(pointPrototype);
+        }
+
         private static void SetDispUnits(Part.Units dispUnits)
         {
             if (dispUnits == Part.Units.Millimeters)
@@ -3033,50 +3041,50 @@ namespace TSG_Library.UFuncs
         }
 
 
-private void DeleteHandles()
-{
-    Session.UndoMarkId markDeleteObjs = session_.SetUndoMark(Session.MarkVisibility.Invisible, "");
-    var myUdOclass = session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoDynamicHandle");
+        private void DeleteHandles()
+        {
+            Session.UndoMarkId markDeleteObjs = session_.SetUndoMark(Session.MarkVisibility.Invisible, "");
+            var myUdOclass = session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoDynamicHandle");
 
-    if (myUdOclass != null)
-    {
-        UserDefinedObject[] currentUdo;
-        currentUdo = _workPart.UserDefinedObjectManager.GetUdosOfClass(myUdOclass);
-        session_.UpdateManager.AddObjectsToDeleteList(currentUdo);
-    }
+            if (myUdOclass != null)
+            {
+                UserDefinedObject[] currentUdo;
+                currentUdo = _workPart.UserDefinedObjectManager.GetUdosOfClass(myUdOclass);
+                session_.UpdateManager.AddObjectsToDeleteList(currentUdo);
+            }
 
-    foreach (Point namedPt in _workPart.Points)
-        if (namedPt.Name != "")
-            session_.UpdateManager.AddToDeleteList(namedPt);
+            foreach (Point namedPt in _workPart.Points)
+                if (namedPt.Name != "")
+                    session_.UpdateManager.AddToDeleteList(namedPt);
 
-    foreach (var dLine in _edgeRepLines) 
-        session_.UpdateManager.AddToDeleteList(dLine);
+            foreach (var dLine in _edgeRepLines)
+                session_.UpdateManager.AddToDeleteList(dLine);
 
-    int errsDelObjs;
-    errsDelObjs = session_.UpdateManager.DoUpdate(markDeleteObjs);
+            int errsDelObjs;
+            errsDelObjs = session_.UpdateManager.DoUpdate(markDeleteObjs);
 
-    session_.DeleteUndoMark(markDeleteObjs, "");
+            session_.DeleteUndoMark(markDeleteObjs, "");
 
-    _edgeRepLines.Clear();
-}
+            _edgeRepLines.Clear();
+        }
 
-private List<Point> SelectHandlePoint()
-{
-    var mask = new Selection.MaskTriple[1];
-    mask[0] = new Selection.MaskTriple(UF_point_type, UF_point_subtype, 0);
-    Selection.Response sel;
-    var pointSelection = new List<Point>();
+        private List<Point> SelectHandlePoint()
+        {
+            var mask = new Selection.MaskTriple[1];
+            mask[0] = new Selection.MaskTriple(UF_point_type, UF_point_subtype, 0);
+            Selection.Response sel;
+            var pointSelection = new List<Point>();
 
-    sel = TheUISession.SelectionManager.SelectTaggedObject("Select Point", "Select Point",
-        Selection.SelectionScope.WorkPart,
-        Selection.SelectionAction.ClearAndEnableSpecific,
-        false, false, mask, out var selectedPoint, out var cursor);
+            sel = TheUISession.SelectionManager.SelectTaggedObject("Select Point", "Select Point",
+                Selection.SelectionScope.WorkPart,
+                Selection.SelectionAction.ClearAndEnableSpecific,
+                false, false, mask, out var selectedPoint, out var cursor);
 
-    if ((sel == Selection.Response.ObjectSelected) | (sel == Selection.Response.ObjectSelectedByName))
-        pointSelection.Add((Point)selectedPoint);
+            if ((sel == Selection.Response.ObjectSelected) | (sel == Selection.Response.ObjectSelectedByName))
+                pointSelection.Add((Point)selectedPoint);
 
-    return pointSelection;
-}
+            return pointSelection;
+        }
 
         private Component SelectOneComponent(string prompt)
         {
@@ -3148,98 +3156,98 @@ private List<Point> SelectHandlePoint()
                     ref dispProps, charSize, font);
             }
         }
-  private void CreateDynamicHandleUdo(Body editBody)
-  {
-      try
-      {
-          var myUdOclass = session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoDynamicHandle");
+        private void CreateDynamicHandleUdo(Body editBody)
+        {
+            try
+            {
+                var myUdOclass = session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoDynamicHandle");
 
-          if (myUdOclass is null)
-              return;
+                if (myUdOclass is null)
+                    return;
 
-          UserDefinedObject[] currentUdo;
-          currentUdo = _workPart.UserDefinedObjectManager.GetUdosOfClass(myUdOclass);
+                UserDefinedObject[] currentUdo;
+                currentUdo = _workPart.UserDefinedObjectManager.GetUdosOfClass(myUdOclass);
 
-          if (currentUdo.Length != 0)
-              return;
+                if (currentUdo.Length != 0)
+                    return;
 
-          BasePart myBasePart = _workPart;
-          var myUdOmanager = myBasePart.UserDefinedObjectManager;
+                BasePart myBasePart = _workPart;
+                var myUdOmanager = myBasePart.UserDefinedObjectManager;
 
-          foreach (var blkFace in editBody.GetFaces())
-          {
-              var myUdo = myUdOmanager.CreateUserDefinedObject(myUdOclass);
-              var myLinks = new UserDefinedObject.LinkDefinition[1];
+                foreach (var blkFace in editBody.GetFaces())
+                {
+                    var myUdo = myUdOmanager.CreateUserDefinedObject(myUdOclass);
+                    var myLinks = new UserDefinedObject.LinkDefinition[1];
 
-              var pointOnFace = new double[3];
-              var dir = new double[3];
-              var box = new double[6];
-              var matrix1 = _displayPart.WCS.CoordinateSystem.Orientation.Element;
+                    var pointOnFace = new double[3];
+                    var dir = new double[3];
+                    var box = new double[6];
+                    var matrix1 = _displayPart.WCS.CoordinateSystem.Orientation.Element;
 
-              ufsession_.Modl.AskFaceData(blkFace.Tag, out var type, pointOnFace, dir, box,
-                  out var radius, out var radData, out var normDir);
+                    ufsession_.Modl.AskFaceData(blkFace.Tag, out var type, pointOnFace, dir, box,
+                        out var radius, out var radData, out var normDir);
 
-              dir[0] = Math.Round(dir[0], 10);
-              dir[1] = Math.Round(dir[1], 10);
-              dir[2] = Math.Round(dir[2], 10);
+                    dir[0] = Math.Round(dir[0], 10);
+                    dir[1] = Math.Round(dir[1], 10);
+                    dir[2] = Math.Round(dir[2], 10);
 
-              double[] wcsVectorX =
-                  { Math.Round(matrix1.Xx, 10), Math.Round(matrix1.Xy, 10), Math.Round(matrix1.Xz, 10) };
-              double[] wcsVectorY =
-                  { Math.Round(matrix1.Yx, 10), Math.Round(matrix1.Yy, 10), Math.Round(matrix1.Yz, 10) };
-              double[] wcsVectorZ =
-                  { Math.Round(matrix1.Zx, 10), Math.Round(matrix1.Zy, 10), Math.Round(matrix1.Zz, 10) };
+                    double[] wcsVectorX =
+                        { Math.Round(matrix1.Xx, 10), Math.Round(matrix1.Xy, 10), Math.Round(matrix1.Xz, 10) };
+                    double[] wcsVectorY =
+                        { Math.Round(matrix1.Yx, 10), Math.Round(matrix1.Yy, 10), Math.Round(matrix1.Yz, 10) };
+                    double[] wcsVectorZ =
+                        { Math.Round(matrix1.Zx, 10), Math.Round(matrix1.Zy, 10), Math.Round(matrix1.Zz, 10) };
 
-              var wcsVectorNegX = new double[3];
-              var wcsVectorNegY = new double[3];
-              var wcsVectorNegZ = new double[3];
+                    var wcsVectorNegX = new double[3];
+                    var wcsVectorNegY = new double[3];
+                    var wcsVectorNegZ = new double[3];
 
-              ufsession_.Vec3.Negate(wcsVectorX, wcsVectorNegX);
-              ufsession_.Vec3.Negate(wcsVectorY, wcsVectorNegY);
-              ufsession_.Vec3.Negate(wcsVectorZ, wcsVectorNegZ);
+                    ufsession_.Vec3.Negate(wcsVectorX, wcsVectorNegX);
+                    ufsession_.Vec3.Negate(wcsVectorY, wcsVectorNegY);
+                    ufsession_.Vec3.Negate(wcsVectorZ, wcsVectorNegZ);
 
-              // create udo handle points
+                    // create udo handle points
 
-              ufsession_.Vec3.IsEqual(dir, wcsVectorX, 0.00, out var isEqualX);
+                    ufsession_.Vec3.IsEqual(dir, wcsVectorX, 0.00, out var isEqualX);
 
-              if (isEqualX == 1)
-                  CreateUdoPosX(myUdo, myLinks, pointOnFace);
+                    if (isEqualX == 1)
+                        CreateUdoPosX(myUdo, myLinks, pointOnFace);
 
-              ufsession_.Vec3.IsEqual(dir, wcsVectorY, 0.00, out var isEqualY);
+                    ufsession_.Vec3.IsEqual(dir, wcsVectorY, 0.00, out var isEqualY);
 
-              if (isEqualY == 1)
-                  CreateUdoPosY(myUdo, myLinks, pointOnFace);
+                    if (isEqualY == 1)
+                        CreateUdoPosY(myUdo, myLinks, pointOnFace);
 
-              ufsession_.Vec3.IsEqual(dir, wcsVectorZ, 0.00, out var isEqualZ);
+                    ufsession_.Vec3.IsEqual(dir, wcsVectorZ, 0.00, out var isEqualZ);
 
-              if (isEqualZ == 1)
-                  CreateUdoPosZ(myUdo, myLinks, pointOnFace);
+                    if (isEqualZ == 1)
+                        CreateUdoPosZ(myUdo, myLinks, pointOnFace);
 
-              ufsession_.Vec3.IsEqual(dir, wcsVectorNegX, 0.00, out var isEqualNegX);
+                    ufsession_.Vec3.IsEqual(dir, wcsVectorNegX, 0.00, out var isEqualNegX);
 
-              if (isEqualNegX == 1)
-                  CreateUdoNegX(myUdo, myLinks, pointOnFace);
+                    if (isEqualNegX == 1)
+                        CreateUdoNegX(myUdo, myLinks, pointOnFace);
 
-              ufsession_.Vec3.IsEqual(dir, wcsVectorNegY, 0.00, out var isEqualNegY);
+                    ufsession_.Vec3.IsEqual(dir, wcsVectorNegY, 0.00, out var isEqualNegY);
 
-              if (isEqualNegY == 1)
-                  CreateUdoNegY(myUdo, myLinks, pointOnFace);
+                    if (isEqualNegY == 1)
+                        CreateUdoNegY(myUdo, myLinks, pointOnFace);
 
-              ufsession_.Vec3.IsEqual(dir, wcsVectorNegZ, 0.00, out var isEqualNegZ);
+                    ufsession_.Vec3.IsEqual(dir, wcsVectorNegZ, 0.00, out var isEqualNegZ);
 
-              if (isEqualNegZ == 1)
-                  CreateUdoNegZ(myUdo, myLinks, pointOnFace);
-          }
+                    if (isEqualNegZ == 1)
+                        CreateUdoNegZ(myUdo, myLinks, pointOnFace);
+                }
 
-          // create origin point
+                // create origin point
 
-          CreatePointBlkOrigin();
-      }
-      catch (Exception ex)
-      {
-          ex.__PrintException();
-      }
-  }
+                CreatePointBlkOrigin();
+            }
+            catch (Exception ex)
+            {
+                ex.__PrintException();
+            }
+        }
         private double RoundDistanceToGrid(double spacing, double cursor)
         {
             if (spacing == 0)
@@ -3482,82 +3490,82 @@ private List<Point> SelectHandlePoint()
         }
 
         private static void CreatePointBlkOrigin()
-{
-    var pointLocationOrigin = _displayPart.WCS.Origin;
-    var point1Origin = _workPart.Points.CreatePoint(pointLocationOrigin);
-    point1Origin.SetVisibility(SmartObject.VisibilityOption.Visible);
-    point1Origin.Blank();
-    point1Origin.SetName("BLKORIGIN");
-    point1Origin.Layer = _displayPart.Layers.WorkLayer;
-    point1Origin.RedisplayObject();
-}
+        {
+            var pointLocationOrigin = _displayPart.WCS.Origin;
+            var point1Origin = _workPart.Points.CreatePoint(pointLocationOrigin);
+            point1Origin.SetVisibility(SmartObject.VisibilityOption.Visible);
+            point1Origin.Blank();
+            point1Origin.SetName("BLKORIGIN");
+            point1Origin.Layer = _displayPart.Layers.WorkLayer;
+            point1Origin.RedisplayObject();
+        }
 
-private static Point CreatePointNegZ(double[] pointOnFace)
-{
-    var pointLocation = new Point3d(pointOnFace[0], pointOnFace[1], pointOnFace[2]);
-    var point1 = _workPart.Points.CreatePoint(pointLocation);
-    point1.SetVisibility(SmartObject.VisibilityOption.Visible);
-    point1.SetName("NEGZ");
-    point1.Layer = _displayPart.Layers.WorkLayer;
-    point1.RedisplayObject();
-    return point1;
-}
+        private static Point CreatePointNegZ(double[] pointOnFace)
+        {
+            var pointLocation = new Point3d(pointOnFace[0], pointOnFace[1], pointOnFace[2]);
+            var point1 = _workPart.Points.CreatePoint(pointLocation);
+            point1.SetVisibility(SmartObject.VisibilityOption.Visible);
+            point1.SetName("NEGZ");
+            point1.Layer = _displayPart.Layers.WorkLayer;
+            point1.RedisplayObject();
+            return point1;
+        }
 
-private static Point CreatePointNegY(double[] pointOnFace)
-{
-    var pointLocation = new Point3d(pointOnFace[0], pointOnFace[1], pointOnFace[2]);
-    var point1 = _workPart.Points.CreatePoint(pointLocation);
-    point1.SetVisibility(SmartObject.VisibilityOption.Visible);
-    point1.SetName("NEGY");
-    point1.Layer = _displayPart.Layers.WorkLayer;
-    point1.RedisplayObject();
-    return point1;
-}
+        private static Point CreatePointNegY(double[] pointOnFace)
+        {
+            var pointLocation = new Point3d(pointOnFace[0], pointOnFace[1], pointOnFace[2]);
+            var point1 = _workPart.Points.CreatePoint(pointLocation);
+            point1.SetVisibility(SmartObject.VisibilityOption.Visible);
+            point1.SetName("NEGY");
+            point1.Layer = _displayPart.Layers.WorkLayer;
+            point1.RedisplayObject();
+            return point1;
+        }
 
-private static Point CreatePointNegX(double[] pointOnFace)
-{
-    var pointLocation = new Point3d(pointOnFace[0], pointOnFace[1], pointOnFace[2]);
-    var point1 = _workPart.Points.CreatePoint(pointLocation);
-    point1.SetVisibility(SmartObject.VisibilityOption.Visible);
-    point1.SetName("NEGX");
-    point1.Layer = _displayPart.Layers.WorkLayer;
-    point1.RedisplayObject();
-    return point1;
-}
+        private static Point CreatePointNegX(double[] pointOnFace)
+        {
+            var pointLocation = new Point3d(pointOnFace[0], pointOnFace[1], pointOnFace[2]);
+            var point1 = _workPart.Points.CreatePoint(pointLocation);
+            point1.SetVisibility(SmartObject.VisibilityOption.Visible);
+            point1.SetName("NEGX");
+            point1.Layer = _displayPart.Layers.WorkLayer;
+            point1.RedisplayObject();
+            return point1;
+        }
 
 
-private static Point PosZ(double[] pointOnFace)
-{
-    var pointLocation = new Point3d(pointOnFace[0], pointOnFace[1], pointOnFace[2]);
-    var point1 = _workPart.Points.CreatePoint(pointLocation);
-    point1.SetVisibility(SmartObject.VisibilityOption.Visible);
-    point1.SetName("POSZ");
-    point1.Layer = _displayPart.Layers.WorkLayer;
-    point1.RedisplayObject();
-    return point1;
-}
+        private static Point PosZ(double[] pointOnFace)
+        {
+            var pointLocation = new Point3d(pointOnFace[0], pointOnFace[1], pointOnFace[2]);
+            var point1 = _workPart.Points.CreatePoint(pointLocation);
+            point1.SetVisibility(SmartObject.VisibilityOption.Visible);
+            point1.SetName("POSZ");
+            point1.Layer = _displayPart.Layers.WorkLayer;
+            point1.RedisplayObject();
+            return point1;
+        }
 
-private static Point CreatePointPosY(double[] pointOnFace)
-{
-    var pointLocation = new Point3d(pointOnFace[0], pointOnFace[1], pointOnFace[2]);
-    var point1 = _workPart.Points.CreatePoint(pointLocation);
-    point1.SetVisibility(SmartObject.VisibilityOption.Visible);
-    point1.SetName("POSY");
-    point1.Layer = _displayPart.Layers.WorkLayer;
-    point1.RedisplayObject();
-    return point1;
-}
+        private static Point CreatePointPosY(double[] pointOnFace)
+        {
+            var pointLocation = new Point3d(pointOnFace[0], pointOnFace[1], pointOnFace[2]);
+            var point1 = _workPart.Points.CreatePoint(pointLocation);
+            point1.SetVisibility(SmartObject.VisibilityOption.Visible);
+            point1.SetName("POSY");
+            point1.Layer = _displayPart.Layers.WorkLayer;
+            point1.RedisplayObject();
+            return point1;
+        }
 
-private static Point CreatePointPosX(double[] pointOnFace)
-{
-    var pointLocation = new Point3d(pointOnFace[0], pointOnFace[1], pointOnFace[2]);
-    var point1 = _workPart.Points.CreatePoint(pointLocation);
-    point1.SetVisibility(SmartObject.VisibilityOption.Visible);
-    point1.SetName("POSX");
-    point1.Layer = _displayPart.Layers.WorkLayer;
-    point1.RedisplayObject();
-    return point1;
-}
+        private static Point CreatePointPosX(double[] pointOnFace)
+        {
+            var pointLocation = new Point3d(pointOnFace[0], pointOnFace[1], pointOnFace[2]);
+            var point1 = _workPart.Points.CreatePoint(pointLocation);
+            point1.SetVisibility(SmartObject.VisibilityOption.Visible);
+            point1.SetName("POSX");
+            point1.Layer = _displayPart.Layers.WorkLayer;
+            point1.RedisplayObject();
+            return point1;
+        }
 
 
         private static void CreateUdoNegX(UserDefinedObject myUdo, UserDefinedObject.LinkDefinition[] myLinks, double[] pointOnFace)
@@ -3577,17 +3585,17 @@ private static Point CreatePointPosX(double[] pointOnFace)
             CreateUdoNegY(myUdo, myLinks, pointOnFace, point1);
         }
 
-private static void CreateUdoPosY(UserDefinedObject myUdo, UserDefinedObject.LinkDefinition[] myLinks, double[] pointOnFace)
-{
-    Point point1 = CreatePointPosY(pointOnFace);
-    CreateUdoPosY(myUdo, myLinks, pointOnFace, point1);
-}
+        private static void CreateUdoPosY(UserDefinedObject myUdo, UserDefinedObject.LinkDefinition[] myLinks, double[] pointOnFace)
+        {
+            Point point1 = CreatePointPosY(pointOnFace);
+            CreateUdoPosY(myUdo, myLinks, pointOnFace, point1);
+        }
 
-private static void CreateUdoPosX(UserDefinedObject myUdo, UserDefinedObject.LinkDefinition[] myLinks, double[] pointOnFace)
-{
-    Point point1 = CreatePointPosX(pointOnFace);
-    CreateUdoPosX(myUdo, myLinks, pointOnFace, point1);
-}
+        private static void CreateUdoPosX(UserDefinedObject myUdo, UserDefinedObject.LinkDefinition[] myLinks, double[] pointOnFace)
+        {
+            Point point1 = CreatePointPosX(pointOnFace);
+            CreateUdoPosX(myUdo, myLinks, pointOnFace, point1);
+        }
 
 
 
@@ -3651,7 +3659,7 @@ private static void CreateUdoPosX(UserDefinedObject myUdo, UserDefinedObject.Lin
             myUdo.SetLinks(UserDefinedObject.LinkType.Type1, myLinks);
         }
 
-        
+
 
         private static void CreateUdoPosY(UserDefinedObject myUdo, UserDefinedObject.LinkDefinition[] myLinks, double[] pointOnFace, Point point1)
         {
@@ -3664,7 +3672,7 @@ private static void CreateUdoPosX(UserDefinedObject myUdo, UserDefinedObject.Lin
             myLinks[0].Status = UserDefinedObject.LinkStatus.UpToDate;
             myUdo.SetLinks(UserDefinedObject.LinkType.Type1, myLinks);
         }
-        
+
         private static void CreateUdoPosX(UserDefinedObject myUdo, UserDefinedObject.LinkDefinition[] myLinks, double[] pointOnFace, Point point1)
         {
             myUdo.SetName("POSX");
@@ -3680,64 +3688,64 @@ private static void CreateUdoPosX(UserDefinedObject myUdo, UserDefinedObject.Lin
 
 
 
- private void MoveComponent(Component compToMove)
- {
-     try
-     {
-         UpdateSessionParts();
+        private void MoveComponent(Component compToMove)
+        {
+            try
+            {
+                UpdateSessionParts();
 
-         if (compToMove is null)
-             return;
+                if (compToMove is null)
+                    return;
 
-         var assmUnits = _displayPart.PartUnits;
-         var compBase = (BasePart)compToMove.Prototype;
-         var compUnits = compBase.PartUnits;
+                var assmUnits = _displayPart.PartUnits;
+                var compBase = (BasePart)compToMove.Prototype;
+                var compUnits = compBase.PartUnits;
 
-         if (compUnits != assmUnits)
-             return;
+                if (compUnits != assmUnits)
+                    return;
 
-         UpdateSessionParts();
-         CreateEditData(compToMove);
-         _isNewSelection = false;
-         var pHandle = new List<Point>();
-         pHandle = SelectHandlePoint();
-         _isDynamic = false;
+                UpdateSessionParts();
+                CreateEditData(compToMove);
+                _isNewSelection = false;
+                var pHandle = new List<Point>();
+                pHandle = SelectHandlePoint();
+                _isDynamic = false;
 
-         while (pHandle.Count == 1)
-         {
-             _distanceMoved = 0;
-             HideDynamicHandles();
-             _udoPointHandle = pHandle[0];
-             _displayPart.WCS.Visibility = false;
-             var message = "Select New Position";
-             var screenPos = new double[3];
-             var viewTag = NXOpen.Tag.Null;
-             var motionCbData = IntPtr.Zero;
-             var clientData = IntPtr.Zero;
-             ufsession_.Ui.LockUgAccess(UF_UI_FROM_CUSTOM);
+                while (pHandle.Count == 1)
+                {
+                    _distanceMoved = 0;
+                    HideDynamicHandles();
+                    _udoPointHandle = pHandle[0];
+                    _displayPart.WCS.Visibility = false;
+                    var message = "Select New Position";
+                    var screenPos = new double[3];
+                    var viewTag = NXOpen.Tag.Null;
+                    var motionCbData = IntPtr.Zero;
+                    var clientData = IntPtr.Zero;
+                    ufsession_.Ui.LockUgAccess(UF_UI_FROM_CUSTOM);
 
-             using (session_.__UsingLockUiFromCustom())
-             {
-                 var mView = (ModelingView)_displayPart.Views.WorkView;
-                 _displayPart.Views.WorkView.Orient(mView.Matrix);
-                 _displayPart.WCS.SetOriginAndMatrix(mView.Origin, mView.Matrix);
-                 ufsession_.Ui.SpecifyScreenPosition(message, MotionCallback, motionCbData, screenPos,
-                     out viewTag, out var response);
+                    using (session_.__UsingLockUiFromCustom())
+                    {
+                        var mView = (ModelingView)_displayPart.Views.WorkView;
+                        _displayPart.Views.WorkView.Orient(mView.Matrix);
+                        _displayPart.WCS.SetOriginAndMatrix(mView.Origin, mView.Matrix);
+                        ufsession_.Ui.SpecifyScreenPosition(message, MotionCallback, motionCbData, screenPos,
+                            out viewTag, out var response);
 
-                 if (response != UF_UI_PICK_RESPONSE)
-                     continue;
+                        if (response != UF_UI_PICK_RESPONSE)
+                            continue;
 
-                 UpdateDynamicHandles();
-                 ShowDynamicHandles();
-                 pHandle = SelectHandlePoint();
-             }
-         }
-     }
-     catch (Exception ex)
-     {
-         ex.__PrintException();
-     }
- }
+                        UpdateDynamicHandles();
+                        ShowDynamicHandles();
+                        pHandle = SelectHandlePoint();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ex.__PrintException();
+            }
+        }
 
 
 
@@ -3795,7 +3803,7 @@ private static void CreateUdoPosX(UserDefinedObject myUdo, UserDefinedObject.Lin
 
                 if (currentUdo.Length == 0)
                     return;
-                
+
                 foreach (var dispUdo in currentUdo)
                 {
                     int[] setDisplay = { 1 };
@@ -3886,8 +3894,7 @@ private static void CreateUdoPosX(UserDefinedObject myUdo, UserDefinedObject.Lin
                 _displayPart.WCS.SetOriginAndMatrix(blkOrigin, _workCompOrientation);
                 _workCompOrigin = blkOrigin;
 
-                session_.Parts.SetWorkComponent(updateComp, out var partLoadComponent);
-                partLoadComponent.Dispose();
+                __work_component_ = updateComp;
                 UpdateSessionParts();
 
                 double[] fromPoint = { blkOrigin.X, blkOrigin.Y, blkOrigin.Z };
@@ -3934,7 +3941,7 @@ private static void CreateUdoPosX(UserDefinedObject myUdo, UserDefinedObject.Lin
 
                             _workPart.FacetedBodies.DeleteTemporaryFacesAndEdges();
 
-                            session_.Parts.SetWork(_displayPart);
+                            __work_part_ = _displayPart;
                             UpdateSessionParts();
 
                             // delete udo's / points
@@ -3943,7 +3950,7 @@ private static void CreateUdoPosX(UserDefinedObject myUdo, UserDefinedObject.Lin
                             session_.Preferences.EmphasisVisualization.WorkPartEmphasis = true;
                             session_.Preferences.Assemblies.WorkPartDisplayAsEntirePart = false;
 
-                            session_.Parts.SetWork(_originalWorkPart);
+                            __work_part_ = _originalWorkPart;
                             UpdateSessionParts();
 
                             _displayPart.WCS.Visibility = true;
@@ -3971,7 +3978,7 @@ private static void CreateUdoPosX(UserDefinedObject myUdo, UserDefinedObject.Lin
 
                 if (currentUdo.Length == 0)
                     return;
-                
+
                 foreach (var dispUdo in currentUdo)
                 {
                     int[] setDisplay = { 0 };
@@ -4017,7 +4024,7 @@ private static void CreateUdoPosX(UserDefinedObject myUdo, UserDefinedObject.Lin
             session_.Preferences.Assemblies.WorkPartDisplayAsEntirePart = false;
             UpdateSessionParts();
             UpdateOriginalParts();
-            session_.Parts.SetWork(_displayPart);
+            __work_part_ = _displayPart;
         }
 
         private void DisableForm()
@@ -4054,346 +4061,346 @@ private static void CreateUdoPosX(UserDefinedObject myUdo, UserDefinedObject.Lin
 
 
 
-  private void MotionCallback(double[] position, ref UFUi.MotionCbData mtnCbData, IntPtr clientData)
-  {
-      try
-      {
-          if (_isDynamic)
-              MotionCallbackDyanmic(position);
-          else
-              MotionCalbackNotDynamic(position);
-
-          double editBlkLength = 0;
-          double editBlkWidth = 0;
-          double editBlkHeight = 0;
-
-          foreach (var eLine in _edgeRepLines)
-          {
-              if (eLine.Name == "XBASE1")
-                  editBlkLength = eLine.GetLength();
-
-              if (eLine.Name == "YBASE1")
-                  editBlkWidth = eLine.GetLength();
-
-              if (eLine.Name == "ZBASE1")
-                  editBlkHeight = eLine.GetLength();
-          }
-
-          if (_displayPart.PartUnits == BasePart.Units.Inches)
-          {
-              ufsession_.Ui.SetPrompt(
-                  $"X = {editBlkLength:0.000}  Y = {editBlkWidth:0.000}  Z = {$"{editBlkHeight:0.000}"}  Distance Moved =  {$"{_distanceMoved:0.000}"}");
-              return;
-          }
-
-          editBlkLength /= 25.4;
-          editBlkWidth /= 25.4;
-          editBlkHeight /= 25.4;
-
-          var convertDistMoved = _distanceMoved / 25.4;
-
-          ufsession_.Ui.SetPrompt($"X = {editBlkLength:0.000}  " +
-              $"Y = {editBlkWidth:0.000}  " +
-              $"Z = {editBlkHeight:0.000}  " +
-              $"Distance Moved =  {convertDistMoved:0.000}");
-      }
-      catch (Exception ex)
-      {
-          ex.__PrintException();
-      }
-  }
-
-
-
-   private void MotionCallbackXDynamic(Point pointPrototype, List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posXObjs, List<Line> negXObjs, List<Line> allxAxisLines, double[] mappedPoint, double[] mappedCursor)
- {
-     if (mappedPoint[0] != mappedCursor[0])
-     {
-         var xDistance = Math.Sqrt(Math.Pow(mappedPoint[0] - mappedCursor[0], 2));
-
-         if (xDistance >= _gridSpace)
-         {
-             if (mappedCursor[0] < mappedPoint[0]) xDistance *= -1;
-
-             _distanceMoved += xDistance;
-
-             if (pointPrototype.Name == "POSX")
-             {
-                 MotionCallbackPosXDyanmic(movePtsHalf, movePtsFull, posXObjs, allxAxisLines, xDistance);
-             }
-             else
-             {
-                 MotionCallbackNegXDyanmic(movePtsHalf, movePtsFull, negXObjs, allxAxisLines, xDistance);
-             }
-         }
-     }
- }
-
- private void MotionCallbackZDynamic(Point pointPrototype, List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posZObjs, List<Line> negZObjs, List<Line> allzAxisLines, double[] mappedPoint, double[] mappedCursor)
- {
-     if (mappedPoint[2] != mappedCursor[2])
-     {
-         var zDistance = Math.Sqrt(Math.Pow(mappedPoint[2] - mappedCursor[2], 2));
-         zDistance = RoundDistanceToGrid(_gridSpace, zDistance);
-
-         if (zDistance >= _gridSpace)
-         {
-             if (mappedCursor[2] < mappedPoint[2]) zDistance *= -1;
-
-             _distanceMoved += zDistance;
-
-             if (pointPrototype.Name == "POSZ")
-             {
-                 MotionCallbackPosZDyanmic(movePtsHalf, movePtsFull, posZObjs, allzAxisLines, zDistance);
-             }
-             else
-             {
-                 MotionCallbackNegZDyanmic(movePtsHalf, movePtsFull, negZObjs, allzAxisLines, zDistance);
-             }
-
-             var mView1 = (ModelingView)_displayPart.Views.WorkView;
-             _displayPart.Views.WorkView.Orient(mView1.Matrix);
-             _displayPart.WCS.SetOriginAndMatrix(mView1.Origin, mView1.Matrix);
-         }
-     }
- }
-
- private void MotionCallbackYDynamic(Point pointPrototype, List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posYObjs, List<Line> negYObjs, List<Line> allyAxisLines, double[] mappedPoint, double[] mappedCursor)
- {
-     if (mappedPoint[1] != mappedCursor[1])
-     {
-         var yDistance = Math.Sqrt(Math.Pow(mappedPoint[1] - mappedCursor[1], 2));
-
-         if (yDistance >= _gridSpace)
-         {
-             if (mappedCursor[1] < mappedPoint[1]) yDistance *= -1;
-
-             _distanceMoved += yDistance;
-
-             if (pointPrototype.Name == "POSY")
-             {
-                 MotionCallbackPosYDyanmic(movePtsHalf, movePtsFull, posYObjs, allyAxisLines, yDistance);
-             }
-             else
-             {
-                 MotionCallbackNegYDyanmic(movePtsHalf, movePtsFull, negYObjs, allyAxisLines, yDistance);
-             }
-         }
-     }
- }
-
- private void MotionCallbackNegZDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> negZObjs, List<Line> allzAxisLines, double zDistance)
- {
-     foreach (var addLine in negZObjs) movePtsFull.Add(addLine);
-
-     foreach (var zAxisLine in allzAxisLines)
-     {
-         var mappedStartPoint = MapAbsoluteToWcs(zAxisLine.StartPoint);
-         var addZ = new Point3d(mappedStartPoint.X, mappedStartPoint.Y,
-             mappedStartPoint.Z + zDistance);
-         var mappedAddZ = MapWcsToAbsolute(addZ);
-         zAxisLine.SetStartPoint(mappedAddZ);
-     }
-
-     MoveObjects(movePtsFull.ToArray(), zDistance, "Z");
-     MoveObjects(movePtsHalf.ToArray(), zDistance / 2, "Z");
-
-     ShowTemporarySizeText();
- }
-
- private void MotionCallbackPosZDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posZObjs, List<Line> allzAxisLines, double zDistance)
- {
-     foreach (var addLine in posZObjs) movePtsFull.Add(addLine);
-
-     foreach (var zAxisLine in allzAxisLines)
-     {
-         var mappedEndPoint = MapAbsoluteToWcs(zAxisLine.EndPoint);
-         var addZ = new Point3d(mappedEndPoint.X, mappedEndPoint.Y,
-             mappedEndPoint.Z + zDistance);
-         var mappedAddZ = MapWcsToAbsolute(addZ);
-         zAxisLine.SetEndPoint(mappedAddZ);
-     }
-
-     MoveObjects(movePtsFull.ToArray(), zDistance, "Z");
-     MoveObjects(movePtsHalf.ToArray(), zDistance / 2, "Z");
-
-     ShowTemporarySizeText();
- }
-
- private void MotionCallbackNegYDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> negYObjs, List<Line> allyAxisLines, double yDistance)
- {
-     foreach (var addLine in negYObjs) movePtsFull.Add(addLine);
-
-     foreach (var yAxisLine in allyAxisLines)
-     {
-         var mappedStartPoint = MapAbsoluteToWcs(yAxisLine.StartPoint);
-         var addY = new Point3d(mappedStartPoint.X, mappedStartPoint.Y + yDistance,
-             mappedStartPoint.Z);
-         var mappedAddY = MapWcsToAbsolute(addY);
-         yAxisLine.SetStartPoint(mappedAddY);
-     }
-
-     MoveObjects(movePtsFull.ToArray(), yDistance, "Y");
-     MoveObjects(movePtsHalf.ToArray(), yDistance / 2, "Y");
-
-     ShowTemporarySizeText();
- }
-
- private void MotionCallbackPosYDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posYObjs, List<Line> allyAxisLines, double yDistance)
- {
-     foreach (var addLine in posYObjs) movePtsFull.Add(addLine);
-
-     foreach (var yAxisLine in allyAxisLines)
-     {
-         var mappedEndPoint = MapAbsoluteToWcs(yAxisLine.EndPoint);
-         var addY = new Point3d(mappedEndPoint.X, mappedEndPoint.Y + yDistance,
-             mappedEndPoint.Z);
-         var mappedAddY = MapWcsToAbsolute(addY);
-         yAxisLine.SetEndPoint(mappedAddY);
-     }
-
-     MoveObjects(movePtsFull.ToArray(), yDistance, "Y");
-     MoveObjects(movePtsHalf.ToArray(), yDistance / 2, "Y");
-
-     ShowTemporarySizeText();
- }
-
- private void MotionCallbackNegXDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> negXObjs, List<Line> allxAxisLines, double xDistance)
- {
-     foreach (var addLine in negXObjs) movePtsFull.Add(addLine);
-
-     foreach (var xAxisLine in allxAxisLines)
-     {
-         var mappedStartPoint = MapAbsoluteToWcs(xAxisLine.StartPoint);
-         var addX = new Point3d(mappedStartPoint.X + xDistance, mappedStartPoint.Y,
-             mappedStartPoint.Z);
-         var mappedAddX = MapWcsToAbsolute(addX);
-         xAxisLine.SetStartPoint(mappedAddX);
-     }
-
-     MoveObjects(movePtsFull.ToArray(), xDistance, "X");
-     MoveObjects(movePtsHalf.ToArray(), xDistance / 2, "X");
-
-     ShowTemporarySizeText();
- }
-
- private void MotionCallbackPosXDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posXObjs, List<Line> allxAxisLines, double xDistance)
- {
-     foreach (var posXLine in posXObjs) movePtsFull.Add(posXLine);
-
-     foreach (var xAxisLine in allxAxisLines)
-     {
-         var mappedEndPoint = MapAbsoluteToWcs(xAxisLine.EndPoint);
-         var addX = new Point3d(mappedEndPoint.X + xDistance, mappedEndPoint.Y,
-             mappedEndPoint.Z);
-         var mappedAddX = MapWcsToAbsolute(addX);
-         xAxisLine.SetEndPoint(mappedAddX);
-     }
-
-     MoveObjects(movePtsFull.ToArray(), xDistance, "X");
-     MoveObjects(movePtsHalf.ToArray(), xDistance / 2, "X");
-
-     ShowTemporarySizeText();
- }
-
-
-
-
-
-
-
-private void MotionCallbackDyanmic(double[] position)
-{
-    var pointPrototype = _udoPointHandle.IsOccurrence
-                            ? (Point)_udoPointHandle.Prototype
-                            : _udoPointHandle;
-
-    var doNotMovePts = new List<NXObject>();
-    var movePtsHalf = new List<NXObject>();
-    var movePtsFull = new List<NXObject>();
-
-    if (pointPrototype.Name.Contains("POS"))
-        MotionCallbackDynamicPos(pointPrototype, doNotMovePts, movePtsHalf, movePtsFull);
-    else
-        MotionCallbackDynamicNeg(pointPrototype, doNotMovePts, movePtsHalf, movePtsFull);
-
-    var posXObjs = new List<Line>();
-    var negXObjs = new List<Line>();
-    var posYObjs = new List<Line>();
-    var negYObjs = new List<Line>();
-    var posZObjs = new List<Line>();
-    var negZObjs = new List<Line>();
-
-    foreach (var eLine in _edgeRepLines)
-    {
-        switch (eLine.Name)
+        private void MotionCallback(double[] position, ref UFUi.MotionCbData mtnCbData, IntPtr clientData)
         {
-            case "YBASE1":
-            case "YCEILING1":
-            case "ZBASE1":
-            case "ZBASE3":
-                negXObjs.Add(eLine);
-                break;
+            try
+            {
+                if (_isDynamic)
+                    MotionCallbackDyanmic(position);
+                else
+                    MotionCalbackNotDynamic(position);
+
+                double editBlkLength = 0;
+                double editBlkWidth = 0;
+                double editBlkHeight = 0;
+
+                foreach (var eLine in _edgeRepLines)
+                {
+                    if (eLine.Name == "XBASE1")
+                        editBlkLength = eLine.GetLength();
+
+                    if (eLine.Name == "YBASE1")
+                        editBlkWidth = eLine.GetLength();
+
+                    if (eLine.Name == "ZBASE1")
+                        editBlkHeight = eLine.GetLength();
+                }
+
+                if (_displayPart.PartUnits == BasePart.Units.Inches)
+                {
+                    ufsession_.Ui.SetPrompt(
+                        $"X = {editBlkLength:0.000}  Y = {editBlkWidth:0.000}  Z = {$"{editBlkHeight:0.000}"}  Distance Moved =  {$"{_distanceMoved:0.000}"}");
+                    return;
+                }
+
+                editBlkLength /= 25.4;
+                editBlkWidth /= 25.4;
+                editBlkHeight /= 25.4;
+
+                var convertDistMoved = _distanceMoved / 25.4;
+
+                ufsession_.Ui.SetPrompt($"X = {editBlkLength:0.000}  " +
+                    $"Y = {editBlkWidth:0.000}  " +
+                    $"Z = {editBlkHeight:0.000}  " +
+                    $"Distance Moved =  {convertDistMoved:0.000}");
+            }
+            catch (Exception ex)
+            {
+                ex.__PrintException();
+            }
         }
 
-        switch (eLine.Name)
+
+
+        private void MotionCallbackXDynamic(Point pointPrototype, List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posXObjs, List<Line> negXObjs, List<Line> allxAxisLines, double[] mappedPoint, double[] mappedCursor)
         {
-            case "YBASE2":
-            case "YCEILING2":
-            case "ZBASE2":
-            case "ZBASE4":
-                posXObjs.Add(eLine);
-                break;
+            if (mappedPoint[0] != mappedCursor[0])
+            {
+                var xDistance = Math.Sqrt(Math.Pow(mappedPoint[0] - mappedCursor[0], 2));
+
+                if (xDistance >= _gridSpace)
+                {
+                    if (mappedCursor[0] < mappedPoint[0]) xDistance *= -1;
+
+                    _distanceMoved += xDistance;
+
+                    if (pointPrototype.Name == "POSX")
+                    {
+                        MotionCallbackPosXDyanmic(movePtsHalf, movePtsFull, posXObjs, allxAxisLines, xDistance);
+                    }
+                    else
+                    {
+                        MotionCallbackNegXDyanmic(movePtsHalf, movePtsFull, negXObjs, allxAxisLines, xDistance);
+                    }
+                }
+            }
         }
 
-        if (eLine.Name == "XBASE1" || eLine.Name == "XCEILING1" || eLine.Name == "ZBASE1" ||
-           eLine.Name == "ZBASE2") negYObjs.Add(eLine);
+        private void MotionCallbackZDynamic(Point pointPrototype, List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posZObjs, List<Line> negZObjs, List<Line> allzAxisLines, double[] mappedPoint, double[] mappedCursor)
+        {
+            if (mappedPoint[2] != mappedCursor[2])
+            {
+                var zDistance = Math.Sqrt(Math.Pow(mappedPoint[2] - mappedCursor[2], 2));
+                zDistance = RoundDistanceToGrid(_gridSpace, zDistance);
 
-        if (eLine.Name == "XBASE2" || eLine.Name == "XCEILING2" || eLine.Name == "ZBASE3" ||
-           eLine.Name == "ZBASE4") posYObjs.Add(eLine);
+                if (zDistance >= _gridSpace)
+                {
+                    if (mappedCursor[2] < mappedPoint[2]) zDistance *= -1;
 
-        if (eLine.Name == "XBASE1" || eLine.Name == "XBASE2" || eLine.Name == "YBASE1" ||
-           eLine.Name == "YBASE2") negZObjs.Add(eLine);
+                    _distanceMoved += zDistance;
 
-        if (eLine.Name == "XCEILING1" || eLine.Name == "XCEILING2" || eLine.Name == "YCEILING1" ||
-           eLine.Name == "YCEILING2") posZObjs.Add(eLine);
-    }
+                    if (pointPrototype.Name == "POSZ")
+                    {
+                        MotionCallbackPosZDyanmic(movePtsHalf, movePtsFull, posZObjs, allzAxisLines, zDistance);
+                    }
+                    else
+                    {
+                        MotionCallbackNegZDyanmic(movePtsHalf, movePtsFull, negZObjs, allzAxisLines, zDistance);
+                    }
 
-    var allxAxisLines = new List<Line>();
-    var allyAxisLines = new List<Line>();
-    var allzAxisLines = new List<Line>();
+                    var mView1 = (ModelingView)_displayPart.Views.WorkView;
+                    _displayPart.Views.WorkView.Orient(mView1.Matrix);
+                    _displayPart.WCS.SetOriginAndMatrix(mView1.Origin, mView1.Matrix);
+                }
+            }
+        }
 
-    foreach (var eLine in _edgeRepLines)
-    {
-        if (eLine.Name.StartsWith("X")) allxAxisLines.Add(eLine);
+        private void MotionCallbackYDynamic(Point pointPrototype, List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posYObjs, List<Line> negYObjs, List<Line> allyAxisLines, double[] mappedPoint, double[] mappedCursor)
+        {
+            if (mappedPoint[1] != mappedCursor[1])
+            {
+                var yDistance = Math.Sqrt(Math.Pow(mappedPoint[1] - mappedCursor[1], 2));
 
-        if (eLine.Name.StartsWith("Y")) allyAxisLines.Add(eLine);
+                if (yDistance >= _gridSpace)
+                {
+                    if (mappedCursor[1] < mappedPoint[1]) yDistance *= -1;
 
-        if (eLine.Name.StartsWith("Z")) allzAxisLines.Add(eLine);
-    }
+                    _distanceMoved += yDistance;
 
-    // get the distance from the selected point to the cursor location
+                    if (pointPrototype.Name == "POSY")
+                    {
+                        MotionCallbackPosYDyanmic(movePtsHalf, movePtsFull, posYObjs, allyAxisLines, yDistance);
+                    }
+                    else
+                    {
+                        MotionCallbackNegYDyanmic(movePtsHalf, movePtsFull, negYObjs, allyAxisLines, yDistance);
+                    }
+                }
+            }
+        }
 
-    double[] pointStart =
-        { _udoPointHandle.Coordinates.X, _udoPointHandle.Coordinates.Y, _udoPointHandle.Coordinates.Z };
+        private void MotionCallbackNegZDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> negZObjs, List<Line> allzAxisLines, double zDistance)
+        {
+            foreach (var addLine in negZObjs) movePtsFull.Add(addLine);
 
-    var mappedPoint = new double[3];
-    var mappedCursor = new double[3];
+            foreach (var zAxisLine in allzAxisLines)
+            {
+                var mappedStartPoint = MapAbsoluteToWcs(zAxisLine.StartPoint);
+                var addZ = new Point3d(mappedStartPoint.X, mappedStartPoint.Y,
+                    mappedStartPoint.Z + zDistance);
+                var mappedAddZ = MapWcsToAbsolute(addZ);
+                zAxisLine.SetStartPoint(mappedAddZ);
+            }
 
-    _displayPart.WCS.SetOriginAndMatrix(_workCompOrigin, _workCompOrientation);
+            MoveObjects(movePtsFull.ToArray(), zDistance, "Z");
+            MoveObjects(movePtsHalf.ToArray(), zDistance / 2, "Z");
 
-    ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, pointStart, UF_CSYS_ROOT_WCS_COORDS, mappedPoint);
-    ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, position, UF_CSYS_ROOT_WCS_COORDS, mappedCursor);
+            ShowTemporarySizeText();
+        }
 
-    if (pointPrototype.Name == "POSX" || pointPrototype.Name == "NEGX")
-        MotionCallbackXDynamic(pointPrototype, movePtsHalf, movePtsFull, posXObjs, negXObjs, allxAxisLines, mappedPoint, mappedCursor);
+        private void MotionCallbackPosZDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posZObjs, List<Line> allzAxisLines, double zDistance)
+        {
+            foreach (var addLine in posZObjs) movePtsFull.Add(addLine);
 
-    if (pointPrototype.Name == "POSY" || pointPrototype.Name == "NEGY")
-        MotionCallbackYDynamic(pointPrototype, movePtsHalf, movePtsFull, posYObjs, negYObjs, allyAxisLines, mappedPoint, mappedCursor);
+            foreach (var zAxisLine in allzAxisLines)
+            {
+                var mappedEndPoint = MapAbsoluteToWcs(zAxisLine.EndPoint);
+                var addZ = new Point3d(mappedEndPoint.X, mappedEndPoint.Y,
+                    mappedEndPoint.Z + zDistance);
+                var mappedAddZ = MapWcsToAbsolute(addZ);
+                zAxisLine.SetEndPoint(mappedAddZ);
+            }
 
-    if (pointPrototype.Name == "POSZ" || pointPrototype.Name == "NEGZ")
-        MotionCallbackZDynamic(pointPrototype, movePtsHalf, movePtsFull, posZObjs, negZObjs, allzAxisLines, mappedPoint, mappedCursor);
-}
+            MoveObjects(movePtsFull.ToArray(), zDistance, "Z");
+            MoveObjects(movePtsHalf.ToArray(), zDistance / 2, "Z");
+
+            ShowTemporarySizeText();
+        }
+
+        private void MotionCallbackNegYDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> negYObjs, List<Line> allyAxisLines, double yDistance)
+        {
+            foreach (var addLine in negYObjs) movePtsFull.Add(addLine);
+
+            foreach (var yAxisLine in allyAxisLines)
+            {
+                var mappedStartPoint = MapAbsoluteToWcs(yAxisLine.StartPoint);
+                var addY = new Point3d(mappedStartPoint.X, mappedStartPoint.Y + yDistance,
+                    mappedStartPoint.Z);
+                var mappedAddY = MapWcsToAbsolute(addY);
+                yAxisLine.SetStartPoint(mappedAddY);
+            }
+
+            MoveObjects(movePtsFull.ToArray(), yDistance, "Y");
+            MoveObjects(movePtsHalf.ToArray(), yDistance / 2, "Y");
+
+            ShowTemporarySizeText();
+        }
+
+        private void MotionCallbackPosYDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posYObjs, List<Line> allyAxisLines, double yDistance)
+        {
+            foreach (var addLine in posYObjs) movePtsFull.Add(addLine);
+
+            foreach (var yAxisLine in allyAxisLines)
+            {
+                var mappedEndPoint = MapAbsoluteToWcs(yAxisLine.EndPoint);
+                var addY = new Point3d(mappedEndPoint.X, mappedEndPoint.Y + yDistance,
+                    mappedEndPoint.Z);
+                var mappedAddY = MapWcsToAbsolute(addY);
+                yAxisLine.SetEndPoint(mappedAddY);
+            }
+
+            MoveObjects(movePtsFull.ToArray(), yDistance, "Y");
+            MoveObjects(movePtsHalf.ToArray(), yDistance / 2, "Y");
+
+            ShowTemporarySizeText();
+        }
+
+        private void MotionCallbackNegXDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> negXObjs, List<Line> allxAxisLines, double xDistance)
+        {
+            foreach (var addLine in negXObjs) movePtsFull.Add(addLine);
+
+            foreach (var xAxisLine in allxAxisLines)
+            {
+                var mappedStartPoint = MapAbsoluteToWcs(xAxisLine.StartPoint);
+                var addX = new Point3d(mappedStartPoint.X + xDistance, mappedStartPoint.Y,
+                    mappedStartPoint.Z);
+                var mappedAddX = MapWcsToAbsolute(addX);
+                xAxisLine.SetStartPoint(mappedAddX);
+            }
+
+            MoveObjects(movePtsFull.ToArray(), xDistance, "X");
+            MoveObjects(movePtsHalf.ToArray(), xDistance / 2, "X");
+
+            ShowTemporarySizeText();
+        }
+
+        private void MotionCallbackPosXDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posXObjs, List<Line> allxAxisLines, double xDistance)
+        {
+            foreach (var posXLine in posXObjs) movePtsFull.Add(posXLine);
+
+            foreach (var xAxisLine in allxAxisLines)
+            {
+                var mappedEndPoint = MapAbsoluteToWcs(xAxisLine.EndPoint);
+                var addX = new Point3d(mappedEndPoint.X + xDistance, mappedEndPoint.Y,
+                    mappedEndPoint.Z);
+                var mappedAddX = MapWcsToAbsolute(addX);
+                xAxisLine.SetEndPoint(mappedAddX);
+            }
+
+            MoveObjects(movePtsFull.ToArray(), xDistance, "X");
+            MoveObjects(movePtsHalf.ToArray(), xDistance / 2, "X");
+
+            ShowTemporarySizeText();
+        }
+
+
+
+
+
+
+
+        private void MotionCallbackDyanmic(double[] position)
+        {
+            var pointPrototype = _udoPointHandle.IsOccurrence
+                                    ? (Point)_udoPointHandle.Prototype
+                                    : _udoPointHandle;
+
+            var doNotMovePts = new List<NXObject>();
+            var movePtsHalf = new List<NXObject>();
+            var movePtsFull = new List<NXObject>();
+
+            if (pointPrototype.Name.Contains("POS"))
+                MotionCallbackDynamicPos(pointPrototype, doNotMovePts, movePtsHalf, movePtsFull);
+            else
+                MotionCallbackDynamicNeg(pointPrototype, doNotMovePts, movePtsHalf, movePtsFull);
+
+            var posXObjs = new List<Line>();
+            var negXObjs = new List<Line>();
+            var posYObjs = new List<Line>();
+            var negYObjs = new List<Line>();
+            var posZObjs = new List<Line>();
+            var negZObjs = new List<Line>();
+
+            foreach (var eLine in _edgeRepLines)
+            {
+                switch (eLine.Name)
+                {
+                    case "YBASE1":
+                    case "YCEILING1":
+                    case "ZBASE1":
+                    case "ZBASE3":
+                        negXObjs.Add(eLine);
+                        break;
+                }
+
+                switch (eLine.Name)
+                {
+                    case "YBASE2":
+                    case "YCEILING2":
+                    case "ZBASE2":
+                    case "ZBASE4":
+                        posXObjs.Add(eLine);
+                        break;
+                }
+
+                if (eLine.Name == "XBASE1" || eLine.Name == "XCEILING1" || eLine.Name == "ZBASE1" ||
+                   eLine.Name == "ZBASE2") negYObjs.Add(eLine);
+
+                if (eLine.Name == "XBASE2" || eLine.Name == "XCEILING2" || eLine.Name == "ZBASE3" ||
+                   eLine.Name == "ZBASE4") posYObjs.Add(eLine);
+
+                if (eLine.Name == "XBASE1" || eLine.Name == "XBASE2" || eLine.Name == "YBASE1" ||
+                   eLine.Name == "YBASE2") negZObjs.Add(eLine);
+
+                if (eLine.Name == "XCEILING1" || eLine.Name == "XCEILING2" || eLine.Name == "YCEILING1" ||
+                   eLine.Name == "YCEILING2") posZObjs.Add(eLine);
+            }
+
+            var allxAxisLines = new List<Line>();
+            var allyAxisLines = new List<Line>();
+            var allzAxisLines = new List<Line>();
+
+            foreach (var eLine in _edgeRepLines)
+            {
+                if (eLine.Name.StartsWith("X")) allxAxisLines.Add(eLine);
+
+                if (eLine.Name.StartsWith("Y")) allyAxisLines.Add(eLine);
+
+                if (eLine.Name.StartsWith("Z")) allzAxisLines.Add(eLine);
+            }
+
+            // get the distance from the selected point to the cursor location
+
+            double[] pointStart =
+                { _udoPointHandle.Coordinates.X, _udoPointHandle.Coordinates.Y, _udoPointHandle.Coordinates.Z };
+
+            var mappedPoint = new double[3];
+            var mappedCursor = new double[3];
+
+            _displayPart.WCS.SetOriginAndMatrix(_workCompOrigin, _workCompOrientation);
+
+            ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, pointStart, UF_CSYS_ROOT_WCS_COORDS, mappedPoint);
+            ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, position, UF_CSYS_ROOT_WCS_COORDS, mappedCursor);
+
+            if (pointPrototype.Name == "POSX" || pointPrototype.Name == "NEGX")
+                MotionCallbackXDynamic(pointPrototype, movePtsHalf, movePtsFull, posXObjs, negXObjs, allxAxisLines, mappedPoint, mappedCursor);
+
+            if (pointPrototype.Name == "POSY" || pointPrototype.Name == "NEGY")
+                MotionCallbackYDynamic(pointPrototype, movePtsHalf, movePtsFull, posYObjs, negYObjs, allyAxisLines, mappedPoint, mappedCursor);
+
+            if (pointPrototype.Name == "POSZ" || pointPrototype.Name == "NEGZ")
+                MotionCallbackZDynamic(pointPrototype, movePtsHalf, movePtsFull, posZObjs, negZObjs, allzAxisLines, mappedPoint, mappedCursor);
+        }
 
 
 
@@ -4475,24 +4482,23 @@ private void MotionCallbackDyanmic(double[] position)
 
         private void MotionCallbackNotDynamicZ(List<NXObject> moveAll, double[] mappedPoint, double[] mappedCursor)
         {
-            if (mappedPoint[2] != mappedCursor[2])
-            {
-                var zDistance = Math.Sqrt(Math.Pow(mappedPoint[2] - mappedCursor[2], 2));
-                zDistance = RoundDistanceToGrid(_gridSpace, zDistance);
+            if (mappedPoint[2] == mappedCursor[2])
+                return;
 
-                if (zDistance >= _gridSpace)
-                {
-                    if (mappedCursor[2] < mappedPoint[2]) zDistance *= -1;
+            var zDistance = Math.Sqrt(Math.Pow(mappedPoint[2] - mappedCursor[2], 2));
+            zDistance = RoundDistanceToGrid(_gridSpace, zDistance);
 
-                    _distanceMoved += zDistance;
+            if (zDistance < _gridSpace)
+                return;
+            
+            if (mappedCursor[2] < mappedPoint[2]) 
+                zDistance *= -1;
 
-                    MoveObjects(moveAll.ToArray(), zDistance, "Z");
-
-                    var mView1 = (ModelingView)_displayPart.Views.WorkView;
-                    _displayPart.Views.WorkView.Orient(mView1.Matrix);
-                    _displayPart.WCS.SetOriginAndMatrix(mView1.Origin, mView1.Matrix);
-                }
-            }
+            _distanceMoved += zDistance;
+            MoveObjects(moveAll.ToArray(), zDistance, "Z");
+            var mView1 = (ModelingView)_displayPart.Views.WorkView;
+            _displayPart.Views.WorkView.Orient(mView1.Matrix);
+            _displayPart.WCS.SetOriginAndMatrix(mView1.Origin, mView1.Matrix);
         }
 
 
@@ -4544,79 +4550,79 @@ private void MotionCallbackDyanmic(double[] position)
 
 
 
-  private void MoveObjects(NXObject[] objsToMove, double distance, string deltaXyz)
-  {
-      try
-      {
-          if (distance == 0)
-              return;
-          
-          _displayPart.WCS.SetOriginAndMatrix(_workCompOrigin, _workCompOrientation);
+        private void MoveObjects(NXObject[] objsToMove, double distance, string deltaXyz)
+        {
+            try
+            {
+                if (distance == 0)
+                    return;
 
-          MoveObject nullFeaturesMoveObject = null;
+                _displayPart.WCS.SetOriginAndMatrix(_workCompOrigin, _workCompOrientation);
 
-          MoveObjectBuilder moveObjectBuilder1;
-          moveObjectBuilder1 = _workPart.BaseFeatures.CreateMoveObjectBuilder(nullFeaturesMoveObject);
+                MoveObject nullFeaturesMoveObject = null;
 
-          moveObjectBuilder1.TransformMotion.DistanceAngle.OrientXpress.AxisOption =
-              OrientXpressBuilder.Axis.Passive;
+                MoveObjectBuilder moveObjectBuilder1;
+                moveObjectBuilder1 = _workPart.BaseFeatures.CreateMoveObjectBuilder(nullFeaturesMoveObject);
 
-          moveObjectBuilder1.TransformMotion.DistanceAngle.OrientXpress.PlaneOption =
-              OrientXpressBuilder.Plane.Passive;
+                moveObjectBuilder1.TransformMotion.DistanceAngle.OrientXpress.AxisOption =
+                    OrientXpressBuilder.Axis.Passive;
 
-          moveObjectBuilder1.TransformMotion.OrientXpress.AxisOption = OrientXpressBuilder.Axis.Passive;
+                moveObjectBuilder1.TransformMotion.DistanceAngle.OrientXpress.PlaneOption =
+                    OrientXpressBuilder.Plane.Passive;
 
-          moveObjectBuilder1.TransformMotion.OrientXpress.PlaneOption = OrientXpressBuilder.Plane.Passive;
+                moveObjectBuilder1.TransformMotion.OrientXpress.AxisOption = OrientXpressBuilder.Axis.Passive;
 
-          Point3d manipulatororigin1;
-          manipulatororigin1 = _displayPart.WCS.Origin;
+                moveObjectBuilder1.TransformMotion.OrientXpress.PlaneOption = OrientXpressBuilder.Plane.Passive;
 
-          Matrix3x3 manipulatormatrix1;
-          manipulatormatrix1 = _displayPart.WCS.CoordinateSystem.Orientation.Element;
+                Point3d manipulatororigin1;
+                manipulatororigin1 = _displayPart.WCS.Origin;
 
-          moveObjectBuilder1.TransformMotion.Option = ModlMotion.Options.DeltaXyz;
+                Matrix3x3 manipulatormatrix1;
+                manipulatormatrix1 = _displayPart.WCS.CoordinateSystem.Orientation.Element;
 
-          moveObjectBuilder1.TransformMotion.DeltaEnum = ModlMotion.Delta.ReferenceWcsWorkPart;
+                moveObjectBuilder1.TransformMotion.Option = ModlMotion.Options.DeltaXyz;
 
-          if (deltaXyz == "X")
-          {
-              moveObjectBuilder1.TransformMotion.DeltaXc.RightHandSide = distance.ToString();
-              moveObjectBuilder1.TransformMotion.DeltaYc.RightHandSide = "0";
-              moveObjectBuilder1.TransformMotion.DeltaZc.RightHandSide = "0";
-          }
+                moveObjectBuilder1.TransformMotion.DeltaEnum = ModlMotion.Delta.ReferenceWcsWorkPart;
 
-          if (deltaXyz == "Y")
-          {
-              moveObjectBuilder1.TransformMotion.DeltaXc.RightHandSide = "0";
-              moveObjectBuilder1.TransformMotion.DeltaYc.RightHandSide = distance.ToString();
-              moveObjectBuilder1.TransformMotion.DeltaZc.RightHandSide = "0";
-          }
+                if (deltaXyz == "X")
+                {
+                    moveObjectBuilder1.TransformMotion.DeltaXc.RightHandSide = distance.ToString();
+                    moveObjectBuilder1.TransformMotion.DeltaYc.RightHandSide = "0";
+                    moveObjectBuilder1.TransformMotion.DeltaZc.RightHandSide = "0";
+                }
 
-          if (deltaXyz == "Z")
-          {
-              moveObjectBuilder1.TransformMotion.DeltaXc.RightHandSide = "0";
-              moveObjectBuilder1.TransformMotion.DeltaYc.RightHandSide = "0";
-              moveObjectBuilder1.TransformMotion.DeltaZc.RightHandSide = distance.ToString();
-          }
+                if (deltaXyz == "Y")
+                {
+                    moveObjectBuilder1.TransformMotion.DeltaXc.RightHandSide = "0";
+                    moveObjectBuilder1.TransformMotion.DeltaYc.RightHandSide = distance.ToString();
+                    moveObjectBuilder1.TransformMotion.DeltaZc.RightHandSide = "0";
+                }
 
-          bool added1;
-          added1 = moveObjectBuilder1.ObjectToMoveObject.Add(objsToMove);
+                if (deltaXyz == "Z")
+                {
+                    moveObjectBuilder1.TransformMotion.DeltaXc.RightHandSide = "0";
+                    moveObjectBuilder1.TransformMotion.DeltaYc.RightHandSide = "0";
+                    moveObjectBuilder1.TransformMotion.DeltaZc.RightHandSide = distance.ToString();
+                }
 
-          NXObject nXObject1;
-          nXObject1 = moveObjectBuilder1.Commit();
+                bool added1;
+                added1 = moveObjectBuilder1.ObjectToMoveObject.Add(objsToMove);
 
-          moveObjectBuilder1.Destroy();
+                NXObject nXObject1;
+                nXObject1 = moveObjectBuilder1.Commit();
 
-          _workPart.FacetedBodies.DeleteTemporaryFacesAndEdges();
-      }
-      catch (Exception ex)
-      {
-          ex.__PrintException();
-      }
-  }
+                moveObjectBuilder1.Destroy();
+
+                _workPart.FacetedBodies.DeleteTemporaryFacesAndEdges();
+            }
+            catch (Exception ex)
+            {
+                ex.__PrintException();
+            }
+        }
 
 
-  
+
         private static void NewMethod()
         {
             SelectWithFilter.NonValidCandidates = _nonValidNames;
@@ -4725,12 +4731,12 @@ private void MotionCallbackDyanmic(double[] position)
                     var mWidth = blockFeatureBuilderMatch.Width.Value;
                     var mHeight = blockFeatureBuilderMatch.Height.Value;
 
-                    session_.Parts.SetWork(_displayPart);
+                    __work_part_ = _displayPart;
                     UpdateSessionParts();
 
                     if (mLength != 0 && mWidth != 0 && mHeight != 0)
                     {
-                        
+
                         // create edit block feature
                         Feature nullFeaturesFeature = null;
                         BlockFeatureBuilder blockFeatureBuilderEdit;
@@ -4870,8 +4876,7 @@ private void MotionCallbackDyanmic(double[] position)
 
                     var compBase = (BasePart)compRefCsys.Prototype;
 
-                    session_.Parts.SetDisplay(compBase, false, false, out var setDispLoadStatus);
-                    setDispLoadStatus.Dispose();
+                    __display_part_ =(Part)compBase; 
                     UpdateSessionParts();
 
                     _isUprParallel = false;
@@ -4950,11 +4955,8 @@ private void MotionCallbackDyanmic(double[] position)
                                     if (bRefSet.Name == "BODY")
                                         bRefSet.AddObjectsToReferenceSet(addToBody);
 
-                                session_.Parts.SetDisplay(_originalDisplayPart, false, false,
-                                    out var setDispLoadStatus1);
-                                setDispLoadStatus1.Dispose();
-                                session_.Parts.SetWorkComponent(compRefCsys, out var partLoadStatusWorkComp);
-                                partLoadStatusWorkComp.Dispose();
+                                __display_part_ = _originalDisplayPart;
+                                __work_component_ = compRefCsys;
                                 UpdateSessionParts();
 
                                 foreach (CartesianCoordinateSystem wpCsys in _workPart.CoordinateSystems)
