@@ -242,7 +242,7 @@ namespace TSG_Library.Extensions
 
         public static Part __Prototype(this Component comp)
         {
-            return comp.__Prototype();
+            return (Part)comp.Prototype;
         }
 
         public static ReferenceSet[] __ReferenceSets(this Part part)
