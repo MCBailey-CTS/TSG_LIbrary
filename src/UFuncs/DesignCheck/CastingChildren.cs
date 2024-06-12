@@ -77,7 +77,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 
             //bool flag = (from child in part.ComponentAssembly.RootComponent.GetChildren()
             //             where child.Prototype is NXOpen.Part
-            //             where child._Prototype().FullPath.ToLower().Contains("liftlugs")
+            //             where child.__Prototype().FullPath.ToLower().Contains("liftlugs")
             //             where child.ReferenceSet != "Empty"
             //             select child).All(child => child.ReferenceSet != "Entire Part");
 

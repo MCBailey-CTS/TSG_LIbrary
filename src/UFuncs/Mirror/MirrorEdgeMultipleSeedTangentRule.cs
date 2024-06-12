@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CTS_Library.Extensions;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
@@ -19,7 +18,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
         public override SelectionIntentRule Mirror(SelectionIntentRule originalRule, Feature originalFeature, Surface. Plane plane, Component originalComp, IDictionary<TaggedObject, TaggedObject> dict)
         {
             Component component = (Component)dict[originalComp];
-            Part part = component._Prototype();
+            Part part = component.__Prototype();
             Feature feature = (Feature)dict[originalFeature];
             ((EdgeMultipleSeedTangentRule)originalRule).GetData(out var seedEdges, out var angleTolerance, out var hasSameConvexity);
             IList<Edge> list = new List<Edge>();
@@ -32,7 +31,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
                 {
                     feature.Suppress();
                     originalFeature.Suppress();
-                    Feature parentFeatureOfBody = originalComp._Prototype().Features.GetParentFeatureOfBody(body);
+                    Feature parentFeatureOfBody = originalComp.__Prototype().Features.GetParentFeatureOfBody(body);
                     BodyFeature bodyFeature = (BodyFeature)dict[parentFeatureOfBody];
                     if (bodyFeature.GetBodies().Length != 1)
                     {

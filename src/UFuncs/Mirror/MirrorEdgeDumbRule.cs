@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using CTS_Library.Extensions;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
@@ -23,7 +22,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             IDictionary<TaggedObject, TaggedObject> dict)
         {            
             Component component = (Component)dict[originalComp];
-            Part part = component._Prototype();
+            Part part = component.__Prototype();
             Feature feature = (Feature)dict[originalFeature];
             ((EdgeDumbRule)originalRule).GetData(out var edges);
             feature.Suppress();

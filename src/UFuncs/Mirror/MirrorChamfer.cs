@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using CTS_Library;
-using CTS_Library.Extensions;
-using CTS_Library.Utilities;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
+using TSG_Library.Disposable;
+using TSG_Library.Extensions;
 using TSG_Library.Geom;
+using static TSG_Library.Extensions.__Extensions_;
 
 namespace TSG_Library.UFuncs.MirrorComponents.Features
 {
@@ -21,8 +21,8 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             originalFeature.Suppress();
             Feature feature = (Feature)dict[originalFeature];
             feature.Suppress();
-            Part part = component._Prototype();
-            ChamferBuilder chamferBuilder = originalFeature._OwningPart().Features.CreateChamferBuilder(originalFeature);
+            Part part = component.__Prototype();
+            ChamferBuilder chamferBuilder = originalFeature.__OwningPart().Features.CreateChamferBuilder(originalFeature);
             IList<SelectionIntentRule> list = new List<SelectionIntentRule>();
             using (new Destroyer(chamferBuilder))
             {
@@ -34,12 +34,12 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
                 }
             }
 
-            Globals._WorkPart = component._Prototype();
-            Session.UndoMarkId featureEditMark = Globals._Session.SetUndoMark(Session.MarkVisibility.Visible, "Redefine Feature");
-            EditWithRollbackManager editWithRollbackManager = Globals._WorkPart.Features.StartEditWithRollbackManager(feature, featureEditMark);
+            __work_part_ = component.__Prototype();
+            Session.UndoMarkId featureEditMark = session_.SetUndoMark(Session.MarkVisibility.Visible, "Redefine Feature");
+            EditWithRollbackManager editWithRollbackManager = __work_part_.Features.StartEditWithRollbackManager(feature, featureEditMark);
             using (new Destroyer(editWithRollbackManager))
             {
-                chamferBuilder = Globals._WorkPart.Features.CreateChamferBuilder(feature);
+                chamferBuilder = __work_part_.Features.CreateChamferBuilder(feature);
                 using (new Destroyer(chamferBuilder))
                 {
                     chamferBuilder.ReverseOffsets = !chamferBuilder.ReverseOffsets;

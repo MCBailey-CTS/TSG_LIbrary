@@ -29,7 +29,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
         ///// <returns>Returns true if it has a subtool reference set, false otherwise.</returns>
         //public static bool HasSubToolRefset(NXOpen.Assemblies.Component snapComp)
         //    =>
-        //    snapComp._Prototype()
+        //    snapComp.__Prototype()
         //    .GetAllReferenceSets()
         //    .Any(referenceSet => SubToolNames.Contains(referenceSet.Name));
 

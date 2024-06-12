@@ -17,7 +17,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
         {
             throw new NotImplementedException();
             //Component component = (Component)dict[originalComp];
-            //Part part = component._Prototype();
+            //Part part = component.__Prototype();
             //Feature feature = (Feature)dict[originalFeature];
             //((EdgeBodyRule)originalRule).GetData(out var body);
             //ISet<Point3d> set = new HashSet<Point3d>(new EqualityPos());

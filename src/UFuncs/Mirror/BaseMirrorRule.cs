@@ -64,7 +64,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             //try
             //{
             //    Component component = (Component)dict[originalComp];
-            //    Part part = component._Prototype();
+            //    Part part = component.__Prototype();
             //    Feature feature = (Feature)dict[originalFeature];
             //    return originalRule.Type switch
             //    {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CTS_Library.Extensions;
+
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
@@ -20,7 +20,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
         {
 
             Component component = (Component)dict[originalComp];
-            Part part = component._Prototype();
+            Part part = component.__Prototype();
             Feature feature = (Feature)dict[originalFeature];
             ((EdgeVertexRule)originalRule).GetData(out var startEdge, out var isFromStart);
             Body body = startEdge.GetBody();
@@ -29,7 +29,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             {
                 feature.Suppress();
                 originalFeature.Suppress();
-                Feature parentFeatureOfBody = originalComp._Prototype().Features.GetParentFeatureOfBody(body);
+                Feature parentFeatureOfBody = originalComp.__Prototype().Features.GetParentFeatureOfBody(body);
                 BodyFeature bodyFeature = (BodyFeature)dict[parentFeatureOfBody];
                 if (bodyFeature.GetBodies().Length != 1)
                 {

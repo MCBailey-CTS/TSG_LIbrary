@@ -1,16 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using CTS_Library;
-using CTS_Library.Equality;
-using CTS_Library.Extensions;
-using CTS_Library.UFuncs.MirrorComponents.LibraryComponents;
-using CTS_Library.Utilities;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
+using TSG_Library.Disposable;
 using TSG_Library.Extensions;
 using TSG_Library.Geom;
+using static TSG_Library.Extensions.__Extensions_;
 
 namespace TSG_Library.UFuncs.MirrorComponents.Features
 {
@@ -31,19 +28,19 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             }
 
             ExtractFace extractFace2 = (ExtractFace)originalFeature;
-            if (extractFace2._IsBroken())
+            if (extractFace2.__IsBroken())
             {
                 return;
             }
 
-            Tag assy_context_xform = extractFace2._XFormTag();
-            Globals._UFSession.So.AskAssyCtxtPartOcc(assy_context_xform, originalComp.Tag, out var from_part_occ);
-            Component component2 = (Component)Globals._Session.GetObjectManager().GetTaggedObject(from_part_occ);
-            Globals._UFSession.Wave.AskLinkedFeatureGeom(extractFace2.Tag, out var linked_geom);
-            Globals._UFSession.Wave.AskLinkedFeatureInfo(linked_geom, out var _);
+            Tag assy_context_xform = extractFace2.__XFormTag();
+            ufsession_.So.AskAssyCtxtPartOcc(assy_context_xform, originalComp.Tag, out var from_part_occ);
+            Component component2 = (Component)session_.GetObjectManager().GetTaggedObject(from_part_occ);
+            ufsession_.Wave.AskLinkedFeatureGeom(extractFace2.Tag, out var linked_geom);
+            ufsession_.Wave.AskLinkedFeatureInfo(linked_geom, out var _);
             if (component2 == null)
             {
-                throw new MirrorException("Linked component was null in " + originalFeature._OwningPart().Leaf + " from " + originalFeature.GetFeatureName());
+                throw new MirrorException("Linked component was null in " + originalFeature.__OwningPart().Leaf + " from " + originalFeature.GetFeatureName());
             }
 
             Component[] array = component2._AssemblyPath().ToArray();
@@ -56,7 +53,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
 
             using (new ReferenceSetReset(component3))
             {
-                component3._ReferenceSet("Entire Part");
+                component3.__ReferenceSet("Entire Part");
                 ILibraryComponent[] array3 = new ILibraryComponent[4]
                 {
                 new MirrorSmartButton(),
@@ -81,12 +78,12 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
                     return;
                 }
 
-                Globals._WorkPart = Globals._DisplayPart;
+                __work_part_ = __display_part_;
                 using (new ReferenceSetReset(component2))
                 {
-                    component2._ReferenceSet("Entire Part");
-                    Globals._WorkPart = originalComp._Prototype();
-                    ExtractFaceBuilder extractFaceBuilder = Globals._WorkPart.Features.CreateExtractFaceBuilder(extractFace2);
+                    component2.__ReferenceSet("Entire Part");
+                    __work_part_ = originalComp.__Prototype();
+                    ExtractFaceBuilder extractFaceBuilder = __work_part_.Features.CreateExtractFaceBuilder(extractFace2);
                     Body[] bodies;
                     using (new Destroyer(extractFaceBuilder))
                     {
@@ -95,27 +92,27 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
                             .ToArray();
                     }
 
-                    Globals._WorkComponent = component;
-                    Session.UndoMarkId featureEditMark = Globals._Session.SetUndoMark(Session.MarkVisibility.Visible, "Redefine Feature");
-                    EditWithRollbackManager editWithRollbackManager = Globals._WorkPart.Features.StartEditWithRollbackManager(extractFace, featureEditMark);
+                    __work_component_ = component;
+                    Session.UndoMarkId featureEditMark = session_.SetUndoMark(Session.MarkVisibility.Visible, "Redefine Feature");
+                    EditWithRollbackManager editWithRollbackManager = __work_part_.Features.StartEditWithRollbackManager(extractFace, featureEditMark);
                     using (new Destroyer(editWithRollbackManager))
                     {
-                        ExtractFaceBuilder extractFaceBuilder2 = Globals._WorkPart.Features.CreateExtractFaceBuilder(extractFace);
+                        ExtractFaceBuilder extractFaceBuilder2 = __work_part_.Features.CreateExtractFaceBuilder(extractFace);
                         using (new Destroyer(extractFaceBuilder2))
                         {
-                            BodyDumbRule bodyDumbRule = Globals._WorkPart.ScRuleFactory.CreateRuleBodyDumb(bodies, includeSheetBodies: true);
+                            BodyDumbRule bodyDumbRule = __work_part_.ScRuleFactory.CreateRuleBodyDumb(bodies, includeSheetBodies: true);
                             SelectionIntentRule[] rules = new SelectionIntentRule[1] { bodyDumbRule };
                             extractFaceBuilder2.ExtractBodyCollector.ReplaceRules(rules, createRulesWoUpdate: false);
                             extractFaceBuilder2.Associative = true;
                             extractFaceBuilder2.Commit();
                         }
 
-                        Globals._Session.Preferences.Modeling.UpdatePending = false;
+                        session_.Preferences.Modeling.UpdatePending = false;
                     }
 
                     originalFeature.Unsuppress();
                     feature.Unsuppress();
-                    Globals._WorkPart = Globals._DisplayPart;
+                    __work_part_ = __display_part_;
                 }
             }
         }

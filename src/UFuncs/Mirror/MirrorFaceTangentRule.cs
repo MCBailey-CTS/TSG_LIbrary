@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CTS_Library.Extensions;
+
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
@@ -19,7 +19,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
         public override SelectionIntentRule Mirror(SelectionIntentRule originalRule, Feature originalFeature, Surface. Plane plane, Component originalComp, IDictionary<TaggedObject, TaggedObject> dict)
         {
             Component mirroredComp = (Component)dict[originalComp];
-            Part part = mirroredComp._Prototype();
+            Part part = mirroredComp.__Prototype();
             Feature feature = (Feature)dict[originalFeature];
             feature.Suppress();
             ((FaceTangentRule)originalRule).GetData(out var startFace, out var endFace, out var _, out var _, out var _);
@@ -33,7 +33,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
                                                           select Tuple.Create<Point3d, Point3d>(mirrorStart, mirrorEnd)).ToList();
             Face face = null;
             Face face2 = null;
-            Feature parentFeatureOfFace = startFace._OwningPart().Features.GetParentFeatureOfFace(startFace);
+            Feature parentFeatureOfFace = startFace.__OwningPart().Features.GetParentFeatureOfFace(startFace);
             BodyFeature bodyFeature = (BodyFeature)dict[parentFeatureOfFace];
             Body[] bodies = bodyFeature.GetBodies();
             foreach (Body body in bodies)

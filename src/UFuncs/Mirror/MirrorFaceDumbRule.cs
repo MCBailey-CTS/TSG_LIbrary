@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CTS_Library.Extensions;
+
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
@@ -19,7 +19,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
         public override SelectionIntentRule Mirror(SelectionIntentRule originalRule, Feature originalFeature, Surface. Plane plane, Component originalComp, IDictionary<TaggedObject, TaggedObject> dict)
         {
             Component mirroredComp = (Component)dict[originalComp];
-            Part mirroredPart = mirroredComp._Prototype();
+            Part mirroredPart = mirroredComp.__Prototype();
             Feature feature = (Feature)dict[originalFeature];
             feature.Suppress();
             ((FaceDumbRule)originalRule).GetData(out var faces);

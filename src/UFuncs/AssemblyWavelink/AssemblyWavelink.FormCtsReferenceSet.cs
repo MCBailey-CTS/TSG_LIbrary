@@ -53,7 +53,7 @@
 //            protected IEnumerable<string> MergeStrings(IEnumerable<NXOpen.Assemblies.Component> snapComponents)
 //            {
 //                NXOpen.Assemblies.Component[] array = snapComponents.ToArray();
-//                IEnumerable<string> source = array[0]._Prototype().GetAllReferenceSets().Select(str => str.Name);
+//                IEnumerable<string> source = array[0].__Prototype().GetAllReferenceSets().Select(str => str.Name);
 //                for (int index = 1; index < array.Length; ++index)
 //                {
 //                    List<string> list = ((NXOpen.BasePart)array[index].Prototype).GetAllReferenceSets().Select(str => str

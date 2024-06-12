@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using CTS_Library.Extensions;
-using CTS_Library.Utilities;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
+using TSG_Library.Disposable;
+using TSG_Library.Extensions;
 using TSG_Library.Geom;
 
 namespace TSG_Library.UFuncs.MirrorComponents.Features
@@ -16,8 +16,8 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
         public override void Mirror(Feature originalFeature, IDictionary<TaggedObject, TaggedObject> dict, Surface.Plane plane, Component originalComp)
         {
             Component component = (Component)dict[originalComp];
-            Part part = component._Prototype();
-            Part part2 = originalComp._Prototype();
+            Part part = component.__Prototype();
+            Part part2 = originalComp.__Prototype();
             originalFeature.Suppress();
             Extrude extrude = (Extrude)dict[originalFeature];
             ExtrudeBuilder extrudeBuilder = part2.Features.CreateExtrudeBuilder(originalFeature);

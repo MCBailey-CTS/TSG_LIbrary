@@ -515,7 +515,9 @@
     <Compile Include="src\UFuncs\Mirror\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\Mirror\MainForm1.cs" />
+    <Compile Include="src\UFuncs\Mirror\MainForm1.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="src\UFuncs\Mirror\MirrorBlock.cs" />
     <Compile Include="src\UFuncs\Mirror\MirrorChamfer.cs" />
     <Compile Include="src\UFuncs\Mirror\MirrorEdgeBlend.cs" />

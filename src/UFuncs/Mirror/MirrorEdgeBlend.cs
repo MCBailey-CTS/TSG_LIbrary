@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CTS_Library;
-using CTS_Library.Extensions;
-using CTS_Library.Utilities;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
+using TSG_Library.Disposable;
+using TSG_Library.Extensions;
 using TSG_Library.Geom;
+using static TSG_Library.Extensions.__Extensions_;
 
 namespace TSG_Library.UFuncs.MirrorComponents.Features
 {
@@ -19,8 +19,8 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
         public override void Mirror(Feature originalFeature, IDictionary<TaggedObject, TaggedObject> dict, Surface.Plane plane, Component originalComp)
         {
             Component component = (Component)dict[originalComp];
-            Part part = component._Prototype();
-            Part part2 = originalComp._Prototype();
+            Part part = component.__Prototype();
+            Part part2 = originalComp.__Prototype();
             EdgeBlend edgeBlend = (EdgeBlend)dict[originalFeature];
             IDictionary<int, Tuple<SelectionIntentRule[], Expression>> dictionary = new Dictionary<int, Tuple<SelectionIntentRule[], Expression>>();
             EdgeBlendBuilder edgeBlendBuilder = part2.Features.CreateEdgeBlendBuilder(originalFeature);
@@ -36,11 +36,11 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
                 }
             }
 
-            Session.UndoMarkId featureEditMark = Globals._Session.SetUndoMark(Session.MarkVisibility.Visible, "Fine");
-            EditWithRollbackManager editWithRollbackManager = Globals._WorkPart.Features.StartEditWithRollbackManager(edgeBlend, featureEditMark);
+            Session.UndoMarkId featureEditMark = session_.SetUndoMark(Session.MarkVisibility.Visible, "Fine");
+            EditWithRollbackManager editWithRollbackManager = __work_part_.Features.StartEditWithRollbackManager(edgeBlend, featureEditMark);
             using (new Destroyer(editWithRollbackManager))
             {
-                EdgeBlendBuilder edgeBlendBuilder2 = Globals._WorkPart.Features.CreateEdgeBlendBuilder(edgeBlend);
+                EdgeBlendBuilder edgeBlendBuilder2 = __work_part_.Features.CreateEdgeBlendBuilder(edgeBlend);
                 using (new Destroyer(edgeBlendBuilder2))
                 {
                     for (int j = 0; j < edgeBlendBuilder2.GetNumberOfValidChainsets(); j++)

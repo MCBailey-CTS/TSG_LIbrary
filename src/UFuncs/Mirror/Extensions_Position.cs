@@ -26,7 +26,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
 
         //public static bool _IsEqualTo(this Point3d vector1, Point3d vector2, double tolerance = 0.01)
         //{
-        //    Globals._UFSession.Vec3.IsEqual(((Vector)(ref vector1)).Array, ((Vector)(ref vector2)).Array, tolerance, out var is_equal);
+        //    ufsession_.Vec3.IsEqual(((Vector)(ref vector1)).Array, ((Vector)(ref vector2)).Array, tolerance, out var is_equal);
         //    return is_equal switch
         //    {
         //        0 => false,

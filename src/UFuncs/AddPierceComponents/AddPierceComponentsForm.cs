@@ -1334,7 +1334,7 @@ namespace TSG_Library.UFuncs
         //{
         //    string retainerRefset = retainer.ReferenceSet;
 
-        //    print_(retainer._Prototype().GetAllReferenceSets().Single(set => set.Name == retainerRefset).AskMembersInReferenceSet()
+        //    print_(retainer.__Prototype().GetAllReferenceSets().Single(set => set.Name == retainerRefset).AskMembersInReferenceSet()
         //        .OfType<NXOpen.CoordinateSystem>().Count());
 
         //    Snap.NX.CoordinateSystem tempCsys = retainer._Members().Select(obj => (Snap.NX.NXObject)obj).OfType<Snap.NX.CoordinateSystem>().Single();

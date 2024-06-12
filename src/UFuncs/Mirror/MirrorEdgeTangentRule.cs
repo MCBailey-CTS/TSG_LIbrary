@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using CTS_Library.Extensions;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
@@ -19,7 +18,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
         {
            
             Component component = (Component)dict[originalComp];
-            Part part = component._Prototype();
+            Part part = component.__Prototype();
             Feature feature = (Feature)dict[originalFeature];
             ((EdgeTangentRule)originalRule).GetData(out var startEdge, out var endEdge, out var isFromStart, out var angleTolerance, out var hasSameConvexity);
             Edge edge = null;

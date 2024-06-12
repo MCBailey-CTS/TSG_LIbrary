@@ -29,8 +29,8 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             //Vector val3 = -val2.AxisX;
             //val2 = new Orientation(axisY, val3);
             //PartLoadStatus loadStatus;
-            //Component newFromComp = fromComp._OwningPart().ComponentAssembly.AddComponent(fromComp._Prototype(), "Entire Part", fromComp.Name, Position.op_Implicit(val), Orientation.op_Implicit(val2), fromComp.Layer, out loadStatus);
-            //ExtractFaceBuilder extractFaceBuilder = originalLinkedBody._OwningPart().Features.CreateExtractFaceBuilder(originalLinkedBody);
+            //Component newFromComp = fromComp.__OwningPart().ComponentAssembly.AddComponent(fromComp.__Prototype(), "Entire Part", fromComp.Name, Position.op_Implicit(val), Orientation.op_Implicit(val2), fromComp.Layer, out loadStatus);
+            //ExtractFaceBuilder extractFaceBuilder = originalLinkedBody.__OwningPart().Features.CreateExtractFaceBuilder(originalLinkedBody);
             //Body[] array = extractFaceBuilder.ExtractBodyCollector.GetObjects().OfType<Body>().ToArray();
             //if (array.Length == 0)
             //{
@@ -39,18 +39,18 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
 
             //extractFaceBuilder.Destroy();
             //loadStatus.Dispose();
-            //Globals._WorkPart = mirroredComp._Prototype();
-            //Globals._WorkComponent = mirroredComp;
-            //Session.UndoMarkId featureEditMark = Globals._Session.SetUndoMark(Session.MarkVisibility.Visible, "Redefine Feature");
-            //EditWithRollbackManager editWithRollbackManager = Globals._WorkPart.Features.StartEditWithRollbackManager(extractFace, featureEditMark);
+            //__work_part_ = mirroredComp.__Prototype();
+            //__work_component_ = mirroredComp;
+            //Session.UndoMarkId featureEditMark = session_.SetUndoMark(Session.MarkVisibility.Visible, "Redefine Feature");
+            //EditWithRollbackManager editWithRollbackManager = __work_part_.Features.StartEditWithRollbackManager(extractFace, featureEditMark);
             //using (new Destroyer(editWithRollbackManager))
             //{
-            //    extractFaceBuilder = Globals._WorkPart.Features.CreateExtractFaceBuilder(extractFace);
+            //    extractFaceBuilder = __work_part_.Features.CreateExtractFaceBuilder(extractFace);
             //    newFromComp._ReferenceSet("Entire Part");
             //    using (new Destroyer(extractFaceBuilder))
             //    {
             //        IList<Body> source = array.Select((Body originalBody) => (Body)newFromComp.FindOccurrence(originalBody)).ToList();
-            //        SelectionIntentRule selectionIntentRule = Globals._WorkPart.ScRuleFactory.CreateRuleBodyDumb(source.ToArray());
+            //        SelectionIntentRule selectionIntentRule = __work_part_.ScRuleFactory.CreateRuleBodyDumb(source.ToArray());
             //        extractFaceBuilder.ExtractBodyCollector.ReplaceRules(new SelectionIntentRule[1] { selectionIntentRule }, createRulesWoUpdate: false);
             //        extractFaceBuilder.Associative = true;
             //        extractFaceBuilder.CommitFeature();

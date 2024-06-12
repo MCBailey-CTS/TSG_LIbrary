@@ -878,7 +878,7 @@ namespace TSG_Library.UFuncs
             //    CreateMasterReferenceSet(prototypeMaster, proposalComponent.DisplayName, proposalComponent);
 
             //    // Gets the prototype of the {proposalComponent}.
-            //    NXOpen.Part proposalPrototype = proposalComponent._Prototype();
+            //    NXOpen.Part proposalPrototype = proposalComponent.__Prototype();
 
             //    proposalPrototype.Save(NXOpen.BasePart.SaveComponents.True, NXOpen.BasePart.CloseAfterSave.False);
 
