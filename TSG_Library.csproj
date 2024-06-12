@@ -370,6 +370,9 @@
     <Compile Include="src\UFuncs\ComponentBuilder\SetWcs.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="src\UFuncs\ComponentBuilder\__Complete.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="src\UFuncs\ConvertSplineToCircle.cs" />
     <Compile Include="src\UFuncs\CopyAttributesForm.cs">
       <SubType>Form</SubType>
