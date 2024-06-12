@@ -1218,32 +1218,38 @@ namespace TSG_Library.UFuncs
 
                                         if (pointPrototype.Name == "POSX")
                                         {
-                                            distance = EditAlignPosX(movePtsHalf, movePtsFull, posXObjs, allxAxisLines, mappedBase, mappedPoint);
+                                            movePtsFull.AddRange(posXObjs);
+                                            distance = EditAlignPosX(movePtsHalf, movePtsFull, allxAxisLines, mappedBase, mappedPoint, 0);
                                         }
 
                                         if (pointPrototype.Name == "NEGX")
                                         {
-                                            distance = EditAlignNegX(movePtsHalf, movePtsFull, negXObjs, allxAxisLines, mappedBase, mappedPoint);
+                                            movePtsFull.AddRange(negXObjs);
+                                            distance = EditAlignNegX(movePtsHalf, movePtsFull, allxAxisLines, mappedBase, mappedPoint, 0);
                                         }
 
                                         if (pointPrototype.Name == "POSY")
                                         {
-                                            distance = EditAlignPosY(movePtsHalf, movePtsFull, posYObjs, allyAxisLines, mappedBase, mappedPoint);
+                                            movePtsFull.AddRange(posYObjs);
+                                            distance = EditAlignPosY(movePtsHalf, movePtsFull, allyAxisLines, mappedBase, mappedPoint, 1);
                                         }
 
                                         if (pointPrototype.Name == "NEGY")
                                         {
-                                            distance = EditAlignNegY(movePtsHalf, movePtsFull, negYObjs, allyAxisLines, mappedBase, mappedPoint);
+                                            movePtsFull.AddRange(negYObjs);
+                                            distance = EditAlignNegY(movePtsHalf, movePtsFull, allyAxisLines, mappedBase, mappedPoint, 1);
                                         }
 
                                         if (pointPrototype.Name == "POSZ")
                                         {
-                                            distance = EditAlignPosZ(movePtsHalf, movePtsFull, posZObjs, allzAxisLines, mappedBase, mappedPoint);
+                                            movePtsFull.AddRange(posZObjs);
+                                            distance = EditAlignPosZ(movePtsHalf, movePtsFull, allzAxisLines, mappedBase, mappedPoint, 2);
                                         }
 
                                         if (pointPrototype.Name == "NEGZ")
                                         {
-                                            distance = EditAlignNegZ(movePtsHalf, movePtsFull, negZObjs, allzAxisLines, mappedBase, mappedPoint);
+                                            movePtsFull.AddRange(negZObjs);
+                                            distance = EditAlignNegZ(movePtsHalf, movePtsFull, allzAxisLines, mappedBase, mappedPoint, 2);
                                         }
                                     }
 

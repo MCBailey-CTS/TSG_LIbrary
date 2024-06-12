@@ -10,10 +10,11 @@ namespace TSG_Library.UFuncs
     public partial class EditBlockForm
     {
 
-        private double EditAlignNegZ(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> negZObjs, List<Line> allzAxisLines, double[] mappedBase, double[] mappedPoint)
+        private double EditAlignNegZ(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> negZObjs, List<Line> allzAxisLines, double[] mappedBase, double[] mappedPoint, int index)
         {
-            var distance = Math.Abs(mappedPoint[2] - mappedBase[2]);
-            if (mappedBase[2] < mappedPoint[2]) distance *= -1;
+            var distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
+
+            if (mappedBase[index] < mappedPoint[index]) distance *= -1;
 
             foreach (var addLine in negZObjs) movePtsFull.Add(addLine);
 
@@ -26,88 +27,73 @@ namespace TSG_Library.UFuncs
             return distance;
         }
 
-        private double EditAlignPosZ(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posZObjs, List<Line> allzAxisLines, double[] mappedBase, double[] mappedPoint)
+        private double EditAlignPosZ(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> allzAxisLines, double[] mappedBase, double[] mappedPoint, int index)
         {
-            var distance = Math.Abs(mappedPoint[2] - mappedBase[2]);
-            if (mappedBase[2] < mappedPoint[2]) distance *= -1;
+            var distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
 
-            foreach (var addLine in posZObjs) movePtsFull.Add(addLine);
+            if (mappedBase[index] < mappedPoint[index]) 
+                distance *= -1;
 
             foreach (var zAxisLine in allzAxisLines)
-            {
                 ZEndPoint(distance, zAxisLine);
-            }
 
             MoveObjectsZ(movePtsHalf, movePtsFull, distance);
             return distance;
         }
 
-        private double EditAlignNegY(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> negYObjs, List<Line> allyAxisLines, double[] mappedBase, double[] mappedPoint)
+        private double EditAlignNegY(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> allyAxisLines, double[] mappedBase, double[] mappedPoint, int index)
         {
-            var distance = Math.Abs(mappedPoint[1] - mappedBase[1]);
-            if (mappedBase[1] < mappedPoint[1]) distance *= -1;
+            var distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
 
-            foreach (var addLine in negYObjs) movePtsFull.Add(addLine);
+            if (mappedBase[index] < mappedPoint[index]) 
+                distance *= -1;
 
             foreach (var yAxisLine in allyAxisLines)
-            {
                 YStartPoint(distance, yAxisLine);
-            }
 
             MoveObjectsY(movePtsHalf, movePtsFull, distance);
             return distance;
         }
 
-        private double EditAlignPosY(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posYObjs, List<Line> allyAxisLines, double[] mappedBase, double[] mappedPoint)
+        private double EditAlignPosY(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> allyAxisLines, double[] mappedBase, double[] mappedPoint, int index)
         {
-            var distance = Math.Abs(mappedPoint[1] - mappedBase[1]);
-            if (mappedBase[1] < mappedPoint[1]) distance *= -1;
+            var distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
 
-            foreach (var addLine in posYObjs) movePtsFull.Add(addLine);
+            if (mappedBase[index] < mappedPoint[index]) 
+                distance *= -1;
 
             foreach (var yAxisLine in allyAxisLines)
-            {
-                var mappedEndPoint = MapAbsoluteToWcs(yAxisLine.EndPoint);
-                var addY = new Point3d(mappedEndPoint.X,
-                    mappedEndPoint.Y + distance, mappedEndPoint.Z);
-                var mappedAddY = MapWcsToAbsolute(addY);
-                yAxisLine.SetEndPoint(mappedAddY);
-            }
+                YEndPoint(distance, yAxisLine);
 
             MoveObjectsY(movePtsHalf, movePtsFull, distance);
             return distance;
         }
 
-        
 
-        private double EditAlignNegX(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> negXObjs, List<Line> allxAxisLines, double[] mappedBase, double[] mappedPoint)
+        private double EditAlignNegX(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> allxAxisLines, double[] mappedBase, double[] mappedPoint, int index)
         {
-            var distance = Math.Abs(mappedPoint[0] - mappedBase[0]);
-            if (mappedBase[0] < mappedPoint[0]) distance *= -1;
+            var distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
 
-            foreach (var addLine in negXObjs) movePtsFull.Add(addLine);
+            if (mappedBase[index] < mappedPoint[index])
+                distance *= -1;
 
             foreach (var xAxisLine in allxAxisLines)
-            {
                 XStartPoint(distance, xAxisLine);
-            }
 
             MoveObjectsX(movePtsHalf, movePtsFull, distance);
             return distance;
         }
 
 
-        private double EditAlignPosX(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posXObjs, List<Line> allxAxisLines, double[] mappedBase, double[] mappedPoint)
+        private double EditAlignPosX(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> allxAxisLines, double[] mappedBase, double[] mappedPoint, int index)
         {
-            var distance = Math.Abs(mappedPoint[0] - mappedBase[0]);
-            if (mappedBase[0] < mappedPoint[0]) distance *= -1;
+            var distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
 
-            foreach (var posXLine in posXObjs) movePtsFull.Add(posXLine);
+            if (mappedBase[index] < mappedPoint[index])
+                distance *= -1;
 
             foreach (var xAxisLine in allxAxisLines)
-            {
                 XEndPoint(distance, xAxisLine);
-            }
 
             MoveObjectsX(movePtsHalf, movePtsFull, distance);
             return distance;

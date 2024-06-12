@@ -291,56 +291,56 @@ namespace TSG_Library.UFuncs
             yBase2.RedisplayObject();
             _edgeRepLines.Add(yBase2);
         }
-  private static double MapAndConvert(double inputDist, double[] mappedBase, double[] mappedPoint, int index)
-  {
-      var distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
+        private static double MapAndConvert(double inputDist, double[] mappedBase, double[] mappedPoint, int index)
+        {
+            var distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
 
-      if (mappedBase[index] < mappedPoint[index])
-      {
-          distance *= -1;
-          distance += inputDist;
-      }
-      else
-      {
-          distance -= inputDist;
-      }
+            if (mappedBase[index] < mappedPoint[index])
+            {
+                distance *= -1;
+                distance += inputDist;
+            }
+            else
+            {
+                distance -= inputDist;
+            }
 
-      return distance;
-  }
-
-
+            return distance;
+        }
 
 
-  private void ZEndPoint(double distance, Line zAxisLine)
-  {
-      var mappedEndPoint = MapAbsoluteToWcs(zAxisLine.EndPoint);
-      var addZ = new Point3d(mappedEndPoint.X, mappedEndPoint.Y,
-          mappedEndPoint.Z + distance);
-      var mappedAddZ = MapWcsToAbsolute(addZ);
-      zAxisLine.SetEndPoint(mappedAddZ);
-  }
 
 
-     private void XStartPoint(double distance, Line xAxisLine)
-   {
-       var mappedStartPoint = MapAbsoluteToWcs(xAxisLine.StartPoint);
-       var addX = new Point3d(mappedStartPoint.X + distance,
-           mappedStartPoint.Y, mappedStartPoint.Z);
-       var mappedAddX = MapWcsToAbsolute(addX);
-       xAxisLine.SetStartPoint(mappedAddX);
-   }
-
-  private void YStartPoint(double distance, Line yAxisLine)
-  {
-      var mappedStartPoint = MapAbsoluteToWcs(yAxisLine.StartPoint);
-      var addY = new Point3d(mappedStartPoint.X,
-          mappedStartPoint.Y + distance, mappedStartPoint.Z);
-      var mappedAddY = MapWcsToAbsolute(addY);
-      yAxisLine.SetStartPoint(mappedAddY);
-  }
+        private void ZEndPoint(double distance, Line zAxisLine)
+        {
+            var mappedEndPoint = MapAbsoluteToWcs(zAxisLine.EndPoint);
+            var addZ = new Point3d(mappedEndPoint.X, mappedEndPoint.Y,
+                mappedEndPoint.Z + distance);
+            var mappedAddZ = MapWcsToAbsolute(addZ);
+            zAxisLine.SetEndPoint(mappedAddZ);
+        }
 
 
-  
+        private void XStartPoint(double distance, Line xAxisLine)
+        {
+            var mappedStartPoint = MapAbsoluteToWcs(xAxisLine.StartPoint);
+            var addX = new Point3d(mappedStartPoint.X + distance,
+                mappedStartPoint.Y, mappedStartPoint.Z);
+            var mappedAddX = MapWcsToAbsolute(addX);
+            xAxisLine.SetStartPoint(mappedAddX);
+        }
+
+        private void YStartPoint(double distance, Line yAxisLine)
+        {
+            var mappedStartPoint = MapAbsoluteToWcs(yAxisLine.StartPoint);
+            var addY = new Point3d(mappedStartPoint.X,
+                mappedStartPoint.Y + distance, mappedStartPoint.Z);
+            var mappedAddY = MapWcsToAbsolute(addY);
+            yAxisLine.SetStartPoint(mappedAddY);
+        }
+
+
+
 
         private void ZStartPoint(double distance, Line zAxisLine)
         {
@@ -354,51 +354,54 @@ namespace TSG_Library.UFuncs
 
 
 
-  private void YEndPoint(double distance, Line yAxisLine)
-  {
-      var mappedEndPoint = MapAbsoluteToWcs(yAxisLine.EndPoint);
-      var addY = new Point3d(mappedEndPoint.X, mappedEndPoint.Y + distance,
-          mappedEndPoint.Z);
-      var mappedAddY = MapWcsToAbsolute(addY);
-      yAxisLine.SetEndPoint(mappedAddY);
-  }
+        private void YEndPoint(double distance, Line yAxisLine)
+        {
+            var mappedEndPoint = MapAbsoluteToWcs(yAxisLine.EndPoint);
+            var addY = new Point3d(mappedEndPoint.X, mappedEndPoint.Y + distance,
+                mappedEndPoint.Z);
+            var mappedAddY = MapWcsToAbsolute(addY);
+            yAxisLine.SetEndPoint(mappedAddY);
+        }
 
-  private void XEndPoint(double distance, Line xAxisLine)
-  {
-      var mappedEndPoint = MapAbsoluteToWcs(xAxisLine.EndPoint);
-      var addX = new Point3d(mappedEndPoint.X + distance, mappedEndPoint.Y,
-          mappedEndPoint.Z);
-      var mappedAddX = MapWcsToAbsolute(addX);
-      xAxisLine.SetEndPoint(mappedAddX);
-  }
+        private void XEndPoint(double distance, Line xAxisLine)
+        {
+            var mappedEndPoint = MapAbsoluteToWcs(xAxisLine.EndPoint);
+            var addX = new Point3d(mappedEndPoint.X + distance, mappedEndPoint.Y,
+                mappedEndPoint.Z);
+            var mappedAddX = MapWcsToAbsolute(addX);
+            xAxisLine.SetEndPoint(mappedAddX);
+        }
 
 
- private void MoveObjectsX(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, double xDistance, bool showTemporary= false)
- {
-     MoveObjects(movePtsFull.ToArray(), xDistance, "X");
-     MoveObjects(movePtsHalf.ToArray(), xDistance / 2, "X");
+        private void MoveObjectsX(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, double xDistance, string dir_xyz, bool showTemporary = false)
+        {
+            if (!(dir_xyz == "X" || dir_xyz == "Y" || dir_xyz == "Z"))
+                throw new ArgumentException($"Invalid direction '{dir_xyz}'");
 
-     if (showTemporary)
-         ShowTemporarySizeText();
- }
+            MoveObjects(movePtsFull.ToArray(), xDistance, "X");
+            MoveObjects(movePtsHalf.ToArray(), xDistance / 2, "X");
 
- private void MoveObjectsZ(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, double zDistance, bool showTemporary = false)
- {
-     MoveObjects(movePtsFull.ToArray(), zDistance, "Z");
-     MoveObjects(movePtsHalf.ToArray(), zDistance / 2, "Z");
+            if (showTemporary)
+                ShowTemporarySizeText();
+        }
 
-     if (showTemporary)
-         ShowTemporarySizeText();
- }
+        private void MoveObjectsZ(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, double zDistance, bool showTemporary = false)
+        {
+            MoveObjects(movePtsFull.ToArray(), zDistance, "Z");
+            MoveObjects(movePtsHalf.ToArray(), zDistance / 2, "Z");
 
- private void MoveObjectsY(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, double yDistance, bool showTemporary = false)
- {
-     MoveObjects(movePtsFull.ToArray(), yDistance, "Y");
-     MoveObjects(movePtsHalf.ToArray(), yDistance / 2, "Y");
+            if (showTemporary)
+                ShowTemporarySizeText();
+        }
 
-     if (showTemporary)
-         ShowTemporarySizeText();
- }
+        private void MoveObjectsY(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, double yDistance, bool showTemporary = false)
+        {
+            MoveObjects(movePtsFull.ToArray(), yDistance, "Y");
+            MoveObjects(movePtsHalf.ToArray(), yDistance / 2, "Y");
+
+            if (showTemporary)
+                ShowTemporarySizeText();
+        }
 
 
 
