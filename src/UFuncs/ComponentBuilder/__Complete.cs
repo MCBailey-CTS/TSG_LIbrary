@@ -228,6 +228,69 @@ namespace TSG_Library.UFuncs
 
 
 
+        private void CreateBlockLines(Point3d wcsOrigin, double lineLength, double lineWidth, double lineHeight)
+        {
+            var lineColor = 7;
+
+            var mappedStartPoint1 = MapAbsoluteToWcs(wcsOrigin);
+            var endPointX1 = mappedStartPoint1.__AddX(lineLength);
+            var mappedEndPointX1 = MapWcsToAbsolute(endPointX1);
+            CreateBlockLine(lineColor, wcsOrigin, mappedEndPointX1, "XBASE1");
+
+            var endPointY1 = mappedStartPoint1.__AddY(lineWidth);
+            var mappedEndPointY1 = MapWcsToAbsolute(endPointY1);
+            CreateBlockLine(lineColor, wcsOrigin, mappedEndPointY1, "YBASE1");
+
+            var endPointZ1 = mappedStartPoint1.__AddZ(lineHeight);
+            var mappedEndPointZ1 = MapWcsToAbsolute(endPointZ1);
+            CreateBlockLine(lineColor, wcsOrigin, mappedEndPointZ1, "ZBASE1");
+
+            //==================================================================================================================
+
+            var mappedStartPoint2 = MapAbsoluteToWcs(mappedEndPointY1);
+
+            var endPointX2 = mappedStartPoint2.__AddX(lineLength);
+            var mappedEndPointX2 = MapWcsToAbsolute(endPointX2);
+            CreateBlockLine(lineColor, mappedEndPointY1, mappedEndPointX2, "XBASE2");
+            CreateBlockLine(lineColor, mappedEndPointX1, mappedEndPointX2, "YBASE2");
+
+            //==================================================================================================================
+
+            var mappedStartPoint3 = MapAbsoluteToWcs(mappedEndPointZ1);
+            var endPointX1Ceiling = mappedStartPoint3.__AddX(lineLength);
+            var mappedEndPointX1Ceiling = MapWcsToAbsolute(endPointX1Ceiling);
+            CreateBlockLine(lineColor, mappedEndPointZ1, mappedEndPointX1Ceiling, "XCEILING1");
+
+            var endPointY1Ceiling = mappedStartPoint3.__AddY(lineWidth);
+            var mappedEndPointY1Ceiling = MapWcsToAbsolute(endPointY1Ceiling);
+            CreateBlockLine(lineColor, mappedEndPointZ1, mappedEndPointY1Ceiling, "YCEILING1");
+
+            //==================================================================================================================
+
+            var mappedStartPoint4 = MapAbsoluteToWcs(mappedEndPointY1Ceiling);
+            var endPointX2Ceiling = mappedStartPoint4.__AddX(lineLength);
+            var mappedEndPointX2Ceiling = MapWcsToAbsolute(endPointX2Ceiling);
+
+            CreateBlockLine(lineColor, mappedEndPointY1Ceiling, mappedEndPointX2Ceiling, "XCEILING2");
+            CreateBlockLine(lineColor, mappedEndPointX1Ceiling, mappedEndPointX2Ceiling, "YCEILING2");
+
+            //==================================================================================================================
+
+            CreateBlockLine(lineColor, mappedEndPointX1, mappedEndPointX1Ceiling, "ZBASE2");
+            CreateBlockLine(lineColor, mappedEndPointY1, mappedEndPointY1Ceiling, "ZBASE3");
+            CreateBlockLine(lineColor, mappedEndPointX2, mappedEndPointX2Ceiling, "ZBASE4");
+
+            //==================================================================================================================
+        }
+
+        private static void CreateBlockLine(int lineColor, Point3d start, Point3d end, string name)
+        {
+            var yBase2 = _workPart.Curves.CreateLine(start, end);
+            yBase2.SetName(name);
+            yBase2.Color = lineColor;
+            yBase2.RedisplayObject();
+            _edgeRepLines.Add(yBase2);
+        }
 
 
     }
