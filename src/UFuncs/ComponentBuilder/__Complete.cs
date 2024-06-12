@@ -309,5 +309,74 @@ namespace TSG_Library.UFuncs
   }
 
 
+
+
+  private void ZEndPoint(double distance, Line zAxisLine)
+  {
+      var mappedEndPoint = MapAbsoluteToWcs(zAxisLine.EndPoint);
+      var addZ = new Point3d(mappedEndPoint.X, mappedEndPoint.Y,
+          mappedEndPoint.Z + distance);
+      var mappedAddZ = MapWcsToAbsolute(addZ);
+      zAxisLine.SetEndPoint(mappedAddZ);
+  }
+
+
+     private void XStartPoint(double distance, Line xAxisLine)
+   {
+       var mappedStartPoint = MapAbsoluteToWcs(xAxisLine.StartPoint);
+       var addX = new Point3d(mappedStartPoint.X + distance,
+           mappedStartPoint.Y, mappedStartPoint.Z);
+       var mappedAddX = MapWcsToAbsolute(addX);
+       xAxisLine.SetStartPoint(mappedAddX);
+   }
+
+  private void YStartPoint(double distance, Line yAxisLine)
+  {
+      var mappedStartPoint = MapAbsoluteToWcs(yAxisLine.StartPoint);
+      var addY = new Point3d(mappedStartPoint.X,
+          mappedStartPoint.Y + distance, mappedStartPoint.Z);
+      var mappedAddY = MapWcsToAbsolute(addY);
+      yAxisLine.SetStartPoint(mappedAddY);
+  }
+
+
+  
+
+        private void ZStartPoint(double distance, Line zAxisLine)
+        {
+            var mappedStartPoint = MapAbsoluteToWcs(zAxisLine.StartPoint);
+            var addZ = new Point3d(mappedStartPoint.X, mappedStartPoint.Y,
+                mappedStartPoint.Z + distance);
+            var mappedAddZ = MapWcsToAbsolute(addZ);
+            zAxisLine.SetStartPoint(mappedAddZ);
+        }
+
+
+
+
+  private void YEndPoint(double distance, Line yAxisLine)
+  {
+      var mappedEndPoint = MapAbsoluteToWcs(yAxisLine.EndPoint);
+      var addY = new Point3d(mappedEndPoint.X, mappedEndPoint.Y + distance,
+          mappedEndPoint.Z);
+      var mappedAddY = MapWcsToAbsolute(addY);
+      yAxisLine.SetEndPoint(mappedAddY);
+  }
+
+  private void XEndPoint(double distance, Line xAxisLine)
+  {
+      var mappedEndPoint = MapAbsoluteToWcs(xAxisLine.EndPoint);
+      var addX = new Point3d(mappedEndPoint.X + distance, mappedEndPoint.Y,
+          mappedEndPoint.Z);
+      var mappedAddX = MapWcsToAbsolute(addX);
+      xAxisLine.SetEndPoint(mappedAddX);
+  }
+
+
+
+
+
+
+
     }
 }

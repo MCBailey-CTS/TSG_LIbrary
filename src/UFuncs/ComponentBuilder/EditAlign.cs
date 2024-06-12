@@ -19,7 +19,7 @@ namespace TSG_Library.UFuncs
 
             foreach (var zAxisLine in allzAxisLines)
             {
-                NewMethod51(distance, zAxisLine);
+                ZStartPoint(distance, zAxisLine);
             }
 
             NewMethod52(movePtsHalf, movePtsFull, distance);
@@ -35,7 +35,7 @@ namespace TSG_Library.UFuncs
 
             foreach (var zAxisLine in allzAxisLines)
             {
-                NewMethod53(distance, zAxisLine);
+                ZEndPoint(distance, zAxisLine);
             }
 
             NewMethod54(movePtsHalf, movePtsFull, distance);
@@ -51,7 +51,7 @@ namespace TSG_Library.UFuncs
 
             foreach (var yAxisLine in allyAxisLines)
             {
-                NewMethod55(distance, yAxisLine);
+                YStartPoint(distance, yAxisLine);
             }
 
             NewMethod56(movePtsHalf, movePtsFull, distance);
@@ -89,7 +89,7 @@ namespace TSG_Library.UFuncs
 
             foreach (var xAxisLine in allxAxisLines)
             {
-                NewMethod57(distance, xAxisLine);
+                XStartPoint(distance, xAxisLine);
             }
 
             NewMethod58(movePtsHalf, movePtsFull, distance);
@@ -106,7 +106,7 @@ namespace TSG_Library.UFuncs
 
             foreach (var xAxisLine in allxAxisLines)
             {
-                NewMethod59(distance, xAxisLine);
+                XEndPoint(distance, xAxisLine);
             }
 
             NewMethod60(movePtsHalf, movePtsFull, distance);
