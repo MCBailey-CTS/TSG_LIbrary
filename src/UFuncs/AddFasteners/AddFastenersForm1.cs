@@ -900,6 +900,8 @@ namespace TSG_Library.UFuncs
                         .Where(__s => !string.IsNullOrWhiteSpace(__s))
                         .ToHashSet();
 
+                    //CTS_Library.UFuncs.MirrorComponents.MainForm
+
                     shcss = shcss.Where(item => shcs_preferred_dirs.Contains(item.Value)).ToList();
                 }
 
