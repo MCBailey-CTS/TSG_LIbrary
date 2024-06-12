@@ -6,6 +6,7 @@ using CTS_Library.Utilities;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
+using TSG_Library.Geom;
 
 namespace TSG_Library.UFuncs.MirrorComponents.Features
 {
@@ -14,7 +15,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
         public override string FeatureType { get; } = "CHAMFER";
 
 
-        public override void Mirror(Feature originalFeature, IDictionary<TaggedObject, TaggedObject> dict, Plane plane, Component originalComp)
+        public override void Mirror(Feature originalFeature, IDictionary<TaggedObject, TaggedObject> dict, Surface.Plane plane, Component originalComp)
         {
             Component component = (Component)dict[originalComp];
             originalFeature.Suppress();

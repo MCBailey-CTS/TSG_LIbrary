@@ -97,7 +97,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
         }
 
         [Obsolete]
-        public static Point3d _Mirror(this Point3d original, Plane plane)
+        public static Point3d _Mirror(this Point3d original, Surface. Plane plane)
         {
             throw new NotImplementedException();
             //Transform val = Transform.CreateReflection(plane);
@@ -105,7 +105,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
         }
 
         [Obsolete]
-        public static Point3d _MirrorMap(this Point3d origin, Plane mirrorPlane, Component originalComp, Component newComp)
+        public static Point3d _MirrorMap(this Point3d origin,Surface. Plane mirrorPlane, Component originalComp, Component newComp)
         {
             throw new NotImplementedException();
             //originalComp._SetWcsToComponent();

@@ -2,6 +2,7 @@
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
+using TSG_Library.Geom;
 
 namespace TSG_Library.UFuncs.MirrorComponents.Features
 {
@@ -10,7 +11,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
         public override string FeatureType { get; } = "UNITE";
 
 
-        public override void Mirror(Feature originalFeature, IDictionary<TaggedObject, TaggedObject> dict, Plane plane, Component originalComp)
+        public override void Mirror(Feature originalFeature, IDictionary<TaggedObject, TaggedObject> dict, Surface.Plane plane, Component originalComp)
         {
         }
     }
