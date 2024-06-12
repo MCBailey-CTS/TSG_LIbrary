@@ -279,7 +279,10 @@ namespace TSG_Library.UFuncs
                 if (!isConverted)
                     return;
 
-                comboBoxCompName.Enabled = compName > 0 && compName < 991;
+                if (chk4Digits.Checked)
+                    comboBoxCompName.Enabled = compName > 0 && compName < 10000;
+                else
+                    comboBoxCompName.Enabled = compName > 0 && compName < 991;
             }
             catch (Exception ex)
             {
@@ -1655,7 +1658,15 @@ namespace TSG_Library.UFuncs
                         CreateRefSetsCategories();
                         _workPart.Layers.WorkLayer = 1;
                         _workPart.Layers.SetState(15, State.Hidden);
-                        CreateAutoSizeUdo();
+                        try
+                        {
+                            CreateAutoSizeUdo();
+                        }
+                        catch (NXException ex) when (ex.ErrorCode == 1535022)
+                        {
+                            ex.__PrintException();
+                        }
+
                         foreach (Body body in _workPart.Bodies)
                         {
                             if (body.Layer == 1)
@@ -2052,7 +2063,14 @@ namespace TSG_Library.UFuncs
 
                         // create auto size UDO
 
-                        CreateAutoSizeUdo();
+                        try
+                        {
+                            CreateAutoSizeUdo();
+                        }
+                        catch (NXException ex) when (ex.ErrorCode == 1535022)
+                        {
+                            ex.__PrintException();
+                        }
 
                         // update component solid body color
 
@@ -2404,41 +2422,91 @@ namespace TSG_Library.UFuncs
                 status = ufsession_.Part.IsLoaded(filePath);
             }
 
-            if (compNameIncrement.Length != 3)
-                return false;
-
-            if (!isConverted)
-                return false;
-
-            if (compNameResult <= 0 || compNameResult >= 991)
-                return false;
-
-            if (_isNameReset)
+            if (chk4Digits.Checked)
             {
-                _isNameReset = false;
-                textBoxDetailNumber.Text = compNameIncrement;
+                if (compNameIncrement.Length != 4)
+                    return false;
+
+                if (!isConverted)
+                    return false;
+
+                if (compNameResult <= 0 || compNameResult >= 10000)
+                    return false;
+
+                if (_isNameReset)
+                {
+                    _isNameReset = false;
+                    textBoxDetailNumber.Text = compNameIncrement;
+                    return true;
+                }
+
+                compNameResult += 1;
+
+                if ((compNameResult > 0) & (compNameResult < 10))
+                {
+                    textBoxDetailNumber.Text = "000" + compNameResult;
+                    return true;
+                }
+
+                if ((compNameResult > 9) & (compNameResult < 100))
+                {
+                    textBoxDetailNumber.Text = "00" + compNameResult;
+                    return true;
+                }
+
+                if ((compNameResult > 99) & (compNameResult < 1000))
+                {
+                    textBoxDetailNumber.Text = "0" + compNameResult;
+                    return true;
+                }
+
+                if (compNameResult <= 999)
+                    return false;
+
+                textBoxDetailNumber.Text = compNameResult.ToString();
+                return true;
+            }
+            else
+            {
+
+                if (compNameIncrement.Length != 3)
+                    return false;
+
+                if (!isConverted)
+                    return false;
+
+                if (compNameResult <= 0 || compNameResult >= 991)
+                    return false;
+
+                if (_isNameReset)
+                {
+                    _isNameReset = false;
+                    textBoxDetailNumber.Text = compNameIncrement;
+                    return true;
+                }
+
+                compNameResult += 1;
+
+                if ((compNameResult > 0) & (compNameResult < 10))
+                {
+                    textBoxDetailNumber.Text = "00" + compNameResult;
+                    return true;
+                }
+
+                if ((compNameResult > 9) & (compNameResult < 100))
+                {
+                    textBoxDetailNumber.Text = "0" + compNameResult;
+                    return true;
+                }
+
+                if (compNameResult <= 100)
+                    return false;
+
+                textBoxDetailNumber.Text = compNameResult.ToString();
                 return true;
             }
 
-            compNameResult += 1;
 
-            if ((compNameResult > 0) & (compNameResult < 10))
-            {
-                textBoxDetailNumber.Text = "00" + compNameResult;
-                return true;
-            }
-
-            if ((compNameResult > 9) & (compNameResult < 100))
-            {
-                textBoxDetailNumber.Text = "0" + compNameResult;
-                return true;
-            }
-
-            if (compNameResult <= 100)
-                return false;
-
-            textBoxDetailNumber.Text = compNameResult.ToString();
-            return true;
         }
 
         private void UpdateFormText()
@@ -2481,8 +2549,6 @@ namespace TSG_Library.UFuncs
                 .Select(int.Parse)
                 .ToList();
 
-            print_(names.Count);
-
             if (names.Count == 0)
                 return;
 
@@ -2490,7 +2556,7 @@ namespace TSG_Library.UFuncs
 
             var lastComponentName = names[names.Count - 1] + 1;
 
-            if (chkDigits.Checked)
+            if (chk4Digits.Checked)
             {
                 if (lastComponentName > 0 && lastComponentName < 10)
                     textBoxDetailNumber.Text = $"000{lastComponentName}";
@@ -2519,7 +2585,9 @@ namespace TSG_Library.UFuncs
 
         private bool IsNameValid(Part partToCheck)
         {
-            bool isValid;
+            if (chkAnyAssembly.Checked)
+                return true;
+
             var lastDirIndex = partToCheck.FullPath.LastIndexOf("\\");
             var subAssemName = partToCheck.FullPath.Substring(lastDirIndex + 1);
 
@@ -2868,6 +2936,8 @@ namespace TSG_Library.UFuncs
 
         private void CreateAutoSizeUdo()
         {
+            //: 1535022'
+
             var myUdOclass = session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoAutoSizeComponent");
 
             if (myUdOclass is null)
@@ -2908,7 +2978,7 @@ namespace TSG_Library.UFuncs
             {
                 foreach (Feature featBlk in _workPart.Features)
                 {
-                    if (featBlk.FeatureType != "BLOCK" || featBlk.Name != "DYNAMIC BLOCK") 
+                    if (featBlk.FeatureType != "BLOCK" || featBlk.Name != "DYNAMIC BLOCK")
                         continue;
 
                     var block1 = (Block)featBlk;
@@ -3000,7 +3070,7 @@ namespace TSG_Library.UFuncs
 
             __display_part_ = _originalDisplayPart;
             __work_component_ = compRefCsys;
-            session_.Parts.SetDisplay(_originalDisplayPart, false, false, out  _);
+            session_.Parts.SetDisplay(_originalDisplayPart, false, false, out _);
             UpdateSessionParts();
         }
 
@@ -3187,6 +3257,11 @@ namespace TSG_Library.UFuncs
                     break;
                 }
             }
+        }
+
+        private void chkAnyAssembly_CheckedChanged(object sender, EventArgs e)
+        {
+            WorkPartChanged1(__work_part_);
         }
     }
 }

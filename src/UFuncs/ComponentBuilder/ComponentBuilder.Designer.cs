@@ -68,7 +68,8 @@
             this.checkBoxBurnDirY = new System.Windows.Forms.CheckBox();
             this.comboBoxTolerance = new System.Windows.Forms.ComboBox();
             this.checkBoxBurnDirX = new System.Windows.Forms.CheckBox();
-            this.chkDigits = new System.Windows.Forms.CheckBox();
+            this.chk4Digits = new System.Windows.Forms.CheckBox();
+            this.chkAnyAssembly = new System.Windows.Forms.CheckBox();
             this.groupBoxColor.SuspendLayout();
             this.groupBoxEditAssembly.SuspendLayout();
             this.groupBoxWorkPlane.SuspendLayout();
@@ -520,14 +521,25 @@
             // 
             // chkDigits
             // 
-            this.chkDigits.AutoSize = true;
-            this.chkDigits.Location = new System.Drawing.Point(12, 39);
-            this.chkDigits.Name = "chkDigits";
-            this.chkDigits.Size = new System.Drawing.Size(91, 17);
-            this.chkDigits.TabIndex = 27;
-            this.chkDigits.Text = "4 Digit Details";
-            this.chkDigits.UseVisualStyleBackColor = true;
-            this.chkDigits.CheckedChanged += new System.EventHandler(this.chkDigits_CheckedChanged);
+            this.chk4Digits.AutoSize = true;
+            this.chk4Digits.Location = new System.Drawing.Point(12, 39);
+            this.chk4Digits.Name = "chkDigits";
+            this.chk4Digits.Size = new System.Drawing.Size(91, 17);
+            this.chk4Digits.TabIndex = 27;
+            this.chk4Digits.Text = "4 Digit Details";
+            this.chk4Digits.UseVisualStyleBackColor = true;
+            this.chk4Digits.CheckedChanged += new System.EventHandler(this.chkDigits_CheckedChanged);
+            // 
+            // chkAnyAssembly
+            // 
+            this.chkAnyAssembly.AutoSize = true;
+            this.chkAnyAssembly.Location = new System.Drawing.Point(104, 39);
+            this.chkAnyAssembly.Name = "chkAnyAssembly";
+            this.chkAnyAssembly.Size = new System.Drawing.Size(91, 17);
+            this.chkAnyAssembly.TabIndex = 28;
+            this.chkAnyAssembly.Text = "Any Assembly";
+            this.chkAnyAssembly.UseVisualStyleBackColor = true;
+            this.chkAnyAssembly.CheckedChanged += new System.EventHandler(this.chkAnyAssembly_CheckedChanged);
             // 
             // ComponentBuilder
             // 
@@ -535,7 +547,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(214, 651);
             this.ControlBox = false;
-            this.Controls.Add(this.chkDigits);
+            this.Controls.Add(this.chkAnyAssembly);
+            this.Controls.Add(this.chk4Digits);
             this.Controls.Add(this.groupBoxBurnSettings);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.changeColorCheckBox);
@@ -607,6 +620,7 @@
         private System.Windows.Forms.Button buttonAutoUpr;
         private System.Windows.Forms.Button buttonLwrRetAssm;
         private System.Windows.Forms.Button buttonUprRetAssm;
-        private System.Windows.Forms.CheckBox chkDigits;
+        private System.Windows.Forms.CheckBox chk4Digits;
+        private System.Windows.Forms.CheckBox chkAnyAssembly;
     }
 }
