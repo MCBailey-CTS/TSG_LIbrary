@@ -22,7 +22,7 @@ namespace TSG_Library.UFuncs
                 ZStartPoint(distance, zAxisLine);
             }
 
-            NewMethod52(movePtsHalf, movePtsFull, distance);
+            MoveObjectsZ(movePtsHalf, movePtsFull, distance);
             return distance;
         }
 
@@ -38,7 +38,7 @@ namespace TSG_Library.UFuncs
                 ZEndPoint(distance, zAxisLine);
             }
 
-            NewMethod54(movePtsHalf, movePtsFull, distance);
+            MoveObjectsZ(movePtsHalf, movePtsFull, distance);
             return distance;
         }
 
@@ -54,7 +54,7 @@ namespace TSG_Library.UFuncs
                 YStartPoint(distance, yAxisLine);
             }
 
-            NewMethod56(movePtsHalf, movePtsFull, distance);
+            MoveObjectsY(movePtsHalf, movePtsFull, distance);
             return distance;
         }
 
@@ -74,7 +74,7 @@ namespace TSG_Library.UFuncs
                 yAxisLine.SetEndPoint(mappedAddY);
             }
 
-            NewMethod76(movePtsHalf, movePtsFull, distance);
+            MoveObjectsY(movePtsHalf, movePtsFull, distance);
             return distance;
         }
 
@@ -92,7 +92,7 @@ namespace TSG_Library.UFuncs
                 XStartPoint(distance, xAxisLine);
             }
 
-            NewMethod58(movePtsHalf, movePtsFull, distance);
+            MoveObjectsX(movePtsHalf, movePtsFull, distance);
             return distance;
         }
 
@@ -109,7 +109,7 @@ namespace TSG_Library.UFuncs
                 XEndPoint(distance, xAxisLine);
             }
 
-            NewMethod60(movePtsHalf, movePtsFull, distance);
+            MoveObjectsX(movePtsHalf, movePtsFull, distance);
             return distance;
         }
 

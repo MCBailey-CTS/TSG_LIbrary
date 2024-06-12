@@ -349,13 +349,7 @@
     <Compile Include="src\UFuncs\ComponentBuilder\EventActions.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\UFuncs\ComponentBuilder\MapAndSet.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="src\UFuncs\ComponentBuilder\MotionCallbackDynamic.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\ComponentBuilder\MoveObjects.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\UFuncs\ComponentBuilder\SelectWithFilter.cs">

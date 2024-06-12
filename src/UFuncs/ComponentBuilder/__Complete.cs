@@ -373,6 +373,34 @@ namespace TSG_Library.UFuncs
   }
 
 
+ private void MoveObjectsX(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, double xDistance, bool showTemporary= false)
+ {
+     MoveObjects(movePtsFull.ToArray(), xDistance, "X");
+     MoveObjects(movePtsHalf.ToArray(), xDistance / 2, "X");
+
+     if (showTemporary)
+         ShowTemporarySizeText();
+ }
+
+ private void MoveObjectsZ(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, double zDistance, bool showTemporary = false)
+ {
+     MoveObjects(movePtsFull.ToArray(), zDistance, "Z");
+     MoveObjects(movePtsHalf.ToArray(), zDistance / 2, "Z");
+
+     if (showTemporary)
+         ShowTemporarySizeText();
+ }
+
+ private void MoveObjectsY(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, double yDistance, bool showTemporary = false)
+ {
+     MoveObjects(movePtsFull.ToArray(), yDistance, "Y");
+     MoveObjects(movePtsHalf.ToArray(), yDistance / 2, "Y");
+
+     if (showTemporary)
+         ShowTemporarySizeText();
+ }
+
+
 
 
 
