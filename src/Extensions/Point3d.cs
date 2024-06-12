@@ -766,6 +766,22 @@ namespace TSG_Library.Extensions
             return new Point3d(x, y, z);
         }
 
+        public static Point3d __AddX(this Point3d p, double x)
+        {
+            return new Point3d(p.X + x, p.Y, p.Z);
+        }
+
+        public static Point3d __AddY(this Point3d p, double y)
+        {
+            return new Point3d(p.X , p.Y + y, p.Z);
+        }
+
+        public static Point3d __AddZ(this Point3d p, double z)
+        {
+            return new Point3d(p.X, p.Y, p.Z+z);
+        }
+
+
         #endregion
     }
 }

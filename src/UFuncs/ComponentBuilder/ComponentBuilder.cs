@@ -2908,7 +2908,9 @@ namespace TSG_Library.UFuncs
             {
                 foreach (Feature featBlk in _workPart.Features)
                 {
-                    if (featBlk.FeatureType != "BLOCK" || featBlk.Name != "DYNAMIC BLOCK") continue;
+                    if (featBlk.FeatureType != "BLOCK" || featBlk.Name != "DYNAMIC BLOCK") 
+                        continue;
+
                     var block1 = (Block)featBlk;
                     var blockFeatureBuilderMatch = _workPart.Features.CreateBlockFeatureBuilder(block1);
                     var bOrigin = blockFeatureBuilderMatch.Origin;
@@ -2998,7 +3000,7 @@ namespace TSG_Library.UFuncs
 
             __display_part_ = _originalDisplayPart;
             __work_component_ = compRefCsys;
-            session_.Parts.SetDisplay(_originalDisplayPart, false, false, out var setDispLoadStatus1);
+            session_.Parts.SetDisplay(_originalDisplayPart, false, false, out  _);
             UpdateSessionParts();
         }
 
