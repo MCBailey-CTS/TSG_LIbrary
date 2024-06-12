@@ -74,10 +74,11 @@ namespace TSG_Library.UFuncs
                 yAxisLine.SetEndPoint(mappedAddY);
             }
 
-            MoveObjects(movePtsFull.ToArray(), distance, "Y");
-            MoveObjects(movePtsHalf.ToArray(), distance / 2, "Y");
+            NewMethod76(movePtsHalf, movePtsFull, distance);
             return distance;
         }
+
+        
 
         private double EditAlignNegX(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> negXObjs, List<Line> allxAxisLines, double[] mappedBase, double[] mappedPoint)
         {

@@ -10,7 +10,11 @@ namespace TSG_Library.UFuncs
     public partial class EditBlockForm
     {
 
-
+private void NewMethod76(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, double distance)
+{
+    MoveObjects(movePtsFull.ToArray(), distance, "Y");
+    MoveObjects(movePtsHalf.ToArray(), distance / 2, "Y");
+}
 
         private void NewMethod20(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, double xDistance)
         {

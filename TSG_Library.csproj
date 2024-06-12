@@ -325,9 +325,6 @@
     <Compile Include="src\UFuncs\ComponentBuilder\ComponentBuilder.Designer.cs">
       <DependentUpon>ComponentBuilder.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\ComponentBuilder\CreateBlockLines.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="src\UFuncs\ComponentBuilder\CtsComponentColor.cs" />
     <Compile Include="src\UFuncs\ComponentBuilder\CtsComponentType.cs" />
     <Compile Include="src\UFuncs\ComponentBuilder\CtsSubtoolColor.cs" />
@@ -353,9 +350,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\UFuncs\ComponentBuilder\MapAndSet.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\ComponentBuilder\MapDistance.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\UFuncs\ComponentBuilder\MotionCallbackDynamic.cs">

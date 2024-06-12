@@ -14,7 +14,7 @@ namespace TSG_Library.UFuncs
 
         private double AlignEdgeDistanceNegZ(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> negZObjs, List<Line> allzAxisLines, double inputDist, double[] mappedBase, double[] mappedPoint)
         {
-            var distance = NewMethod38(inputDist, mappedBase, mappedPoint);
+            var distance = MapAndConvert(inputDist, mappedBase, mappedPoint,2);
 
             foreach (var addLine in negZObjs) movePtsFull.Add(addLine);
 
@@ -33,7 +33,7 @@ namespace TSG_Library.UFuncs
 
         private double AlignEdgeDistancePosZ(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posZObjs, List<Line> allzAxisLines, double inputDist, double[] mappedBase, double[] mappedPoint)
         {
-            var distance = NewMethod35(inputDist, mappedBase, mappedPoint);
+            var distance = MapAndConvert(inputDist, mappedBase, mappedPoint,2);
 
             foreach (var addLine in posZObjs) movePtsFull.Add(addLine);
 
@@ -52,7 +52,7 @@ namespace TSG_Library.UFuncs
 
         private double AlignEdgeDistanceNegY(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> negYObjs, List<Line> allyAxisLines, double inputDist, double[] mappedBase, double[] mappedPoint)
         {
-            var distance = NewMethod32(inputDist, mappedBase, mappedPoint);
+            var distance = MapAndConvert(inputDist, mappedBase, mappedPoint, 1);
 
             foreach (var addLine in negYObjs) movePtsFull.Add(addLine);
 
@@ -70,7 +70,7 @@ namespace TSG_Library.UFuncs
 
         private double AlignEdgeDistancePosY(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posYObjs, List<Line> allyAxisLines, double inputDist, double[] mappedBase, double[] mappedPoint)
         {
-            var distance = NewMethod31(inputDist, mappedBase, mappedPoint);
+            var distance = MapAndConvert(inputDist, mappedBase, mappedPoint, 1);
 
             foreach (var addLine in posYObjs) movePtsFull.Add(addLine);
 
@@ -89,7 +89,7 @@ namespace TSG_Library.UFuncs
 
         private double AlignEdgeDistanceNegX(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> negXObjs, List<Line> allxAxisLines, double inputDist, double[] mappedBase, double[] mappedPoint)
         {
-            var distance = NewMethod28(inputDist, mappedBase, mappedPoint);
+            var distance = MapAndConvert(inputDist, mappedBase, mappedPoint, 0);
 
             foreach (var addLine in negXObjs) movePtsFull.Add(addLine);
 
@@ -106,8 +106,8 @@ namespace TSG_Library.UFuncs
 
         private double AlignEdgeDistancePosX(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posXObjs, List<Line> allxAxisLines, double inputDist, double[] mappedBase, double[] mappedPoint)
         {
-            var distance = Math.Abs(mappedPoint[0] - mappedBase[0]);
-            distance = NewMethod75(inputDist, mappedBase, mappedPoint, distance);
+            
+            var distance = MapAndConvert(inputDist, mappedBase, mappedPoint, 0);
 
             foreach (var posXLine in posXObjs) movePtsFull.Add(posXLine);
 

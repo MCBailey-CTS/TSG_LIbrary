@@ -291,6 +291,22 @@ namespace TSG_Library.UFuncs
             yBase2.RedisplayObject();
             _edgeRepLines.Add(yBase2);
         }
+  private static double MapAndConvert(double inputDist, double[] mappedBase, double[] mappedPoint, int index)
+  {
+      var distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
+
+      if (mappedBase[index] < mappedPoint[index])
+      {
+          distance *= -1;
+          distance += inputDist;
+      }
+      else
+      {
+          distance -= inputDist;
+      }
+
+      return distance;
+  }
 
 
     }
