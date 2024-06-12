@@ -53,6 +53,9 @@ namespace TSG_Library.UFuncs
             if (_displayPart != null)
                 WorkPartChanged1(_displayPart);
 
+            chk4Digits.Checked = Properties.Settings.Default.comp_builder_4_digits;
+            chkAnyAssembly.Checked = Settings.Default.com_builder_any_assembly;
+
             Location = Settings.Default.udoComponentBuilderWindowLocation;
             toolTip1.SetToolTip(buttonAquamarine, CtsComponentColor.AquaMarine.ToString());
             toolTip1.SetToolTip(buttonDarkDullGreen, CtsComponentColor.DarkDullGreen.ToString());
@@ -169,7 +172,7 @@ namespace TSG_Library.UFuncs
             return 0;
         }
 
-        public void WorkPartChanged1(BasePart p)
+        public void WorkPartChanged1(BasePart oldWorkPart)
         {
             try
             {
@@ -182,13 +185,16 @@ namespace TSG_Library.UFuncs
                     groupBoxColor.Enabled = false;
                 }
 
-                if (__work_component_ is null)
+                var workComp = __work_component_;
+
+
+                if (workComp is null)
                     if (session_.Parts.Work.ComponentAssembly.RootComponent != null)
-                        __work_component_ = session_.Parts.Work.ComponentAssembly.RootComponent;
+                        workComp = session_.Parts.Work.ComponentAssembly.RootComponent;
                     else
                         return;
 
-                var ass = Check(__work_component_);
+                var ass = Check(workComp);
 
                 switch (ass)
                 {
@@ -220,13 +226,15 @@ namespace TSG_Library.UFuncs
                     || displayName.Contains("LSP")
                     || displayName.Contains("LSH")
                     || displayName.Contains("LAD")
-                    || displayName.Contains("LFTR"))
+                    || displayName.Contains("LFTR")
+                    || displayName.Contains("LOWER"))
                     return AssemblyComponent.Lower;
 
                 if (displayName.Contains("UPR")
                     || displayName.Contains("USP")
                     || displayName.Contains("USH")
-                    || displayName.Contains("UAD"))
+                    || displayName.Contains("UAD")
+                    || displayName.Contains("UPPER"))
                     return AssemblyComponent.Upper;
 
                 if (component.Parent is null)
@@ -3158,9 +3166,11 @@ namespace TSG_Library.UFuncs
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             Settings.Default.udoComponentBuilderWindowLocation = Location;
+            Settings.Default.udoComponentBuilderGridIncrement = comboBoxGrid.Text;
+            Settings.Default.comp_builder_4_digits = chk4Digits.Checked;
+            Settings.Default.com_builder_any_assembly = chkAnyAssembly.Checked;
             Settings.Default.Save();
             session_.Parts.RemoveWorkPartChangedHandler(_idWorkPartChanged1);
-            Settings.Default.udoComponentBuilderGridIncrement = comboBoxGrid.Text;
         }
 
         private enum AssemblyComponent

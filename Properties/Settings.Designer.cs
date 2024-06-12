@@ -610,5 +610,29 @@ namespace TSG_Library.Properties {
                 this["design_check_window_location"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool comp_builder_4_digits {
+            get {
+                return ((bool)(this["comp_builder_4_digits"]));
+            }
+            set {
+                this["comp_builder_4_digits"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool com_builder_any_assembly {
+            get {
+                return ((bool)(this["com_builder_any_assembly"]));
+            }
+            set {
+                this["com_builder_any_assembly"] = value;
+            }
+        }
     }
 }
