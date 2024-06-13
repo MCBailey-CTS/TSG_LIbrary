@@ -20,22 +20,6 @@ public static class Program
             new MainForm().Show();
 
             return;
-
-            do
-            {
-            }
-            while (false);
-
-
-#pragma warning disable CS0162 // Unreachable code detected
-            if (args.Length == 0)
-            {
-                print_("No main arguments");
-                return;
-            }
-#pragma warning restore CS0162 // Unreachable code detected
-
-            execute(args[0]);
         }
         catch (Exception ex)
         {

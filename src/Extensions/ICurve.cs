@@ -15,7 +15,9 @@ namespace TSG_Library.Extensions
                 case Curve __curve__:
                     return __curve__.__Parameter(point);
                 case Edge __edge__:
+#pragma warning disable CS0612 // Type or member is obsolete
                     return __edge__.__Parameter(point);
+#pragma warning restore CS0612 // Type or member is obsolete
                 default:
                     throw new ArgumentException("Unknown curve type");
             }

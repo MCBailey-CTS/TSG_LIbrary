@@ -54,8 +54,6 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
         {
             GFolder folder = GFolder.create(part.FullPath);
             result_node = new TreeNode(part.Leaf) { Tag = part };
-            bool passed = true;
-
             foreach (Expression expression in part.Expressions.ToArray())
                 try
                 {
@@ -69,7 +67,6 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 
                     TreeNode exp_node = new TreeNode(expression.Name) { Tag = expression };
                     result_node.Nodes.Add(exp_node);
-                    passed = false;
                 }
                 catch (Exception ex)
                 {

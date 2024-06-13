@@ -325,9 +325,9 @@ namespace TSG_Library.Extensions
                 builder.Operation = booleanType;
                 builder.Target = target;
                 foreach (Body body in toolBodies)
-                    //#pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CS0618 // Type or member is obsolete
                     builder.Tools.Add(body);
-                //#pragma warning restore CS0618 // Type or member is obsolete
+#pragma warning restore CS0618 // Type or member is obsolete
                 BooleanFeature boolean =
                     (BooleanFeature)(Feature)builder.Commit();
                 return boolean;
