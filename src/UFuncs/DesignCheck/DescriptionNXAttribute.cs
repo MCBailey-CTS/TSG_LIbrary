@@ -39,7 +39,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
             //{
             //    Component comp = (Component)NXOpen.Utilities.NXObjectManager.Get(partOcc);
 
-            //    Part prototype = comp._Prototype();
+            //    Part prototype = comp.__Prototype();
             //    string partDescription = prototype.GetUserAttributeAsString(requiredAttributeTitle, NXObject.AttributeType.String, -1);
             //    string compDescription = comp.GetUserAttributeAsString(requiredAttributeTitle, NXObject.AttributeType.String, -1);
 

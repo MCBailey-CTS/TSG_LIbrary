@@ -330,7 +330,7 @@ namespace TSG_Library.UFuncs
 
         //            __display_part_.Layers.SetState(256, NXOpen.Layer.State.WorkLayer);
 
-        //            var proto_press_csys = press_comp._Prototype()
+        //            var proto_press_csys = press_comp.__Prototype()
         //                .features
         //                .First()
         //                .to_datum_csys_feature_();

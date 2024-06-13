@@ -192,7 +192,6 @@ namespace TSG_Library.Extensions
             return coordinateSystem;
         }
 
-        [Obsolete(nameof(NotImplementedException))]
         public static Point3d __Mirror(
             this Point3d point,
             Surface.Plane plane)
@@ -725,7 +724,7 @@ namespace TSG_Library.Extensions
         ///         use this function to "map" them to the ACS before using them in SNAP functions.
         ///     </para>
         /// </remarks>
-        public static Point3d __MapWcsToAcs(Point3d workCoords)
+        public static Point3d __MapWcsToAcs(this Point3d workCoords)
         {
             var input_csys = 3;
             var output_csys = 1;
@@ -738,7 +737,7 @@ namespace TSG_Library.Extensions
         /// <summary>Map a position from Absolute coordinates to Work coordinates</summary>
         /// <param name="absCoords">The coordinates of the given point wrt the Absolute Coordinate System (ACS)</param>
         /// <returns>The coordinates of the given point wrt the Work Coordinate System (WCS)</returns>
-        public static Point3d __MapAcsToWcs(Point3d absCoords)
+        public static Point3d __MapAcsToWcs(this Point3d absCoords)
         {
             var output_csys = 3;
             var input_csys = 1;

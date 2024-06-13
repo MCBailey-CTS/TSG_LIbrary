@@ -108,7 +108,7 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
             //        NXOpen.Features.Extrude extrusion = _model.DrainHoleCreator.CreateExtrusionCore(result, curves, _model.DrainHoleSettings);
 
             //        // Adds the {extrusion} to the the feature group.
-            //        //   AddToFeatureGroup(Globals._WorkPart, _model.DrainHoleSettings.FeatureGroupName, extrusion);
+            //        //   AddToFeatureGroup(__work_part_, _model.DrainHoleSettings.FeatureGroupName, extrusion);
 
             //        NXOpen.Features.BooleanFeature subtractionFeature = null;
 
@@ -117,7 +117,7 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
             //            subtractionFeature = _model.DrainHoleCreator.CreateSubtraction(result, extrusion, _model.DrainHoleSettings);
 
             //            // Adds the {extrusion} to the the feature group.
-            //            // AddToFeatureGroup(Globals._WorkPart, _model.DrainHoleSettings.FeatureGroupName, subtractionFeature);
+            //            // AddToFeatureGroup(__work_part_, _model.DrainHoleSettings.FeatureGroupName, subtractionFeature);
             //        }
 
             //        _model.DrainHoleCreator.CleanUp(result, curves, extrusion, subtractionFeature, _model.DrainHoleSettings);

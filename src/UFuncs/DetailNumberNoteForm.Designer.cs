@@ -52,10 +52,12 @@
             this.btnWcs.TabIndex = 2;
             this.btnWcs.Text = "Set WCS";
             this.btnWcs.UseVisualStyleBackColor = true;
+#pragma warning disable CS0612 // Type or member is obsolete
             this.btnWcs.Click += new System.EventHandler(this.BtnWcs_Click);
-            // 
-            // DetailNumberNoteForm
-            // 
+#pragma warning restore CS0612 // Type or member is obsolete
+                              // 
+                              // DetailNumberNoteForm
+                              // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(279, 144);

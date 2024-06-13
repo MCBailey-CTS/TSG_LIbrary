@@ -34,6 +34,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CTS_Library, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>U:\NX1899\NXcustom\NX1899library\Ufunc\MirrorComponents\CTS_Library.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Office.Interop.Excel.15.0.4795.1001\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -522,6 +526,47 @@
     <Compile Include="src\UFuncs\MirrorComponents\MirrorSmartStockEjector.cs" />
     <Compile Include="src\UFuncs\MirrorComponents\MirrorSubtract.cs" />
     <Compile Include="src\UFuncs\MirrorComponents\MirrorUnite.cs" />
+    <Compile Include="src\UFuncs\Mirror\BaseMirrorFeature.cs" />
+    <Compile Include="src\UFuncs\Mirror\BaseMirrorRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\Extensions_Position.cs" />
+    <Compile Include="src\UFuncs\Mirror\Extensions_Vector.cs" />
+    <Compile Include="src\UFuncs\Mirror\ILibraryComponent.cs" />
+    <Compile Include="src\UFuncs\Mirror\IMirrorFeature.cs" />
+    <Compile Include="src\UFuncs\Mirror\IMirrorRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\UFuncs\Mirror\MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\UFuncs\Mirror\MainForm1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\UFuncs\Mirror\MirrorBlock.cs" />
+    <Compile Include="src\UFuncs\Mirror\MirrorChamfer.cs" />
+    <Compile Include="src\UFuncs\Mirror\MirrorEdgeBlend.cs" />
+    <Compile Include="src\UFuncs\Mirror\MirrorEdgeBodyRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\MirrorEdgeBoundaryRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\MirrorEdgeChainRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\MirrorEdgeDumbRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\MirrorEdgeMultipleSeedTangentRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\MirrorEdgeTangentRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\MirrorEdgeVertexRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\MirrorException.cs" />
+    <Compile Include="src\UFuncs\Mirror\MirrorExtractedBody.cs" />
+    <Compile Include="src\UFuncs\Mirror\MirrorExtrude.cs" />
+    <Compile Include="src\UFuncs\Mirror\MirrorFaceAndAdjacentFacesRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\MirrorFaceDumbRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\MirrorFaceTangentRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\MirrorIntersect.cs" />
+    <Compile Include="src\UFuncs\Mirror\MirrorLinkedBody.cs" />
+    <Compile Include="src\UFuncs\Mirror\MirrorSmartButton.cs" />
+    <Compile Include="src\UFuncs\Mirror\MirrorSmartKey.cs" />
+    <Compile Include="src\UFuncs\Mirror\MirrorSmartStandardLiftersGuidedKeepersMetric.cs" />
+    <Compile Include="src\UFuncs\Mirror\MirrorSmartStockEjector.cs" />
+    <Compile Include="src\UFuncs\Mirror\MirrorSubtract.cs" />
+    <Compile Include="src\UFuncs\Mirror\MirrorUnite.cs" />
+    <Compile Include="src\UFuncs\Mirror\Program.cs" />
     <Compile Include="src\UFuncs\NitroTravels.cs" />
     <Compile Include="src\UFuncs\Nx7zip\Nx7ZipCompression.cs" />
     <Compile Include="src\UFuncs\Nx7zip\Nx7zipForm.cs">

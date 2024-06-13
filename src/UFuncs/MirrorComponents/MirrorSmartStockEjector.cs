@@ -41,8 +41,8 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             //    mirroredOrientation = new NXOpen.Matrix3x3(newXDir, newYDir);
 
-            //    NXOpen.Assemblies.Component newFromComp = fromComp._OwningPart().ComponentAssembly.AddComponent(
-            //        fromComp._Prototype(),
+            //    NXOpen.Assemblies.Component newFromComp = fromComp.__OwningPart().ComponentAssembly.AddComponent(
+            //        fromComp.__Prototype(),
             //        "Entire Part",
             //        fromComp.Name,
             //        mirroredOrigin,
@@ -50,7 +50,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             //        fromComp.Layer,
             //        out NXOpen.PartLoadStatus status);
 
-            //    NXOpen.Features.ExtractFaceBuilder builder = originalLinkedBody._OwningPart().Features.CreateExtractFaceBuilder(originalLinkedBody);
+            //    NXOpen.Features.ExtractFaceBuilder builder = originalLinkedBody.__OwningPart().Features.CreateExtractFaceBuilder(originalLinkedBody);
 
             //    NXOpen.Body[] originalBodies = builder.ExtractBodyCollector.GetObjects().OfType<NXOpen.Body>().ToArray();
 
@@ -61,17 +61,17 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             //    status.Dispose();
 
-            //    Globals._WorkPart = mirroredComp._Prototype();
+            //    __work_part_ = mirroredComp.__Prototype();
 
             //    Globals.__work_component_ = mirroredComp;
 
             //    NXOpen.Session.UndoMarkId markId2 = Globals.session_.SetUndoMark(NXOpen.Session.MarkVisibility.Visible, "Redefine Feature");
 
-            //    NXOpen.Features.EditWithRollbackManager rollBackManager = Globals._WorkPart.Features.StartEditWithRollbackManager(mirroredLinkedBody, markId2);
+            //    NXOpen.Features.EditWithRollbackManager rollBackManager = __work_part_.Features.StartEditWithRollbackManager(mirroredLinkedBody, markId2);
 
             //    using (new Destroyer(rollBackManager))
             //    {
-            //        builder = Globals._WorkPart.Features.CreateExtractFaceBuilder(mirroredLinkedBody);
+            //        builder = __work_part_.Features.CreateExtractFaceBuilder(mirroredLinkedBody);
 
             //        newFromComp._ReferenceSet(Constants."Entire Part");
 
@@ -80,7 +80,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             //            // For now we will just assume that every rule must be a DumbBodyRule
             //            IList<NXOpen.Body> mirrorBodies = originalBodies.Select(originalBody => (NXOpen.Body)newFromComp.FindOccurrence(originalBody)).ToList();
 
-            //            NXOpen.SelectionIntentRule mirrorBodyDumbRule = Globals._WorkPart.ScRuleFactory.CreateRuleBodyDumb(mirrorBodies.ToArray());
+            //            NXOpen.SelectionIntentRule mirrorBodyDumbRule = __work_part_.ScRuleFactory.CreateRuleBodyDumb(mirrorBodies.ToArray());
 
             //            builder.ExtractBodyCollector.ReplaceRules(new[] { mirrorBodyDumbRule }, false);
 
@@ -249,7 +249,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
                 throw new NotImplementedException();
                 //NXOpen.Assemblies.Component mirroredComp = (NXOpen.Assemblies.Component)dict[originalComp];
 
-                //NXOpen.Part mirroredPart = mirroredComp._Prototype();
+                //NXOpen.Part mirroredPart = mirroredComp.__Prototype();
 
                 //// ReSharper disable once UnusedVariable
                 //_ = (NXOpen.Features.Feature)dict[originalFeature];
