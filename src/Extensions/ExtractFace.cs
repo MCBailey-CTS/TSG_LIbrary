@@ -32,7 +32,7 @@ namespace TSG_Library.Extensions
         /// <returns>True or false.</returns>
         public static bool __IsBroken(this ExtractFace nxExtractFace)
         {
-            UFSession.GetUFSession().Wave.IsLinkBroken(nxExtractFace.Tag, out var isBroken);
+            UFSession.GetUFSession().Wave.IsLinkBroken(nxExtractFace.Tag, out bool isBroken);
             return isBroken;
         }
 

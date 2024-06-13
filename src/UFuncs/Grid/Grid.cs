@@ -51,8 +51,8 @@ namespace TSG_Library.UFuncs
 
         public static void SetGrid(GridSize size)
         {
-            var multiplier = __display_part_.PartUnits == BasePart.Units.Inches ? 1.0 : 25.4;
-            var gridSpacing = Convert(size) * multiplier;
+            double multiplier = __display_part_.PartUnits == BasePart.Units.Inches ? 1.0 : 25.4;
+            double gridSpacing = Convert(size) * multiplier;
             WorkPlane.SetRectangularUniformGridSize(new WorkPlane.GridSize(gridSpacing, 1, 1));
             Component comp = __display_part_.ComponentAssembly.RootComponent;
             comp.DirectOwner.ReplaceReferenceSet(comp, "BODY");

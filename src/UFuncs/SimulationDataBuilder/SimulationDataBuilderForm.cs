@@ -84,36 +84,36 @@ namespace TSG_Library.UFuncs
         {
             get
             {
-                var temp = "";
+                string temp = "";
 
-                if(txtJobNumber.Text != string.Empty)
+                if (txtJobNumber.Text != string.Empty)
                     temp = txtJobNumber.Text;
 
-                if(cmbOperation.Text != string.Empty)
+                if (cmbOperation.Text != string.Empty)
                     temp += cmbOperation.Text == @"Unfold"
                         ? "-00-" + cmbOperation.Text
                         : "-" + cmbOperation.Text;
 
-                if(cmbVersion.Text != string.Empty)
+                if (cmbVersion.Text != string.Empty)
                     temp += "-" + cmbVersion.Text;
 
                 temp += cmbOperation.Text == @"Unfold"
                     ? "-" + UnfoldMatlThk + UnfoldMatType
                     : "-" + cmbSurface.Text;
 
-                if(!string.IsNullOrEmpty(cmbToolSide.Text))
+                if (!string.IsNullOrEmpty(cmbToolSide.Text))
                     temp += $"-{cmbToolSide.Text}";
 
-                if(!string.IsNullOrEmpty(cmbData.Text))
+                if (!string.IsNullOrEmpty(cmbData.Text))
                     temp += $"-{cmbData.Text}";
 
-                if(!string.IsNullOrEmpty(cmbStudyProposal.Text))
+                if (!string.IsNullOrEmpty(cmbStudyProposal.Text))
                     temp += cmbStudyProposal.Text;
 
-                if(!string.IsNullOrEmpty(cmbEngineeringLevel.Text))
+                if (!string.IsNullOrEmpty(cmbEngineeringLevel.Text))
                     temp += $"-{cmbEngineeringLevel.Text}";
 
-                if(!string.IsNullOrEmpty(txtCustomText.Text))
+                if (!string.IsNullOrEmpty(txtCustomText.Text))
                     temp += $"-{txtCustomText.Text}";
 
                 return temp;
@@ -161,42 +161,42 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var partName = NameBuilder;
+                string partName = NameBuilder;
 
-                var tsgNum = cmbData.Text;
+                string tsgNum = cmbData.Text;
 
-                if(!CheckName(partName, "" + cmbEngineeringLevel.SelectedItem, (string)cmbOperation.SelectedItem,
-                       __SimActive, NameBuilder, tsgNum))
+                if (!CheckName(partName, "" + cmbEngineeringLevel.SelectedItem, (string)cmbOperation.SelectedItem,
+                        __SimActive, NameBuilder, tsgNum))
                     return;
 
 
                 // Select the objects to export
                 Tag[] selObjects = SelectObjects();
-                if(selObjects.Length <= 0) return;
+                if (selObjects.Length <= 0) return;
 
                 // build export/iges/component name
-                var tempPart = $"{TempDir}\\{NameBuilder}";
+                string tempPart = $"{TempDir}\\{NameBuilder}";
 
                 // Determines if there are any child components of the Display.RootComponent whose display name matches the currently built name. (NameBuilder)
-                var doesExist = false;
+                bool doesExist = false;
 
-                if(__display_part_.ComponentAssembly.RootComponent != null)
+                if (__display_part_.ComponentAssembly.RootComponent != null)
                     doesExist = __display_part_.ComponentAssembly.RootComponent.GetChildren()
                         .Any(simComp => simComp.Name == NameBuilder.ToUpper());
 
                 // If the above comment is true and there are components tha exist with the same displayName..
-                if(doesExist)
+                if (doesExist)
                 {
                     // MessageBox prompts user if they want to Replace current file or cancel. 
                     DialogResult dResult = MessageBox.Show($@"Replace file {NameBuilder}?", @"File Exist",
                         MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 
-                    if(dResult != DialogResult.OK)
+                    if (dResult != DialogResult.OK)
                         return;
 
                     foreach (Component simComp in __display_part_.ComponentAssembly.RootComponent.GetChildren())
                     {
-                        if(simComp.Name != NameBuilder.ToUpper())
+                        if (simComp.Name != NameBuilder.ToUpper())
                             continue;
 
                         Part closeSimPart = (Part)simComp.Prototype;
@@ -230,7 +230,7 @@ namespace TSG_Library.UFuncs
             //System.Diagnostics.Debugger.Launch();
 
             // If there is no current __display_part_ return.
-            if(__display_part_ is null)
+            if (__display_part_ is null)
                 return;
 
             // Sets the "txtJobNumber" and "txtCustomText" .Text properties to empty. 
@@ -242,7 +242,7 @@ namespace TSG_Library.UFuncs
             // Matches the current display part to the regex. If not .Success return.
             Match match = regex.Match(__display_part_.Leaf);
 
-            if(!match.Success)
+            if (!match.Success)
                 return;
 
             // Sets the text of the txtJobNumber text box to the CustomerNumber found by the regex.
@@ -279,7 +279,7 @@ namespace TSG_Library.UFuncs
 
         private void BuildFilesExportIges(string partFile, Tag[] tagObjects)
         {
-            if(File.Exists(partFile))
+            if (File.Exists(partFile))
                 switch (MessageBox.Show($@"Part {partFile} already exists. Do you want to save over it?", @"Question?",
                             MessageBoxButtons.YesNo))
                 {
@@ -297,10 +297,10 @@ namespace TSG_Library.UFuncs
             ExportPart(partFile, tagObjects);
 
             // get path to sim location, check directory structure
-            var compSurfaceDirectory = folder.dir_surfaces();
+            string compSurfaceDirectory = folder.dir_surfaces();
 
             // export part to simulation\surfaces directory
-            if(!Directory.Exists(compSurfaceDirectory))
+            if (!Directory.Exists(compSurfaceDirectory))
                 Directory.CreateDirectory(compSurfaceDirectory);
 
             compSurfaceDirectory += $"\\{NameBuilder}.prt";
@@ -313,57 +313,57 @@ namespace TSG_Library.UFuncs
 
             //System.Diagnostics.Debugger.Launch();
 
-            var simDir = $"{Path.GetFileNameWithoutExtension(folder.dir_job)}-{cmbData.Text}";
+            string simDir = $"{Path.GetFileNameWithoutExtension(folder.dir_job)}-{cmbData.Text}";
 
-            var simPathSimDir = $"{__SimActive}\\{simDir}";
+            string simPathSimDir = $"{__SimActive}\\{simDir}";
 
-            if(!Directory.Exists(simPathSimDir))
+            if (!Directory.Exists(simPathSimDir))
                 Directory.CreateDirectory(simPathSimDir);
 
-            if(!Directory.Exists($"{simPathSimDir}\\data"))
+            if (!Directory.Exists($"{simPathSimDir}\\data"))
                 Directory.CreateDirectory($"{simPathSimDir}\\data");
 
-            if(!Directory.Exists($"{simPathSimDir}\\reports"))
+            if (!Directory.Exists($"{simPathSimDir}\\reports"))
                 Directory.CreateDirectory($"{simPathSimDir}\\reports");
 
-            if(!Directory.Exists($"{simPathSimDir}\\data\\fShapes"))
+            if (!Directory.Exists($"{simPathSimDir}\\data\\fShapes"))
                 Directory.CreateDirectory($"{simPathSimDir}\\data\\fShapes");
 
             AddNewSurface(compSurfaceDirectory, cmbOperation.Text, NameBuilder);
 
             // export blank iges data
             // Removed code below for exporting iges files according to CTS-CIT Item# 2014-0011 Simulation Data Builder Change - 2014-03 Duane VW
-            var simPathDirData = $"{simPathSimDir}\\data";
+            string simPathDirData = $"{simPathSimDir}\\data";
 
-            if(rdoPrt.Checked)
+            if (rdoPrt.Checked)
             {
-                if(!Directory.Exists($"{simPathDirData}\\{cmbOperation.SelectedItem}"))
+                if (!Directory.Exists($"{simPathDirData}\\{cmbOperation.SelectedItem}"))
                     Directory.CreateDirectory($"{simPathDirData}\\{cmbOperation.SelectedItem}");
 
-                if(File.Exists($"{simPathDirData}\\{cmbOperation.SelectedItem}\\{NameBuilder}.prt"))
+                if (File.Exists($"{simPathDirData}\\{cmbOperation.SelectedItem}\\{NameBuilder}.prt"))
                     File.Delete($"{simPathDirData}\\{cmbOperation.SelectedItem}\\{NameBuilder}.prt");
 
                 File.Copy(compSurfaceDirectory, $"{simPathDirData}\\{cmbOperation.SelectedItem}\\{NameBuilder}.prt");
 
                 print_($"Copied to : {simPathDirData}\\{cmbOperation.SelectedItem}\\{NameBuilder}.prt");
             }
-            else if(rdoIges.Checked)
+            else if (rdoIges.Checked)
             {
-                var igesDirectory = $"{simPathDirData}\\{cmbOperation.SelectedItem}";
+                string igesDirectory = $"{simPathDirData}\\{cmbOperation.SelectedItem}";
 
-                if(!Directory.Exists(igesDirectory))
+                if (!Directory.Exists(igesDirectory))
                     Directory.CreateDirectory(igesDirectory);
 
                 Iges(compSurfaceDirectory, $"{igesDirectory}\\{NameBuilder}.igs");
 
                 print_($"Created: {igesDirectory}\\{NameBuilder}.igs");
             }
-            else if(rdoStp.Checked)
+            else if (rdoStp.Checked)
             {
-                if(!Directory.Exists($"{simPathDirData}\\{cmbOperation.SelectedItem}"))
+                if (!Directory.Exists($"{simPathDirData}\\{cmbOperation.SelectedItem}"))
                     Directory.CreateDirectory($"{simPathDirData}\\{cmbOperation.SelectedItem}");
 
-                if(File.Exists($"{simPathDirData}\\{cmbOperation.SelectedItem}\\{NameBuilder}.stp"))
+                if (File.Exists($"{simPathDirData}\\{cmbOperation.SelectedItem}\\{NameBuilder}.stp"))
                     File.Delete($"{simPathDirData}\\{cmbOperation.SelectedItem}\\{NameBuilder}.stp");
 
                 Step(compSurfaceDirectory, $"{simPathDirData}\\{cmbOperation.SelectedItem}\\{NameBuilder}.stp");
@@ -376,11 +376,11 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if(!File.Exists(partPath))
+                if (!File.Exists(partPath))
                     throw new ArgumentException(@"Path to part does not exist.", nameof(partPath));
-                if(File.Exists(dwgPath))
+                if (File.Exists(dwgPath))
                     throw new ArgumentException(@"Path for Step file already exists.", nameof(dwgPath));
-                if(File.Exists(dwgPath))
+                if (File.Exists(dwgPath))
                     throw new ArgumentException(@"Path for Step file already exists.", nameof(dwgPath));
                 StepCreator stepCreator1 = session_.DexManager.CreateStepCreator();
                 stepCreator1.ExportAs = StepCreator.ExportAsOption.Ap214;
@@ -443,18 +443,18 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if(cmbOperation.SelectedIndex < 0)
+                if (cmbOperation.SelectedIndex < 0)
                     return;
 
-                var operation = (string)cmbOperation.SelectedItem;
-                var lowerOp = operation.ToLower();
+                string operation = (string)cmbOperation.SelectedItem;
+                string lowerOp = operation.ToLower();
 
-                if(lowerOp.StartsWith("d") || lowerOp.Contains("refdata"))
+                if (lowerOp.StartsWith("d") || lowerOp.Contains("refdata"))
                     rdoPrt.Checked = true;
                 else
                     rdoIges.Checked = true;
 
-                if(lowerOp.StartsWith("d"))
+                if (lowerOp.StartsWith("d"))
                 {
                     cmbVersion.Enabled = true;
                     cmbStudyProposal.Enabled = true;
@@ -463,7 +463,7 @@ namespace TSG_Library.UFuncs
                     cmbData.Enabled = true;
                     cmbToolSide.Enabled = true;
                 }
-                else if(lowerOp.StartsWith("t") || lowerOp == "b")
+                else if (lowerOp.StartsWith("t") || lowerOp == "b")
                 {
                     cmbVersion.Enabled = true;
                     cmbStudyProposal.Enabled = true;
@@ -509,21 +509,21 @@ namespace TSG_Library.UFuncs
                 }
 
                 Regex regex = new Regex($"^{txtJobNumber.Text}-{operation}-v(?<version>[0-9]+)");
-                var versions = __display_part_.ComponentAssembly.RootComponent.GetChildren()
+                int[] versions = __display_part_.ComponentAssembly.RootComponent.GetChildren()
                     .Select(component => component.DisplayName)
                     .Select(displayName => regex.Match(displayName))
                     .Where(match => match.Success)
                     .Select(match => int.Parse(match.Groups["version"].Value))
                     .ToArray();
 
-                if(versions.Length == 0)
+                if (versions.Length == 0)
                 {
                     cmbVersion.SelectedItem = "v01";
                     return;
                 }
 
-                var newMaxVersion = $"v{(versions.Max() + 1).__PadInt(2)}";
-                if(cmbVersion.Items.OfType<string>().Contains(newMaxVersion))
+                string newMaxVersion = $"v{(versions.Max() + 1).__PadInt(2)}";
+                if (cmbVersion.Items.OfType<string>().Contains(newMaxVersion))
                     cmbVersion.SelectedItem = newMaxVersion;
             }
             catch (Exception ex)
@@ -552,7 +552,7 @@ namespace TSG_Library.UFuncs
 
         private void CmbData_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(cmbData.SelectedIndex < 0)
+            if (cmbData.SelectedIndex < 0)
             {
                 btnSelect.Enabled = false;
                 return;
@@ -586,21 +586,21 @@ namespace TSG_Library.UFuncs
         {
             Part basePart1 = session_.__FindOrOpen(compSurfacePath);
 
-            var layer = 1;
+            int layer = 1;
 
-            if(comboBoxText.StartsWith("d"))
-                for (var i = 1; i < 10; i++)
+            if (comboBoxText.StartsWith("d"))
+                for (int i = 1; i < 10; i++)
                 {
-                    if(comboBoxText.Contains(i.ToString()))
+                    if (comboBoxText.Contains(i.ToString()))
                         layer = i * 10 + 1;
                 }
-            else if(comboBoxText.StartsWith("t"))
-                for (var i = 1; i < 10; i++)
+            else if (comboBoxText.StartsWith("t"))
+                for (int i = 1; i < 10; i++)
                 {
-                    if(comboBoxText.Contains(i.ToString()))
+                    if (comboBoxText.Contains(i.ToString()))
                         layer = i * 10 + 101;
                 }
-            else if(comboBoxText.StartsWith("b"))
+            else if (comboBoxText.StartsWith("b"))
                 layer = 101;
             else
                 switch (comboBoxText)
@@ -632,31 +632,32 @@ namespace TSG_Library.UFuncs
         public static bool CheckName(string partName, string engineering, string operation, string simPath,
             string nameBuilder, string tsgNum)
         {
-            if(string.IsNullOrEmpty(operation))
+            if (string.IsNullOrEmpty(operation))
                 return false;
 
             Component displayComp = __display_part_.ComponentAssembly.RootComponent;
 
-            if(displayComp == null)
+            if (displayComp == null)
                 return true;
 
             Component[] childrenComps = displayComp.GetChildren()
                 .Where(component => component.DisplayName == partName)
                 .ToArray();
 
-            if(childrenComps.Length == 0)
+            if (childrenComps.Length == 0)
                 return true;
 
             // If the program gets here then there must already be a child with that name.
-            DialogResult dResult = MessageBox.Show($@"Replace file {nameBuilder}?", @"File Exist", MessageBoxButtons.OKCancel,
+            DialogResult dResult = MessageBox.Show($@"Replace file {nameBuilder}?", @"File Exist",
+                MessageBoxButtons.OKCancel,
                 MessageBoxIcon.Question);
 
-            if(dResult != DialogResult.OK)
+            if (dResult != DialogResult.OK)
                 return false;
 
             Part part = session_.__FindOrOpen(childrenComps[0].DisplayName);
 
-            var partFilePath = part.FullPath;
+            string partFilePath = part.FullPath;
 
             part.__Close(true, true);
 
@@ -666,12 +667,12 @@ namespace TSG_Library.UFuncs
 
             GFolder folder = GFolder.create_or_null(__work_part_);
 
-            if(folder is null)
+            if (folder is null)
                 throw new InvalidOperationException("The current work part does not reside within a GFolder.");
 
-            var eng = string.IsNullOrEmpty(engineering) ? "" : " " + engineering;
+            string eng = string.IsNullOrEmpty(engineering) ? "" : " " + engineering;
 
-            var simFolder = $"{simPath}\\{Path.GetFileNameWithoutExtension(folder.dir_job)}-{tsgNum}";
+            string simFolder = $"{simPath}\\{Path.GetFileNameWithoutExtension(folder.dir_job)}-{tsgNum}";
 
             //if (folder.is_cts_job())
             //    simFolder = $"{simPath}\\{folder.cts_number} ({folder.company}-{folder.CustomerNumber})-{tsgNum}";
@@ -679,7 +680,7 @@ namespace TSG_Library.UFuncs
             //    simFolder = $"{simPath}\\{folder.CustomerNumber}-{tsgNum}";
 
 
-            var temp = $"{simFolder}\\data\\{operation}";
+            string temp = $"{simFolder}\\data\\{operation}";
 
             // Revision 3.1
             List<string> files = Directory.GetFiles(temp)
@@ -693,7 +694,7 @@ namespace TSG_Library.UFuncs
 
         public static void ExportPart(string partFile, params Tag[] tagObjects)
         {
-            if(File.Exists($"{partFile}.prt"))
+            if (File.Exists($"{partFile}.prt"))
                 File.Delete($"{partFile}.prt");
 
             UFPart.ExportOptions exportOptions = new UFPart.ExportOptions
@@ -744,7 +745,7 @@ namespace TSG_Library.UFuncs
             {
                 List<object> list = new List<object>();
 
-                for (var index = 1; index <= 999; index++)
+                for (int index = 1; index <= 999; index++)
                     list.Add($"v{(index > 9 ? index + "" : $"0{index}")}");
 
                 return list.ToArray();
@@ -759,7 +760,7 @@ namespace TSG_Library.UFuncs
             {
                 List<object> list = new List<object>();
 
-                for (var index = 1; index <= 20; index++)
+                for (int index = 1; index <= 20; index++)
                     list.Add($"tsg{index.__PadInt(3)}");
 
                 return list.ToArray();
@@ -769,7 +770,7 @@ namespace TSG_Library.UFuncs
             {
                 List<object> list = new List<object>();
 
-                for (var index = 501; index <= 520; index++)
+                for (int index = 501; index <= 520; index++)
                     list.Add($"{index}");
 
                 return list.ToArray();
@@ -780,10 +781,10 @@ namespace TSG_Library.UFuncs
             {
                 List<object> list = new List<object>();
 
-                for (var index = 1; index <= 10; index++)
+                for (int index = 1; index <= 10; index++)
                     list.Add($"s{index}");
 
-                for (var index = 1; index <= 10; index++)
+                for (int index = 1; index <= 10; index++)
                     list.Add($"p{index}");
 
                 return list.ToArray();

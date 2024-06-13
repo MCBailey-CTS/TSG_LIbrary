@@ -12,12 +12,12 @@ namespace TSG_Library.Extensions
 
         private static bool __FastenerInfo(string file, string regex, out string diameter, out string length)
         {
-            if(file.Contains("\\"))
+            if (file.Contains("\\"))
                 file = Path.GetFileNameWithoutExtension(file);
 
             Match match = Regex.Match(file, regex, RegexOptions.IgnoreCase);
 
-            if(!match.Success)
+            if (!match.Success)
             {
                 diameter = string.Empty;
 
@@ -164,10 +164,10 @@ namespace TSG_Library.Extensions
 
         public static string __AskDetailNumber(this string file)
         {
-            var leaf = Path.GetFileNameWithoutExtension(file);
+            string leaf = Path.GetFileNameWithoutExtension(file);
             Match match = Regex.Match(leaf, "^\\d+-\\d+-(?<detail>\\d+)$");
 
-            if(!match.Success)
+            if (!match.Success)
                 throw new FormatException("Could not find detail number.");
 
             return match.Groups["detail"].Value;
@@ -244,10 +244,10 @@ namespace TSG_Library.Extensions
 
         public static bool __IsFastener(this string file, out string diameter)
         {
-            if(file.__IsShcs(out diameter))
+            if (file.__IsShcs(out diameter))
                 return true;
 
-            if(file.__IsDwl(out diameter))
+            if (file.__IsDwl(out diameter))
                 return true;
 
             return file.__IsJckScrew(out diameter) || file.__IsJckScrewTsg(out diameter);
@@ -255,7 +255,7 @@ namespace TSG_Library.Extensions
 
         public static bool __IsLoaded(this string partName)
         {
-            var status = ufsession_.Part.IsLoaded(partName);
+            int status = ufsession_.Part.IsLoaded(partName);
 
             switch (status)
             {
@@ -271,9 +271,9 @@ namespace TSG_Library.Extensions
 
         public static bool __IsDetail(this string str)
         {
-            var leaf = Path.GetFileNameWithoutExtension(str);
+            string leaf = Path.GetFileNameWithoutExtension(str);
 
-            if(leaf is null)
+            if (leaf is null)
                 return false;
 
             return Regex.IsMatch(leaf, "^\\d+-\\d+-\\d+$");
@@ -282,11 +282,11 @@ namespace TSG_Library.Extensions
 
         public static string __AskDetailOp(this string path)
         {
-            var leaf = Path.GetFileNameWithoutExtension(path);
+            string leaf = Path.GetFileNameWithoutExtension(path);
 
             Match match = Regex.Match(leaf, "^\\d+-(?<op>\\d+)-\\d+$");
 
-            if(!match.Success)
+            if (!match.Success)
                 throw new Exception($"could not find an op: '{leaf}'");
 
             return match.Groups["op"].Value;

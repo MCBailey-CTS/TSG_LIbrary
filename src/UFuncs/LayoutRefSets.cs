@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MoreLinq;
 using NXOpen;
 using TSG_Library.Attributes;
-using TSG_Library.Extensions;
 using static TSG_Library.Extensions.__Extensions_;
 
 namespace TSG_Library.UFuncs
@@ -39,14 +37,15 @@ namespace TSG_Library.UFuncs
                 list.AddRange(__display_part_.Points.ToArray());
 
                 list.AddRange(from body in __display_part_.Bodies.ToArray()
-                              where body.IsSolidBody
-                              select body);
+                    where body.IsSolidBody
+                    select body);
 
                 NXObject[] array = NewMethod1(list, 10);
 
                 if (array.Length != 0)
                 {
-                    ReferenceSet referenceSet = __display_part_.GetAllReferenceSets().SingleOrDefault((ReferenceSet set) => set.Name == "BODY");
+                    ReferenceSet referenceSet = __display_part_.GetAllReferenceSets()
+                        .SingleOrDefault(set => set.Name == "BODY");
                     if (referenceSet == null)
                     {
                         referenceSet = __display_part_.CreateReferenceSet();
@@ -67,9 +66,9 @@ namespace TSG_Library.UFuncs
                 List<DisplayableObject> list2 = new List<DisplayableObject>();
                 list2.AddRange(__display_part_.Points.ToArray());
                 list2.AddRange(from body in __display_part_.Bodies.ToArray()
-                               where body.IsSolidBody
-                               where body.Color != 75
-                               select body);
+                    where body.IsSolidBody
+                    where body.Color != 75
+                    select body);
 
                 NXObject[] array2 = NewMethod1(list2, 10);
             }
@@ -156,14 +155,19 @@ namespace TSG_Library.UFuncs
                 num++;
             }
 
-            string[] array10 = new string[9] { "BODY", "BODY_NO_SLUG", "INCOMING_BODY", "PAD-PROFILE", "UPR-PROFILE", "LWR-PROFILE", "PAD-3D", "UPR-3D", "LWR-3D" };
+            string[] array10 = new string[9]
+            {
+                "BODY", "BODY_NO_SLUG", "INCOMING_BODY", "PAD-PROFILE", "UPR-PROFILE", "LWR-PROFILE", "PAD-3D",
+                "UPR-3D", "LWR-3D"
+            };
             string[] array11 = array10;
 
             foreach (string refset_name in array11)
             {
                 ReferenceSet referenceSet10 = __display_part_.__FindReferenceSetOrNull(refset_name);
 
-                if (referenceSet10 != null && referenceSet10.AskAllDirectMembers().Length == 0 && referenceSet10.AskMembersInReferenceSet().Length == 0)
+                if (referenceSet10 != null && referenceSet10.AskAllDirectMembers().Length == 0 &&
+                    referenceSet10.AskMembersInReferenceSet().Length == 0)
                     referenceSet10.OwningPart.DeleteReferenceSet(referenceSet10);
             }
 
@@ -174,7 +178,8 @@ namespace TSG_Library.UFuncs
         {
             if (array9.Length != 0)
             {
-                ReferenceSet referenceSet9 = __display_part_.GetAllReferenceSets().SingleOrDefault((ReferenceSet refset) => refset.Name == ref_set);
+                ReferenceSet referenceSet9 = __display_part_.GetAllReferenceSets()
+                    .SingleOrDefault(refset => refset.Name == ref_set);
                 if (referenceSet9 == null)
                 {
                     referenceSet9 = __display_part_.CreateReferenceSet();
@@ -188,18 +193,18 @@ namespace TSG_Library.UFuncs
         private static NXObject[] FindBodiesOnLayerInDisplayPart(int layer)
         {
             return (from body in __display_part_.Bodies.ToArray()
-                    where body.IsSolidBody
-                    where !body.IsOccurrence
-                    where body.Layer == layer
-                    select body).Cast<NXObject>().ToArray();
+                where body.IsSolidBody
+                where !body.IsOccurrence
+                where body.Layer == layer
+                select body).Cast<NXObject>().ToArray();
         }
 
         private static NXObject[] NewMethod1(List<DisplayableObject> list2, int layer)
         {
             return (from obj in list2
-                    where obj.Layer == layer
-                    where !obj.IsOccurrence
-                    select obj).Cast<NXObject>().ToArray();
+                where obj.Layer == layer
+                where !obj.IsOccurrence
+                select obj).Cast<NXObject>().ToArray();
         }
     }
 }

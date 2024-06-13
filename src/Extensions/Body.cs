@@ -26,9 +26,9 @@ namespace TSG_Library.Extensions
 
         public static Box3d __Box3d(this Body body)
         {
-            var array = new double[3];
-            var array2 = new double[3, 3];
-            var array3 = new double[3];
+            double[] array = new double[3];
+            double[,] array2 = new double[3, 3];
+            double[] array3 = new double[3];
             Tag tag = body.Tag;
             ufsession_.Modl.AskBoundingBoxExact(tag, Tag.Null, array, array2, array3);
             Point3d position = array.__ToPoint3d();
@@ -52,7 +52,7 @@ namespace TSG_Library.Extensions
 
         public static bool __InterferesWith(this Body target, Component component)
         {
-            if(target.OwningPart.Tag != component.OwningPart.Tag)
+            if (target.OwningPart.Tag != component.OwningPart.Tag)
                 throw new ArgumentException("Body and component are not in the same assembly.");
 
             return target.__InterferesWith(component.__SolidBodyMembers());
@@ -64,11 +64,11 @@ namespace TSG_Library.Extensions
             //    throw new ArgumentException("At least one tool body is not in the same assembly as the target body.");
 
             Tag[] solid_bodies = toolBodies.Select(__b => __b.Tag).ToArray();
-            var results = new int[solid_bodies.Length];
+            int[] results = new int[solid_bodies.Length];
             ufsession_.Modl.CheckInterference(target.Tag, solid_bodies.Length, solid_bodies, results);
 
-            for (var i = 0; i < solid_bodies.Length; i++)
-                if(results[i] == 1)
+            for (int i = 0; i < solid_bodies.Length; i++)
+                if (results[i] == 1)
                     return true;
 
             return false;

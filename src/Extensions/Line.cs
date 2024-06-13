@@ -21,7 +21,7 @@ namespace TSG_Library.Extensions
 
         public static Line __Copy(this Line line)
         {
-            if(line.IsOccurrence)
+            if (line.IsOccurrence)
                 throw new ArgumentException($@"Cannot copy {nameof(line)} that is an occurrence.", nameof(line));
 
             return line.__OwningPart().Curves.CreateLine(line.__StartPoint(), line.__EndPoint());

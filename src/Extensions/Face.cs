@@ -28,13 +28,13 @@ namespace TSG_Library.Extensions
 
         public static Vector3d __NormalVector(this Face __face)
         {
-            var point = new double[3];
-            var dir = new double[3];
-            var box = new double[6];
-            ufsession_.Modl.AskFaceData(__face.Tag, out var type, point, dir, box, out var radius,
-                out var rad_data, out var norm_dir);
+            double[] point = new double[3];
+            double[] dir = new double[3];
+            double[] box = new double[6];
+            ufsession_.Modl.AskFaceData(__face.Tag, out int type, point, dir, box, out double radius,
+                out double rad_data, out int norm_dir);
 
-            if(type != 22)
+            if (type != 22)
                 throw new InvalidOperationException("Cannot ask for the normal of a non planar face");
 
             return dir.__ToVector3d();
@@ -111,10 +111,10 @@ namespace TSG_Library.Extensions
         {
             UFEvalsf evalsf = ufsession_.Evalsf;
             evalsf.Initialize2(face.Tag, out IntPtr evaluator);
-            var array = point.__ToArray();
+            double[] array = point.__ToArray();
             evalsf.FindClosestPoint(evaluator, array, out UFEvalsf.Pos3 srf_pos);
             evalsf.Free(out evaluator);
-            var uv = srf_pos.uv;
+            double[] uv = srf_pos.uv;
 #pragma warning disable CS0618 // Type or member is obsolete
             uv[0] = face.__FactorU() * uv[0];
             uv[1] = face.__FactorV() * uv[1];

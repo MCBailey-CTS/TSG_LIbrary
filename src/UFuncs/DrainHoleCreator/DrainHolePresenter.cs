@@ -140,7 +140,7 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
                 .SingleOrDefault(group => group.Name == featureGroupName);
 
             // If {featureGroup is not null, then add the {feature}.
-            if(featureGroup != null)
+            if (featureGroup != null)
             {
                 featureGroup.AddMembersWithRelocation(new[] { feature }, false, false);
                 return;

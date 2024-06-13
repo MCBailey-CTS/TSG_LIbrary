@@ -13,7 +13,7 @@ namespace TSG_Library.Disposable
         /// <summary>Instantiates the display reset.</summary>
         public DisplayPartReset()
         {
-            if(__display_part_ is null)
+            if (__display_part_ is null)
                 throw new Exception("No display part.");
 
             _originalDisplayPart = __display_part_;

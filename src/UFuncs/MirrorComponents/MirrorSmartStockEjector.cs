@@ -13,7 +13,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
     {
         public bool IsLibraryComponent(Component component)
         {
-            if(!component.HasUserAttribute("LIBRARY", NXObject.AttributeType.String, -1))
+            if (!component.HasUserAttribute("LIBRARY", NXObject.AttributeType.String, -1))
                 return false;
 
             // Check to see if it is a smart key metric
@@ -109,7 +109,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             public static bool EdgePointsMatchFace(Face mirrorFace, IList<Tuple<Point3d, Point3d>> edgePoints)
             {
-                if(edgePoints.Count != mirrorFace.GetEdges().Length)
+                if (edgePoints.Count != mirrorFace.GetEdges().Length)
                     return false;
 
                 HashSet<Edge> faceEdges = new HashSet<Edge>(mirrorFace.GetEdges());
@@ -130,16 +130,16 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                 foreach (Tuple<Point3d, Point3d> tuple in edgePoints)
                 {
-                    if(edge0.__HasEndPoints(tuple.Item1, tuple.Item2))
+                    if (edge0.__HasEndPoints(tuple.Item1, tuple.Item2))
                         matchedEdges.Add(edge0);
 
-                    if(edge1.__HasEndPoints(tuple.Item1, tuple.Item2))
+                    if (edge1.__HasEndPoints(tuple.Item1, tuple.Item2))
                         matchedEdges.Add(edge1);
 
-                    if(edge2.__HasEndPoints(tuple.Item1, tuple.Item2))
+                    if (edge2.__HasEndPoints(tuple.Item1, tuple.Item2))
                         matchedEdges.Add(edge2);
 
-                    if(edge3.__HasEndPoints(tuple.Item1, tuple.Item2))
+                    if (edge3.__HasEndPoints(tuple.Item1, tuple.Item2))
                         matchedEdges.Add(edge3);
                 }
 
@@ -356,7 +356,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
                 _ = (Feature)dict[originalFeature];
 
                 ((EdgeChainRule)originalRule).GetData(out Edge originalStartEdge, out Edge originalEndEdge,
-                    out var isFromStart);
+                    out bool isFromStart);
 
                 Edge newStartEdge = null;
 
@@ -368,10 +368,10 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                 foreach (Body body in mirroredPart.Bodies.ToArray())
                 foreach (Edge e in body.GetEdges())
-                    if(e.__HasEndPoints(finalStart, finalEnd))
+                    if (e.__HasEndPoints(finalStart, finalEnd))
                         newStartEdge = e;
 
-                if(!(originalEndEdge is null))
+                if (!(originalEndEdge is null))
                 {
                     finalStart = originalEndEdge.__StartPoint().__MirrorMap(plane, originalComp, mirroredComp);
 
@@ -379,11 +379,11 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                     foreach (Body body in mirroredPart.Bodies.ToArray())
                     foreach (Edge e in body.GetEdges())
-                        if(e.__HasEndPoints(finalStart, finalEnd))
+                        if (e.__HasEndPoints(finalStart, finalEnd))
                             newEndEdge = e;
                 }
 
-                if(newStartEdge is null)
+                if (newStartEdge is null)
                     throw new ArgumentException("Could not find start edge");
 
                 return mirroredPart.ScRuleFactory.CreateRuleEdgeChain(newStartEdge, newEndEdge, isFromStart);
@@ -429,7 +429,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                     foreach (Body body in mirroredPart.Bodies.ToArray())
                     foreach (Edge e in body.GetEdges())
-                        if(e.__HasEndPoints(finalStart, finalEnd))
+                        if (e.__HasEndPoints(finalStart, finalEnd))
                             newEdges.Add(e);
                 }
 
@@ -459,8 +459,9 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                 Feature mirroredFeature = (Feature)dict[originalFeature];
 
-                ((EdgeMultipleSeedTangentRule)originalRule).GetData(out Edge[] originalSeedEdges, out var angleTolerance,
-                    out var hasSameConvexity);
+                ((EdgeMultipleSeedTangentRule)originalRule).GetData(out Edge[] originalSeedEdges,
+                    out double angleTolerance,
+                    out bool hasSameConvexity);
 
                 IList<Edge> newEdges = new List<Edge>();
 
@@ -470,7 +471,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                     Body mirrorBody;
 
-                    if(!dict.ContainsKey(originalBody))
+                    if (!dict.ContainsKey(originalBody))
                     {
                         mirroredFeature.Suppress();
 
@@ -481,7 +482,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                         BodyFeature mirrorOwningFeature = (BodyFeature)dict[originalOwningFeature];
 
-                        if(mirrorOwningFeature.GetBodies().Length != 1)
+                        if (mirrorOwningFeature.GetBodies().Length != 1)
                             throw new InvalidOperationException("Invalid number of bodies for feature");
 
                         mirrorBody = mirrorOwningFeature.GetBodies()[0];
@@ -496,7 +497,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
                     Point3d finalEnd = originalEdge.__EndPoint().__MirrorMap(plane, originalComp, mirroredComp);
 
                     foreach (Edge e in mirrorBody.GetEdges())
-                        if(e.__HasEndPoints(finalStart, finalEnd))
+                        if (e.__HasEndPoints(finalStart, finalEnd))
                             newEdges.Add(e);
                 }
 
@@ -524,7 +525,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
                 _ = (Feature)dict[originalFeature];
 
                 ((EdgeTangentRule)originalRule).GetData(out Edge originalStartEdge, out Edge originalEndEdge,
-                    out var isFromStart, out var angleTolerance, out var hasSameConvexity);
+                    out bool isFromStart, out double angleTolerance, out bool hasSameConvexity);
 
                 Edge newStartEdge = null;
 
@@ -536,10 +537,10 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                 foreach (Body body in mirroredPart.Bodies.ToArray())
                 foreach (Edge e in body.GetEdges())
-                    if(e.__HasEndPoints(finalStart, finalEnd))
+                    if (e.__HasEndPoints(finalStart, finalEnd))
                         newStartEdge = e;
 
-                if(!(originalEndEdge is null))
+                if (!(originalEndEdge is null))
                 {
                     finalStart = originalEndEdge.__StartPoint().__MirrorMap(plane, originalComp, mirroredComp);
 
@@ -547,11 +548,11 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                     foreach (Body body in mirroredPart.Bodies.ToArray())
                     foreach (Edge e in body.GetEdges())
-                        if(e.__HasEndPoints(finalStart, finalEnd))
+                        if (e.__HasEndPoints(finalStart, finalEnd))
                             newEndEdge = e;
                 }
 
-                if(newStartEdge is null)
+                if (newStartEdge is null)
                     throw new ArgumentException("Could not find start edge");
 
                 return mirroredPart.ScRuleFactory.CreateRuleEdgeTangent(newStartEdge, newEndEdge, isFromStart,
@@ -577,13 +578,13 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                 Feature mirroredFeature = (Feature)dict[originalFeature];
 
-                ((EdgeVertexRule)originalRule).GetData(out Edge originalStartEdge, out var isFromStart);
+                ((EdgeVertexRule)originalRule).GetData(out Edge originalStartEdge, out bool isFromStart);
 
                 Body originalBody = originalStartEdge.GetBody();
 
                 Body mirrorBody;
 
-                if(!dict.ContainsKey(originalBody))
+                if (!dict.ContainsKey(originalBody))
                 {
                     mirroredFeature.Suppress();
 
@@ -594,7 +595,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                     BodyFeature mirrorOwningFeature = (BodyFeature)dict[originalOwningFeature];
 
-                    if(mirrorOwningFeature.GetBodies().Length != 1)
+                    if (mirrorOwningFeature.GetBodies().Length != 1)
                         throw new InvalidOperationException("Invalid number of bodies for feature");
 
                     mirrorBody = mirrorOwningFeature.GetBodies()[0];
@@ -610,7 +611,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                 Edge mirrorEdge = mirrorBody.GetEdges().FirstOrDefault(edge => edge.__HasEndPoints(newStart, newEnd));
 
-                if(mirrorEdge is null)
+                if (mirrorEdge is null)
                     throw new InvalidOperationException("Could not find mirror edge");
 
                 return mirroredPart.ScRuleFactory.CreateRuleEdgeVertex(mirrorEdge, isFromStart);
@@ -674,8 +675,9 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
                 mirroredFeature.Suppress();
 
 #pragma warning disable 618
-                ((FaceTangentRule)originalRule).GetData(out Face originalStartFace, out Face originalEndFace, out var _,
-                    out var _, out var _);
+                ((FaceTangentRule)originalRule).GetData(out Face originalStartFace, out Face originalEndFace,
+                    out bool _,
+                    out double _, out bool _);
 #pragma warning restore 618
 
                 IList<Tuple<Point3d, Point3d>> expectedStartFaceEdgePoints = (from edge in originalStartFace.GetEdges()
@@ -699,29 +701,29 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                 foreach (Body body in mirrorOwningFeatureOfStartFace.GetBodies())
                 {
-                    if(!(mirrorStartFace is null) && !(mirrorEndFace is null))
+                    if (!(mirrorStartFace is null) && !(mirrorEndFace is null))
                         break;
 
                     foreach (Face face in body.GetFaces())
                     {
-                        if(mirrorStartFace is null && EdgePointsMatchFace(face, expectedStartFaceEdgePoints))
+                        if (mirrorStartFace is null && EdgePointsMatchFace(face, expectedStartFaceEdgePoints))
                         {
                             mirrorStartFace = face;
 
                             continue;
                         }
 
-                        if(!(mirrorEndFace is null) || !EdgePointsMatchFace(face, expectedEndFaceEdgePoints))
+                        if (!(mirrorEndFace is null) || !EdgePointsMatchFace(face, expectedEndFaceEdgePoints))
                             continue;
 
                         mirrorEndFace = face;
                     }
                 }
 
-                if(mirrorStartFace is null)
+                if (mirrorStartFace is null)
                     throw new ArgumentException("Unable to find start face");
 
-                if(mirrorEndFace is null)
+                if (mirrorEndFace is null)
                     throw new ArgumentException("Unable to find end face");
 
                 return mirroredPart.ScRuleFactory.CreateRuleFaceTangent(mirrorStartFace, new[] { mirrorEndFace });

@@ -164,7 +164,7 @@ namespace TSG_Library.UFuncs
         {
             treeView1.Nodes.Clear();
 
-            if(__display_part_ is null)
+            if (__display_part_ is null)
             {
                 treeView1.Nodes.Add("There is no display part");
                 return;
@@ -172,7 +172,7 @@ namespace TSG_Library.UFuncs
 
             Feature[] features = __work_part_.Features.ToArray();
 
-            if(features.Length > 0)
+            if (features.Length > 0)
             {
                 TreeNode feature_node = treeView1.Nodes.Add("Features");
 

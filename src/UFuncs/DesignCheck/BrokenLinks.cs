@@ -2,7 +2,6 @@
 using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Features;
-
 using TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
@@ -16,9 +15,9 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
             foreach (Feature feature in part.Features.ToArray())
                 try
                 {
-                    if(!(feature is ExtractFace extract_face)
-                       || !extract_face.__IsLinkedBody()
-                       || !extract_face.__IsBroken())
+                    if (!(feature is ExtractFace extract_face)
+                        || !extract_face.__IsLinkedBody()
+                        || !extract_face.__IsBroken())
                         continue;
 
                     TreeNode extract_face_node = new TreeNode(extract_face.GetFeatureName())

@@ -26,23 +26,24 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             Feature mirroredFeature = (Feature)dict[originalFeature];
 
-            ((EdgeVertexRule)originalRule).GetData(out Edge originalStartEdge, out var isFromStart);
+            ((EdgeVertexRule)originalRule).GetData(out Edge originalStartEdge, out bool isFromStart);
 
             Body originalBody = originalStartEdge.GetBody();
 
             Body mirrorBody;
 
-            if(!dict.ContainsKey(originalBody))
+            if (!dict.ContainsKey(originalBody))
             {
                 mirroredFeature.Suppress();
 
                 originalFeature.Suppress();
 
-                Feature originalOwningFeature = originalComp.__Prototype().Features.GetParentFeatureOfBody(originalBody);
+                Feature originalOwningFeature =
+                    originalComp.__Prototype().Features.GetParentFeatureOfBody(originalBody);
 
                 BodyFeature mirrorOwningFeature = (BodyFeature)dict[originalOwningFeature];
 
-                if(mirrorOwningFeature.GetBodies().Length != 1)
+                if (mirrorOwningFeature.GetBodies().Length != 1)
                     throw new InvalidOperationException("Invalid number of bodies for feature");
 
                 mirrorBody = mirrorOwningFeature.GetBodies()[0];
@@ -58,7 +59,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             Edge mirrorEdge = mirrorBody.GetEdges().FirstOrDefault(edge => edge.__HasEndPoints(newStart, newEnd));
 
-            if(mirrorEdge is null)
+            if (mirrorEdge is null)
                 throw new InvalidOperationException("Could not find mirror edge");
 
             return mirroredPart.ScRuleFactory.CreateRuleEdgeVertex(mirrorEdge, isFromStart);

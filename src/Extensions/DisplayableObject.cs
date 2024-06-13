@@ -22,7 +22,7 @@ namespace TSG_Library.Extensions
         {
             obj.Color = color;
 
-            if(redisplayObj)
+            if (redisplayObj)
                 obj.__RedisplayObject();
         }
 
@@ -30,7 +30,7 @@ namespace TSG_Library.Extensions
         {
             ufsession_.Obj.SetTranslucency(obj.Tag, translucency);
 
-            if(redisplayObj)
+            if (redisplayObj)
                 obj.__RedisplayObject();
         }
 
@@ -43,7 +43,7 @@ namespace TSG_Library.Extensions
         {
             displayableObject.Layer = layer;
 
-            if(redisplayObj)
+            if (redisplayObj)
                 displayableObject.__RedisplayObject();
         }
 

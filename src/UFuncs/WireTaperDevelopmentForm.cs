@@ -38,11 +38,11 @@ namespace TSG_Library.UFuncs
             {
                 allComponents = Selection.SelectManyComponents().ToList();
 
-                if(allComponents.Count != 0)
+                if (allComponents.Count != 0)
                 {
                     selComponents = new HashSet<Component>(allComponents.DistinctBy(__c => __c.DisplayName)).ToList();
 
-                    if(selComponents.Count != 0)
+                    if (selComponents.Count != 0)
                     {
                         using (session_.__usingDisplayPartReset())
                         {
@@ -59,11 +59,11 @@ namespace TSG_Library.UFuncs
 
                                 // open 4-VIEW  and update all views
 
-                                var is4View = false;
+                                bool is4View = false;
 
                                 foreach (DrawingSheet drwSheet in __display_part_.DrawingSheets)
                                 {
-                                    if(drwSheet.Name != "4-VIEW") continue;
+                                    if (drwSheet.Name != "4-VIEW") continue;
                                     drwSheet.Open();
 
                                     is4View = true;
@@ -74,76 +74,76 @@ namespace TSG_Library.UFuncs
 
                                 // set attribute values from form
 
-                                if(radioButtonAddWtn.Checked)
+                                if (radioButtonAddWtn.Checked)
                                     __display_part_.SetUserAttribute("WTN", -1, "YES", NXOpen.Update.Option.Now);
-                                if(radioButtonAddWfft.Checked)
+                                if (radioButtonAddWfft.Checked)
                                     __display_part_.SetUserAttribute("WFTD", -1, "YES", NXOpen.Update.Option.Now);
-                                if(radioButtonRemoveWtn.Checked)
+                                if (radioButtonRemoveWtn.Checked)
                                     __display_part_.SetUserAttribute("WTN", -1, "NO", NXOpen.Update.Option.Now);
-                                if(radioButtonRemoveWfft.Checked)
+                                if (radioButtonRemoveWfft.Checked)
                                     __display_part_.SetUserAttribute("WFTD", -1, "NO", NXOpen.Update.Option.Now);
 
                                 // delete selected notes from 4-VIEW
 
-                                if(!is4View) continue;
+                                if (!is4View) continue;
                                 List<NXObject> addToDelete = new List<NXObject>();
 
                                 foreach (Note drfNote in __display_part_.Notes)
                                 {
-                                    if(drfNote.Layer != 200) continue;
-                                    if(radioButtonAddWtn.Checked)
+                                    if (drfNote.Layer != 200) continue;
+                                    if (radioButtonAddWtn.Checked)
                                     {
-                                        var noteText = drfNote.GetText();
+                                        string[] noteText = drfNote.GetText();
 
-                                        if(noteText[0].Contains("TSG STANDARD"))
+                                        if (noteText[0].Contains("TSG STANDARD"))
                                             addToDelete.Add(drfNote);
                                     }
 
-                                    if(radioButtonRemoveWtn.Checked)
+                                    if (radioButtonRemoveWtn.Checked)
                                     {
-                                        var noteText = drfNote.GetText();
+                                        string[] noteText = drfNote.GetText();
 
-                                        if(noteText[0].Contains("TSG STANDARD"))
+                                        if (noteText[0].Contains("TSG STANDARD"))
                                             addToDelete.Add(drfNote);
                                     }
 
-                                    if(radioButtonAddWfft.Checked)
+                                    if (radioButtonAddWfft.Checked)
                                     {
-                                        var noteText = drfNote.GetText();
+                                        string[] noteText = drfNote.GetText();
 
-                                        if(noteText[0].Contains("WAITING FOR FINAL TRIM"))
+                                        if (noteText[0].Contains("WAITING FOR FINAL TRIM"))
                                             addToDelete.Add(drfNote);
                                     }
 
-                                    if(!radioButtonRemoveWfft.Checked) continue;
+                                    if (!radioButtonRemoveWfft.Checked) continue;
                                     {
-                                        var noteText = drfNote.GetText();
+                                        string[] noteText = drfNote.GetText();
 
-                                        if(noteText[0].Contains("WAITING FOR FINAL TRIM"))
+                                        if (noteText[0].Contains("WAITING FOR FINAL TRIM"))
                                             addToDelete.Add(drfNote);
                                     }
                                 }
 
-                                if(addToDelete.Count != 0)
+                                if (addToDelete.Count != 0)
                                     session_.__DeleteObjects(addToDelete.ToArray());
 
                                 // get scale expression value
-                                var scale = 1.00;
+                                double scale = 1.00;
 
                                 foreach (Expression exp in __display_part_.Expressions)
-                                    if(exp.Name == "borderScale")
+                                    if (exp.Name == "borderScale")
                                         scale = exp.GetValueUsingUnits(Expression.UnitsOption.Expression);
 
                                 // get settings from form and set attributes and import notes
 
-                                if(radioButtonAddWtn.Checked)
+                                if (radioButtonAddWtn.Checked)
                                 {
                                     __display_part_.SetUserAttribute("WTN", -1, "YES", NXOpen.Update.Option.Now);
                                     const string path = "G:\\0Library\\Drafting\\wire-note.prt";
                                     ImportNote(path, scale);
                                 }
 
-                                if(radioButtonAddWfft.Checked)
+                                if (radioButtonAddWfft.Checked)
                                 {
                                     __display_part_.SetUserAttribute("WFTD", -1, "YES", NXOpen.Update.Option.Now);
                                     const string path = "G:\\0Library\\Drafting\\trim-note.prt";
@@ -209,7 +209,7 @@ namespace TSG_Library.UFuncs
             StateCollection layerState = part.Layers.GetStates();
 
             foreach (Category category in part.LayerCategories)
-                if(category.Name == "ALL")
+                if (category.Name == "ALL")
                     layerState.SetStateOfCategory(category, State.Hidden);
 
             part.Layers.SetStates(layerState, true);
@@ -228,7 +228,7 @@ namespace TSG_Library.UFuncs
             StateCollection layerState = part.Layers.GetStates();
 
             foreach (Category category in part.LayerCategories)
-                if(category.Name == "ALL")
+                if (category.Name == "ALL")
                     layerState.SetStateOfCategory(category, State.Hidden);
 
             part.Layers.SetStates(layerState, true);

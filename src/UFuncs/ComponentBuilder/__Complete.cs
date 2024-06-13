@@ -1,15 +1,12 @@
-﻿using NXOpen.UF;
-using NXOpen;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static TSG_Library.Extensions.__Extensions_;
-using static NXOpen.UF.UFConstants;
-using NXOpen.UserDefinedObjects;
+using NXOpen;
 using NXOpen.Features;
 using NXOpen.GeometricUtilities;
+using NXOpen.UF;
+using NXOpen.UserDefinedObjects;
+using static TSG_Library.Extensions.__Extensions_;
+using static NXOpen.UF.UFConstants;
 
 namespace TSG_Library.UFuncs
 {
@@ -24,16 +21,16 @@ namespace TSG_Library.UFuncs
                 if (eLine.Name != "XBASE1" && eLine.Name != "YBASE1" && eLine.Name != "ZBASE1")
                     continue;
 
-                var dim = _displayPart.PartUnits == BasePart.Units.Inches
+                string dim = _displayPart.PartUnits == BasePart.Units.Inches
                     ? $"{Math.Round(eLine.GetLength(), 3):0.000}"
                     : $"{Math.Round(eLine.GetLength(), 3) / 25.4:0.000}";
 
-                var midPoint = new double[3];
+                double[] midPoint = new double[3];
                 UFObj.DispProps dispProps = new UFObj.DispProps { color = 31 };
                 midPoint[0] = (eLine.StartPoint.X + eLine.EndPoint.X) / 2;
                 midPoint[1] = (eLine.StartPoint.Y + eLine.EndPoint.Y) / 2;
                 midPoint[2] = (eLine.StartPoint.Z + eLine.EndPoint.Z) / 2;
-                var mappedPoint = new double[3];
+                double[] mappedPoint = new double[3];
                 ufsession_.Csys.MapPoint(UF_CSYS_WORK_COORDS, midPoint, UF_CSYS_ROOT_COORDS, mappedPoint);
 
                 ufsession_.Disp.DisplayTemporaryText(
@@ -47,6 +44,7 @@ namespace TSG_Library.UFuncs
                     1);
             }
         }
+
         private static void CreatePointBlkOrigin()
         {
             Point3d pointLocationOrigin = _displayPart.WCS.Origin;
@@ -91,7 +89,8 @@ namespace TSG_Library.UFuncs
         {
             using (session_.__UsingDoUpdate())
             {
-                UserDefinedClass myUdOclass = session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoDynamicHandle");
+                UserDefinedClass myUdOclass =
+                    session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoDynamicHandle");
 
                 if (myUdOclass != null)
                 {
@@ -173,16 +172,16 @@ namespace TSG_Library.UFuncs
 
         private static double RoundEnglish(double spacing, double cursor)
         {
-            var round = Math.Abs(cursor);
-            var roundValue = Math.Round(round, 3);
-            var truncateValue = Math.Truncate(roundValue);
-            var fractionValue = roundValue - truncateValue;
+            double round = Math.Abs(cursor);
+            double roundValue = Math.Round(round, 3);
+            double truncateValue = Math.Truncate(roundValue);
+            double fractionValue = roundValue - truncateValue;
             if (fractionValue != 0)
-                for (var ii = spacing; ii <= 1; ii += spacing)
+                for (double ii = spacing; ii <= 1; ii += spacing)
                     if (fractionValue <= ii)
                     {
-                        var roundedFraction = ii;
-                        var finalValue = truncateValue + roundedFraction;
+                        double roundedFraction = ii;
+                        double finalValue = truncateValue + roundedFraction;
                         round = finalValue;
                         break;
                     }
@@ -194,16 +193,16 @@ namespace TSG_Library.UFuncs
 
         private static double RoundMetric(double spacing, double cursor)
         {
-            var round = Math.Abs(cursor / 25.4);
-            var roundValue = Math.Round(round, 3);
-            var truncateValue = Math.Truncate(roundValue);
-            var fractionValue = roundValue - truncateValue;
+            double round = Math.Abs(cursor / 25.4);
+            double roundValue = Math.Round(round, 3);
+            double truncateValue = Math.Truncate(roundValue);
+            double fractionValue = roundValue - truncateValue;
             if (fractionValue != 0)
-                for (var ii = spacing / 25.4; ii <= 1; ii += spacing / 25.4)
+                for (double ii = spacing / 25.4; ii <= 1; ii += spacing / 25.4)
                     if (fractionValue <= ii)
                     {
-                        var roundedFraction = ii;
-                        var finalValue = truncateValue + roundedFraction;
+                        double roundedFraction = ii;
+                        double finalValue = truncateValue + roundedFraction;
                         round = finalValue;
                         break;
                     }
@@ -213,7 +212,8 @@ namespace TSG_Library.UFuncs
             return round * 25.4;
         }
 
-        private static void CreateUdo(UserDefinedObject myUdo, UserDefinedObject.LinkDefinition[] myLinks, double[] pointOnFace, Point point1, string name)
+        private static void CreateUdo(UserDefinedObject myUdo, UserDefinedObject.LinkDefinition[] myLinks,
+            double[] pointOnFace, Point point1, string name)
         {
             myUdo.SetName(name);
             myUdo.SetDoubles(pointOnFace);
@@ -226,11 +226,9 @@ namespace TSG_Library.UFuncs
         }
 
 
-
-
         private void CreateBlockLines(Point3d wcsOrigin, double lineLength, double lineWidth, double lineHeight)
         {
-            var lineColor = 7;
+            int lineColor = 7;
 
             Point3d mappedStartPoint1 = MapAbsoluteToWcs(wcsOrigin);
             Point3d endPointX1 = mappedStartPoint1.__AddX(lineLength);
@@ -291,9 +289,10 @@ namespace TSG_Library.UFuncs
             yBase2.RedisplayObject();
             _edgeRepLines.Add(yBase2);
         }
+
         private static double MapAndConvert(double inputDist, double[] mappedBase, double[] mappedPoint, int index)
         {
-            var distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
+            double distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
 
             if (mappedBase[index] < mappedPoint[index])
             {
@@ -307,8 +306,6 @@ namespace TSG_Library.UFuncs
 
             return distance;
         }
-
-
 
 
         private void ZEndPoint(double distance, Line zAxisLine)
@@ -340,8 +337,6 @@ namespace TSG_Library.UFuncs
         }
 
 
-
-
         private void ZStartPoint(double distance, Line zAxisLine)
         {
             Point3d mappedStartPoint = MapAbsoluteToWcs(zAxisLine.StartPoint);
@@ -350,8 +345,6 @@ namespace TSG_Library.UFuncs
             Point3d mappedAddZ = MapWcsToAbsolute(addZ);
             zAxisLine.SetStartPoint(mappedAddZ);
         }
-
-
 
 
         private void YEndPoint(double distance, Line yAxisLine)
@@ -373,7 +366,8 @@ namespace TSG_Library.UFuncs
         }
 
 
-        private void MoveObjects(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, double xDistance, string dir_xyz, bool showTemporary)
+        private void MoveObjects(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, double xDistance,
+            string dir_xyz, bool showTemporary)
         {
             if (!(dir_xyz == "X" || dir_xyz == "Y" || dir_xyz == "Z"))
                 throw new ArgumentException($"Invalid direction '{dir_xyz}'");
@@ -386,45 +380,43 @@ namespace TSG_Library.UFuncs
         }
 
 
+        private static void MotionCallbackDynamic1(Point pointPrototype, List<NXObject> doNotMovePts,
+            List<NXObject> movePtsHalf, List<NXObject> movePtsFull, bool isPos)
+        {
+            foreach (Point namedPt in _workPart.Points)
+                if (namedPt.Name != "")
+                {
+                    if (namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
+                    {
+                        doNotMovePts.Add(namedPt);
+                        continue;
+                    }
 
+                    if (namedPt.Name.Contains("Y") && pointPrototype.Name.Contains("Y"))
+                    {
+                        doNotMovePts.Add(namedPt);
+                        continue;
+                    }
 
-  private static void MotionCallbackDynamic1(Point pointPrototype, List<NXObject> doNotMovePts, List<NXObject> movePtsHalf, List<NXObject> movePtsFull, bool isPos)
-  {
-      foreach (Point namedPt in _workPart.Points)
-          if (namedPt.Name != "")
-          {
-              if (namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
-              {
-                  doNotMovePts.Add(namedPt);
-                  continue;
-              }
+                    if (namedPt.Name.Contains("Z") && pointPrototype.Name.Contains("Z"))
+                    {
+                        doNotMovePts.Add(namedPt);
+                        continue;
+                    }
 
-              if (namedPt.Name.Contains("Y") && pointPrototype.Name.Contains("Y"))
-              {
-                  doNotMovePts.Add(namedPt);
-                  continue;
-              }
+                    if (namedPt.Name.Contains("BLKORIGIN"))
+                    {
+                        if (isPos)
+                            doNotMovePts.Add(namedPt);
+                        else
+                            movePtsFull.Add(namedPt);
+                        continue;
+                    }
 
-              if (namedPt.Name.Contains("Z") && pointPrototype.Name.Contains("Z"))
-              {
-                  doNotMovePts.Add(namedPt);
-                  continue;
-              }
+                    movePtsHalf.Add(namedPt);
+                }
 
-              if (namedPt.Name.Contains("BLKORIGIN"))
-              {
-                  if (isPos)
-                      doNotMovePts.Add(namedPt);
-                  else
-                      movePtsFull.Add(namedPt);
-                  continue;
-              }
-
-              movePtsHalf.Add(namedPt);
-          }
-
-      movePtsFull.Add(pointPrototype);
-  }
-
+            movePtsFull.Add(pointPrototype);
+        }
     }
 }

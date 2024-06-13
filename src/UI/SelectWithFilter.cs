@@ -30,15 +30,15 @@ namespace TSG_Library.Utilities
 
         public static Body SelectComponent(string prompt)
         {
-            var cursor = new double[3];
+            double[] cursor = new double[3];
             Ufs.Ui.LockUgAccess(UF_UI_FROM_CUSTOM);
             try
             {
                 Ufs.Ui.SelectWithSingleDialog(prompt, prompt, UF_UI_SEL_SCOPE_ANY_IN_ASSEMBLY, Ip, IntPtr.Zero,
-                    out var response, out Tag selectedObj,
+                    out int response, out Tag selectedObj,
                     cursor, out Tag view);
                 Ufs.Ui.UnlockUgAccess(UF_UI_FROM_CUSTOM);
-                if(response != UF_UI_OBJECT_SELECTED || selectedObj == Tag.Null) return null;
+                if (response != UF_UI_OBJECT_SELECTED || selectedObj == Tag.Null) return null;
                 Body comp = (Body)NXObjectManager.Get(selectedObj);
                 comp.Unhighlight();
                 return comp;
@@ -59,8 +59,8 @@ namespace TSG_Library.Utilities
         {
             Body obj1 = (Body)NXObjectManager.Get(_object);
             Component objComp = obj1.OwningComponent;
-            if(objComp == null) return UF_UI_SEL_ACCEPT;
-            var isFound = NonValidCandidates.Where(name => objComp.Name != string.Empty)
+            if (objComp == null) return UF_UI_SEL_ACCEPT;
+            bool isFound = NonValidCandidates.Where(name => objComp.Name != string.Empty)
                 .Any(name => objComp.Name.ToLower().Contains(name));
             return isFound ? UF_UI_SEL_REJECT : UF_UI_SEL_ACCEPT;
         }

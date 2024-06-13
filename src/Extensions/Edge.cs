@@ -22,7 +22,7 @@ namespace TSG_Library.Extensions
 
         public static Vector3d __NormalVector(this Edge edge)
         {
-            if(edge.SolidEdgeType != Edge.EdgeType.Linear)
+            if (edge.SolidEdgeType != Edge.EdgeType.Linear)
                 throw new ArgumentException("Cannot ask for the vector of a non linear edge");
 
             return edge.__StartPoint().__Subtract(edge.__EndPoint());
@@ -36,10 +36,10 @@ namespace TSG_Library.Extensions
         /// <returns>The edge positions.</returns>
         public static bool __HasEndPoints(this Edge edge, Point3d pos1, Point3d pos2)
         {
-            if(edge.__StartPoint().__IsEqualTo(pos1) && edge.__EndPoint().__IsEqualTo(pos2))
+            if (edge.__StartPoint().__IsEqualTo(pos1) && edge.__EndPoint().__IsEqualTo(pos2))
                 return true;
 
-            if(edge.__StartPoint().__IsEqualTo(pos2) && edge.__EndPoint().__IsEqualTo(pos1))
+            if (edge.__StartPoint().__IsEqualTo(pos2) && edge.__EndPoint().__IsEqualTo(pos1))
                 return true;
 
             return false;
@@ -58,7 +58,7 @@ namespace TSG_Library.Extensions
         {
             UFEval eval = ufsession_.Eval;
             eval.Initialize2(edge.Tag, out IntPtr evaluator);
-            var array = new double[2] { 0.0, 1.0 };
+            double[] array = new double[2] { 0.0, 1.0 };
             eval.AskLimits(evaluator, array);
             eval.Free(evaluator);
             return Factor * array[0];
@@ -71,7 +71,7 @@ namespace TSG_Library.Extensions
         {
             UFEval eval = ufsession_.Eval;
             eval.Initialize2(edge.Tag, out IntPtr evaluator);
-            var array = new double[2] { 0.0, 1.0 };
+            double[] array = new double[2] { 0.0, 1.0 };
             eval.AskLimits(evaluator, array);
             eval.Free(evaluator);
             return Factor * array[1];
@@ -90,8 +90,8 @@ namespace TSG_Library.Extensions
         //     / Factor
         internal static double __Factor(this Edge edge)
         {
-            if(edge.SolidEdgeType == Edge.EdgeType.Elliptical ||
-               edge.SolidEdgeType == Edge.EdgeType.Circular)
+            if (edge.SolidEdgeType == Edge.EdgeType.Elliptical ||
+                edge.SolidEdgeType == Edge.EdgeType.Circular)
                 return 180.0 / System.Math.PI;
 
             return 1.0;
@@ -284,10 +284,10 @@ namespace TSG_Library.Extensions
         {
             UFEval eval = ufsession_.Eval;
             eval.Initialize2(edge.Tag, out IntPtr evaluator);
-            var point = new double[3];
-            var tangent = new double[3];
-            var normal = new double[3];
-            var array = new double[3];
+            double[] point = new double[3];
+            double[] tangent = new double[3];
+            double[] normal = new double[3];
+            double[] array = new double[3];
             value /= Factor;
             eval.EvaluateUnitVectors(evaluator, value, point, tangent, normal, array);
             eval.Free(evaluator);

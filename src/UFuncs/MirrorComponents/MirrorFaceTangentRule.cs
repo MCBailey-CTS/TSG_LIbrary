@@ -29,8 +29,8 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             mirroredFeature.Suppress();
 
 #pragma warning disable 618
-            ((FaceTangentRule)originalRule).GetData(out Face originalStartFace, out Face originalEndFace, out var _,
-                out var _, out var _);
+            ((FaceTangentRule)originalRule).GetData(out Face originalStartFace, out Face originalEndFace, out bool _,
+                out double _, out bool _);
 #pragma warning restore 618
 
             IList<Tuple<Point3d, Point3d>> expectedStartFaceEdgePoints = (from edge in originalStartFace.GetEdges()
@@ -54,29 +54,29 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             foreach (Body body in mirrorOwningFeatureOfStartFace.GetBodies())
             {
-                if(!(mirrorStartFace is null) && !(mirrorEndFace is null))
+                if (!(mirrorStartFace is null) && !(mirrorEndFace is null))
                     break;
 
                 foreach (Face face in body.GetFaces())
                 {
-                    if(mirrorStartFace is null && EdgePointsMatchFace(face, expectedStartFaceEdgePoints))
+                    if (mirrorStartFace is null && EdgePointsMatchFace(face, expectedStartFaceEdgePoints))
                     {
                         mirrorStartFace = face;
 
                         continue;
                     }
 
-                    if(!(mirrorEndFace is null) || !EdgePointsMatchFace(face, expectedEndFaceEdgePoints))
+                    if (!(mirrorEndFace is null) || !EdgePointsMatchFace(face, expectedEndFaceEdgePoints))
                         continue;
 
                     mirrorEndFace = face;
                 }
             }
 
-            if(mirrorStartFace is null)
+            if (mirrorStartFace is null)
                 throw new ArgumentException("Unable to find start face");
 
-            if(mirrorEndFace is null)
+            if (mirrorEndFace is null)
                 throw new ArgumentException("Unable to find end face");
 
             return mirroredPart.ScRuleFactory.CreateRuleFaceTangent(mirrorStartFace, new[] { mirrorEndFace });

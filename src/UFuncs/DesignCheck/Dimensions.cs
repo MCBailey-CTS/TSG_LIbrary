@@ -19,7 +19,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
         {
             result_node = new TreeNode(part.Leaf) { Tag = part };
 #pragma warning disable CS0219 // Variable is assigned but its value is never used
-            var passed = true;
+            bool passed = true;
 #pragma warning restore CS0219 // Variable is assigned but its value is never used
 
             foreach (Dimension dimension in part.Dimensions.ToArray())

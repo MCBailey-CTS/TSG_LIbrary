@@ -10,7 +10,8 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
     {
         string FeatureType { get; }
 
-        void Mirror(Feature originalFeature, IDictionary<TaggedObject, TaggedObject> dict, Surface.Plane plane, Component originalComp);
+        void Mirror(Feature originalFeature, IDictionary<TaggedObject, TaggedObject> dict, Surface.Plane plane,
+            Component originalComp);
 
         Point3d MirrorMap(Point3d position, Surface.Plane plane, Component fromComponent, Component toComponent);
 
@@ -18,8 +19,4 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
 
         Matrix3x3 MirrorMap(Matrix3x3 orientation, Surface.Plane plane, Component fromComponent, Component toComponent);
     }
-
-
-
-
 }

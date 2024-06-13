@@ -20,46 +20,47 @@ namespace TSG_Library.Utilities
         {
             List<Component> selComponents = Selection.SelectManyComponents().ToList();
 
-            if(selComponents.Count <= 0)
+            if (selComponents.Count <= 0)
                 return;
 
             HashSet<string> filesToDelete = new HashSet<string>();
 
-            HashSet<string> selectedDisplayNames = new HashSet<string>(selComponents.Select(component => component.DisplayName));
+            HashSet<string> selectedDisplayNames =
+                new HashSet<string>(selComponents.Select(component => component.DisplayName));
 
-            foreach (var selectedDisplayName in selectedDisplayNames)
+            foreach (string selectedDisplayName in selectedDisplayNames)
 
-                if(selectedDisplayName.ToLower().Contains("master") ||
-                   selectedDisplayName.ToLower().Contains("history"))
+                if (selectedDisplayName.ToLower().Contains("master") ||
+                    selectedDisplayName.ToLower().Contains("history"))
                     print_($"Deleting the {selectedDisplayName} is forbidden.");
 
 
             GFolder folder = GFolder.create(__work_part_.FullPath);
 
-            var currentDisplayNameJob = __display_part_.Leaf.Replace("-simulation", "");
+            string currentDisplayNameJob = __display_part_.Leaf.Replace("-simulation", "");
 
             // This gets all the files to delete that are located within the JobFolder on the GDrive.
-            foreach (var file in Directory.EnumerateFiles(folder.dir_job, "*", SearchOption.AllDirectories))
+            foreach (string file in Directory.EnumerateFiles(folder.dir_job, "*", SearchOption.AllDirectories))
             {
-                var fileName = Path.GetFileNameWithoutExtension(file);
+                string fileName = Path.GetFileNameWithoutExtension(file);
 
-                if(!selectedDisplayNames.Contains(fileName))
+                if (!selectedDisplayNames.Contains(fileName))
                     continue;
 
                 filesToDelete.Add(file);
             }
 
-            var simDir = $"{SimActive}\\{Path.GetFileNameWithoutExtension(folder.dir_job)}";
+            string simDir = $"{SimActive}\\{Path.GetFileNameWithoutExtension(folder.dir_job)}";
 
             Dictionary<string, string> dictionary = new Dictionary<string, string>();
 
-            foreach (var displayName in selectedDisplayNames)
+            foreach (string displayName in selectedDisplayNames)
                 switch (folder.customer_number.Length)
                 {
                     case 6:
                         Match tsgMatch = Regex.Match(displayName, "-(?<tsgLevel>tsg\\d+)");
 
-                        if(!tsgMatch.Success)
+                        if (!tsgMatch.Success)
                             continue;
 
                         dictionary.Add(displayName, $"{simDir}-{tsgMatch.Groups["tsgLevel"].Value}");
@@ -68,7 +69,7 @@ namespace TSG_Library.Utilities
 
                         Match ecMatch = Regex.Match(displayName, "-(?<engineeringChange>5[0-9]{2})[-]*");
 
-                        if(ecMatch.Success)
+                        if (ecMatch.Success)
                         {
                             dictionary.Add(displayName, $"{simDir} {ecMatch.Groups["engineeringChange"].Value}");
                             continue;
@@ -79,14 +80,14 @@ namespace TSG_Library.Utilities
                 }
 
             foreach (KeyValuePair<string, string> pair in dictionary)
-            foreach (var file in Directory.EnumerateFiles(pair.Value, "*", SearchOption.AllDirectories))
+            foreach (string file in Directory.EnumerateFiles(pair.Value, "*", SearchOption.AllDirectories))
             {
-                var fileName = Path.GetFileNameWithoutExtension(file);
+                string fileName = Path.GetFileNameWithoutExtension(file);
 
-                if(fileName == null)
+                if (fileName == null)
                     continue;
 
-                if(fileName != pair.Key)
+                if (fileName != pair.Key)
                     continue;
 
                 filesToDelete.Add(file);
@@ -114,7 +115,7 @@ namespace TSG_Library.Utilities
 
         private static void DeleteFiles(IEnumerable<string> filesToDelete)
         {
-            foreach (var file in filesToDelete)
+            foreach (string file in filesToDelete)
                 File.Delete(file);
         }
 
@@ -122,7 +123,7 @@ namespace TSG_Library.Utilities
         {
             foreach (Component comp in selComponents.Select(__c => __c))
             {
-                if(comp.Prototype is Part part)
+                if (comp.Prototype is Part part)
                     part.Close(BasePart.CloseWholeTree.False, BasePart.CloseModified.CloseModified, null);
 
                 session_.__DeleteObjects(comp);

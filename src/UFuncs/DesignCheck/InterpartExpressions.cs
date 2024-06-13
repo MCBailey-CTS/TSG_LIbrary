@@ -55,18 +55,18 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
             GFolder folder = GFolder.create(part.FullPath);
             result_node = new TreeNode(part.Leaf) { Tag = part };
 #pragma warning disable CS0219 // Variable is assigned but its value is never used
-            var passed = true;
+            bool passed = true;
 #pragma warning restore CS0219 // Variable is assigned but its value is never used
 
             foreach (Expression expression in part.Expressions.ToArray())
                 try
                 {
-                    if(!expression.IsInterpartExpression)
+                    if (!expression.IsInterpartExpression)
                         continue;
 
-                    expression.GetInterpartExpressionNames(out var partName, out _);
+                    expression.GetInterpartExpressionNames(out string partName, out _);
 
-                    if(partName.StartsWith(folder.dir_job))
+                    if (partName.StartsWith(folder.dir_job))
                         continue;
 
                     TreeNode exp_node = new TreeNode(expression.Name) { Tag = expression };

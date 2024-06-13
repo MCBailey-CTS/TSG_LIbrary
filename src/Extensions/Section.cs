@@ -53,7 +53,7 @@ namespace TSG_Library.Extensions
             Section nXOpenSection = section;
             nXOpenSection.AllowSelfIntersection(false);
 
-            for (var i = 0; i < icurves.Length; i++)
+            for (int i = 0; i < icurves.Length; i++)
             {
                 SelectionIntentRule[] rules = section.__OwningPart().__CreateSelectionIntentRule(icurves[i]);
 
@@ -72,7 +72,7 @@ namespace TSG_Library.Extensions
         {
             Point[] array = new Point[points.Length];
 
-            for (var i = 0; i < array.Length; i++)
+            for (int i = 0; i < array.Length; i++)
                 array[i] = points[i];
 
             CurveDumbRule curveDumbRule = __work_part_.ScRuleFactory.CreateRuleCurveDumbFromPoints(array);

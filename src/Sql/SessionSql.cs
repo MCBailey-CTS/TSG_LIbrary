@@ -21,7 +21,7 @@ namespace TSG_Library.Forms
             {
                 ListingWindow lw = Session.GetSession().ListingWindow;
 
-                if(lw.IsOpen) return lw;
+                if (lw.IsOpen) return lw;
 
                 lw.Open();
 
@@ -37,7 +37,7 @@ namespace TSG_Library.Forms
 
                 user_id = NewMethod(user_id);
 
-                if(user_id is null)
+                if (user_id is null)
                     user_id = NewMethod1();
                 NewMethod2(user_id);
             }
@@ -59,7 +59,7 @@ namespace TSG_Library.Forms
 
                 UFSession.GetUFSession().UF.AskSystemInfo(out SystemInfo info);
 
-                var is_batch = _session_.IsBatch ? 1 : 0;
+                int is_batch = _session_.IsBatch ? 1 : 0;
 
                 using (SqlCommand sql = new SqlCommand
                        {
@@ -149,9 +149,9 @@ namespace TSG_Library.Forms
                                $@"select user_id, user_name from ufunc_users where user_name='{info.user_name}'"
                        })
                 {
-                    var result = sql.ExecuteScalar();
+                    object result = sql.ExecuteScalar();
 
-                    if(result is int _k)
+                    if (result is int _k)
                         user_id = _k;
                 }
             }

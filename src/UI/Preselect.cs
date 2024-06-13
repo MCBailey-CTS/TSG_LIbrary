@@ -21,9 +21,10 @@ namespace TSG_Library.Ui
 
         public static int PreselectComponents(IntPtr select, IntPtr userData)
         {
-            PreselectData preselectedData = (PreselectData)Marshal.PtrToStructure(userData, new PreselectData().GetType());
+            PreselectData preselectedData =
+                (PreselectData)Marshal.PtrToStructure(userData, new PreselectData().GetType());
 
-            if(preselectedData.ItemCount > 0)
+            if (preselectedData.ItemCount > 0)
                 UFSession.GetUFSession().Ui
                     .AddToSelList(select, preselectedData.ItemCount, preselectedData.Items, true);
 
@@ -42,10 +43,10 @@ namespace TSG_Library.Ui
         {
             PreselectData preselectComponentsData = new PreselectData { Items = null, ItemCount = 0 };
 
-            if(theComponents != null)
+            if (theComponents != null)
             {
                 Tag[] compTags = new Tag[theComponents.Length];
-                for (var ii = 0; ii < theComponents.Length; ii++) compTags[ii] = theComponents[ii].Tag;
+                for (int ii = 0; ii < theComponents.Length; ii++) compTags[ii] = theComponents[ii].Tag;
 
                 preselectComponentsData.Items = compTags;
                 preselectComponentsData.ItemCount = theComponents.Length;
@@ -59,14 +60,14 @@ namespace TSG_Library.Ui
             UFSession.GetUFSession().Ui.LockUgAccess(UF_UI_FROM_CUSTOM);
 
             UFSession.GetUFSession().Ui.SelectWithClassDialog("Select Components", prompt,
-                UF_UI_SEL_SCOPE_ANY_IN_ASSEMBLY, PreselectComponents, preselectIntPtr, out _, out var cnt,
+                UF_UI_SEL_SCOPE_ANY_IN_ASSEMBLY, PreselectComponents, preselectIntPtr, out _, out int cnt,
                 out Tag[] theTags);
 
             UFSession.GetUFSession().Ui.UnlockUgAccess(UF_UI_FROM_CUSTOM);
 
             theComponents = new Component[cnt];
 
-            for (var ii = 0; ii < cnt; ii++)
+            for (int ii = 0; ii < cnt; ii++)
             {
                 UFSession.GetUFSession().Disp.SetHighlight(theTags[ii], 0);
                 theComponents[ii] = (Component)NXObjectManager.Get(theTags[ii]);

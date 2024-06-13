@@ -26,13 +26,13 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             Component mirroredComp = (Component)dict[originalComp];
 
-            if(!mirroredLinkedBody.__IsBroken())
+            if (!mirroredLinkedBody.__IsBroken())
                 return;
 
             ExtractFace originalLinkedBody = (ExtractFace)originalFeature;
 
             // Check to see if they are both broken. Then we can continue.
-            if(originalLinkedBody.__IsBroken())
+            if (originalLinkedBody.__IsBroken())
                 return;
 
             Tag xform = originalLinkedBody.__XFormTag();
@@ -45,7 +45,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             _UFSession.Wave.AskLinkedFeatureInfo(linkedGeom, out UFWave.LinkedFeatureInfo nameStore);
 
-            if(fromComp is null)
+            if (fromComp is null)
                 throw new MirrorException(
                     $"Linked component was null in {originalFeature.__OwningPart().Leaf} from {originalFeature.GetFeatureName()}");
 
@@ -53,9 +53,9 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             Component parent = parentComponents[parentComponents.Length - 2];
 
-            var originalRefsets = new string[parentComponents.Length];
+            string[] originalRefsets = new string[parentComponents.Length];
 
-            for (var i = 0; i < originalRefsets.Length; i++)
+            for (int i = 0; i < originalRefsets.Length; i++)
                 originalRefsets[i] = parentComponents[i].ReferenceSet;
 
             using (new ReferenceSetReset(parent))
@@ -71,7 +71,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
                 };
 
                 foreach (ILibraryComponent libComp in libComps)
-                    if(libComp.IsLibraryComponent(fromComp))
+                    if (libComp.IsLibraryComponent(fromComp))
                     {
                         libComp.Mirror(plane, mirroredComp, originalLinkedBody, fromComp, dict);
 
@@ -82,7 +82,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
                         return;
                     }
 
-                if(!fromComp.DisplayName.Contains("layout") && !fromComp.DisplayName.Contains("blank"))
+                if (!fromComp.DisplayName.Contains("layout") && !fromComp.DisplayName.Contains("blank"))
                     return;
 
                 _WorkPart = __display_part_;
@@ -95,7 +95,8 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                     Body[] bodies;
 
-                    ExtractFaceBuilder tempExtractBuilder = _WorkPart.Features.CreateExtractFaceBuilder(originalLinkedBody);
+                    ExtractFaceBuilder tempExtractBuilder =
+                        _WorkPart.Features.CreateExtractFaceBuilder(originalLinkedBody);
 
                     using (new Destroyer(tempExtractBuilder))
                     {
@@ -109,13 +110,16 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                     __work_component_ = mirroredComp;
 
-                    Session.UndoMarkId markId4 = session_.SetUndoMark(Session.MarkVisibility.Visible, "Redefine Feature");
+                    Session.UndoMarkId markId4 =
+                        session_.SetUndoMark(Session.MarkVisibility.Visible, "Redefine Feature");
 
-                    EditWithRollbackManager rollbackManager = _WorkPart.Features.StartEditWithRollbackManager(mirroredLinkedBody, markId4);
+                    EditWithRollbackManager rollbackManager =
+                        _WorkPart.Features.StartEditWithRollbackManager(mirroredLinkedBody, markId4);
 
                     using (new Destroyer(rollbackManager))
                     {
-                        ExtractFaceBuilder extractBuilder = _WorkPart.Features.CreateExtractFaceBuilder(mirroredLinkedBody);
+                        ExtractFaceBuilder extractBuilder =
+                            _WorkPart.Features.CreateExtractFaceBuilder(mirroredLinkedBody);
 
                         using (new Destroyer(extractBuilder))
                         {

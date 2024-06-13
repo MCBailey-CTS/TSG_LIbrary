@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TSG_Library.Utilities;
+﻿using TSG_Library.Utilities;
 
 namespace TSG_Library.UFuncs
 {
     public partial class EditBlockForm
     {
-
         private static void NewMethod23()
         {
             SelectWithFilter.NonValidCandidates = _nonValidNames;
@@ -44,7 +38,6 @@ namespace TSG_Library.UFuncs
         }
 
 
-
         private static void NewMethod10()
         {
             SelectWithFilter.NonValidCandidates = _nonValidNames;
@@ -52,8 +45,6 @@ namespace TSG_Library.UFuncs
             _editBody = SelectWithFilter.SelectedCompBody;
             _isNewSelection = true;
         }
-
-
 
 
         private static void NewMethod()
@@ -72,11 +63,5 @@ namespace TSG_Library.UFuncs
             _editBody = SelectWithFilter.SelectedCompBody;
             _isNewSelection = true;
         }
-
-
-
-
-
-
     }
 }

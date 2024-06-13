@@ -32,7 +32,7 @@ namespace TSG_Library.UFuncs
                     List<Component> toComponents = Selection.SelectManyComponents().ToList();
                     Tag cycleRefSet = Tag.Null;
 
-                    if(fromComponent.Count == 0 || toComponents.Count == 0)
+                    if (fromComponent.Count == 0 || toComponents.Count == 0)
                         return;
 
                     Tag copyFromPart = ufsession_.Assem.AskPrototypeOfOcc(fromComponent[0].Tag);
@@ -41,47 +41,48 @@ namespace TSG_Library.UFuncs
                     {
                         ufsession_.Obj.CycleObjsInPart(copyFromPart, UF_reference_set_type, ref cycleRefSet);
 
-                        if(cycleRefSet == Tag.Null)
+                        if (cycleRefSet == Tag.Null)
                             break;
 
-                        ufsession_.Obj.AskName(cycleRefSet, out var name);
+                        ufsession_.Obj.AskName(cycleRefSet, out string name);
 
-                        if(!((name != Refset_Body) & (name != "SUB_TOOL") & (name != Refset_EntirePart) &
-                             (name != Refset_Empty)))
+                        if (!((name != Refset_Body) & (name != "SUB_TOOL") & (name != Refset_EntirePart) &
+                              (name != Refset_Empty)))
                             continue;
 
                         refSetName.Add(name);
-                    } while (cycleRefSet != Tag.Null);
+                    }
+                    while (cycleRefSet != Tag.Null);
 
                     //------------------------------------------------------------------------------
                     // Make each copy to component the work part
                     // Create reference sets and add to current work part
                     //------------------------------------------------------------------------------
 
-                    if(refSetName.Count == 0)
+                    if (refSetName.Count == 0)
                         throw new Exception("There are no reference sets other than the component defaults");
 
                     foreach (Component wpComponent in toComponents.Select(__c => __c))
                     {
-                        if(!(wpComponent.Prototype is Part))
+                        if (!(wpComponent.Prototype is Part))
                             continue;
 
                         Part part = (Part)wpComponent.Prototype;
 
-                        if(part.PartUnits != BasePart.Units.Inches)
+                        if (part.PartUnits != BasePart.Units.Inches)
                             continue;
 
                         __work_component_ = wpComponent;
                         const int numOfMembers = 0;
                         List<Tag> refSetArray = new List<Tag>();
 
-                        foreach (var refName in refSetName)
+                        foreach (string refName in refSetName)
                         {
-                            var origin = new double[3];
+                            double[] origin = new double[3];
                             ufsession_.Csys.AskWcs(out Tag wcs);
                             ufsession_.Csys.AskCsysInfo(wcs, out Tag wcsMatrix,
                                 origin); // get origin of current work coordinate system
-                            var matrixValue = new double[9];
+                            double[] matrixValue = new double[9];
                             ufsession_.Csys.AskMatrixValues(wcsMatrix, matrixValue); // gets the matrix values
                             ufsession_.Assem.CreateRefSet(refName, origin, matrixValue, refSetArray.ToArray(),
                                 numOfMembers, out _);

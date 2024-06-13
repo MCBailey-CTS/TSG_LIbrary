@@ -24,7 +24,7 @@ namespace TSG_Library.Utilities
             bool createFeatureGroup)
         {
             SlugObj[] slugs = CreateSlugs(source, color).ToArray();
-            var uniteTargetLayer = isTrimProfile
+            int uniteTargetLayer = isTrimProfile
                 ? layer + 5
                 : isUpper
                     ? layer + 5
@@ -38,13 +38,13 @@ namespace TSG_Library.Utilities
 
             Pad[] pads = CreatePad(uniteTargets, color, layer + 6).ToArray();
             CreateOffsetPads(pads, expression, padOffsetOut);
-            if(isTrimProfile)
+            if (isTrimProfile)
             {
                 Pad[] lowers = CreateLower(uniteTargets, color, layer + 4).ToArray();
                 CreateOffsetPads(lowers, "b", padOffsetOut);
             }
 
-            if(!createFeatureGroup) return;
+            if (!createFeatureGroup) return;
             foreach (UniteTarget target in uniteTargets)
             {
                 List<TaggedObject> objects = new List<TaggedObject>();
@@ -61,8 +61,8 @@ namespace TSG_Library.Utilities
         public static FeatureGroup CreateFeatureGroup(string name, bool show, params TaggedObject[] objects)
         {
             Tag[] tagObjects = (from obj in objects select obj.Tag).ToArray();
-            var hideResult = 1;
-            if(show) hideResult = 0;
+            int hideResult = 1;
+            if (show) hideResult = 0;
             UFSession.GetUFSession().Modl
                 .CreateSetOfFeature(name, tagObjects, tagObjects.Length, hideResult, out Tag tag);
             return (FeatureGroup)NXObjectManager.Get(tag);
@@ -72,7 +72,8 @@ namespace TSG_Library.Utilities
         {
             foreach (UniteTarget unite in uniteTargets)
             {
-                ExtractFace linkedBody = WaveLinkObject(unite.Unite.GetBodies()[0], ExtractFaceBuilder.ParentPartType.WorkPart);
+                ExtractFace linkedBody =
+                    WaveLinkObject(unite.Unite.GetBodies()[0], ExtractFaceBuilder.ParentPartType.WorkPart);
                 linkedBody.SetName("Lower");
                 linkedBody.GetBodies()[0].__Color(color);
                 linkedBody.GetBodies()[0].__Layer(layer);
@@ -114,7 +115,7 @@ namespace TSG_Library.Utilities
             NXObject nXObject1 = builder.Commit();
             builder.Destroy();
 
-            if(nXObject1 is null)
+            if (nXObject1 is null)
                 throw new Exception("Didnt create anything");
 
             return (ExtractFace)nXObject1;
@@ -149,7 +150,8 @@ namespace TSG_Library.Utilities
                     builder.Section = __work_part_.Sections.CreateSection(0, 0, 0);
                     builder.Limits.StartExtend.Value.RightHandSide = "-100";
                     builder.Section.SetAllowedEntityTypes(Section.AllowTypes.OnlyCurves);
-                    EdgeBoundaryRule edgeBoundaryRule = __work_part_.ScRuleFactory.CreateRuleEdgeBoundary(new[] { slug.TopFace });
+                    EdgeBoundaryRule edgeBoundaryRule =
+                        __work_part_.ScRuleFactory.CreateRuleEdgeBoundary(new[] { slug.TopFace });
                     SelectionIntentRule[] selectionRule = { edgeBoundaryRule };
                     builder.Section.AddToSection(selectionRule, slug.TopFace, null, null, _Point3dOrigin,
                         Section.Mode.Create, false);
@@ -278,7 +280,8 @@ namespace TSG_Library.Utilities
                 extrudeBuilder.Section.AllowSelfIntersection(true);
                 foreach (Curve curve in group)
                 {
-                    CurveDumbRule curveDumbRule = __work_part_.ScRuleFactory.CreateRuleBaseCurveDumb(new IBaseCurve[] { curve });
+                    CurveDumbRule curveDumbRule =
+                        __work_part_.ScRuleFactory.CreateRuleBaseCurveDumb(new IBaseCurve[] { curve });
                     SelectionIntentRule[] rule = { curveDumbRule };
                     extrudeBuilder.Section.AddToSection(rule, curve, null, null, _Point3dOrigin, Section.Mode.Create,
                         false);

@@ -37,7 +37,7 @@ namespace TSG_Library.Extensions
                 TKey key = keySelector(value);
 
                 // Checks to see if the dictionary contains the {key}.
-                if(!dictionary.ContainsKey(key))
+                if (!dictionary.ContainsKey(key))
                     // If it doesn't we need to add it with an initialized {List<TValue>}.
                     dictionary[key] = new List<TValue>();
 

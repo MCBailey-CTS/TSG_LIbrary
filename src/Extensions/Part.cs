@@ -15,7 +15,7 @@ namespace TSG_Library.Extensions
             StringComparison stringComparison)
         {
             foreach (DrawingSheet drawingSheet in part.DrawingSheets)
-                if(drawingSheet.Name.Equals(drawingSheetName, stringComparison))
+                if (drawingSheet.Name.Equals(drawingSheetName, stringComparison))
                     return drawingSheet;
 
             return null;

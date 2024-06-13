@@ -10,10 +10,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
     {
         SelectionIntentRule.RuleType RuleType { get; }
 
-        SelectionIntentRule Mirror(SelectionIntentRule originalRule, Feature originalFeature, Surface.Plane plane, Component originalComp, IDictionary<TaggedObject, TaggedObject> dict);
+        SelectionIntentRule Mirror(SelectionIntentRule originalRule, Feature originalFeature, Surface.Plane plane,
+            Component originalComp, IDictionary<TaggedObject, TaggedObject> dict);
     }
-
-
-
-
 }

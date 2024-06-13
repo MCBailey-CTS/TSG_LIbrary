@@ -33,7 +33,8 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             return newStart.__MapAcsToWcs();
         }
 
-        public Matrix3x3 MirrorMap(Matrix3x3 orientation, Surface.Plane plane, Component fromComponent, Component toComponent)
+        public Matrix3x3 MirrorMap(Matrix3x3 orientation, Surface.Plane plane, Component fromComponent,
+            Component toComponent)
         {
             Vector3d newXVector = MirrorMap(orientation.__AxisY(), plane, fromComponent, toComponent);
 

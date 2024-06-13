@@ -59,14 +59,14 @@ namespace TSG_Library.UFuncs
             // Set window location
             Location = Settings.Default.block_attributer_form_window_location;
             const string settingsPath = "U:\\NX110\\Concept";
-            var settingsFile = Directory.GetFiles(settingsPath, "*.UCF");
-            if(settingsFile.Length == 1)
+            string[] settingsFile = Directory.GetFiles(settingsPath, "*.UCF");
+            if (settingsFile.Length == 1)
             {
-                var getDescription = PerformStreamReaderString(settingsFile[0], ":DESCRIPTION_ATTRIBUTE_NAME:",
+                string getDescription = PerformStreamReaderString(settingsFile[0], ":DESCRIPTION_ATTRIBUTE_NAME:",
                     ":END_DESCRIPTION_ATTRIBUTE_NAME:");
-                var getName = PerformStreamReaderString(settingsFile[0], ":DETAIL_TYPE_ATTRIBUTE_NAME:",
+                string getName = PerformStreamReaderString(settingsFile[0], ":DETAIL_TYPE_ATTRIBUTE_NAME:",
                     ":END_DETAIL_TYPE_ATTRIBUTE_NAME:");
-                var getMaterial = PerformStreamReaderString(settingsFile[0], ":MATERIAL_ATTRIBUTE_NAME:",
+                string getMaterial = PerformStreamReaderString(settingsFile[0], ":MATERIAL_ATTRIBUTE_NAME:",
                     ":END_MATERIAL_ATTRIBUTE_NAME:");
 
                 _customDescriptions = PerformStreamReaderList(settingsFile[0], ":CUSTOM_DESCRIPTIONS:",
@@ -119,7 +119,7 @@ namespace TSG_Library.UFuncs
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(WindowState == FormWindowState.Normal)
+            if (WindowState == FormWindowState.Normal)
             {
                 Settings.Default.block_attributer_form_window_location = Location;
                 Settings.Default.Save();
@@ -134,7 +134,7 @@ namespace TSG_Library.UFuncs
 
         private void comboBoxDescription_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(comboBoxDescription.Text == string.Empty) return;
+            if (comboBoxDescription.Text == string.Empty) return;
             textBoxDescription.Clear();
             textBoxDescription.Text = comboBoxDescription.Text;
             comboBoxDescription.SelectedIndex = -1;
@@ -144,7 +144,7 @@ namespace TSG_Library.UFuncs
 
         private void comboBoxPurMaterials_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(comboBoxPurMaterials.SelectedIndex != -1)
+            if (comboBoxPurMaterials.SelectedIndex != -1)
             {
                 textBoxMaterial.Text = string.Empty;
                 comboBoxCustomMaterials.SelectedIndex = -1;
@@ -153,14 +153,14 @@ namespace TSG_Library.UFuncs
 
         private void comboBoxCustomMaterials_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(comboBoxCustomMaterials.SelectedIndex != -1)
+            if (comboBoxCustomMaterials.SelectedIndex != -1)
             {
                 textBoxMaterial.Text = string.Empty;
                 comboBoxPurMaterials.SelectedIndex = -1;
 
                 CtsAttributes material = (CtsAttributes)comboBoxCustomMaterials.SelectedItem;
 
-                if(material.AttrValue == "STEELCRAFT")
+                if (material.AttrValue == "STEELCRAFT")
                     textBoxDescription.Text = "NITROGEN PLATE SYSTEM";
             }
         }
@@ -182,7 +182,7 @@ namespace TSG_Library.UFuncs
 
         private void checkBoxBurnDirX_CheckedChanged(object sender, EventArgs e)
         {
-            if(checkBoxBurnDirX.Checked)
+            if (checkBoxBurnDirX.Checked)
             {
                 checkBoxBurnDirY.Checked = false;
                 checkBoxBurnDirZ.Checked = false;
@@ -191,7 +191,7 @@ namespace TSG_Library.UFuncs
 
         private void checkBoxBurnDirY_CheckedChanged(object sender, EventArgs e)
         {
-            if(checkBoxBurnDirY.Checked)
+            if (checkBoxBurnDirY.Checked)
             {
                 checkBoxBurnDirX.Checked = false;
                 checkBoxBurnDirZ.Checked = false;
@@ -200,7 +200,7 @@ namespace TSG_Library.UFuncs
 
         private void checkBoxBurnDirZ_CheckedChanged(object sender, EventArgs e)
         {
-            if(checkBoxBurnDirZ.Checked)
+            if (checkBoxBurnDirZ.Checked)
             {
                 checkBoxBurnDirX.Checked = false;
                 checkBoxBurnDirY.Checked = false;
@@ -209,7 +209,7 @@ namespace TSG_Library.UFuncs
 
         private void checkBoxBurnout_CheckedChanged(object sender, EventArgs e)
         {
-            if(checkBoxBurnout.Checked)
+            if (checkBoxBurnout.Checked)
             {
                 checkBoxBurnDirZ.Checked = true;
                 comboBoxMaterial.Items.Clear();
@@ -217,7 +217,7 @@ namespace TSG_Library.UFuncs
                 foreach (CtsAttributes custBurnMatl in _burnCompMaterials)
                     comboBoxMaterial.Items.Add(custBurnMatl);
             }
-            else if(!checkBoxBurnout.Checked)
+            else if (!checkBoxBurnout.Checked)
             {
                 checkBoxBurnDirZ.Checked = false;
                 comboBoxMaterial.Items.Clear();
@@ -226,7 +226,7 @@ namespace TSG_Library.UFuncs
             }
             else
             {
-                if(!checkBoxGrind.Checked)
+                if (!checkBoxGrind.Checked)
                 {
                     checkBoxBurnDirX.Checked = false;
                     checkBoxBurnDirY.Checked = false;
@@ -237,7 +237,7 @@ namespace TSG_Library.UFuncs
 
         private void checkBoxGrind_CheckedChanged(object sender, EventArgs e)
         {
-            if(checkBoxGrind.Checked)
+            if (checkBoxGrind.Checked)
             {
                 comboBoxTolerance.Enabled = true;
                 comboBoxTolerance.SelectedIndex = 0;
@@ -245,7 +245,7 @@ namespace TSG_Library.UFuncs
             }
             else
             {
-                if(!checkBoxBurnout.Checked)
+                if (!checkBoxBurnout.Checked)
                 {
                     comboBoxTolerance.Enabled = false;
                     comboBoxTolerance.SelectedIndex = -1;
@@ -269,19 +269,19 @@ namespace TSG_Library.UFuncs
 
         private void textBoxDescription_TextChanged(object sender, EventArgs e)
         {
-            if(textBoxDescription.Text != string.Empty)
+            if (textBoxDescription.Text != string.Empty)
             {
-                var isBlockComp = false;
+                bool isBlockComp = false;
 
-                if(_selComp != null)
+                if (_selComp != null)
                 {
                     Part compProto = (Part)_selComp.Prototype;
 
                     foreach (Feature featDynamic in compProto.Features)
-                        if(featDynamic.FeatureType == "BLOCK")
-                            if(featDynamic.Name == "DYNAMIC BLOCK")
+                        if (featDynamic.FeatureType == "BLOCK")
+                            if (featDynamic.Name == "DYNAMIC BLOCK")
                                 isBlockComp = true;
-                    if(isBlockComp)
+                    if (isBlockComp)
                         groupBoxDescription.Text = "Description = Auto Update Off";
                 }
             }
@@ -293,15 +293,15 @@ namespace TSG_Library.UFuncs
 
         private void textBoxDescription_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode.Equals(Keys.Tab))
+            if (e.KeyCode.Equals(Keys.Tab))
                 textBoxMaterial.Focus();
         }
 
         private void textBoxMaterial_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode.Equals(Keys.Tab))
+            if (e.KeyCode.Equals(Keys.Tab))
                 buttonApply.Focus();
-            if(e.KeyCode.Equals(Keys.Return))
+            if (e.KeyCode.Equals(Keys.Return))
                 buttonApply.PerformClick();
         }
 
@@ -326,20 +326,20 @@ namespace TSG_Library.UFuncs
 
                 _selComp = SelectOneComponent();
 
-                if(_selComp != null)
+                if (_selComp != null)
                 {
                     NXObject.AttributeInformation[] attrInfo = _selComp.__GetAttributes();
 
-                    if(attrInfo.Length != 0)
+                    if (attrInfo.Length != 0)
                         foreach (NXObject.AttributeInformation attr in _selComp.__GetAttributes())
                         {
-                            if(attr.Title == "DESCRIPTION")
-                                if(_selComp.__GetStringAttribute(attr.Title) != "")
+                            if (attr.Title == "DESCRIPTION")
+                                if (_selComp.__GetStringAttribute(attr.Title) != "")
                                     textBoxDescription.Text = _selComp.__GetStringAttribute(attr.Title);
                                 else
                                     textBoxDescription.Text = "NO DESCRIPTION";
-                            if(attr.Title == "MATERIAL")
-                                if(_selComp.__GetStringAttribute(attr.Title) != "")
+                            if (attr.Title == "MATERIAL")
+                                if (_selComp.__GetStringAttribute(attr.Title) != "")
                                     textBoxMaterial.Text = _selComp.__GetStringAttribute(attr.Title);
                                 else
                                     textBoxMaterial.Text = "NO MATERIAL";
@@ -353,16 +353,16 @@ namespace TSG_Library.UFuncs
                 {
                     NXObject.AttributeInformation[] attrInfo = _workPart.__GetAttributes();
 
-                    if(attrInfo.Length != 0)
+                    if (attrInfo.Length != 0)
                         foreach (NXObject.AttributeInformation attr in _workPart.__GetAttributes())
                         {
-                            if(attr.Title == "DESCRIPTION")
-                                if(_workPart.__GetStringAttribute(attr.Title) != "")
+                            if (attr.Title == "DESCRIPTION")
+                                if (_workPart.__GetStringAttribute(attr.Title) != "")
                                     textBoxDescription.Text = _workPart.__GetStringAttribute(attr.Title);
                                 else
                                     textBoxDescription.Text = "NO DESCRIPTION";
-                            if(attr.Title == "MATERIAL")
-                                if(_workPart.__GetStringAttribute(attr.Title) != "")
+                            if (attr.Title == "MATERIAL")
+                                if (_workPart.__GetStringAttribute(attr.Title) != "")
                                     textBoxMaterial.Text = _workPart.__GetStringAttribute(attr.Title);
                                 else
                                     textBoxMaterial.Text = "NO MATERIAL";
@@ -398,7 +398,7 @@ namespace TSG_Library.UFuncs
 
                 _allSelectedComponents = SelectMultipleComponents();
 
-                if(_allSelectedComponents.Count > 0)
+                if (_allSelectedComponents.Count > 0)
                     _selectedComponents = GetOneComponentOfMany(_allSelectedComponents);
             }
             catch (NXException ex)
@@ -426,7 +426,7 @@ namespace TSG_Library.UFuncs
 
                 _selectedComponents = SelectMultipleComponents();
 
-                if(_selectedComponents.Count > 0)
+                if (_selectedComponents.Count > 0)
                 {
                     ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
@@ -438,53 +438,55 @@ namespace TSG_Library.UFuncs
                         UpdateSessionParts();
 
                         Expression noteExp = null;
-                        var isExpression = false;
+                        bool isExpression = false;
 
                         foreach (Expression exp in _workPart.Expressions)
-                            if(exp.Name == "DiesetNote")
+                            if (exp.Name == "DiesetNote")
                             {
                                 isExpression = true;
                                 noteExp = exp;
                             }
 
-                        var isDescription = false;
-                        var description = string.Empty;
+                        bool isDescription = false;
+                        string description = string.Empty;
 
                         foreach (NXObject.AttributeInformation attr in _workPart.__GetAttributes())
-                            if(attr.Title == "DESCRIPTION")
+                            if (attr.Title == "DESCRIPTION")
                                 isDescription = true;
 
-                        if(isDescription)
+                        if (isDescription)
                             description = _workPart.__GetStringAttribute("DESCRIPTION");
                         else
                             _workPart.__SetAttribute("DESCRIPTION", "NO DESCRIPTION");
 
-                        if(description != "")
+                        if (description != "")
                         {
-                            if(!description.ToLower().Contains("dieset"))
+                            if (!description.ToLower().Contains("dieset"))
                             {
                                 description += " DIESET";
                                 _workPart.__SetAttribute("DESCRIPTION", description);
                             }
 
-                            if(isExpression)
+                            if (isExpression)
                             {
                                 noteExp.RightHandSide = "\"yes\"";
                             }
                             else
                             {
-                                Expression diesetExp = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
+                                Expression diesetExp =
+                                    _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
                             }
                         }
                         else
                         {
-                            if(isExpression)
+                            if (isExpression)
                             {
                                 noteExp.RightHandSide = "\"yes\"";
                             }
                             else
                             {
-                                Expression diesetExp = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
+                                Expression diesetExp =
+                                    _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
                             }
                         }
                     }
@@ -523,7 +525,7 @@ namespace TSG_Library.UFuncs
 
                 _selectedComponents = SelectMultipleComponents();
 
-                if(_selectedComponents.Count > 0)
+                if (_selectedComponents.Count > 0)
                 {
                     ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
@@ -535,40 +537,42 @@ namespace TSG_Library.UFuncs
                         UpdateSessionParts();
 
                         Expression noteExp = null;
-                        var isExpression = false;
+                        bool isExpression = false;
 
                         foreach (Expression exp in _workPart.Expressions)
-                            if(exp.Name == "DiesetNote")
+                            if (exp.Name == "DiesetNote")
                             {
                                 isExpression = true;
                                 noteExp = exp;
                             }
 
-                        var description = _workPart.__GetStringAttribute("DESCRIPTION");
+                        string description = _workPart.__GetStringAttribute("DESCRIPTION");
 
-                        if(description != "")
+                        if (description != "")
                         {
                             description = description.Replace(" DIESET", "");
                             _workPart.__SetAttribute("DESCRIPTION", description);
 
-                            if(isExpression)
+                            if (isExpression)
                             {
                                 noteExp.RightHandSide = "\"no\"";
                             }
                             else
                             {
-                                Expression diesetExp = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
+                                Expression diesetExp =
+                                    _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
                             }
                         }
                         else
                         {
-                            if(isExpression)
+                            if (isExpression)
                             {
                                 noteExp.RightHandSide = "\"no\"";
                             }
                             else
                             {
-                                Expression diesetExp = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
+                                Expression diesetExp =
+                                    _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
                             }
                         }
                     }
@@ -607,7 +611,7 @@ namespace TSG_Library.UFuncs
 
                 _selectedComponents = SelectMultipleComponents();
 
-                if(_selectedComponents.Count > 0)
+                if (_selectedComponents.Count > 0)
                 {
                     ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
@@ -619,36 +623,36 @@ namespace TSG_Library.UFuncs
                         UpdateSessionParts();
 
                         Expression noteExp = null;
-                        var isExpression = false;
+                        bool isExpression = false;
 
                         foreach (Expression exp in _workPart.Expressions)
-                            if(exp.Name == "WeldmentNote")
+                            if (exp.Name == "WeldmentNote")
                             {
                                 isExpression = true;
                                 noteExp = exp;
                             }
 
-                        var isDescription = false;
-                        var description = string.Empty;
+                        bool isDescription = false;
+                        string description = string.Empty;
 
                         foreach (NXObject.AttributeInformation attr in _workPart.__GetAttributes())
-                            if(attr.Title == "DESCRIPTION")
+                            if (attr.Title == "DESCRIPTION")
                                 isDescription = true;
 
-                        if(isDescription)
+                        if (isDescription)
                             description = _workPart.__GetStringAttribute("DESCRIPTION");
                         else
                             _workPart.__SetAttribute("DESCRIPTION", "NO DESCRIPTION");
 
-                        if(description != "")
+                        if (description != "")
                         {
-                            if(!description.ToLower().Contains("weldment"))
+                            if (!description.ToLower().Contains("weldment"))
                             {
                                 description += " WELDMENT";
                                 _workPart.__SetAttribute("DESCRIPTION", description);
                             }
 
-                            if(isExpression)
+                            if (isExpression)
                             {
                                 noteExp.RightHandSide = "\"yes\"";
                             }
@@ -660,7 +664,7 @@ namespace TSG_Library.UFuncs
                         }
                         else
                         {
-                            if(isExpression)
+                            if (isExpression)
                             {
                                 noteExp.RightHandSide = "\"yes\"";
                             }
@@ -707,7 +711,7 @@ namespace TSG_Library.UFuncs
 
                 _selectedComponents = SelectMultipleComponents();
 
-                if(_selectedComponents.Count > 0)
+                if (_selectedComponents.Count > 0)
                 {
                     ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
@@ -719,23 +723,23 @@ namespace TSG_Library.UFuncs
                         UpdateSessionParts();
 
                         Expression noteExp = null;
-                        var isExpression = false;
+                        bool isExpression = false;
 
                         foreach (Expression exp in _workPart.Expressions)
-                            if(exp.Name == "WeldmentNote")
+                            if (exp.Name == "WeldmentNote")
                             {
                                 isExpression = true;
                                 noteExp = exp;
                             }
 
-                        var description = _workPart.__GetStringAttribute("DESCRIPTION");
+                        string description = _workPart.__GetStringAttribute("DESCRIPTION");
 
-                        if(description != "")
+                        if (description != "")
                         {
                             description = description.Replace(" WELDMENT", "");
                             _workPart.__SetAttribute("DESCRIPTION", description);
 
-                            if(isExpression)
+                            if (isExpression)
                             {
                                 noteExp.RightHandSide = "\"no\"";
                             }
@@ -747,7 +751,7 @@ namespace TSG_Library.UFuncs
                         }
                         else
                         {
-                            if(isExpression)
+                            if (isExpression)
                             {
                                 noteExp.RightHandSide = "\"no\"";
                             }
@@ -801,7 +805,7 @@ namespace TSG_Library.UFuncs
                 _isCustom = false;
                 _isSelectMultiple = false;
 
-                var isNamedExpression = false;
+                bool isNamedExpression = false;
 
                 Expression AddX = null,
                     AddY = null,
@@ -819,7 +823,7 @@ namespace TSG_Library.UFuncs
                     burnoutValue = string.Empty,
                     grindValue = string.Empty,
                     grindTolValue = string.Empty;
-                var unitsMatch = true;
+                bool unitsMatch = true;
 
                 _sizeBody = SelectOneComponentBody();
 
@@ -827,22 +831,22 @@ namespace TSG_Library.UFuncs
                 //Revision 1.01 – 12/29/16
                 //Added a dialog for the “Select Block” process
 
-                if(_sizeBody == null) return;
+                if (_sizeBody == null) return;
                 const string autoUpdate = "AUTO UPDATE";
                 Part owningPart = _sizeBody.IsOccurrence
                     ? (Part)_sizeBody.OwningComponent.Prototype
                     : (Part)_sizeBody.OwningPart;
-                var hasAutoUpdate = owningPart.HasUserAttribute(autoUpdate, NXObject.AttributeType.String, -1);
-                if(hasAutoUpdate)
+                bool hasAutoUpdate = owningPart.HasUserAttribute(autoUpdate, NXObject.AttributeType.String, -1);
+                if (hasAutoUpdate)
                 {
-                    var autoUpdateValue = owningPart.__GetStringAttribute(autoUpdate);
-                    if(autoUpdateValue == "OFF")
+                    string autoUpdateValue = owningPart.__GetStringAttribute(autoUpdate);
+                    if (autoUpdateValue == "OFF")
                     {
                         const string message =
                             "Auto Update is currently off.\nClicking yes will turn it on.\nClicking no will cancel the current selection process.";
                         DialogResult dislogResult = MessageBox.Show(message, "Continue?", MessageBoxButtons.YesNo);
 
-                        if(dislogResult == DialogResult.No)
+                        if (dislogResult == DialogResult.No)
                             return;
 
                         owningPart.SetUserAttribute(autoUpdate, -1, "ON", NXOpen.Update.Option.Now);
@@ -854,18 +858,18 @@ namespace TSG_Library.UFuncs
                 //End revision 1.01
 
 
-                if(_sizeBody != null)
+                if (_sizeBody != null)
                 {
                     _selComp = _sizeBody.OwningComponent;
 
-                    if(_selComp != null)
+                    if (_selComp != null)
                     {
                         _selComp.Unhighlight();
 
                         Part makeWork = (Part)_selComp.Prototype;
                         BasePart.Units wpUnits = makeWork.PartUnits;
 
-                        if(__display_part_.PartUnits == wpUnits)
+                        if (__display_part_.PartUnits == wpUnits)
                         {
                             session_.Parts.SetWorkComponent(_selComp, PartCollection.RefsetOption.Current,
                                 PartCollection.WorkComponentOption.Given,
@@ -880,15 +884,15 @@ namespace TSG_Library.UFuncs
                         }
                     }
 
-                    if(unitsMatch)
+                    if (unitsMatch)
                     {
-                        var isBlockComp = false;
+                        bool isBlockComp = false;
 
                         foreach (Feature featDynamic in _workPart.Features)
-                            if(featDynamic.FeatureType == "BLOCK")
-                                if(featDynamic.Name == "DYNAMIC BLOCK")
+                            if (featDynamic.FeatureType == "BLOCK")
+                                if (featDynamic.Name == "DYNAMIC BLOCK")
                                     isBlockComp = true;
-                        if(isBlockComp)
+                        if (isBlockComp)
                         {
                             SetWcsToWorkPart(_selComp);
 
@@ -896,49 +900,49 @@ namespace TSG_Library.UFuncs
 
                             foreach (Expression exp in _workPart.Expressions.ToArray())
                             {
-                                if(exp.Name == "AddX")
+                                if (exp.Name == "AddX")
                                 {
                                     isNamedExpression = true;
                                     AddX = exp;
                                     xValue = exp.Value;
                                 }
 
-                                if(exp.Name == "AddY")
+                                if (exp.Name == "AddY")
                                 {
                                     isNamedExpression = true;
                                     AddY = exp;
                                     yValue = exp.Value;
                                 }
 
-                                if(exp.Name == "AddZ")
+                                if (exp.Name == "AddZ")
                                 {
                                     isNamedExpression = true;
                                     AddZ = exp;
                                     zValue = exp.Value;
                                 }
 
-                                if(exp.Name == "BurnDir")
+                                if (exp.Name == "BurnDir")
                                 {
                                     isNamedExpression = true;
                                     BurnDir = exp;
                                     burnDirValue = exp.RightHandSide;
                                 }
 
-                                if(exp.Name == "Burnout")
+                                if (exp.Name == "Burnout")
                                 {
                                     isNamedExpression = true;
                                     Burnout = exp;
                                     burnoutValue = exp.RightHandSide;
                                 }
 
-                                if(exp.Name == "Grind")
+                                if (exp.Name == "Grind")
                                 {
                                     isNamedExpression = true;
                                     Grind = exp;
                                     grindValue = exp.RightHandSide;
                                 }
 
-                                if(exp.Name == "GrindTolerance")
+                                if (exp.Name == "GrindTolerance")
                                 {
                                     isNamedExpression = true;
                                     GrindTolerance = exp;
@@ -951,12 +955,12 @@ namespace TSG_Library.UFuncs
                             grindValue = grindValue.Replace("\"", string.Empty);
                             grindTolValue = grindTolValue.Replace("\"", string.Empty);
 
-                            if(isNamedExpression)
+                            if (isNamedExpression)
                             {
                                 foreach (CtsAttributes addX in comboBoxAddx.Items)
                                     try
                                     {
-                                        if(AddX.RightHandSide == addX.AttrValue)
+                                        if (AddX.RightHandSide == addX.AttrValue)
                                         {
                                             comboBoxAddx.SelectedItem = addX;
 
@@ -972,7 +976,7 @@ namespace TSG_Library.UFuncs
 
                                 foreach (CtsAttributes addY in comboBoxAddy.Items)
                                 {
-                                    if(AddY.RightHandSide == addY.AttrValue)
+                                    if (AddY.RightHandSide == addY.AttrValue)
                                     {
                                         comboBoxAddy.SelectedItem = addY;
 
@@ -984,7 +988,7 @@ namespace TSG_Library.UFuncs
 
                                 foreach (CtsAttributes addZ in comboBoxAddz.Items)
                                 {
-                                    if(AddZ.RightHandSide == addZ.AttrValue)
+                                    if (AddZ.RightHandSide == addZ.AttrValue)
                                     {
                                         comboBoxAddz.SelectedItem = addZ;
 
@@ -994,30 +998,30 @@ namespace TSG_Library.UFuncs
                                     comboBoxAddz.SelectedIndex = 0;
                                 }
 
-                                if(burnoutValue.ToLower() == "yes")
+                                if (burnoutValue.ToLower() == "yes")
                                     checkBoxBurnout.Checked = true;
                                 else
                                     checkBoxBurnout.Checked = false;
-                                if(grindValue.ToLower() == "yes")
+                                if (grindValue.ToLower() == "yes")
                                     checkBoxGrind.Checked = true;
                                 else
                                     checkBoxGrind.Checked = false;
-                                if(burnDirValue.ToLower() == "x")
+                                if (burnDirValue.ToLower() == "x")
                                     checkBoxBurnDirX.Checked = true;
-                                if(burnDirValue.ToLower() == "y")
+                                if (burnDirValue.ToLower() == "y")
                                     checkBoxBurnDirY.Checked = true;
-                                if(burnDirValue.ToLower() == "z")
+                                if (burnDirValue.ToLower() == "z")
                                     checkBoxBurnDirZ.Checked = true;
                                 foreach (CtsAttributes tolSetting in comboBoxTolerance.Items)
-                                    if(grindTolValue == tolSetting.AttrValue)
+                                    if (grindTolValue == tolSetting.AttrValue)
                                         comboBoxTolerance.SelectedItem = tolSetting;
 
 
                                 // get bounding box info
 
-                                var minCorner = new double[3];
-                                var directions = new double[3, 3];
-                                var distances = new double[3];
+                                double[] minCorner = new double[3];
+                                double[,] directions = new double[3, 3];
+                                double[] distances = new double[3];
 
                                 ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
                                     __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
@@ -1028,22 +1032,22 @@ namespace TSG_Library.UFuncs
                                 distances[1] += yValue;
                                 distances[2] += zValue;
 
-                                if(_workPart.PartUnits == BasePart.Units.Millimeters)
-                                    for (var i = 0; i < distances.Length; i++)
+                                if (_workPart.PartUnits == BasePart.Units.Millimeters)
+                                    for (int i = 0; i < distances.Length; i++)
                                         distances[i] /= 25.4d;
 
-                                for (var i = 0; i < 3; i++)
+                                for (int i = 0; i < 3; i++)
                                 {
-                                    var roundValue = System.Math.Round(distances[i], 3);
-                                    var truncateValue = System.Math.Truncate(roundValue);
-                                    var fractionValue = roundValue - truncateValue;
-                                    if(fractionValue != 0)
-                                        for (var ii = .125; ii <= 1; ii += .125)
+                                    double roundValue = System.Math.Round(distances[i], 3);
+                                    double truncateValue = System.Math.Truncate(roundValue);
+                                    double fractionValue = roundValue - truncateValue;
+                                    if (fractionValue != 0)
+                                        for (double ii = .125; ii <= 1; ii += .125)
                                         {
-                                            if(fractionValue <= ii)
+                                            if (fractionValue <= ii)
                                             {
-                                                var roundedFraction = ii;
-                                                var finalValue = truncateValue + roundedFraction;
+                                                double roundedFraction = ii;
+                                                double finalValue = truncateValue + roundedFraction;
                                                 distances[i] = finalValue;
                                                 break;
                                             }
@@ -1064,49 +1068,49 @@ namespace TSG_Library.UFuncs
 
                                 foreach (Expression exp in _workPart.Expressions.ToArray())
                                 {
-                                    if(exp.Name == "AddX")
+                                    if (exp.Name == "AddX")
                                     {
                                         isNamedExpression = true;
                                         AddX = exp;
                                         xValue = exp.Value;
                                     }
 
-                                    if(exp.Name == "AddY")
+                                    if (exp.Name == "AddY")
                                     {
                                         isNamedExpression = true;
                                         AddY = exp;
                                         yValue = exp.Value;
                                     }
 
-                                    if(exp.Name == "AddZ")
+                                    if (exp.Name == "AddZ")
                                     {
                                         isNamedExpression = true;
                                         AddZ = exp;
                                         zValue = exp.Value;
                                     }
 
-                                    if(exp.Name == "BurnDir")
+                                    if (exp.Name == "BurnDir")
                                     {
                                         isNamedExpression = true;
                                         BurnDir = exp;
                                         burnDirValue = exp.RightHandSide;
                                     }
 
-                                    if(exp.Name == "Burnout")
+                                    if (exp.Name == "Burnout")
                                     {
                                         isNamedExpression = true;
                                         Burnout = exp;
                                         burnoutValue = exp.RightHandSide;
                                     }
 
-                                    if(exp.Name == "Grind")
+                                    if (exp.Name == "Grind")
                                     {
                                         isNamedExpression = true;
                                         Grind = exp;
                                         grindValue = exp.RightHandSide;
                                     }
 
-                                    if(exp.Name == "GrindTolerance")
+                                    if (exp.Name == "GrindTolerance")
                                     {
                                         isNamedExpression = true;
                                         GrindTolerance = exp;
@@ -1119,11 +1123,11 @@ namespace TSG_Library.UFuncs
                                 grindValue = grindValue.Replace("\"", string.Empty);
                                 grindTolValue = grindTolValue.Replace("\"", string.Empty);
 
-                                if(isNamedExpression)
+                                if (isNamedExpression)
                                 {
                                     foreach (CtsAttributes addX in comboBoxAddx.Items)
                                     {
-                                        if(AddX.RightHandSide == addX.AttrValue)
+                                        if (AddX.RightHandSide == addX.AttrValue)
                                         {
                                             comboBoxAddx.SelectedItem = addX;
 
@@ -1135,7 +1139,7 @@ namespace TSG_Library.UFuncs
 
                                     foreach (CtsAttributes addY in comboBoxAddy.Items)
                                     {
-                                        if(AddY.RightHandSide == addY.AttrValue)
+                                        if (AddY.RightHandSide == addY.AttrValue)
                                         {
                                             comboBoxAddy.SelectedItem = addY;
 
@@ -1147,7 +1151,7 @@ namespace TSG_Library.UFuncs
 
                                     foreach (CtsAttributes addZ in comboBoxAddz.Items)
                                     {
-                                        if(AddZ.RightHandSide == addZ.AttrValue)
+                                        if (AddZ.RightHandSide == addZ.AttrValue)
                                         {
                                             comboBoxAddz.SelectedItem = addZ;
 
@@ -1157,29 +1161,29 @@ namespace TSG_Library.UFuncs
                                         comboBoxAddz.SelectedIndex = 0;
                                     }
 
-                                    if(burnoutValue.ToLower() == "yes")
+                                    if (burnoutValue.ToLower() == "yes")
                                         checkBoxBurnout.Checked = true;
                                     else
                                         checkBoxBurnout.Checked = false;
-                                    if(grindValue.ToLower() == "yes")
+                                    if (grindValue.ToLower() == "yes")
                                         checkBoxGrind.Checked = true;
                                     else
                                         checkBoxGrind.Checked = false;
-                                    if(burnDirValue.ToLower() == "x")
+                                    if (burnDirValue.ToLower() == "x")
                                         checkBoxBurnDirX.Checked = true;
-                                    if(burnDirValue.ToLower() == "y")
+                                    if (burnDirValue.ToLower() == "y")
                                         checkBoxBurnDirY.Checked = true;
-                                    if(burnDirValue.ToLower() == "z")
+                                    if (burnDirValue.ToLower() == "z")
                                         checkBoxBurnDirZ.Checked = true;
                                     foreach (CtsAttributes tolSetting in comboBoxTolerance.Items)
-                                        if(grindTolValue == tolSetting.AttrValue)
+                                        if (grindTolValue == tolSetting.AttrValue)
                                             comboBoxTolerance.SelectedItem = tolSetting;
 
                                     // get bounding box info
 
-                                    var minCorner = new double[3];
-                                    var directions = new double[3, 3];
-                                    var distances = new double[3];
+                                    double[] minCorner = new double[3];
+                                    double[,] directions = new double[3, 3];
+                                    double[] distances = new double[3];
 
                                     ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
                                         __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
@@ -1190,22 +1194,22 @@ namespace TSG_Library.UFuncs
                                     distances[1] += yValue;
                                     distances[2] += zValue;
 
-                                    if(_workPart.PartUnits == BasePart.Units.Millimeters)
-                                        for (var i = 0; i < distances.Length; i++)
+                                    if (_workPart.PartUnits == BasePart.Units.Millimeters)
+                                        for (int i = 0; i < distances.Length; i++)
                                             distances[i] /= 25.4d;
 
-                                    for (var i = 0; i < 3; i++)
+                                    for (int i = 0; i < 3; i++)
                                     {
-                                        var roundValue = System.Math.Round(distances[i], 3);
-                                        var truncateValue = System.Math.Truncate(roundValue);
-                                        var fractionValue = roundValue - truncateValue;
-                                        if(fractionValue != 0)
-                                            for (var ii = .125; ii <= 1; ii += .125)
+                                        double roundValue = System.Math.Round(distances[i], 3);
+                                        double truncateValue = System.Math.Truncate(roundValue);
+                                        double fractionValue = roundValue - truncateValue;
+                                        if (fractionValue != 0)
+                                            for (double ii = .125; ii <= 1; ii += .125)
                                             {
-                                                if(fractionValue <= ii)
+                                                if (fractionValue <= ii)
                                                 {
-                                                    var roundedFraction = ii;
-                                                    var finalValue = truncateValue + roundedFraction;
+                                                    double roundedFraction = ii;
+                                                    double finalValue = truncateValue + roundedFraction;
                                                     distances[i] = finalValue;
                                                     break;
                                                 }
@@ -1284,7 +1288,7 @@ namespace TSG_Library.UFuncs
                 _isCustom = false;
                 _isSelectMultiple = false;
 
-                var isNamedExpression = false;
+                bool isNamedExpression = false;
 
                 Expression AddX = null,
                     AddY = null,
@@ -1303,7 +1307,7 @@ namespace TSG_Library.UFuncs
                     grindValue = string.Empty,
                     grindTolValue = string.Empty;
 
-                var unitsMatch = true;
+                bool unitsMatch = true;
 
                 UI.GetUI()
                     .NXMessageBox.Show("Measure Body", NXMessageBox.DialogType.Information,
@@ -1311,18 +1315,18 @@ namespace TSG_Library.UFuncs
 
                 _sizeBody = SelectOneComponentBody();
 
-                if(_sizeBody != null)
+                if (_sizeBody != null)
                 {
                     _selComp = _sizeBody.OwningComponent;
 
-                    if(_selComp != null)
+                    if (_selComp != null)
                     {
                         _selComp.Unhighlight();
 
                         Part makeWork = (Part)_selComp.Prototype;
                         BasePart.Units wpUnits = makeWork.PartUnits;
 
-                        if(__display_part_.PartUnits == wpUnits)
+                        if (__display_part_.PartUnits == wpUnits)
                         {
                             session_.Parts.SetWorkComponent(_selComp, PartCollection.RefsetOption.Current,
                                 PartCollection.WorkComponentOption.Given,
@@ -1337,63 +1341,63 @@ namespace TSG_Library.UFuncs
                         }
                     }
 
-                    if(unitsMatch)
+                    if (unitsMatch)
                     {
-                        var isBlockComp = false;
+                        bool isBlockComp = false;
 
                         foreach (Feature featDynamic in _workPart.Features)
-                            if(featDynamic.FeatureType == "BLOCK")
-                                if(featDynamic.Name == "DYNAMIC BLOCK")
+                            if (featDynamic.FeatureType == "BLOCK")
+                                if (featDynamic.Name == "DYNAMIC BLOCK")
                                     isBlockComp = true;
-                        if(!isBlockComp)
+                        if (!isBlockComp)
                         {
                             // get named expressions
 
                             foreach (Expression exp in _workPart.Expressions.ToArray())
                             {
-                                if(exp.Name == "AddX")
+                                if (exp.Name == "AddX")
                                 {
                                     isNamedExpression = true;
                                     AddX = exp;
                                     xValue = exp.Value;
                                 }
 
-                                if(exp.Name == "AddY")
+                                if (exp.Name == "AddY")
                                 {
                                     isNamedExpression = true;
                                     AddY = exp;
                                     yValue = exp.Value;
                                 }
 
-                                if(exp.Name == "AddZ")
+                                if (exp.Name == "AddZ")
                                 {
                                     isNamedExpression = true;
                                     AddZ = exp;
                                     zValue = exp.Value;
                                 }
 
-                                if(exp.Name == "BurnDir")
+                                if (exp.Name == "BurnDir")
                                 {
                                     isNamedExpression = true;
                                     BurnDir = exp;
                                     burnDirValue = exp.RightHandSide;
                                 }
 
-                                if(exp.Name == "Burnout")
+                                if (exp.Name == "Burnout")
                                 {
                                     isNamedExpression = true;
                                     Burnout = exp;
                                     burnoutValue = exp.RightHandSide;
                                 }
 
-                                if(exp.Name == "Grind")
+                                if (exp.Name == "Grind")
                                 {
                                     isNamedExpression = true;
                                     Grind = exp;
                                     grindValue = exp.RightHandSide;
                                 }
 
-                                if(exp.Name == "GrindTolerance")
+                                if (exp.Name == "GrindTolerance")
                                 {
                                     isNamedExpression = true;
                                     GrindTolerance = exp;
@@ -1406,11 +1410,11 @@ namespace TSG_Library.UFuncs
                             grindValue = grindValue.Replace("\"", string.Empty);
                             grindTolValue = grindTolValue.Replace("\"", string.Empty);
 
-                            if(isNamedExpression)
+                            if (isNamedExpression)
                             {
                                 foreach (CtsAttributes addX in comboBoxAddx.Items)
                                 {
-                                    if(AddX.RightHandSide == addX.AttrValue)
+                                    if (AddX.RightHandSide == addX.AttrValue)
                                     {
                                         comboBoxAddx.SelectedItem = addX;
 
@@ -1422,7 +1426,7 @@ namespace TSG_Library.UFuncs
 
                                 foreach (CtsAttributes addY in comboBoxAddy.Items)
                                 {
-                                    if(AddY.RightHandSide == addY.AttrValue)
+                                    if (AddY.RightHandSide == addY.AttrValue)
                                     {
                                         comboBoxAddy.SelectedItem = addY;
 
@@ -1434,7 +1438,7 @@ namespace TSG_Library.UFuncs
 
                                 foreach (CtsAttributes addZ in comboBoxAddz.Items)
                                 {
-                                    if(AddZ.RightHandSide == addZ.AttrValue)
+                                    if (AddZ.RightHandSide == addZ.AttrValue)
                                     {
                                         comboBoxAddz.SelectedItem = addZ;
 
@@ -1444,29 +1448,29 @@ namespace TSG_Library.UFuncs
                                     comboBoxAddz.SelectedIndex = 0;
                                 }
 
-                                if(burnoutValue.ToLower() == "yes")
+                                if (burnoutValue.ToLower() == "yes")
                                     checkBoxBurnout.Checked = true;
                                 else
                                     checkBoxBurnout.Checked = false;
-                                if(grindValue.ToLower() == "yes")
+                                if (grindValue.ToLower() == "yes")
                                     checkBoxGrind.Checked = true;
                                 else
                                     checkBoxGrind.Checked = false;
-                                if(burnDirValue.ToLower() == "x")
+                                if (burnDirValue.ToLower() == "x")
                                     checkBoxBurnDirX.Checked = true;
-                                if(burnDirValue.ToLower() == "y")
+                                if (burnDirValue.ToLower() == "y")
                                     checkBoxBurnDirY.Checked = true;
-                                if(burnDirValue.ToLower() == "z")
+                                if (burnDirValue.ToLower() == "z")
                                     checkBoxBurnDirZ.Checked = true;
                                 foreach (CtsAttributes tolSetting in comboBoxTolerance.Items)
-                                    if(grindTolValue == tolSetting.AttrValue)
+                                    if (grindTolValue == tolSetting.AttrValue)
                                         comboBoxTolerance.SelectedItem = tolSetting;
 
                                 // get bounding box info
 
-                                var minCorner = new double[3];
-                                var directions = new double[3, 3];
-                                var distances = new double[3];
+                                double[] minCorner = new double[3];
+                                double[,] directions = new double[3, 3];
+                                double[] distances = new double[3];
 
                                 ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
                                     __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
@@ -1477,22 +1481,22 @@ namespace TSG_Library.UFuncs
                                 distances[1] += yValue;
                                 distances[2] += zValue;
 
-                                if(_workPart.PartUnits == BasePart.Units.Millimeters)
-                                    for (var i = 0; i < distances.Length; i++)
+                                if (_workPart.PartUnits == BasePart.Units.Millimeters)
+                                    for (int i = 0; i < distances.Length; i++)
                                         distances[i] /= 25.4d;
 
-                                for (var i = 0; i < 3; i++)
+                                for (int i = 0; i < 3; i++)
                                 {
-                                    var roundValue = System.Math.Round(distances[i], 3);
-                                    var truncateValue = System.Math.Truncate(roundValue);
-                                    var fractionValue = roundValue - truncateValue;
-                                    if(fractionValue != 0)
-                                        for (var ii = .125; ii <= 1; ii += .125)
+                                    double roundValue = System.Math.Round(distances[i], 3);
+                                    double truncateValue = System.Math.Truncate(roundValue);
+                                    double fractionValue = roundValue - truncateValue;
+                                    if (fractionValue != 0)
+                                        for (double ii = .125; ii <= 1; ii += .125)
                                         {
-                                            if(fractionValue <= ii)
+                                            if (fractionValue <= ii)
                                             {
-                                                var roundedFraction = ii;
-                                                var finalValue = truncateValue + roundedFraction;
+                                                double roundedFraction = ii;
+                                                double finalValue = truncateValue + roundedFraction;
                                                 distances[i] = finalValue;
                                                 break;
                                             }
@@ -1511,49 +1515,49 @@ namespace TSG_Library.UFuncs
 
                                 foreach (Expression exp in _workPart.Expressions.ToArray())
                                 {
-                                    if(exp.Name == "AddX")
+                                    if (exp.Name == "AddX")
                                     {
                                         isNamedExpression = true;
                                         AddX = exp;
                                         xValue = exp.Value;
                                     }
 
-                                    if(exp.Name == "AddY")
+                                    if (exp.Name == "AddY")
                                     {
                                         isNamedExpression = true;
                                         AddY = exp;
                                         yValue = exp.Value;
                                     }
 
-                                    if(exp.Name == "AddZ")
+                                    if (exp.Name == "AddZ")
                                     {
                                         isNamedExpression = true;
                                         AddZ = exp;
                                         zValue = exp.Value;
                                     }
 
-                                    if(exp.Name == "BurnDir")
+                                    if (exp.Name == "BurnDir")
                                     {
                                         isNamedExpression = true;
                                         BurnDir = exp;
                                         burnDirValue = exp.RightHandSide;
                                     }
 
-                                    if(exp.Name == "Burnout")
+                                    if (exp.Name == "Burnout")
                                     {
                                         isNamedExpression = true;
                                         Burnout = exp;
                                         burnoutValue = exp.RightHandSide;
                                     }
 
-                                    if(exp.Name == "Grind")
+                                    if (exp.Name == "Grind")
                                     {
                                         isNamedExpression = true;
                                         Grind = exp;
                                         grindValue = exp.RightHandSide;
                                     }
 
-                                    if(exp.Name == "GrindTolerance")
+                                    if (exp.Name == "GrindTolerance")
                                     {
                                         isNamedExpression = true;
                                         GrindTolerance = exp;
@@ -1566,11 +1570,11 @@ namespace TSG_Library.UFuncs
                                 grindValue = grindValue.Replace("\"", string.Empty);
                                 grindTolValue = grindTolValue.Replace("\"", string.Empty);
 
-                                if(isNamedExpression)
+                                if (isNamedExpression)
                                 {
                                     foreach (CtsAttributes addX in comboBoxAddx.Items)
                                     {
-                                        if(AddX.RightHandSide == addX.AttrValue)
+                                        if (AddX.RightHandSide == addX.AttrValue)
                                         {
                                             comboBoxAddx.SelectedItem = addX;
 
@@ -1582,7 +1586,7 @@ namespace TSG_Library.UFuncs
 
                                     foreach (CtsAttributes addY in comboBoxAddy.Items)
                                     {
-                                        if(AddY.RightHandSide == addY.AttrValue)
+                                        if (AddY.RightHandSide == addY.AttrValue)
                                         {
                                             comboBoxAddy.SelectedItem = addY;
 
@@ -1594,7 +1598,7 @@ namespace TSG_Library.UFuncs
 
                                     foreach (CtsAttributes addZ in comboBoxAddz.Items)
                                     {
-                                        if(AddZ.RightHandSide == addZ.AttrValue)
+                                        if (AddZ.RightHandSide == addZ.AttrValue)
                                         {
                                             comboBoxAddz.SelectedItem = addZ;
 
@@ -1604,29 +1608,29 @@ namespace TSG_Library.UFuncs
                                         comboBoxAddz.SelectedIndex = 0;
                                     }
 
-                                    if(burnoutValue.ToLower() == "yes")
+                                    if (burnoutValue.ToLower() == "yes")
                                         checkBoxBurnout.Checked = true;
                                     else
                                         checkBoxBurnout.Checked = false;
-                                    if(grindValue.ToLower() == "yes")
+                                    if (grindValue.ToLower() == "yes")
                                         checkBoxGrind.Checked = true;
                                     else
                                         checkBoxGrind.Checked = false;
-                                    if(burnDirValue.ToLower() == "x")
+                                    if (burnDirValue.ToLower() == "x")
                                         checkBoxBurnDirX.Checked = true;
-                                    if(burnDirValue.ToLower() == "y")
+                                    if (burnDirValue.ToLower() == "y")
                                         checkBoxBurnDirY.Checked = true;
-                                    if(burnDirValue.ToLower() == "z")
+                                    if (burnDirValue.ToLower() == "z")
                                         checkBoxBurnDirZ.Checked = true;
                                     foreach (CtsAttributes tolSetting in comboBoxTolerance.Items)
-                                        if(grindTolValue == tolSetting.AttrValue)
+                                        if (grindTolValue == tolSetting.AttrValue)
                                             comboBoxTolerance.SelectedItem = tolSetting;
 
                                     // get bounding box info
 
-                                    var minCorner = new double[3];
-                                    var directions = new double[3, 3];
-                                    var distances = new double[3];
+                                    double[] minCorner = new double[3];
+                                    double[,] directions = new double[3, 3];
+                                    double[] distances = new double[3];
 
                                     ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
                                         __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
@@ -1637,22 +1641,22 @@ namespace TSG_Library.UFuncs
                                     distances[1] += yValue;
                                     distances[2] += zValue;
 
-                                    if(_workPart.PartUnits == BasePart.Units.Millimeters)
-                                        for (var i = 0; i < distances.Length; i++)
+                                    if (_workPart.PartUnits == BasePart.Units.Millimeters)
+                                        for (int i = 0; i < distances.Length; i++)
                                             distances[i] /= 25.4d;
 
-                                    for (var i = 0; i < 3; i++)
+                                    for (int i = 0; i < 3; i++)
                                     {
-                                        var roundValue = System.Math.Round(distances[i], 3);
-                                        var truncateValue = System.Math.Truncate(roundValue);
-                                        var fractionValue = roundValue - truncateValue;
-                                        if(fractionValue != 0)
-                                            for (var ii = .125; ii <= 1; ii += .125)
+                                        double roundValue = System.Math.Round(distances[i], 3);
+                                        double truncateValue = System.Math.Truncate(roundValue);
+                                        double fractionValue = roundValue - truncateValue;
+                                        if (fractionValue != 0)
+                                            for (double ii = .125; ii <= 1; ii += .125)
                                             {
-                                                if(fractionValue <= ii)
+                                                if (fractionValue <= ii)
                                                 {
-                                                    var roundedFraction = ii;
-                                                    var finalValue = truncateValue + roundedFraction;
+                                                    double roundedFraction = ii;
+                                                    double finalValue = truncateValue + roundedFraction;
                                                     distances[i] = finalValue;
                                                     break;
                                                 }
@@ -1717,11 +1721,11 @@ namespace TSG_Library.UFuncs
                 UserDefinedClass myUDOclass =
                     session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoAutoSizeComponent");
 
-                if(myUDOclass != null)
+                if (myUDOclass != null)
                 {
                     List<Component> selectedComps = SelectMultipleComponents();
 
-                    if(selectedComps.Count > 0)
+                    if (selectedComps.Count > 0)
                     {
                         ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
@@ -1738,11 +1742,11 @@ namespace TSG_Library.UFuncs
                             UserDefinedObject[] currentUdo;
                             currentUdo = _workPart.UserDefinedObjectManager.GetUdosOfClass(myUDOclass);
 
-                            if(currentUdo.Length == 1)
+                            if (currentUdo.Length == 1)
                             {
                                 UserDefinedObject myUDO = currentUdo[0];
 
-                                var updateFlag = myUDO.GetIntegers();
+                                int[] updateFlag = myUDO.GetIntegers();
 
                                 int[] updateOn = { 1 };
                                 myUDO.SetIntegers(updateOn);
@@ -1764,11 +1768,11 @@ namespace TSG_Library.UFuncs
                         UserDefinedObject[] currentUdo;
                         currentUdo = _workPart.UserDefinedObjectManager.GetUdosOfClass(myUDOclass);
 
-                        if(currentUdo.Length == 1)
+                        if (currentUdo.Length == 1)
                         {
                             UserDefinedObject myUDO = currentUdo[0];
 
-                            var updateFlag = myUDO.GetIntegers();
+                            int[] updateFlag = myUDO.GetIntegers();
 
                             int[] updateOn = { 1 };
                             myUDO.SetIntegers(updateOn);
@@ -1795,11 +1799,11 @@ namespace TSG_Library.UFuncs
 
             session_.Parts.SetWork(__display_part_);
 
-            if(_selectedComponents.Count > 0)
+            if (_selectedComponents.Count > 0)
                 foreach (Component comp in _selectedComponents)
                     comp.Unhighlight();
 
-            if(_selComp != null)
+            if (_selComp != null)
                 _selComp.Unhighlight();
 
             __display_part_.Views.Refresh();
@@ -1862,9 +1866,9 @@ namespace TSG_Library.UFuncs
             _ = session_.SetUndoMark(Session.MarkVisibility.Visible, "Block Attributer");
             try
             {
-                if(_isSelectMultiple)
+                if (_isSelectMultiple)
                 {
-                    if(_selectedComponents.Count > 0)
+                    if (_selectedComponents.Count > 0)
                         foreach (Component sComp in _selectedComponents)
                         {
                             _selComp = sComp;
@@ -1878,10 +1882,10 @@ namespace TSG_Library.UFuncs
                 {
                     UpdateCompExpressions();
 
-                    if(_selComp != null)
+                    if (_selComp != null)
                         _selComp.Unhighlight();
 
-                    if(_isMeasureBody)
+                    if (_isMeasureBody)
                     {
                         MeasureComponentBody();
                         buttonReset.PerformClick();
@@ -1938,7 +1942,7 @@ namespace TSG_Library.UFuncs
             {
                 CtsAttributes addStock = new CtsAttributes("", string.Format("{0:f3}", i));
 
-                if(addStock.AttrValue.StartsWith("0"))
+                if (addStock.AttrValue.StartsWith("0"))
                     addStock.AttrValue = addStock.AttrValue.Remove(0, 1);
 
                 comboBoxAddx.Items.Add(addStock);
@@ -1988,7 +1992,7 @@ namespace TSG_Library.UFuncs
 
             // get named expressions
 
-            var isNamedExpression = false;
+            bool isNamedExpression = false;
 
             Expression AddX = null,
                 AddY = null,
@@ -2009,49 +2013,49 @@ namespace TSG_Library.UFuncs
 
             foreach (Expression exp in _workPart.Expressions.ToArray())
             {
-                if(exp.Name == "AddX")
+                if (exp.Name == "AddX")
                 {
                     isNamedExpression = true;
                     AddX = exp;
                     xValue = exp.Value;
                 }
 
-                if(exp.Name == "AddY")
+                if (exp.Name == "AddY")
                 {
                     isNamedExpression = true;
                     AddY = exp;
                     yValue = exp.Value;
                 }
 
-                if(exp.Name == "AddZ")
+                if (exp.Name == "AddZ")
                 {
                     isNamedExpression = true;
                     AddZ = exp;
                     zValue = exp.Value;
                 }
 
-                if(exp.Name == "BurnDir")
+                if (exp.Name == "BurnDir")
                 {
                     isNamedExpression = true;
                     BurnDir = exp;
                     burnDirValue = exp.RightHandSide;
                 }
 
-                if(exp.Name == "Burnout")
+                if (exp.Name == "Burnout")
                 {
                     isNamedExpression = true;
                     Burnout = exp;
                     burnoutValue = exp.RightHandSide;
                 }
 
-                if(exp.Name == "Grind")
+                if (exp.Name == "Grind")
                 {
                     isNamedExpression = true;
                     Grind = exp;
                     grindValue = exp.RightHandSide;
                 }
 
-                if(exp.Name == "GrindTolerance")
+                if (exp.Name == "GrindTolerance")
                 {
                     isNamedExpression = true;
                     GrindTolerance = exp;
@@ -2059,26 +2063,26 @@ namespace TSG_Library.UFuncs
                 }
             }
 
-            if(isNamedExpression)
+            if (isNamedExpression)
             {
-                if(comboBoxAddx.SelectedIndex >= 0)
+                if (comboBoxAddx.SelectedIndex >= 0)
                     AddX.RightHandSide = comboBoxAddx.Text;
 
-                if(comboBoxAddy.SelectedIndex >= 0)
+                if (comboBoxAddy.SelectedIndex >= 0)
                     AddY.RightHandSide = comboBoxAddy.Text;
 
-                if(comboBoxAddz.SelectedIndex >= 0)
+                if (comboBoxAddz.SelectedIndex >= 0)
                     AddZ.RightHandSide = comboBoxAddz.Text;
 
-                if(checkBoxBurnout.Checked)
+                if (checkBoxBurnout.Checked)
                     Burnout.RightHandSide = "\"" + "yes" + "\"";
                 else
                     Burnout.RightHandSide = "\"" + "no" + "\"";
-                if(checkBoxGrind.Checked)
+                if (checkBoxGrind.Checked)
                 {
                     Grind.RightHandSide = "\"" + "yes" + "\"";
 
-                    if(comboBoxTolerance.SelectedIndex != -1)
+                    if (comboBoxTolerance.SelectedIndex != -1)
                         GrindTolerance.RightHandSide = "\"" + comboBoxTolerance.Text + "\"";
                     else
                         GrindTolerance.RightHandSide = "\"" + "none" + "\"";
@@ -2090,11 +2094,11 @@ namespace TSG_Library.UFuncs
                     GrindTolerance.RightHandSide = "\"" + "none" + "\"";
                 }
 
-                if(checkBoxBurnDirX.Checked)
+                if (checkBoxBurnDirX.Checked)
                     BurnDir.RightHandSide = "\"" + "X" + "\"";
-                else if(checkBoxBurnDirY.Checked)
+                else if (checkBoxBurnDirY.Checked)
                     BurnDir.RightHandSide = "\"" + "Y" + "\"";
-                else if(checkBoxBurnDirZ.Checked)
+                else if (checkBoxBurnDirZ.Checked)
                     BurnDir.RightHandSide = "\"" + "Z" + "\"";
                 else
                     BurnDir.RightHandSide = "\"" + "none" + "\"";
@@ -2107,19 +2111,19 @@ namespace TSG_Library.UFuncs
             Session.UndoMarkId makeExpressions;
             makeExpressions = session_.SetUndoMark(Session.MarkVisibility.Invisible, "Expression");
 
-            if(_workPart.PartUnits == BasePart.Units.Inches)
+            if (_workPart.PartUnits == BasePart.Units.Inches)
             {
                 Unit unit1 = _workPart.UnitCollection.FindObject("Inch");
 
-                if(comboBoxAddx.SelectedIndex > 0)
+                if (comboBoxAddx.SelectedIndex > 0)
                     _ = _workPart.Expressions.CreateWithUnits("AddX=" + comboBoxAddx.Text, unit1);
                 else
                     _ = _workPart.Expressions.CreateWithUnits("AddX=.000", unit1);
-                if(comboBoxAddy.SelectedIndex > 0)
+                if (comboBoxAddy.SelectedIndex > 0)
                     _ = _workPart.Expressions.CreateWithUnits("AddY=" + comboBoxAddy.Text, unit1);
                 else
                     _ = _workPart.Expressions.CreateWithUnits("AddY=.000", unit1);
-                if(comboBoxAddz.SelectedIndex > 0)
+                if (comboBoxAddz.SelectedIndex > 0)
                     _ = _workPart.Expressions.CreateWithUnits("AddZ=" + comboBoxAddz.Text, unit1);
                 else
                     _ = _workPart.Expressions.CreateWithUnits("AddZ=.000", unit1);
@@ -2128,29 +2132,29 @@ namespace TSG_Library.UFuncs
             {
                 Unit unit1 = _workPart.UnitCollection.FindObject("MilliMeter");
 
-                if(comboBoxAddx.SelectedIndex > 0)
+                if (comboBoxAddx.SelectedIndex > 0)
                     _ = _workPart.Expressions.CreateWithUnits("AddX=" + comboBoxAddx.Text, unit1);
                 else
                     _ = _workPart.Expressions.CreateWithUnits("AddX=.000", unit1);
-                if(comboBoxAddy.SelectedIndex > 0)
+                if (comboBoxAddy.SelectedIndex > 0)
                     _ = _workPart.Expressions.CreateWithUnits("AddY=" + comboBoxAddy.Text, unit1);
                 else
                     _ = _workPart.Expressions.CreateWithUnits("AddY=.000", unit1);
-                if(comboBoxAddz.SelectedIndex > 0)
+                if (comboBoxAddz.SelectedIndex > 0)
                     _ = _workPart.Expressions.CreateWithUnits("AddZ=" + comboBoxAddz.Text, unit1);
                 else
                     _ = _workPart.Expressions.CreateWithUnits("AddZ=.000", unit1);
             }
 
-            if(checkBoxBurnout.Checked)
+            if (checkBoxBurnout.Checked)
                 _ = _workPart.Expressions.CreateExpression("String", "Burnout=\"yes\"");
             else
                 _ = _workPart.Expressions.CreateExpression("String", "Burnout=\"no\"");
-            if(checkBoxGrind.Checked)
+            if (checkBoxGrind.Checked)
             {
                 _ = _workPart.Expressions.CreateExpression("String", "Grind=\"yes\"");
 
-                if(comboBoxTolerance.SelectedIndex != -1)
+                if (comboBoxTolerance.SelectedIndex != -1)
                     _ = _workPart.Expressions.CreateExpression("String",
                         "GrindTolerance=\"" + comboBoxTolerance.Text + "\"");
                 else
@@ -2162,11 +2166,11 @@ namespace TSG_Library.UFuncs
                 _ = _workPart.Expressions.CreateExpression("String", "GrindTolerance=\"none\"");
             }
 
-            if(checkBoxBurnDirX.Checked)
+            if (checkBoxBurnDirX.Checked)
                 _ = _workPart.Expressions.CreateExpression("String", "BurnDir=\"X\"");
-            else if(checkBoxBurnDirY.Checked)
+            else if (checkBoxBurnDirY.Checked)
                 _ = _workPart.Expressions.CreateExpression("String", "BurnDir=\"Y\"");
-            else if(checkBoxBurnDirZ.Checked)
+            else if (checkBoxBurnDirZ.Checked)
                 _ = _workPart.Expressions.CreateExpression("String", "BurnDir=\"Z\"");
             else
                 _ = _workPart.Expressions.CreateExpression("String", "BurnDir=\"none\"");
@@ -2178,20 +2182,20 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if(_selComp != null)
+                if (_selComp != null)
                     session_.Parts.SetWork((Part)_selComp.Prototype);
 
                 CartesianCoordinateSystem tempCsys = __display_part_.WCS.Save();
 
-                var isMetric = false;
+                bool isMetric = false;
 
-                if(_workPart.PartUnits == BasePart.Units.Millimeters)
+                if (_workPart.PartUnits == BasePart.Units.Millimeters)
                     isMetric = true;
-                if(tempCsys != null)
+                if (tempCsys != null)
                 {
                     // get named expressions
 
-                    var isNamedExpression = false;
+                    bool isNamedExpression = false;
 
                     Expression AddX = null,
                         AddY = null,
@@ -2215,56 +2219,56 @@ namespace TSG_Library.UFuncs
 
                     foreach (Expression exp in _workPart.Expressions.ToArray())
                     {
-                        if(exp.Name == "AddX")
+                        if (exp.Name == "AddX")
                         {
                             isNamedExpression = true;
                             AddX = exp;
                             xValue = exp.Value;
                         }
 
-                        if(exp.Name == "AddY")
+                        if (exp.Name == "AddY")
                         {
                             isNamedExpression = true;
                             AddY = exp;
                             yValue = exp.Value;
                         }
 
-                        if(exp.Name == "AddZ")
+                        if (exp.Name == "AddZ")
                         {
                             isNamedExpression = true;
                             AddZ = exp;
                             zValue = exp.Value;
                         }
 
-                        if(exp.Name == "BurnDir")
+                        if (exp.Name == "BurnDir")
                         {
                             isNamedExpression = true;
                             BurnDir = exp;
                             burnDirValue = exp.RightHandSide;
                         }
 
-                        if(exp.Name == "Burnout")
+                        if (exp.Name == "Burnout")
                         {
                             isNamedExpression = true;
                             Burnout = exp;
                             burnoutValue = exp.RightHandSide;
                         }
 
-                        if(exp.Name == "Grind")
+                        if (exp.Name == "Grind")
                         {
                             isNamedExpression = true;
                             Grind = exp;
                             grindValue = exp.RightHandSide;
                         }
 
-                        if(exp.Name == "GrindTolerance")
+                        if (exp.Name == "GrindTolerance")
                         {
                             isNamedExpression = true;
                             GrindTolerance = exp;
                             grindTolValue = exp.RightHandSide;
                         }
 
-                        if(exp.Name == "DiesetNote")
+                        if (exp.Name == "DiesetNote")
                         {
                             Dieset = exp;
                             diesetValue = exp.RightHandSide;
@@ -2277,14 +2281,14 @@ namespace TSG_Library.UFuncs
                     grindTolValue = grindTolValue.Replace("\"", string.Empty);
                     diesetValue = diesetValue.Replace("\"", string.Empty);
 
-                    if(isNamedExpression)
+                    if (isNamedExpression)
                     {
                         // get bounding box of solid body
 
-                        var minCorner = new double[3];
-                        var directions = new double[3, 3];
-                        var distances = new double[3];
-                        var grindDistances = new double[3];
+                        double[] minCorner = new double[3];
+                        double[,] directions = new double[3, 3];
+                        double[] distances = new double[3];
+                        double[] grindDistances = new double[3];
 
                         ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag, tempCsys.Tag, minCorner, directions,
                             distances);
@@ -2297,23 +2301,23 @@ namespace TSG_Library.UFuncs
                         distances[1] += yValue;
                         distances[2] += zValue;
 
-                        if(isMetric)
-                            for (var i = 0; i < distances.Length; i++)
+                        if (isMetric)
+                            for (int i = 0; i < distances.Length; i++)
                                 distances[i] /= 25.4d;
 
-                        if(burnoutValue.ToLower() == "no")
-                            for (var i = 0; i < 3; i++)
+                        if (burnoutValue.ToLower() == "no")
+                            for (int i = 0; i < 3; i++)
                             {
-                                var roundValue = System.Math.Round(distances[i], 3);
-                                var truncateValue = System.Math.Truncate(roundValue);
-                                var fractionValue = roundValue - truncateValue;
-                                if(fractionValue != 0)
-                                    for (var ii = .125; ii <= 1; ii += .125)
+                                double roundValue = System.Math.Round(distances[i], 3);
+                                double truncateValue = System.Math.Truncate(roundValue);
+                                double fractionValue = roundValue - truncateValue;
+                                if (fractionValue != 0)
+                                    for (double ii = .125; ii <= 1; ii += .125)
                                     {
-                                        if(fractionValue <= ii)
+                                        if (fractionValue <= ii)
                                         {
-                                            var roundedFraction = ii;
-                                            var finalValue = truncateValue + roundedFraction;
+                                            double roundedFraction = ii;
+                                            double finalValue = truncateValue + roundedFraction;
                                             distances[i] = finalValue;
                                             break;
                                         }
@@ -2322,80 +2326,80 @@ namespace TSG_Library.UFuncs
                                     distances[i] = roundValue;
                             }
 
-                        var xDist = distances[0];
-                        var yDist = distances[1];
-                        var zDist = distances[2];
+                        double xDist = distances[0];
+                        double yDist = distances[1];
+                        double zDist = distances[2];
 
-                        var xGrindDist = grindDistances[0];
-                        var yGrindDist = grindDistances[1];
-                        var zGrindDist = grindDistances[2];
+                        double xGrindDist = grindDistances[0];
+                        double yGrindDist = grindDistances[1];
+                        double zGrindDist = grindDistances[2];
 
                         Array.Sort(distances);
                         Array.Sort(grindDistances);
 
-                        if(burnoutValue.ToLower() == "no" && grindValue.ToLower() == "no")
+                        if (burnoutValue.ToLower() == "no" && grindValue.ToLower() == "no")
                         {
                             _workPart.__SetAttribute("DESCRIPTION",
                                 string.Format("{0:f2}", distances[0]) + " X " + string.Format("{0:f2}", distances[1]) +
                                 " X " +
                                 string.Format("{0:f2}", distances[2]));
                         }
-                        else if(burnoutValue.ToLower() == "no" && grindValue.ToLower() == "yes")
+                        else if (burnoutValue.ToLower() == "no" && grindValue.ToLower() == "yes")
                         {
-                            if(burnDirValue.ToLower() == "x")
+                            if (burnDirValue.ToLower() == "x")
                             {
-                                if(xGrindDist == grindDistances[0])
+                                if (xGrindDist == grindDistances[0])
                                     _workPart.__SetAttribute("DESCRIPTION",
                                         string.Format("{0:f3}", grindDistances[0]) + " " + grindTolValue + " X " +
                                         string.Format("{0:f2}", distances[1]) +
                                         " X " +
                                         string.Format("{0:f2}", distances[2]));
-                                if(xGrindDist == grindDistances[1])
+                                if (xGrindDist == grindDistances[1])
                                     _workPart.__SetAttribute("DESCRIPTION",
                                         string.Format("{0:f2}", distances[0]) + " X " +
                                         string.Format("{0:f3}", grindDistances[1]) + " " + grindTolValue +
                                         " X " +
                                         string.Format("{0:f2}", distances[2]));
-                                if(xGrindDist == grindDistances[2])
+                                if (xGrindDist == grindDistances[2])
                                     _workPart.__SetAttribute("DESCRIPTION",
                                         string.Format("{0:f2}", distances[0]) + " X " +
                                         string.Format("{0:f2}", distances[1]) + " X " +
                                         string.Format("{0:f3}", grindDistances[2]) + " " + grindTolValue);
                             }
 
-                            if(burnDirValue.ToLower() == "y")
+                            if (burnDirValue.ToLower() == "y")
                             {
-                                if(yGrindDist == grindDistances[0])
+                                if (yGrindDist == grindDistances[0])
                                     _workPart.__SetAttribute("DESCRIPTION",
                                         $"{string.Format("{0:f3}", grindDistances[0])} {grindTolValue} X {string.Format("{0:f2}", distances[1])} X {string.Format("{0:f2}", distances[2])}");
-                                if(yGrindDist == grindDistances[1])
+                                if (yGrindDist == grindDistances[1])
                                     _workPart.__SetAttribute("DESCRIPTION",
                                         string.Format("{0:f2}", distances[0]) + " X " +
                                         string.Format("{0:f3}", grindDistances[1]) + " " + grindTolValue +
                                         " X " +
                                         string.Format("{0:f2}", distances[2]));
-                                if(yGrindDist == grindDistances[2])
+                                if (yGrindDist == grindDistances[2])
                                     _workPart.__SetAttribute("DESCRIPTION",
                                         string.Format("{0:f2}", distances[0]) + " X " +
                                         string.Format("{0:f2}", distances[1]) + " X " +
                                         string.Format("{0:f3}", grindDistances[2]) + " " + grindTolValue);
                             }
 
-                            if(burnDirValue.ToLower() == "z")
+                            if (burnDirValue.ToLower() == "z")
                             {
-                                if(zGrindDist == grindDistances[0])
+                                if (zGrindDist == grindDistances[0])
                                     _workPart.__SetAttribute("DESCRIPTION",
                                         string.Format("{0:f3}", grindDistances[0]) + " " + grindTolValue + " X " +
                                         string.Format("{0:f2}", distances[1]) +
                                         " X " +
                                         string.Format("{0:f2}", distances[2]));
-                                if(zGrindDist == grindDistances[1])
+                                if (zGrindDist == grindDistances[1])
                                     _workPart.__SetAttribute("DESCRIPTION",
                                         string.Format("{0:f2}", distances[0]) + " X " +
                                         string.Format("{0:f3}", grindDistances[1]) + " " + grindTolValue +
                                         " X " +
                                         string.Format("{0:f2}", distances[2]));
-                                if(zGrindDist == grindDistances[2])
+                                if (zGrindDist == grindDistances[2])
                                     _workPart.__SetAttribute("DESCRIPTION",
                                         string.Format("{0:f2}", distances[0]) + " X " +
                                         string.Format("{0:f2}", distances[1]) + " X " +
@@ -2404,34 +2408,34 @@ namespace TSG_Library.UFuncs
                         }
                         else
                         {
-                            if(grindValue.ToLower() == "yes")
+                            if (grindValue.ToLower() == "yes")
                             {
-                                if(burnDirValue.ToLower() == "x")
+                                if (burnDirValue.ToLower() == "x")
                                     _workPart.__SetAttribute("DESCRIPTION",
                                         "BURN " + string.Format("{0:f3}", xGrindDist) + " " + grindTolValue);
-                                if(burnDirValue.ToLower() == "y")
+                                if (burnDirValue.ToLower() == "y")
                                     _workPart.__SetAttribute("DESCRIPTION",
                                         "BURN " + string.Format("{0:f3}", yGrindDist) + " " + grindTolValue);
-                                if(burnDirValue.ToLower() == "z")
+                                if (burnDirValue.ToLower() == "z")
                                     _workPart.__SetAttribute("DESCRIPTION",
                                         "BURN " + string.Format("{0:f3}", zGrindDist) + " " + grindTolValue);
                             }
                             else
                             {
-                                if(burnDirValue.ToLower() == "x")
+                                if (burnDirValue.ToLower() == "x")
                                     _workPart.__SetAttribute("DESCRIPTION", $"BURN {"{xDist:f2}"}");
-                                if(burnDirValue.ToLower() == "y")
+                                if (burnDirValue.ToLower() == "y")
                                     _workPart.__SetAttribute("DESCRIPTION", "BURN " + string.Format("{0:f2}", yDist));
-                                if(burnDirValue.ToLower() == "z")
+                                if (burnDirValue.ToLower() == "z")
                                     _workPart.__SetAttribute("DESCRIPTION", "BURN " + string.Format("{0:f2}", zDist));
                             }
                         }
 
-                        if(diesetValue == "yes")
+                        if (diesetValue == "yes")
                         {
-                            var description = _workPart.__GetStringAttribute("DESCRIPTION");
+                            string description = _workPart.__GetStringAttribute("DESCRIPTION");
 
-                            if(!description.ToLower().Contains("dieset"))
+                            if (!description.ToLower().Contains("dieset"))
                             {
                                 description += " DIESET";
                                 _workPart.__SetAttribute("DESCRIPTION", description);
@@ -2442,29 +2446,29 @@ namespace TSG_Library.UFuncs
                     {
                         // get bounding box of solid body
 
-                        var minCorner = new double[3];
-                        var directions = new double[3, 3];
-                        var distances = new double[3];
+                        double[] minCorner = new double[3];
+                        double[,] directions = new double[3, 3];
+                        double[] distances = new double[3];
 
                         ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag, tempCsys.Tag, minCorner, directions,
                             distances);
 
-                        if(isMetric)
-                            for (var i = 0; i < distances.Length; i++)
+                        if (isMetric)
+                            for (int i = 0; i < distances.Length; i++)
                                 distances[i] /= 25.4d;
 
-                        for (var i = 0; i < 3; i++)
+                        for (int i = 0; i < 3; i++)
                         {
-                            var roundValue = System.Math.Round(distances[i], 3);
-                            var truncateValue = System.Math.Truncate(roundValue);
-                            var fractionValue = roundValue - truncateValue;
-                            if(fractionValue != 0)
-                                for (var ii = .125; ii <= 1; ii += .125)
+                            double roundValue = System.Math.Round(distances[i], 3);
+                            double truncateValue = System.Math.Truncate(roundValue);
+                            double fractionValue = roundValue - truncateValue;
+                            if (fractionValue != 0)
+                                for (double ii = .125; ii <= 1; ii += .125)
                                 {
-                                    if(fractionValue <= ii)
+                                    if (fractionValue <= ii)
                                     {
-                                        var roundedFraction = ii;
-                                        var finalValue = truncateValue + roundedFraction;
+                                        double roundedFraction = ii;
+                                        double finalValue = truncateValue + roundedFraction;
                                         distances[i] = finalValue;
                                         break;
                                     }
@@ -2482,11 +2486,11 @@ namespace TSG_Library.UFuncs
                             " X " +
                             string.Format("{0:f2}", distances[2]));
 
-                        if(diesetValue == "yes")
+                        if (diesetValue == "yes")
                         {
-                            var description = _workPart.__GetStringAttribute("DESCRIPTION");
+                            string description = _workPart.__GetStringAttribute("DESCRIPTION");
 
-                            if(!description.ToLower().Contains("dieset"))
+                            if (!description.ToLower().Contains("dieset"))
                             {
                                 description += " DIESET";
                                 _workPart.__SetAttribute("DESCRIPTION", description);
@@ -2503,10 +2507,11 @@ namespace TSG_Library.UFuncs
                     ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
                     ufsession_.Disp.RegenerateDisplay();
 
-                    if(_selComp == null)
+                    if (_selComp == null)
                         __display_part_.Views.Regenerate();
 
-                    session_.Parts.SetDisplay(_originalDisplayPart, false, false, out PartLoadStatus setDispLoadStatus1);
+                    session_.Parts.SetDisplay(_originalDisplayPart, false, false,
+                        out PartLoadStatus setDispLoadStatus1);
                     setDispLoadStatus1.Dispose();
                     UpdateSessionParts();
                 }
@@ -2532,19 +2537,19 @@ namespace TSG_Library.UFuncs
             {
                 //UpdateSessionParts();
 
-                var isMetric = false;
+                bool isMetric = false;
 
                 BasePart basePart = _workPart;
                 BasePart.Units partUnits = basePart.PartUnits;
 
-                if(partUnits == BasePart.Units.Millimeters)
+                if (partUnits == BasePart.Units.Millimeters)
                     isMetric = true;
 
 
                 foreach (Feature featDynamic in _workPart.Features)
                 {
-                    if(featDynamic.FeatureType != "BLOCK") continue;
-                    if(featDynamic.Name != "DYNAMIC BLOCK") continue;
+                    if (featDynamic.FeatureType != "BLOCK") continue;
+                    if (featDynamic.Name != "DYNAMIC BLOCK") continue;
                     Block block1 = (Block)featDynamic;
                     Body[] sizeBody = block1.GetBodies();
 
@@ -2560,17 +2565,17 @@ namespace TSG_Library.UFuncs
                     };
                     double[] xVector = { xAxis.X, xAxis.Y, xAxis.Z };
                     double[] yVector = { yAxis.X, yAxis.Y, yAxis.Z };
-                    var initMatrix = new double[9];
+                    double[] initMatrix = new double[9];
                     Tag tempCsys = NXOpen.Tag.Null;
                     ufsession_.Mtx3.Initialize(xVector, yVector, initMatrix);
                     ufsession_.Csys.CreateMatrix(initMatrix, out Tag tempMatrix);
                     ufsession_.Csys.CreateTempCsys(initOrigin, tempMatrix, out tempCsys);
 
-                    if(tempCsys != NXOpen.Tag.Null)
+                    if (tempCsys != NXOpen.Tag.Null)
                     {
                         // get named expressions
 
-                        var isNamedExpression = false;
+                        bool isNamedExpression = false;
 
                         double xValue = 0,
                             yValue = 0,
@@ -2584,49 +2589,49 @@ namespace TSG_Library.UFuncs
 
                         foreach (Expression exp in _workPart.Expressions.ToArray())
                         {
-                            if(exp.Name == "AddX")
+                            if (exp.Name == "AddX")
                             {
                                 isNamedExpression = true;
                                 xValue = exp.Value;
                             }
 
-                            if(exp.Name == "AddY")
+                            if (exp.Name == "AddY")
                             {
                                 isNamedExpression = true;
                                 yValue = exp.Value;
                             }
 
-                            if(exp.Name == "AddZ")
+                            if (exp.Name == "AddZ")
                             {
                                 isNamedExpression = true;
                                 zValue = exp.Value;
                             }
 
-                            if(exp.Name == "BurnDir")
+                            if (exp.Name == "BurnDir")
                             {
                                 isNamedExpression = true;
                                 burnDirValue = exp.RightHandSide;
                             }
 
-                            if(exp.Name == "Burnout")
+                            if (exp.Name == "Burnout")
                             {
                                 isNamedExpression = true;
                                 burnoutValue = exp.RightHandSide;
                             }
 
-                            if(exp.Name == "Grind")
+                            if (exp.Name == "Grind")
                             {
                                 isNamedExpression = true;
                                 grindValue = exp.RightHandSide;
                             }
 
-                            if(exp.Name == "GrindTolerance")
+                            if (exp.Name == "GrindTolerance")
                             {
                                 isNamedExpression = true;
                                 grindTolValue = exp.RightHandSide;
                             }
 
-                            if(exp.Name == "DiesetNote") diesetValue = exp.RightHandSide;
+                            if (exp.Name == "DiesetNote") diesetValue = exp.RightHandSide;
                         }
 
                         burnDirValue = burnDirValue.Replace("\"", string.Empty);
@@ -2635,14 +2640,14 @@ namespace TSG_Library.UFuncs
                         grindTolValue = grindTolValue.Replace("\"", string.Empty);
                         diesetValue = diesetValue.Replace("\"", string.Empty);
 
-                        if(isNamedExpression)
+                        if (isNamedExpression)
                         {
                             // get bounding box of solid body
 
-                            var minCorner = new double[3];
-                            var directions = new double[3, 3];
-                            var distances = new double[3];
-                            var grindDistances = new double[3];
+                            double[] minCorner = new double[3];
+                            double[,] directions = new double[3, 3];
+                            double[] distances = new double[3];
+                            double[] grindDistances = new double[3];
 
                             ufsession_.Modl.AskBoundingBoxExact(sizeBody[0].Tag, tempCsys, minCorner, directions,
                                 distances);
@@ -2655,27 +2660,27 @@ namespace TSG_Library.UFuncs
                             distances[1] += yValue;
                             distances[2] += zValue;
 
-                            var trueX = distances[0];
-                            var trueY = distances[1];
-                            var trueZ = distances[2];
+                            double trueX = distances[0];
+                            double trueY = distances[1];
+                            double trueZ = distances[2];
 
-                            if(isMetric)
-                                for (var i = 0; i < distances.Length; i++)
+                            if (isMetric)
+                                for (int i = 0; i < distances.Length; i++)
                                     distances[i] /= 25.4d;
 
-                            if(burnoutValue.ToLower() == "no")
-                                for (var i = 0; i < 3; i++)
+                            if (burnoutValue.ToLower() == "no")
+                                for (int i = 0; i < 3; i++)
                                 {
-                                    var roundValue = System.Math.Round(distances[i], 3);
-                                    var truncateValue = System.Math.Truncate(roundValue);
-                                    var fractionValue = roundValue - truncateValue;
-                                    if(fractionValue != 0)
-                                        for (var ii = .125; ii <= 1; ii += .125)
+                                    double roundValue = System.Math.Round(distances[i], 3);
+                                    double truncateValue = System.Math.Truncate(roundValue);
+                                    double fractionValue = roundValue - truncateValue;
+                                    if (fractionValue != 0)
+                                        for (double ii = .125; ii <= 1; ii += .125)
                                         {
-                                            if(fractionValue <= ii)
+                                            if (fractionValue <= ii)
                                             {
-                                                var roundedFraction = ii;
-                                                var finalValue = truncateValue + roundedFraction;
+                                                double roundedFraction = ii;
+                                                double finalValue = truncateValue + roundedFraction;
                                                 distances[i] = finalValue;
                                                 break;
                                             }
@@ -2684,25 +2689,25 @@ namespace TSG_Library.UFuncs
                                         distances[i] = roundValue;
                                 }
 
-                            var xDist = distances[0];
-                            var yDist = distances[1];
-                            var zDist = distances[2];
+                            double xDist = distances[0];
+                            double yDist = distances[1];
+                            double zDist = distances[2];
 
-                            var xGrindDist = grindDistances[0];
-                            var yGrindDist = grindDistances[1];
-                            var zGrindDist = grindDistances[2];
+                            double xGrindDist = grindDistances[0];
+                            double yGrindDist = grindDistances[1];
+                            double zGrindDist = grindDistances[2];
 
                             Array.Sort(distances);
                             Array.Sort(grindDistances);
 
                             CtsAttributes text = (CtsAttributes)comboBoxTolerance.SelectedItem;
-                            if(burnoutValue.ToLower() == "no" && grindValue.ToLower() == "no")
+                            if (burnoutValue.ToLower() == "no" && grindValue.ToLower() == "no")
                             {
                                 _workPart.SetUserAttribute("DESCRIPTION", -1,
                                     $"{distances[0]:f2} X {distances[1]:f2} X {distances[2]:f2}",
                                     NXOpen.Update.Option.Now);
                             }
-                            else if(text != null && text.AttrValue.ToLower().Contains("cleanup"))
+                            else if (text != null && text.AttrValue.ToLower().Contains("cleanup"))
                             {
                                 switch (burnDirValue)
                                 {
@@ -2727,7 +2732,7 @@ namespace TSG_Library.UFuncs
                                         break;
                                 }
                             }
-                            else if(burnoutValue.ToLower() == "no" && grindValue.ToLower() == "yes")
+                            else if (burnoutValue.ToLower() == "no" && grindValue.ToLower() == "yes")
                             {
                                 const double tolerance = .001;
 
@@ -2735,43 +2740,43 @@ namespace TSG_Library.UFuncs
                                 switch (burnDirValue.ToLower())
                                 {
                                     case "x":
-                                        if(System.Math.Abs(xGrindDist - grindDistances[0]) < tolerance)
+                                        if (System.Math.Abs(xGrindDist - grindDistances[0]) < tolerance)
                                             _workPart.SetUserAttribute("DESCRIPTION", -1,
                                                 $"{grindDistances[0]:f3} {grindTolValue} X {distances[1]:f2} X {distances[2]:f2}",
                                                 NXOpen.Update.Option.Now);
-                                        if(System.Math.Abs(xGrindDist - grindDistances[1]) < tolerance)
+                                        if (System.Math.Abs(xGrindDist - grindDistances[1]) < tolerance)
                                             _workPart.SetUserAttribute("DESCRIPTION", -1,
                                                 $"{distances[0]:f2} X {grindDistances[1]:f3} {grindTolValue} X {distances[2]:f2}",
                                                 NXOpen.Update.Option.Now);
-                                        if(System.Math.Abs(xGrindDist - grindDistances[2]) < tolerance)
+                                        if (System.Math.Abs(xGrindDist - grindDistances[2]) < tolerance)
                                             _workPart.SetUserAttribute("DESCRIPTION", -1,
                                                 $"{distances[0]:f2} X {distances[1]:f2} X {grindDistances[2]:f3} {grindTolValue}",
                                                 NXOpen.Update.Option.Now);
                                         break;
                                     case "y":
-                                        if(System.Math.Abs(yGrindDist - grindDistances[0]) < tolerance)
+                                        if (System.Math.Abs(yGrindDist - grindDistances[0]) < tolerance)
                                             _workPart.SetUserAttribute("DESCRIPTION", -1,
                                                 $"{grindDistances[0]:f3} {grindTolValue} X {distances[1]:f2} X {distances[2]:f2}",
                                                 NXOpen.Update.Option.Now);
-                                        if(System.Math.Abs(yGrindDist - grindDistances[1]) < tolerance)
+                                        if (System.Math.Abs(yGrindDist - grindDistances[1]) < tolerance)
                                             _workPart.SetUserAttribute("DESCRIPTION", -1,
                                                 $"{distances[0]:f2} X {grindDistances[1]:f3} {grindTolValue} X {distances[2]:f2}",
                                                 NXOpen.Update.Option.Now);
-                                        if(System.Math.Abs(yGrindDist - grindDistances[2]) < tolerance)
+                                        if (System.Math.Abs(yGrindDist - grindDistances[2]) < tolerance)
                                             _workPart.SetUserAttribute("DESCRIPTION", -1,
                                                 $"{distances[0]:f2} X {distances[1]:f2} X {grindDistances[2]:f3} {grindTolValue}",
                                                 NXOpen.Update.Option.Now);
                                         break;
                                     case "z":
-                                        if(System.Math.Abs(zGrindDist - grindDistances[0]) < tolerance)
+                                        if (System.Math.Abs(zGrindDist - grindDistances[0]) < tolerance)
                                             _workPart.SetUserAttribute("DESCRIPTION", -1,
                                                 $"{grindDistances[0]:f3} {grindTolValue} X {distances[1]:f2} X {distances[2]:f2}",
                                                 NXOpen.Update.Option.Now);
-                                        if(System.Math.Abs(zGrindDist - grindDistances[1]) < tolerance)
+                                        if (System.Math.Abs(zGrindDist - grindDistances[1]) < tolerance)
                                             _workPart.SetUserAttribute("DESCRIPTION", -1,
                                                 $"{distances[0]:f2} X {grindDistances[1]:f3} {grindTolValue} X {distances[2]:f2}",
                                                 NXOpen.Update.Option.Now);
-                                        if(System.Math.Abs(zGrindDist - grindDistances[2]) < tolerance)
+                                        if (System.Math.Abs(zGrindDist - grindDistances[2]) < tolerance)
                                             _workPart.SetUserAttribute("DESCRIPTION", -1,
                                                 $"{distances[0]:f2} X {distances[1]:f2} X {grindDistances[2]:f3} {grindTolValue}",
                                                 NXOpen.Update.Option.Now);
@@ -2780,7 +2785,7 @@ namespace TSG_Library.UFuncs
                             }
                             else
                             {
-                                if(grindValue.ToLower() == "yes")
+                                if (grindValue.ToLower() == "yes")
                                     // ReSharper disable once SwitchStatementMissingSomeCases
                                     switch (burnDirValue.ToLower())
                                     {
@@ -2816,8 +2821,8 @@ namespace TSG_Library.UFuncs
                                     }
                             }
 
-                            if(diesetValue != "yes") continue;
-                            var description =
+                            if (diesetValue != "yes") continue;
+                            string description =
                                 _workPart.GetUserAttributeAsString("DESCRIPTION", NXObject.AttributeType.String, -1);
                             //description += " DIESET";
                             _workPart.SetUserAttribute("DESCRIPTION", -1, $"{description} DIESET",
@@ -2827,29 +2832,29 @@ namespace TSG_Library.UFuncs
                         {
                             // get bounding box of solid body
 
-                            var minCorner = new double[3];
-                            var directions = new double[3, 3];
-                            var distances = new double[3];
+                            double[] minCorner = new double[3];
+                            double[,] directions = new double[3, 3];
+                            double[] distances = new double[3];
 
                             ufsession_.Modl.AskBoundingBoxExact(sizeBody[0].Tag, tempCsys, minCorner, directions,
                                 distances);
 
-                            if(isMetric)
-                                for (var i = 0; i < distances.Length; i++)
+                            if (isMetric)
+                                for (int i = 0; i < distances.Length; i++)
                                     distances[i] /= 25.4d;
 
-                            for (var i = 0; i < 3; i++)
+                            for (int i = 0; i < 3; i++)
                             {
-                                var roundValue = System.Math.Round(distances[i], 3);
-                                var truncateValue = System.Math.Truncate(roundValue);
-                                var fractionValue = roundValue - truncateValue;
-                                if(fractionValue != 0)
-                                    for (var ii = .125; ii <= 1; ii += .125)
+                                double roundValue = System.Math.Round(distances[i], 3);
+                                double truncateValue = System.Math.Truncate(roundValue);
+                                double fractionValue = roundValue - truncateValue;
+                                if (fractionValue != 0)
+                                    for (double ii = .125; ii <= 1; ii += .125)
                                     {
-                                        if(fractionValue <= ii)
+                                        if (fractionValue <= ii)
                                         {
-                                            var roundedFraction = ii;
-                                            var finalValue = truncateValue + roundedFraction;
+                                            double roundedFraction = ii;
+                                            double finalValue = truncateValue + roundedFraction;
                                             distances[i] = finalValue;
                                             break;
                                         }
@@ -2867,9 +2872,9 @@ namespace TSG_Library.UFuncs
                                 $"{distances[0]:f2} X {distances[1]:f2} X {distances[2]:f2}", NXOpen.Update.Option.Now);
                             //_workPart.__SetAttribute($"DESCRIPTION", $"{distances[0]:f2} X {distances[1]:f2} X {distances[2]:f2}");
 
-                            if(diesetValue == "yes")
+                            if (diesetValue == "yes")
                             {
-                                var description = _workPart.GetUserAttributeAsString("DESCRIPTION",
+                                string description = _workPart.GetUserAttributeAsString("DESCRIPTION",
                                     NXObject.AttributeType.String, -1);
                                 description += " DIESET";
 
@@ -2887,18 +2892,18 @@ namespace TSG_Library.UFuncs
                 }
 
                 // If the work part does not have a {"DESCRIPTION"} attribute then we want to return;.
-                if(!_workPart.HasUserAttribute("DESCRIPTION", NXObject.AttributeType.String, -1)) return;
+                if (!_workPart.HasUserAttribute("DESCRIPTION", NXObject.AttributeType.String, -1)) return;
 
                 // The string value of the {"DESCRIPTION"} attribute.
-                var descriptionAtt =
+                string descriptionAtt =
                     _workPart.GetUserAttributeAsString("DESCRIPTION", NXObject.AttributeType.String, -1);
 
                 Expression[] expressions = _workPart.Expressions.ToArray();
 
                 // Checks to see if the {_workPart} contains an expression with value {"yes"} and name of {lwrParallel} or {uprParallel}.
-                if(expressions.Any(exp =>
-                       (exp.Name.ToLower() == "lwrparallel" || exp.Name.ToLower() == "uprparallel") &&
-                       exp.StringValue.ToLower() == "yes"))
+                if (expressions.Any(exp =>
+                        (exp.Name.ToLower() == "lwrparallel" || exp.Name.ToLower() == "uprparallel") &&
+                        exp.StringValue.ToLower() == "yes"))
                     // Appends {"Parallel"} to the end of the {"DESCRIPTION"} attribute string value and then sets the it to be the value of the {"DESCRIPTION"} attribute.
                     _workPart.SetUserAttribute("DESCRIPTION", -1, descriptionAtt + " PARALLEL",
                         NXOpen.Update.Option.Now);
@@ -2913,19 +2918,19 @@ namespace TSG_Library.UFuncs
         {
             //            if (part.Leaf.Contains("200"))
             //                Debugger.Launch();
-            var roundValue = System.Math.Round(distance, 3);
-            var truncateValue = System.Math.Truncate(roundValue);
-            var fractionValue = roundValue - truncateValue;
+            double roundValue = System.Math.Round(distance, 3);
+            double truncateValue = System.Math.Truncate(roundValue);
+            double fractionValue = roundValue - truncateValue;
 
             // If it doesn't seem to be working you might have any issue with metric vs english,
             // or you can revert the code back to the orignal line before you changed to float-point comparison.
-            if(System.Math.Abs(fractionValue) > .001)
+            if (System.Math.Abs(fractionValue) > .001)
             {
-                for (var ii = .125; ii <= 1; ii += .125)
-                    if(fractionValue <= ii)
+                for (double ii = .125; ii <= 1; ii += .125)
+                    if (fractionValue <= ii)
                     {
-                        var roundedFraction = ii;
-                        var finalValue = truncateValue + roundedFraction;
+                        double roundedFraction = ii;
+                        double finalValue = truncateValue + roundedFraction;
                         return finalValue;
                     }
             }
@@ -2940,31 +2945,31 @@ namespace TSG_Library.UFuncs
 
         private void UpdateCompAttributes()
         {
-            if(_isCustom)
+            if (_isCustom)
             {
-                if(_selComp != null)
+                if (_selComp != null)
                 {
                     Part selCompProto = (Part)_selComp.Prototype;
 
-                    if(textBoxDescription.Text != "")
+                    if (textBoxDescription.Text != "")
                     {
                         selCompProto.__SetAttribute("DESCRIPTION", textBoxDescription.Text);
 
                         using (selCompProto.__UsingSetWorkPartQuietly())
                         {
                             UpdateSessionParts();
-                            var isBlockComp = false;
+                            bool isBlockComp = false;
 
-                            if(_selComp != null)
+                            if (_selComp != null)
                             {
                                 Part compProto = (Part)_selComp.Prototype;
 
                                 foreach (Feature featDynamic in compProto.Features)
-                                    if(featDynamic.FeatureType == "BLOCK")
-                                        if(featDynamic.Name == "DYNAMIC BLOCK")
+                                    if (featDynamic.FeatureType == "BLOCK")
+                                        if (featDynamic.Name == "DYNAMIC BLOCK")
                                             isBlockComp = true;
 
-                                if(isBlockComp)
+                                if (isBlockComp)
                                     TheUi.NXMessageBox.Show("Custom Description", NXMessageBox.DialogType.Warning,
                                         "Block component = Auto Update Off");
                             }
@@ -2975,29 +2980,29 @@ namespace TSG_Library.UFuncs
                         UpdateSessionParts();
                     }
 
-                    if(textBoxMaterial.Text != "")
+                    if (textBoxMaterial.Text != "")
                     {
                         selCompProto.__SetAttribute("MATERIAL", textBoxMaterial.Text);
                     }
                     else
                     {
-                        if(comboBoxPurMaterials.Text != "")
+                        if (comboBoxPurMaterials.Text != "")
                             selCompProto.__SetAttribute("MATERIAL", comboBoxPurMaterials.Text);
-                        if(comboBoxCustomMaterials.Text != "")
+                        if (comboBoxCustomMaterials.Text != "")
                             selCompProto.__SetAttribute("MATERIAL", comboBoxCustomMaterials.Text);
                     }
 
-                    if(comboBoxMaterial.Text != "")
+                    if (comboBoxMaterial.Text != "")
                         selCompProto.__SetAttribute("MATERIAL", comboBoxMaterial.Text);
 
-                    if(comboBoxName.Text != "")
+                    if (comboBoxName.Text != "")
                         selCompProto.__SetAttribute("DETAIL NAME", comboBoxName.Text);
-                    if(comboBoxWireTaper.Text != "")
+                    if (comboBoxWireTaper.Text != "")
                         selCompProto.__SetAttribute("WTN", comboBoxWireTaper.Text);
-                    if(comboBoxWireDev.Text != "")
+                    if (comboBoxWireDev.Text != "")
                         selCompProto.__SetAttribute("WFTD", comboBoxWireDev.Text);
-                    if(comboBoxDieset.Text != "")
-                        if(comboBoxDieset.Text == "YES")
+                    if (comboBoxDieset.Text != "")
+                        if (comboBoxDieset.Text == "YES")
                         {
                             Tag prevWp = NXOpen.Tag.Null;
 #pragma warning disable CS0618 // Type or member is obsolete
@@ -3008,10 +3013,10 @@ namespace TSG_Library.UFuncs
                             Expression Dieset = null;
 
                             foreach (Expression exp in _workPart.Expressions.ToArray())
-                                if(exp.Name == "DiesetNote")
+                                if (exp.Name == "DiesetNote")
                                     Dieset = exp;
 
-                            if(Dieset != null)
+                            if (Dieset != null)
                                 Dieset.RightHandSide = "\"yes\"";
                             else
                                 _ = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
@@ -3019,9 +3024,9 @@ namespace TSG_Library.UFuncs
                             ufsession_.Assem.SetWorkPart(prevWp);
                             UpdateSessionParts();
 
-                            var description = selCompProto.__GetStringAttribute("DESCRIPTION");
+                            string description = selCompProto.__GetStringAttribute("DESCRIPTION");
 
-                            if(!description.ToLower().Contains("dieset"))
+                            if (!description.ToLower().Contains("dieset"))
                             {
                                 description += " DIESET";
                                 selCompProto.__SetAttribute("DESCRIPTION", description);
@@ -3038,10 +3043,10 @@ namespace TSG_Library.UFuncs
                             Expression Dieset = null;
 
                             foreach (Expression exp in _workPart.Expressions.ToArray())
-                                if(exp.Name == "DiesetNote")
+                                if (exp.Name == "DiesetNote")
                                     Dieset = exp;
 
-                            if(Dieset != null)
+                            if (Dieset != null)
                                 Dieset.RightHandSide = "\"no\"";
                             else
                                 _ = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
@@ -3049,14 +3054,14 @@ namespace TSG_Library.UFuncs
                             ufsession_.Assem.SetWorkPart(prevWp);
                             UpdateSessionParts();
 
-                            var description = selCompProto.__GetStringAttribute("DESCRIPTION");
+                            string description = selCompProto.__GetStringAttribute("DESCRIPTION");
                             description = description.Replace("DIESET", "");
                             selCompProto.__SetAttribute("DESCRIPTION", description);
                         }
 
                     //Add Weldment stuff
-                    if(comboBoxWeldment.Text != "")
-                        if(comboBoxWeldment.Text == "YES")
+                    if (comboBoxWeldment.Text != "")
+                        if (comboBoxWeldment.Text == "YES")
                         {
                             Tag prevWp = NXOpen.Tag.Null;
 #pragma warning disable CS0618 // Type or member is obsolete
@@ -3067,10 +3072,10 @@ namespace TSG_Library.UFuncs
                             Expression Weldment = null;
 
                             foreach (Expression exp in _workPart.Expressions.ToArray())
-                                if(exp.Name == "WeldmentNote")
+                                if (exp.Name == "WeldmentNote")
                                     Weldment = exp;
 
-                            if(Weldment != null)
+                            if (Weldment != null)
                                 Weldment.RightHandSide = "\"yes\"";
                             else
                                 _ = _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"yes\"");
@@ -3078,9 +3083,9 @@ namespace TSG_Library.UFuncs
                             ufsession_.Assem.SetWorkPart(prevWp);
                             UpdateSessionParts();
 
-                            var description = selCompProto.__GetStringAttribute("DESCRIPTION");
+                            string description = selCompProto.__GetStringAttribute("DESCRIPTION");
 
-                            if(!description.ToLower().Contains("weldment"))
+                            if (!description.ToLower().Contains("weldment"))
                             {
                                 description += " WELDMENT";
                                 selCompProto.__SetAttribute("DESCRIPTION", description);
@@ -3098,10 +3103,10 @@ namespace TSG_Library.UFuncs
                             Expression Weldment = null;
 
                             foreach (Expression exp in _workPart.Expressions.ToArray())
-                                if(exp.Name == "WeldmentNote")
+                                if (exp.Name == "WeldmentNote")
                                     Weldment = exp;
 
-                            if(Weldment != null)
+                            if (Weldment != null)
                                 Weldment.RightHandSide = "\"no\"";
                             else
                                 _ = _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"no\"");
@@ -3109,7 +3114,7 @@ namespace TSG_Library.UFuncs
                             ufsession_.Assem.RestoreWorkPartContextQuietly(ref prevWp);
                             UpdateSessionParts();
 
-                            var description = selCompProto.__GetStringAttribute("DESCRIPTION");
+                            string description = selCompProto.__GetStringAttribute("DESCRIPTION");
                             description = description.Replace("WELDMENT", "");
                             selCompProto.__SetAttribute("DESCRIPTION", description);
                         }
@@ -3117,46 +3122,46 @@ namespace TSG_Library.UFuncs
                 }
                 else
                 {
-                    if(textBoxDescription.Text != "")
+                    if (textBoxDescription.Text != "")
                     {
                         _workPart.__SetAttribute("DESCRIPTION", textBoxDescription.Text);
                         SetAutoUpdateOff();
                     }
 
-                    if(textBoxMaterial.Text != "")
+                    if (textBoxMaterial.Text != "")
                     {
                         _workPart.__SetAttribute("MATERIAL", textBoxMaterial.Text);
                     }
                     else
                     {
-                        if(comboBoxPurMaterials.Text != "")
+                        if (comboBoxPurMaterials.Text != "")
                             _workPart.__SetAttribute("MATERIAL", comboBoxPurMaterials.Text);
-                        if(comboBoxCustomMaterials.Text != "")
+                        if (comboBoxCustomMaterials.Text != "")
                             _workPart.__SetAttribute("MATERIAL", comboBoxCustomMaterials.Text);
                     }
 
-                    if(comboBoxName.Text != "")
+                    if (comboBoxName.Text != "")
                         _workPart.__SetAttribute("DETAIL NAME", comboBoxName.Text);
-                    if(comboBoxWireTaper.Text != "")
+                    if (comboBoxWireTaper.Text != "")
                         _workPart.__SetAttribute("WTN", comboBoxWireTaper.Text);
-                    if(comboBoxWireDev.Text != "")
+                    if (comboBoxWireDev.Text != "")
                         _workPart.__SetAttribute("WFTD", comboBoxWireDev.Text);
-                    if(comboBoxDieset.Text != "")
-                        if(comboBoxDieset.Text == "YES")
+                    if (comboBoxDieset.Text != "")
+                        if (comboBoxDieset.Text == "YES")
                         {
                             Expression Dieset = null;
 
                             foreach (Expression exp in _workPart.Expressions.ToArray())
-                                if(exp.Name == "DiesetNote")
+                                if (exp.Name == "DiesetNote")
                                     Dieset = exp;
 
-                            if(Dieset != null)
+                            if (Dieset != null)
                                 Dieset.RightHandSide = "\"yes\"";
                             else
                                 _ = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
 
-                            var description = _workPart.__GetStringAttribute("DESCRIPTION");
-                            if(!description.ToLower().Contains("dieset"))
+                            string description = _workPart.__GetStringAttribute("DESCRIPTION");
+                            if (!description.ToLower().Contains("dieset"))
                             {
                                 description += " DIESET";
                                 _workPart.__SetAttribute("DESCRIPTION", description);
@@ -3167,36 +3172,36 @@ namespace TSG_Library.UFuncs
                             Expression Dieset = null;
 
                             foreach (Expression exp in _workPart.Expressions.ToArray())
-                                if(exp.Name == "DiesetNote")
+                                if (exp.Name == "DiesetNote")
                                     Dieset = exp;
 
-                            if(Dieset != null)
+                            if (Dieset != null)
                                 Dieset.RightHandSide = "\"no\"";
                             else
                                 _ = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
 
-                            var description = _workPart.__GetStringAttribute("DESCRIPTION");
+                            string description = _workPart.__GetStringAttribute("DESCRIPTION");
                             description = description.Replace("DIESET", "");
                             _workPart.__SetAttribute("DESCRIPTION", description);
                         }
 
                     //Add more Weldment Stuff
-                    if(comboBoxWeldment.Text != "")
-                        if(comboBoxWeldment.Text == "YES")
+                    if (comboBoxWeldment.Text != "")
+                        if (comboBoxWeldment.Text == "YES")
                         {
                             Expression Weldment = null;
 
                             foreach (Expression exp in _workPart.Expressions.ToArray())
-                                if(exp.Name == "WeldmentNote")
+                                if (exp.Name == "WeldmentNote")
                                     Weldment = exp;
 
-                            if(Weldment != null)
+                            if (Weldment != null)
                                 Weldment.RightHandSide = "\"yes\"";
                             else
                                 _ = _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"yes\"");
 
-                            var description = _workPart.__GetStringAttribute("DESCRIPTION");
-                            if(!description.ToLower().Contains("weldment"))
+                            string description = _workPart.__GetStringAttribute("DESCRIPTION");
+                            if (!description.ToLower().Contains("weldment"))
                             {
                                 description += " WELDMENT";
                                 _workPart.__SetAttribute("DESCRIPTION", description);
@@ -3207,15 +3212,15 @@ namespace TSG_Library.UFuncs
                             Expression Weldment = null;
 
                             foreach (Expression exp in _workPart.Expressions.ToArray())
-                                if(exp.Name == "WeldmentNote")
+                                if (exp.Name == "WeldmentNote")
                                     Weldment = exp;
 
-                            if(Weldment != null)
+                            if (Weldment != null)
                                 Weldment.RightHandSide = "\"no\"";
                             else
                                 _ = _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"no\"");
 
-                            var description = _workPart.__GetStringAttribute("DESCRIPTION");
+                            string description = _workPart.__GetStringAttribute("DESCRIPTION");
                             description = description.Replace("WELDMENT", "");
                             _workPart.__SetAttribute("DESCRIPTION", description);
                         }
@@ -3224,31 +3229,31 @@ namespace TSG_Library.UFuncs
             }
             else
             {
-                if(comboBoxMaterial.Text != "")
+                if (comboBoxMaterial.Text != "")
                     _workPart.__SetAttribute("MATERIAL", comboBoxMaterial.Text);
-                if(comboBoxName.Text != "")
+                if (comboBoxName.Text != "")
                     _workPart.__SetAttribute("DETAIL NAME", comboBoxName.Text);
-                if(comboBoxWireTaper.Text != "")
+                if (comboBoxWireTaper.Text != "")
                     _workPart.__SetAttribute("WTN", comboBoxWireTaper.Text);
-                if(comboBoxWireDev.Text != "")
+                if (comboBoxWireDev.Text != "")
                     _workPart.__SetAttribute("WFTD", comboBoxWireDev.Text);
-                if(comboBoxDieset.Text != "")
-                    if(comboBoxDieset.Text == "YES")
+                if (comboBoxDieset.Text != "")
+                    if (comboBoxDieset.Text == "YES")
                     {
                         Expression Dieset = null;
 
                         foreach (Expression exp in _workPart.Expressions.ToArray())
-                            if(exp.Name == "DiesetNote")
+                            if (exp.Name == "DiesetNote")
                                 Dieset = exp;
 
-                        if(Dieset != null)
+                        if (Dieset != null)
                             Dieset.RightHandSide = "\"yes\"";
                         else
                             _ = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
 
-                        var description = _workPart.__GetStringAttribute("DESCRIPTION");
+                        string description = _workPart.__GetStringAttribute("DESCRIPTION");
 
-                        if(!description.ToLower().Contains("dieset"))
+                        if (!description.ToLower().Contains("dieset"))
                         {
                             description += " DIESET";
                             _workPart.__SetAttribute("DESCRIPTION", description);
@@ -3259,37 +3264,37 @@ namespace TSG_Library.UFuncs
                         Expression Dieset = null;
 
                         foreach (Expression exp in _workPart.Expressions.ToArray())
-                            if(exp.Name == "DiesetNote")
+                            if (exp.Name == "DiesetNote")
                                 Dieset = exp;
 
-                        if(Dieset != null)
+                        if (Dieset != null)
                             Dieset.RightHandSide = "\"no\"";
                         else
                             _ = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
 
-                        var description = _workPart.__GetStringAttribute("DESCRIPTION");
+                        string description = _workPart.__GetStringAttribute("DESCRIPTION");
                         description = description.Replace("DIESET", "");
                         _workPart.__SetAttribute("DESCRIPTION", description);
                     }
 
                 //Add Weldment stuff
-                if(comboBoxWeldment.Text != "")
-                    if(comboBoxWeldment.Text == "YES")
+                if (comboBoxWeldment.Text != "")
+                    if (comboBoxWeldment.Text == "YES")
                     {
                         Expression Weldment = null;
 
                         foreach (Expression exp in _workPart.Expressions.ToArray())
-                            if(exp.Name == "WeldmentNote")
+                            if (exp.Name == "WeldmentNote")
                                 Weldment = exp;
 
-                        if(Weldment != null)
+                        if (Weldment != null)
                             Weldment.RightHandSide = "\"yes\"";
                         else
                             _ = _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"yes\"");
 
-                        var description = _workPart.__GetStringAttribute("DESCRIPTION");
+                        string description = _workPart.__GetStringAttribute("DESCRIPTION");
 
-                        if(!description.ToLower().Contains("weldment"))
+                        if (!description.ToLower().Contains("weldment"))
                         {
                             description += " WELDMENT";
                             _workPart.__SetAttribute("DESCRIPTION", description);
@@ -3300,15 +3305,15 @@ namespace TSG_Library.UFuncs
                         Expression Weldment = null;
 
                         foreach (Expression exp in _workPart.Expressions.ToArray())
-                            if(exp.Name == "WeldmentNote")
+                            if (exp.Name == "WeldmentNote")
                                 Weldment = exp;
 
-                        if(Weldment != null)
+                        if (Weldment != null)
                             Weldment.RightHandSide = "\"no\"";
                         else
                             _ = _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"no\"");
 
-                        var description = _workPart.__GetStringAttribute("DESCRIPTION");
+                        string description = _workPart.__GetStringAttribute("DESCRIPTION");
                         description = description.Replace("WELDMENT", "");
                         _workPart.__SetAttribute("DESCRIPTION", description);
                     }
@@ -3326,16 +3331,16 @@ namespace TSG_Library.UFuncs
                 UserDefinedClass myUDOclass =
                     session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoAutoSizeComponent");
 
-                if(myUDOclass != null)
+                if (myUDOclass != null)
                 {
                     UserDefinedObject[] currentUdo;
                     currentUdo = _workPart.UserDefinedObjectManager.GetUdosOfClass(myUDOclass);
 
-                    if(currentUdo.Length == 1)
+                    if (currentUdo.Length == 1)
                     {
                         UserDefinedObject myUDO = currentUdo[0];
 
-                        var updateFlag = myUDO.GetIntegers();
+                        int[] updateFlag = myUDO.GetIntegers();
 
                         int[] updateOff = { 0 };
                         myUDO.SetIntegers(updateOff);
@@ -3361,8 +3366,8 @@ namespace TSG_Library.UFuncs
                 Selection.SelectionAction.ClearAndEnableSpecific,
                 false, true, mask, out TaggedObject selectedComp, out _);
 
-            if(sel == Selection.Response.Ok || sel == Selection.Response.ObjectSelected ||
-               sel == Selection.Response.ObjectSelectedByName)
+            if (sel == Selection.Response.Ok || sel == Selection.Response.ObjectSelected ||
+                sel == Selection.Response.ObjectSelectedByName)
                 compSelection = (Component)selectedComp;
 
             return compSelection;
@@ -3379,8 +3384,8 @@ namespace TSG_Library.UFuncs
                 Selection.SelectionAction.ClearAndEnableSpecific,
                 false, false, mask, out TaggedObject selectedBody, out _);
 
-            if(sel == Selection.Response.Ok || sel == Selection.Response.ObjectSelected ||
-               sel == Selection.Response.ObjectSelectedByName)
+            if (sel == Selection.Response.Ok || sel == Selection.Response.ObjectSelected ||
+                sel == Selection.Response.ObjectSelectedByName)
                 returnBody = (Body)selectedBody;
 
             return returnBody;
@@ -3398,7 +3403,7 @@ namespace TSG_Library.UFuncs
                 Selection.SelectionAction.ClearAndEnableSpecific,
                 false, true, mask, out TaggedObject[] selectedCompArray);
 
-            if(sel == Selection.Response.Ok)
+            if (sel == Selection.Response.Ok)
                 foreach (TaggedObject comp in selectedCompArray)
                 {
                     Component component = (Component)comp;
@@ -3416,12 +3421,15 @@ namespace TSG_Library.UFuncs
 
             foreach (Component comp in compList)
             {
-                Component foundComponent = oneComp.Find(delegate(Component c) { return c.DisplayName == comp.DisplayName; });
-                if(foundComponent == null)
+                Component foundComponent = oneComp.Find(delegate(Component c)
+                {
+                    return c.DisplayName == comp.DisplayName;
+                });
+                if (foundComponent == null)
                     oneComp.Add(comp);
             }
 
-            if(oneComp.Count != 0)
+            if (oneComp.Count != 0)
                 return oneComp;
             return null;
         }
@@ -3430,7 +3438,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if(compRefCsys != null)
+                if (compRefCsys != null)
                 {
                     ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
@@ -3441,31 +3449,32 @@ namespace TSG_Library.UFuncs
                     UpdateSessionParts();
 
                     foreach (Feature featBlk in _workPart.Features)
-                        if(featBlk.FeatureType == "BLOCK")
-                            if(featBlk.Name == "DYNAMIC BLOCK")
+                        if (featBlk.FeatureType == "BLOCK")
+                            if (featBlk.Name == "DYNAMIC BLOCK")
                             {
                                 Block block1 = (Block)featBlk;
 
                                 BlockFeatureBuilder blockFeatureBuilderMatch;
                                 blockFeatureBuilderMatch = _workPart.Features.CreateBlockFeatureBuilder(block1);
                                 Point3d bOrigin = blockFeatureBuilderMatch.Origin;
-                                var blength = blockFeatureBuilderMatch.Length.RightHandSide;
-                                var bwidth = blockFeatureBuilderMatch.Width.RightHandSide;
-                                var bheight = blockFeatureBuilderMatch.Height.RightHandSide;
-                                var mLength = blockFeatureBuilderMatch.Length.Value;
-                                var mWidth = blockFeatureBuilderMatch.Width.Value;
-                                var mHeight = blockFeatureBuilderMatch.Height.Value;
+                                string blength = blockFeatureBuilderMatch.Length.RightHandSide;
+                                string bwidth = blockFeatureBuilderMatch.Width.RightHandSide;
+                                string bheight = blockFeatureBuilderMatch.Height.RightHandSide;
+                                double mLength = blockFeatureBuilderMatch.Length.Value;
+                                double mWidth = blockFeatureBuilderMatch.Width.Value;
+                                double mHeight = blockFeatureBuilderMatch.Height.Value;
 
                                 blockFeatureBuilderMatch.GetOrientation(out Vector3d xAxis, out Vector3d yAxis);
 
                                 double[] initOrigin = { bOrigin.X, bOrigin.Y, bOrigin.Z };
                                 double[] xVector = { xAxis.X, xAxis.Y, xAxis.Z };
                                 double[] yVector = { yAxis.X, yAxis.Y, yAxis.Z };
-                                var initMatrix = new double[9];
+                                double[] initMatrix = new double[9];
                                 ufsession_.Mtx3.Initialize(xVector, yVector, initMatrix);
                                 ufsession_.Csys.CreateMatrix(initMatrix, out Tag tempMatrix);
                                 ufsession_.Csys.CreateTempCsys(initOrigin, tempMatrix, out Tag tempCsys);
-                                CartesianCoordinateSystem setTempCsys = (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
+                                CartesianCoordinateSystem setTempCsys =
+                                    (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
 
                                 __display_part_.WCS.SetOriginAndMatrix(setTempCsys.Origin,
                                     setTempCsys.Orientation.Element);
@@ -3477,7 +3486,7 @@ namespace TSG_Library.UFuncs
                                 NXObject[] addToBody = { featBlkCsys };
 
                                 foreach (ReferenceSet bRefSet in __display_part_.GetAllReferenceSets())
-                                    if(bRefSet.Name == "BODY")
+                                    if (bRefSet.Name == "BODY")
                                         bRefSet.AddObjectsToReferenceSet(addToBody);
 
                                 session_.Parts.SetDisplay(_originalDisplayPart, false, false,
@@ -3491,15 +3500,16 @@ namespace TSG_Library.UFuncs
                                 UpdateSessionParts();
 
                                 foreach (CartesianCoordinateSystem wpCsys in _workPart.CoordinateSystems)
-                                    if(wpCsys.Layer == 254)
-                                        if(wpCsys.Name == "EDITCSYS")
+                                    if (wpCsys.Layer == 254)
+                                        if (wpCsys.Name == "EDITCSYS")
                                         {
                                             NXObject csysOccurrence;
                                             csysOccurrence = session_.Parts.WorkComponent.FindOccurrence(wpCsys);
 
-                                            CartesianCoordinateSystem editCsys = (CartesianCoordinateSystem)csysOccurrence;
+                                            CartesianCoordinateSystem editCsys =
+                                                (CartesianCoordinateSystem)csysOccurrence;
 
-                                            if(editCsys != null)
+                                            if (editCsys != null)
                                                 __display_part_.WCS.SetOriginAndMatrix(editCsys.Origin,
                                                     editCsys.Orientation.Element);
 
@@ -3520,31 +3530,32 @@ namespace TSG_Library.UFuncs
                 else
                 {
                     foreach (Feature featBlk in _workPart.Features)
-                        if(featBlk.FeatureType == "BLOCK")
-                            if(featBlk.Name == "DYNAMIC BLOCK")
+                        if (featBlk.FeatureType == "BLOCK")
+                            if (featBlk.Name == "DYNAMIC BLOCK")
                             {
                                 Block block1 = (Block)featBlk;
 
                                 BlockFeatureBuilder blockFeatureBuilderMatch;
                                 blockFeatureBuilderMatch = _workPart.Features.CreateBlockFeatureBuilder(block1);
                                 Point3d bOrigin = blockFeatureBuilderMatch.Origin;
-                                var blength = blockFeatureBuilderMatch.Length.RightHandSide;
-                                var bwidth = blockFeatureBuilderMatch.Width.RightHandSide;
-                                var bheight = blockFeatureBuilderMatch.Height.RightHandSide;
-                                var mLength = blockFeatureBuilderMatch.Length.Value;
-                                var mWidth = blockFeatureBuilderMatch.Width.Value;
-                                var mHeight = blockFeatureBuilderMatch.Height.Value;
+                                string blength = blockFeatureBuilderMatch.Length.RightHandSide;
+                                string bwidth = blockFeatureBuilderMatch.Width.RightHandSide;
+                                string bheight = blockFeatureBuilderMatch.Height.RightHandSide;
+                                double mLength = blockFeatureBuilderMatch.Length.Value;
+                                double mWidth = blockFeatureBuilderMatch.Width.Value;
+                                double mHeight = blockFeatureBuilderMatch.Height.Value;
 
                                 blockFeatureBuilderMatch.GetOrientation(out Vector3d xAxis, out Vector3d yAxis);
 
                                 double[] initOrigin = { bOrigin.X, bOrigin.Y, bOrigin.Z };
                                 double[] xVector = { xAxis.X, xAxis.Y, xAxis.Z };
                                 double[] yVector = { yAxis.X, yAxis.Y, yAxis.Z };
-                                var initMatrix = new double[9];
+                                double[] initMatrix = new double[9];
                                 ufsession_.Mtx3.Initialize(xVector, yVector, initMatrix);
                                 ufsession_.Csys.CreateMatrix(initMatrix, out Tag tempMatrix);
                                 ufsession_.Csys.CreateTempCsys(initOrigin, tempMatrix, out Tag tempCsys);
-                                CartesianCoordinateSystem setTempCsys = (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
+                                CartesianCoordinateSystem setTempCsys =
+                                    (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
 
                                 __display_part_.WCS.SetOriginAndMatrix(setTempCsys.Origin,
                                     setTempCsys.Orientation.Element);
@@ -3564,7 +3575,7 @@ namespace TSG_Library.UFuncs
         {
             Point3d mappedPoint;
             double[] input = { pointToMap.X, pointToMap.Y, pointToMap.Z };
-            var output = new double[3];
+            double[] output = new double[3];
             ufsession_.Csys.MapPoint(UF_CSYS_ROOT_WCS_COORDS, input, UF_CSYS_ROOT_COORDS, output);
             mappedPoint.X = output[0];
             mappedPoint.Y = output[1];
@@ -3576,7 +3587,7 @@ namespace TSG_Library.UFuncs
         {
             Point3d mappedPoint;
             double[] input = { pointToMap.X, pointToMap.Y, pointToMap.Z };
-            var output = new double[3];
+            double[] output = new double[3];
             ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, input, UF_CSYS_ROOT_WCS_COORDS, output);
             mappedPoint.X = output[0];
             mappedPoint.Y = output[1];
@@ -3588,7 +3599,7 @@ namespace TSG_Library.UFuncs
         {
             Point3d mappedPoint;
             double[] input = { pointToMap.X, pointToMap.Y, pointToMap.Z };
-            var output = new double[3];
+            double[] output = new double[3];
             ufsession_.Csys.MapPoint(UF_CSYS_WORK_COORDS, input, UF_CSYS_ROOT_WCS_COORDS, output);
             mappedPoint.X = output[0];
             mappedPoint.Y = output[1];
@@ -3600,26 +3611,26 @@ namespace TSG_Library.UFuncs
         {
             Tag view = __display_part_.Views.WorkView.Tag;
             UFDisp.ViewType viewType = UFDisp.ViewType.UseWorkView;
-            var dim = string.Empty;
+            string dim = string.Empty;
 
-            if(__display_part_.PartUnits == BasePart.Units.Inches)
+            if (__display_part_.PartUnits == BasePart.Units.Inches)
             {
-                var roundDim = System.Math.Round(length, 3);
+                double roundDim = System.Math.Round(length, 3);
                 dim = string.Format("{0:0.000}", roundDim);
             }
             else
             {
-                var roundDim = System.Math.Round(length, 3);
+                double roundDim = System.Math.Round(length, 3);
                 dim = string.Format("{0:0.000}", roundDim / 25.4);
             }
 
-            var midPoint = new double[3];
+            double[] midPoint = new double[3];
             UFObj.DispProps dispProps = new UFObj.DispProps();
             dispProps.color = 31;
             double charSize;
-            var font = 1;
+            int font = 1;
 
-            if(__display_part_.PartUnits == BasePart.Units.Inches)
+            if (__display_part_.PartUnits == BasePart.Units.Inches)
                 charSize = .125;
             else
                 charSize = 3.175;
@@ -3645,7 +3656,8 @@ namespace TSG_Library.UFuncs
             dispProps.color = 7;
             UFCurve.Line lineData1 = new UFCurve.Line();
 
-            Point3d endPointX1 = new Point3d(mappedStartPoint1.X + lineLength, mappedStartPoint1.Y, mappedStartPoint1.Z);
+            Point3d endPointX1 =
+                new Point3d(mappedStartPoint1.X + lineLength, mappedStartPoint1.Y, mappedStartPoint1.Z);
             Point3d mappedEndPointX1 = MapWcsToAbsolute(endPointX1);
             double[] startX1 = { wcsOrigin.X, wcsOrigin.Y, wcsOrigin.Z };
             double[] endX1 = { mappedEndPointX1.X, mappedEndPointX1.Y, mappedEndPointX1.Z };
@@ -3667,7 +3679,8 @@ namespace TSG_Library.UFuncs
                 ref dispProps);
             ShowTemporarySizeText(lineWidth, wcsOrigin, mappedEndPointY1);
 
-            Point3d endPointZ1 = new Point3d(mappedStartPoint1.X, mappedStartPoint1.Y, mappedStartPoint1.Z + lineHeight);
+            Point3d endPointZ1 =
+                new Point3d(mappedStartPoint1.X, mappedStartPoint1.Y, mappedStartPoint1.Z + lineHeight);
             Point3d mappedEndPointZ1 = MapWcsToAbsolute(endPointZ1);
             double[] startZ1 = { wcsOrigin.X, wcsOrigin.Y, wcsOrigin.Z };
             double[] endZ1 = { mappedEndPointZ1.X, mappedEndPointZ1.Y, mappedEndPointZ1.Z };
@@ -3682,7 +3695,8 @@ namespace TSG_Library.UFuncs
 
             Point3d mappedStartPoint2 = MapAbsoluteToWcs(mappedEndPointY1);
 
-            Point3d endPointX2 = new Point3d(mappedStartPoint2.X + lineLength, mappedStartPoint2.Y, mappedStartPoint2.Z);
+            Point3d endPointX2 =
+                new Point3d(mappedStartPoint2.X + lineLength, mappedStartPoint2.Y, mappedStartPoint2.Z);
             Point3d mappedEndPointX2 = MapWcsToAbsolute(endPointX2);
             double[] startX2 = { mappedEndPointY1.X, mappedEndPointY1.Y, mappedEndPointY1.Z };
             double[] endX2 = { mappedEndPointX2.X, mappedEndPointX2.Y, mappedEndPointX2.Z };
@@ -3775,7 +3789,7 @@ namespace TSG_Library.UFuncs
                 lineData1.start_point, lineData1.end_point,
                 ref dispProps);
 
-            if(_selComp != null)
+            if (_selComp != null)
             {
                 session_.Parts.SetWorkComponent(_selComp, PartCollection.RefsetOption.Current,
                     PartCollection.WorkComponentOption.Given, out PartLoadStatus partLoad1);
@@ -3792,13 +3806,13 @@ namespace TSG_Library.UFuncs
 
         private void UpdateBoundingBox()
         {
-            if(_allowBoundingBox)
+            if (_allowBoundingBox)
             {
                 __display_part_.Views.Refresh();
 
                 // get named expressions
 
-                var isNamedExpression = false;
+                bool isNamedExpression = false;
 
                 Expression AddX = null,
                     AddY = null,
@@ -3810,21 +3824,21 @@ namespace TSG_Library.UFuncs
 
                 foreach (Expression exp in _workPart.Expressions.ToArray())
                 {
-                    if(exp.Name == "AddX")
+                    if (exp.Name == "AddX")
                     {
                         isNamedExpression = true;
                         AddX = exp;
                         xValue = exp.Value;
                     }
 
-                    if(exp.Name == "AddY")
+                    if (exp.Name == "AddY")
                     {
                         isNamedExpression = true;
                         AddY = exp;
                         yValue = exp.Value;
                     }
 
-                    if(exp.Name == "AddZ")
+                    if (exp.Name == "AddZ")
                     {
                         isNamedExpression = true;
                         AddZ = exp;
@@ -3832,7 +3846,7 @@ namespace TSG_Library.UFuncs
                     }
                 }
 
-                if(isNamedExpression)
+                if (isNamedExpression)
                 {
                     _workPart.Expressions.Edit(AddX, comboBoxAddx.Text);
                     xValue = AddX.Value;
@@ -3845,9 +3859,9 @@ namespace TSG_Library.UFuncs
 
                     // get bounding box info
 
-                    var minCorner = new double[3];
-                    var directions = new double[3, 3];
-                    var distances = new double[3];
+                    double[] minCorner = new double[3];
+                    double[,] directions = new double[3, 3];
+                    double[] distances = new double[3];
 
                     ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag, __display_part_.WCS.CoordinateSystem.Tag,
                         minCorner, directions, distances);
@@ -3858,22 +3872,22 @@ namespace TSG_Library.UFuncs
                     distances[1] += yValue;
                     distances[2] += zValue;
 
-                    if(_workPart.PartUnits == BasePart.Units.Millimeters)
-                        for (var i = 0; i < distances.Length; i++)
+                    if (_workPart.PartUnits == BasePart.Units.Millimeters)
+                        for (int i = 0; i < distances.Length; i++)
                             distances[i] /= 25.4d;
 
-                    for (var i = 0; i < 3; i++)
+                    for (int i = 0; i < 3; i++)
                     {
-                        var roundValue = System.Math.Round(distances[i], 3);
-                        var truncateValue = System.Math.Truncate(roundValue);
-                        var fractionValue = roundValue - truncateValue;
-                        if(fractionValue != 0)
-                            for (var ii = .125; ii <= 1; ii += .125)
+                        double roundValue = System.Math.Round(distances[i], 3);
+                        double truncateValue = System.Math.Truncate(roundValue);
+                        double fractionValue = roundValue - truncateValue;
+                        if (fractionValue != 0)
+                            for (double ii = .125; ii <= 1; ii += .125)
                             {
-                                if(fractionValue <= ii)
+                                if (fractionValue <= ii)
                                 {
-                                    var roundedFraction = ii;
-                                    var finalValue = truncateValue + roundedFraction;
+                                    double roundedFraction = ii;
+                                    double finalValue = truncateValue + roundedFraction;
                                     distances[i] = finalValue;
                                     break;
                                 }
@@ -3914,7 +3928,7 @@ namespace TSG_Library.UFuncs
             try
             {
                 StreamReader sr = new StreamReader(path);
-                var content = sr.ReadToEnd();
+                string content = sr.ReadToEnd();
                 sr.Close();
                 string[] startSplit;
                 string[] endSplit;
@@ -3924,7 +3938,7 @@ namespace TSG_Library.UFuncs
                 textSetting = endSplit[0];
                 textSetting = textSetting.Replace("\r\n", string.Empty);
 
-                if(textSetting.Length > 0)
+                if (textSetting.Length > 0)
                     return textSetting;
                 return null;
             }
@@ -3941,7 +3955,7 @@ namespace TSG_Library.UFuncs
             try
             {
                 StreamReader sr = new StreamReader(path);
-                var content = sr.ReadToEnd();
+                string content = sr.ReadToEnd();
                 sr.Close();
                 string[] startSplit;
                 string[] endSplit;
@@ -3952,17 +3966,17 @@ namespace TSG_Library.UFuncs
                 endSplit = Regex.Split(startSplit[1], endSearchString);
                 textData = endSplit[0];
 
-                var splitData = Regex.Split(textData, "\r\n");
+                string[] splitData = Regex.Split(textData, "\r\n");
 
-                foreach (var sData in splitData)
-                    if(sData != string.Empty)
+                foreach (string sData in splitData)
+                    if (sData != string.Empty)
                     {
                         CtsAttributes cData = new CtsAttributes();
                         cData.AttrValue = sData;
                         compData.Add(cData);
                     }
 
-                if(compData.Count > 0)
+                if (compData.Count > 0)
                     return compData;
                 return null;
             }

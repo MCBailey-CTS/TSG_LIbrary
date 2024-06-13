@@ -47,7 +47,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                 foreach (Body body in mirroredPart.Bodies.ToArray())
                 foreach (Edge e in body.GetEdges())
-                    if(e.__HasEndPoints(finalStart, finalEnd))
+                    if (e.__HasEndPoints(finalStart, finalEnd))
                         newEdges.Add(e);
             }
 

@@ -42,9 +42,9 @@ namespace TSG_Library.UFuncs
 
             Text = @"Detail Number Note";
 
-            var location = Assembly.GetExecutingAssembly().Location;
+            string location = Assembly.GetExecutingAssembly().Location;
 
-            var directory = Path.GetDirectoryName(location);
+            string directory = Path.GetDirectoryName(location);
 
             //string[] lines = System.IO.File.ReadAllLines($"{directory}\\Settings.txt");
 
@@ -83,7 +83,7 @@ namespace TSG_Library.UFuncs
                 NXObject[] result = obj.GetInterferenceResults();
                 Face[] faces = new Face[result.Length];
 
-                for (var i = 0; i < result.Length; i += 2)
+                for (int i = 0; i < result.Length; i += 2)
                 {
                     faces[i] = (Face)result[i];
                     faces[i + 1] = (Face)result[i + 1];
@@ -101,7 +101,7 @@ namespace TSG_Library.UFuncs
             {
                 Face selectedFace = Selection.SelectSingleFace();
 
-                if(selectedFace is null)
+                if (selectedFace is null)
                     return;
 
                 Vector3d normal = selectedFace.__NormalVector();
@@ -134,24 +134,24 @@ namespace TSG_Library.UFuncs
 
         private bool TryCreateNote(string detail, Vector3d expectedTargetVector, Face[] interferingFaces)
         {
-            for (var i = 0; i < interferingFaces.Length - 1; i += 2)
+            for (int i = 0; i < interferingFaces.Length - 1; i += 2)
             {
                 Face targetFace = interferingFaces[i];
                 Face toolFace = interferingFaces[i + 1];
 
-                if(!targetFace.__IsPlanar())
+                if (!targetFace.__IsPlanar())
                     continue;
 
-                if(!toolFace.__IsPlanar())
+                if (!toolFace.__IsPlanar())
                     continue;
 
                 Vector3d targetVector = targetFace.__NormalVector().__Unit();
                 Vector3d toolVector = toolFace.__NormalVector().__Unit();
 
-                if(!targetVector.__IsEqualTo(expectedTargetVector))
+                if (!targetVector.__IsEqualTo(expectedTargetVector))
                     continue;
 
-                if(!toolVector.__IsEqualTo(expectedTargetVector.__Negate()))
+                if (!toolVector.__IsEqualTo(expectedTargetVector.__Negate()))
                     continue;
 
                 CreateNote0(detail, targetFace, toolFace);
@@ -168,7 +168,7 @@ namespace TSG_Library.UFuncs
                 Face targetFace = SelectPlanarFace();
 
                 // for now the target face must be an occurrence
-                if(!targetFace.IsOccurrence)
+                if (!targetFace.IsOccurrence)
                 {
                     print_("Please select an occurrence face");
                     return;
@@ -187,9 +187,9 @@ namespace TSG_Library.UFuncs
                     Face[] interferingFaces =
                         _SimpleInterference(_WorkPart, targetFace.GetBody(), solid_body_layer_1_proto);
 
-                    var detail = GetDetailName(interferingFaces[1].OwningComponent);
+                    string detail = GetDetailName(interferingFaces[1].OwningComponent);
 
-                    if(TryCreateNote(detail, expectedTargetVector, interferingFaces))
+                    if (TryCreateNote(detail, expectedTargetVector, interferingFaces))
                     {
                         solid_body_layer_1_proto.OwningComponent.Blank();
 
@@ -267,9 +267,9 @@ namespace TSG_Library.UFuncs
 
         private static string GetDetailName(Component component)
         {
-            var displayName = component.DisplayName;
+            string displayName = component.DisplayName;
 
-            var length = displayName.Length;
+            int length = displayName.Length;
 
             return displayName.Substring(length - 3);
         }
@@ -295,7 +295,7 @@ namespace TSG_Library.UFuncs
         private static Matrix3x3 CreateOrientationFromZVector(Vector3d vector)
         {
             double[] vec = { vector.X, vector.Y, vector.Z };
-            var matrix = new double[9];
+            double[] matrix = new double[9];
             TheUFSession.Mtx3.InitializeZ(vec, matrix);
             Vector3d xVec = new Vector3d(matrix[0], matrix[1], matrix[2]);
             Vector3d yVec = new Vector3d(matrix[3], matrix[4], matrix[5]);
@@ -304,9 +304,9 @@ namespace TSG_Library.UFuncs
 
         private static double[] SumEdgePositions(IEnumerable<Point3d> edgePositions)
         {
-            var x = 0.0;
-            var y = 0.0;
-            var z = 0.0;
+            double x = 0.0;
+            double y = 0.0;
+            double z = 0.0;
 
             foreach (Point3d pos in edgePositions)
             {
@@ -334,9 +334,9 @@ namespace TSG_Library.UFuncs
         {
             List<Point3d> edgePositions = toolFace.__EdgePositions().ToList();
 
-            var edgeSums = SumEdgePositions(edgePositions.ToArray());
+            double[] edgeSums = SumEdgePositions(edgePositions.ToArray());
 
-            var count = edgePositions.Count;
+            int count = edgePositions.Count;
 
             Point3d originInAbsolute = new Point3d(edgeSums[0] / count, edgeSums[1] / count, edgeSums[2] / count);
 
@@ -346,9 +346,9 @@ namespace TSG_Library.UFuncs
 
             __display_part_.WCS.SetOriginAndMatrix(compOrigin, compOrientation);
 
-            var origin = originInAbsolute.__ToArray();
+            double[] origin = originInAbsolute.__ToArray();
 
-            var originInTarget = new double[3];
+            double[] originInTarget = new double[3];
 
             TheUFSession.Csys.MapPoint(UF_CSYS_ROOT_COORDS, origin, UF_CSYS_ROOT_WCS_COORDS, originInTarget);
 
@@ -358,7 +358,8 @@ namespace TSG_Library.UFuncs
 
             __display_part_ = (Part)((Face)targetFace.Prototype).OwningPart;
 
-            Feature text = __work_part_.__CreateTextFeature(detailNumber, originInTarget.__ToPoint3d(), orientation, LENGTH,
+            Feature text = __work_part_.__CreateTextFeature(detailNumber, originInTarget.__ToPoint3d(), orientation,
+                LENGTH,
                 HEIGHT, FONT, SCRIPT);
 
             List<Spline> splines = text.GetEntities().OfType<Spline>().ToList();
@@ -369,7 +370,7 @@ namespace TSG_Library.UFuncs
 
             ReferenceSet refset;
 
-            if(__display_part_.__HasReferenceSet(REFERENCE_SET))
+            if (__display_part_.__HasReferenceSet(REFERENCE_SET))
             {
                 refset = __display_part_.__FindReferenceSet(REFERENCE_SET);
             }
@@ -389,12 +390,12 @@ namespace TSG_Library.UFuncs
 
         private static string ReadString(string key, IEnumerable<string> lines)
         {
-            foreach (var line in lines)
+            foreach (string line in lines)
             {
-                if(!line.StartsWith(key))
+                if (!line.StartsWith(key))
                     continue;
 
-                var index = line.IndexOf('=');
+                int index = line.IndexOf('=');
 
                 return line.Substring(index + 1).Trim();
             }
@@ -404,12 +405,12 @@ namespace TSG_Library.UFuncs
 
         private static int ReadInt(string key, IEnumerable<string> lines)
         {
-            foreach (var line in lines)
+            foreach (string line in lines)
             {
-                if(!line.StartsWith(key))
+                if (!line.StartsWith(key))
                     continue;
 
-                var index = line.IndexOf('=');
+                int index = line.IndexOf('=');
 
                 return int.Parse(line.Substring(index + 1).Trim());
             }
@@ -419,12 +420,12 @@ namespace TSG_Library.UFuncs
 
         private static double ReadDouble(string key, IEnumerable<string> lines)
         {
-            foreach (var line in lines)
+            foreach (string line in lines)
             {
-                if(!line.StartsWith(key))
+                if (!line.StartsWith(key))
                     continue;
 
-                var index = line.IndexOf('=');
+                int index = line.IndexOf('=');
 
                 return double.Parse(line.Substring(index + 1).Trim());
             }

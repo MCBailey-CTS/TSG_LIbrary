@@ -1,23 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Assemblies;
-using NXOpen.Features;
-using NXOpen.GeometricUtilities;
-using NXOpen.Preferences;
-using NXOpen.UF;
 using NXOpen.UserDefinedObjects;
-using NXOpen.Utilities;
-using NXOpenUI;
-using TSG_Library.Properties;
-using TSG_Library.Utilities;
 using static TSG_Library.Extensions.__Extensions_;
-using static NXOpen.UF.UFConstants;
 using Part = NXOpen.Part;
-using NXOpen.CAE;
-using NXOpen.CAM;
 
 namespace TSG_Library.UFuncs
 {
@@ -51,21 +39,19 @@ namespace TSG_Library.UFuncs
         }
 
 
-
         private static void NewMethod2()
         {
             if (_isNewSelection)
                 if (_updateComponent == null)
-                {
                     NewMethod23();
-                }
         }
 
         private void CreateDynamicHandleUdo(Body editBody)
         {
             try
             {
-                UserDefinedClass myUdOclass = session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoDynamicHandle");
+                UserDefinedClass myUdOclass =
+                    session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoDynamicHandle");
 
                 if (myUdOclass is null)
                     return;
@@ -84,13 +70,13 @@ namespace TSG_Library.UFuncs
                     UserDefinedObject myUdo = myUdOmanager.CreateUserDefinedObject(myUdOclass);
                     UserDefinedObject.LinkDefinition[] myLinks = new UserDefinedObject.LinkDefinition[1];
 
-                    var pointOnFace = new double[3];
-                    var dir = new double[3];
-                    var box = new double[6];
+                    double[] pointOnFace = new double[3];
+                    double[] dir = new double[3];
+                    double[] box = new double[6];
                     Matrix3x3 matrix1 = _displayPart.WCS.CoordinateSystem.Orientation.Element;
 
-                    ufsession_.Modl.AskFaceData(blkFace.Tag, out var type, pointOnFace, dir, box,
-                        out var radius, out var radData, out var normDir);
+                    ufsession_.Modl.AskFaceData(blkFace.Tag, out int type, pointOnFace, dir, box,
+                        out double radius, out double radData, out int normDir);
 
                     dir[0] = Math.Round(dir[0], 10);
                     dir[1] = Math.Round(dir[1], 10);
@@ -103,9 +89,9 @@ namespace TSG_Library.UFuncs
                     double[] wcsVectorZ =
                         { Math.Round(matrix1.Zx, 10), Math.Round(matrix1.Zy, 10), Math.Round(matrix1.Zz, 10) };
 
-                    var wcsVectorNegX = new double[3];
-                    var wcsVectorNegY = new double[3];
-                    var wcsVectorNegZ = new double[3];
+                    double[] wcsVectorNegX = new double[3];
+                    double[] wcsVectorNegY = new double[3];
+                    double[] wcsVectorNegZ = new double[3];
 
                     ufsession_.Vec3.Negate(wcsVectorX, wcsVectorNegX);
                     ufsession_.Vec3.Negate(wcsVectorY, wcsVectorNegY);
@@ -113,32 +99,32 @@ namespace TSG_Library.UFuncs
 
                     // create udo handle points
 
-                    ufsession_.Vec3.IsEqual(dir, wcsVectorX, 0.00, out var isEqualX);
+                    ufsession_.Vec3.IsEqual(dir, wcsVectorX, 0.00, out int isEqualX);
 
                     if (isEqualX == 1)
                         CreateUdo(myUdo, myLinks, pointOnFace, "POSX");
 
-                    ufsession_.Vec3.IsEqual(dir, wcsVectorY, 0.00, out var isEqualY);
+                    ufsession_.Vec3.IsEqual(dir, wcsVectorY, 0.00, out int isEqualY);
 
                     if (isEqualY == 1)
                         CreateUdo(myUdo, myLinks, pointOnFace, "POSY");
 
-                    ufsession_.Vec3.IsEqual(dir, wcsVectorZ, 0.00, out var isEqualZ);
+                    ufsession_.Vec3.IsEqual(dir, wcsVectorZ, 0.00, out int isEqualZ);
 
                     if (isEqualZ == 1)
                         CreateUdo(myUdo, myLinks, pointOnFace, "POSZ");
 
-                    ufsession_.Vec3.IsEqual(dir, wcsVectorNegX, 0.00, out var isEqualNegX);
+                    ufsession_.Vec3.IsEqual(dir, wcsVectorNegX, 0.00, out int isEqualNegX);
 
                     if (isEqualNegX == 1)
                         CreateUdo(myUdo, myLinks, pointOnFace, "NEGX");
 
-                    ufsession_.Vec3.IsEqual(dir, wcsVectorNegY, 0.00, out var isEqualNegY);
+                    ufsession_.Vec3.IsEqual(dir, wcsVectorNegY, 0.00, out int isEqualNegY);
 
                     if (isEqualNegY == 1)
                         CreateUdo(myUdo, myLinks, pointOnFace, "NEGY");
 
-                    ufsession_.Vec3.IsEqual(dir, wcsVectorNegZ, 0.00, out var isEqualNegZ);
+                    ufsession_.Vec3.IsEqual(dir, wcsVectorNegZ, 0.00, out int isEqualNegZ);
 
                     if (isEqualNegZ == 1)
                         CreateUdo(myUdo, myLinks, pointOnFace, "NEGZ");
@@ -154,20 +140,13 @@ namespace TSG_Library.UFuncs
             }
         }
 
-      
 
-
-
-
-        private static void CreateUdo(UserDefinedObject myUdo, UserDefinedObject.LinkDefinition[] myLinks, double[] pointOnFace, string name)
+        private static void CreateUdo(UserDefinedObject myUdo, UserDefinedObject.LinkDefinition[] myLinks,
+            double[] pointOnFace, string name)
         {
             Point point1 = CreatePoint(pointOnFace, name);
             CreateUdo(myUdo, myLinks, pointOnFace, point1, name);
         }
-
-      
-
-    
     }
 }
 // 4839

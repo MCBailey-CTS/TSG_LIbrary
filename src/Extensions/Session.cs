@@ -104,7 +104,7 @@ namespace TSG_Library.Extensions
             if (items.Length == max)
                 using (session_.__UsingLockUiFromCustom())
                 {
-                    var picked_item = ufsession_.Ui.DisplayMenu(
+                    int picked_item = ufsession_.Ui.DisplayMenu(
                         title,
                         0,
                         items,
@@ -156,11 +156,11 @@ namespace TSG_Library.Extensions
 
             while (list_items.Count > 0)
             {
-                var set_of_items = new string[max];
+                string[] set_of_items = new string[max];
 
                 set_of_items[set_of_items.Length - 1] = __next__;
 
-                var end_index = set_of_items.Length - 1;
+                int end_index = set_of_items.Length - 1;
 
                 if (list_items.Count < max)
                 {
@@ -168,7 +168,7 @@ namespace TSG_Library.Extensions
                     end_index = list_items.Count;
                 }
 
-                for (var i = 0; i < end_index; i++)
+                for (int i = 0; i < end_index; i++)
                 {
                     set_of_items[i] = list_items[0];
                     list_items.RemoveAt(0);
@@ -178,12 +178,12 @@ namespace TSG_Library.Extensions
             }
 
 
-            var current_set_index = 0;
+            int current_set_index = 0;
 
             while (true)
                 using (session_.__UsingLockUiFromCustom())
                 {
-                    var picked_item = ufsession_.Ui.DisplayMenu(
+                    int picked_item = ufsession_.Ui.DisplayMenu(
                         title,
                         0,
                         separated[current_set_index],
@@ -396,7 +396,7 @@ namespace TSG_Library.Extensions
             out int response,
             out Tag _object)
         {
-            var cursor = new double[3];
+            double[] cursor = new double[3];
 
             session.__SelectSingleObject(
                 "Select Component Message",
@@ -430,7 +430,8 @@ namespace TSG_Library.Extensions
 
                 if (__tag != Tag.Null)
                     yield return session_.__GetTaggedObject(__tag);
-            } while (__tag != Tag.Null);
+            }
+            while (__tag != Tag.Null);
         }
 
         public static void __DeleteObjects(this Session session_,

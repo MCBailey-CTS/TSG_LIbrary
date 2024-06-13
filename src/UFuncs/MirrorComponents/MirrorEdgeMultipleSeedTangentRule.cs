@@ -27,8 +27,8 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             Feature mirroredFeature = (Feature)dict[originalFeature];
 
-            ((EdgeMultipleSeedTangentRule)originalRule).GetData(out Edge[] originalSeedEdges, out var angleTolerance,
-                out var hasSameConvexity);
+            ((EdgeMultipleSeedTangentRule)originalRule).GetData(out Edge[] originalSeedEdges, out double angleTolerance,
+                out bool hasSameConvexity);
 
             IList<Edge> newEdges = new List<Edge>();
 
@@ -38,7 +38,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                 Body mirrorBody;
 
-                if(!dict.ContainsKey(originalBody))
+                if (!dict.ContainsKey(originalBody))
                 {
                     mirroredFeature.Suppress();
 
@@ -49,7 +49,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                     BodyFeature mirrorOwningFeature = (BodyFeature)dict[originalOwningFeature];
 
-                    if(mirrorOwningFeature.GetBodies().Length != 1)
+                    if (mirrorOwningFeature.GetBodies().Length != 1)
                         throw new InvalidOperationException("Invalid number of bodies for feature");
 
                     mirrorBody = mirrorOwningFeature.GetBodies()[0];
@@ -64,7 +64,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
                 Point3d finalEnd = originalEdge.__EndPoint().__MirrorMap(plane, originalComp, mirroredComp);
 
                 foreach (Edge e in mirrorBody.GetEdges())
-                    if(e.__HasEndPoints(finalStart, finalEnd))
+                    if (e.__HasEndPoints(finalStart, finalEnd))
                         newEdges.Add(e);
             }
 

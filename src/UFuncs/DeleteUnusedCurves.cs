@@ -29,7 +29,7 @@ namespace TSG_Library.UFuncs
                 {
                     TheUFSession.Modl.AskObjectFeat(delete.Tag, out Tag featTag);
 
-                    if(featTag == Tag.Null)
+                    if (featTag == Tag.Null)
                         delCurves.Add(delete.Tag);
                 }
 

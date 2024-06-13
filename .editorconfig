@@ -1,11 +1,59 @@
-root = true
+[*cs]
+# end_of_line
+# Type and namespace declaration
+resharper_csharp_type_declaration_braces=next_line
+# Indent inside namespace declaration
+resharper_csharp_indent_inside_namespace=true
+# Method declaration
+resharper_csharp_invocable_declaration_braces=next_line
+# Property declaration
+resharper_csharp_accessor_owner_declaration_braces=next_line
+#Accessor declaration
+resharper_csharp_accessor_declaration_braces=next_line
+# Other
+resharper_csharp_other_braces=next_line
+# Before colon in 'case' statement
+resharper_csharp_space_before_colon_in_case=false
 
-[*.cs]
 
-# IDE1006: Naming Styles
-dotnet_diagnostic.IDE1006.severity = none
+csharp_new_line_before_catch=true
+csharp_new_line_before_finally=true
 
-# IDE0008: Use explicit type
-csharp_style_var_for_built_in_types = true
+csharp_new_line_before_while=true
+csharp_space_after_cast=false
 
-csharp_space_before_if_parentheses = false
+
+# 'var' usage in declarations
+
+# For built-in types
+csharp_for_built_in_types=use_explicit_type
+# For simple types
+csharp_for_simple_types=use_explicit_type
+# Elsewhere
+csharp_for_other_types=use_explicit_type
+
+# Use 'var' keyword for discards
+csharp_prefer_explicit_discard_declaration=false
+# Use 'this.' qualifier for
+csharp_instance_members_qualify_members=none
+
+# Remove redundant braces
+csharp_braces_redundant=true
+
+# Code body
+
+# Methods and operators
+csharp_method_or_operator_body=block_body
+# Local functions
+csharp_local_function_body=block_body
+# Constructors and Destructors
+csharp_constructor_or_destructor_body=block_body
+
+# Place 'System.*' and 'Windows.*' namespaces first when sorting 'using' directives
+csharp_sort_usings_with_system_first=true
+
+csharp_extra_spaces=remove_all
+
+
+
+

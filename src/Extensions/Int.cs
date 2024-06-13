@@ -8,22 +8,22 @@ namespace TSG_Library.Extensions
 
         public static string __PadInt(this int integer, int padLength)
         {
-            if(integer < 0)
+            if (integer < 0)
                 throw new ArgumentOutOfRangeException(nameof(integer), @"You cannot pad a negative integer.");
 
-            if(padLength < 1)
+            if (padLength < 1)
                 throw new ArgumentOutOfRangeException(nameof(padLength),
                     @"You cannot have a pad length of less than 1.");
 
-            var integerString = $"{integer}";
+            string integerString = $"{integer}";
 
-            var counter = 0;
+            int counter = 0;
 
             while (integerString.Length < padLength)
             {
                 integerString = $"0{integerString}";
 
-                if(counter++ > 100)
+                if (counter++ > 100)
                     throw new TimeoutException(nameof(__PadInt));
             }
 

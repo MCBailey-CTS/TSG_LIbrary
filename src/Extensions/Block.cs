@@ -17,9 +17,9 @@ namespace TSG_Library.Extensions
         {
             Point3d origin = block.__Origin().__Mirror(plane);
             Matrix3x3 orientation = block.__Orientation().__Mirror(plane);
-            var length = block.__Width();
-            var width = block.__Length();
-            var height = block.__Height();
+            double length = block.__Width();
+            double width = block.__Length();
+            double height = block.__Height();
             BlockFeatureBuilder builder = block.__OwningPart().Features.CreateBlockFeatureBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(builder))

@@ -28,17 +28,17 @@ namespace TSG_Library.Extensions
             bool includeSuppressed = false,
             bool includeUnloaded = false)
         {
-            if(includeRoot)
+            if (includeRoot)
                 yield return rootComponent;
 
             Component[] children = rootComponent.GetChildren();
 
-            for (var index = 0; index < children.Length; index++)
+            for (int index = 0; index < children.Length; index++)
             {
-                if(children[index].IsSuppressed && !includeSuppressed)
+                if (children[index].IsSuppressed && !includeSuppressed)
                     continue;
 
-                if(!children[index].__IsLoaded() && !includeUnloaded)
+                if (!children[index].__IsLoaded() && !includeUnloaded)
                     continue;
 
                 foreach (Component descendant in children[index]
@@ -62,14 +62,14 @@ namespace TSG_Library.Extensions
             {
                 tag = uFSession.Assem.CycleEntsInPartOcc(component.Tag, tag);
 
-                if(tag == Tag.Null)
+                if (tag == Tag.Null)
                     continue;
 
                 try
                 {
                     NXObject nXObject = session_.__GetTaggedObject(tag) as NXObject;
 
-                    if(nXObject is null)
+                    if (nXObject is null)
                         continue;
 
                     list.Add(nXObject);
@@ -78,7 +78,8 @@ namespace TSG_Library.Extensions
                 {
                     ex.__PrintException();
                 }
-            } while (tag != 0);
+            }
+            while (tag != 0);
 
             return list;
         }
@@ -225,7 +226,7 @@ namespace TSG_Library.Extensions
         {
             ComponentConstraint[] constraints = component.GetConstraints();
 
-            if(constraints.Length > 0)
+            if (constraints.Length > 0)
                 session_.__DeleteObjects(constraints);
 
             session_.__DeleteObjects(component);
@@ -336,7 +337,7 @@ namespace TSG_Library.Extensions
 
         public static void __ReferenceSet(this Component component, string referenceSetTitle)
         {
-            if(!(component.Prototype is Part part))
+            if (!(component.Prototype is Part part))
                 throw new ArgumentException($"The given component \"{component.DisplayName}\" is not loaded.");
 
             //   part._RightClickOpen

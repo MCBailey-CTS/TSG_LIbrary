@@ -30,15 +30,16 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
             foreach (Feature feature in part.Features.ToArray())
                 try
                 {
-                    if(!(feature is ExtractFace extract_face)
-                       || !extract_face.__IsLinkedBody())
+                    if (!(feature is ExtractFace extract_face)
+                        || !extract_face.__IsLinkedBody())
                         continue;
 
-                    ExtractFaceBuilder builder = extract_face.__OwningPart().Features.CreateExtractFaceBuilder(extract_face);
+                    ExtractFaceBuilder builder =
+                        extract_face.__OwningPart().Features.CreateExtractFaceBuilder(extract_face);
 
                     using (session_.__UsingBuilderDestroyer(builder))
                     {
-                        if(!builder.FixAtCurrentTimestamp)
+                        if (!builder.FixAtCurrentTimestamp)
                             continue;
 
                         TreeNode extract_face_node = new TreeNode(extract_face.GetFeatureName())

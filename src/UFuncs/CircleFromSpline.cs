@@ -18,7 +18,7 @@ namespace TSG_Library.UFuncs
     {
         public override void execute()
         {
-            if(Session.GetSession().Parts.Display is null)
+            if (Session.GetSession().Parts.Display is null)
             {
                 print_("There is no displayed part loaded");
                 return;
@@ -26,7 +26,7 @@ namespace TSG_Library.UFuncs
 
             Spline selObject = Selection.SelectSingleSpline();
 
-            if(selObject is null)
+            if (selObject is null)
                 return;
 
             do
@@ -34,11 +34,11 @@ namespace TSG_Library.UFuncs
                 Session.GetSession().SetUndoMark(Session.MarkVisibility.Visible, "CreateOrNull Arc");
                 Spline spline1 = selObject;
 
-                var limits = new double[2];
-                var pointOnCurve1 = new double[3];
-                var pointOnCurve2 = new double[3];
-                var pointOnCurve3 = new double[3];
-                var derivatives = new double[3];
+                double[] limits = new double[2];
+                double[] pointOnCurve1 = new double[3];
+                double[] pointOnCurve2 = new double[3];
+                double[] pointOnCurve3 = new double[3];
+                double[] derivatives = new double[3];
 
                 UFSession.GetUFSession().Eval.Initialize(spline1.Tag, out IntPtr evaluator);
                 UFSession.GetUFSession().Eval.AskLimits(evaluator, limits);
@@ -68,7 +68,8 @@ namespace TSG_Library.UFuncs
                 Session.GetSession().Information.DisplayObjectsDetails(selectedObjects1);
 
                 selObject = Selection.SelectSingleSpline();
-            } while (!(selObject is null));
+            }
+            while (!(selObject is null));
         }
     }
 }

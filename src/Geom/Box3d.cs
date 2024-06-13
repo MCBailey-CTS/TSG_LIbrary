@@ -118,16 +118,16 @@ namespace TSG_Library.Geom
         /// <returns>Box enclosing all the input boxes</returns>
         public static Box3d Combine(params Box3d[] inputBoxes)
         {
-            var num = double.PositiveInfinity;
-            var num2 = double.NegativeInfinity;
-            var num3 = num;
-            var num4 = num;
-            var num5 = num;
-            var num6 = num2;
-            var num7 = num2;
-            var num8 = num2;
+            double num = double.PositiveInfinity;
+            double num2 = double.NegativeInfinity;
+            double num3 = num;
+            double num4 = num;
+            double num5 = num;
+            double num6 = num2;
+            double num7 = num2;
+            double num8 = num2;
             foreach (Box3d box3d in inputBoxes)
-                if(box3d != null)
+                if (box3d != null)
                 {
                     num3 = System.Math.Min(num3, box3d.MinX);
                     num4 = System.Math.Min(num4, box3d.MinY);

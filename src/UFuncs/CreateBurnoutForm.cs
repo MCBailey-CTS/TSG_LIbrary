@@ -29,7 +29,7 @@ namespace TSG_Library.UFuncs
 
         private void CheckBoxBurnoutSheet_CheckedChanged(object sender, EventArgs e)
         {
-            if(checkBoxBurnoutSheet.Checked)
+            if (checkBoxBurnoutSheet.Checked)
             {
                 checkBoxDeleteBurnout.Checked = false;
                 buttonSelect.Enabled = true;
@@ -38,7 +38,7 @@ namespace TSG_Library.UFuncs
             else
 
             {
-                if(checkBoxDeleteBurnout.Checked) return;
+                if (checkBoxDeleteBurnout.Checked) return;
                 buttonSelect.Enabled = false;
                 buttonSelectAll.Enabled = false;
             }
@@ -46,7 +46,7 @@ namespace TSG_Library.UFuncs
 
         private void CheckBoxDeleteBurnout_CheckedChanged(object sender, EventArgs e)
         {
-            if(checkBoxDeleteBurnout.Checked)
+            if (checkBoxDeleteBurnout.Checked)
             {
                 checkBoxBurnoutSheet.Checked = false;
                 buttonSelect.Enabled = true;
@@ -54,7 +54,7 @@ namespace TSG_Library.UFuncs
             }
             else
             {
-                if(checkBoxBurnoutSheet.Checked) return;
+                if (checkBoxBurnoutSheet.Checked) return;
                 buttonSelect.Enabled = false;
                 buttonSelectAll.Enabled = false;
             }
@@ -66,15 +66,15 @@ namespace TSG_Library.UFuncs
             {
                 _allComponents.Clear();
                 _selComponents.Clear();
-                if(sender == buttonSelect)
+                if (sender == buttonSelect)
                 {
                     // Select: User selects components.
                     _allComponents = Selection.SelectManyComponents().ToList();
 
-                    if(_allComponents.Count == 0)
+                    if (_allComponents.Count == 0)
                         return;
                 }
-                else if(sender == buttonSelectAll)
+                else if (sender == buttonSelectAll)
                     // Select All: Iterate through assembly.
                 {
                     _allComponents = __display_part_.__RootComponent()
@@ -87,11 +87,11 @@ namespace TSG_Library.UFuncs
                     return;
                 }
 
-                if(_allComponents.Count != 0)
+                if (_allComponents.Count != 0)
                 {
                     _selComponents = _allComponents.Distinct().ToList();
 
-                    if(_selComponents.Count != 0)
+                    if (_selComponents.Count != 0)
                     {
                         List<Component> burnComponent = (from comp in _selComponents
                             from attrAll in comp.GetUserAttributes()
@@ -102,10 +102,10 @@ namespace TSG_Library.UFuncs
                             let value = attrValue.ToUpper()
                             where value == "HRS PLT" || value == "4140 PLT" || value == "4140 PH PLT"
                             select comp).ToList();
-                        if(checkBoxBurnoutSheet.Checked)
+                        if (checkBoxBurnoutSheet.Checked)
                             CreateBurnoutSheet(burnComponent);
 
-                        if(checkBoxDeleteBurnout.Checked)
+                        if (checkBoxDeleteBurnout.Checked)
                             foreach (Component burnComp in burnComponent)
                             {
                                 Part compProto = (Part)burnComp.Prototype;
@@ -187,7 +187,8 @@ namespace TSG_Library.UFuncs
 
             letteringPreferences1.Dispose();
 
-            LineAndArrowPreferences lineAndArrowPreferences1 = __work_part_.Annotations.Preferences.GetLineAndArrowPreferences();
+            LineAndArrowPreferences lineAndArrowPreferences1 =
+                __work_part_.Annotations.Preferences.GetLineAndArrowPreferences();
 
             LineCfw firstExtensionLineCfw1 = new LineCfw(7, DisplayableObject.ObjectFont.Solid, LineWidth.Thin);
             lineAndArrowPreferences1.SetFirstExtensionLineCfw(firstExtensionLineCfw1);
@@ -253,23 +254,23 @@ namespace TSG_Library.UFuncs
         {
             session_.SetUndoMark(Session.MarkVisibility.Visible, "CreateOrNull Burnout");
 
-            if(nxCompList.Count == 0)
+            if (nxCompList.Count == 0)
             {
                 print_("");
                 print_("There are no burnouts in this assembly");
                 return;
             }
 
-            var isJobNumber = false;
-            var isQty = false;
-            var isDetailNumber = false;
-            var isMaterial = false;
-            var isDescription = false;
-            var isShop = false;
+            bool isJobNumber = false;
+            bool isQty = false;
+            bool isDetailNumber = false;
+            bool isMaterial = false;
+            bool isDescription = false;
+            bool isShop = false;
 
             foreach (Component comp in nxCompList)
             {
-                if(!(comp.Prototype is Part))
+                if (!(comp.Prototype is Part))
                 {
                     print_("Component: " + comp.DisplayName + " is not fully loaded.");
                     continue;
@@ -281,70 +282,72 @@ namespace TSG_Library.UFuncs
                 {
                     Expression exp = snapPart.__FindExpression(str);
 
-                    if(exp == null)
+                    if (exp == null)
                     {
                         print_("Component \"" + snapPart.Leaf + "\" is missing expression \"" + str + "\".");
                         return false;
                     }
 
-                    if(exp.RightHandSide != null)
+                    if (exp.RightHandSide != null)
                         return true;
 
                     print_("Component \"" + snapPart.Leaf + "\" has an invalid valid for expression \"" + str + "\".");
                     return false;
                 }
 
-                var addX = ValidateExpression("AddX");
-                var addY = ValidateExpression("AddY");
-                var addZ = ValidateExpression("AddZ");
+                bool addX = ValidateExpression("AddX");
+                bool addY = ValidateExpression("AddY");
+                bool addZ = ValidateExpression("AddZ");
 
-                if(!addX || !addY || !addZ)
+                if (!addX || !addY || !addZ)
                     continue;
 
                 foreach (NXObject.AttributeInformation attrBurn in comp.GetUserAttributes())
                 {
-                    var title = attrBurn.Title.ToUpper();
+                    string title = attrBurn.Title.ToUpper();
 
                     switch (title)
                     {
                         case "JOB NUMBER":
-                            var jobNumber =
+                            string jobNumber =
                                 comp.GetUserAttributeAsString(attrBurn.Title, NXObject.AttributeType.String, -1);
-                            if(jobNumber != "")
+                            if (jobNumber != "")
                                 isJobNumber = true;
                             break;
                         case "QTY":
-                            var qty = comp.GetUserAttributeAsString(attrBurn.Title, NXObject.AttributeType.String, -1);
-                            if(qty != "")
+                            string qty =
+                                comp.GetUserAttributeAsString(attrBurn.Title, NXObject.AttributeType.String, -1);
+                            if (qty != "")
                                 isQty = true;
                             break;
                         case "DETAIL NUMBER":
-                            var detNumber =
+                            string detNumber =
                                 comp.GetUserAttributeAsString(attrBurn.Title, NXObject.AttributeType.String, -1);
-                            if(detNumber != "")
+                            if (detNumber != "")
                                 isDetailNumber = true;
                             break;
                         case "MATERIAL":
-                            var material =
+                            string material =
                                 comp.GetUserAttributeAsString(attrBurn.Title, NXObject.AttributeType.String, -1);
-                            if(material != "")
+                            if (material != "")
                                 isMaterial = true;
                             break;
                         case "DESCRIPTION":
-                            var description =
+                            string description =
                                 comp.GetUserAttributeAsString(attrBurn.Title, NXObject.AttributeType.String, -1);
-                            if(description != "")
+                            if (description != "")
                                 isDescription = true;
                             break;
                         case "SHOP":
-                            var shop = comp.GetUserAttributeAsString(attrBurn.Title, NXObject.AttributeType.String, -1);
-                            if(shop != "")
+                            string shop =
+                                comp.GetUserAttributeAsString(attrBurn.Title, NXObject.AttributeType.String, -1);
+                            if (shop != "")
                                 isShop = true;
                             break;
                     }
                 }
 
-                if(isJobNumber && isQty && isDetailNumber && isMaterial && isDescription && isShop)
+                if (isJobNumber && isQty && isDetailNumber && isMaterial && isDescription && isShop)
                 {
                     Part compProto = (Part)comp.Prototype;
                     ufsession_.Part.SetDisplayPart(compProto.Tag);
@@ -353,13 +356,13 @@ namespace TSG_Library.UFuncs
 
                     // CreateOrNull burnout drawing sheet
 
-                    var isBurnout = false;
+                    bool isBurnout = false;
 
                     foreach (DrawingSheet dwgSheet in __display_part_.DrawingSheets)
-                        if(dwgSheet.Name == "BURNOUT")
+                        if (dwgSheet.Name == "BURNOUT")
                             isBurnout = true;
 
-                    if(isBurnout == false)
+                    if (isBurnout == false)
                     {
                         __work_part_.DraftingDrawingSheets.InsertSheet("BURNOUT", DrawingSheet.Unit.Inches, 150.0,
                             250.0, 1.0, 1.0,
@@ -371,9 +374,9 @@ namespace TSG_Library.UFuncs
 
                         ufsession_.Draw.AskCurrentDrawing(out Tag currentDwg);
 
-                        ufsession_.Obj.AskName(currentDwg, out var dwgName);
+                        ufsession_.Obj.AskName(currentDwg, out string dwgName);
 
-                        if(dwgName != "BURNOUT")
+                        if (dwgName != "BURNOUT")
                             ufsession_.Draw.OpenDrawing(burnoutDwg);
 
                         // Set lettering and view preferences
@@ -388,18 +391,18 @@ namespace TSG_Library.UFuncs
 
                         BaseViewBuilder baseViewBuilder1 = __work_part_.DraftingViews.CreateBaseViewBuilder(null);
 
-                        var isPlan = false;
+                        bool isPlan = false;
 
                         foreach (ModelingView mView in __work_part_.ModelingViews)
                         {
-                            if(mView.Name.ToUpper() != "PLAN") continue;
+                            if (mView.Name.ToUpper() != "PLAN") continue;
                             isPlan = true;
                             baseViewBuilder1.SelectModelView.SelectedView = mView;
                         }
 
-                        if(isPlan == false)
+                        if (isPlan == false)
                             foreach (ModelingView mView in __work_part_.ModelingViews)
-                                if(mView.Name.ToUpper() == "TOP")
+                                if (mView.Name.ToUpper() == "TOP")
 
                                     baseViewBuilder1.SelectModelView.SelectedView = mView;
 
@@ -418,7 +421,7 @@ namespace TSG_Library.UFuncs
 
                         StateInfo[] layerVisibleInView = new StateInfo[256];
 
-                        for (var i = 0; i < layerVisibleInView.Length - 1; i++)
+                        for (int i = 0; i < layerVisibleInView.Length - 1; i++)
                         {
                             layerVisibleInView[i].Layer = i + 1;
                             layerVisibleInView[i].State = State.Hidden;
@@ -434,15 +437,18 @@ namespace TSG_Library.UFuncs
 
                         // Add annotation note
 
-                        Session.UndoMarkId markId3 = session_.SetUndoMark(Session.MarkVisibility.Invisible, "CreateOrNull Annotation");
+                        Session.UndoMarkId markId3 = session_.SetUndoMark(Session.MarkVisibility.Invisible,
+                            "CreateOrNull Annotation");
 
-                        LetteringPreferences letteringPreferences2 = __work_part_.Annotations.Preferences.GetLetteringPreferences();
+                        LetteringPreferences letteringPreferences2 =
+                            __work_part_.Annotations.Preferences.GetLetteringPreferences();
 
-                        UserSymbolPreferences userSymbolPreferences2 = __work_part_.Annotations.NewUserSymbolPreferences(
-                            UserSymbolPreferences.SizeType.ScaleAspectRatio, 1.0,
-                            1.0);
+                        UserSymbolPreferences userSymbolPreferences2 =
+                            __work_part_.Annotations.NewUserSymbolPreferences(
+                                UserSymbolPreferences.SizeType.ScaleAspectRatio, 1.0,
+                                1.0);
 
-                        var textLines1 = new string[6];
+                        string[] textLines1 = new string[6];
                         textLines1[0] = "<W@SHOP> JOB NO.: <W@JOB NUMBER>";
                         textLines1[1] = "QTY: <W@QTY>";
                         textLines1[2] = "DET #: <W@DETAIL NUMBER>";
@@ -450,11 +456,12 @@ namespace TSG_Library.UFuncs
                         textLines1[4] = "SIZE: <W@DESCRIPTION>";
                         textLines1[5] = "SEND ALL SLUGS TO <W@SHOP>";
                         Point3d origin2 = new Point3d(0.0, 0.0, 0.0);
-                        Note note1 = __work_part_.Annotations.CreateNote(textLines1, origin2, AxisOrientation.Horizontal,
+                        Note note1 = __work_part_.Annotations.CreateNote(textLines1, origin2,
+                            AxisOrientation.Horizontal,
                             letteringPreferences2,
                             userSymbolPreferences2);
 
-                        var lines1 = new string[6];
+                        string[] lines1 = new string[6];
                         lines1[0] = "<W@SHOP> JOB NO.: <W@JOB NUMBER>";
                         lines1[1] = "QTY: <W@QTY>";
                         lines1[2] = "DET #: <W@DETAIL NUMBER>";
@@ -467,9 +474,10 @@ namespace TSG_Library.UFuncs
 
                         session_.UpdateManager.DoUpdate(markId3);
 
-                        Session.UndoMarkId markId4 = session_.SetUndoMark(Session.MarkVisibility.Invisible, "CreateOrNull Annotation");
+                        Session.UndoMarkId markId4 = session_.SetUndoMark(Session.MarkVisibility.Invisible,
+                            "CreateOrNull Annotation");
 
-                        var textLines2 = new string[6];
+                        string[] textLines2 = new string[6];
                         textLines2[0] = "<W@SHOP> JOB NO.: <W@JOB NUMBER>";
                         textLines2[1] = "QTY: <W@QTY>";
                         textLines2[2] = "DET #: <W@DETAIL NUMBER>";
@@ -477,7 +485,8 @@ namespace TSG_Library.UFuncs
                         textLines2[4] = "SIZE: <W@DESCRIPTION>";
                         textLines2[5] = "SEND ALL SLUGS TO <W@SHOP>";
                         Point3d origin4 = new Point3d(125.0, 100.0, 0.0);
-                        Note note2 = __work_part_.Annotations.CreateNote(textLines2, origin4, AxisOrientation.Horizontal,
+                        Note note2 = __work_part_.Annotations.CreateNote(textLines2, origin4,
+                            AxisOrientation.Horizontal,
                             letteringPreferences2,
                             userSymbolPreferences2);
 
@@ -504,24 +513,24 @@ namespace TSG_Library.UFuncs
                 }
                 else
                 {
-                    if(!isDescription)
+                    if (!isDescription)
                         print_($"Attribute Error {comp.DisplayName}: DESCRIPTION");
-                    if(!isDetailNumber)
+                    if (!isDetailNumber)
                         print_($"Attribute Error {comp.DisplayName}: DETAIL NUMBER");
-                    if(!isJobNumber)
+                    if (!isJobNumber)
                         print_($"Attribute Error {comp.DisplayName}: JOB NUMBER");
-                    if(!isMaterial)
+                    if (!isMaterial)
                         print_($"Attribute Error {comp.DisplayName}: MATERIAL");
-                    if(!isQty)
+                    if (!isQty)
                         print_($"Attribute Error {comp.DisplayName}: QTY");
-                    if(!isShop)
+                    if (!isShop)
                         print_($"Attribute Error {comp.DisplayName}: SHOP");
 
                     return;
                 }
             }
 
-            var burnoutList = nxCompList.Aggregate("", (current, comp) => $"{current}{comp.DisplayName}\n");
+            string burnoutList = nxCompList.Aggregate("", (current, comp) => $"{current}{comp.DisplayName}\n");
             print_("");
             print_("==================================================================================");
             print_("List of all burnout components:");

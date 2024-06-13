@@ -46,13 +46,13 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if(__display_part_ is null)
+                if (__display_part_ is null)
                 {
                     print_("No DisplayPart");
                     return;
                 }
 
-                if(!__display_part_.__HasDynamicBlock())
+                if (!__display_part_.__HasDynamicBlock())
                 {
                     print_("No Dynamic Block");
                     return;
@@ -60,8 +60,8 @@ namespace TSG_Library.UFuncs
 
                 Block dynamic_block = __display_part_.__DynamicBlock();
 
-                if(chkSubtract.Checked)
-                    if(!__work_part_.__HasDynamicBlock())
+                if (chkSubtract.Checked)
+                    if (!__work_part_.__HasDynamicBlock())
                     {
                         print_("Current Work Part doesn't not contain a dynamic block");
 

@@ -62,9 +62,9 @@ namespace TSG_Library.UFuncs
             const string rgbRegex =
                 @"^{(?<Color>.+)}\s*{A:(?<A>\d+)}\s*{B:(?<B>\d+)}\s*{G:(?<G>\d+)}\s*{R:(?<R>\d+)}\s*{NX:(?<NX>\d+)}\s*{DETAILS:(?<Details>-.*)}\s*{DCB:(?<Dcb>-.*)?}$";
 
-            var xCounter = 0;
+            int xCounter = 0;
 
-            var yCounter = 0;
+            int yCounter = 0;
 
             //foreach (string colorLine in ucf["COLORS"])
 
@@ -84,47 +84,47 @@ namespace TSG_Library.UFuncs
             };
 
 
-            foreach (var colorLine in colors)
+            foreach (string colorLine in colors)
             {
                 // Matches the {colorLine}.
                 Match match = Regex.Match(colorLine, rgbRegex);
 
                 // If the {colorLine} doesn't match, ignore it.
-                if(!match.Success)
+                if (!match.Success)
                 {
                     print_($"Could not match \"{colorLine}\".");
                     continue;
                 }
 
-                if(xCounter % 4 == 0)
+                if (xCounter % 4 == 0)
                 {
                     xCounter = 0;
                     yCounter++;
                 }
 
                 // Gets the "A" value.
-                var aValue = int.Parse(match.Groups["A"].Value);
+                int aValue = int.Parse(match.Groups["A"].Value);
 
                 // Gets the "R" value.
-                var rValue = int.Parse(match.Groups["R"].Value);
+                int rValue = int.Parse(match.Groups["R"].Value);
 
                 // Gets the "G" value.
-                var gValue = int.Parse(match.Groups["G"].Value);
+                int gValue = int.Parse(match.Groups["G"].Value);
 
                 // Gets the "B" value.
-                var bValue = int.Parse(match.Groups["B"].Value);
+                int bValue = int.Parse(match.Groups["B"].Value);
 
                 // Gets the title of the color.
-                var colorTitle = match.Groups["Color"].Value;
+                string colorTitle = match.Groups["Color"].Value;
 
                 // Gets the detail notes pertaining to this color.
-                var detailNotes = match.Groups["Details"].Value;
+                string detailNotes = match.Groups["Details"].Value;
 
                 // Gets the dieset, castings, & burnout notes for this color.
-                var dcb = match.Groups["Dcb"].Value;
+                string dcb = match.Groups["Dcb"].Value;
 
                 // Creates a button. 
-                var nxColor = int.Parse(match.Groups["NX"].Value);
+                int nxColor = int.Parse(match.Groups["NX"].Value);
                 // ReSharper disable once UseObjectOrCollectionInitializer
                 Button button = new Button
                 {
@@ -138,12 +138,12 @@ namespace TSG_Library.UFuncs
 
                 button.Click += ColorButtons_Click;
 
-                var toolTipString =
+                string toolTipString =
                     $"{button.Name} = {(int)button.Tag}, a={aValue}, r={rValue}, g={gValue}, b={bValue}";
 
-                if(detailNotes != "-") toolTipString += $"\n\nDetails:\n{detailNotes}";
+                if (detailNotes != "-") toolTipString += $"\n\nDetails:\n{detailNotes}";
 
-                if(dcb != "-") toolTipString += $"\n\nDiesets, Castings, & Burnouts:\n{dcb}";
+                if (dcb != "-") toolTipString += $"\n\nDiesets, Castings, & Burnouts:\n{dcb}";
 
                 toolTipString = toolTipString.Replace("\\n", "\n");
 
@@ -247,13 +247,13 @@ namespace TSG_Library.UFuncs
 
         private void RdoButton_Click(object sender, EventArgs e)
         {
-            if(sender == rdoFace)
+            if (sender == rdoFace)
                 Settings.Default.AssemblyColorCodeLastUsed = (int)AssemblyColorCodeType.Face;
-            else if(sender == rdoFeature)
+            else if (sender == rdoFeature)
                 Settings.Default.AssemblyColorCodeLastUsed = (int)AssemblyColorCodeType.Feature;
-            else if(sender == rdoSolid)
+            else if (sender == rdoSolid)
                 Settings.Default.AssemblyColorCodeLastUsed = (int)AssemblyColorCodeType.Solid;
-            else if(sender == rdoNoFilter)
+            else if (sender == rdoNoFilter)
                 Settings.Default.AssemblyColorCodeLastUsed = (int)AssemblyColorCodeType.None;
         }
 

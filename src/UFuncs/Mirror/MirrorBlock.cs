@@ -14,7 +14,8 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
         public override string FeatureType { get; } = "BLOCK";
 
 
-        public override void Mirror(Feature originalFeature, IDictionary<TaggedObject, TaggedObject> dict, Surface. Plane plane, Component originalComp)
+        public override void Mirror(Feature originalFeature, IDictionary<TaggedObject, TaggedObject> dict,
+            Surface.Plane plane, Component originalComp)
         {
             originalFeature.Unsuppress();
             Feature feature = (Feature)dict[originalFeature];
@@ -22,15 +23,13 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             Component mirrorComp = (Component)dict[originalComp];
             Block block = (Block)originalFeature;
             Block block2 = (Block)feature;
-            if (!TryMatchFaces(block.GetFaces(), block2.GetFaces(), plane, originalComp, mirrorComp, out Face[] facePairs))
-            {
+            if (!TryMatchFaces(block.GetFaces(), block2.GetFaces(), plane, originalComp, mirrorComp,
+                    out Face[] facePairs))
                 throw new Exception("Unable to match faces in " + originalFeature.GetFeatureName());
-            }
 
-            if (!TryMatchEdges(block.GetEdges(), block2.GetEdges(), plane, originalComp, mirrorComp, out Edge[] edgePairs))
-            {
+            if (!TryMatchEdges(block.GetEdges(), block2.GetEdges(), plane, originalComp, mirrorComp,
+                    out Edge[] edgePairs))
                 throw new Exception("Unable to match edges in " + originalFeature.GetFeatureName());
-            }
 
             for (int i = 0; i < facePairs.Length; i += 2)
             {
@@ -56,7 +55,8 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             feature.Unsuppress();
         }
 
-        public static bool TryMatchEdges(IEnumerable<Edge> originalEdges, IEnumerable<Edge> mirrorEdges, Surface.Plane plane, Component originalComp, Component mirrorComp, out Edge[] edgePairs)
+        public static bool TryMatchEdges(IEnumerable<Edge> originalEdges, IEnumerable<Edge> mirrorEdges,
+            Surface.Plane plane, Component originalComp, Component mirrorComp, out Edge[] edgePairs)
         {
             IList<Edge> list = new List<Edge>();
             ISet<Edge> set = originalEdges.ToHashSet();
@@ -80,10 +80,11 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             return true;
         }
 
-        public static bool TryMatchFaces(IEnumerable<Face> originalFaces, IEnumerable<Face> mirrorFaces, Surface.Plane plane, Component originalComp, Component mirrorComp, out Face[] facePairs)
+        public static bool TryMatchFaces(IEnumerable<Face> originalFaces, IEnumerable<Face> mirrorFaces,
+            Surface.Plane plane, Component originalComp, Component mirrorComp, out Face[] facePairs)
         {
             IList<Face> list = new List<Face>();
-            ISet<Face> set =originalFaces.ToHashSet();
+            ISet<Face> set = originalFaces.ToHashSet();
             ISet<Face> set2 = mirrorFaces.ToHashSet();
             while (set.Count > 0)
             {
@@ -104,7 +105,8 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             return true;
         }
 
-        public static bool TryMatchFace(Face originalFace, IEnumerable<Face> mirrorFaces, Surface.Plane plane, Component originalComp, Component mirrorComp, out Face mirrorFace)
+        public static bool TryMatchFace(Face originalFace, IEnumerable<Face> mirrorFaces, Surface.Plane plane,
+            Component originalComp, Component mirrorComp, out Face mirrorFace)
         {
             Vector3d val = originalFace.__NormalVector()._MirrorMap(plane, originalComp, mirrorComp);
             Vector3d vector = val.__Unit();
@@ -112,10 +114,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             {
                 val = mirrorFace2.__NormalVector();
                 Vector3d vector2 = val.__Unit();
-                if (!vector2.__IsEqualTo(vector))
-                {
-                    continue;
-                }
+                if (!vector2.__IsEqualTo(vector)) continue;
 
                 mirrorFace = mirrorFace2;
                 return true;
@@ -125,24 +124,20 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             return false;
         }
 
-        public static bool TryMatchEdge(Edge originalEdge, IEnumerable<Edge> mirrorEdges, Surface.Plane plane, Component originalComp, Component mirrorComp, out Edge mirrorEdge)
+        public static bool TryMatchEdge(Edge originalEdge, IEnumerable<Edge> mirrorEdges, Surface.Plane plane,
+            Component originalComp, Component mirrorComp, out Edge mirrorEdge)
         {
             Point3d pos = originalEdge.__StartPoint()._MirrorMap(plane, originalComp, mirrorComp);
             Point3d pos2 = originalEdge.__EndPoint()._MirrorMap(plane, originalComp, mirrorComp);
             foreach (Edge mirrorEdge2 in mirrorEdges)
-            {
                 if (mirrorEdge2.__HasEndPoints(pos, pos2))
                 {
                     mirrorEdge = mirrorEdge2;
                     return true;
                 }
-            }
 
             mirrorEdge = null;
             return false;
         }
     }
-
-
-
 }

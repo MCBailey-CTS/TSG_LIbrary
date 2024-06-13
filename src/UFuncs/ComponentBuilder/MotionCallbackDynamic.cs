@@ -1,11 +1,7 @@
-﻿using NXOpen;
-using NXOpen.UF;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TSG_Library.Extensions;
+using NXOpen;
+using NXOpen.UF;
 using static TSG_Library.Extensions.__Extensions_;
 using static NXOpen.UF.UFConstants;
 
@@ -13,12 +9,6 @@ namespace TSG_Library.UFuncs
 {
     public partial class EditBlockForm
     {
-
-
-
-
-
-
         private void MotionCallback(double[] position, ref UFUi.MotionCbData mtnCbData, IntPtr clientData)
         {
             try
@@ -58,7 +48,7 @@ namespace TSG_Library.UFuncs
                 editBlkWidth /= 25.4;
                 editBlkHeight /= 25.4;
 
-                var convertDistMoved = _distanceMoved / 25.4;
+                double convertDistMoved = _distanceMoved / 25.4;
 
                 ufsession_.Ui.SetPrompt(
                     $"X = {editBlkLength:0.000}  " +
@@ -73,81 +63,56 @@ namespace TSG_Library.UFuncs
         }
 
 
-
-
-
-
-
-
-
-        private void MotionCallbackNegYDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> negYObjs, List<Line> allyAxisLines, double yDistance)
+        private void MotionCallbackNegYDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull,
+            List<Line> negYObjs, List<Line> allyAxisLines, double yDistance)
         {
             foreach (Line addLine in negYObjs) movePtsFull.Add(addLine);
 
-            foreach (Line yAxisLine in allyAxisLines)
-            {
-                YStartPoint(yDistance, yAxisLine);
-            }
+            foreach (Line yAxisLine in allyAxisLines) YStartPoint(yDistance, yAxisLine);
 
             MoveObjects(movePtsHalf, movePtsFull, yDistance, "Y", true);
         }
 
 
-
-
-
-        private void MotionCallbackPosYDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posYObjs, List<Line> allyAxisLines, double yDistance)
+        private void MotionCallbackPosYDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull,
+            List<Line> posYObjs, List<Line> allyAxisLines, double yDistance)
         {
             foreach (Line addLine in posYObjs) movePtsFull.Add(addLine);
 
-            foreach (Line yAxisLine in allyAxisLines)
-            {
-                YEndPoint(yDistance, yAxisLine);
-            }
+            foreach (Line yAxisLine in allyAxisLines) YEndPoint(yDistance, yAxisLine);
 
             MoveObjects(movePtsHalf, movePtsFull, yDistance, "Y", true);
         }
 
 
-
-        private void MotionCallbackNegXDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> negXObjs, List<Line> allxAxisLines, double xDistance)
+        private void MotionCallbackNegXDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull,
+            List<Line> negXObjs, List<Line> allxAxisLines, double xDistance)
         {
             foreach (Line addLine in negXObjs) movePtsFull.Add(addLine);
 
-            foreach (Line xAxisLine in allxAxisLines)
-            {
-                XStartPoint(xDistance, xAxisLine);
-            }
+            foreach (Line xAxisLine in allxAxisLines) XStartPoint(xDistance, xAxisLine);
 
             MoveObjects(movePtsHalf, movePtsFull, xDistance, "X", true);
         }
 
 
-
-        private void MotionCallbackPosZDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posZObjs, List<Line> allzAxisLines, double zDistance)
+        private void MotionCallbackPosZDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull,
+            List<Line> posZObjs, List<Line> allzAxisLines, double zDistance)
         {
             foreach (Line addLine in posZObjs) movePtsFull.Add(addLine);
 
-            foreach (Line zAxisLine in allzAxisLines)
-            {
-                ZEndPoint(zDistance, zAxisLine);
-            }
+            foreach (Line zAxisLine in allzAxisLines) ZEndPoint(zDistance, zAxisLine);
 
             MoveObjects(movePtsHalf, movePtsFull, zDistance, "Z", true);
         }
 
 
-
-
-
-        private void MotionCallbackPosXDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posXObjs, List<Line> allxAxisLines, double xDistance)
+        private void MotionCallbackPosXDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull,
+            List<Line> posXObjs, List<Line> allxAxisLines, double xDistance)
         {
             foreach (Line posXLine in posXObjs) movePtsFull.Add(posXLine);
 
-            foreach (Line xAxisLine in allxAxisLines)
-            {
-                XEndPoint(xDistance, xAxisLine);
-            }
+            foreach (Line xAxisLine in allxAxisLines) XEndPoint(xDistance, xAxisLine);
 
             MoveObjects(movePtsHalf, movePtsFull, xDistance, "X", true);
         }
@@ -156,14 +121,15 @@ namespace TSG_Library.UFuncs
         private void MotionCallbackDyanmic(double[] position)
         {
             Point pointPrototype = _udoPointHandle.IsOccurrence
-                                    ? (Point)_udoPointHandle.Prototype
-                                    : _udoPointHandle;
+                ? (Point)_udoPointHandle.Prototype
+                : _udoPointHandle;
 
             List<NXObject> doNotMovePts = new List<NXObject>();
             List<NXObject> movePtsHalf = new List<NXObject>();
             List<NXObject> movePtsFull = new List<NXObject>();
 
-            MotionCallbackDynamic1(pointPrototype, doNotMovePts, movePtsHalf, movePtsFull, pointPrototype.Name.Contains("POS"));
+            MotionCallbackDynamic1(pointPrototype, doNotMovePts, movePtsHalf, movePtsFull,
+                pointPrototype.Name.Contains("POS"));
 
             List<Line> posXObjs = new List<Line>();
             List<Line> negXObjs = new List<Line>();
@@ -195,16 +161,16 @@ namespace TSG_Library.UFuncs
                 }
 
                 if (eLine.Name == "XBASE1" || eLine.Name == "XCEILING1" || eLine.Name == "ZBASE1" ||
-                   eLine.Name == "ZBASE2") negYObjs.Add(eLine);
+                    eLine.Name == "ZBASE2") negYObjs.Add(eLine);
 
                 if (eLine.Name == "XBASE2" || eLine.Name == "XCEILING2" || eLine.Name == "ZBASE3" ||
-                   eLine.Name == "ZBASE4") posYObjs.Add(eLine);
+                    eLine.Name == "ZBASE4") posYObjs.Add(eLine);
 
                 if (eLine.Name == "XBASE1" || eLine.Name == "XBASE2" || eLine.Name == "YBASE1" ||
-                   eLine.Name == "YBASE2") negZObjs.Add(eLine);
+                    eLine.Name == "YBASE2") negZObjs.Add(eLine);
 
                 if (eLine.Name == "XCEILING1" || eLine.Name == "XCEILING2" || eLine.Name == "YCEILING1" ||
-                   eLine.Name == "YCEILING2") posZObjs.Add(eLine);
+                    eLine.Name == "YCEILING2") posZObjs.Add(eLine);
             }
 
             List<Line> allxAxisLines = new List<Line>();
@@ -225,8 +191,8 @@ namespace TSG_Library.UFuncs
             double[] pointStart =
                 { _udoPointHandle.Coordinates.X, _udoPointHandle.Coordinates.Y, _udoPointHandle.Coordinates.Z };
 
-            var mappedPoint = new double[3];
-            var mappedCursor = new double[3];
+            double[] mappedPoint = new double[3];
+            double[] mappedCursor = new double[3];
 
             _displayPart.WCS.SetOriginAndMatrix(_workCompOrigin, _workCompOrientation);
 
@@ -234,17 +200,17 @@ namespace TSG_Library.UFuncs
             ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, position, UF_CSYS_ROOT_WCS_COORDS, mappedCursor);
 
             if (pointPrototype.Name == "POSX" || pointPrototype.Name == "NEGX")
-                MotionCallbackXDynamic(pointPrototype, movePtsHalf, movePtsFull, posXObjs, negXObjs, allxAxisLines, mappedPoint, mappedCursor);
+                MotionCallbackXDynamic(pointPrototype, movePtsHalf, movePtsFull, posXObjs, negXObjs, allxAxisLines,
+                    mappedPoint, mappedCursor);
 
             if (pointPrototype.Name == "POSY" || pointPrototype.Name == "NEGY")
-                MotionCallbackYDynamic(pointPrototype, movePtsHalf, movePtsFull, posYObjs, negYObjs, allyAxisLines, mappedPoint, mappedCursor);
+                MotionCallbackYDynamic(pointPrototype, movePtsHalf, movePtsFull, posYObjs, negYObjs, allyAxisLines,
+                    mappedPoint, mappedCursor);
 
             if (pointPrototype.Name == "POSZ" || pointPrototype.Name == "NEGZ")
-                MotionCallbackZDynamic(pointPrototype, movePtsHalf, movePtsFull, posZObjs, negZObjs, allzAxisLines, mappedPoint, mappedCursor);
+                MotionCallbackZDynamic(pointPrototype, movePtsHalf, movePtsFull, posZObjs, negZObjs, allzAxisLines,
+                    mappedPoint, mappedCursor);
         }
-
-
-
 
 
         private void MotionCallbackXDynamic(
@@ -260,7 +226,7 @@ namespace TSG_Library.UFuncs
             if (mappedPoint[0] == mappedCursor[0])
                 return;
 
-            var xDistance = Math.Sqrt(Math.Pow(mappedPoint[0] - mappedCursor[0], 2));
+            double xDistance = Math.Sqrt(Math.Pow(mappedPoint[0] - mappedCursor[0], 2));
 
             if (xDistance < _gridSpace)
                 return;
@@ -276,11 +242,13 @@ namespace TSG_Library.UFuncs
                 MotionCallbackNegXDyanmic(movePtsHalf, movePtsFull, negXObjs, allxAxisLines, xDistance);
         }
 
-        private void MotionCallbackZDynamic(Point pointPrototype, List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posZObjs, List<Line> negZObjs, List<Line> allzAxisLines, double[] mappedPoint, double[] mappedCursor)
+        private void MotionCallbackZDynamic(Point pointPrototype, List<NXObject> movePtsHalf,
+            List<NXObject> movePtsFull, List<Line> posZObjs, List<Line> negZObjs, List<Line> allzAxisLines,
+            double[] mappedPoint, double[] mappedCursor)
         {
             if (mappedPoint[2] != mappedCursor[2])
             {
-                var zDistance = Math.Sqrt(Math.Pow(mappedPoint[2] - mappedCursor[2], 2));
+                double zDistance = Math.Sqrt(Math.Pow(mappedPoint[2] - mappedCursor[2], 2));
                 zDistance = RoundDistanceToGrid(_gridSpace, zDistance);
 
                 if (zDistance >= _gridSpace)
@@ -290,13 +258,9 @@ namespace TSG_Library.UFuncs
                     _distanceMoved += zDistance;
 
                     if (pointPrototype.Name == "POSZ")
-                    {
                         MotionCallbackPosZDyanmic(movePtsHalf, movePtsFull, posZObjs, allzAxisLines, zDistance);
-                    }
                     else
-                    {
                         MotionCallbackNegZDyanmic(movePtsHalf, movePtsFull, negZObjs, allzAxisLines, zDistance);
-                    }
 
                     ModelingView mView1 = (ModelingView)_displayPart.Views.WorkView;
                     _displayPart.Views.WorkView.Orient(mView1.Matrix);
@@ -305,11 +269,13 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        private void MotionCallbackYDynamic(Point pointPrototype, List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posYObjs, List<Line> negYObjs, List<Line> allyAxisLines, double[] mappedPoint, double[] mappedCursor)
+        private void MotionCallbackYDynamic(Point pointPrototype, List<NXObject> movePtsHalf,
+            List<NXObject> movePtsFull, List<Line> posYObjs, List<Line> negYObjs, List<Line> allyAxisLines,
+            double[] mappedPoint, double[] mappedCursor)
         {
             if (mappedPoint[1] != mappedCursor[1])
             {
-                var yDistance = Math.Sqrt(Math.Pow(mappedPoint[1] - mappedCursor[1], 2));
+                double yDistance = Math.Sqrt(Math.Pow(mappedPoint[1] - mappedCursor[1], 2));
 
                 if (yDistance >= _gridSpace)
                 {
@@ -318,33 +284,25 @@ namespace TSG_Library.UFuncs
                     _distanceMoved += yDistance;
 
                     if (pointPrototype.Name == "POSY")
-                    {
                         MotionCallbackPosYDyanmic(movePtsHalf, movePtsFull, posYObjs, allyAxisLines, yDistance);
-                    }
                     else
-                    {
                         MotionCallbackNegYDyanmic(movePtsHalf, movePtsFull, negYObjs, allyAxisLines, yDistance);
-                    }
                 }
             }
         }
 
-        private void MotionCallbackNegZDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> negZObjs, List<Line> allzAxisLines, double zDistance)
+        private void MotionCallbackNegZDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull,
+            List<Line> negZObjs, List<Line> allzAxisLines, double zDistance)
         {
             foreach (Line addLine in negZObjs) movePtsFull.Add(addLine);
 
-            foreach (Line zAxisLine in allzAxisLines)
-            {
-                ZStartPoint(zDistance, zAxisLine);
-            }
+            foreach (Line zAxisLine in allzAxisLines) ZStartPoint(zDistance, zAxisLine);
 
             MoveObjects(movePtsHalf, movePtsFull, zDistance, "Z", true);
         }
 
 
         //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-
-
 
 
         private void MotionCalbackNotDynamic(double[] position)
@@ -368,8 +326,8 @@ namespace TSG_Library.UFuncs
 
             double[] pointStart = _udoPointHandle.Coordinates.__ToArray();
 
-            var mappedPoint = new double[3];
-            var mappedCursor = new double[3];
+            double[] mappedPoint = new double[3];
+            double[] mappedCursor = new double[3];
 
             _displayPart.WCS.SetOriginAndMatrix(_workCompOrigin, _workCompOrientation);
 
@@ -388,16 +346,10 @@ namespace TSG_Library.UFuncs
 
         private void MotionCallbackNotDynamicX(List<NXObject> moveAll, double[] mappedPoint, double[] mappedCursor)
         {
-            if (mappedPoint[0] == mappedCursor[0])
-            {
-                return;
-            }
-            var xDistance = Math.Sqrt(Math.Pow(mappedPoint[0] - mappedCursor[0], 2));
+            if (mappedPoint[0] == mappedCursor[0]) return;
+            double xDistance = Math.Sqrt(Math.Pow(mappedPoint[0] - mappedCursor[0], 2));
 
-            if (xDistance < _gridSpace)
-            {
-                return;
-            }
+            if (xDistance < _gridSpace) return;
             if (mappedCursor[0] < mappedPoint[0]) xDistance *= -1;
 
             _distanceMoved += xDistance;
@@ -409,7 +361,7 @@ namespace TSG_Library.UFuncs
         {
             if (mappedPoint[1] != mappedCursor[1])
             {
-                var yDistance = Math.Sqrt(Math.Pow(mappedPoint[1] - mappedCursor[1], 2));
+                double yDistance = Math.Sqrt(Math.Pow(mappedPoint[1] - mappedCursor[1], 2));
 
                 if (yDistance >= _gridSpace)
                 {
@@ -427,7 +379,7 @@ namespace TSG_Library.UFuncs
             if (mappedPoint[2] == mappedCursor[2])
                 return;
 
-            var zDistance = Math.Sqrt(Math.Pow(mappedPoint[2] - mappedCursor[2], 2));
+            double zDistance = Math.Sqrt(Math.Pow(mappedPoint[2] - mappedCursor[2], 2));
             zDistance = RoundDistanceToGrid(_gridSpace, zDistance);
 
             if (zDistance < _gridSpace)
@@ -442,10 +394,5 @@ namespace TSG_Library.UFuncs
             _displayPart.Views.WorkView.Orient(mView1.Matrix);
             _displayPart.WCS.SetOriginAndMatrix(mView1.Origin, mView1.Matrix);
         }
-
-
-
-
-
     }
 }

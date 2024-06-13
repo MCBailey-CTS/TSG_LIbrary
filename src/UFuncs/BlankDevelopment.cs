@@ -26,7 +26,7 @@ namespace TSG_Library.UFuncs
             Curve[] lengthObjs = Selection.SelectCurves();
 
             // get total length of selected lines
-            var addLength = lengthObjs.Select(selTag => (Curve)session_.__GetTaggedObject(selTag.Tag))
+            double addLength = lengthObjs.Select(selTag => (Curve)session_.__GetTaggedObject(selTag.Tag))
                 .Select(selCurve => selCurve.GetLength())
                 .Sum();
 
@@ -34,7 +34,7 @@ namespace TSG_Library.UFuncs
             Point3d cursorLocation = new Point3d();
             Line developObj = Selection.SelectSingleLine();
 
-            if(developObj is null)
+            if (developObj is null)
                 return;
 
             // get user selection for which end of the line to extend
@@ -90,11 +90,11 @@ namespace TSG_Library.UFuncs
 
         private static void AskCloserToStartOrEnd(Tag curve, double[] cursorLocation)
         {
-            var limits = new double[2];
-            var startPoint = new double[3];
-            var endPoint = new double[3];
-            var derivatives = new double[3];
-            var closestPoint = new double[3];
+            double[] limits = new double[2];
+            double[] startPoint = new double[3];
+            double[] endPoint = new double[3];
+            double[] derivatives = new double[3];
+            double[] closestPoint = new double[3];
             TheUFSession.Eval.Initialize(curve, out IntPtr evaluator);
             TheUFSession.Eval.AskLimits(evaluator, limits);
             TheUFSession.Eval.Evaluate(evaluator, 0, limits[0], startPoint, derivatives);
@@ -110,7 +110,7 @@ namespace TSG_Library.UFuncs
             double[] destinationCsys = { 0, 0, 0, 1, 0, 0, 0, 1, 0 };
             double[] refViewCsys = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             double[] outputMatrix = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-            TheUFSession.Ui.AskLastPickedView(out var viewName);
+            TheUFSession.Ui.AskLastPickedView(out string viewName);
             View lastViewPicked = __work_part_.ModelingViews.FindObject(viewName);
             refViewCsys[3] = lastViewPicked.Matrix.Xx;
             refViewCsys[4] = lastViewPicked.Matrix.Xy;
@@ -130,7 +130,7 @@ namespace TSG_Library.UFuncs
             double[] destinationCsys = { 0, 0, 0, 1, 0, 0, 0, 1, 0 };
             double[] refViewCsys = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             double[] outputMatrix = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-            TheUFSession.Ui.AskLastPickedView(out var viewName);
+            TheUFSession.Ui.AskLastPickedView(out string viewName);
             View lastViewPicked = __work_part_.ModelingViews.FindObject(viewName);
             refViewCsys[3] = lastViewPicked.Matrix.Xx;
             refViewCsys[4] = lastViewPicked.Matrix.Xy;
@@ -149,8 +149,8 @@ namespace TSG_Library.UFuncs
         {
             double[] cp = { 0, 0, 0 };
             UFCurve.Line lp;
-            var startPoint = new double[3];
-            var endPoint = new double[3];
+            double[] startPoint = new double[3];
+            double[] endPoint = new double[3];
             lp.start_point = startPoint;
             lp.end_point = endPoint;
             MapAbsoluteToView(ref cursorLocation);

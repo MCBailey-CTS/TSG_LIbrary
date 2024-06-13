@@ -27,7 +27,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
             TreeNode part_node = part.__TreeNode();
 
             foreach (Component child in part.ComponentAssembly.RootComponent.GetChildren())
-                if(child.GetPositionOverrideType() != PositionOverrideType.Explicit)
+                if (child.GetPositionOverrideType() != PositionOverrideType.Explicit)
                     part_node.Nodes.Add(child.__TreeNode());
 
             return part_node;

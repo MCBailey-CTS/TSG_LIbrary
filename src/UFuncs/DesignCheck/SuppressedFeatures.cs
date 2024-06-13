@@ -30,7 +30,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 
             foreach (Feature feature in part.Features.GetFeatures())
             {
-                if(!featureNames.Add(feature.GetFeatureName()))
+                if (!featureNames.Add(feature.GetFeatureName()))
                     continue;
 
                 yield return feature;

@@ -16,7 +16,7 @@ namespace TSG_Library.UFuncs
     {
         public override void execute()
         {
-            if(Session.GetSession().Parts.Display is null)
+            if (Session.GetSession().Parts.Display is null)
             {
                 print_("There is no displayed part loaded");
                 return;

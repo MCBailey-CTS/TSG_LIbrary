@@ -5,7 +5,6 @@ using System.Linq;
 using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Assemblies;
-using TSG_Library.Attributes;
 using TSG_Library.Properties;
 using TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities;
 using static TSG_Library.Extensions.__Extensions_;
@@ -253,7 +252,7 @@ namespace TSG_Library.UFuncs
                     //new CastingChildren(),
                     //new CastingHalfMoons(),
                     //new CBoreDepths(),
-                    new ComponentNames(),
+                    new ComponentNames()
                     //new DescriptionNXAttribute(),
                     //new Dimensions(),
                     //new FolderLocations(),
@@ -343,7 +342,7 @@ namespace TSG_Library.UFuncs
             {
                 print_("double clicked11");
 
-                if(!(e.Node.Tag is Part part))
+                if (!(e.Node.Tag is Part part))
                     return;
 
                 //__display_part_.Acti
@@ -368,7 +367,7 @@ namespace TSG_Library.UFuncs
             {
                 TreeNode xNode = x as TreeNode;
                 TreeNode yNode = y as TreeNode;
-                if(ReferenceEquals(xNode, yNode)) return 0;
+                if (ReferenceEquals(xNode, yNode)) return 0;
                 return xNode is null
                     ? string.CompareOrdinal(null, yNode.Text)
                     : string.CompareOrdinal(xNode.Text, yNode?.Text);

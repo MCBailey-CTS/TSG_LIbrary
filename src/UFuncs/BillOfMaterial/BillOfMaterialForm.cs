@@ -160,7 +160,6 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-
                 Hide();
                 NXExcelData.RowColumnIndexes customerIndex;
                 string customerPath;
@@ -213,7 +212,7 @@ namespace TSG_Library.UFuncs
                     .Distinct()
                     .ToArray();
 
-                if(partsInBom.Length == 0)
+                if (partsInBom.Length == 0)
                 {
                     print_("Didn't find any data");
                     return;
@@ -253,8 +252,10 @@ namespace TSG_Library.UFuncs
                         .Where(__c => __c.__IsFastener())
                         .ToArray();
 
-                    Component[] metric_fasteners = fasteners.Where(__f => __f.DisplayName.ToLower().Contains("mm")).ToArray();
-                    Component[] english_fasteners = fasteners.Where(__f => !__f.DisplayName.ToLower().Contains("mm")).ToArray();
+                    Component[] metric_fasteners =
+                        fasteners.Where(__f => __f.DisplayName.ToLower().Contains("mm")).ToArray();
+                    Component[] english_fasteners =
+                        fasteners.Where(__f => !__f.DisplayName.ToLower().Contains("mm")).ToArray();
 
                     if (metric_fasteners.Length > 0 && english_fasteners.Length > 0)
                         metric_english_fastener_owners.Add(part);
@@ -316,12 +317,12 @@ namespace TSG_Library.UFuncs
 
         private static bool CheckMaterials(IEnumerable<Part> partsInBom)
         {
-            var allPassed = true;
+            bool allPassed = true;
 
             foreach (Part part in partsInBom)
                 try
                 {
-                    var att = part.GetUserAttributes().Select(information => information.Title)
+                    string att = part.GetUserAttributes().Select(information => information.Title)
                         .FirstOrDefault(title => title.ToLower() == "material");
 
                     if (att is null)
@@ -331,7 +332,7 @@ namespace TSG_Library.UFuncs
                         continue;
                     }
 
-                    var attValue = part.GetUserAttributeAsString(att, NXObject.AttributeType.String, -1);
+                    string attValue = part.GetUserAttributeAsString(att, NXObject.AttributeType.String, -1);
 
                     switch (attValue)
                     {
@@ -363,10 +364,10 @@ namespace TSG_Library.UFuncs
 
         private static bool CheckSizeDescriptions(IEnumerable<Part> partsInBom)
         {
-            var allPassed = true;
+            bool allPassed = true;
 
             foreach (Part part in partsInBom)
-                if (!SizeDescription1.Validate(part, out var message))
+                if (!SizeDescription1.Validate(part, out string message))
                 {
                     allPassed = false;
                     print_($"{part.Leaf}:\n{message}\n");
@@ -382,13 +383,13 @@ namespace TSG_Library.UFuncs
 
             using (excelApp)
             {
-                var checkerStockListPath = folder.file_checker_stock_list();
+                string checkerStockListPath = folder.file_checker_stock_list();
 
                 if (File.Exists(checkerStockListPath))
                     File.Delete(checkerStockListPath);
                 File.Copy(CheckProperties.CheckerTemplateFilePath, checkerStockListPath);
                 NXExcelData[] enumeratedDatas = bomDatas.ToArray();
-                for (var index = 0; index < enumeratedDatas.Length; index++)
+                for (int index = 0; index < enumeratedDatas.Length; index++)
                 {
                     NXExcelData data = enumeratedDatas[index];
                     prompt_($"Writing checker sheet. Cell {index + 1} of {enumeratedDatas.Length}.");
@@ -412,7 +413,7 @@ namespace TSG_Library.UFuncs
                     }
 
                     //Revision 1.7 - 2018-01-29
-                    var rowIndex = data.RowIndex - (BomProperties.StartRow + CheckProperties.StartRow) + 12;
+                    int rowIndex = data.RowIndex - (BomProperties.StartRow + CheckProperties.StartRow) + 12;
 
                     excelApp.SetCell(checkerStockListPath, 1, rowIndex, colIndex, data.Data);
 
@@ -433,7 +434,7 @@ namespace TSG_Library.UFuncs
             using (ExcelApplication excelApp = new ExcelApplication())
             {
                 // Revision 1.2 2017/11/22
-                var expectedStocklistPath = _isCasting
+                string expectedStocklistPath = _isCasting
                     ? $"{folder.dir_stocklist}\\{__display_part_.Leaf}-casting-stocklist.xlsx"
                     : $"{folder.dir_stocklist}\\{__display_part_.Leaf}-stocklist.xlsx";
 
@@ -449,7 +450,7 @@ namespace TSG_Library.UFuncs
                             return null;
                     }
 
-                var dir = Path.GetDirectoryName(expectedStocklistPath);
+                string dir = Path.GetDirectoryName(expectedStocklistPath);
 
                 if (!Directory.Exists(dir))
                     Directory.CreateDirectory(dir);
@@ -477,11 +478,11 @@ namespace TSG_Library.UFuncs
                 }
 
 
-                foreach (var key in dict_parts.Keys)
+                foreach (int key in dict_parts.Keys)
                     try
                     {
                         Part part = session_.__FindOrOpen($"{folder.customer_number}-{dict_parts[key].Data}");
-                        var description = dict_sizes[key].Data;
+                        string description = dict_sizes[key].Data;
 
                         if (!chkMM.Checked)
                             continue;
@@ -499,12 +500,13 @@ namespace TSG_Library.UFuncs
                         massUnits1[4] = _WorkPart.UnitCollection.FindObject("PoundForce");
                         IBody[] objects1 = new IBody[1];
                         objects1[0] = solidBody;
-                        MeasureBodies measureBodies1 = _WorkPart.MeasureManager.NewMassProperties(massUnits1, 0.99, objects1);
+                        MeasureBodies measureBodies1 =
+                            _WorkPart.MeasureManager.NewMassProperties(massUnits1, 0.99, objects1);
 
                         using (measureBodies1)
                         {
                             measureBodies1.InformationUnit = MeasureBodies.AnalysisUnit.KilogramMillimeter;
-                            var weight = $"{measureBodies1.Mass / 2.2:f3}";
+                            string weight = $"{measureBodies1.Mass / 2.2:f3}";
 
                             ExcelData.Add(new NXExcelData
                             {
@@ -522,11 +524,12 @@ namespace TSG_Library.UFuncs
                             continue;
 
                         Box3d box = solidBody.__Box3d();
-                        var x = double.Parse(match.Groups["num0"].Value) *
-                                25.4; //  Math.Abs(box.MaxX - box.MinX) * 25.4;
-                        var y = double.Parse(match.Groups["num1"].Value) * 25.4; //Math.Abs(box.MaxY - box.MinY) * 25.4;
-                        var z = double.Parse(match.Groups["num2"].Value) * 25.4;
-                        var sizes = new[] { x, y, z }.OrderBy(t => t).ToArray();
+                        double x = double.Parse(match.Groups["num0"].Value) *
+                                   25.4; //  Math.Abs(box.MaxX - box.MinX) * 25.4;
+                        double y = double.Parse(match.Groups["num1"].Value) *
+                                   25.4; //Math.Abs(box.MaxY - box.MinY) * 25.4;
+                        double z = double.Parse(match.Groups["num2"].Value) * 25.4;
+                        double[] sizes = new[] { x, y, z }.OrderBy(t => t).ToArray();
                         dict_sizes[key].Data =
                             $"{sizes[0]:f3} X {sizes[1]:f3} X {sizes[2]:f3}{match.Groups["append"].Value}";
                     }
@@ -542,7 +545,7 @@ namespace TSG_Library.UFuncs
 
                 excelApp.SaveWorkBook(expectedStocklistPath);
 
-                var max = ExcelData.Select(d => d.RowIndex).Max();
+                int max = ExcelData.Select(d => d.RowIndex).Max();
 
                 Dictionary<string, int> _dict = new Dictionary<string, int>();
 
@@ -579,9 +582,9 @@ namespace TSG_Library.UFuncs
 
                 _Worksheet workSheetFasteners = excelApp.WorkSheet(expectedStocklistPath, "fasteners");
 
-                var keys = _dict.Keys.OrderBy(k => k).ToArray();
+                string[] keys = _dict.Keys.OrderBy(k => k).ToArray();
 
-                for (var i = 0; i < keys.Length; i++)
+                for (int i = 0; i < keys.Length; i++)
                 {
                     workSheetFasteners.Cells[index + i, 2] = _dict[keys[i]];
                     workSheetFasteners.Cells[index + i, 3] = keys[i].Replace("-2x", "");
@@ -589,11 +592,11 @@ namespace TSG_Library.UFuncs
                 }
 
                 // Constructs the path to the {previous}.
-                var previous = $"{folder.dir_stocklist}\\previous.txt";
+                string previous = $"{folder.dir_stocklist}\\previous.txt";
                 List<string> flags = new List<string>();
                 if (File.Exists(previous))
                     flags.AddRange(File.ReadAllLines(previous));
-                var strings = ShowCheckBoxDialog(ExcelData, flags.ToArray());
+                string[] strings = ShowCheckBoxDialog(ExcelData, flags.ToArray());
                 File.WriteAllLines(previous, strings);
                 NXExcelData.Color(strings, workSheet, ExcelData);
                 excelApp.SaveWorkBook(expectedStocklistPath);
@@ -606,20 +609,20 @@ namespace TSG_Library.UFuncs
         private string[] ShowCheckBoxDialog(IEnumerable<NXExcelData> data, string[] array)
         {
             List<string> purchasedList = new List<string>();
-            var purMaterials = _ucf["PURCHASED_MATERIALS"].ToArray();
+            string[] purMaterials = _ucf["PURCHASED_MATERIALS"].ToArray();
             purMaterials = purMaterials.Where(s => s.ToUpper() != "PUR" && s.ToUpper() != "STOCK").ToArray();
             foreach (NXExcelData dat in data)
-                foreach (var str in purMaterials)
-                {
-                    if (!string.Equals(dat.Data, str, StringComparison.CurrentCultureIgnoreCase)) continue;
-                    if (!purchasedList.Contains(dat.Data.ToUpper()))
-                        purchasedList.Add(dat.Data.ToUpper());
-                }
+            foreach (string str in purMaterials)
+            {
+                if (!string.Equals(dat.Data, str, StringComparison.CurrentCultureIgnoreCase)) continue;
+                if (!purchasedList.Contains(dat.Data.ToUpper()))
+                    purchasedList.Add(dat.Data.ToUpper());
+            }
 
             if (purchasedList.Count == 0)
                 return new string[0];
 
-            var strings = CheckBoxDialog.ShowBoxes(purchasedList.ToArray(), array, Location);
+            string[] strings = CheckBoxDialog.ShowBoxes(purchasedList.ToArray(), array, Location);
             return strings;
         }
 
@@ -668,16 +671,16 @@ namespace TSG_Library.UFuncs
                     _childComponents.Clear();
 
                     foreach (Component comp in _selectedComponents.Select(__c => __c))
-                        foreach (NXObject.AttributeInformation attr in comp.GetUserAttributes())
-                        {
-                            if (attr.Title.ToUpper() != "DESCRIPTION")
-                                continue;
+                    foreach (NXObject.AttributeInformation attr in comp.GetUserAttributes())
+                    {
+                        if (attr.Title.ToUpper() != "DESCRIPTION")
+                            continue;
 
-                            var value = comp.GetStringUserAttribute(attr.Title, -1);
+                        string value = comp.GetStringUserAttribute(attr.Title, -1);
 
-                            if (value.Contains("CAST") || value.Contains("cast"))
-                                _childComponents.Add(comp);
-                        }
+                        if (value.Contains("CAST") || value.Contains("cast"))
+                            _childComponents.Add(comp);
+                    }
 
                     _isCasting = true;
                     _selectedComponents.Clear();
@@ -729,7 +732,7 @@ namespace TSG_Library.UFuncs
                     continue;
                 }
 
-                var isValid = IsNameValid(child);
+                bool isValid = IsNameValid(child);
 
                 if (isValid)
                 {
@@ -738,12 +741,12 @@ namespace TSG_Library.UFuncs
                     if (instance == NXOpen.Tag.Null)
                         continue;
 
-                    UFSession.GetUFSession().Assem.AskPartNameOfChild(instance, out var partName);
-                    var partLoad = UFSession.GetUFSession().Part.IsLoaded(partName);
+                    UFSession.GetUFSession().Assem.AskPartNameOfChild(instance, out string partName);
+                    int partLoad = UFSession.GetUFSession().Part.IsLoaded(partName);
 
                     if (partLoad != 1)
                     {
-                        UFSession.GetUFSession().Cfi.AskFileExist(partName, out var status);
+                        UFSession.GetUFSession().Cfi.AskFileExist(partName, out int status);
 
                         if (status != 0)
                             continue;
@@ -768,13 +771,12 @@ namespace TSG_Library.UFuncs
         {
             if (chk4Digits.Checked)
                 return comp.DisplayName.__IsDetail() && int.TryParse(comp.Name, out _) && comp.Name.Length == 4;
-            else
-                return comp.DisplayName.__IsDetail() && int.TryParse(comp.Name, out _) && comp.Name.Length == 3;
+            return comp.DisplayName.__IsDetail() && int.TryParse(comp.Name, out _) && comp.Name.Length == 3;
         }
 
         private static bool IsAssemNameValid(Component comp)
         {
-            var disp = comp.DisplayName.ToLower();
+            string disp = comp.DisplayName.ToLower();
 
             if (disp.Contains("000"))
                 return true;
@@ -807,7 +809,7 @@ namespace TSG_Library.UFuncs
 
             Component[] components = _selectedComponents.Select(__c => __c).ToArray();
 
-            for (var i = 0; i < components.Length; i++)
+            for (int i = 0; i < components.Length; i++)
             {
                 Component comp = components[i];
 
@@ -819,27 +821,24 @@ namespace TSG_Library.UFuncs
                         continue;
                 }
                 else if (comp.Name.Length != 3)
+                {
                     continue;
+                }
 
                 hashParts.Add((Part)comp.Prototype);
 
 
-
-
-
-
                 if (chk4Digits.Checked)
                 {
-
                     if (comp.DisplayName.Contains("mirror"))
                     {
-                        var testName = comp.DisplayName.Substring(comp.DisplayName.Length - 10, 4);
+                        string testName = comp.DisplayName.Substring(comp.DisplayName.Length - 10, 4);
                         if (comp.Name != testName)
                             ErrorComponents.Add(comp);
                     }
                     else
                     {
-                        var testName = comp.DisplayName.Substring(comp.DisplayName.Length - 4, 4);
+                        string testName = comp.DisplayName.Substring(comp.DisplayName.Length - 4, 4);
                         if (comp.Name != testName)
                             ErrorComponents.Add(comp);
                     }
@@ -848,13 +847,13 @@ namespace TSG_Library.UFuncs
                 {
                     if (comp.DisplayName.Contains("mirror"))
                     {
-                        var testName = comp.DisplayName.Substring(comp.DisplayName.Length - 10, 3);
+                        string testName = comp.DisplayName.Substring(comp.DisplayName.Length - 10, 3);
                         if (comp.Name != testName)
                             ErrorComponents.Add(comp);
                     }
                     else
                     {
-                        var testName = comp.DisplayName.Substring(comp.DisplayName.Length - 3, 3);
+                        string testName = comp.DisplayName.Substring(comp.DisplayName.Length - 3, 3);
                         if (comp.Name != testName)
                             ErrorComponents.Add(comp);
                     }
@@ -877,9 +876,9 @@ namespace TSG_Library.UFuncs
 
             // create list of UGExcel objects from list of assembly components
             _selectedComponents.Sort((c1, c2) => string.Compare(c1.Name, c2.Name, StringComparison.Ordinal));
-            var rowIndexCount = (int)startRowIndex;
+            int rowIndexCount = (int)startRowIndex;
 
-            for (var i = 0; i < _selectedComponents.Count; i++)
+            for (int i = 0; i < _selectedComponents.Count; i++)
             {
                 prompt_($"Building NX Excel List: {i + 1} of {components.Length}");
 
@@ -888,7 +887,7 @@ namespace TSG_Library.UFuncs
                 int compNumber;
                 string compName;
                 // Added OperationNumber - 2013-09-25 dvw
-                var opNumberName = string.Empty;
+                string opNumberName = string.Empty;
                 bool isConverted;
                 if (chk4Digits.Checked)
                 {
@@ -940,14 +939,15 @@ namespace TSG_Library.UFuncs
                         Part excelPart = (Part)excelComp.Prototype;
                         UFSession.GetUFSession().Assem
                             .AskOccsOfPart(__display_part_.Tag, excelPart.Tag, out Tag[] partOccs);
-                        var quantity = (from occTag in partOccs
-                                        select (Component)NXObjectManager.Get(occTag)
+                        int quantity = (from occTag in partOccs
+                            select (Component)NXObjectManager.Get(occTag)
                             into component
-                                        where component.Name.Length == 3 && !chk4Digits.Checked || component.Name.Length == 4 && chk4Digits.Checked
-                                        where !component.Parent.IsSuppressed
-                                        where !component.IsSuppressed
-                                        // Revision 1.11 2017/10/11 
-                                        select component).Count(component => component.Parent.ReferenceSet != "Empty");
+                            where (component.Name.Length == 3 && !chk4Digits.Checked) ||
+                                  (component.Name.Length == 4 && chk4Digits.Checked)
+                            where !component.Parent.IsSuppressed
+                            where !component.IsSuppressed
+                            // Revision 1.11 2017/10/11 
+                            select component).Count(component => component.Parent.ReferenceSet != "Empty");
                         NXExcelData excelDataQty = new NXExcelData
                         {
                             Data = quantity.ToString(),
@@ -958,16 +958,16 @@ namespace TSG_Library.UFuncs
                         ExcelData.Add(excelDataQty);
                         NXObject.AttributeInformation[] descriptionAttributes = excelPart.GetUserAttributes()
                             .Where(att => att.Title.ToUpper() == "DESCRIPTION").ToArray();
-                        var isCasting = descriptionAttributes.Length == 1 &&
-                                        descriptionAttributes[0].StringValue != null && descriptionAttributes[0]
-                                            .StringValue.ToUpper().Contains("CAST");
+                        bool isCasting = descriptionAttributes.Length == 1 &&
+                                         descriptionAttributes[0].StringValue != null && descriptionAttributes[0]
+                                             .StringValue.ToUpper().Contains("CAST");
                         // Gets the attribute titles and columns for the cells that need to be populated.
                         var pairs = (from str in _ucf["ATTRIBUTE_TO_POPULATE_WITH"]
-                                     let match = Regex.Match(str, @"^{(?<title>.+)}:{(?<column>\d+)}$")
-                                     where match.Success
-                                     let title = match.Groups["title"].Value
-                                     let column = match.Groups["column"].Value
-                                     select new { title, column }).ToArray();
+                            let match = Regex.Match(str, @"^{(?<title>.+)}:{(?<column>\d+)}$")
+                            where match.Success
+                            let title = match.Groups["title"].Value
+                            let column = match.Groups["column"].Value
+                            select new { title, column }).ToArray();
                         // Iterate through the attribute titles and columns.
                         foreach (var pair in pairs)
                         {
@@ -989,7 +989,7 @@ namespace TSG_Library.UFuncs
                         if (isCasting)
                             foreach (Body body in excelPart.Bodies)
                             {
-                                var count = 1;
+                                int count = 1;
 
                                 if (body.Layer != 1)
                                     continue;

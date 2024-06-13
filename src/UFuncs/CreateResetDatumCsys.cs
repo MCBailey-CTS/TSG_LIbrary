@@ -47,14 +47,14 @@ namespace TSG_Library.UFuncs
                 buttonResetAll.Enabled = false;
                 makeWp = Selection.SelectManyComponents().ToList();
 
-                if(makeWp is null)
+                if (makeWp is null)
                     return;
 
                 Part wpUnits = (Part)makeWp[0].Prototype;
                 BasePart.Units unit = wpUnits.PartUnits;
                 BasePart.Units dpUnits = displayPart.PartUnits;
 
-                if(unit != dpUnits)
+                if (unit != dpUnits)
                     return;
 
                 __work_component_ = makeWp[0];
@@ -75,7 +75,7 @@ namespace TSG_Library.UFuncs
             {
                 ResetComponent();
 
-                if(!(makeWp is null))
+                if (!(makeWp is null))
                 {
                     __work_component_ = makeWp[0];
                     UpdateSessionParts();
@@ -128,22 +128,22 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var count = 0;
-                var countSuppressed = 0;
+                int count = 0;
+                int countSuppressed = 0;
 
                 UpdateSessionParts();
                 UpdateOriginalParts();
 
-                if(workPart.ComponentAssembly.RootComponent != null)
+                if (workPart.ComponentAssembly.RootComponent != null)
                     foreach (Component comp in workPart.ComponentAssembly.RootComponent.GetChildren())
-                        if(comp.IsSuppressed == false)
+                        if (comp.IsSuppressed == false)
                         {
-                            if(comp.Prototype == null) continue;
+                            if (comp.Prototype == null) continue;
                             Part part = (Part)comp.Prototype;
                             BasePart.Units partUnits = part.PartUnits;
                             BasePart.Units dpUnits = displayPart.PartUnits;
 
-                            if(partUnits != dpUnits) continue;
+                            if (partUnits != dpUnits) continue;
 
                             ufsession_.Assem.SetWorkPartContextQuietly(part.Tag, out IntPtr intPtr);
 
@@ -151,7 +151,7 @@ namespace TSG_Library.UFuncs
 
                             foreach (CoordinateSystem csys in part.CoordinateSystems)
                             {
-                                if(csys.Layer != 254) continue;
+                                if (csys.Layer != 254) continue;
                                 count += 1;
 
                                 ufsession_.Assem.AskOccsOfPart(displayPart.Tag, part.Tag, out Tag[] partOccs);
@@ -159,7 +159,7 @@ namespace TSG_Library.UFuncs
                                 foreach (Tag blankComp in partOccs)
                                 {
                                     ufsession_.Obj.AskOwningPart(blankComp, out Tag parentTag);
-                                    if(parentTag == displayPart.Tag)
+                                    if (parentTag == displayPart.Tag)
                                         ufsession_.Obj.SetBlankStatus(blankComp, UFConstants.UF_OBJ_BLANKED);
                                 }
                             }
@@ -173,13 +173,13 @@ namespace TSG_Library.UFuncs
                             countSuppressed += 1;
                         }
 
-                if(count == 0)
+                if (count == 0)
                 {
                     print_("");
                     print_("There are no valid components in this assembly");
                 }
 
-                if(countSuppressed > 0)
+                if (countSuppressed > 0)
                 {
                     print_("");
                     print_("There are suppressed components in this assembly");
@@ -201,17 +201,17 @@ namespace TSG_Library.UFuncs
             DialogResult dialogResult = MessageBox.Show("Are you sure that you want to remove all CTSDATUMCSYS",
                 "Verify Remove All", MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
-            if(dialogResult != DialogResult.Yes) return;
+            if (dialogResult != DialogResult.Yes) return;
             try
             {
                 UpdateSessionParts();
                 UpdateOriginalParts();
 
-                if(workPart.ComponentAssembly.RootComponent != null)
+                if (workPart.ComponentAssembly.RootComponent != null)
                 {
                     GetChildComponents(workPart.ComponentAssembly.RootComponent);
 
-                    if(children.Count != 0)
+                    if (children.Count != 0)
                     {
                         oneChild = children.DistinctBy(__c => __c.DisplayName).ToList();
 
@@ -227,10 +227,11 @@ namespace TSG_Library.UFuncs
 
                             // Delete order block on layer 250
 
-                            Session.UndoMarkId markId1 = session_.SetUndoMark(Session.MarkVisibility.Invisible, "Delete Order Block");
+                            Session.UndoMarkId markId1 = session_.SetUndoMark(Session.MarkVisibility.Invisible,
+                                "Delete Order Block");
 
                             foreach (Body orderBlk in displayPart.Bodies)
-                                if(orderBlk.Layer == 250)
+                                if (orderBlk.Layer == 250)
                                     session_.UpdateManager.AddToDeleteList(orderBlk);
 
                             session_.UpdateManager.DoUpdate(markId1);
@@ -239,23 +240,24 @@ namespace TSG_Library.UFuncs
 
                             session_.UpdateManager.ClearErrorList();
 
-                            Session.UndoMarkId markId2 = session_.SetUndoMark(Session.MarkVisibility.Invisible, "Delete CTSDATUMCSYS");
+                            Session.UndoMarkId markId2 = session_.SetUndoMark(Session.MarkVisibility.Invisible,
+                                "Delete CTSDATUMCSYS");
 
                             foreach (Feature feat in workPart.Features)
-                                if(feat.Name == "CTSDATUMCSYS")
+                                if (feat.Name == "CTSDATUMCSYS")
                                     session_.UpdateManager.AddToDeleteList(feat);
 
                             session_.UpdateManager.DoUpdate(markId2);
 
                             // Delete Plan view
 
-                            var planExists = false;
+                            bool planExists = false;
                             ModelingViewCollection wpModelingViews = workPart.ModelingViews;
                             foreach (ModelingView mView in wpModelingViews)
-                                if(mView.Name == "PLAN")
+                                if (mView.Name == "PLAN")
                                     planExists = true;
 
-                            if(planExists)
+                            if (planExists)
                             {
                                 Layout layout1 = workPart.Layouts.FindObject("L1");
                                 ModelingView modelingView1 = workPart.ModelingViews.WorkView;
@@ -339,27 +341,28 @@ namespace TSG_Library.UFuncs
 
                 session_.UpdateManager.ClearErrorList();
 
-                Session.UndoMarkId markId1 = session_.SetUndoMark(Session.MarkVisibility.Invisible, "Delete CTSDATUMCSYS");
+                Session.UndoMarkId markId1 =
+                    session_.SetUndoMark(Session.MarkVisibility.Invisible, "Delete CTSDATUMCSYS");
 
-                var csysExists = false;
+                bool csysExists = false;
                 foreach (Feature feat in workPart.Features)
                 {
-                    if(feat.Name != "CTSDATUMCSYS") continue;
+                    if (feat.Name != "CTSDATUMCSYS") continue;
                     csysExists = true;
                     session_.UpdateManager.AddToDeleteList(feat);
                 }
 
-                if(csysExists) session_.UpdateManager.DoUpdate(markId1);
+                if (csysExists) session_.UpdateManager.DoUpdate(markId1);
 
                 // Delete Plan view
 
-                var planExists = false;
+                bool planExists = false;
                 ModelingViewCollection wpModelingViews = workPart.ModelingViews;
                 foreach (ModelingView mView in wpModelingViews)
-                    if(mView.Name == "PLAN")
+                    if (mView.Name == "PLAN")
                         planExists = true;
 
-                if(planExists)
+                if (planExists)
                 {
                     Layout layout1 = workPart.Layouts.FindObject("L1");
                     ModelingView modelingView1 = workPart.ModelingViews.WorkView;
@@ -407,26 +410,26 @@ namespace TSG_Library.UFuncs
 
             try
             {
-                var csysExists = false;
+                bool csysExists = false;
 
                 foreach (Feature feat in workPart.Features)
-                    if(feat.Name == "CTSDATUMCSYS")
+                    if (feat.Name == "CTSDATUMCSYS")
                         csysExists = true;
 
-                if(!csysExists) return;
+                if (!csysExists) return;
                 {
                     foreach (Feature feat in workPart.Features)
                     {
-                        if(feat.Name != "CTSDATUMCSYS") continue;
+                        if (feat.Name != "CTSDATUMCSYS") continue;
                         DatumCsys datumCsys = (DatumCsys)feat;
 
                         ufsession_.Modl.AskDatumCsysComponents(datumCsys.Tag, out Tag smartCsys, out _, out _, out _);
 
-                        var wcsOrigin = new double[3];
+                        double[] wcsOrigin = new double[3];
 
                         ufsession_.Csys.AskCsysInfo(smartCsys, out Tag matrix, wcsOrigin);
 
-                        var matrixValues = new double[9];
+                        double[] matrixValues = new double[9];
 
                         ufsession_.Csys.AskMatrixValues(matrix, matrixValues);
 
@@ -476,13 +479,13 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var csysExists = false;
+                bool csysExists = false;
 
                 foreach (Feature feat in workPart.Features)
-                    if(feat.Name == "CTSDATUMCSYS")
+                    if (feat.Name == "CTSDATUMCSYS")
                         csysExists = true;
 
-                if(csysExists == false)
+                if (csysExists == false)
                 {
                     DatumCsysBuilder datumCsysBuilder1 = workPart.Features.CreateDatumCsysBuilder(null);
 
@@ -490,7 +493,7 @@ namespace TSG_Library.UFuncs
                     Unit unit1;
                     Expression expression1;
 
-                    if(wpUnits == BasePart.Units.Inches)
+                    if (wpUnits == BasePart.Units.Inches)
                     {
                         unit1 = workPart.UnitCollection.FindObject("Inch");
                         expression1 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
@@ -502,21 +505,24 @@ namespace TSG_Library.UFuncs
                     }
 
 
-                    Scalar scalar1 = workPart.Scalars.CreateScalarExpression(expression1, Scalar.DimensionalityType.Length,
+                    Scalar scalar1 = workPart.Scalars.CreateScalarExpression(expression1,
+                        Scalar.DimensionalityType.Length,
                         SmartObject.UpdateOption.WithinModeling);
 
 
                     Expression expression2 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
 
 
-                    Scalar scalar2 = workPart.Scalars.CreateScalarExpression(expression2, Scalar.DimensionalityType.Length,
+                    Scalar scalar2 = workPart.Scalars.CreateScalarExpression(expression2,
+                        Scalar.DimensionalityType.Length,
                         SmartObject.UpdateOption.WithinModeling);
 
 
                     Expression expression3 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
 
 
-                    Scalar scalar3 = workPart.Scalars.CreateScalarExpression(expression3, Scalar.DimensionalityType.Length,
+                    Scalar scalar3 = workPart.Scalars.CreateScalarExpression(expression3,
+                        Scalar.DimensionalityType.Length,
                         SmartObject.UpdateOption.WithinModeling);
 
 
@@ -529,21 +535,24 @@ namespace TSG_Library.UFuncs
                     Expression expression4 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit2);
 
 
-                    Scalar scalar4 = workPart.Scalars.CreateScalarExpression(expression4, Scalar.DimensionalityType.Angle,
+                    Scalar scalar4 = workPart.Scalars.CreateScalarExpression(expression4,
+                        Scalar.DimensionalityType.Angle,
                         SmartObject.UpdateOption.WithinModeling);
 
 
                     Expression expression5 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit2);
 
 
-                    Scalar scalar5 = workPart.Scalars.CreateScalarExpression(expression5, Scalar.DimensionalityType.Angle,
+                    Scalar scalar5 = workPart.Scalars.CreateScalarExpression(expression5,
+                        Scalar.DimensionalityType.Angle,
                         SmartObject.UpdateOption.WithinModeling);
 
 
                     Expression expression6 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit2);
 
 
-                    Scalar scalar6 = workPart.Scalars.CreateScalarExpression(expression6, Scalar.DimensionalityType.Angle,
+                    Scalar scalar6 = workPart.Scalars.CreateScalarExpression(expression6,
+                        Scalar.DimensionalityType.Angle,
                         SmartObject.UpdateOption.WithinModeling);
 
                     CartesianCoordinateSystem cartesianCoordinateSystem1 = savedCsys;
@@ -567,7 +576,7 @@ namespace TSG_Library.UFuncs
                     datumCsysBuilder1.Destroy();
 
                     foreach (Point csysPoint in workPart.Points)
-                        if(csysPoint.Layer == 254)
+                        if (csysPoint.Layer == 254)
                             csysPoint.Layer = 2;
                 }
                 else
@@ -589,16 +598,16 @@ namespace TSG_Library.UFuncs
             {
                 foreach (Component child in assembly.GetChildren())
                 {
-                    if(child.IsSuppressed) continue;
-                    var isValid = child.DisplayName.__IsDetail();
+                    if (child.IsSuppressed) continue;
+                    bool isValid = child.DisplayName.__IsDetail();
 
-                    if(isValid)
+                    if (isValid)
                     {
                         Tag instance = ufsession_.Assem.AskInstOfPartOcc(child.Tag);
-                        ufsession_.Assem.AskPartNameOfChild(instance, out var partName);
-                        var partLoad = ufsession_.Part.IsLoaded(partName);
+                        ufsession_.Assem.AskPartNameOfChild(instance, out string partName);
+                        int partLoad = ufsession_.Part.IsLoaded(partName);
 
-                        if(partLoad == 1)
+                        if (partLoad == 1)
                         {
                             children.Add(child);
                             GetChildComponents(child);
@@ -607,7 +616,7 @@ namespace TSG_Library.UFuncs
                         {
                             ufsession_.Part.OpenQuiet(partName, out Tag partOpen, out _);
 
-                            if(partOpen == NXOpen.Tag.Null) continue;
+                            if (partOpen == NXOpen.Tag.Null) continue;
                             children.Add(child);
                             GetChildComponents(child);
                         }

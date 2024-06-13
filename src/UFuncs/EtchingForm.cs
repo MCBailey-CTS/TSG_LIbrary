@@ -42,7 +42,7 @@ namespace TSG_Library.UFuncs
                 {
                     Part __prototype = __c.__Prototype();
 
-                    if(!__prototype.__HasDynamicBlock())
+                    if (!__prototype.__HasDynamicBlock())
                         continue;
 
                     __work_part_ = __prototype;
@@ -53,14 +53,14 @@ namespace TSG_Library.UFuncs
 
                     session_.__SetDisplayToWork();
 
-                    var expected_z = __display_part_.WCS.CoordinateSystem.Origin.Z;
+                    double expected_z = __display_part_.WCS.CoordinateSystem.Origin.Z;
 
                     foreach (TaggedObject __member in __c.__Members())
                     {
-                        if(!(__member is Face __face))
+                        if (!(__member is Face __face))
                             continue;
 
-                        if(!__face.__IsPlanar())
+                        if (!__face.__IsPlanar())
                             continue;
 
                         Point3d[] __edge_positions = __face.GetEdges().SelectMany(__e =>
@@ -69,7 +69,7 @@ namespace TSG_Library.UFuncs
                             return new[] { vert0, vert1 };
                         }).ToArray();
 
-                        if(!__edge_positions.All(__pos => System.Math.Abs(expected_z - __pos.Z) < .001))
+                        if (!__edge_positions.All(__pos => System.Math.Abs(expected_z - __pos.Z) < .001))
                             continue;
 
                         using (session_.__usingDisplayPartReset())
@@ -80,13 +80,13 @@ namespace TSG_Library.UFuncs
 
                             Face __proto_face = (Face)__face.Prototype;
 
-                            var z = __proto_face.__EdgePositions().Select(__p => __p.Z).First();
+                            double z = __proto_face.__EdgePositions().Select(__p => __p.Z).First();
 
                             Point3d[] edge_pos = __proto_face.__EdgePositions().ToArray();
 
-                            var average_x = edge_pos.Select(__p => __p.X).Average();
-                            var average_y = edge_pos.Select(__p => __p.Y).Average();
-                            var average_z = edge_pos.Select(__p => __p.Z).Average();
+                            double average_x = edge_pos.Select(__p => __p.X).Average();
+                            double average_y = edge_pos.Select(__p => __p.Y).Average();
+                            double average_z = edge_pos.Select(__p => __p.Z).Average();
 
                             Point3d new_origin = new Point3d(average_x, average_y, z);
                             Matrix3x3 new_ori = __display_part_.WCS.__Orientation();

@@ -27,7 +27,8 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             mirroredFeature.Suppress();
 
-            ChamferBuilder chamferBuilder = originalFeature.__OwningPart().Features.CreateChamferBuilder(originalFeature);
+            ChamferBuilder chamferBuilder =
+                originalFeature.__OwningPart().Features.CreateChamferBuilder(originalFeature);
 
             IList<SelectionIntentRule> newRules = new List<SelectionIntentRule>();
 
@@ -43,7 +44,8 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             Session.UndoMarkId markId1 = session_.SetUndoMark(Session.MarkVisibility.Visible, "Redefine Feature");
 
-            EditWithRollbackManager editWithRollbackManager1 = _WorkPart.Features.StartEditWithRollbackManager(mirroredFeature, markId1);
+            EditWithRollbackManager editWithRollbackManager1 =
+                _WorkPart.Features.StartEditWithRollbackManager(mirroredFeature, markId1);
 
             using (new Destroyer(editWithRollbackManager1))
             {

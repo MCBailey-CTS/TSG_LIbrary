@@ -41,7 +41,7 @@ namespace TSG_Library.UFuncs
 
                 #region Revision • 1.1 – 2017 / 11 / 28
 
-                var controls = session_.Parts.ToArray().Select(part => part.FullPath)
+                string[] controls = session_.Parts.ToArray().Select(part => part.FullPath)
                     .Where(s => s.Contains("strip-control")).ToArray();
                 switch (controls.Length)
                 {
@@ -63,7 +63,7 @@ namespace TSG_Library.UFuncs
                 RetainerDetail = txtRetainer.Text;
                 using (session_.__usingDisplayPartReset())
                 {
-                    if(chkAssembly.Checked)
+                    if (chkAssembly.Checked)
                         SameAssembly(rdoMetric.Checked, chkButton.Checked, chkPunch.Checked, chkRetainer.Checked);
                     else
                         DifferentAssemblies(rdoMetric.Checked, chkButton.Checked, chkPunch.Checked,
@@ -82,18 +82,18 @@ namespace TSG_Library.UFuncs
 
         public static string GetNextDetailNumber(Part snapUspLsp)
         {
-            var detailDirectory = Path.GetDirectoryName(snapUspLsp.FullPath);
-            var partLeaf = snapUspLsp.Leaf.ToLower();
+            string detailDirectory = Path.GetDirectoryName(snapUspLsp.FullPath);
+            string partLeaf = snapUspLsp.Leaf.ToLower();
             Regex shortRegex = new Regex("^([0-9]+)-([0-9]{3,})-(lsp|usp)([0-9]{1})$");
             Match match = shortRegex.Match(partLeaf);
-            if(match.Success)
+            if (match.Success)
             {
-                var customerJobNumber = match.Groups[1].Value;
-                var partOp = match.Groups[2].Value;
-                var uspLsp = match.Groups[3].Value;
-                var uspLspOp = int.Parse(match.Groups[4].Value);
-                var isLower = uspLsp == "lsp";
-                var detailNumber = isLower
+                string customerJobNumber = match.Groups[1].Value;
+                string partOp = match.Groups[2].Value;
+                string uspLsp = match.Groups[3].Value;
+                int uspLspOp = int.Parse(match.Groups[4].Value);
+                bool isLower = uspLsp == "lsp";
+                int detailNumber = isLower
                     ? GetLspDetailNumberShort(uspLspOp)
                     : GetUspDetailNumberShort(uspLspOp);
                 string newDisplayName;
@@ -101,35 +101,36 @@ namespace TSG_Library.UFuncs
                 {
                     newDisplayName = $"{customerJobNumber}-{partOp}-{detailNumber++}";
 
-                    if(snapUspLsp.ComponentAssembly.RootComponent.GetChildren()
-                       .Any(component => component.DisplayName == newDisplayName))
+                    if (snapUspLsp.ComponentAssembly.RootComponent.GetChildren()
+                        .Any(component => component.DisplayName == newDisplayName))
                         continue;
 
-                    var newFullPath = $"{detailDirectory}\\{newDisplayName}.prt";
+                    string newFullPath = $"{detailDirectory}\\{newDisplayName}.prt";
 
-                    if(File.Exists(newFullPath))
+                    if (File.Exists(newFullPath))
                         continue;
 
-                    if(isLower && detailNumber > 499)
+                    if (isLower && detailNumber > 499)
                         throw new Exception("Exceeded the detail numbers for the Lower");
 
-                    if(detailNumber > 990)
+                    if (detailNumber > 990)
                         throw new Exception("Exceeded the detail numbers for the Upper");
 
                     return newFullPath;
-                } while (true);
+                }
+                while (true);
             }
 
             Regex longRegex = new Regex("^([0-9]{4,5})-([0-9]{3,})-(lsp|usp)([0-9]{3})$");
             match = longRegex.Match(partLeaf);
-            if(!match.Success) throw new ArgumentException("Part is not a valid Usp or Lsp.", nameof(snapUspLsp));
+            if (!match.Success) throw new ArgumentException("Part is not a valid Usp or Lsp.", nameof(snapUspLsp));
             {
-                var customerJobNumber = match.Groups[1].Value;
-                var partOp = match.Groups[2].Value;
-                var uspLsp = match.Groups[3].Value;
-                var uspLspOp = int.Parse(match.Groups[4].Value);
-                var isLower = uspLsp == "lsp";
-                var detailNumber = isLower
+                string customerJobNumber = match.Groups[1].Value;
+                string partOp = match.Groups[2].Value;
+                string uspLsp = match.Groups[3].Value;
+                int uspLspOp = int.Parse(match.Groups[4].Value);
+                bool isLower = uspLsp == "lsp";
+                int detailNumber = isLower
                     ? GetLspDetailNumberLong(uspLspOp)
                     : GetUspDetailNumberLong(uspLspOp);
                 string newDisplayName;
@@ -137,23 +138,24 @@ namespace TSG_Library.UFuncs
                 {
                     newDisplayName = $"{customerJobNumber}-{partOp}-{detailNumber++}";
 
-                    if(snapUspLsp.ComponentAssembly.RootComponent.GetChildren()
-                       .Any(component => component.DisplayName == newDisplayName))
+                    if (snapUspLsp.ComponentAssembly.RootComponent.GetChildren()
+                        .Any(component => component.DisplayName == newDisplayName))
                         continue;
 
-                    var newFullPath = $"{detailDirectory}\\{newDisplayName}.prt";
+                    string newFullPath = $"{detailDirectory}\\{newDisplayName}.prt";
 
-                    if(File.Exists(newFullPath))
+                    if (File.Exists(newFullPath))
                         continue;
 
-                    if(isLower && detailNumber > 499)
+                    if (isLower && detailNumber > 499)
                         throw new Exception("Exceeded the detail numbers for the Lower");
 
-                    if(detailNumber > 990)
+                    if (detailNumber > 990)
                         throw new Exception("Exceeded the detail numbers for the Upper");
 
                     return newFullPath;
-                } while (true);
+                }
+                while (true);
             }
         }
 
@@ -321,7 +323,7 @@ namespace TSG_Library.UFuncs
         /// <returns>The highest/current detail or -1 if <paramref name="snapComponent" /> doesn't have any child who are valid.</returns>
         public static int GetCurrentDetailNumberOfChildren(Component snapComponent)
         {
-            var validDetailNumbers = snapComponent.GetChildren()
+            int[] validDetailNumbers = snapComponent.GetChildren()
                 .Select(component => component.DisplayName)
                 .Select(s => Regex.Match(s, Regex_Detail))
                 .Where(match => match.Success)
@@ -346,7 +348,7 @@ namespace TSG_Library.UFuncs
         /// <returns>True if the name of the face starts with "PIERCED_FACE_" followed immediately by a non-negative integer.</returns>
         public static bool IsFaceNameValid(Face snapFace)
         {
-            if(snapFace == null) throw new ArgumentNullException(nameof(snapFace));
+            if (snapFace == null) throw new ArgumentNullException(nameof(snapFace));
             return PierceProperties.PiercedFaceRegex.IsMatch(snapFace.Name);
         }
 
@@ -359,9 +361,9 @@ namespace TSG_Library.UFuncs
         /// <returns>Returns integer that corresponds to a <see cref="NXOpen.Features. DatumCsys" />. </returns>
         public static int GetFaceNameInteger(Face snapFace)
         {
-            if(snapFace == null) throw new ArgumentNullException(nameof(snapFace));
+            if (snapFace == null) throw new ArgumentNullException(nameof(snapFace));
             Match match = PierceProperties.PiercedFaceRegex.Match(snapFace.Name);
-            if(!match.Success) throw new FormatException("\"" + snapFace.Name + "\" is invalid.");
+            if (!match.Success) throw new FormatException("\"" + snapFace.Name + "\" is invalid.");
             return int.Parse(match.Groups[1].Value);
         }
 
@@ -378,7 +380,7 @@ namespace TSG_Library.UFuncs
         /// <returns>The added snapButton.</returns>
         public static Component AddButton(BasePart.Units buttonUnit, CoordinateSystem csys)
         {
-            if(csys == null) throw new ArgumentNullException(nameof(csys));
+            if (csys == null) throw new ArgumentNullException(nameof(csys));
             double multiplier;
 
             string buttonPath;
@@ -407,7 +409,7 @@ namespace TSG_Library.UFuncs
 
         public static Component AddPunch(BasePart.Units buttonUnit, CoordinateSystem csys)
         {
-            if(csys == null) throw new ArgumentNullException(nameof(csys));
+            if (csys == null) throw new ArgumentNullException(nameof(csys));
             string punchPath;
             switch (buttonUnit)
             {
@@ -426,7 +428,7 @@ namespace TSG_Library.UFuncs
 
         public static Component AddRetainer(BasePart.Units buttonUnit, CoordinateSystem csys)
         {
-            if(csys == null) throw new ArgumentNullException(nameof(csys));
+            if (csys == null) throw new ArgumentNullException(nameof(csys));
             string retainerPath;
             switch (buttonUnit)
             {
@@ -468,14 +470,14 @@ namespace TSG_Library.UFuncs
         private static void GetPartPaths(bool isMetric, out string buttonPath, out string retainerPath,
             out string punchPath)
         {
-            var directory = Path.GetDirectoryName(__display_part_.FullPath);
+            string directory = Path.GetDirectoryName(__display_part_.FullPath);
 
             var details = (from file in Directory.GetFiles(directory, "*.prt", SearchOption.TopDirectoryOnly)
                 where file.__IsDetail()
                 let detailNumber = file.__AskDetailNumber()
                 select new { file, detailNumber }).ToArray();
 
-            if(string.IsNullOrEmpty(ButtonDetail))
+            if (string.IsNullOrEmpty(ButtonDetail))
             {
                 buttonPath = isMetric ? PierceProperties.SmartButtonMetric : PierceProperties.SmartButtonEnglish;
             }
@@ -488,23 +490,23 @@ namespace TSG_Library.UFuncs
 
                 Part tempPart = session_.__FindOrOpen(argDetail.file);
 
-                if(!tempPart.HasUserAttribute("LIBRARY", NXObject.AttributeType.String, -1))
+                if (!tempPart.HasUserAttribute("LIBRARY", NXObject.AttributeType.String, -1))
                     throw new InvalidOperationException("The selected part does not have a \'LIBRARY\' attribute.");
 
-                var expectedLibraryAttributeValue = Path.GetFileNameWithoutExtension(isMetric
+                string expectedLibraryAttributeValue = Path.GetFileNameWithoutExtension(isMetric
                     ? PierceProperties.SmartButtonMetric
                     : PierceProperties.SmartButtonEnglish);
-                var libraryAttributeValue =
+                string libraryAttributeValue =
                     tempPart.GetUserAttributeAsString("LIBRARY", NXObject.AttributeType.String, -1);
 
-                if(expectedLibraryAttributeValue != libraryAttributeValue)
+                if (expectedLibraryAttributeValue != libraryAttributeValue)
                     throw new InvalidOperationException(
                         $"The library attribute value {tempPart.Leaf} does not equal {expectedLibraryAttributeValue}.");
 
                 buttonPath = tempPart.FullPath;
             }
 
-            if(string.IsNullOrEmpty(PunchDetail))
+            if (string.IsNullOrEmpty(PunchDetail))
             {
                 punchPath = isMetric ? PierceProperties.SmartPunchMetric : PierceProperties.SmartPunchEnglish;
             }
@@ -517,24 +519,24 @@ namespace TSG_Library.UFuncs
 
                 Part tempPart = session_.__FindOrOpen(argDetail.file);
 
-                if(!tempPart.HasUserAttribute("LIBRARY", NXObject.AttributeType.String, -1))
+                if (!tempPart.HasUserAttribute("LIBRARY", NXObject.AttributeType.String, -1))
                     throw new InvalidOperationException("The selected part does not have a \'LIBRARY\' attribute.");
 
-                var expectedLibraryAttributeValue =
+                string expectedLibraryAttributeValue =
                     Path.GetFileNameWithoutExtension(isMetric
                         ? PierceProperties.SmartPunchMetric
                         : PierceProperties.SmartPunchEnglish);
-                var libraryAttributeValue =
+                string libraryAttributeValue =
                     tempPart.GetUserAttributeAsString("LIBRARY", NXObject.AttributeType.String, -1);
 
-                if(expectedLibraryAttributeValue != libraryAttributeValue)
+                if (expectedLibraryAttributeValue != libraryAttributeValue)
                     throw new InvalidOperationException(
                         $"The library attribute value {tempPart.Leaf} does not equal {expectedLibraryAttributeValue}.");
 
                 punchPath = tempPart.FullPath;
             }
 
-            if(string.IsNullOrEmpty(RetainerDetail))
+            if (string.IsNullOrEmpty(RetainerDetail))
             {
                 retainerPath = isMetric
                     ? PierceProperties.SmartBallLockRetainerMetric
@@ -550,17 +552,17 @@ namespace TSG_Library.UFuncs
 
                 Part tempPart = session_.__FindOrOpen(argDetail.file);
 
-                if(!tempPart.HasUserAttribute("LIBRARY", NXObject.AttributeType.String, -1))
+                if (!tempPart.HasUserAttribute("LIBRARY", NXObject.AttributeType.String, -1))
                     throw new InvalidOperationException("The selected part does not have a \'LIBRARY\' attribute.");
 
-                var expectedLibraryAttributeValue =
+                string expectedLibraryAttributeValue =
                     Path.GetFileNameWithoutExtension(isMetric
                         ? PierceProperties.SmartBallLockRetainerMetric
                         : PierceProperties.SmartBallLockRetainerEnglish);
-                var libraryAttributeValue =
+                string libraryAttributeValue =
                     tempPart.GetUserAttributeAsString("LIBRARY", NXObject.AttributeType.String, -1);
 
-                if(expectedLibraryAttributeValue != libraryAttributeValue)
+                if (expectedLibraryAttributeValue != libraryAttributeValue)
                     throw new InvalidOperationException(
                         $"The library attribute value {tempPart.Leaf} does not equal {expectedLibraryAttributeValue}.");
 
@@ -570,22 +572,22 @@ namespace TSG_Library.UFuncs
 
         private static void ConfirmStripControlAndEExpression()
         {
-            var stripControls = session_.Parts
+            string[] stripControls = session_.Parts
                 .OfType<Part>()
                 .Select(part => part.Leaf.ToLower())
                 .Where(s => s.Contains("strip-control"))
                 .ToArray();
 
-            if(stripControls.Length < 1)
+            if (stripControls.Length < 1)
                 throw new InvalidOperationException("You need to have a strip control loaded.");
 
-            var expressions = __display_part_.Expressions
+            string[] expressions = __display_part_.Expressions
                 .ToArray()
                 .Select(expression => expression.Name.ToLower())
                 .Where(s => s == "e")
                 .ToArray();
 
-            if(expressions.Length < 1)
+            if (expressions.Length < 1)
                 throw new InvalidOperationException("Unable to find an expression with the name of \'e\'.");
         }
 
@@ -593,18 +595,18 @@ namespace TSG_Library.UFuncs
         {
             ConfirmStripControlAndEExpression();
             _addedComponents = new List<Tuple<Component, Face>>();
-            GetPartPaths(isMetric, out var buttonPath, out var retainerPath, out var punchPath);
+            GetPartPaths(isMetric, out string buttonPath, out string retainerPath, out string punchPath);
             Regex uspLspRegex = new Regex("^[0-9]{4,5}-([0-9]{3})-[l|u]sp([0-9]{1,})$");
-            var _display_part_DisplayName = Path.GetFileNameWithoutExtension(__display_part_.FullPath);
-            if(_display_part_DisplayName == null) throw new NullReferenceException("_display_part_DisplayName");
+            string _display_part_DisplayName = Path.GetFileNameWithoutExtension(__display_part_.FullPath);
+            if (_display_part_DisplayName == null) throw new NullReferenceException("_display_part_DisplayName");
             Match nameMatch = uspLspRegex.Match(_display_part_DisplayName);
-            if(!nameMatch.Success)
+            if (!nameMatch.Success)
                 throw new FormatException(_display_part_DisplayName + " is not a valid usp or lsp.");
             GFolder folder = GFolder.create_or_null(__work_part_);
-            if(folder is null)
+            if (folder is null)
                 throw new InvalidOperationException("The current displayed part does not reside within a GFolder.");
-            var op = nameMatch.Groups[1].Value;
-            var uspLspNumberAsInteger = int.Parse(nameMatch.Groups[2].Value);
+            string op = nameMatch.Groups[1].Value;
+            int uspLspNumberAsInteger = int.Parse(nameMatch.Groups[2].Value);
             Part uspLspPart = session_.__FindOrOpen(_display_part_DisplayName);
 
             /////////////////////////////////////////////
@@ -616,26 +618,27 @@ namespace TSG_Library.UFuncs
             {
                 Face[] faces = Ui.Selection.SelectManyFaces();
 
-                IDictionary<string, List<Face>> dictionaryShape = faces.__ToILookIDict(face => face.GetStringUserAttribute("PIERCED_TYPE", -1));
+                IDictionary<string, List<Face>> dictionaryShape =
+                    faces.__ToILookIDict(face => face.GetStringUserAttribute("PIERCED_TYPE", -1));
 
-                foreach (var keyShape in dictionaryShape.Keys)
+                foreach (string keyShape in dictionaryShape.Keys)
                 {
                     List<Face> shapeFaces = dictionaryShape[keyShape];
                     // Revision • 1.2 – 2017 / 12 / 07
                     IDictionary<double, List<Face>> dictionaryP = shapeFaces.__ToILookIDict(face =>
                         System.Math.Round(face.GetRealUserAttribute("PIERCED_P", -1), 4));
-                    foreach (var keyP in dictionaryP.Keys)
+                    foreach (double keyP in dictionaryP.Keys)
                     {
                         List<Face> pFaces = dictionaryP[keyP];
                         // Revision • 1.2 – 2017 / 12 / 07
                         IDictionary<double, List<Face>> dictionaryW = pFaces.__ToILookIDict(face =>
                             System.Math.Round(face.GetRealUserAttribute("PIERCED_W", -1), 4));
-                        foreach (var keyW in dictionaryW.Keys)
+                        foreach (double keyW in dictionaryW.Keys)
                         {
-                            var partOfThePath = $"{folder.dir_op(op)}\\{folder.customer_number}-{op}-";
-                            var currentLowerDetailNumber =
+                            string partOfThePath = $"{folder.dir_op(op)}\\{folder.customer_number}-{op}-";
+                            int currentLowerDetailNumber =
                                 GetCurrentDetailNumberOfChildren(uspLspPart.__RootComponent());
-                            if(currentLowerDetailNumber == -1)
+                            if (currentLowerDetailNumber == -1)
                                 // Revision • 1.2 – 2017 / 12 / 07
                                 currentLowerDetailNumber = IsUsp(uspLspPart)
                                     ? !folder.is_cts_job()
@@ -644,50 +647,50 @@ namespace TSG_Library.UFuncs
                                     : !folder.is_cts_job()
                                         ? GetLspDetailNumberLong(uspLspNumberAsInteger)
                                         : GetLspDetailNumberShort(uspLspNumberAsInteger);
-                            var newButtonPath = buttonPath.StartsWith("G:\\0Library")
+                            string newButtonPath = buttonPath.StartsWith("G:\\0Library")
                                 ? GetNewPartPath(partOfThePath, buttonPath, currentLowerDetailNumber)
                                 : buttonPath;
-                            var newRetainerPath = retainerPath.StartsWith("G:\\0Library")
+                            string newRetainerPath = retainerPath.StartsWith("G:\\0Library")
                                 ? GetNewPartPath(partOfThePath, retainerPath, currentLowerDetailNumber)
                                 : retainerPath;
-                            var newPunchPath = punchPath.StartsWith("G:\\0Library")
+                            string newPunchPath = punchPath.StartsWith("G:\\0Library")
                                 ? GetNewPartPath(partOfThePath, punchPath, currentLowerDetailNumber)
                                 : punchPath;
                             foreach (Face faceW in dictionaryW[keyW])
                             {
                                 Component button = null, punch = null, retainer = null;
                                 Component layoutComponent = faceW.OwningComponent;
-                                var originalRefset = layoutComponent.ReferenceSet;
+                                string originalRefset = layoutComponent.ReferenceSet;
                                 layoutComponent.__ReferenceSet(PierceProperties.SlugRefsetName);
                                 Expression expression = __display_part_.Expressions
                                     .ToArray()
                                     .SingleOrDefault(tempExpression => tempExpression.Name == "e");
-                                var layer = uspLspPart.Leaf.Contains("lsp") ? 1 : 101;
+                                int layer = uspLspPart.Leaf.Contains("lsp") ? 1 : 101;
 
-                                if(addPunch)
+                                if (addPunch)
                                     punch = AddComponentAndConstrain(faceW, newPunchPath, uspLspPart, "ALIGN", layer,
                                         expression);
 
-                                if(addRetainer)
+                                if (addRetainer)
                                     retainer = AddComponentAndConstrain(faceW, newRetainerPath, uspLspPart, "MATE",
                                         layer);
 
-                                if(addButton)
+                                if (addButton)
                                     button = AddComponentAndConstrain(faceW, newButtonPath, uspLspPart, "ALIGN", layer,
                                         expression);
 
-                                if(retainer != null && punch != null)
+                                if (retainer != null && punch != null)
                                     ConstrainPunchAndRetainer(punch, retainer);
 
                                 List<Component> listComps = new List<Component>();
 
-                                if(button != null)
+                                if (button != null)
                                     listComps.Add(button);
 
-                                if(retainer != null)
+                                if (retainer != null)
                                     listComps.Add(retainer);
 
-                                if(punch != null)
+                                if (punch != null)
                                     listComps.Add(punch);
 
                                 ChangeRefsets("BODY", listComps.ToArray());
@@ -712,29 +715,29 @@ namespace TSG_Library.UFuncs
 
             ConfirmStripControlAndEExpression();
             _addedComponents = new List<Tuple<Component, Face>>();
-            GetPartPaths(isMetric, out var buttonPath, out var retainerPath, out var punchPath);
+            GetPartPaths(isMetric, out string buttonPath, out string retainerPath, out string punchPath);
 
-            var _display_part_DisplayName = Path.GetFileNameWithoutExtension(__display_part_.FullPath)
-                                            ??
-                                            throw new NullReferenceException("_display_part_DisplayName");
+            string _display_part_DisplayName = Path.GetFileNameWithoutExtension(__display_part_.FullPath)
+                                               ??
+                                               throw new NullReferenceException("_display_part_DisplayName");
 
             Match nameMatch = Regex.Match(_display_part_DisplayName, Regex_LspUsp);
 
-            if(!nameMatch.Success)
+            if (!nameMatch.Success)
                 throw new FormatException($"{_display_part_DisplayName} is not a valid usp or lsp.");
 
-            var op = nameMatch.Groups["opNum"].Value;
-            var uspLspNumberAsString = nameMatch.Groups["extraOpNum"].Value;
-            var uspLspNumberAsInteger = int.Parse(uspLspNumberAsString);
-            var lspName = $"{folder.customer_number}-{op}-lsp{uspLspNumberAsString}";
-            var uspName = $"{folder.customer_number}-{op}-usp{uspLspNumberAsString}";
+            string op = nameMatch.Groups["opNum"].Value;
+            string uspLspNumberAsString = nameMatch.Groups["extraOpNum"].Value;
+            int uspLspNumberAsInteger = int.Parse(uspLspNumberAsString);
+            string lspName = $"{folder.customer_number}-{op}-lsp{uspLspNumberAsString}";
+            string uspName = $"{folder.customer_number}-{op}-usp{uspLspNumberAsString}";
             BasePart lspPart = session_.Parts.ToArray().SingleOrDefault(part => part.FullPath.Contains(lspName));
             BasePart uspPart = session_.Parts.ToArray().SingleOrDefault(part => part.FullPath.Contains(uspName));
 
-            if(addButton && lspPart == null)
+            if (addButton && lspPart == null)
                 throw new InvalidOperationException($"Could not find part \"{lspName}\" loaded in your session.");
 
-            if((addPunch || addRetainer) && uspPart == null)
+            if ((addPunch || addRetainer) && uspPart == null)
                 throw new InvalidOperationException("Could not find part " + "\"" + uspName +
                                                     "\" loaded in your session.");
 
@@ -746,29 +749,30 @@ namespace TSG_Library.UFuncs
             {
                 Face[] faces = Ui.Selection.SelectManyFaces();
 
-                IDictionary<string, List<Face>> dictionaryShape = faces.__ToILookIDict(face => face.GetStringUserAttribute("PIERCED_TYPE", -1));
+                IDictionary<string, List<Face>> dictionaryShape =
+                    faces.__ToILookIDict(face => face.GetStringUserAttribute("PIERCED_TYPE", -1));
 
-                foreach (var keyShape in dictionaryShape.Keys)
+                foreach (string keyShape in dictionaryShape.Keys)
                 {
                     List<Face> shapeFaces = dictionaryShape[keyShape];
                     // Revision • 1.2 – 2017 / 12 / 01
                     IDictionary<double, List<Face>> dictionaryP = shapeFaces.__ToILookIDict(face =>
                         System.Math.Round(face.GetRealUserAttribute("PIERCED_P", -1), 4));
-                    foreach (var keyP in dictionaryP.Keys)
+                    foreach (double keyP in dictionaryP.Keys)
                     {
                         List<Face> pFaces = dictionaryP[keyP];
                         // Revision • 1.2 – 2017 / 12 / 01
                         IDictionary<double, List<Face>> dictionaryW = pFaces.__ToILookIDict(face =>
                             System.Math.Round(face.GetRealUserAttribute("PIERCED_W", -1), 4));
-                        foreach (var keyW in dictionaryW.Keys)
+                        foreach (double keyW in dictionaryW.Keys)
                         {
-                            var partOfThePath = $"{folder.dir_op(op)}\\{folder.customer_number}-{op}-";
+                            string partOfThePath = $"{folder.dir_op(op)}\\{folder.customer_number}-{op}-";
                             string newPunchPath = null, newRetainerPath = null, newButtonPath = null;
-                            if(lspPart != null)
+                            if (lspPart != null)
                             {
-                                var currentLowerDetailNumber =
+                                int currentLowerDetailNumber =
                                     GetCurrentDetailNumberOfChildren(lspPart.ComponentAssembly.RootComponent);
-                                if(currentLowerDetailNumber == -1)
+                                if (currentLowerDetailNumber == -1)
                                     // Revision • 1.2 – 2017 / 12 / 07
                                     currentLowerDetailNumber = !folder.is_cts_job()
                                         ? GetLspDetailNumberLong(uspLspNumberAsInteger)
@@ -778,11 +782,11 @@ namespace TSG_Library.UFuncs
                                     : buttonPath;
                             }
 
-                            if(uspPart != null)
+                            if (uspPart != null)
                             {
-                                var currentUpperDetailNumber =
+                                int currentUpperDetailNumber =
                                     GetCurrentDetailNumberOfChildren(uspPart.ComponentAssembly.RootComponent);
-                                if(currentUpperDetailNumber == -1)
+                                if (currentUpperDetailNumber == -1)
                                     // Revision • 1.2 – 2017 / 12 / 07
                                     currentUpperDetailNumber = !folder.is_cts_job()
                                         ? GetUspDetailNumberLong(uspLspNumberAsInteger)
@@ -793,7 +797,7 @@ namespace TSG_Library.UFuncs
                                     : retainerPath;
                                 currentUpperDetailNumber =
                                     GetCurrentDetailNumberOfChildren(uspPart.ComponentAssembly.RootComponent);
-                                if(currentUpperDetailNumber == -1)
+                                if (currentUpperDetailNumber == -1)
                                     // Revision • 1.2 – 2017 / 12 / 07
                                     currentUpperDetailNumber = !folder.is_cts_job()
                                         ? GetUspDetailNumberLong(uspLspNumberAsInteger)
@@ -808,38 +812,38 @@ namespace TSG_Library.UFuncs
                             {
                                 Component button = null, punch = null, retainer = null;
                                 Component layoutComponent = faceW.OwningComponent;
-                                var originalRefset = layoutComponent.ReferenceSet;
+                                string originalRefset = layoutComponent.ReferenceSet;
                                 layoutComponent.__ReferenceSet(PierceProperties.SlugRefsetName);
                                 Expression expression = __display_part_.Expressions
                                     .ToArray()
                                     .SingleOrDefault(tempExpression => tempExpression.Name == "e");
 
-                                if(addPunch)
+                                if (addPunch)
                                     punch = AddComponentAndConstrain(faceW, newPunchPath, (Part)uspPart, "ALIGN", 101,
                                         expression);
 
                                 // Revision • 1.3 – 2017 / 12 / 28
-                                if(addRetainer)
+                                if (addRetainer)
                                     retainer = AddComponentAndConstrain(faceW, newRetainerPath, (Part)uspPart, "MATE",
                                         101);
 
                                 // Revision • 1.3 – 2017 / 12 / 28
-                                if(addButton)
+                                if (addButton)
                                     button = AddComponentAndConstrain(faceW, newButtonPath, (Part)lspPart, "ALIGN", 1,
                                         expression);
 
-                                if(retainer != null && punch != null)
+                                if (retainer != null && punch != null)
                                     ConstrainPunchAndRetainer(punch, retainer);
 
                                 List<Component> listComps = new List<Component>();
 
-                                if(button != null)
+                                if (button != null)
                                     listComps.Add(button);
 
-                                if(retainer != null)
+                                if (retainer != null)
                                     listComps.Add(retainer);
 
-                                if(punch != null)
+                                if (punch != null)
                                     listComps.Add(punch);
 
                                 ChangeRefsets("BODY", listComps.ToArray());
@@ -863,27 +867,28 @@ namespace TSG_Library.UFuncs
                 BasePart stripControl = session_.Parts.ToArray().Single(part => part.Leaf.Contains("strip-control"));
                 Expression materialThicknessExp = stripControl.Expressions.ToArray()
                     .SingleOrDefault(expression => expression.Name == "M");
-                if(materialThicknessExp == null)
+                if (materialThicknessExp == null)
                     print_("Unable to find Material Thickness.");
                 else
                     print_("Material Thickness (M): " + materialThicknessExp.RightHandSide);
 
-                if(_addedComponents == null)
+                if (_addedComponents == null)
                 {
                     print_("  addedComponents was null");
                     return;
                 }
 
-                if(_addedComponents.Count <= 0)
+                if (_addedComponents.Count <= 0)
                 {
                     print_("  addedComponents was empty");
                     return;
                 }
 
-                IOrderedEnumerable<Tuple<Component, Face>> trimmedTuples = _addedComponents.DistinctBy(tup => tup.Item1.DisplayName)
+                IOrderedEnumerable<Tuple<Component, Face>> trimmedTuples = _addedComponents
+                    .DistinctBy(tup => tup.Item1.DisplayName)
                     .OrderBy(tuple => tuple, new Comparer());
 
-                var divider = isMetric ? 1.0 : 25.4;
+                double divider = isMetric ? 1.0 : 25.4;
 
                 //foreach (Tuple<NXOpen.Assemblies.Component, NXOpen.Face> tuple in trimmedTuples)
                 //{
@@ -933,11 +938,11 @@ namespace TSG_Library.UFuncs
         private static string GetNewPartPath(string partOfThePath, string originalPartPath,
             int currentUpperDetailNumber)
         {
-            var newPath = "";
-            for (var i = 0; i < 1000; i++)
+            string newPath = "";
+            for (int i = 0; i < 1000; i++)
             {
                 newPath = partOfThePath + (currentUpperDetailNumber + i) + ".prt";
-                if(File.Exists(newPath)) continue;
+                if (File.Exists(newPath)) continue;
                 File.Copy(originalPartPath, newPath);
                 break;
             }
@@ -956,16 +961,19 @@ namespace TSG_Library.UFuncs
             __display_part_ = part;
             __work_part_ = __display_part_;
             snapFace.Unhighlight();
-            var integer = GetFaceNameInteger(snapFace);
+            int integer = GetFaceNameInteger(snapFace);
 
             // Revision • 1.2 – 2017 / 12 / 07
             Component layout = snapFace.OwningComponent;
-            DatumAxis xAxis = layout.__Members().OfType<DatumAxis>().Single(axis => axis.Name == "PIERCED_AXIS_X_" + integer);
-            DatumAxis yAxis = layout.__Members().OfType<DatumAxis>().Single(axis => axis.Name == "PIERCED_AXIS_Y_" + integer);
-            DatumAxis zAxis = layout.__Members().OfType<DatumAxis>().Single(axis => axis.Name == "PIERCED_AXIS_Z_" + integer);
+            DatumAxis xAxis = layout.__Members().OfType<DatumAxis>()
+                .Single(axis => axis.Name == "PIERCED_AXIS_X_" + integer);
+            DatumAxis yAxis = layout.__Members().OfType<DatumAxis>()
+                .Single(axis => axis.Name == "PIERCED_AXIS_Y_" + integer);
+            DatumAxis zAxis = layout.__Members().OfType<DatumAxis>()
+                .Single(axis => axis.Name == "PIERCED_AXIS_Z_" + integer);
             Matrix3x3 orientation = xAxis.Direction.__ToMatrix3x3(yAxis.Direction);
             Point3d newOrigin = xAxis.Origin;
-            if(zOffsetExpression != null)
+            if (zOffsetExpression != null)
                 newOrigin = new Point3d(xAxis.Origin.X, xAxis.Origin.Y, xAxis.Origin.Z + zOffsetExpression.Value);
 
             Component addedComponent = part.ComponentAssembly.AddComponent(
@@ -1003,7 +1011,7 @@ namespace TSG_Library.UFuncs
             DisplayedConstraint constraint = Constraints.CreateAlign(__work_part_, zAxisComponent, zAxis);
             session_.__DeleteObjects(constraint);
 
-            if(!addedComponent.GetStringUserAttribute("LIBRARY", -1).ToLower().Contains("retainer"))
+            if (!addedComponent.GetStringUserAttribute("LIBRARY", -1).ToLower().Contains("retainer"))
                 _addedComponents.Add(new Tuple<Component, Face>(addedComponent, snapFace));
 
             return addedComponent;
@@ -1071,8 +1079,8 @@ namespace TSG_Library.UFuncs
 
             public int Compare(Tuple<Component, Face> x, Tuple<Component, Face> y)
             {
-                if(x == null) throw new ArgumentNullException(nameof(x));
-                if(y == null) throw new ArgumentNullException(nameof(y));
+                if (x == null) throw new ArgumentNullException(nameof(x));
+                if (y == null) throw new ArgumentNullException(nameof(y));
                 return string.Compare(x.Item1.DisplayName, y.Item1.DisplayName, StringComparison.Ordinal);
             }
 
@@ -1264,7 +1272,7 @@ namespace TSG_Library.UFuncs
 
         public static DatumAxis GetZAxisOccurenceOfSlug(Face face)
         {
-            var integer = GetFaceNameInteger(face);
+            int integer = GetFaceNameInteger(face);
             return face.OwningComponent.__Members()
                 .OfType<DatumAxis>()
                 .Single(plane => plane.Name == "PIERCED_AXIS_Z_" + integer);
@@ -1272,7 +1280,7 @@ namespace TSG_Library.UFuncs
 
         public static DatumPlane GetYZPlaneOccurenceOfSlug(Face face)
         {
-            var integer = GetFaceNameInteger(face);
+            int integer = GetFaceNameInteger(face);
             return face.OwningComponent.__Members()
                 .OfType<DatumPlane>()
                 .Single(plane => plane.Name == "PIERCED_PLANE_YZ_" + integer);
@@ -1319,11 +1327,11 @@ namespace TSG_Library.UFuncs
 
         internal static string EditInteger(int integer)
         {
-            if(integer < 0)
+            if (integer < 0)
                 throw new ArgumentOutOfRangeException(nameof(integer));
-            if(integer < 10)
+            if (integer < 10)
                 return "00" + integer;
-            if(integer < 100)
+            if (integer < 100)
                 return "0" + integer;
             return integer.ToString();
         }

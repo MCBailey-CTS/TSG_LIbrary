@@ -42,7 +42,7 @@ namespace TSG_Library.Extensions
             bool hasSameConvexity = false,
             bool allowLaminarEdge = false)
         {
-            var tol = angleTolerance ?? AngleTolerance;
+            double tol = angleTolerance ?? AngleTolerance;
             return basePart.ScRuleFactory.CreateRuleEdgeTangent(startEdge, endEdge, isFromStart, tol, hasSameConvexity,
                 allowLaminarEdge);
         }

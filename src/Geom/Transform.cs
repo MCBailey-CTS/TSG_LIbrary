@@ -103,8 +103,8 @@ namespace TSG_Library.Geom
         /// </remarks>
         public static Transform CreateRotation(Point3d basePoint, Vector3d axis, double angle)
         {
-            var array = new double[12];
-            ufsession_.Trns.CreateRotationMatrix(basePoint.__ToArray(), axis.__ToArray(), ref angle, array, out var _);
+            double[] array = new double[12];
+            ufsession_.Trns.CreateRotationMatrix(basePoint.__ToArray(), axis.__ToArray(), ref angle, array, out int _);
             return new Transform(array);
         }
 
@@ -187,9 +187,9 @@ namespace TSG_Library.Geom
         /// </remarks>
         public static Transform CreateScale(Point3d basePoint, double[] scaleFactors)
         {
-            var array = new double[12];
-            var type = 2;
-            ufsession_.Trns.CreateScalingMatrix(ref type, scaleFactors, basePoint.__ToArray(), array, out var _);
+            double[] array = new double[12];
+            int type = 2;
+            ufsession_.Trns.CreateScalingMatrix(ref type, scaleFactors, basePoint.__ToArray(), array, out int _);
             return new Transform(array);
         }
 
@@ -204,10 +204,10 @@ namespace TSG_Library.Geom
         public static Transform CreateScale(Point3d basePoint, double scaleFactor)
         {
             UFSession uFSession = ufsession_;
-            var array = new double[12];
-            var type = 1;
-            var scales = new double[3] { scaleFactor, 1.0, 1.0 };
-            uFSession.Trns.CreateScalingMatrix(ref type, scales, basePoint.__ToArray(), array, out var _);
+            double[] array = new double[12];
+            int type = 1;
+            double[] scales = new double[3] { scaleFactor, 1.0, 1.0 };
+            uFSession.Trns.CreateScalingMatrix(ref type, scales, basePoint.__ToArray(), array, out int _);
             return new Transform(array);
         }
 
@@ -233,10 +233,10 @@ namespace TSG_Library.Geom
         /// </remarks>
         public static Transform CreateReflection(Vector3d normal, double d)
         {
-            var array = new double[12];
-            var x = normal.X;
-            var y = normal.Y;
-            var z = normal.Z;
+            double[] array = new double[12];
+            double x = normal.X;
+            double y = normal.Y;
+            double z = normal.Z;
             array[0] = 1.0 - 2.0 * x * x;
             array[1] = -2.0 * x * y;
             array[2] = -2.0 * x * z;
@@ -265,7 +265,7 @@ namespace TSG_Library.Geom
         public static Transform Composition(Transform xform1, Transform xform2)
         {
             UFSession uFSession = ufsession_;
-            var array = new double[12];
+            double[] array = new double[12];
             uFSession.Trns.MultiplyMatrices(xform1.Matrix, xform2.Matrix, array);
             return new Transform(array);
         }

@@ -156,14 +156,14 @@ namespace TSG_Library.Geom
                 Vector3d vector = p0.__Subtract(pa).__Unit();
                 Vector3d vector2 = p1.__Subtract(pa).__Unit();
                 Vector3d vector3 = vector.__Add(vector2).__Unit();
-                var num = vector.__Angle(vector2) / 2.0;
-                var num2 = radius / Math.SinD(num);
+                double num = vector.__Angle(vector2) / 2.0;
+                double num2 = radius / Math.SinD(num);
                 Point3d center = vector3.__Multiply(num2).__Add(pa);
                 Vector3d vector4 = vector3.__Negate();
                 Vector3d vector5 = vector2.__Subtract(vector).__Unit();
-                var num3 = 90.0 - num;
-                var startAngle = 0.0 - num3;
-                var endAngle = num3;
+                double num3 = 90.0 - num;
+                double startAngle = 0.0 - num3;
+                double endAngle = num3;
                 return new Arc(center, vector4, vector5, radius, startAngle, endAngle);
             }
         }
@@ -272,7 +272,7 @@ namespace TSG_Library.Geom
             {
                 get
                 {
-                    var num = Poles.Length;
+                    int num = Poles.Length;
                     return Knots.Length - num;
                 }
             }
@@ -308,7 +308,7 @@ namespace TSG_Library.Geom
             /// <seealso cref="O:Snap.Create.SplineThroughPoints">SplineThroughPoints</seealso>
             public static Spline Create(double[] knots, Point3d[] poles)
             {
-                var weights = UnitWeights(poles.Length);
+                double[] weights = UnitWeights(poles.Length);
                 return new Spline(knots, poles, weights);
             }
 
@@ -395,8 +395,8 @@ namespace TSG_Library.Geom
 
             private static double[] UnitWeights(int n)
             {
-                var array = new double[n];
-                for (var i = 0; i < n; i++) array[i] = 1.0;
+                double[] array = new double[n];
+                for (int i = 0; i < n; i++) array[i] = 1.0;
 
                 return array;
             }

@@ -57,14 +57,14 @@ namespace TSG_Library.Extensions
         {
             UFEval eval = ufsession_.Eval;
             eval.Initialize2(curve.__Tag(), out IntPtr evaluator);
-            var array = new double[3];
-            var point = array;
-            var array2 = new double[3];
-            var tangent = array2;
-            var array3 = new double[3];
-            var normal = array3;
-            var array4 = new double[3];
-            var array5 = array4;
+            double[] array = new double[3];
+            double[] point = array;
+            double[] array2 = new double[3];
+            double[] tangent = array2;
+            double[] array3 = new double[3];
+            double[] normal = array3;
+            double[] array4 = new double[3];
+            double[] array5 = array4;
             value /= Factor;
             eval.EvaluateUnitVectors(evaluator, value, point, tangent, normal, array5);
             eval.Free(evaluator);
@@ -73,7 +73,7 @@ namespace TSG_Library.Extensions
 
         public static Tag __Tag(this ICurve curve)
         {
-            if(curve is TaggedObject taggedObject)
+            if (curve is TaggedObject taggedObject)
                 return taggedObject.Tag;
 
             throw new ArgumentException("Curve was not a tagged object");
@@ -106,10 +106,10 @@ namespace TSG_Library.Extensions
 
         public static void __IsPlanar(this ICurve icurve)
         {
-            var data = new double[6];
-            ufsession_.Modl.AskObjDimensionality(icurve.__Tag(), out var dimensionality, data);
+            double[] data = new double[6];
+            ufsession_.Modl.AskObjDimensionality(icurve.__Tag(), out int dimensionality, data);
 
-            if(dimensionality == 3)
+            if (dimensionality == 3)
                 throw new ArgumentException("The input curve is not planar.");
         }
 

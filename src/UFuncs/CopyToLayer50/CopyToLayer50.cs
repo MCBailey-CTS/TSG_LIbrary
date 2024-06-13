@@ -62,7 +62,7 @@ namespace TSG_Library.UFuncs
                             return;
                     }
 
-                    var date = $"{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day}";
+                    string date = $"{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day}";
 
                     Body[] layer_50_bodies = comp.__Prototype()
                         .Layers

@@ -81,36 +81,36 @@ namespace TSG_Library
         [Obsolete(nameof(NotImplementedException))]
         internal static Point3d[] __ClipRay(Geom.Curve.Ray ray)
         {
-            var num = -1000000.0;
-            var num2 = 1000000.0;
-            var num3 = 1E-16;
-            var num4 = 200.0 * MetersToPartUnits;
-            var x = ray.Axis.X;
-            var x2 = ray.Origin.X;
-            if(System.Math.Abs(x) > num3)
+            double num = -1000000.0;
+            double num2 = 1000000.0;
+            double num3 = 1E-16;
+            double num4 = 200.0 * MetersToPartUnits;
+            double x = ray.Axis.X;
+            double x2 = ray.Origin.X;
+            if (System.Math.Abs(x) > num3)
             {
-                var val = System.Math.Min((0.0 - num4 - x2) / x, (num4 - x2) / x);
-                var val2 = System.Math.Max((0.0 - num4 - x2) / x, (num4 - x2) / x);
+                double val = System.Math.Min((0.0 - num4 - x2) / x, (num4 - x2) / x);
+                double val2 = System.Math.Max((0.0 - num4 - x2) / x, (num4 - x2) / x);
                 num = System.Math.Max(val, num);
                 num2 = System.Math.Min(val2, num2);
             }
 
             x = ray.Axis.Y;
             x2 = ray.Origin.Y;
-            if(System.Math.Abs(x) > num3)
+            if (System.Math.Abs(x) > num3)
             {
-                var val = System.Math.Min((0.0 - num4 - x2) / x, (num4 - x2) / x);
-                var val3 = System.Math.Max((0.0 - num4 - x2) / x, (num4 - x2) / x);
+                double val = System.Math.Min((0.0 - num4 - x2) / x, (num4 - x2) / x);
+                double val3 = System.Math.Max((0.0 - num4 - x2) / x, (num4 - x2) / x);
                 num = System.Math.Max(val, num);
                 num2 = System.Math.Min(val3, num2);
             }
 
             x = ray.Axis.Z;
             x2 = ray.Origin.Z;
-            if(System.Math.Abs(x) > num3)
+            if (System.Math.Abs(x) > num3)
             {
-                var val = System.Math.Min((0.0 - num4 - x2) / x, (num4 - x2) / x);
-                var val4 = System.Math.Max((0.0 - num4 - x2) / x, (num4 - x2) / x);
+                double val = System.Math.Min((0.0 - num4 - x2) / x, (num4 - x2) / x);
+                double val4 = System.Math.Max((0.0 - num4 - x2) / x, (num4 - x2) / x);
                 num = System.Math.Max(val, num);
                 num2 = System.Math.Min(val4, num2);
             }
@@ -244,7 +244,7 @@ namespace TSG_Library
         {
             Arc[] array = new Arc[curveArray.Length];
 
-            for (var i = 0; i < curveArray.Length; i++)
+            for (int i = 0; i < curveArray.Length; i++)
                 array[i] = (Arc)curveArray[i];
 
             return array;

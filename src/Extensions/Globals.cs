@@ -166,7 +166,7 @@ namespace TSG_Library.Extensions
 
         public static Session session_ =>
             //[IgnoreExtensionAspect]
-            NXOpen.Session.GetSession();
+            GetSession();
 
         public static double Factor =>
             //[IgnoreExtensionAspect]
@@ -183,7 +183,7 @@ namespace TSG_Library.Extensions
             //[IgnoreExtensionAspect]
             get
             {
-                var array = new double[9];
+                double[] array = new double[9];
                 ufsession_.Mtx3.Identity(array);
                 return array.__ToMatrix3x3();
             }
@@ -350,10 +350,10 @@ namespace TSG_Library.Extensions
             //[IgnoreExtensionAspect]
             get
             {
-                var day = DateTime.Today.Day < 10
+                string day = DateTime.Today.Day < 10
                     ? '0' + DateTime.Today.Day.ToString()
                     : DateTime.Today.Day.ToString();
-                var month = DateTime.Today.Month < 10
+                string month = DateTime.Today.Month < 10
                     ? '0' + DateTime.Today.Month.ToString()
                     : DateTime.Today.Month.ToString();
                 return DateTime.Today.Year + "-" + month + "-" + day;
@@ -483,7 +483,7 @@ namespace TSG_Library.Extensions
             //[IgnoreExtensionAspect]
             set
             {
-                if(value)
+                if (value)
                     __work_part_.Preferences.Modeling.SetHistoryMode();
                 else
                     __work_part_.Preferences.Modeling.SetHistoryFreeMode();
@@ -597,7 +597,7 @@ namespace TSG_Library.Extensions
         {
             ListingWindow lw = session_.ListingWindow;
 
-            if(!lw.IsOpen)
+            if (!lw.IsOpen)
                 lw.Open();
 
             lw.WriteLine(message);
@@ -681,11 +681,11 @@ namespace TSG_Library.Extensions
 
         public static string __Op10To010(int __op)
         {
-            if(__op == 0)
+            if (__op == 0)
                 return "000";
-            if(__op < 10)
+            if (__op < 10)
                 throw new Exception("op integer must be 0 or greater than 9");
-            if(__op < 100)
+            if (__op < 100)
                 return $"0{__op}";
             return $"{__op}";
         }

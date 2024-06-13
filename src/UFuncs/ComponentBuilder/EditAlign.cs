@@ -1,15 +1,11 @@
-﻿using NXOpen;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using NXOpen;
 
 namespace TSG_Library.UFuncs
 {
     public partial class EditBlockForm
     {
-
         private double EditAlignNegZ(
             List<NXObject> movePtsHalf,
             List<NXObject> movePtsFull,
@@ -19,7 +15,7 @@ namespace TSG_Library.UFuncs
             int index,
             string dir_xyz)
         {
-            var distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
+            double distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
 
             if (mappedBase[index] < mappedPoint[index]) distance *= -1;
 
@@ -76,9 +72,10 @@ namespace TSG_Library.UFuncs
         //    return distance;
         //}
 
-        private double EditAlignPosZ(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> allzAxisLines, double[] mappedBase, double[] mappedPoint, int index, string dir_xyz)
+        private double EditAlignPosZ(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> allzAxisLines,
+            double[] mappedBase, double[] mappedPoint, int index, string dir_xyz)
         {
-            var distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
+            double distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
 
             if (mappedBase[index] < mappedPoint[index])
                 distance *= -1;
@@ -90,9 +87,10 @@ namespace TSG_Library.UFuncs
             return distance;
         }
 
-        private double EditAlignNegY(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> allyAxisLines, double[] mappedBase, double[] mappedPoint, int index, string dir_xyz)
+        private double EditAlignNegY(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> allyAxisLines,
+            double[] mappedBase, double[] mappedPoint, int index, string dir_xyz)
         {
-            var distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
+            double distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
 
             if (mappedBase[index] < mappedPoint[index])
                 distance *= -1;
@@ -104,9 +102,10 @@ namespace TSG_Library.UFuncs
             return distance;
         }
 
-        private double EditAlignPosY(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> allyAxisLines, double[] mappedBase, double[] mappedPoint, int index, string dir_xyz)
+        private double EditAlignPosY(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> allyAxisLines,
+            double[] mappedBase, double[] mappedPoint, int index, string dir_xyz)
         {
-            var distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
+            double distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
 
             if (mappedBase[index] < mappedPoint[index])
                 distance *= -1;
@@ -119,9 +118,10 @@ namespace TSG_Library.UFuncs
         }
 
 
-        private double EditAlignNegX(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> allxAxisLines, double[] mappedBase, double[] mappedPoint, int index, string dir_xyz)
+        private double EditAlignNegX(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> allxAxisLines,
+            double[] mappedBase, double[] mappedPoint, int index, string dir_xyz)
         {
-            var distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
+            double distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
 
             if (mappedBase[index] < mappedPoint[index])
                 distance *= -1;
@@ -143,7 +143,7 @@ namespace TSG_Library.UFuncs
             int index,
             string dir_xyz)
         {
-            var distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
+            double distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
 
             if (mappedBase[index] < mappedPoint[index])
                 distance *= -1;
@@ -154,6 +154,5 @@ namespace TSG_Library.UFuncs
             MoveObjects(movePtsHalf, movePtsFull, distance, dir_xyz, false);
             return distance;
         }
-
     }
 }

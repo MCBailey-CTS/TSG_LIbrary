@@ -17,9 +17,9 @@ namespace TSG_Library.Extensions
             Vector3d axisX = __display_part_.WCS.__AxisX();
             Vector3d axisY = __display_part_.WCS.__AxisY();
             Vector3d axisZ = __display_part_.WCS.__AxisZ();
-            var x = axisX.__Multiply(absVector);
-            var y = axisY.__Multiply(absVector);
-            var z = axisZ.__Multiply(absVector);
+            double x = axisX.__Multiply(absVector);
+            double y = axisY.__Multiply(absVector);
+            double z = axisZ.__Multiply(absVector);
             return new Vector3d(x, y, z);
         }
 
@@ -40,9 +40,9 @@ namespace TSG_Library.Extensions
             Vector3d y = inputVector.Y.__Multiply(axisY);
             Vector3d z = inputVector.Z.__Multiply(axisZ);
             Vector3d vector = x.__Add(y, z);
-            var x0 = vector.__Multiply(outputCsys.__Orientation().Element.__AxisX());
-            var y0 = vector.__Multiply(outputCsys.__Orientation().Element.__AxisY());
-            var z0 = vector.__Multiply(outputCsys.__Orientation().Element.__AxisZ());
+            double x0 = vector.__Multiply(outputCsys.__Orientation().Element.__AxisX());
+            double y0 = vector.__Multiply(outputCsys.__Orientation().Element.__AxisY());
+            double z0 = vector.__Multiply(outputCsys.__Orientation().Element.__AxisZ());
             return new Vector3d(x0, y0, z0);
         }
 
@@ -97,7 +97,7 @@ namespace TSG_Library.Extensions
         /// </remarks>
         public static Vector3d __Unit(this Vector3d u)
         {
-            var num = 1.0 / u.__Norm();
+            double num = 1.0 / u.__Norm();
             return new Vector3d(num * u.X, num * u.Y, num * u.Z);
         }
 
@@ -163,7 +163,7 @@ namespace TSG_Library.Extensions
 
         public static Matrix3x3 __ToMatrix3x3(this Vector3d xDir, Vector3d yDir)
         {
-            var array = new double[9];
+            double[] array = new double[9];
             ufsession_.Mtx3.Initialize(xDir.__ToArray(), yDir.__ToArray(), array);
             return array.__ToMatrix3x3();
         }
@@ -186,7 +186,7 @@ namespace TSG_Library.Extensions
 
         public static Vector3d __AskPerpendicular(this Vector3d vec)
         {
-            var __vec_perp = new double[3];
+            double[] __vec_perp = new double[3];
             ufsession_.Vec3.AskPerpendicular(vec.__ToArray(), __vec_perp);
             return new Vector3d(__vec_perp[0], __vec_perp[1], __vec_perp[2]);
         }
@@ -218,7 +218,7 @@ namespace TSG_Library.Extensions
         /// <returns>The angle, theta, in degrees, where 0 ≤ theta ≤ 180</returns>
         public static double __Angle(this Vector3d u, Vector3d v)
         {
-            var val = u.__Unit().__Multiply(v.__Unit());
+            double val = u.__Unit().__Multiply(v.__Unit());
             val = System.Math.Min(1.0, val);
             val = System.Math.Max(-1.0, val);
             return System.Math.Acos(val) * 180.0 / System.Math.PI;
@@ -226,7 +226,7 @@ namespace TSG_Library.Extensions
 
         public static bool __IsPerpendicularTo(this Vector3d vec1, Vector3d vec2, double tolerance = .0001)
         {
-            ufsession_.Vec3.IsPerpendicular(vec1.__ToArray(), vec2.__ToArray(), tolerance, out var result);
+            ufsession_.Vec3.IsPerpendicular(vec1.__ToArray(), vec2.__ToArray(), tolerance, out int result);
             return result == 1;
         }
 
@@ -247,13 +247,13 @@ namespace TSG_Library.Extensions
         //     A transformed copy of the original input vector
         public static Vector3d __Copy(this Vector3d vector, Transform xform)
         {
-            var matrix = xform.Matrix;
-            var x = vector.X;
-            var y = vector.Y;
-            var z = vector.Z;
-            var x2 = x * matrix[0] + y * matrix[1] + z * matrix[2];
-            var y2 = x * matrix[4] + y * matrix[5] + z * matrix[6];
-            var z2 = x * matrix[8] + y * matrix[9] + z * matrix[10];
+            double[] matrix = xform.Matrix;
+            double x = vector.X;
+            double y = vector.Y;
+            double z = vector.Z;
+            double x2 = x * matrix[0] + y * matrix[1] + z * matrix[2];
+            double y2 = x * matrix[4] + y * matrix[5] + z * matrix[6];
+            double z2 = x * matrix[8] + y * matrix[9] + z * matrix[10];
             return new Vector3d(x2, y2, z2);
         }
 
@@ -267,7 +267,7 @@ namespace TSG_Library.Extensions
 
         public static bool __IsEqual(this Vector3d vec0, Vector3d vec1, double tolerance = .001)
         {
-            ufsession_.Vec3.IsEqual(vec0.__ToArray(), vec1.__ToArray(), tolerance, out var is_equal);
+            ufsession_.Vec3.IsEqual(vec0.__ToArray(), vec1.__ToArray(), tolerance, out int is_equal);
 
             switch (is_equal)
             {
@@ -283,7 +283,7 @@ namespace TSG_Library.Extensions
         public static bool __IsEqualTo(this Vector3d vector1, Vector3d vector2, double tolerance = .01)
         {
             // Compares the two vectors. If they are equal, then {isEqual} == 1, else {isEqual} == 0.
-            ufsession_.Vec3.IsEqual(vector1.__ToArray(), vector2.__ToArray(), tolerance, out var isEqual);
+            ufsession_.Vec3.IsEqual(vector1.__ToArray(), vector2.__ToArray(), tolerance, out int isEqual);
 
             switch (isEqual)
             {
@@ -307,7 +307,7 @@ namespace TSG_Library.Extensions
         /// <returns>The resulting matrix.</returns>
         public static Matrix3x3 __Initialize(this Vector3d xVec, Vector3d yVec)
         {
-            var mtx = new double[9];
+            double[] mtx = new double[9];
             ufsession_.Mtx3.Initialize(xVec.__ToArray(), yVec.__ToArray(), mtx);
             return mtx.__ToMatrix3x3();
         }
@@ -320,7 +320,7 @@ namespace TSG_Library.Extensions
         /// <returns>The resulting matrix.</returns>
         public static Matrix3x3 __InitializeX(Vector3d xVec)
         {
-            var mtx = new double[9];
+            double[] mtx = new double[9];
             ufsession_.Mtx3.InitializeX(xVec.__ToArray(), mtx);
             return mtx.__ToMatrix3x3();
         }
@@ -333,7 +333,7 @@ namespace TSG_Library.Extensions
         /// <returns>The resulting matrix.</returns>
         public static Matrix3x3 __InitializeZ(Vector3d z_vec)
         {
-            var mtx = new double[9];
+            double[] mtx = new double[9];
             ufsession_.Mtx3.InitializeZ(z_vec.__ToArray(), mtx);
             return mtx.__ToMatrix3x3();
         }
@@ -363,7 +363,7 @@ namespace TSG_Library.Extensions
 
         public static Vector3d __Multiply(this Vector3d vector3d, double scale)
         {
-            var scaled_vec = new double[3];
+            double[] scaled_vec = new double[3];
             ufsession_.Vec3.Scale(scale, vector3d.__ToArray(), scaled_vec);
             return scaled_vec.__ToVector3d();
         }
@@ -393,7 +393,7 @@ namespace TSG_Library.Extensions
 
         public static Matrix3x3 __Mtx3Initialize(Vector3d x_vec, Vector3d y_vec)
         {
-            var matrix = new double[9];
+            double[] matrix = new double[9];
             ufsession_.Mtx3.Initialize(x_vec.__ToArray(), y_vec.__ToArray(), matrix);
             return matrix.__ToMatrix3x3();
         }

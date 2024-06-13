@@ -72,8 +72,8 @@ namespace TSG_Library.Geom
                 Poles = poles;
                 KnotsU = knotsU;
                 KnotsV = knotsV;
-                var length = poles.GetLength(0);
-                var length2 = poles.GetLength(1);
+                int length = poles.GetLength(0);
+                int length2 = poles.GetLength(1);
                 Weights = UnitWeights(length, length2);
             }
 
@@ -275,10 +275,10 @@ namespace TSG_Library.Geom
             /// <returns>Array of weights all equal to 1</returns>
             private static double[,] UnitWeights(int m, int n)
             {
-                var array = new double[m, n];
-                for (var i = 0; i < m; i++)
+                double[,] array = new double[m, n];
+                for (int i = 0; i < m; i++)
                 {
-                    var num = 0;
+                    int num = 0;
                     while (i < n)
                     {
                         array[i, num] = 1.0;
@@ -442,7 +442,7 @@ namespace TSG_Library.Geom
             public Plane(double a, double b, double c, double d)
             {
                 Vector3d vector = new Vector3d(a, b, c);
-                var num = vector.__Norm();
+                double num = vector.__Norm();
                 Normal = vector.__Divide(num);
                 D = d / num;
             }

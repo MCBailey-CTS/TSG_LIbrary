@@ -1,13 +1,7 @@
-﻿using NXOpen;
-using NXOpen.UF;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows.Forms;
+using NXOpen;
 using NXOpen.Assemblies;
-using TSG_Library.Extensions;
 using static NXOpen.UF.UFConstants;
 using static TSG_Library.Extensions.__Extensions_;
 
@@ -15,7 +9,6 @@ namespace TSG_Library.UFuncs
 {
     public partial class EditBlockForm
     {
-
         private void ButtonEditMove_Click(object sender, EventArgs e)
         {
             try
@@ -23,7 +16,7 @@ namespace TSG_Library.UFuncs
                 UpdateSessionParts();
                 UpdateOriginalParts();
                 buttonApply.Enabled = true;
-                var isBlockComponent = false;
+                bool isBlockComponent = false;
                 Part.Units dispUnits = (Part.Units)_displayPart.PartUnits;
                 SetDispUnits(dispUnits);
                 NewMethod2();
@@ -55,8 +48,8 @@ namespace TSG_Library.UFuncs
                 UpdateSessionParts();
                 UpdateOriginalParts();
                 buttonApply.Enabled = true;
-                var isBlockComponent = false;
-                ufsession_.Ui.AskInfoUnits(out var infoUnits);
+                bool isBlockComponent = false;
+                ufsession_.Ui.AskInfoUnits(out int infoUnits);
                 Part.Units dispUnits = (Part.Units)_displayPart.PartUnits;
                 SetDispUnits(dispUnits);
 
@@ -76,8 +69,6 @@ namespace TSG_Library.UFuncs
         }
 
 
-
-
         private void ButtonEditDynamic_Click(object sender, EventArgs e)
         {
             try
@@ -85,8 +76,8 @@ namespace TSG_Library.UFuncs
                 UpdateSessionParts();
                 UpdateOriginalParts();
                 buttonApply.Enabled = true;
-                var isBlockComponent = false;
-                ufsession_.Ui.AskInfoUnits(out var infoUnits);
+                bool isBlockComponent = false;
+                ufsession_.Ui.AskInfoUnits(out int infoUnits);
                 Part.Units dispUnits = (Part.Units)_displayPart.PartUnits;
                 SetDispUnits(dispUnits);
 
@@ -99,13 +90,9 @@ namespace TSG_Library.UFuncs
                 Component editComponent = _editBody.OwningComponent;
 
                 if (editComponent is null)
-                {
                     isBlockComponent = EditDynamicDisplayPart(isBlockComponent, editComponent);
-                }
                 else
-                {
                     isBlockComponent = EditDynamicWorkPart(isBlockComponent, editComponent);
-                }
             }
             catch (Exception ex)
             {
@@ -120,7 +107,6 @@ namespace TSG_Library.UFuncs
                 ufsession_.Disp.RegenerateDisplay();
             }
         }
-
 
 
         private void ButtonViewWcs_Click(object sender, EventArgs e)
@@ -140,14 +126,17 @@ namespace TSG_Library.UFuncs
                 UpdateSessionParts();
                 UpdateOriginalParts();
                 buttonApply.Enabled = true;
-                var isBlockComponent = false;
-                ufsession_.Ui.AskInfoUnits(out var infoUnits);
+                bool isBlockComponent = false;
+                ufsession_.Ui.AskInfoUnits(out int infoUnits);
                 Part.Units dispUnits = (Part.Units)_displayPart.PartUnits;
                 SetDispUnits(dispUnits);
 
                 if (_isNewSelection)
+                {
                     if (_updateComponent is null)
+                    {
                         NewMethod4();
+                    }
                     else
                     {
                         UpdateDynamicBlock(_updateComponent);
@@ -155,6 +144,7 @@ namespace TSG_Library.UFuncs
                         _displayPart.WCS.Visibility = true;
                         _isNewSelection = true;
                     }
+                }
                 else
                 {
                     UpdateDynamicBlock(_updateComponent);
@@ -182,8 +172,8 @@ namespace TSG_Library.UFuncs
                 UpdateSessionParts();
                 UpdateOriginalParts();
                 buttonApply.Enabled = true;
-                var isBlockComponent = false;
-                ufsession_.Ui.AskInfoUnits(out var infoUnits);
+                bool isBlockComponent = false;
+                ufsession_.Ui.AskInfoUnits(out int infoUnits);
                 Part.Units dispUnits = (Part.Units)_displayPart.PartUnits;
                 SetDispUnits(dispUnits);
 
@@ -217,8 +207,8 @@ namespace TSG_Library.UFuncs
                 UpdateSessionParts();
                 UpdateOriginalParts();
                 buttonApply.Enabled = true;
-                var isBlockComponent = false;
-                ufsession_.Ui.AskInfoUnits(out var infoUnits);
+                bool isBlockComponent = false;
+                ufsession_.Ui.AskInfoUnits(out int infoUnits);
                 Part.Units dispUnits = (Part.Units)_displayPart.PartUnits;
                 SetDispUnits(dispUnits);
                 session_.Preferences.EmphasisVisualization.WorkPartEmphasis = false;
@@ -239,7 +229,6 @@ namespace TSG_Library.UFuncs
         }
 
 
-
         private void ButtonAlignEdgeDistance_Click(object sender, EventArgs e)
         {
             try
@@ -247,8 +236,8 @@ namespace TSG_Library.UFuncs
                 UpdateSessionParts();
                 UpdateOriginalParts();
                 buttonApply.Enabled = true;
-                var isBlockComponent = false;
-                ufsession_.Ui.AskInfoUnits(out var infoUnits);
+                bool isBlockComponent = false;
+                ufsession_.Ui.AskInfoUnits(out int infoUnits);
                 Part.Units dispUnits = (Part.Units)_displayPart.PartUnits;
                 SetDispUnits(dispUnits);
 
@@ -317,9 +306,5 @@ namespace TSG_Library.UFuncs
             UpdateOriginalParts();
             __work_part_ = _displayPart;
         }
-
-
-
-
     }
 }

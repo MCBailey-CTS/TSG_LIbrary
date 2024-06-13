@@ -44,9 +44,9 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             using (new Destroyer(builder))
             {
-                var chainSetLength = builder.GetNumberOfValidChainsets();
+                int chainSetLength = builder.GetNumberOfValidChainsets();
 
-                for (var i = 0; i < chainSetLength; i++)
+                for (int i = 0; i < chainSetLength; i++)
                 {
                     builder.GetChainset(i, out ScCollector originalCollector, out Expression radius);
 
@@ -61,7 +61,8 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             Session.UndoMarkId markId1 = session_.SetUndoMark(Session.MarkVisibility.Visible, "Fine");
 
-            EditWithRollbackManager editWithRollbackManager1 = _WorkPart.Features.StartEditWithRollbackManager(mirroredFeature, markId1);
+            EditWithRollbackManager editWithRollbackManager1 =
+                _WorkPart.Features.StartEditWithRollbackManager(mirroredFeature, markId1);
 
             using (new Destroyer(editWithRollbackManager1))
             {
@@ -69,9 +70,10 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                 using (new Destroyer(edgeBlendBuilder1))
                 {
-                    for (var i = 0; i < edgeBlendBuilder1.GetNumberOfValidChainsets(); i++)
+                    for (int i = 0; i < edgeBlendBuilder1.GetNumberOfValidChainsets(); i++)
                     {
-                        edgeBlendBuilder1.GetChainsetAndStatus(i, out ScCollector scCollector1, out Expression _, out var _);
+                        edgeBlendBuilder1.GetChainsetAndStatus(i, out ScCollector scCollector1, out Expression _,
+                            out bool _);
 
                         SelectionIntentRule[] newRules = chainSetDict[i].Item1;
 

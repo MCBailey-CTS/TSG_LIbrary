@@ -41,15 +41,15 @@ namespace TSG_Library.Utilities
             GC.WaitForPendingFinalizers();
 
             foreach (Range range in _ranges)
-                if(range != null)
+                if (range != null)
                     Marshal.ReleaseComObject(range);
 
             foreach (_Worksheet range in _workSheets)
-                if(range != null)
+                if (range != null)
                     Marshal.ReleaseComObject(range);
 
             foreach (KeyValuePair<string, Workbook> range in _workBooks)
-                if(range.Value != null)
+                if (range.Value != null)
                 {
                     range.Value.Close();
                     Marshal.ReleaseComObject(range.Value);
@@ -61,7 +61,7 @@ namespace TSG_Library.Utilities
 
         public void SetCell(string excelFilePath, int sheetIndex, object rowIndex, object columnIndex, object data)
         {
-            if(!_workBooks.ContainsKey(excelFilePath))
+            if (!_workBooks.ContainsKey(excelFilePath))
                 _workBooks.Add(excelFilePath, _application.Workbooks.Open(excelFilePath));
 
             _Worksheet workSheet = (_Worksheet)_workBooks[excelFilePath].Sheets[sheetIndex];
@@ -72,7 +72,7 @@ namespace TSG_Library.Utilities
 
             _ranges.Add(range);
 
-            if(!(range[rowIndex, columnIndex] is Range tempRange))
+            if (!(range[rowIndex, columnIndex] is Range tempRange))
                 return;
 
             _ranges.Add(tempRange);
@@ -82,7 +82,7 @@ namespace TSG_Library.Utilities
 
         public void SetCell(string excelFilePath, int sheetIndex, object rowIndex, object columnIndex, Color color)
         {
-            if(!_workBooks.ContainsKey(excelFilePath))
+            if (!_workBooks.ContainsKey(excelFilePath))
                 _workBooks.Add(excelFilePath, _application.Workbooks.Open(excelFilePath));
 
             _Worksheet workSheet = (_Worksheet)_workBooks[excelFilePath].Sheets[sheetIndex];
@@ -93,7 +93,7 @@ namespace TSG_Library.Utilities
 
             _ranges.Add(range);
 
-            if(!(range[rowIndex, columnIndex] is Range tempRange))
+            if (!(range[rowIndex, columnIndex] is Range tempRange))
                 return;
 
             _ranges.Add(tempRange);
@@ -128,7 +128,7 @@ namespace TSG_Library.Utilities
 
         public _Worksheet WorkBookActiveSheet(string excelFilePath)
         {
-            if(!_workBooks.ContainsKey(excelFilePath))
+            if (!_workBooks.ContainsKey(excelFilePath))
                 _workBooks.Add(excelFilePath, _application.Workbooks.Open(excelFilePath));
 
             _Worksheet workSheet = (_Worksheet)_workBooks[excelFilePath].ActiveSheet;
@@ -140,7 +140,7 @@ namespace TSG_Library.Utilities
 
         public void SaveWorkBook(string excelFilePath)
         {
-            if(!_workBooks.ContainsKey(excelFilePath))
+            if (!_workBooks.ContainsKey(excelFilePath))
                 throw new FileNotFoundException(
                     $"You cannot save excel sheet \"{excelFilePath}\" when you haven't opened it.");
             _workBooks[excelFilePath].Save();

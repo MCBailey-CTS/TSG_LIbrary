@@ -20,7 +20,7 @@ namespace TSG_Library.UFuncUtilities.BomUtilities
         private void Button1_Click(object sender, EventArgs e)
         {
             foreach (CheckBox box in _checkBoxes)
-                if(box.Checked)
+                if (box.Checked)
                     _strings.Add(box.Text);
             Close();
         }
@@ -34,12 +34,13 @@ namespace TSG_Library.UFuncUtilities.BomUtilities
             };
             _strings = new List<string>();
             _checkBoxes = new List<CheckBox>();
-            var i = 0;
-            foreach (var str in purchased)
+            int i = 0;
+            foreach (string str in purchased)
             {
-                CheckBox box = new CheckBox { Size = new Size(80, 17), Location = new Point(12, 19 + 23 * i++), Text = str };
-                foreach (var arr in array)
-                    if(arr == str)
+                CheckBox box = new CheckBox
+                    { Size = new Size(80, 17), Location = new Point(12, 19 + 23 * i++), Text = str };
+                foreach (string arr in array)
+                    if (arr == str)
                         box.Checked = true;
                 dialog.groupBox1.Controls.Add(box);
                 _checkBoxes.Add(box);
@@ -47,7 +48,7 @@ namespace TSG_Library.UFuncUtilities.BomUtilities
 
             UFSession.GetUFSession().Ui.SetPrompt("Please select shop vendors.....");
             dialog.ShowDialog();
-            var rings = _strings.ToArray();
+            string[] rings = _strings.ToArray();
             dialog.Dispose();
             return rings;
         }

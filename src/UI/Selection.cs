@@ -184,10 +184,10 @@ namespace TSG_Library.Ui
             {
                 try
                 {
-                    if(!(_object.__ToTaggedObject() is TSource source_obj))
+                    if (!(_object.__ToTaggedObject() is TSource source_obj))
                         return UF_UI_SEL_REJECT;
 
-                    if(!pred(source_obj))
+                    if (!pred(source_obj))
                         return UF_UI_SEL_REJECT;
 
                     return UF_UI_SEL_ACCEPT;
@@ -206,7 +206,7 @@ namespace TSG_Library.Ui
                 {
                     ufsession_.Ui.SetSelProcs(__select, __filter_proc, null, __user_data);
 
-                    if(!(masks is null) && masks.Length > 0)
+                    if (!(masks is null) && masks.Length > 0)
                         ufsession_.Ui.SetSelMask(
                             __select,
                             UFUi.SelMaskAction.SelMaskClearAndEnableSpecific,
@@ -224,7 +224,7 @@ namespace TSG_Library.Ui
 
             using (session_.__UsingLockUiFromCustom())
             {
-                var cursor = new double[3];
+                double[] cursor = new double[3];
 
                 ufsession_.Ui.SelectWithSingleDialog(
                     message,
@@ -232,7 +232,7 @@ namespace TSG_Library.Ui
                     UF_UI_SEL_SCOPE_ANY_IN_ASSEMBLY,
                     __init_proc,
                     IntPtr.Zero,
-                    out var __response,
+                    out int __response,
                     out Tag __object,
                     cursor,
                     out _);
@@ -250,7 +250,7 @@ namespace TSG_Library.Ui
 
                 TSource __obj = __object.__To<TSource>();
 
-                if(__obj is DisplayableObject disp)
+                if (__obj is DisplayableObject disp)
                     disp.Unhighlight();
 
                 return __obj;
@@ -267,13 +267,13 @@ namespace TSG_Library.Ui
             {
                 try
                 {
-                    if(!(_object.__ToTaggedObject() is TSource source_obj))
+                    if (!(_object.__ToTaggedObject() is TSource source_obj))
                         return UF_UI_SEL_REJECT;
 
-                    if(pred is null)
+                    if (pred is null)
                         return UF_UI_SEL_ACCEPT;
 
-                    if(!pred(source_obj))
+                    if (!pred(source_obj))
                         return UF_UI_SEL_REJECT;
 
                     return UF_UI_SEL_ACCEPT;
@@ -292,7 +292,7 @@ namespace TSG_Library.Ui
                 {
                     ufsession_.Ui.SetSelProcs(__select, __filter_proc, null, __user_data);
 
-                    if(!(masks is null) && masks.Length > 0)
+                    if (!(masks is null) && masks.Length > 0)
                         ufsession_.Ui.SetSelMask(
                             __select,
                             UFUi.SelMaskAction.SelMaskClearAndEnableSpecific,
@@ -310,7 +310,7 @@ namespace TSG_Library.Ui
 
             using (session_.__UsingLockUiFromCustom())
             {
-                var cursor = new double[3];
+                double[] cursor = new double[3];
 
                 ufsession_.Ui.SelectWithClassDialog(
                     message,
@@ -318,8 +318,8 @@ namespace TSG_Library.Ui
                     UF_UI_SEL_SCOPE_ANY_IN_ASSEMBLY,
                     __init_proc,
                     IntPtr.Zero,
-                    out var __response,
-                    out var count,
+                    out int __response,
+                    out int count,
                     out Tag[] objects);
 
                 switch (__response)

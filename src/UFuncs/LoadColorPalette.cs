@@ -25,7 +25,7 @@ namespace TSG_Library.UFuncs
 
             DialogResult result = dialog.ShowDialog();
 
-            if(result != DialogResult.OK)
+            if (result != DialogResult.OK)
                 return;
 
 
@@ -103,7 +103,7 @@ namespace TSG_Library.UFuncs
             {
                 print_(child.DisplayName);
                 // insert code to process component or subassembly
-                if(true /*LoadComponent(child)*/)
+                if (true /*LoadComponent(child)*/)
                     //session_.ListingWindow.WriteLine("old component name: " + child.Name);
                     //session_.ListingWindow.WriteLine("file name: " + child.Prototype.OwningPart.Leaf);
                     // Get the Part() object
@@ -142,15 +142,15 @@ namespace TSG_Library.UFuncs
 
             //        string rootDir = Environment
             //.GetEnvironmentVariable("UGII_ROOT_DIR");
-            var colorPalette = cdfFile;
-            var colorName = "";
-            var red = "";
-            var green = "";
-            var blue = "";
-            var rgbColor = new double[3];
-            var thisColor = 0;
-            var textLine = "";
-            var lineCounter = 0;
+            string colorPalette = cdfFile;
+            string colorName = "";
+            string red = "";
+            string green = "";
+            string blue = "";
+            double[] rgbColor = new double[3];
+            int thisColor = 0;
+            string textLine = "";
+            int lineCounter = 0;
 
             //VB FileSystem.FileOpen(1, colorPalette, OpenMode.Input, -1, -1, -1);
             StreamReader file = new StreamReader(colorPalette);
@@ -158,7 +158,7 @@ namespace TSG_Library.UFuncs
             while ((textLine = file.ReadLine()) != null)
             {
                 //VB textLine = FileSystem.LineInput(1);
-                if(lineCounter > 3)
+                if (lineCounter > 3)
                 {
                     colorName = textLine.Substring(0, 30);
                     red = textLine.Substring(34, 8);

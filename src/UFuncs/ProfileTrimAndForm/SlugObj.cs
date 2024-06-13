@@ -40,13 +40,13 @@ namespace TSG_Library.UFuncs
             TopFace = (Face)validFaces.MaxBy(face1 =>
                 face1.GetEdges().First().__StartPoint().__MapCsysToCsys(abs, coordSystem).Z);
             Face maxFace = null;
-            var maxZ = double.MinValue;
+            double maxZ = double.MinValue;
 
             foreach (Face face1 in validFaces)
             {
-                var other = face1.GetEdges().First().__StartPoint().__MapCsysToCsys(abs, coordSystem).Z;
+                double other = face1.GetEdges().First().__StartPoint().__MapCsysToCsys(abs, coordSystem).Z;
 
-                if(other > maxZ)
+                if (other > maxZ)
                     maxFace = face1;
             }
 

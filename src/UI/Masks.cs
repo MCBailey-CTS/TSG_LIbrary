@@ -392,7 +392,8 @@ namespace TSG_Library.Utilities
         {
             try
             {
-                UFUi.Mask mask = new UFUi.Mask { object_type = UF_datum_plane_type, object_subtype = 0, solid_type = 0 };
+                UFUi.Mask mask = new UFUi.Mask
+                    { object_type = UF_datum_plane_type, object_subtype = 0, solid_type = 0 };
 
                 __uf.Ui.SetSelMask(select_, UFUi.SelMaskAction.SelMaskClearAndEnableSpecific, 1, new[] { mask });
 

@@ -52,9 +52,9 @@ namespace TSG_Library.Extensions
 
         public static Matrix3x3 __MapAcsToWcs(this Matrix3x3 __ori)
         {
-            var x_vec = __MapAcsToWcs(__ori.__AxisX()).__ToArray();
-            var y_vec = __MapAcsToWcs(__ori.__AxisY()).__ToArray();
-            var z_vec = __MapAcsToWcs(__ori.__AxisZ()).__ToArray();
+            double[] x_vec = __MapAcsToWcs(__ori.__AxisX()).__ToArray();
+            double[] y_vec = __MapAcsToWcs(__ori.__AxisY()).__ToArray();
+            double[] z_vec = __MapAcsToWcs(__ori.__AxisZ()).__ToArray();
             return x_vec.Concat(y_vec).Concat(z_vec).ToArray().__ToMatrix3x3();
         }
 
@@ -94,7 +94,7 @@ namespace TSG_Library.Extensions
 
         public static Matrix3x3 __Copy(this Matrix3x3 matrix)
         {
-            var mtx_dst = new double[9];
+            double[] mtx_dst = new double[9];
             ufsession_.Mtx3.Copy(matrix.__Array(), mtx_dst);
             return mtx_dst.__ToMatrix3x3();
         }
@@ -111,7 +111,7 @@ namespace TSG_Library.Extensions
 
         public static double __Determinant(this Matrix3x3 matrix)
         {
-            ufsession_.Mtx3.Determinant(matrix.__Array(), out var determinant);
+            ufsession_.Mtx3.Determinant(matrix.__Array(), out double determinant);
             return determinant;
         }
 

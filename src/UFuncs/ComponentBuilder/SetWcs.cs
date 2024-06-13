@@ -1,14 +1,8 @@
-﻿using NXOpen.Features;
-using NXOpen.UF;
-using NXOpen.Utilities;
+﻿using System;
 using NXOpen;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TSG_Library.Extensions;
 using NXOpen.Assemblies;
+using NXOpen.Features;
+using NXOpen.Utilities;
 using static TSG_Library.Extensions.__Extensions_;
 using static NXOpen.UF.UFConstants;
 
@@ -21,13 +15,9 @@ namespace TSG_Library.UFuncs
             try
             {
                 if (compRefCsys is null)
-                {
                     SetWcsDisplayPart();
-                }
                 else
-                {
                     SetWcsWorkComponent(compRefCsys);
-                }
             }
             catch (Exception ex)
             {
@@ -71,12 +61,12 @@ namespace TSG_Library.UFuncs
                         BlockFeatureBuilder blockFeatureBuilderMatch;
                         blockFeatureBuilderMatch = _workPart.Features.CreateBlockFeatureBuilder(block1);
                         Point3d bOrigin = blockFeatureBuilderMatch.Origin;
-                        var blength = blockFeatureBuilderMatch.Length.RightHandSide;
-                        var bwidth = blockFeatureBuilderMatch.Width.RightHandSide;
-                        var bheight = blockFeatureBuilderMatch.Height.RightHandSide;
-                        var mLength = blockFeatureBuilderMatch.Length.Value;
-                        var mWidth = blockFeatureBuilderMatch.Width.Value;
-                        var mHeight = blockFeatureBuilderMatch.Height.Value;
+                        string blength = blockFeatureBuilderMatch.Length.RightHandSide;
+                        string bwidth = blockFeatureBuilderMatch.Width.RightHandSide;
+                        string bheight = blockFeatureBuilderMatch.Height.RightHandSide;
+                        double mLength = blockFeatureBuilderMatch.Length.Value;
+                        double mWidth = blockFeatureBuilderMatch.Width.Value;
+                        double mHeight = blockFeatureBuilderMatch.Height.Value;
 
                         if (_isUprParallel)
                         {
@@ -95,11 +85,12 @@ namespace TSG_Library.UFuncs
                         double[] initOrigin = { bOrigin.X, bOrigin.Y, bOrigin.Z };
                         double[] xVector = { xAxis.X, xAxis.Y, xAxis.Z };
                         double[] yVector = { yAxis.X, yAxis.Y, yAxis.Z };
-                        var initMatrix = new double[9];
+                        double[] initMatrix = new double[9];
                         ufsession_.Mtx3.Initialize(xVector, yVector, initMatrix);
                         ufsession_.Csys.CreateMatrix(initMatrix, out Tag tempMatrix);
                         ufsession_.Csys.CreateTempCsys(initOrigin, tempMatrix, out Tag tempCsys);
-                        CartesianCoordinateSystem setTempCsys = (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
+                        CartesianCoordinateSystem setTempCsys =
+                            (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
 
                         _displayPart.WCS.SetOriginAndMatrix(setTempCsys.Origin,
                             setTempCsys.Orientation.Element);
@@ -150,12 +141,12 @@ namespace TSG_Library.UFuncs
                         BlockFeatureBuilder blockFeatureBuilderMatch;
                         blockFeatureBuilderMatch = _workPart.Features.CreateBlockFeatureBuilder(block1);
                         Point3d bOrigin = blockFeatureBuilderMatch.Origin;
-                        var blength = blockFeatureBuilderMatch.Length.RightHandSide;
-                        var bwidth = blockFeatureBuilderMatch.Width.RightHandSide;
-                        var bheight = blockFeatureBuilderMatch.Height.RightHandSide;
-                        var mLength = blockFeatureBuilderMatch.Length.Value;
-                        var mWidth = blockFeatureBuilderMatch.Width.Value;
-                        var mHeight = blockFeatureBuilderMatch.Height.Value;
+                        string blength = blockFeatureBuilderMatch.Length.RightHandSide;
+                        string bwidth = blockFeatureBuilderMatch.Width.RightHandSide;
+                        string bheight = blockFeatureBuilderMatch.Height.RightHandSide;
+                        double mLength = blockFeatureBuilderMatch.Length.Value;
+                        double mWidth = blockFeatureBuilderMatch.Width.Value;
+                        double mHeight = blockFeatureBuilderMatch.Height.Value;
 
                         if (_isUprParallel)
                         {
@@ -174,11 +165,12 @@ namespace TSG_Library.UFuncs
                         double[] initOrigin = { bOrigin.X, bOrigin.Y, bOrigin.Z };
                         double[] xVector = { xAxis.X, xAxis.Y, xAxis.Z };
                         double[] yVector = { yAxis.X, yAxis.Y, yAxis.Z };
-                        var initMatrix = new double[9];
+                        double[] initMatrix = new double[9];
                         ufsession_.Mtx3.Initialize(xVector, yVector, initMatrix);
                         ufsession_.Csys.CreateMatrix(initMatrix, out Tag tempMatrix);
                         ufsession_.Csys.CreateTempCsys(initOrigin, tempMatrix, out Tag tempCsys);
-                        CartesianCoordinateSystem setTempCsys = (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
+                        CartesianCoordinateSystem setTempCsys =
+                            (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
 
                         _displayPart.WCS.SetOriginAndMatrix(setTempCsys.Origin,
                             setTempCsys.Orientation.Element);

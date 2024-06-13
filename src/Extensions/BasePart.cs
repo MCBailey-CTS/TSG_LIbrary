@@ -268,7 +268,7 @@ namespace TSG_Library.Extensions
             if (!part.__IsPartDetail())
                 return false;
 
-            var materials = Ucf.StaticRead(Ucf.ConceptControlFile, ":CASTING_MATERIALS:",
+            string[] materials = Ucf.StaticRead(Ucf.ConceptControlFile, ":CASTING_MATERIALS:",
                 ":END_CASTING_MATERIALS:", StringComparison.OrdinalIgnoreCase).ToArray();
             const string material = "MATERIAL";
 
@@ -278,7 +278,7 @@ namespace TSG_Library.Extensions
             if (!part.HasUserAttribute(material, NXObject.AttributeType.String, -1))
                 return false;
 
-            var materialValue = part.GetUserAttributeAsString(material, NXObject.AttributeType.String, -1);
+            string materialValue = part.GetUserAttributeAsString(material, NXObject.AttributeType.String, -1);
 
             return materialValue != null && materials.Any(s => materialValue.Contains(s));
         }
@@ -520,7 +520,7 @@ namespace TSG_Library.Extensions
             {
                 if (ex.ErrorCode == 3515007)
                 {
-                    var message = "A category with the given name already exists.";
+                    string message = "A category with the given name already exists.";
                     ArgumentException ex2 = new ArgumentException(message, ex);
                     throw ex2;
                 }
@@ -686,7 +686,7 @@ namespace TSG_Library.Extensions
                 ScCollector scCollector = part.ScCollectors.CreateCollector();
                 Edge[] array = new Edge[edges.Length];
 
-                for (var i = 0; i < array.Length; i++)
+                for (int i = 0; i < array.Length; i++)
                     array[i] = edges[i];
 
                 EdgeMultipleSeedTangentRule edgeMultipleSeedTangentRule =
@@ -729,7 +729,7 @@ namespace TSG_Library.Extensions
                 builder.FaceOption = ExtractFaceBuilder.FaceOptionType.FaceChain;
                 Face[] array = new Face[faces.Length];
 
-                for (var i = 0; i < faces.Length; i++)
+                for (int i = 0; i < faces.Length; i++)
                     array[i] = faces[i];
 
                 FaceDumbRule faceDumbRule = part.ScRuleFactory.CreateRuleFaceDumb(array);
@@ -842,10 +842,10 @@ namespace TSG_Library.Extensions
                 SelectionIntentRule[] rules = new SelectionIntentRule[1] { edgeDumbRule };
                 scCollector.ReplaceRules(rules, false);
                 edgeBlendBuilder.AddChainset(scCollector, "5");
-                var parameter = arclengthPercents[0].ToString();
-                var parameter2 = arclengthPercents[1].ToString();
-                var radius = radii[0].ToString();
-                var radius2 = radii[1].ToString();
+                string parameter = arclengthPercents[0].ToString();
+                string parameter2 = arclengthPercents[1].ToString();
+                string radius = radii[0].ToString();
+                string radius2 = radii[1].ToString();
                 Point smartPoint = null;
                 edgeBlendBuilder.AddVariablePointData(edge, parameter, radius, "3.333", "0.6", smartPoint,
                     false, false);
@@ -897,7 +897,7 @@ namespace TSG_Library.Extensions
             if (!part.HasUserAttribute("DESCRIPTION", NXObject.AttributeType.String, -1))
                 return false;
 
-            var descriptionValue =
+            string descriptionValue =
                 part.GetUserAttributeAsString("DESCRIPTION", NXObject.AttributeType.String, -1);
             return descriptionValue != null && regex.IsMatch(descriptionValue.ToUpper());
         }
@@ -964,7 +964,7 @@ namespace TSG_Library.Extensions
         {
             basePart.__AssertIsWorkPart();
             UFSession uFSession = ufsession_;
-            var point_coords = new double[3] { x, y, z };
+            double[] point_coords = new double[3] { x, y, z };
             uFSession.Curve.CreatePoint(point_coords, out Tag point);
             return (Point)session_.__GetTaggedObject(point);
         }
@@ -1092,7 +1092,7 @@ namespace TSG_Library.Extensions
                 offsetFaceBuilder.Distance.RightHandSide = distance.ToString();
                 SelectionIntentRule[] array = new SelectionIntentRule[faces.Length];
 
-                for (var i = 0; i < faces.Length; i++)
+                for (int i = 0; i < faces.Length; i++)
                 {
                     Face[] boundaryFaces = new Face[0];
                     array[i] = part.ScRuleFactory.CreateRuleFaceTangent(faces[i], boundaryFaces);
@@ -1136,7 +1136,7 @@ namespace TSG_Library.Extensions
             icurve1.__IsPlanar();
             icurve2.__IsLinearCurve();
             icurve2.__IsPlanar();
-            var value = icurve1.__Parameter(icurve1.__StartPoint());
+            double value = icurve1.__Parameter(icurve1.__StartPoint());
             Surface.Plane plane = new Surface.Plane(icurve1.__StartPoint(), icurve1.__Binormal(value));
             helpPoint1 = helpPoint1.__Project(plane);
             helpPoint2 = helpPoint2.__Project(plane);
@@ -1245,7 +1245,7 @@ namespace TSG_Library.Extensions
                 offsetCurveBuilder.ReverseDirection = reverseDirection;
                 Section section = offsetCurveBuilder.CurvesToOffset;
 
-                for (var i = 0; i < curves.Length; i++)
+                for (int i = 0; i < curves.Length; i++)
                     section.__AddICurve(curves);
 
                 Feature feature = offsetCurveBuilder.CommitFeature();
@@ -1290,7 +1290,7 @@ namespace TSG_Library.Extensions
                 offsetCurveBuilder.ReverseDirection = reverseDirection;
                 Section section = offsetCurveBuilder.CurvesToOffset;
 
-                for (var i = 0; i < icurves.Length; i++)
+                for (int i = 0; i < icurves.Length; i++)
                     section.__AddICurve(icurves);
 
                 Feature feature = offsetCurveBuilder.CommitFeature();
@@ -1460,9 +1460,9 @@ namespace TSG_Library.Extensions
         {
             basePart.__AssertIsWorkPart();
             Tag[] curve_objs = new Tag[2] { curve1.Tag, curve2.Tag };
-            var array = center.__ToArray();
-            var array2 = new int[3];
-            var arc_opts = new int[3];
+            double[] array = center.__ToArray();
+            int[] array2 = new int[3];
+            int[] arc_opts = new int[3];
             if (doTrim)
             {
                 array2[0] = 1;
@@ -1866,7 +1866,7 @@ namespace TSG_Library.Extensions
             Match match = Regex.Match(part.Leaf, Regex_Detail);
             //GFolderWithCtsNumber.DetailPart.DetailExclusiveRegex.Match(nxPart.Leaf);
             if (!match.Success) return false;
-            var detailNumber = int.Parse(match.Groups[3].Value);
+            int detailNumber = int.Parse(match.Groups[3].Value);
             return detailNumber >= 990 && detailNumber <= 1000;
         }
 
@@ -2054,8 +2054,8 @@ namespace TSG_Library.Extensions
             double angle2)
         {
             basePart.__AssertIsWorkPart();
-            var radians1 = __DegreesToRadians(angle1);
-            var radians2 = __DegreesToRadians(angle2);
+            double radians1 = __DegreesToRadians(angle1);
+            double radians2 = __DegreesToRadians(angle2);
             Matrix3x3 ori = axisX.__ToMatrix3x3(axisY);
             NXMatrix matrix = basePart.NXMatrices.Create(ori);
             return basePart.Curves.CreateArc(center, matrix, radius, radians1, radians2);
@@ -2302,8 +2302,8 @@ namespace TSG_Library.Extensions
             double angle2)
         {
             basePart.__AssertIsWorkPart();
-            var startAngle = __DegreesToRadians(angle1);
-            var endAngle = __DegreesToRadians(angle2);
+            double startAngle = __DegreesToRadians(angle1);
+            double endAngle = __DegreesToRadians(angle2);
             return __work_part_.Curves.CreateArc(center, axisX, axisY, radius, startAngle, endAngle);
         }
 
@@ -2378,7 +2378,7 @@ namespace TSG_Library.Extensions
         {
             List<SelectionIntentRule> list = new List<SelectionIntentRule>();
 
-            for (var i = 0; i < icurves.Length; i++)
+            for (int i = 0; i < icurves.Length; i++)
                 if (icurves[i] is Curve curve)
                 {
                     Curve[] curves = new Curve[1] { curve };
@@ -2441,7 +2441,7 @@ namespace TSG_Library.Extensions
                 extrudeBuilder.Offset.EndOffset.RightHandSide = offsetValues[1].ToString();
             }
 
-            var num = double.Parse(draftAngle.ToString());
+            double num = double.Parse(draftAngle.ToString());
 
             extrudeBuilder.Draft.DraftOption = System.Math.Abs(num) < 0.001
                 ? SimpleDraft.SimpleDraftType.NoDraft
@@ -2451,7 +2451,8 @@ namespace TSG_Library.Extensions
             extrudeBuilder.Section = section;
             Point3d origin = new Point3d(30.0, 0.0, 0.0);
             Vector3d vector = new Vector3d(axis.X, axis.Y, axis.Z);
-            Direction direction = part.Directions.CreateDirection(origin, vector, SmartObject.UpdateOption.WithinModeling);
+            Direction direction =
+                part.Directions.CreateDirection(origin, vector, SmartObject.UpdateOption.WithinModeling);
             extrudeBuilder.Direction = direction;
             Extrude extrude = (Extrude)extrudeBuilder.CommitFeature();
             extrudeBuilder.Destroy();

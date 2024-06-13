@@ -152,51 +152,51 @@ namespace TSG_Library.UFuncs
             const string rgbRegex =
                 @"^{(?<Color>.+)}\s*{A:(?<A>\d+)}\s*{B:(?<B>\d+)}\s*{G:(?<G>\d+)}\s*{R:(?<R>\d+)}\s*{NX:(?<NX>\d+)}\s*{DETAILS:(?<Details>-.*)}\s*{DCB:(?<Dcb>-.*)?}$";
 
-            var xCounter = 0;
+            int xCounter = 0;
 
-            var yCounter = 0;
+            int yCounter = 0;
 
-            foreach (var colorLine in ucf["COLORS"])
+            foreach (string colorLine in ucf["COLORS"])
             {
                 // Matches the {colorLine}.
                 Match match = Regex.Match(colorLine, rgbRegex);
 
                 // If the {colorLine} doesn't match, ignore it.
-                if(!match.Success)
+                if (!match.Success)
                 {
                     print_($"Could not match \"{colorLine}\".");
                     continue;
                 }
 
-                if(xCounter % 4 == 0)
+                if (xCounter % 4 == 0)
                 {
                     xCounter = 0;
                     yCounter++;
                 }
 
                 // Gets the "A" value.
-                var aValue = int.Parse(match.Groups["A"].Value);
+                int aValue = int.Parse(match.Groups["A"].Value);
 
                 // Gets the "R" value.
-                var rValue = int.Parse(match.Groups["R"].Value);
+                int rValue = int.Parse(match.Groups["R"].Value);
 
                 // Gets the "G" value.
-                var gValue = int.Parse(match.Groups["G"].Value);
+                int gValue = int.Parse(match.Groups["G"].Value);
 
                 // Gets the "B" value.
-                var bValue = int.Parse(match.Groups["B"].Value);
+                int bValue = int.Parse(match.Groups["B"].Value);
 
                 // Gets the title of the color.
-                var colorTitle = match.Groups["Color"].Value;
+                string colorTitle = match.Groups["Color"].Value;
 
                 // Gets the detail notes pertaining to this color.
-                var detailNotes = match.Groups["Details"].Value;
+                string detailNotes = match.Groups["Details"].Value;
 
                 // Gets the dieset, castings, & burnout notes for this color.
-                var dcb = match.Groups["Dcb"].Value;
+                string dcb = match.Groups["Dcb"].Value;
 
                 // Creates a button. 
-                var nxColor = int.Parse(match.Groups["NX"].Value);
+                int nxColor = int.Parse(match.Groups["NX"].Value);
                 // ReSharper disable once UseObjectOrCollectionInitializer
                 Button button = new Button
                 {
@@ -210,11 +210,11 @@ namespace TSG_Library.UFuncs
 
                 button.Click += ColorButtons_Click;
 
-                var toolTipString = $"{button.Name} = {(int)button.Tag}";
+                string toolTipString = $"{button.Name} = {(int)button.Tag}";
 
-                if(detailNotes != "-") toolTipString += $"\n\nDetails:\n{detailNotes}";
+                if (detailNotes != "-") toolTipString += $"\n\nDetails:\n{detailNotes}";
 
-                if(dcb != "-") toolTipString += $"\n\nDiesets, Castings, & Burnouts:\n{dcb}";
+                if (dcb != "-") toolTipString += $"\n\nDiesets, Castings, & Burnouts:\n{dcb}";
 
                 toolTipString = toolTipString.Replace("\\n", "\n");
 
@@ -234,7 +234,7 @@ namespace TSG_Library.UFuncs
         {
             __SetUndoMark(MarkVisibility.Visible, "Assembly Color");
 
-            if(__triples is null && rdoFeature.Checked)
+            if (__triples is null && rdoFeature.Checked)
             {
                 UI.GetUI().SelectionManager.SelectFeatures("Select Features", Selection.SelectionFeatureType.Browsable,
                     out Feature[] features);
@@ -248,7 +248,7 @@ namespace TSG_Library.UFuncs
                 return;
             }
 
-            if(__triples is null)
+            if (__triples is null)
             {
                 print_("Triples were null");
                 return;
@@ -271,27 +271,27 @@ namespace TSG_Library.UFuncs
 
         private void RdoButton_Click(object sender, EventArgs e)
         {
-            if(rdoFace.Checked)
+            if (rdoFace.Checked)
             {
                 Settings.Default.AssemblyColorCodeLastUsed = (int)AssemblyColorCodeType.Face;
                 __triples = face_mask;
             }
-            else if(rdoFeature.Checked)
+            else if (rdoFeature.Checked)
             {
                 Settings.Default.AssemblyColorCodeLastUsed = (int)AssemblyColorCodeType.Feature;
                 __triples = null;
             }
-            else if(rdoCurves.Checked)
+            else if (rdoCurves.Checked)
             {
                 Settings.Default.AssemblyColorCodeLastUsed = (int)AssemblyColorCodeType.Curve;
                 __triples = curves_mask;
             }
-            else if(rdoSolid.Checked)
+            else if (rdoSolid.Checked)
             {
                 Settings.Default.AssemblyColorCodeLastUsed = (int)AssemblyColorCodeType.Solid;
                 __triples = body_mask;
             }
-            else if(rdoNoFilter.Checked)
+            else if (rdoNoFilter.Checked)
             {
                 Settings.Default.AssemblyColorCodeLastUsed = (int)AssemblyColorCodeType.None;
                 __triples = all_triples;
@@ -331,7 +331,7 @@ namespace TSG_Library.UFuncs
                         out TaggedObject object_,
                         out _);
 
-                    if(!(object_ is DisplayableObject disp))
+                    if (!(object_ is DisplayableObject disp))
                     {
                         print_("You didn't select an object with a color");
                         return;

@@ -27,7 +27,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             _ = (Feature)dict[originalFeature];
 
             ((EdgeTangentRule)originalRule).GetData(out Edge originalStartEdge, out Edge originalEndEdge,
-                out var isFromStart, out var angleTolerance, out var hasSameConvexity);
+                out bool isFromStart, out double angleTolerance, out bool hasSameConvexity);
 
             Edge newStartEdge = null;
 
@@ -39,10 +39,10 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             foreach (Body body in mirroredPart.Bodies.ToArray())
             foreach (Edge e in body.GetEdges())
-                if(e.__HasEndPoints(finalStart, finalEnd))
+                if (e.__HasEndPoints(finalStart, finalEnd))
                     newStartEdge = e;
 
-            if(!(originalEndEdge is null))
+            if (!(originalEndEdge is null))
             {
                 finalStart = originalEndEdge.__StartPoint().__MirrorMap(plane, originalComp, mirroredComp);
 
@@ -50,11 +50,11 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                 foreach (Body body in mirroredPart.Bodies.ToArray())
                 foreach (Edge e in body.GetEdges())
-                    if(e.__HasEndPoints(finalStart, finalEnd))
+                    if (e.__HasEndPoints(finalStart, finalEnd))
                         newEndEdge = e;
             }
 
-            if(newStartEdge is null)
+            if (newStartEdge is null)
                 throw new ArgumentException("Could not find start edge");
 
             return mirroredPart.ScRuleFactory.CreateRuleEdgeTangent(newStartEdge, newEndEdge, isFromStart,

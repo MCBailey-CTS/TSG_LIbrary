@@ -42,19 +42,19 @@ namespace TSG_Library.UFuncs
 
                     Component[] nxComponents;
 
-                    if(btnAddAll == sender)
+                    if (btnAddAll == sender)
                         nxComponents = __display_part_.ComponentAssembly.RootComponent.GetChildren()
                             .Where(component => !component.DisplayName.Contains("Master"))
                             .ToArray();
-                    else if(btnAddTo == sender)
+                    else if (btnAddTo == sender)
                         nxComponents = Selection.SelectManyComponents().ToArray();
                     else
                         return;
 
-                    if(nxComponents.Length == 0)
+                    if (nxComponents.Length == 0)
                         return;
 
-                    if(chkDelete.Checked)
+                    if (chkDelete.Checked)
                     {
                         List<ReferenceSet> listOfRefs = __display_part_.GetAllReferenceSets()
                             // Revision • 1.3 – 2017 – 10 – 26 
@@ -77,10 +77,10 @@ namespace TSG_Library.UFuncs
 
         internal static void MakeRefSets(params Component[] nxComponents)
         {
-            if(nxComponents.Length == 0)
+            if (nxComponents.Length == 0)
                 throw new Exception("No ref sets made for 0 components");
 
-            var validChildrenDisplayNames = __display_part_.ComponentAssembly.RootComponent
+            string[] validChildrenDisplayNames = __display_part_.ComponentAssembly.RootComponent
                 .GetChildren()
                 .Where(__c => !__c.IsSuppressed)
                 .Select(__c => __c.Name)
@@ -90,8 +90,8 @@ namespace TSG_Library.UFuncs
                 try
                 {
                     // Checks to make sure that there aren't two components with the same "Component Name".
-                    var nxCompName = nxComp.Name;
-                    var componentsWithSameName = validChildrenDisplayNames.Where(s => nxCompName == s).ToArray();
+                    string nxCompName = nxComp.Name;
+                    string[] componentsWithSameName = validChildrenDisplayNames.Where(s => nxCompName == s).ToArray();
 
                     switch (componentsWithSameName.Length)
                     {
@@ -107,10 +107,10 @@ namespace TSG_Library.UFuncs
                     }
 
                     // Gets the name for the to be created reference set.
-                    var newRefSetName = GetNewReferenceSetName(nxComp);
+                    string newRefSetName = GetNewReferenceSetName(nxComp);
 
                     // If null then it means the "Component.Name" of nxComp was weird and was unable to determine what the name of the reference set should be called.
-                    if(newRefSetName is null)
+                    if (newRefSetName is null)
                         continue;
 
                     // Checks to make sure that there aren't two components with the same "Component Name".
@@ -122,7 +122,7 @@ namespace TSG_Library.UFuncs
                     // is already the name of a reference set in the Simulation file.
                     // User will be prompted to choose whether or not they want to delete the existing
                     // reference set and create a new one, or just continue on and not override the reference set.
-                    if(!(alreadyNamedRefSet is null))
+                    if (!(alreadyNamedRefSet is null))
                     {
                         DialogResult result = MessageBox.Show(
                             $@"A reference set named {newRefSetName} already exists. Would you like to override it?",
@@ -133,7 +133,7 @@ namespace TSG_Library.UFuncs
                         {
                             case DialogResult.Yes:
                                 session_.__DeleteObjects(alreadyNamedRefSet);
-                                if(__work_part_.GetAllReferenceSets().Any(set => set.Name == newRefSetName))
+                                if (__work_part_.GetAllReferenceSets().Any(set => set.Name == newRefSetName))
                                     print_("Reference Set " + newRefSetName + " was unable to be deleted");
                                 else
                                     print_("Reference Set " + newRefSetName + " was successfully deleted.");
@@ -149,7 +149,7 @@ namespace TSG_Library.UFuncs
 
                     ReferenceSet referenceSet = __display_part_.__FindReferenceSetOrNull(newRefSetName);
 
-                    if(referenceSet is null)
+                    if (referenceSet is null)
                     {
                         referenceSet = __display_part_.CreateReferenceSet();
                         referenceSet.SetName(newRefSetName);
@@ -168,12 +168,12 @@ namespace TSG_Library.UFuncs
 
         private static string GetNewReferenceSetName(Component nxComp)
         {
-            if(nxComp.Name.ToUpper().Contains("MASTER"))
+            if (nxComp.Name.ToUpper().Contains("MASTER"))
                 return nxComp.Name;
 
-            var firstHyphen = nxComp.Name.IndexOf('-');
+            int firstHyphen = nxComp.Name.IndexOf('-');
 
-            if(firstHyphen >= 0)
+            if (firstHyphen >= 0)
                 return nxComp.Name.Substring(firstHyphen + 1);
 
             print_(
@@ -187,7 +187,7 @@ namespace TSG_Library.UFuncs
         /// <param name="newRefSetName">The name of the reference set.</param>
         private static void PrintReferenceSetResult(string newRefSetName)
         {
-            if(__work_part_.GetAllReferenceSets().Any(set => set.Name == newRefSetName))
+            if (__work_part_.GetAllReferenceSets().Any(set => set.Name == newRefSetName))
                 print_($"Reference Set {newRefSetName} was successfully created.");
             else
                 print_($"Reference Set {newRefSetName} was not able to be created.");

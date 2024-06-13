@@ -134,15 +134,15 @@ namespace TSG_Library.Extensions
             basePart.__AssertIsWorkPart();
             Vector3d vector = p2.__Subtract(p1);
             Vector3d vector2 = p3.__Subtract(p1);
-            var num = vector.__Multiply(vector);
-            var num2 = vector.__Multiply(vector2);
-            var num3 = vector2.__Multiply(vector2);
-            var num4 = num * num3 - num2 * num2;
-            var num5 = (num * num3 - num2 * num3) / (2.0 * num4);
-            var num6 = (num * num3 - num * num2) / (2.0 * num4);
+            double num = vector.__Multiply(vector);
+            double num2 = vector.__Multiply(vector2);
+            double num3 = vector2.__Multiply(vector2);
+            double num4 = num * num3 - num2 * num2;
+            double num5 = (num * num3 - num2 * num3) / (2.0 * num4);
+            double num6 = (num * num3 - num * num2) / (2.0 * num4);
             Vector3d vector3 = vector.__Multiply(num5).__Add(vector2.__Multiply(num6));
             Point3d center = vector3.__Add(p1);
-            var radius = vector3.__Norm();
+            double radius = vector3.__Norm();
             Matrix3x3 orientation = vector.__Cross(vector2).__ToMatrix3x3();
             Vector3d axisX = orientation.__AxisX();
             Vector3d axisY = orientation.__AxisY();
@@ -158,7 +158,7 @@ namespace TSG_Library.Extensions
             Point3d origin, NXMatrix matrix)
         {
             basePart.__AssertIsWorkPart();
-            var array = origin.__ToArray();
+            double[] array = origin.__ToArray();
             ufsession_.Csys.CreateCsys(array, matrix.Tag, out Tag csys_id);
             NXObject objectFromTag = (NXObject)session_.__GetTaggedObject(csys_id);
             CoordinateSystem coordinateSystem = (CoordinateSystem)objectFromTag;
@@ -183,7 +183,7 @@ namespace TSG_Library.Extensions
             Vector3d axisZ)
         {
             basePart.__AssertIsWorkPart();
-            var array = origin.__ToArray();
+            double[] array = origin.__ToArray();
             NXMatrix matrix = __work_part_.NXMatrices.Create(axisX.__ToMatrix3x3(axisY, axisZ));
             Tag nXOpenTag = matrix.Tag;
             ufsession_.Csys.CreateCsys(array, nXOpenTag, out Tag csys_id);
@@ -226,13 +226,13 @@ namespace TSG_Library.Extensions
         //     To create a transformation, use the functions in the Snap.Geom.Transform class.
         public static Point3d __Copy(this Point3d point, Transform xform)
         {
-            var matrix = xform.Matrix;
-            var x = point.X;
-            var y = point.Y;
-            var z = point.Z;
-            var x2 = x * matrix[0] + y * matrix[1] + z * matrix[2] + matrix[3];
-            var y2 = x * matrix[4] + y * matrix[5] + z * matrix[6] + matrix[7];
-            var z2 = x * matrix[8] + y * matrix[9] + z * matrix[10] + matrix[11];
+            double[] matrix = xform.Matrix;
+            double x = point.X;
+            double y = point.Y;
+            double z = point.Z;
+            double x2 = x * matrix[0] + y * matrix[1] + z * matrix[2] + matrix[3];
+            double y2 = x * matrix[4] + y * matrix[5] + z * matrix[6] + matrix[7];
+            double z2 = x * matrix[8] + y * matrix[9] + z * matrix[10] + matrix[11];
             return new Point3d(x2, y2, z2);
         }
 
@@ -284,7 +284,7 @@ namespace TSG_Library.Extensions
 
         public static int __ToHashCode(this Point3d p)
         {
-            var hash = 17;
+            int hash = 17;
 
             hash = hash * 23 + p.X.GetHashCode();
             hash = hash * 23 + p.Y.GetHashCode();
@@ -307,26 +307,26 @@ namespace TSG_Library.Extensions
             Vector3d _z = axisZ.__Multiply(inputCoords.Z);
             Point3d position = origin.__Add(_x).__Add(_y).__Add(_z);
             Vector3d vector = position.__Subtract(outputCsys.Origin);
-            var x = vector.__Multiply(outputCsys.__Orientation().Element.__AxisX());
-            var y = vector.__Multiply(outputCsys.__Orientation().Element.__AxisY());
-            var z = vector.__Multiply(outputCsys.__Orientation().Element.__AxisZ());
+            double x = vector.__Multiply(outputCsys.__Orientation().Element.__AxisX());
+            double y = vector.__Multiply(outputCsys.__Orientation().Element.__AxisY());
+            double z = vector.__Multiply(outputCsys.__Orientation().Element.__AxisZ());
             return new Point3d(x, y, z);
         }
 
         public static Point3d __Add(this Point3d point, Vector3d vector)
         {
-            var x = point.X + vector.X;
-            var y = point.Y + vector.Y;
-            var z = point.Z + vector.Z;
+            double x = point.X + vector.X;
+            double y = point.Y + vector.Y;
+            double z = point.Z + vector.Z;
             return new Point3d(x, y, z);
         }
 
 
         public static Vector3d __Subtract(this Point3d start, Point3d end)
         {
-            var x = start.X - end.X;
-            var y = start.Y - end.Y;
-            var z = start.Z - end.Z;
+            double x = start.X - end.X;
+            double y = start.Y - end.Y;
+            double z = start.Z - end.Z;
             return new Vector3d(x, y, z);
         }
 
@@ -540,10 +540,10 @@ namespace TSG_Library.Extensions
         /// </remarks>
         public static Line[] __PolyLine(this BasePart basePart, params Point3d[] points)
         {
-            var num = points.Length;
+            int num = points.Length;
             Line[] array = new Line[num - 1];
 
-            for (var i = 0; i < num - 1; i++)
+            for (int i = 0; i < num - 1; i++)
                 array[i] = __CreateLine(points[i], points[i + 1]);
 
             return array;
@@ -569,9 +569,9 @@ namespace TSG_Library.Extensions
         /// <returns></returns>
         public static Line[] __Polygon(params Point3d[] points)
         {
-            var num = points.Length;
+            int num = points.Length;
             Line[] array = new Line[num];
-            for (var i = 0; i < num - 1; i++) array[i] = __CreateLine(points[i], points[i + 1]);
+            for (int i = 0; i < num - 1; i++) array[i] = __CreateLine(points[i], points[i + 1]);
 
             array[num - 1] = __CreateLine(points[num - 1], points[0]);
             return array;
@@ -726,9 +726,9 @@ namespace TSG_Library.Extensions
         /// </remarks>
         public static Point3d __MapWcsToAcs(this Point3d workCoords)
         {
-            var input_csys = 3;
-            var output_csys = 1;
-            var numArray = new double[3];
+            int input_csys = 3;
+            int output_csys = 1;
+            double[] numArray = new double[3];
             ufsession_.Csys.MapPoint(input_csys, workCoords.__ToArray(), output_csys, numArray);
             return numArray.__ToPoint3d();
         }
@@ -739,9 +739,9 @@ namespace TSG_Library.Extensions
         /// <returns>The coordinates of the given point wrt the Work Coordinate System (WCS)</returns>
         public static Point3d __MapAcsToWcs(this Point3d absCoords)
         {
-            var output_csys = 3;
-            var input_csys = 1;
-            var numArray = new double[3];
+            int output_csys = 3;
+            int input_csys = 1;
+            double[] numArray = new double[3];
             ufsession_.Csys.MapPoint(input_csys, absCoords.__ToArray(), output_csys, numArray);
             return numArray.__ToPoint3d();
         }
@@ -759,9 +759,9 @@ namespace TSG_Library.Extensions
 
         public static Point3d __MidPoint(this Point3d p, Point3d q)
         {
-            var x = (p.X + q.X) / 2;
-            var y = (p.Y + q.Y) / 2;
-            var z = (p.Z + q.Z) / 2;
+            double x = (p.X + q.X) / 2;
+            double y = (p.Y + q.Y) / 2;
+            double z = (p.Z + q.Z) / 2;
             return new Point3d(x, y, z);
         }
 
@@ -772,14 +772,13 @@ namespace TSG_Library.Extensions
 
         public static Point3d __AddY(this Point3d p, double y)
         {
-            return new Point3d(p.X , p.Y + y, p.Z);
+            return new Point3d(p.X, p.Y + y, p.Z);
         }
 
         public static Point3d __AddZ(this Point3d p, double z)
         {
-            return new Point3d(p.X, p.Y, p.Z+z);
+            return new Point3d(p.X, p.Y, p.Z + z);
         }
-
 
         #endregion
     }
