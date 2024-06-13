@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using NXOpen;
@@ -12,19 +13,16 @@ public static class Program
     public static int WorkPartChangedRegister;
 
 
-    public static void Main(string[] args)
-    {
+    public static void Main(string[] args) {
         try
         {
-          
-
             new TSG_Library.UFuncs.MirrorComponents.Features.MainForm().Show();
 
             return;
 
 
 #pragma warning disable CS0162 // Unreachable code detected
-            if (args.Length == 0)
+            if(args.Length == 0)
             {
                 print_("No main arguments");
                 return;
@@ -39,45 +37,39 @@ public static class Program
         }
     }
 
-    public static int GetUnloadOption()
-    {
+    public static int GetUnloadOption() {
         return (int)Session.LibraryUnloadOption.Explicitly;
     }
 
-    public static void UnloadLibrary()
-    {
+    public static void UnloadLibrary() {
         int temp = 10;
 
         switch (temp)
         {
             case 0:
-                {
-                    print_("kdk");
-                    break;
-                }
+            {
+                print_("kdk");
+                break;
+            }
         }
 
-        if (true){
+        if(true)
+        {
             print_("kdkdk");
         }
-
-
-
-
     }
 
-    public static void execute(string ufunc_name)
-    {
+    public static void execute(string ufunc_name) {
         _IUFunc __ufunc = null;
 
         foreach (var type in Assembly.GetAssembly(typeof(Program)).GetTypes())
         {
             var ufunc_att = type.GetCustomAttributes().OfType<UFuncAttribute>().SingleOrDefault();
 
-            if (ufunc_att is null)
+            if(ufunc_att is null)
                 continue;
 
-            if (ufunc_att.ufunc_name != ufunc_name)
+            if(ufunc_att.ufunc_name != ufunc_name)
                 continue;
 
             __ufunc = (_IUFunc)Activator.CreateInstance(type);
@@ -85,7 +77,7 @@ public static class Program
             break;
         }
 
-        if (__ufunc is null)
+        if(__ufunc is null)
         {
             print_($"Could not find ufunc with name '{ufunc_name}'");
 
@@ -96,5 +88,4 @@ public static class Program
 
         __ufunc.execute();
     }
-
 }

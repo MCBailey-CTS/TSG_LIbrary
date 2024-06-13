@@ -1,0 +1,16 @@
+[*cs]
+# end_of_line
+# Type and namespace declaration
+resharper_csharp_type_declaration_braces=next_line
+# Indent inside namespace declaration
+resharper_csharp_indent_inside_namespace=true
+# Method declaration
+resharper_csharp_invocable_declaration_braces=next_line
+# Property declaration
+resharper_csharp_accessor_owner_declaration_braces=next_line
+#Accessor declaration
+resharper_csharp_accessor_declaration_braces=next_line
+# Other
+resharper_csharp_other_braces=next_line
+# Before colon in 'case' statement
+resharper_csharp_space_before_colon_in_case=false
