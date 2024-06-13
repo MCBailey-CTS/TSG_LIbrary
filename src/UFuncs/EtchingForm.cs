@@ -2,6 +2,7 @@
 using System.Linq;
 using MoreLinq;
 using NXOpen;
+using NXOpen.Assemblies;
 using NXOpen.Features;
 using TSG_Library.Attributes;
 using TSG_Library.Utilities;
@@ -30,45 +31,45 @@ namespace TSG_Library.UFuncs
 
         public static void Etching1()
         {
-            var components = __display_part_.ComponentAssembly.RootComponent
+            Component[] components = __display_part_.ComponentAssembly.RootComponent
                 .__Descendants()
                 .Where(__c => __c.__IsLoaded())
                 .DistinctBy(__c => __c.DisplayName)
                 .ToArray();
 
-            foreach (var __c in components)
+            foreach (Component __c in components)
                 try
                 {
-                    var __prototype = __c.__Prototype();
+                    Part __prototype = __c.__Prototype();
 
-                    if(!__prototype.__HasDynamicBlock())
+                    if (!__prototype.__HasDynamicBlock())
                         continue;
 
                     __work_part_ = __prototype;
 
-                    var __folder = GFolder.create(__work_part_.FullPath);
+                    GFolder __folder = GFolder.create(__work_part_.FullPath);
 
                     AddFastenersForm1.SetWcsToWorkPart();
 
                     session_.__SetDisplayToWork();
 
-                    var expected_z = __display_part_.WCS.CoordinateSystem.Origin.Z;
+                    double expected_z = __display_part_.WCS.CoordinateSystem.Origin.Z;
 
                     foreach (TaggedObject __member in __c.__Members())
                     {
-                        if(!(__member is Face __face))
+                        if (!(__member is Face __face))
                             continue;
 
-                        if(!__face.__IsPlanar())
+                        if (!__face.__IsPlanar())
                             continue;
 
-                        var __edge_positions = __face.GetEdges().SelectMany(__e =>
+                        Point3d[] __edge_positions = __face.GetEdges().SelectMany(__e =>
                         {
-                            __e.GetVertices(out var vert0, out var vert1);
+                            __e.GetVertices(out Point3d vert0, out Point3d vert1);
                             return new[] { vert0, vert1 };
                         }).ToArray();
 
-                        if(!__edge_positions.All(__pos => System.Math.Abs(expected_z - __pos.Z) < .001))
+                        if (!__edge_positions.All(__pos => System.Math.Abs(expected_z - __pos.Z) < .001))
                             continue;
 
                         using (session_.__usingDisplayPartReset())
@@ -77,20 +78,20 @@ namespace TSG_Library.UFuncs
 
                             AddFastenersForm1.SetWcsToWorkPart();
 
-                            var __proto_face = (Face)__face.Prototype;
+                            Face __proto_face = (Face)__face.Prototype;
 
-                            var z = __proto_face.__EdgePositions().Select(__p => __p.Z).First();
+                            double z = __proto_face.__EdgePositions().Select(__p => __p.Z).First();
 
-                            var edge_pos = __proto_face.__EdgePositions().ToArray();
+                            Point3d[] edge_pos = __proto_face.__EdgePositions().ToArray();
 
-                            var average_x = edge_pos.Select(__p => __p.X).Average();
-                            var average_y = edge_pos.Select(__p => __p.Y).Average();
-                            var average_z = edge_pos.Select(__p => __p.Z).Average();
+                            double average_x = edge_pos.Select(__p => __p.X).Average();
+                            double average_y = edge_pos.Select(__p => __p.Y).Average();
+                            double average_z = edge_pos.Select(__p => __p.Z).Average();
 
-                            var new_origin = new Point3d(average_x, average_y, z);
-                            var new_ori = __display_part_.WCS.__Orientation();
+                            Point3d new_origin = new Point3d(average_x, average_y, z);
+                            Matrix3x3 new_ori = __display_part_.WCS.__Orientation();
 
-                            var detail_text_feature = (Text)__display_part_.__CreateTextFeature(
+                            Text detail_text_feature = (Text)__display_part_.__CreateTextFeature(
                                 $"{__display_part_.Leaf}",
                                 new_origin,
                                 new_ori,

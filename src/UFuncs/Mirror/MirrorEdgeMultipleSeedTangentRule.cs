@@ -11,15 +11,18 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
 {
     public class MirrorEdgeMultipleSeedTangentRule : BaseMirrorRule
     {
-        public override SelectionIntentRule.RuleType RuleType { get; } = SelectionIntentRule.RuleType.EdgeMultipleSeedTangent;
+        public override SelectionIntentRule.RuleType RuleType { get; } =
+            SelectionIntentRule.RuleType.EdgeMultipleSeedTangent;
 
 
-        public override SelectionIntentRule Mirror(SelectionIntentRule originalRule, Feature originalFeature, Surface. Plane plane, Component originalComp, IDictionary<TaggedObject, TaggedObject> dict)
+        public override SelectionIntentRule Mirror(SelectionIntentRule originalRule, Feature originalFeature,
+            Surface.Plane plane, Component originalComp, IDictionary<TaggedObject, TaggedObject> dict)
         {
             Component component = (Component)dict[originalComp];
             Part part = component.__Prototype();
             Feature feature = (Feature)dict[originalFeature];
-            ((EdgeMultipleSeedTangentRule)originalRule).GetData(out var seedEdges, out var angleTolerance, out var hasSameConvexity);
+            ((EdgeMultipleSeedTangentRule)originalRule).GetData(out Edge[] seedEdges, out double angleTolerance,
+                out bool hasSameConvexity);
             IList<Edge> list = new List<Edge>();
             Edge[] array = seedEdges;
             foreach (Edge edge in array)
@@ -33,9 +36,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
                     Feature parentFeatureOfBody = originalComp.__Prototype().Features.GetParentFeatureOfBody(body);
                     BodyFeature bodyFeature = (BodyFeature)dict[parentFeatureOfBody];
                     if (bodyFeature.GetBodies().Length != 1)
-                    {
                         throw new InvalidOperationException("Invalid number of bodies for feature");
-                    }
 
                     body2 = bodyFeature.GetBodies()[0];
                 }
@@ -48,19 +49,12 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
                 Point3d pos2 = edge.__EndPoint()._MirrorMap(plane, originalComp, component);
                 Edge[] edges = body2.GetEdges();
                 foreach (Edge edge2 in edges)
-                {
                     if (edge2.__HasEndPoints(pos, pos2))
-                    {
                         list.Add(edge2);
-                    }
-                }
             }
 
-            return part.ScRuleFactory.CreateRuleEdgeMultipleSeedTangent(list.ToArray(), angleTolerance, hasSameConvexity);
+            return part.ScRuleFactory.CreateRuleEdgeMultipleSeedTangent(list.ToArray(), angleTolerance,
+                hasSameConvexity);
         }
     }
-
-
-
-
 }

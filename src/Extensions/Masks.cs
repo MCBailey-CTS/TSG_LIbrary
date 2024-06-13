@@ -65,7 +65,7 @@ namespace TSG_Library.Extensions
             //[IgnoreExtensionAspect]
             get
             {
-                var mask1 = new UFUi.Mask
+                UFUi.Mask mask1 = new UFUi.Mask
                     { object_type = 70, object_subtype = 0, solid_type = 0 };
                 return mask1;
             }

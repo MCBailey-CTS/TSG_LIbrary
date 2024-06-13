@@ -128,7 +128,7 @@ namespace TSG_Library.Utilities
         {
             get
             {
-                var mask1 = new UFUi.Mask { object_type = 63, object_subtype = 0, solid_type = 0 };
+                UFUi.Mask mask1 = new UFUi.Mask { object_type = 63, object_subtype = 0, solid_type = 0 };
                 return mask1;
             }
         }
@@ -137,7 +137,7 @@ namespace TSG_Library.Utilities
         {
             get
             {
-                var mask1 = new UFUi.Mask { object_type = 70, object_subtype = 0, solid_type = 0 };
+                UFUi.Mask mask1 = new UFUi.Mask { object_type = 70, object_subtype = 0, solid_type = 0 };
                 return mask1;
             }
         }
@@ -146,7 +146,7 @@ namespace TSG_Library.Utilities
         {
             get
             {
-                var mask1 = new UFUi.Mask { object_type = 70, object_subtype = 0, solid_type = 1 };
+                UFUi.Mask mask1 = new UFUi.Mask { object_type = 70, object_subtype = 0, solid_type = 1 };
                 return mask1;
             }
         }
@@ -155,7 +155,7 @@ namespace TSG_Library.Utilities
         {
             get
             {
-                var mask1 = new UFUi.Mask { object_type = 70, object_subtype = 0, solid_type = 20 };
+                UFUi.Mask mask1 = new UFUi.Mask { object_type = 70, object_subtype = 0, solid_type = 20 };
                 return mask1;
             }
         }
@@ -164,7 +164,7 @@ namespace TSG_Library.Utilities
         {
             get
             {
-                var mask1 = new UFUi.Mask { object_type = 2, object_subtype = 0, solid_type = 0 };
+                UFUi.Mask mask1 = new UFUi.Mask { object_type = 2, object_subtype = 0, solid_type = 0 };
                 return mask1;
             }
         }
@@ -182,7 +182,7 @@ namespace TSG_Library.Utilities
 
         public static int mask_for_bodies(IntPtr select_, IntPtr handle)
         {
-            var mask = new UFUi.Mask
+            UFUi.Mask mask = new UFUi.Mask
                 { object_type = UF_solid_type, object_subtype = 0, solid_type = UF_UI_SEL_FEATURE_BODY };
 
             try
@@ -224,7 +224,7 @@ namespace TSG_Library.Utilities
 
         public static int mask_for_components(IntPtr select_, IntPtr user_data)
         {
-            var mask = new UFUi.Mask { object_type = UF_component_type, object_subtype = 0, solid_type = 0 };
+            UFUi.Mask mask = new UFUi.Mask { object_type = UF_component_type, object_subtype = 0, solid_type = 0 };
 
             try
             {
@@ -342,7 +342,7 @@ namespace TSG_Library.Utilities
 
         public static int mask_for_points(IntPtr select_, IntPtr handle)
         {
-            var mask = new UFUi.Mask { object_type = UF_point_type, object_subtype = 0, solid_type = 0 };
+            UFUi.Mask mask = new UFUi.Mask { object_type = UF_point_type, object_subtype = 0, solid_type = 0 };
 
             try
             {
@@ -392,7 +392,8 @@ namespace TSG_Library.Utilities
         {
             try
             {
-                var mask = new UFUi.Mask { object_type = UF_datum_plane_type, object_subtype = 0, solid_type = 0 };
+                UFUi.Mask mask = new UFUi.Mask
+                    { object_type = UF_datum_plane_type, object_subtype = 0, solid_type = 0 };
 
                 __uf.Ui.SetSelMask(select_, UFUi.SelMaskAction.SelMaskClearAndEnableSpecific, 1, new[] { mask });
 
@@ -440,7 +441,7 @@ namespace TSG_Library.Utilities
         {
             try
             {
-                var mask = new UFUi.Mask
+                UFUi.Mask mask = new UFUi.Mask
                     { object_type = UF_solid_type, object_subtype = 0, solid_type = UF_UI_SEL_FEATURE_ANY_FACE };
                 __uf.Ui.SetSelMask(select_, UFUi.SelMaskAction.SelMaskClearAndEnableSpecific, 1, new[] { mask });
                 return UF_UI_SEL_SUCCESS;
@@ -459,7 +460,7 @@ namespace TSG_Library.Utilities
 
         public static int mask_for_components_add_fasteners(IntPtr select_, IntPtr handle)
         {
-            var mask = new UFUi.Mask { object_type = UF_component_type, object_subtype = 0, solid_type = 0 };
+            UFUi.Mask mask = new UFUi.Mask { object_type = UF_component_type, object_subtype = 0, solid_type = 0 };
 
             try
             {

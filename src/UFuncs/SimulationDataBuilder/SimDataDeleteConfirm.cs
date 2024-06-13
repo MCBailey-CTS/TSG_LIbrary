@@ -13,7 +13,7 @@ namespace TSG_Library.Utilities
 
         public SimDataDeleteConfirm(IEnumerable<string> filesToDisplay) : this()
         {
-            foreach (var file in filesToDisplay)
+            foreach (string file in filesToDisplay)
                 simTreeView.Nodes.Add(file);
         }
 

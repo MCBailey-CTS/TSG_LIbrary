@@ -42,9 +42,9 @@ namespace TSG_Library.UFuncs
 
             Text = @"Detail Number Note";
 
-            var location = Assembly.GetExecutingAssembly().Location;
+            string location = Assembly.GetExecutingAssembly().Location;
 
-            var directory = Path.GetDirectoryName(location);
+            string directory = Path.GetDirectoryName(location);
 
             //string[] lines = System.IO.File.ReadAllLines($"{directory}\\Settings.txt");
 
@@ -71,7 +71,7 @@ namespace TSG_Library.UFuncs
 
         public static Face[] _SimpleInterference(Part part, Body targetBody, Body toolBody)
         {
-            var obj = part.AnalysisManager.CreateSimpleInterferenceObject();
+            SimpleInterference obj = part.AnalysisManager.CreateSimpleInterferenceObject();
 
             using (new Destroyer(obj))
             {
@@ -80,10 +80,10 @@ namespace TSG_Library.UFuncs
                 obj.FirstBody.Value = targetBody;
                 obj.SecondBody.Value = toolBody;
                 obj.PerformCheck();
-                var result = obj.GetInterferenceResults();
-                var faces = new Face[result.Length];
+                NXObject[] result = obj.GetInterferenceResults();
+                Face[] faces = new Face[result.Length];
 
-                for (var i = 0; i < result.Length; i += 2)
+                for (int i = 0; i < result.Length; i += 2)
                 {
                     faces[i] = (Face)result[i];
                     faces[i + 1] = (Face)result[i + 1];
@@ -99,16 +99,16 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var selectedFace = Selection.SelectSingleFace();
+                Face selectedFace = Selection.SelectSingleFace();
 
-                if(selectedFace is null)
+                if (selectedFace is null)
                     return;
 
-                var normal = selectedFace.__NormalVector();
+                Vector3d normal = selectedFace.__NormalVector();
 
-                var orientation = normal.__ToMatrix3x3();
+                Matrix3x3 orientation = normal.__ToMatrix3x3();
 
-                var origin = selectedFace.GetEdges()[0].__StartPoint();
+                Point3d origin = selectedFace.GetEdges()[0].__StartPoint();
 
                 __display_part_.WCS.SetOriginAndMatrix(origin, orientation);
 
@@ -134,24 +134,24 @@ namespace TSG_Library.UFuncs
 
         private bool TryCreateNote(string detail, Vector3d expectedTargetVector, Face[] interferingFaces)
         {
-            for (var i = 0; i < interferingFaces.Length - 1; i += 2)
+            for (int i = 0; i < interferingFaces.Length - 1; i += 2)
             {
-                var targetFace = interferingFaces[i];
-                var toolFace = interferingFaces[i + 1];
+                Face targetFace = interferingFaces[i];
+                Face toolFace = interferingFaces[i + 1];
 
-                if(!targetFace.__IsPlanar())
+                if (!targetFace.__IsPlanar())
                     continue;
 
-                if(!toolFace.__IsPlanar())
+                if (!toolFace.__IsPlanar())
                     continue;
 
-                var targetVector = targetFace.__NormalVector().__Unit();
-                var toolVector = toolFace.__NormalVector().__Unit();
+                Vector3d targetVector = targetFace.__NormalVector().__Unit();
+                Vector3d toolVector = toolFace.__NormalVector().__Unit();
 
-                if(!targetVector.__IsEqualTo(expectedTargetVector))
+                if (!targetVector.__IsEqualTo(expectedTargetVector))
                     continue;
 
-                if(!toolVector.__IsEqualTo(expectedTargetVector.__Negate()))
+                if (!toolVector.__IsEqualTo(expectedTargetVector.__Negate()))
                     continue;
 
                 CreateNote0(detail, targetFace, toolFace);
@@ -165,31 +165,31 @@ namespace TSG_Library.UFuncs
         {
             using (new DisplayPartReset())
             {
-                var targetFace = SelectPlanarFace();
+                Face targetFace = SelectPlanarFace();
 
                 // for now the target face must be an occurrence
-                if(!targetFace.IsOccurrence)
+                if (!targetFace.IsOccurrence)
                 {
                     print_("Please select an occurrence face");
                     return;
                 }
 
-                var target_face_normal = targetFace.__NormalVector();
+                Vector3d target_face_normal = targetFace.__NormalVector();
 
-                var selectedToolComponents = SelectToolComponents();
+                Component[] selectedToolComponents = SelectToolComponents();
 
-                foreach (var tool in selectedToolComponents)
+                foreach (Component tool in selectedToolComponents)
                 {
-                    var solid_body_layer_1_proto = tool.__Members()
+                    Body solid_body_layer_1_proto = tool.__Members()
                         .OfType<Body>()
                         .Single(__b => ((Body)__b.Prototype).Layer == 1);
 
-                    var interferingFaces =
+                    Face[] interferingFaces =
                         _SimpleInterference(_WorkPart, targetFace.GetBody(), solid_body_layer_1_proto);
 
-                    var detail = GetDetailName(interferingFaces[1].OwningComponent);
+                    string detail = GetDetailName(interferingFaces[1].OwningComponent);
 
-                    if(TryCreateNote(detail, expectedTargetVector, interferingFaces))
+                    if (TryCreateNote(detail, expectedTargetVector, interferingFaces))
                     {
                         solid_body_layer_1_proto.OwningComponent.Blank();
 
@@ -214,7 +214,7 @@ namespace TSG_Library.UFuncs
         private static Body[] SelectSolidBodies()
 #pragma warning restore IDE0051 // Remove unused private members
         {
-            var mask = new MaskTriple(UF_solid_type, 0, UF_UI_SEL_FEATURE_BODY);
+            MaskTriple mask = new MaskTriple(UF_solid_type, 0, UF_UI_SEL_FEATURE_BODY);
 
             TheUISession.SelectionManager.SelectTaggedObjects(
                 "Please select tool bodies",
@@ -224,7 +224,7 @@ namespace TSG_Library.UFuncs
                 false,
                 false,
                 new[] { mask },
-                out var selectedObjects);
+                out TaggedObject[] selectedObjects);
 
             return selectedObjects.Cast<Body>().ToArray();
         }
@@ -233,7 +233,7 @@ namespace TSG_Library.UFuncs
         private static Body SelectSolidBody()
 #pragma warning restore IDE0051 // Remove unused private members
         {
-            var mask = new MaskTriple(UF_solid_type, 0, UF_UI_SEL_FEATURE_BODY);
+            MaskTriple mask = new MaskTriple(UF_solid_type, 0, UF_UI_SEL_FEATURE_BODY);
 
             TheUISession.SelectionManager.SelectTaggedObject(
                 "Please select target body",
@@ -242,15 +242,15 @@ namespace TSG_Library.UFuncs
                 SelectionAction.ClearAndEnableSpecific,
                 false,
                 false,
-                new[] { mask }, out var selectedObjects,
-                out var _);
+                new[] { mask }, out TaggedObject selectedObjects,
+                out Point3d _);
 
             return (Body)selectedObjects;
         }
 
         private static Face SelectPlanarFace()
         {
-            var mask = new MaskTriple(UF_face_type, 0, UF_UI_SEL_FEATURE_PLANAR_FACE);
+            MaskTriple mask = new MaskTriple(UF_face_type, 0, UF_UI_SEL_FEATURE_PLANAR_FACE);
 
             TheUISession.SelectionManager.SelectTaggedObject(
                 "Please select target body",
@@ -259,24 +259,24 @@ namespace TSG_Library.UFuncs
                 SelectionAction.ClearAndEnableSpecific,
                 false,
                 false,
-                new[] { mask }, out var selectedObjects,
-                out var _);
+                new[] { mask }, out TaggedObject selectedObjects,
+                out Point3d _);
 
             return (Face)selectedObjects;
         }
 
         private static string GetDetailName(Component component)
         {
-            var displayName = component.DisplayName;
+            string displayName = component.DisplayName;
 
-            var length = displayName.Length;
+            int length = displayName.Length;
 
             return displayName.Substring(length - 3);
         }
 
         private static void ModifyDisplay(DisplayableObject[] displayableObjects, int color, int layer)
         {
-            var dispMod = session_.DisplayManager.NewDisplayModification();
+            DisplayModification dispMod = session_.DisplayManager.NewDisplayModification();
 
             using (dispMod)
             {
@@ -295,20 +295,20 @@ namespace TSG_Library.UFuncs
         private static Matrix3x3 CreateOrientationFromZVector(Vector3d vector)
         {
             double[] vec = { vector.X, vector.Y, vector.Z };
-            var matrix = new double[9];
+            double[] matrix = new double[9];
             TheUFSession.Mtx3.InitializeZ(vec, matrix);
-            var xVec = new Vector3d(matrix[0], matrix[1], matrix[2]);
-            var yVec = new Vector3d(matrix[3], matrix[4], matrix[5]);
+            Vector3d xVec = new Vector3d(matrix[0], matrix[1], matrix[2]);
+            Vector3d yVec = new Vector3d(matrix[3], matrix[4], matrix[5]);
             return xVec.__ToMatrix3x3(yVec);
         }
 
         private static double[] SumEdgePositions(IEnumerable<Point3d> edgePositions)
         {
-            var x = 0.0;
-            var y = 0.0;
-            var z = 0.0;
+            double x = 0.0;
+            double y = 0.0;
+            double z = 0.0;
 
-            foreach (var pos in edgePositions)
+            foreach (Point3d pos in edgePositions)
             {
                 x += pos.X;
                 y += pos.Y;
@@ -320,7 +320,7 @@ namespace TSG_Library.UFuncs
 
         private static void RemoveParameters(Part part, NXObject[] objects)
         {
-            var removeParameters = part.Features.CreateRemoveParametersBuilder();
+            RemoveParametersBuilder removeParameters = part.Features.CreateRemoveParametersBuilder();
 
             using (new Destroyer(removeParameters))
             {
@@ -332,36 +332,37 @@ namespace TSG_Library.UFuncs
 
         public void CreateNote0(string detailNumber, Face targetFace, Face toolFace)
         {
-            var edgePositions = toolFace.__EdgePositions().ToList();
+            List<Point3d> edgePositions = toolFace.__EdgePositions().ToList();
 
-            var edgeSums = SumEdgePositions(edgePositions.ToArray());
+            double[] edgeSums = SumEdgePositions(edgePositions.ToArray());
 
-            var count = edgePositions.Count;
+            int count = edgePositions.Count;
 
-            var originInAbsolute = new Point3d(edgeSums[0] / count, edgeSums[1] / count, edgeSums[2] / count);
+            Point3d originInAbsolute = new Point3d(edgeSums[0] / count, edgeSums[1] / count, edgeSums[2] / count);
 
-            var compOrigin = targetFace.OwningComponent.__Origin();
+            Point3d compOrigin = targetFace.OwningComponent.__Origin();
 
-            var compOrientation = targetFace.OwningComponent.__Orientation();
+            Matrix3x3 compOrientation = targetFace.OwningComponent.__Orientation();
 
             __display_part_.WCS.SetOriginAndMatrix(compOrigin, compOrientation);
 
-            var origin = originInAbsolute.__ToArray();
+            double[] origin = originInAbsolute.__ToArray();
 
-            var originInTarget = new double[3];
+            double[] originInTarget = new double[3];
 
             TheUFSession.Csys.MapPoint(UF_CSYS_ROOT_COORDS, origin, UF_CSYS_ROOT_WCS_COORDS, originInTarget);
 
-            var faceVector = targetFace.__NormalVector();
+            Vector3d faceVector = targetFace.__NormalVector();
 
-            var orientation = CreateOrientationFromZVector(faceVector);
+            Matrix3x3 orientation = CreateOrientationFromZVector(faceVector);
 
             __display_part_ = (Part)((Face)targetFace.Prototype).OwningPart;
 
-            var text = __work_part_.__CreateTextFeature(detailNumber, originInTarget.__ToPoint3d(), orientation, LENGTH,
+            Feature text = __work_part_.__CreateTextFeature(detailNumber, originInTarget.__ToPoint3d(), orientation,
+                LENGTH,
                 HEIGHT, FONT, SCRIPT);
 
-            var splines = text.GetEntities().OfType<Spline>().ToList();
+            List<Spline> splines = text.GetEntities().OfType<Spline>().ToList();
 
             RemoveParameters(_WorkPart, splines.Cast<NXObject>().ToArray());
 
@@ -369,7 +370,7 @@ namespace TSG_Library.UFuncs
 
             ReferenceSet refset;
 
-            if(__display_part_.__HasReferenceSet(REFERENCE_SET))
+            if (__display_part_.__HasReferenceSet(REFERENCE_SET))
             {
                 refset = __display_part_.__FindReferenceSet(REFERENCE_SET);
             }
@@ -389,12 +390,12 @@ namespace TSG_Library.UFuncs
 
         private static string ReadString(string key, IEnumerable<string> lines)
         {
-            foreach (var line in lines)
+            foreach (string line in lines)
             {
-                if(!line.StartsWith(key))
+                if (!line.StartsWith(key))
                     continue;
 
-                var index = line.IndexOf('=');
+                int index = line.IndexOf('=');
 
                 return line.Substring(index + 1).Trim();
             }
@@ -404,12 +405,12 @@ namespace TSG_Library.UFuncs
 
         private static int ReadInt(string key, IEnumerable<string> lines)
         {
-            foreach (var line in lines)
+            foreach (string line in lines)
             {
-                if(!line.StartsWith(key))
+                if (!line.StartsWith(key))
                     continue;
 
-                var index = line.IndexOf('=');
+                int index = line.IndexOf('=');
 
                 return int.Parse(line.Substring(index + 1).Trim());
             }
@@ -419,12 +420,12 @@ namespace TSG_Library.UFuncs
 
         private static double ReadDouble(string key, IEnumerable<string> lines)
         {
-            foreach (var line in lines)
+            foreach (string line in lines)
             {
-                if(!line.StartsWith(key))
+                if (!line.StartsWith(key))
                     continue;
 
-                var index = line.IndexOf('=');
+                int index = line.IndexOf('=');
 
                 return double.Parse(line.Substring(index + 1).Trim());
             }

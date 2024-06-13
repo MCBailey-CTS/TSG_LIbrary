@@ -18,13 +18,13 @@ namespace TSG_Library.UFuncs
 
             treeView1.Sort();
 
-            var __pairs = from __type in typeof(SessionSql).Assembly.GetTypes()
+            IEnumerable<Type> __pairs = from __type in typeof(SessionSql).Assembly.GetTypes()
                 let atts = __type.GetCustomAttributes(typeof(UFuncAttribute), false)
                 where atts.Length == 1
                 let ufunc_att = (UFuncAttribute)atts[0]
                 select __type;
 
-            foreach (var k in __pairs)
+            foreach (Type k in __pairs)
                 //switch(k.Name)
                 //{
                 //    case "LayoutRefSets":
@@ -46,10 +46,10 @@ namespace TSG_Library.UFuncs
 //[0]: \SessionForm.cs:line 53
             try
             {
-                var __type = (Type)e.Node.Tag;
+                Type __type = (Type)e.Node.Tag;
 
 
-                var __obj = (_IUFunc)Activator.CreateInstance(__type);
+                _IUFunc __obj = (_IUFunc)Activator.CreateInstance(__type);
 
 
                 __obj.execute();

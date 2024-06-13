@@ -16,9 +16,9 @@ namespace TSG_Library.UFuncs
         public override void execute()
 #pragma warning restore CS0809 // Obsolete member overrides non-obsolete member
         {
-            var selectedSplines = SelectSplines();
+            Spline[] selectedSplines = SelectSplines();
 
-            if(selectedSplines is null || !selectedSplines.Any())
+            if (selectedSplines is null || !selectedSplines.Any())
                 return;
 
             throw new NotImplementedException();
@@ -101,7 +101,7 @@ namespace TSG_Library.UFuncs
 
         private static Line[] CreateLines(Point3d midPoint, params Point3d[] positions)
         {
-            if(positions.Length == 0)
+            if (positions.Length == 0)
                 throw new ArgumentException("Value cannot be an empty collection.", "positions");
 
             return positions.Select(position => __work_part_.Curves.CreateLine(midPoint, position)).ToArray();
@@ -131,7 +131,7 @@ namespace TSG_Library.UFuncs
 
         private static double[] GetDistances(Point3d midPoint, params Point3d[] positions)
         {
-            if(positions.Length == 0)
+            if (positions.Length == 0)
                 throw new ArgumentException("Value cannot be an empty collection.", "positions");
 
             return positions.Select(position => GetDistance(midPoint, position)).ToArray();
@@ -144,15 +144,15 @@ namespace TSG_Library.UFuncs
                 return System.Math.Pow(d1 - d2, 2);
             }
 
-            var x = distanceHelper(p1.X, p2.X);
-            var y = distanceHelper(p1.Y, p2.Y);
-            var z = distanceHelper(p1.Z, p2.Z);
+            double x = distanceHelper(p1.X, p2.X);
+            double y = distanceHelper(p1.Y, p2.Y);
+            double z = distanceHelper(p1.Z, p2.Z);
             return System.Math.Sqrt(x + y + z);
         }
 
         private static double Average(params double[] doubles)
         {
-            if(doubles.Length == 0)
+            if (doubles.Length == 0)
                 throw new ArgumentException("Value cannot be an empty collection.", "doubles");
 
             return doubles.Sum() / doubles.Length;
@@ -188,8 +188,8 @@ namespace TSG_Library.UFuncs
                 1,
                 new[] { spline.Tag },
                 .0005,
-                out var segments,
-                out var segmentTags);
+                out int segments,
+                out Tag[] segmentTags);
 
             spline.Blank();
 

@@ -62,14 +62,20 @@ namespace TSG_Library.Disposable
 
         public Destroyer(Part part, out CopyPasteBuilder builder, params Feature[] featuresToCopy)
         {
-            if(featuresToCopy == null)
+            if (featuresToCopy == null)
+            {
                 throw new ArgumentNullException(nameof(featuresToCopy));
+            }
 
-            if(featuresToCopy.Length == 0)
+            if (featuresToCopy.Length == 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(featuresToCopy));
+            }
 
-            if(part.Tag != Session.GetSession().Parts.Work.Tag)
+            if (part.Tag != Session.GetSession().Parts.Work.Tag)
+            {
                 throw new ArgumentException($@"Part ""{part.Leaf}"" must be the current work part.", nameof(part));
+            }
 
             // ReSharper disable once CoVariantArrayConversion
             builder = part.Features.CreateCopyPasteBuilder2(featuresToCopy);
@@ -149,12 +155,14 @@ namespace TSG_Library.Disposable
 
         public void Dispose()
         {
-            if(!(_editWithRollbackManager is null))
+            if (!(_editWithRollbackManager is null))
             {
                 _editWithRollbackManager.UpdateFeature(_updateFeatureBeforeStop);
 
-                if(_callStop)
+                if (_callStop)
+                {
                     _editWithRollbackManager.Stop();
+                }
 
                 _editWithRollbackManager.Destroy();
             }
@@ -169,14 +177,20 @@ namespace TSG_Library.Disposable
 
             _section?.Destroy();
 
-            if(_rules is null)
+            if (_rules is null)
+            {
                 return;
+            }
 
-            foreach (var rule in _rules)
-                if(!(rule is null))
+            foreach (SelectionIntentRule rule in _rules)
+            {
+                if (!(rule is null))
+                {
                     using (rule)
                     {
                     }
+                }
+            }
         }
     }
 }

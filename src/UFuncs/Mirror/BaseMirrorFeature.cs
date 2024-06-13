@@ -6,7 +6,6 @@ using NXOpen.Assemblies;
 using NXOpen.Features;
 using TSG_Library.Extensions;
 using TSG_Library.Geom;
-using static TSG_Library.Extensions.__Extensions_;
 
 namespace TSG_Library.UFuncs.MirrorComponents.Features
 {
@@ -30,21 +29,20 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             return val.__MapAcsToWcs();
         }
 
-        public Matrix3x3 MirrorMap(Matrix3x3 orientation, Surface.Plane plane, Component fromComponent, Component toComponent)
+        public Matrix3x3 MirrorMap(Matrix3x3 orientation, Surface.Plane plane, Component fromComponent,
+            Component toComponent)
         {
             Vector3d val = MirrorMap(orientation.__AxisY(), plane, fromComponent, toComponent);
             Vector3d val2 = MirrorMap(orientation.__AxisX(), plane, fromComponent, toComponent);
             return val.__ToMatrix3x3(val2);
         }
 
-        public abstract void Mirror(Feature originalFeature, IDictionary<TaggedObject, TaggedObject> dict, Surface.Plane plane, Component originalComp);
+        public abstract void Mirror(Feature originalFeature, IDictionary<TaggedObject, TaggedObject> dict,
+            Surface.Plane plane, Component originalComp);
 
         public bool EdgePointsMatchFace(Face mirrorFace, IList<Tuple<Point3d, Point3d>> edgePoints)
         {
-            if (edgePoints.Count != mirrorFace.GetEdges().Length)
-            {
-                return false;
-            }
+            if (edgePoints.Count != mirrorFace.GetEdges().Length) return false;
 
             HashSet<Edge> hashSet = new HashSet<Edge>(mirrorFace.GetEdges());
             Edge edge = hashSet.First();
@@ -58,32 +56,16 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             ISet<Edge> set = new HashSet<Edge>();
             foreach (Tuple<Point3d, Point3d> edgePoint in edgePoints)
             {
-                if (edge.__HasEndPoints(edgePoint.Item1, edgePoint.Item2))
-                {
-                    set.Add(edge);
-                }
+                if (edge.__HasEndPoints(edgePoint.Item1, edgePoint.Item2)) set.Add(edge);
 
-                if (edge2.__HasEndPoints(edgePoint.Item1, edgePoint.Item2))
-                {
-                    set.Add(edge2);
-                }
+                if (edge2.__HasEndPoints(edgePoint.Item1, edgePoint.Item2)) set.Add(edge2);
 
-                if (edge3.__HasEndPoints(edgePoint.Item1, edgePoint.Item2))
-                {
-                    set.Add(edge3);
-                }
+                if (edge3.__HasEndPoints(edgePoint.Item1, edgePoint.Item2)) set.Add(edge3);
 
-                if (edge4.__HasEndPoints(edgePoint.Item1, edgePoint.Item2))
-                {
-                    set.Add(edge4);
-                }
+                if (edge4.__HasEndPoints(edgePoint.Item1, edgePoint.Item2)) set.Add(edge4);
             }
 
             return set.Count == mirrorFace.GetEdges().Length;
         }
     }
-
-
-
-
 }

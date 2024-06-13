@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -27,7 +28,7 @@ namespace TSG_Library.UFuncs
 
         private void ResetForm()
         {
-            if(__display_part_ is null)
+            if (__display_part_ is null)
             {
                 Enabled = false;
                 return;
@@ -35,18 +36,18 @@ namespace TSG_Library.UFuncs
 
             Enabled = true;
 
-            if(!rdoChange.Checked && !rdoRto.Checked && !rdoReview50.Checked && !rdoReview90.Checked &&
-               !rdoReview100.Checked && !rdoOther.Checked)
+            if (!rdoChange.Checked && !rdoRto.Checked && !rdoReview50.Checked && !rdoReview90.Checked &&
+                !rdoReview100.Checked && !rdoOther.Checked)
                 rdoReview50.Checked = true;
 
-            var folder = GFolder.create_or_null(_WorkPart);
+            GFolder folder = GFolder.create_or_null(_WorkPart);
 
-            if(folder is null)
+            if (folder is null)
                 return;
 
-            if(folder.customer_number.Length == 6)
+            if (folder.customer_number.Length == 6)
             {
-                if(rdoRto.Checked || rdoChange.Checked)
+                if (rdoRto.Checked || rdoChange.Checked)
                 {
                     txtFolderName.Text = "";
                     txtFolderName.Enabled = false;
@@ -71,11 +72,11 @@ namespace TSG_Library.UFuncs
             Hide();
             try
             {
-                if(sender == btnDesignAccept)
+                if (sender == btnDesignAccept)
                     Export_Design();
-                else if(sender == btnSelectComponents)
+                else if (sender == btnSelectComponents)
                     ManualExport(false);
-                else if(sender == btnSelectAll)
+                else if (sender == btnSelectAll)
                     ManualExport(true);
             }
             catch (Exception ex)
@@ -95,13 +96,13 @@ namespace TSG_Library.UFuncs
 
         private void ManualExport(bool selectAll)
         {
-            var __display_part_ = Session.GetSession().Parts.Display;
+            Part __display_part_ = Session.GetSession().Parts.Display;
 
-            var components = selectAll
+            List<Component> components = selectAll
                 ? __display_part_.ComponentAssembly.RootComponent.__Descendants().ToList()
                 : Selection.SelectManyComponents().ToList();
 
-            if(components.Count == 0)
+            if (components.Count == 0)
                 return;
 
             components.Add(__display_part_.ComponentAssembly.RootComponent);
@@ -128,19 +129,19 @@ namespace TSG_Library.UFuncs
         {
             Component[] components;
 
-            var isRto = false;
+            bool isRto = false;
 
-            if(rdoRto.Checked)
+            if (rdoRto.Checked)
             {
                 isRto = true;
                 components = __display_part_.ComponentAssembly.RootComponent.__Descendants().ToArray();
             }
-            else if(rdoChange.Checked)
+            else if (rdoChange.Checked)
             {
                 isRto = true;
                 components = Selection.SelectManyComponents();
             }
-            else if(rdoReview50.Checked || rdoReview90.Checked || rdoReview100.Checked || rdoOther.Checked)
+            else if (rdoReview50.Checked || rdoReview90.Checked || rdoReview100.Checked || rdoOther.Checked)
             {
                 isRto = false;
                 components = __display_part_.ComponentAssembly.RootComponent.__Descendants().ToArray();
@@ -150,7 +151,7 @@ namespace TSG_Library.UFuncs
                 throw new ArgumentException();
             }
 
-            if(components.Length == 0)
+            if (components.Length == 0)
                 return;
 
             Export.Design(
@@ -173,12 +174,12 @@ namespace TSG_Library.UFuncs
                     ? "Select"
                     : "Execute";
 
-                if(__display_part_ is null)
+                if (__display_part_ is null)
                     return;
 
-                var folder = GFolder.create_or_null(_WorkPart);
+                GFolder folder = GFolder.create_or_null(_WorkPart);
 
-                if(folder is null)
+                if (folder is null)
                     return;
 
                 switch (folder.customer_number.Length)
@@ -191,24 +192,24 @@ namespace TSG_Library.UFuncs
                         break;
                 }
 
-                var folderName = $"{TodaysDate}-----{__display_part_.Leaf}-----";
+                string folderName = $"{TodaysDate}-----{__display_part_.Leaf}-----";
 
-                if(sender == rdoReview50)
+                if (sender == rdoReview50)
                     txtFolderName.Text = folderName + @"50% Review";
 
-                else if(sender == rdoReview90)
+                else if (sender == rdoReview90)
                     txtFolderName.Text = folderName + @"90% Review";
 
-                else if(sender == rdoReview100)
+                else if (sender == rdoReview100)
                     txtFolderName.Text = folderName + @"100% Review";
 
-                else if(sender == rdoRto)
+                else if (sender == rdoRto)
                     txtFolderName.Text = folderName + @"RTO";
 
-                else if(sender == rdoOther)
+                else if (sender == rdoOther)
                     txtFolderName.Text = folderName + @"-----";
 
-                else if(sender == rdoChange)
+                else if (sender == rdoChange)
                     txtFolderName.Text = folderName + @"-----";
             }
             catch (Exception ex)
@@ -219,9 +220,9 @@ namespace TSG_Library.UFuncs
 
         private void TabControl_Selected(object sender, TabControlEventArgs e)
         {
-            if(tabControl.SelectedTab == tabDesign)
+            if (tabControl.SelectedTab == tabDesign)
                 Size = new Size(275, 249);
-            else if(tabControl.SelectedTab == tabData)
+            else if (tabControl.SelectedTab == tabData)
                 Size = new Size(182, 385);
         }
 

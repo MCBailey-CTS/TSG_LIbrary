@@ -24,10 +24,10 @@ namespace TSG_Library.Utilities
 
         public void WaitForExit()
         {
-            if(_process is null)
+            if (_process is null)
                 throw new ArgumentNullException(nameof(_process));
 
-            if(!_started)
+            if (!_started)
                 throw new InvalidOperationException("Zip process hasn't been started yet.");
 
             _process.WaitForExit();
@@ -35,14 +35,14 @@ namespace TSG_Library.Utilities
 
         public void Start()
         {
-            var tempFile = $"{Path.GetTempPath()}zipData{_filesToZip.GetHashCode()}.txt";
+            string tempFile = $"{Path.GetTempPath()}zipData{_filesToZip.GetHashCode()}.txt";
 
-            using (var fs = File.Open(tempFile, FileMode.Create))
+            using (FileStream fs = File.Open(tempFile, FileMode.Create))
             {
                 fs.Close();
             }
 
-            using (var writer = new StreamWriter(tempFile))
+            using (StreamWriter writer = new StreamWriter(tempFile))
             {
                 _filesToZip.ToList().ForEach(writer.WriteLine);
             }

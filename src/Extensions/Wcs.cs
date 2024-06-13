@@ -8,7 +8,7 @@ namespace TSG_Library.Extensions
 
         public static Matrix3x3 __Orientation(this WCS wcs)
         {
-            wcs.CoordinateSystem.GetDirections(out var xDir, out var yDir);
+            wcs.CoordinateSystem.GetDirections(out Vector3d xDir, out Vector3d yDir);
             return xDir.__ToMatrix3x3(yDir);
         }
 

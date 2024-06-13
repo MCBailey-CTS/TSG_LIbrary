@@ -50,12 +50,12 @@ namespace TSG_Library.Extensions
 
         internal static void __AddICurve(this Section section, params ICurve[] icurves)
         {
-            var nXOpenSection = section;
+            Section nXOpenSection = section;
             nXOpenSection.AllowSelfIntersection(false);
 
-            for (var i = 0; i < icurves.Length; i++)
+            for (int i = 0; i < icurves.Length; i++)
             {
-                var rules = section.__OwningPart().__CreateSelectionIntentRule(icurves[i]);
+                SelectionIntentRule[] rules = section.__OwningPart().__CreateSelectionIntentRule(icurves[i]);
 
                 nXOpenSection.AddToSection(
                     rules,
@@ -70,21 +70,21 @@ namespace TSG_Library.Extensions
 
         internal static SelectionIntentRule[] __CreateSelectionIntentRule(params Point[] points)
         {
-            var array = new Point[points.Length];
+            Point[] array = new Point[points.Length];
 
-            for (var i = 0; i < array.Length; i++)
+            for (int i = 0; i < array.Length; i++)
                 array[i] = points[i];
 
-            var curveDumbRule = __work_part_.ScRuleFactory.CreateRuleCurveDumbFromPoints(array);
+            CurveDumbRule curveDumbRule = __work_part_.ScRuleFactory.CreateRuleCurveDumbFromPoints(array);
             return new SelectionIntentRule[1] { curveDumbRule };
         }
 
 
         internal static void __AddPoints(this Section section, params Point[] points)
         {
-            var nXOpenSection = section;
+            Section nXOpenSection = section;
             nXOpenSection.AllowSelfIntersection(false);
-            var rules = __CreateSelectionIntentRule(points);
+            SelectionIntentRule[] rules = __CreateSelectionIntentRule(points);
 
             nXOpenSection.AddToSection(
                 rules,

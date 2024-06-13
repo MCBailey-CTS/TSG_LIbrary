@@ -15,7 +15,7 @@ namespace TSG_Library.Extensions
 
         public static void __Layer(this ExtractFace ext, int layer)
         {
-            foreach (var body in ext.GetBodies())
+            foreach (Body body in ext.GetBodies())
                 body.__Layer(layer);
         }
 
@@ -32,13 +32,13 @@ namespace TSG_Library.Extensions
         /// <returns>True or false.</returns>
         public static bool __IsBroken(this ExtractFace nxExtractFace)
         {
-            UFSession.GetUFSession().Wave.IsLinkBroken(nxExtractFace.Tag, out var isBroken);
+            UFSession.GetUFSession().Wave.IsLinkBroken(nxExtractFace.Tag, out bool isBroken);
             return isBroken;
         }
 
         public static Tag __XFormTag(this ExtractFace extractFace)
         {
-            ufsession_.Wave.AskLinkXform(extractFace.Tag, out var xform);
+            ufsession_.Wave.AskLinkXform(extractFace.Tag, out Tag xform);
             return xform;
         }
 

@@ -10,6 +10,7 @@ using NXOpen.Features;
 using NXOpen.GeometricUtilities;
 using NXOpen.Layer;
 using NXOpen.Positioning;
+using NXOpen.UF;
 using NXOpen.Utilities;
 using TSG_Library.Disposable;
 using TSG_Library.Enum;
@@ -142,8 +143,8 @@ namespace TSG_Library.Extensions
             double diameter)
         {
             basePart.__AssertIsWorkPart();
-            var part = __work_part_;
-            var cylinderBuilder = part.Features.CreateCylinderBuilder(null);
+            Part part = __work_part_;
+            CylinderBuilder cylinderBuilder = part.Features.CreateCylinderBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(cylinderBuilder))
             {
@@ -151,12 +152,12 @@ namespace TSG_Library.Extensions
                 cylinderBuilder.BooleanOption.Type = BooleanOperation.BooleanType.Create;
                 cylinderBuilder.Diameter.RightHandSide = diameter.ToString();
                 cylinderBuilder.Height.RightHandSide = height.ToString();
-                var origin = _Point3dOrigin;
-                var direction = part.Directions.CreateDirection(origin, axisVector,
+                Point3d origin = _Point3dOrigin;
+                Direction direction = part.Directions.CreateDirection(origin, axisVector,
                     SmartObject.UpdateOption.WithinModeling);
                 cylinderBuilder.Axis.Direction = direction;
                 cylinderBuilder.Axis.Point = part.Points.CreatePoint(axisPoint);
-                var cylinder = (Cylinder)cylinderBuilder.Commit();
+                Cylinder cylinder = (Cylinder)cylinderBuilder.Commit();
                 return cylinder;
             }
         }
@@ -264,20 +265,20 @@ namespace TSG_Library.Extensions
 
         public static bool __IsCasting(this BasePart part)
         {
-            if(!part.__IsPartDetail())
+            if (!part.__IsPartDetail())
                 return false;
 
-            var materials = Ucf.StaticRead(Ucf.ConceptControlFile, ":CASTING_MATERIALS:",
+            string[] materials = Ucf.StaticRead(Ucf.ConceptControlFile, ":CASTING_MATERIALS:",
                 ":END_CASTING_MATERIALS:", StringComparison.OrdinalIgnoreCase).ToArray();
             const string material = "MATERIAL";
 
-            if(!Regex.IsMatch(part.Leaf, Regex_Detail))
+            if (!Regex.IsMatch(part.Leaf, Regex_Detail))
                 return false;
 
-            if(!part.HasUserAttribute(material, NXObject.AttributeType.String, -1))
+            if (!part.HasUserAttribute(material, NXObject.AttributeType.String, -1))
                 return false;
 
-            var materialValue = part.GetUserAttributeAsString(material, NXObject.AttributeType.String, -1);
+            string materialValue = part.GetUserAttributeAsString(material, NXObject.AttributeType.String, -1);
 
             return materialValue != null && materials.Any(s => materialValue.Contains(s));
         }
@@ -301,7 +302,7 @@ namespace TSG_Library.Extensions
             Point3d p1,
             double radius)
         {
-            var arc = Geom.Curve.Arc.Fillet(p0, pa, p1, radius);
+            Geom.Curve.Arc arc = Geom.Curve.Arc.Fillet(p0, pa, p1, radius);
             return basePart.__CreateArc(arc.Center, arc.AxisX, arc.AxisY, arc.Radius, arc.StartAngle, arc.EndAngle);
         }
 
@@ -316,18 +317,18 @@ namespace TSG_Library.Extensions
             Body target, Body[] toolBodies, Feature.BooleanType booleanType)
         {
             basePart.__AssertIsWorkPart();
-            var part = __work_part_;
-            var builder = part.Features.CreateBooleanBuilder(null);
+            Part part = __work_part_;
+            BooleanBuilder builder = part.Features.CreateBooleanBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(builder))
             {
                 builder.Operation = booleanType;
                 builder.Target = target;
-                foreach (var body in toolBodies)
+                foreach (Body body in toolBodies)
                     //#pragma warning disable CS0618 // Type or member is obsolete
                     builder.Tools.Add(body);
                 //#pragma warning restore CS0618 // Type or member is obsolete
-                var boolean =
+                BooleanFeature boolean =
                     (BooleanFeature)(Feature)builder.Commit();
                 return boolean;
             }
@@ -335,27 +336,27 @@ namespace TSG_Library.Extensions
 
         public static void __AssertIsDisplayPart(this BasePart basePart)
         {
-            if(session_.Parts.Display.Tag != basePart.Tag)
+            if (session_.Parts.Display.Tag != basePart.Tag)
                 throw new ArgumentException($"Part must be display part to {nameof(__AssertIsDisplayPart)}");
         }
 
         public static void __AssertIsDisplayOrWorkPart(this BasePart basePart)
         {
-            if(session_.Parts.Display.Tag != basePart.Tag || session_.Parts.Work.Tag != basePart.Tag)
+            if (session_.Parts.Display.Tag != basePart.Tag || session_.Parts.Work.Tag != basePart.Tag)
                 throw new PartIsNotWorkOrDisplayException();
         }
 
         public static TaggedObject[] __CycleByName(this BasePart basePart, string name)
         {
             basePart.__AssertIsWorkPart();
-            var _tag = Tag.Null;
-            var list = new List<TaggedObject>();
+            Tag _tag = Tag.Null;
+            List<TaggedObject> list = new List<TaggedObject>();
 
             while (true)
             {
                 ufsession_.Obj.CycleByName(name, ref _tag);
 
-                if(_tag == Tag.Null)
+                if (_tag == Tag.Null)
                     break;
 
                 list.Add(session_.GetObjectManager().GetTaggedObject(_tag));
@@ -374,10 +375,10 @@ namespace TSG_Library.Extensions
             Point3d originPoint, Point3d cornerPoint, double height)
         {
             basePart.__AssertIsWorkPart();
-            var part = __work_part_;
-            var wcsOrientation = __display_part_.WCS.__Orientation();
+            Part part = __work_part_;
+            Matrix3x3 wcsOrientation = __display_part_.WCS.__Orientation();
             __display_part_.WCS.__Orientation(matrix);
-            var builder = part.Features.CreateBlockFeatureBuilder(null);
+            BlockFeatureBuilder builder = part.Features.CreateBlockFeatureBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(builder))
             {
@@ -398,17 +399,17 @@ namespace TSG_Library.Extensions
             Point3d originPoint, Point3d cornerPoint)
         {
             basePart.__AssertIsWorkPart();
-            var part = __work_part_;
-            var wcsOrientation = __wcs_.Orientation.Element;
+            Part part = __work_part_;
+            Matrix3x3 wcsOrientation = __wcs_.Orientation.Element;
             __wcs_.SetDirections(matrix.__AxisX(), matrix.__AxisY());
-            var builder = part.Features.CreateBlockFeatureBuilder(null);
+            BlockFeatureBuilder builder = part.Features.CreateBlockFeatureBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(builder))
             {
                 builder.Type = BlockFeatureBuilder.Types.DiagonalPoints;
                 builder.BooleanOption.Type = BooleanOperation.BooleanType.Create;
                 builder.SetTwoDiagonalPoints(originPoint, cornerPoint);
-                var block = (Block)builder.Commit();
+                Block block = (Block)builder.Commit();
                 __wcs_.SetDirections(wcsOrientation.__AxisX(), Wcs.__Orientation().Element.__AxisY());
                 return block;
             }
@@ -464,7 +465,7 @@ namespace TSG_Library.Extensions
             string font,
             TextBuilder.ScriptOptions script)
         {
-            var textBuilder = part.Features.CreateTextBuilder(null);
+            TextBuilder textBuilder = part.Features.CreateTextBuilder(null);
 
             using (new Destroyer(textBuilder))
             {
@@ -476,12 +477,12 @@ namespace TSG_Library.Extensions
                 textBuilder.PlanarFrame.WScale = 75d;
                 textBuilder.SelectFont(font, script);
                 textBuilder.TextString = note;
-                var point2 = part.Points.CreatePoint(origin);
-                var csys =
+                Point point2 = part.Points.CreatePoint(origin);
+                CartesianCoordinateSystem csys =
                     part.CoordinateSystems.CreateCoordinateSystem(origin, orientation, true);
                 textBuilder.PlanarFrame.CoordinateSystem = csys;
                 textBuilder.PlanarFrame.UpdateOnCoordinateSystem();
-                var workView = session_.Parts.Work.ModelingViews.WorkView;
+                ModelingView workView = session_.Parts.Work.ModelingViews.WorkView;
                 textBuilder.PlanarFrame.AnchorLocator.SetValue(point2, workView, origin);
                 return (Text)textBuilder.Commit();
             }
@@ -517,10 +518,10 @@ namespace TSG_Library.Extensions
             }
             catch (NXException ex)
             {
-                if(ex.ErrorCode == 3515007)
+                if (ex.ErrorCode == 3515007)
                 {
-                    var message = "A category with the given name already exists.";
-                    var ex2 = new ArgumentException(message, ex);
+                    string message = "A category with the given name already exists.";
+                    ArgumentException ex2 = new ArgumentException(message, ex);
                     throw ex2;
                 }
 
@@ -544,8 +545,8 @@ namespace TSG_Library.Extensions
             double distance, bool offsetFaces)
         {
             basePart.__AssertIsWorkPart();
-            var part = __work_part_;
-            var chamferBuilder = part.Features.CreateChamferBuilder(null);
+            Part part = __work_part_;
+            ChamferBuilder chamferBuilder = part.Features.CreateChamferBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(chamferBuilder))
             {
@@ -558,12 +559,12 @@ namespace TSG_Library.Extensions
                 chamferBuilder.FirstOffset = distance.ToString();
                 chamferBuilder.SecondOffset = distance.ToString();
                 chamferBuilder.Tolerance = DistanceTolerance;
-                var scCollector = part.ScCollectors.CreateCollector();
-                var edgeTangentRule = part.__CreateRuleEdgeTangent(edge);
-                var rules = new SelectionIntentRule[1] { edgeTangentRule };
+                ScCollector scCollector = part.ScCollectors.CreateCollector();
+                EdgeTangentRule edgeTangentRule = part.__CreateRuleEdgeTangent(edge);
+                SelectionIntentRule[] rules = new SelectionIntentRule[1] { edgeTangentRule };
                 scCollector.ReplaceRules(rules, false);
                 chamferBuilder.SmartCollector = scCollector;
-                var feature = chamferBuilder.CommitFeature();
+                Feature feature = chamferBuilder.CommitFeature();
                 return (Chamfer)feature;
             }
         }
@@ -585,8 +586,8 @@ namespace TSG_Library.Extensions
             double distance1, double distance2, bool offsetFaces)
         {
             basePart.__AssertIsWorkPart();
-            var part = __work_part_;
-            var chamferBuilder = part.Features.CreateChamferBuilder(null);
+            Part part = __work_part_;
+            ChamferBuilder chamferBuilder = part.Features.CreateChamferBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(chamferBuilder))
             {
@@ -597,13 +598,13 @@ namespace TSG_Library.Extensions
                 chamferBuilder.FirstOffset = distance1.ToString();
                 chamferBuilder.SecondOffset = distance2.ToString();
                 chamferBuilder.Tolerance = DistanceTolerance;
-                var scCollector = part.ScCollectors.CreateCollector();
-                var edgeTangentRule = part.ScRuleFactory.CreateRuleEdgeTangent(edge, null,
+                ScCollector scCollector = part.ScCollectors.CreateCollector();
+                EdgeTangentRule edgeTangentRule = part.ScRuleFactory.CreateRuleEdgeTangent(edge, null,
                     false, AngleTolerance, false, false);
-                var rules = new SelectionIntentRule[1] { edgeTangentRule };
+                SelectionIntentRule[] rules = new SelectionIntentRule[1] { edgeTangentRule };
                 scCollector.ReplaceRules(rules, false);
                 chamferBuilder.SmartCollector = scCollector;
-                var feature = chamferBuilder.CommitFeature();
+                Feature feature = chamferBuilder.CommitFeature();
                 return (Chamfer)feature;
             }
         }
@@ -617,8 +618,8 @@ namespace TSG_Library.Extensions
             double distance, double angle)
         {
             basePart.__AssertIsWorkPart();
-            var part = __work_part_;
-            var chamferBuilder = part.Features.CreateChamferBuilder(null);
+            Part part = __work_part_;
+            ChamferBuilder chamferBuilder = part.Features.CreateChamferBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(chamferBuilder))
             {
@@ -626,14 +627,14 @@ namespace TSG_Library.Extensions
                 chamferBuilder.FirstOffset = distance.ToString();
                 chamferBuilder.Angle = angle.ToString();
                 chamferBuilder.Tolerance = DistanceTolerance;
-                var scCollector = part.ScCollectors.CreateCollector();
-                var edgeTangentRule = part.ScRuleFactory.CreateRuleEdgeTangent(edge, null,
+                ScCollector scCollector = part.ScCollectors.CreateCollector();
+                EdgeTangentRule edgeTangentRule = part.ScRuleFactory.CreateRuleEdgeTangent(edge, null,
                     true, AngleTolerance, false, false);
-                var rules = new SelectionIntentRule[1] { edgeTangentRule };
+                SelectionIntentRule[] rules = new SelectionIntentRule[1] { edgeTangentRule };
                 scCollector.ReplaceRules(rules, false);
                 chamferBuilder.SmartCollector = scCollector;
                 chamferBuilder.AllInstances = false;
-                var feature = chamferBuilder.CommitFeature();
+                Feature feature = chamferBuilder.CommitFeature();
                 return (Chamfer)feature;
             }
         }
@@ -650,7 +651,7 @@ namespace TSG_Library.Extensions
             CurveOrientations curveOrientation)
         {
             basePart.__AssertIsWorkPart();
-            var datumAxisBuilder = __work_part_.Features.CreateDatumAxisBuilder(null);
+            DatumAxisBuilder datumAxisBuilder = __work_part_.Features.CreateDatumAxisBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(datumAxisBuilder))
             {
@@ -676,25 +677,25 @@ namespace TSG_Library.Extensions
             Edge[] edges)
         {
             basePart.__AssertIsWorkPart();
-            var part = __work_part_;
-            var edgeBlendBuilder = part.Features.CreateEdgeBlendBuilder(null);
+            Part part = __work_part_;
+            EdgeBlendBuilder edgeBlendBuilder = part.Features.CreateEdgeBlendBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(edgeBlendBuilder))
             {
                 _ = edgeBlendBuilder.LimitsListData;
-                var scCollector = part.ScCollectors.CreateCollector();
-                var array = new Edge[edges.Length];
+                ScCollector scCollector = part.ScCollectors.CreateCollector();
+                Edge[] array = new Edge[edges.Length];
 
-                for (var i = 0; i < array.Length; i++)
+                for (int i = 0; i < array.Length; i++)
                     array[i] = edges[i];
 
-                var edgeMultipleSeedTangentRule =
+                EdgeMultipleSeedTangentRule edgeMultipleSeedTangentRule =
                     part.ScRuleFactory.CreateRuleEdgeMultipleSeedTangent(
                         array,
                         AngleTolerance,
                         true);
 
-                var rules = new SelectionIntentRule[1] { edgeMultipleSeedTangentRule };
+                SelectionIntentRule[] rules = new SelectionIntentRule[1] { edgeMultipleSeedTangentRule };
                 scCollector.ReplaceRules(rules, false);
                 edgeBlendBuilder.Tolerance = DistanceTolerance;
                 edgeBlendBuilder.AllInstancesOption = false;
@@ -708,7 +709,7 @@ namespace TSG_Library.Extensions
                 edgeBlendBuilder.BlendOrder = EdgeBlendBuilder.OrderOfBlending.ConvexFirst;
                 edgeBlendBuilder.SetbackOption = EdgeBlendBuilder.Setback.SeparateFromCorner;
                 edgeBlendBuilder.AddChainset(scCollector, radius.ToString());
-                var feature = edgeBlendBuilder.CommitFeature();
+                Feature feature = edgeBlendBuilder.CommitFeature();
                 return (EdgeBlend)feature;
             }
         }
@@ -720,21 +721,21 @@ namespace TSG_Library.Extensions
             Face[] faces)
         {
             basePart.__AssertIsDisplayPart();
-            var part = __work_part_;
-            var builder = part.Features.CreateExtractFaceBuilder(null);
+            Part part = __work_part_;
+            ExtractFaceBuilder builder = part.Features.CreateExtractFaceBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(builder))
             {
                 builder.FaceOption = ExtractFaceBuilder.FaceOptionType.FaceChain;
-                var array = new Face[faces.Length];
+                Face[] array = new Face[faces.Length];
 
-                for (var i = 0; i < faces.Length; i++)
+                for (int i = 0; i < faces.Length; i++)
                     array[i] = faces[i];
 
-                var faceDumbRule = part.ScRuleFactory.CreateRuleFaceDumb(array);
-                var rules = new SelectionIntentRule[1] { faceDumbRule };
+                FaceDumbRule faceDumbRule = part.ScRuleFactory.CreateRuleFaceDumb(array);
+                SelectionIntentRule[] rules = new SelectionIntentRule[1] { faceDumbRule };
                 builder.FaceChain.ReplaceRules(rules, false);
-                var extract = (ExtractFace)builder.CommitFeature();
+                ExtractFace extract = (ExtractFace)builder.CommitFeature();
                 return extract;
             }
         }
@@ -747,7 +748,7 @@ namespace TSG_Library.Extensions
             double end)
         {
             part.__AssertIsWorkPart();
-            var builder = part.Features.CreateExtrudeBuilder(null);
+            ExtrudeBuilder builder = part.Features.CreateExtrudeBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(builder))
             {
@@ -775,11 +776,11 @@ namespace TSG_Library.Extensions
             bool makeTemporary = true)
         {
             // Creates and NXMatrix with the orientation of the {orientation}.
-            var matrix = part.__OwningPart().NXMatrices.Create(orientation);
+            NXMatrix matrix = part.__OwningPart().NXMatrices.Create(orientation);
             // The tag to hold the csys.
             Tag csysId;
 
-            if(makeTemporary)
+            if (makeTemporary)
                 ufsession_.Csys.CreateTempCsys(origin.__ToArray(), matrix.Tag, out csysId);
             else
                 ufsession_.Csys.CreateCsys(origin.__ToArray(), matrix.Tag, out csysId);
@@ -802,8 +803,8 @@ namespace TSG_Library.Extensions
             bool reverseDirection)
         {
             basePart.__AssertIsWorkPart();
-            var part = __work_part_;
-            var offsetCurveBuilder = part.Features.CreateOffsetCurveBuilder(null);
+            Part part = __work_part_;
+            OffsetCurveBuilder offsetCurveBuilder = part.Features.CreateOffsetCurveBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(offsetCurveBuilder))
             {
@@ -815,9 +816,9 @@ namespace TSG_Library.Extensions
                 offsetCurveBuilder.DraftHeight.RightHandSide = height;
                 offsetCurveBuilder.DraftAngle.RightHandSide = angle;
                 offsetCurveBuilder.ReverseDirection = reverseDirection;
-                var section = offsetCurveBuilder.CurvesToOffset;
+                Section section = offsetCurveBuilder.CurvesToOffset;
                 section.__AddICurve(icurve);
-                var feature = offsetCurveBuilder.CommitFeature();
+                Feature feature = offsetCurveBuilder.CommitFeature();
                 offsetCurveBuilder.CurvesToOffset.CleanMappingData();
                 return feature as OffsetCurve;
             }
@@ -831,20 +832,20 @@ namespace TSG_Library.Extensions
             double[] radii)
         {
             part.__AssertIsWorkPart();
-            var edgeBlendBuilder = part.Features.CreateEdgeBlendBuilder(null);
+            EdgeBlendBuilder edgeBlendBuilder = part.Features.CreateEdgeBlendBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(edgeBlendBuilder))
             {
-                var scCollector = part.ScCollectors.CreateCollector();
-                var edges = new Edge[1] { edge };
-                var edgeDumbRule = part.ScRuleFactory.CreateRuleEdgeDumb(edges);
-                var rules = new SelectionIntentRule[1] { edgeDumbRule };
+                ScCollector scCollector = part.ScCollectors.CreateCollector();
+                Edge[] edges = new Edge[1] { edge };
+                EdgeDumbRule edgeDumbRule = part.ScRuleFactory.CreateRuleEdgeDumb(edges);
+                SelectionIntentRule[] rules = new SelectionIntentRule[1] { edgeDumbRule };
                 scCollector.ReplaceRules(rules, false);
                 edgeBlendBuilder.AddChainset(scCollector, "5");
-                var parameter = arclengthPercents[0].ToString();
-                var parameter2 = arclengthPercents[1].ToString();
-                var radius = radii[0].ToString();
-                var radius2 = radii[1].ToString();
+                string parameter = arclengthPercents[0].ToString();
+                string parameter2 = arclengthPercents[1].ToString();
+                string radius = radii[0].ToString();
+                string radius2 = radii[1].ToString();
                 Point smartPoint = null;
                 edgeBlendBuilder.AddVariablePointData(edge, parameter, radius, "3.333", "0.6", smartPoint,
                     false, false);
@@ -891,12 +892,12 @@ namespace TSG_Library.Extensions
 
         public static bool __IsSee3DData(this BasePart part)
         {
-            var regex = new Regex("SEE(-|_| )3D(-|_| )DATA");
+            Regex regex = new Regex("SEE(-|_| )3D(-|_| )DATA");
 
-            if(!part.HasUserAttribute("DESCRIPTION", NXObject.AttributeType.String, -1))
+            if (!part.HasUserAttribute("DESCRIPTION", NXObject.AttributeType.String, -1))
                 return false;
 
-            var descriptionValue =
+            string descriptionValue =
                 part.GetUserAttributeAsString("DESCRIPTION", NXObject.AttributeType.String, -1);
             return descriptionValue != null && regex.IsMatch(descriptionValue.ToUpper());
         }
@@ -916,8 +917,8 @@ namespace TSG_Library.Extensions
             bool createBsurface)
         {
             basePart.__AssertIsWorkPart();
-            var part = __work_part_;
-            var tubeBuilder = part.Features.CreateTubeBuilder(null);
+            Part part = __work_part_;
+            TubeBuilder tubeBuilder = part.Features.CreateTubeBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(tubeBuilder))
             {
@@ -926,13 +927,13 @@ namespace TSG_Library.Extensions
                 tubeBuilder.InnerDiameter.RightHandSide = innerDiameter.ToString();
                 tubeBuilder.OutputOption = TubeBuilder.Output.MultipleSegments;
 
-                if(createBsurface)
+                if (createBsurface)
                     tubeBuilder.OutputOption = TubeBuilder.Output.SingleSegment;
 
-                var section = tubeBuilder.PathSection;
+                Section section = tubeBuilder.PathSection;
                 section.__AddICurve(spine);
                 tubeBuilder.BooleanOption.Type = BooleanOperation.BooleanType.Create;
-                var tube = (Tube)tubeBuilder.CommitFeature();
+                Tube tube = (Tube)tubeBuilder.CommitFeature();
                 return tube;
             }
         }
@@ -946,9 +947,9 @@ namespace TSG_Library.Extensions
         internal static Point __CreatePointInvisible(this BasePart basePart, double x, double y, double z)
         {
             basePart.__AssertIsWorkPart();
-            var part = __work_part_;
-            var coordinates = new Point3d(x, y, z);
-            var point = part.Points.CreatePoint(coordinates);
+            Part part = __work_part_;
+            Point3d coordinates = new Point3d(x, y, z);
+            Point point = part.Points.CreatePoint(coordinates);
             point.SetVisibility(SmartObject.VisibilityOption.Invisible);
             return point;
         }
@@ -962,9 +963,9 @@ namespace TSG_Library.Extensions
         internal static Point __CreatePoint(this BasePart basePart, double x, double y, double z)
         {
             basePart.__AssertIsWorkPart();
-            var uFSession = ufsession_;
-            var point_coords = new double[3] { x, y, z };
-            uFSession.Curve.CreatePoint(point_coords, out var point);
+            UFSession uFSession = ufsession_;
+            double[] point_coords = new double[3] { x, y, z };
+            uFSession.Curve.CreatePoint(point_coords, out Tag point);
             return (Point)session_.__GetTaggedObject(point);
         }
 
@@ -981,11 +982,11 @@ namespace TSG_Library.Extensions
         public static void __Close(this BasePart part, bool close_whole_tree = false,
             bool close_modified = false)
         {
-            var __close_whole_tree = close_whole_tree
+            BasePart.CloseWholeTree __close_whole_tree = close_whole_tree
                 ? BasePart.CloseWholeTree.True
                 : BasePart.CloseWholeTree.False;
 
-            var __close_modified = close_modified
+            BasePart.CloseModified __close_modified = close_modified
                 ? BasePart.CloseModified.CloseModified
                 : BasePart.CloseModified.DontCloseModified;
 
@@ -1017,8 +1018,8 @@ namespace TSG_Library.Extensions
         public static PointFeature __CreatePointFeature(this BasePart basePart,
             Point3d point3D)
         {
-            var point = basePart.__CreatePoint(point3D);
-            var builder = basePart.BaseFeatures.CreatePointFeatureBuilder(null);
+            Point point = basePart.__CreatePoint(point3D);
+            PointFeatureBuilder builder = basePart.BaseFeatures.CreatePointFeatureBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(builder))
             {
@@ -1038,11 +1039,11 @@ namespace TSG_Library.Extensions
         public static ScCollector __CreateScCollector(this BasePart part,
             params SelectionIntentRule[] intentRules)
         {
-            if(intentRules.Length == 0)
+            if (intentRules.Length == 0)
                 throw new ArgumentException($"Cannot create {nameof(ScCollector)} from 0 {nameof(intentRules)}.",
                     nameof(intentRules));
 
-            var collector = part.ScCollectors.CreateCollector();
+            ScCollector collector = part.ScCollectors.CreateCollector();
             collector.ReplaceRules(intentRules, false);
             return collector;
         }
@@ -1056,11 +1057,11 @@ namespace TSG_Library.Extensions
             Point3d helpPoint = default,
             Section.Mode mode = Section.Mode.Create)
         {
-            if(intentRules.Length == 0)
+            if (intentRules.Length == 0)
                 throw new ArgumentException($"Cannot create {nameof(Section)} from 0 {nameof(intentRules)}.",
                     nameof(intentRules));
 
-            var section = part.Sections.CreateSection();
+            Section section = part.Sections.CreateSection();
             section.AddToSection(intentRules, seed, startConnector, endConnector, helpPoint, mode);
             return section;
         }
@@ -1083,23 +1084,23 @@ namespace TSG_Library.Extensions
             Face[] faces, double distance, bool direction)
         {
             basePart.__AssertIsWorkPart();
-            var part = __work_part_;
-            var offsetFaceBuilder = part.Features.CreateOffsetFaceBuilder(null);
+            Part part = __work_part_;
+            OffsetFaceBuilder offsetFaceBuilder = part.Features.CreateOffsetFaceBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(offsetFaceBuilder))
             {
                 offsetFaceBuilder.Distance.RightHandSide = distance.ToString();
-                var array = new SelectionIntentRule[faces.Length];
+                SelectionIntentRule[] array = new SelectionIntentRule[faces.Length];
 
-                for (var i = 0; i < faces.Length; i++)
+                for (int i = 0; i < faces.Length; i++)
                 {
-                    var boundaryFaces = new Face[0];
+                    Face[] boundaryFaces = new Face[0];
                     array[i] = part.ScRuleFactory.CreateRuleFaceTangent(faces[i], boundaryFaces);
                 }
 
                 offsetFaceBuilder.FaceCollector.ReplaceRules(array, false);
                 offsetFaceBuilder.Direction = direction;
-                var offsetFace = (OffsetFace)offsetFaceBuilder.Commit();
+                OffsetFace offsetFace = (OffsetFace)offsetFaceBuilder.Commit();
                 return offsetFace;
             }
         }
@@ -1135,13 +1136,13 @@ namespace TSG_Library.Extensions
             icurve1.__IsPlanar();
             icurve2.__IsLinearCurve();
             icurve2.__IsPlanar();
-            var value = icurve1.__Parameter(icurve1.__StartPoint());
-            var plane = new Surface.Plane(icurve1.__StartPoint(), icurve1.__Binormal(value));
+            double value = icurve1.__Parameter(icurve1.__StartPoint());
+            Surface.Plane plane = new Surface.Plane(icurve1.__StartPoint(), icurve1.__Binormal(value));
             helpPoint1 = helpPoint1.__Project(plane);
             helpPoint2 = helpPoint2.__Project(plane);
-            var workPart = __work_part_;
+            Part workPart = __work_part_;
             AssociativeLine associativeLine = null;
-            var associativeLineBuilder =
+            AssociativeLineBuilder associativeLineBuilder =
                 workPart.BaseFeatures.CreateAssociativeLineBuilder(associativeLine);
 
             using (session_.__UsingBuilderDestroyer(associativeLineBuilder))
@@ -1152,7 +1153,7 @@ namespace TSG_Library.Extensions
                 associativeLineBuilder.EndTangent.SetValue(icurve2, null, helpPoint2);
                 associativeLineBuilder.Associative = false;
                 associativeLineBuilder.Commit();
-                var nXObject = associativeLineBuilder.GetCommittedObjects()[0];
+                NXObject nXObject = associativeLineBuilder.GetCommittedObjects()[0];
                 return (Line)nXObject;
             }
         }
@@ -1225,8 +1226,8 @@ namespace TSG_Library.Extensions
             ICurve[] curves, double distance, bool reverseDirection)
         {
             basePart.__AssertIsWorkPart();
-            var part = __work_part_;
-            var offsetCurveBuilder = part.Features.CreateOffsetCurveBuilder(null);
+            Part part = __work_part_;
+            OffsetCurveBuilder offsetCurveBuilder = part.Features.CreateOffsetCurveBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(offsetCurveBuilder))
             {
@@ -1242,12 +1243,12 @@ namespace TSG_Library.Extensions
                 offsetCurveBuilder.CurvesToOffset.AllowSelfIntersection(true);
                 offsetCurveBuilder.OffsetDistance.RightHandSide = distance.ToString();
                 offsetCurveBuilder.ReverseDirection = reverseDirection;
-                var section = offsetCurveBuilder.CurvesToOffset;
+                Section section = offsetCurveBuilder.CurvesToOffset;
 
-                for (var i = 0; i < curves.Length; i++)
+                for (int i = 0; i < curves.Length; i++)
                     section.__AddICurve(curves);
 
-                var feature = offsetCurveBuilder.CommitFeature();
+                Feature feature = offsetCurveBuilder.CommitFeature();
                 return feature as OffsetCurve;
             }
         }
@@ -1275,8 +1276,8 @@ namespace TSG_Library.Extensions
             bool reverseDirection)
         {
             basePart.__AssertIsWorkPart();
-            var part = __work_part_;
-            var offsetCurveBuilder = part.Features.CreateOffsetCurveBuilder(null);
+            Part part = __work_part_;
+            OffsetCurveBuilder offsetCurveBuilder = part.Features.CreateOffsetCurveBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(offsetCurveBuilder))
             {
@@ -1287,12 +1288,12 @@ namespace TSG_Library.Extensions
                 offsetCurveBuilder.DraftHeight.RightHandSide = height.ToString();
                 offsetCurveBuilder.DraftAngle.RightHandSide = angle.ToString();
                 offsetCurveBuilder.ReverseDirection = reverseDirection;
-                var section = offsetCurveBuilder.CurvesToOffset;
+                Section section = offsetCurveBuilder.CurvesToOffset;
 
-                for (var i = 0; i < icurves.Length; i++)
+                for (int i = 0; i < icurves.Length; i++)
                     section.__AddICurve(icurves);
 
-                var feature = offsetCurveBuilder.CommitFeature();
+                Feature feature = offsetCurveBuilder.CommitFeature();
                 offsetCurveBuilder.CurvesToOffset.CleanMappingData();
                 return feature as OffsetCurve;
             }
@@ -1322,8 +1323,8 @@ namespace TSG_Library.Extensions
             Vector3d helpVector)
         {
             basePart.__AssertIsWorkPart();
-            var part = __work_part_;
-            var offsetCurveBuilder = part.Features.CreateOffsetCurveBuilder(null);
+            Part part = __work_part_;
+            OffsetCurveBuilder offsetCurveBuilder = part.Features.CreateOffsetCurveBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(offsetCurveBuilder))
             {
@@ -1335,13 +1336,13 @@ namespace TSG_Library.Extensions
                 offsetCurveBuilder.CurvesToOffset.SetAllowedEntityTypes(Section.AllowTypes.OnlyCurves);
                 offsetCurveBuilder.CurvesToOffset.AllowSelfIntersection(true);
                 offsetCurveBuilder.OffsetDistance.RightHandSide = distance.ToString();
-                var section = offsetCurveBuilder.CurvesToOffset;
+                Section section = offsetCurveBuilder.CurvesToOffset;
                 section.__AddICurve(curves);
 #pragma warning disable CS0618 // Type or member is obsolete
                 offsetCurveBuilder.ReverseDirection =
                     Extensions_.__IsReverseDirection(offsetCurveBuilder, curves, helpPoint, helpVector);
 #pragma warning restore CS0618 // Type or member is obsolete
-                var feature = offsetCurveBuilder.CommitFeature();
+                Feature feature = offsetCurveBuilder.CommitFeature();
                 return feature as OffsetCurve;
             }
         }
@@ -1372,8 +1373,8 @@ namespace TSG_Library.Extensions
             Vector3d helpVector)
         {
             basePart.__AssertIsWorkPart();
-            var part = __work_part_;
-            var offsetCurveBuilder = part.Features.CreateOffsetCurveBuilder(null);
+            Part part = __work_part_;
+            OffsetCurveBuilder offsetCurveBuilder = part.Features.CreateOffsetCurveBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(offsetCurveBuilder))
             {
@@ -1383,13 +1384,13 @@ namespace TSG_Library.Extensions
                 offsetCurveBuilder.CurveFitData.Tolerance = DistanceTolerance;
                 offsetCurveBuilder.DraftHeight.RightHandSide = height.ToString();
                 offsetCurveBuilder.DraftAngle.RightHandSide = angle.ToString();
-                var section = offsetCurveBuilder.CurvesToOffset;
+                Section section = offsetCurveBuilder.CurvesToOffset;
                 section.__AddICurve(curves);
 #pragma warning disable CS0618 // Type or member is obsolete
                 offsetCurveBuilder.ReverseDirection =
                     Extensions_.__IsReverseDirection(offsetCurveBuilder, curves, helpPoint, helpVector);
 #pragma warning restore CS0618 // Type or member is obsolete
-                var feature = offsetCurveBuilder.CommitFeature();
+                Feature feature = offsetCurveBuilder.CommitFeature();
                 offsetCurveBuilder.CurvesToOffset.CleanMappingData();
                 return feature as OffsetCurve;
             }
@@ -1421,8 +1422,8 @@ namespace TSG_Library.Extensions
             bool reverseDirection)
         {
             basePart.__AssertIsWorkPart();
-            var part = __work_part_;
-            var offsetCurveBuilder = part.Features.CreateOffsetCurveBuilder(null);
+            Part part = __work_part_;
+            OffsetCurveBuilder offsetCurveBuilder = part.Features.CreateOffsetCurveBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(offsetCurveBuilder))
             {
@@ -1433,9 +1434,9 @@ namespace TSG_Library.Extensions
                 offsetCurveBuilder.OffsetDistance.RightHandSide = distance;
                 offsetCurveBuilder.ReverseDirection = reverseDirection;
                 offsetCurveBuilder.PointOnOffsetPlane = point;
-                var section = offsetCurveBuilder.CurvesToOffset;
+                Section section = offsetCurveBuilder.CurvesToOffset;
                 section.__AddICurve(icurve);
-                var feature = offsetCurveBuilder.CommitFeature();
+                Feature feature = offsetCurveBuilder.CommitFeature();
                 offsetCurveBuilder.CurvesToOffset.CleanMappingData();
                 return feature as OffsetCurve;
             }
@@ -1458,11 +1459,11 @@ namespace TSG_Library.Extensions
             bool doTrim)
         {
             basePart.__AssertIsWorkPart();
-            var curve_objs = new Tag[2] { curve1.Tag, curve2.Tag };
-            var array = center.__ToArray();
-            var array2 = new int[3];
-            var arc_opts = new int[3];
-            if(doTrim)
+            Tag[] curve_objs = new Tag[2] { curve1.Tag, curve2.Tag };
+            double[] array = center.__ToArray();
+            int[] array2 = new int[3];
+            int[] arc_opts = new int[3];
+            if (doTrim)
             {
                 array2[0] = 1;
                 array2[1] = 1;
@@ -1473,13 +1474,13 @@ namespace TSG_Library.Extensions
                 array2[1] = 0;
             }
 
-            ufsession_.Curve.CreateFillet(0, curve_objs, array, radius, array2, arc_opts, out var fillet_obj);
+            ufsession_.Curve.CreateFillet(0, curve_objs, array, radius, array2, arc_opts, out Tag fillet_obj);
             return (Arc)session_.__GetTaggedObject(fillet_obj);
         }
 
         public static void __AssertIsWorkPart(this BasePart basePart)
         {
-            if(__work_part_.Tag != basePart.Tag)
+            if (__work_part_.Tag != basePart.Tag)
                 throw new AssertWorkPartException(basePart);
         }
 
@@ -1492,21 +1493,21 @@ namespace TSG_Library.Extensions
         internal static TrimBody2 __CreateTrimBody(this BasePart basePart,
             Body targetBody, Body toolBody, bool direction)
         {
-            var part = __work_part_;
-            var trimBody2Builder = part.Features.CreateTrimBody2Builder(null);
+            Part part = __work_part_;
+            TrimBody2Builder trimBody2Builder = part.Features.CreateTrimBody2Builder(null);
 
             using (session_.__UsingBuilderDestroyer(trimBody2Builder))
             {
                 trimBody2Builder.Tolerance = DistanceTolerance;
                 trimBody2Builder.BooleanTool.ExtrudeRevolveTool.ToolSection.DistanceTolerance = DistanceTolerance;
                 trimBody2Builder.BooleanTool.ExtrudeRevolveTool.ToolSection.ChainingTolerance = ChainingTolerance;
-                var scCollector = part.ScCollectors.CreateCollector();
-                var bodies = new Body[1] { targetBody };
-                var bodyDumbRule = part.ScRuleFactory.CreateRuleBodyDumb(bodies);
-                var rules = new SelectionIntentRule[1] { bodyDumbRule };
+                ScCollector scCollector = part.ScCollectors.CreateCollector();
+                Body[] bodies = new Body[1] { targetBody };
+                BodyDumbRule bodyDumbRule = part.ScRuleFactory.CreateRuleBodyDumb(bodies);
+                SelectionIntentRule[] rules = new SelectionIntentRule[1] { bodyDumbRule };
                 scCollector.ReplaceRules(rules, false);
                 trimBody2Builder.TargetBodyCollector = scCollector;
-                var rules2 = new SelectionIntentRule[1]
+                SelectionIntentRule[] rules2 = new SelectionIntentRule[1]
                     { part.ScRuleFactory.CreateRuleFaceBody(toolBody) };
                 trimBody2Builder.BooleanTool.FacePlaneTool.ToolFaces.FaceCollector.ReplaceRules(rules2,
                     false);
@@ -1523,27 +1524,27 @@ namespace TSG_Library.Extensions
         internal static TrimBody2 __CreateTrimBody(this BasePart basePart,
             Body targetBody, DatumPlane toolDatumPlane, bool direction)
         {
-            var part = __work_part_;
-            var trimBody2Builder = part.Features.CreateTrimBody2Builder(null);
+            Part part = __work_part_;
+            TrimBody2Builder trimBody2Builder = part.Features.CreateTrimBody2Builder(null);
 
             using (session_.__UsingBuilderDestroyer(trimBody2Builder))
             {
                 trimBody2Builder.Tolerance = DistanceTolerance;
                 trimBody2Builder.BooleanTool.ExtrudeRevolveTool.ToolSection.DistanceTolerance = DistanceTolerance;
                 trimBody2Builder.BooleanTool.ExtrudeRevolveTool.ToolSection.ChainingTolerance = ChainingTolerance;
-                var scCollector = part.ScCollectors.CreateCollector();
-                var bodies = new Body[1] { targetBody };
-                var bodyDumbRule = part.ScRuleFactory.CreateRuleBodyDumb(bodies);
-                var rules = new SelectionIntentRule[1] { bodyDumbRule };
+                ScCollector scCollector = part.ScCollectors.CreateCollector();
+                Body[] bodies = new Body[1] { targetBody };
+                BodyDumbRule bodyDumbRule = part.ScRuleFactory.CreateRuleBodyDumb(bodies);
+                SelectionIntentRule[] rules = new SelectionIntentRule[1] { bodyDumbRule };
                 scCollector.ReplaceRules(rules, false);
                 trimBody2Builder.TargetBodyCollector = scCollector;
-                var array = new SelectionIntentRule[1];
-                var faces = new DatumPlane[1] { toolDatumPlane };
+                SelectionIntentRule[] array = new SelectionIntentRule[1];
+                DatumPlane[] faces = new DatumPlane[1] { toolDatumPlane };
                 array[0] = part.ScRuleFactory.CreateRuleFaceDatum(faces);
                 trimBody2Builder.BooleanTool.FacePlaneTool.ToolFaces.FaceCollector.ReplaceRules(array,
                     false);
                 trimBody2Builder.BooleanTool.ReverseDirection = direction;
-                var feature = trimBody2Builder.CommitFeature();
+                Feature feature = trimBody2Builder.CommitFeature();
                 return (TrimBody2)feature;
             }
         }
@@ -1769,17 +1770,17 @@ namespace TSG_Library.Extensions
         {
             basePart.__AssertIsWorkPart();
 
-            if(boundingCurves.Length == 0)
+            if (boundingCurves.Length == 0)
                 throw new ArgumentOutOfRangeException();
 
-            var part = __work_part_;
-            var boundedPlaneBuilder = part.Features.CreateBoundedPlaneBuilder(null);
+            Part part = __work_part_;
+            BoundedPlaneBuilder boundedPlaneBuilder = part.Features.CreateBoundedPlaneBuilder(null);
 
             using (boundedPlaneBuilder.__UsingBuilder())
             {
                 boundedPlaneBuilder.BoundingCurves.SetAllowedEntityTypes(Section.AllowTypes.OnlyCurves);
                 boundedPlaneBuilder.BoundingCurves.AllowSelfIntersection(false);
-                var section = boundedPlaneBuilder.BoundingCurves;
+                Section section = boundedPlaneBuilder.BoundingCurves;
                 section.__AddICurve(boundingCurves);
                 return (BoundedPlane)boundedPlaneBuilder.Commit();
             }
@@ -1862,10 +1863,10 @@ namespace TSG_Library.Extensions
 
         public static bool __Is999(this BasePart part)
         {
-            var match = Regex.Match(part.Leaf, Regex_Detail);
+            Match match = Regex.Match(part.Leaf, Regex_Detail);
             //GFolderWithCtsNumber.DetailPart.DetailExclusiveRegex.Match(nxPart.Leaf);
-            if(!match.Success) return false;
-            var detailNumber = int.Parse(match.Groups[3].Value);
+            if (!match.Success) return false;
+            int detailNumber = int.Parse(match.Groups[3].Value);
             return detailNumber >= 990 && detailNumber <= 1000;
         }
 
@@ -1957,7 +1958,7 @@ namespace TSG_Library.Extensions
         public static CurveDumbRule __CreateRuleCurveDumb(this BasePart part,
             params Curve[] curves)
         {
-            if(curves.Length == 0)
+            if (curves.Length == 0)
                 throw new ArgumentException($"Cannot create rule from 0 {nameof(curves)}.", nameof(curves));
 
             return part.ScRuleFactory.CreateRuleCurveDumb(curves);
@@ -1965,7 +1966,7 @@ namespace TSG_Library.Extensions
 
         public static EdgeDumbRule __CreateRuleEdgeDumb(this BasePart part, params Edge[] edges)
         {
-            if(edges.Length == 0)
+            if (edges.Length == 0)
                 throw new ArgumentException($"Cannot create rule from 0 {nameof(edges)}.", nameof(edges));
 
             return part.ScRuleFactory.CreateRuleEdgeDumb(edges);
@@ -1982,7 +1983,7 @@ namespace TSG_Library.Extensions
         public static EdgeFeatureRule __CreateRuleEdgeFeature(this BasePart part,
             params Feature[] features)
         {
-            if(features.Length == 0)
+            if (features.Length == 0)
                 throw new ArgumentException($"Cannot create rule from 0 {nameof(features)}.", nameof(features));
 
             return part.ScRuleFactory.CreateRuleEdgeFeature(features);
@@ -1991,7 +1992,7 @@ namespace TSG_Library.Extensions
         public static FaceFeatureRule __CreateRuleFaceFeature(this BasePart part,
             params Feature[] features)
         {
-            if(features.Length == 0)
+            if (features.Length == 0)
                 throw new ArgumentException($"Cannot create rule from 0 {nameof(features)}.", nameof(features));
 
             return part.ScRuleFactory.CreateRuleFaceFeature(features);
@@ -2000,7 +2001,7 @@ namespace TSG_Library.Extensions
         public static CurveFeatureRule __CreateRuleCurveFeature(this BasePart part,
             params Feature[] features)
         {
-            if(features.Length == 0)
+            if (features.Length == 0)
                 throw new ArgumentException($"Cannot create rule from 0 {nameof(features)}.", nameof(features));
 
             return part.ScRuleFactory.CreateRuleCurveFeature(features);
@@ -2014,7 +2015,7 @@ namespace TSG_Library.Extensions
             bool isFromSeedStart = true,
             double gapTolerance = 0.001)
         {
-            if(features.Length == 0)
+            if (features.Length == 0)
                 throw new ArgumentException($"Cannot create rule from 0 {nameof(features)}.", nameof(features));
 
             return part.ScRuleFactory.CreateRuleCurveFeatureChain(features, startCurve, endCurve, isFromSeedStart,
@@ -2053,10 +2054,10 @@ namespace TSG_Library.Extensions
             double angle2)
         {
             basePart.__AssertIsWorkPart();
-            var radians1 = __DegreesToRadians(angle1);
-            var radians2 = __DegreesToRadians(angle2);
-            var ori = axisX.__ToMatrix3x3(axisY);
-            var matrix = basePart.NXMatrices.Create(ori);
+            double radians1 = __DegreesToRadians(angle1);
+            double radians2 = __DegreesToRadians(angle2);
+            Matrix3x3 ori = axisX.__ToMatrix3x3(axisY);
+            NXMatrix matrix = basePart.NXMatrices.Create(ori);
             return basePart.Curves.CreateArc(center, matrix, radius, radians1, radians2);
         }
 
@@ -2081,10 +2082,10 @@ namespace TSG_Library.Extensions
             Expression source_expression,
             string destination_name)
         {
-            if(part.Tag != __display_part_.Tag)
+            if (part.Tag != __display_part_.Tag)
                 throw new Exception("Part must be displayed part to create interpart expressions");
 
-            var
+            InterpartExpressionsBuilder
                 builder = __display_part_.Expressions.CreateInterpartExpressionsBuilder();
 
             using (new Destroyer(builder))
@@ -2138,22 +2139,22 @@ namespace TSG_Library.Extensions
             DatumPlane __proto_plane,
             string __distance_or_expression_name)
         {
-            if(__work_part_.Tag != __display_part_.Tag)
+            if (__work_part_.Tag != __display_part_.Tag)
                 throw new Exception("Display part must be Work part");
 
-            if(!__occ_plane.IsOccurrence)
+            if (!__occ_plane.IsOccurrence)
                 throw new Exception("Occurrence plane for constraint was actually a prototype.");
 
-            if(__proto_plane.IsOccurrence)
+            if (__proto_plane.IsOccurrence)
                 throw new Exception("Prototype plane for constraint was actually an occurrence.");
 
             part.__AssertIsDisplayPart();
-            var markId3 = session_.SetUndoMark(MarkVisibility.Visible, "Start");
-            var component_positioner1 = part.ComponentAssembly.Positioner;
+            UndoMarkId markId3 = session_.SetUndoMark(MarkVisibility.Visible, "Start");
+            ComponentPositioner component_positioner1 = part.ComponentAssembly.Positioner;
             component_positioner1.ClearNetwork();
             component_positioner1.BeginAssemblyConstraints();
-            var component_network1 = component_positioner1.EstablishNetwork();
-            var componentConstraint1 =
+            Network component_network1 = component_positioner1.EstablishNetwork();
+            ComponentConstraint componentConstraint1 =
                 (ComponentConstraint)component_positioner1.CreateConstraint(true);
             componentConstraint1.ConstraintType = Constraint.Type.Distance;
             componentConstraint1.__CreateConstRefOcc(__occ_plane);
@@ -2181,20 +2182,20 @@ namespace TSG_Library.Extensions
             Face toolFace, bool direction)
         {
             part.__AssertIsWorkPart();
-            var trimBody2Builder = part.Features.CreateTrimBody2Builder(null);
+            TrimBody2Builder trimBody2Builder = part.Features.CreateTrimBody2Builder(null);
 
             using (session_.__UsingBuilderDestroyer(trimBody2Builder))
             {
                 trimBody2Builder.Tolerance = DistanceTolerance;
                 trimBody2Builder.BooleanTool.ExtrudeRevolveTool.ToolSection.DistanceTolerance = DistanceTolerance;
                 trimBody2Builder.BooleanTool.ExtrudeRevolveTool.ToolSection.ChainingTolerance = ChainingTolerance;
-                var scCollector = part.ScCollectors.CreateCollector();
-                var bodies = new Body[1] { targetBody };
-                var bodyDumbRule = part.ScRuleFactory.CreateRuleBodyDumb(bodies);
-                var rules = new SelectionIntentRule[1] { bodyDumbRule };
+                ScCollector scCollector = part.ScCollectors.CreateCollector();
+                Body[] bodies = new Body[1] { targetBody };
+                BodyDumbRule bodyDumbRule = part.ScRuleFactory.CreateRuleBodyDumb(bodies);
+                SelectionIntentRule[] rules = new SelectionIntentRule[1] { bodyDumbRule };
                 scCollector.ReplaceRules(rules, false);
                 trimBody2Builder.TargetBodyCollector = scCollector;
-                var rules2 = new SelectionIntentRule[1]
+                SelectionIntentRule[] rules2 = new SelectionIntentRule[1]
                     { part.ScRuleFactory.CreateRuleFaceBody(toolFace.GetBody()) };
                 trimBody2Builder.BooleanTool.FacePlaneTool.ToolFaces.FaceCollector.ReplaceRules(rules2,
                     false);
@@ -2205,7 +2206,7 @@ namespace TSG_Library.Extensions
 
         public static CartesianCoordinateSystem __AbsoluteCsys(this BasePart part)
         {
-            ufsession_.Modl.AskDatumCsysComponents(part.__AbsoluteDatumCsys().Tag, out var csys_tag, out _,
+            ufsession_.Modl.AskDatumCsysComponents(part.__AbsoluteDatumCsys().Tag, out Tag csys_tag, out _,
                 out _, out _);
             return (CartesianCoordinateSystem)session_.__GetTaggedObject(csys_tag);
         }
@@ -2236,13 +2237,13 @@ namespace TSG_Library.Extensions
 
         public static void __RightClickOpenAssemblyWhole(this BasePart part)
         {
-            if(session_.Parts.Display is null)
+            if (session_.Parts.Display is null)
                 throw new Exception("There is no open display part to right click open assembly");
 
-            if(__work_part_.Tag != __display_part_.Tag)
+            if (__work_part_.Tag != __display_part_.Tag)
                 throw new Exception("DisplayPart does not equal __work_part_");
 
-            if(__display_part_.Tag != part.Tag)
+            if (__display_part_.Tag != part.Tag)
                 throw new Exception($"Part {part.Leaf} is not the current display part");
 
             __display_part_.ComponentAssembly.OpenComponents(
@@ -2260,8 +2261,8 @@ namespace TSG_Library.Extensions
             Matrix3x3? orientation = null,
             int layer = 1)
         {
-            var __origin = origin ?? _Point3dOrigin;
-            var __orientation = orientation ?? _Matrix3x3Identity;
+            Point3d __origin = origin ?? _Point3dOrigin;
+            Matrix3x3 __orientation = orientation ?? _Matrix3x3Identity;
             return part.__AddComponent(session_.__FindOrOpen(path), referenceSet, componentName, __origin,
                 __orientation, layer);
         }
@@ -2276,8 +2277,8 @@ namespace TSG_Library.Extensions
             Matrix3x3? orientation = null,
             int layer = 1)
         {
-            var __origin = origin ?? _Point3dOrigin;
-            var __orientation = orientation ?? _Matrix3x3Identity;
+            Point3d __origin = origin ?? _Point3dOrigin;
+            Matrix3x3 __orientation = orientation ?? _Matrix3x3Identity;
             return part.ComponentAssembly.AddComponent(prototype, referenceSet, componentName, __origin, __orientation,
                 layer, out _);
         }
@@ -2301,14 +2302,14 @@ namespace TSG_Library.Extensions
             double angle2)
         {
             basePart.__AssertIsWorkPart();
-            var startAngle = __DegreesToRadians(angle1);
-            var endAngle = __DegreesToRadians(angle2);
+            double startAngle = __DegreesToRadians(angle1);
+            double endAngle = __DegreesToRadians(angle2);
             return __work_part_.Curves.CreateArc(center, axisX, axisY, radius, startAngle, endAngle);
         }
 
         public static PartCollection.SdpsStatus __SetActiveDisplay(this BasePart __part)
         {
-            if(session_.Parts.AllowMultipleDisplayedParts != PartCollection.MultipleDisplayedPartStatus.Enabled)
+            if (session_.Parts.AllowMultipleDisplayedParts != PartCollection.MultipleDisplayedPartStatus.Enabled)
                 throw new Exception("Session does not allow multiple displayed parts");
 
             return session_.Parts.SetActiveDisplay(
@@ -2375,19 +2376,19 @@ namespace TSG_Library.Extensions
         internal static SelectionIntentRule[] __CreateSelectionIntentRule(this BasePart basePart,
             params ICurve[] icurves)
         {
-            var list = new List<SelectionIntentRule>();
+            List<SelectionIntentRule> list = new List<SelectionIntentRule>();
 
-            for (var i = 0; i < icurves.Length; i++)
-                if(icurves[i] is Curve curve)
+            for (int i = 0; i < icurves.Length; i++)
+                if (icurves[i] is Curve curve)
                 {
-                    var curves = new Curve[1] { curve };
-                    var item = basePart.ScRuleFactory.CreateRuleCurveDumb(curves);
+                    Curve[] curves = new Curve[1] { curve };
+                    CurveDumbRule item = basePart.ScRuleFactory.CreateRuleCurveDumb(curves);
                     list.Add(item);
                 }
                 else
                 {
-                    var edges = new Edge[1] { (Edge)icurves[i] };
-                    var item2 = basePart.ScRuleFactory.CreateRuleEdgeDumb(edges);
+                    Edge[] edges = new Edge[1] { (Edge)icurves[i] };
+                    EdgeDumbRule item2 = basePart.ScRuleFactory.CreateRuleEdgeDumb(edges);
                     list.Add(item2);
                 }
 
@@ -2396,7 +2397,7 @@ namespace TSG_Library.Extensions
 
         public static CoordinateSystem __CreateCsys(this BasePart basePart, Vector3d vector3D)
         {
-            var orientation = basePart.__CreateNXMatrix(vector3D.__ToMatrix3x3());
+            NXMatrix orientation = basePart.__CreateNXMatrix(vector3D.__ToMatrix3x3());
 
             return basePart.__CreateCoordinateSystem(_Point3dOrigin, orientation);
         }
@@ -2421,26 +2422,26 @@ namespace TSG_Library.Extensions
             double[] offsetValues,
             bool createSheet)
         {
-            var part = __work_part_;
-            var extrudeBuilder = part.Features.CreateExtrudeBuilder(null);
+            Part part = __work_part_;
+            ExtrudeBuilder extrudeBuilder = part.Features.CreateExtrudeBuilder(null);
             extrudeBuilder.DistanceTolerance = DistanceTolerance;
             extrudeBuilder.BooleanOperation.Type = BooleanOperation.BooleanType.Create;
 
-            if(createSheet)
+            if (createSheet)
                 extrudeBuilder.FeatureOptions.BodyType = FeatureOptions.BodyStyle.Sheet;
 
             extrudeBuilder.Limits.StartExtend.Value.RightHandSide = extents[0].ToString();
             extrudeBuilder.Limits.EndExtend.Value.RightHandSide = extents[1].ToString();
             extrudeBuilder.Offset.Option = Type.NoOffset;
 
-            if(offset)
+            if (offset)
             {
                 extrudeBuilder.Offset.Option = Type.NonsymmetricOffset;
                 extrudeBuilder.Offset.StartOffset.RightHandSide = offsetValues[0].ToString();
                 extrudeBuilder.Offset.EndOffset.RightHandSide = offsetValues[1].ToString();
             }
 
-            var num = double.Parse(draftAngle.ToString());
+            double num = double.Parse(draftAngle.ToString());
 
             extrudeBuilder.Draft.DraftOption = System.Math.Abs(num) < 0.001
                 ? SimpleDraft.SimpleDraftType.NoDraft
@@ -2448,11 +2449,12 @@ namespace TSG_Library.Extensions
 
             extrudeBuilder.Draft.FrontDraftAngle.RightHandSide = $"{num}";
             extrudeBuilder.Section = section;
-            var origin = new Point3d(30.0, 0.0, 0.0);
-            var vector = new Vector3d(axis.X, axis.Y, axis.Z);
-            var direction = part.Directions.CreateDirection(origin, vector, SmartObject.UpdateOption.WithinModeling);
+            Point3d origin = new Point3d(30.0, 0.0, 0.0);
+            Vector3d vector = new Vector3d(axis.X, axis.Y, axis.Z);
+            Direction direction =
+                part.Directions.CreateDirection(origin, vector, SmartObject.UpdateOption.WithinModeling);
             extrudeBuilder.Direction = direction;
-            var extrude = (Extrude)extrudeBuilder.CommitFeature();
+            Extrude extrude = (Extrude)extrudeBuilder.CommitFeature();
             extrudeBuilder.Destroy();
             return extrude;
         }

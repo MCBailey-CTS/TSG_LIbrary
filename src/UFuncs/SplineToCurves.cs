@@ -21,35 +21,35 @@ namespace TSG_Library.UFuncs
                 // generate curve pts tol \/
                 double[] tolerances = { 0.005, 0.1, 1.0 }; // 0.005,, was 0.01, 0.1, 1.0
                 // create new geom tolerance \/
-                var tolerance = 0.05; // 0.05 was 0.125
-                var jumpGap = 1.0; // was 2.0
-                var pts = new double[MaxLength][];
-                for (var i = 0; i < MaxLength; i++)
+                double tolerance = 0.05; // 0.05 was 0.125
+                double jumpGap = 1.0; // was 2.0
+                double[][] pts = new double[MaxLength][];
+                for (int i = 0; i < MaxLength; i++)
                     pts[i] = new double[3];
-                var xyz = new double[MaxLength][];
-                for (var i = 0; i < MaxLength; i++)
+                double[][] xyz = new double[MaxLength][];
+                for (int i = 0; i < MaxLength; i++)
                     xyz[i] = new double[3];
                 int cc;
                 const int currentCurve = 0;
-                var currentCurveEnd = 2;
-                var numOfCurves = 0;
-                var numOfLines = 0;
-                var numOfPts = 0;
+                int currentCurveEnd = 2;
+                int numOfCurves = 0;
+                int numOfLines = 0;
+                int numOfPts = 0;
 
-                var origLineData = new double[200][];
-                for (var i = 0; i < 200; i++)
+                double[][] origLineData = new double[200][];
+                for (int i = 0; i < 200; i++)
                     origLineData[i] = new double[7];
 
-                var curvesSe = new int[200][];
-                for (var i = 0; i < 200; i++)
+                int[][] curvesSe = new int[200][];
+                for (int i = 0; i < 200; i++)
                     curvesSe[i] = new int[9];
-                var pointData = new UFCurve.PtSlopeCrvatr[MaxLength];
+                UFCurve.PtSlopeCrvatr[] pointData = new UFCurve.PtSlopeCrvatr[MaxLength];
 
                 // UFSession.GetUFSession().Modl.AskDistanceTolerance(out _);
 
                 GetPartUnits(tolerances, ref jumpGap, ref tolerance);
 
-                var curves = Selection.SelectCurves().Select(curve => curve.Tag).ToArray();
+                Tag[] curves = Selection.SelectCurves().Select(curve => curve.Tag).ToArray();
                 UFSession.GetUFSession().Disp.Refresh();
 
                 for (cc = 0; cc < curves.Length; cc++)
@@ -59,24 +59,24 @@ namespace TSG_Library.UFuncs
                 GetCurveOrder(numOfCurves, currentCurve, currentCurveEnd, jumpGap, curvesSe, xyz);
                 currentCurveEnd = 3;
                 GetCurveOrder(numOfCurves, currentCurve, currentCurveEnd, jumpGap, curvesSe, xyz);
-                var ret = RecallPointsFillArray(numOfCurves, curvesSe, ref numOfPts, pts, xyz);
+                int ret = RecallPointsFillArray(numOfCurves, curvesSe, ref numOfPts, pts, xyz);
 
 
-                if(ret != 0) return;
+                if (ret != 0) return;
                 int ii;
                 for (ii = 0; ii < numOfPts; ii++)
                 {
-                    var tempVec = new double[3];
+                    double[] tempVec = new double[3];
                     UFSession.GetUFSession().Vec3.Copy(pts[ii], tempVec);
                     pointData[ii].point = tempVec;
-                    if(ii == 0 || ii == numOfPts)
+                    if (ii == 0 || ii == numOfPts)
                         pointData[ii].slope_type = UFConstants.UF_CURVE_SLOPE_AUTO;
                     else
                         pointData[ii].slope_type = UFConstants.UF_CURVE_SLOPE_NONE;
                     pointData[ii].crvatr_type = UFConstants.UF_CURVE_CRVATR_NONE;
                 }
 
-                UFSession.GetUFSession().Curve.CreateSplineThruPts(3, 0, numOfPts, pointData, null, 0, out var spline);
+                UFSession.GetUFSession().Curve.CreateSplineThruPts(3, 0, numOfPts, pointData, null, 0, out Tag spline);
                 UFSession.GetUFSession().Curve.CreateSimplifiedCurve(1, new[] { spline }, tolerance, out _, out _);
 
                 UFSession.GetUFSession().Obj.DeleteObject(spline);
@@ -99,10 +99,10 @@ namespace TSG_Library.UFuncs
 
         private static void GetPartUnits(IList<double> gTolerances, ref double jumpGap, ref double tolerance)
         {
-            var partTag = UFSession.GetUFSession().Part.AskDisplayPart();
-            UFSession.GetUFSession().Part.AskUnits(partTag, out var partUnits);
+            Tag partTag = UFSession.GetUFSession().Part.AskDisplayPart();
+            UFSession.GetUFSession().Part.AskUnits(partTag, out int partUnits);
 
-            if(partUnits != UFConstants.UF_PART_ENGLISH) return;
+            if (partUnits != UFConstants.UF_PART_ENGLISH) return;
             jumpGap = 0.07;
             gTolerances[0] = 0.0002;
             tolerance = 0.001;
@@ -119,22 +119,22 @@ namespace TSG_Library.UFuncs
             int curveMatch = 0, done = 0;
             while (done == 0)
             {
-                var dist = 1000000.0;
-                var endMatch = false;
-                var startMatch = false;
+                double dist = 1000000.0;
+                bool endMatch = false;
+                bool startMatch = false;
                 int jj;
                 for (jj = 0; jj < numOfCurves; jj++)
                 {
-                    if(jj == currentCurve) continue;
+                    if (jj == currentCurve) continue;
                     double tmpDist;
-                    if(curvesSe[jj][7] == 0) // Start of curve has NOT been matched up yet
+                    if (curvesSe[jj][7] == 0) // Start of curve has NOT been matched up yet
                     {
                         tmpDist = CheckDistance(xyz[curvesSe[currentCurve][currentCurveEnd]][0],
                             xyz[curvesSe[currentCurve][currentCurveEnd]][1],
                             xyz[curvesSe[currentCurve][currentCurveEnd]][2],
                             xyz[curvesSe[jj][2]][0], xyz[curvesSe[jj][2]][1], xyz[curvesSe[jj][2]][2]);
 
-                        if(tmpDist < dist)
+                        if (tmpDist < dist)
                         {
                             dist = tmpDist;
                             curveMatch = jj;
@@ -143,26 +143,26 @@ namespace TSG_Library.UFuncs
                         }
                     }
 
-                    if(curvesSe[jj][8] != 0) continue; // End of curve has NOT been matched up yet
+                    if (curvesSe[jj][8] != 0) continue; // End of curve has NOT been matched up yet
                     tmpDist = CheckDistance(xyz[curvesSe[currentCurve][currentCurveEnd]][0],
                         xyz[curvesSe[currentCurve][currentCurveEnd]][1],
                         xyz[curvesSe[currentCurve][currentCurveEnd]][2],
                         xyz[curvesSe[jj][3]][0], xyz[curvesSe[jj][3]][1], xyz[curvesSe[jj][3]][2]);
-                    if(!(tmpDist < dist)) continue;
+                    if (!(tmpDist < dist)) continue;
                     dist = tmpDist;
                     curveMatch = jj;
                     endMatch = true;
                     startMatch = false;
                 }
 
-                if(dist >= jumpGap)
+                if (dist >= jumpGap)
                 {
                     done = 1;
 
                     continue;
                 }
 
-                if(startMatch)
+                if (startMatch)
                 {
                     curvesSe[curveMatch][7] = currentCurveEnd;
                     curvesSe[curveMatch][5] = currentCurve;
@@ -182,19 +182,19 @@ namespace TSG_Library.UFuncs
                     currentCurve = curveMatch;
                     currentCurveEnd = 3;
                 }
-                else if(endMatch)
+                else if (endMatch)
                 {
                     curvesSe[curveMatch][6] =
                         currentCurve; // set the curve we just matched to, = to curve number we compared to
                     curvesSe[curveMatch][8] =
                         currentCurveEnd; // set the curve we just matches to, = to start(2) / end(3)
                     // ReSharper disable once ConvertIfStatementToSwitchStatement
-                    if(currentCurveEnd == 2)
+                    if (currentCurveEnd == 2)
                     {
                         curvesSe[currentCurve][7] = 3; // We have a match to other curves end, so set to (3) end
                         curvesSe[currentCurve][5] = curveMatch; // number of curve closest to this end
                     }
-                    else if(currentCurveEnd == 3)
+                    else if (currentCurveEnd == 3)
                     {
                         curvesSe[currentCurve][8] = 3; //  We have a match to other curves end, so set to (3) end
                         curvesSe[currentCurve][6] = curveMatch; //  number of curve closest to this end
@@ -230,11 +230,11 @@ namespace TSG_Library.UFuncs
             IReadOnlyList<int[]> curvesSe,
             IReadOnlyList<double[]> xyz, IReadOnlyList<double[]> origLineData, ref int numOfLines)
         {
-            UFSession.GetUFSession().Curve.AskArcLength(curve, 0.0, 1.0, ModlUnits.ModlUnitsPart, out var arcLength);
+            UFSession.GetUFSession().Curve.AskArcLength(curve, 0.0, 1.0, ModlUnits.ModlUnitsPart, out double arcLength);
 
-            if(!(arcLength > 0.050)) return;
+            if (!(arcLength > 0.050)) return;
             UFSession.GetUFSession().Modl.AskCurvePoints(curve, pTolerances[0], pTolerances[1], pTolerances[2],
-                out var np, out var pts);
+                out int np, out double[] pts);
 
 
             curvesSe[numOfCurves][4] = (int)curve; // curve tag
@@ -243,11 +243,11 @@ namespace TSG_Library.UFuncs
             curvesSe[numOfCurves][0] = -1; // recall order
 
 
-            UFSession.GetUFSession().Eval.Initialize(curve, out var eval);
-            UFSession.GetUFSession().Eval.IsLine(eval, out var isLine);
-            if(isLine)
+            UFSession.GetUFSession().Eval.Initialize(curve, out IntPtr eval);
+            UFSession.GetUFSession().Eval.IsLine(eval, out bool isLine);
+            if (isLine)
             {
-                UFSession.GetUFSession().Eval.AskLine(eval, out var uFEvalLine);
+                UFSession.GetUFSession().Eval.AskLine(eval, out UFEval.Line uFEvalLine);
                 origLineData[numOfLines][0] = uFEvalLine.start[0];
                 origLineData[numOfLines][1] = uFEvalLine.start[1];
                 origLineData[numOfLines][2] = uFEvalLine.start[2];
@@ -258,9 +258,9 @@ namespace TSG_Library.UFuncs
                 ++numOfLines;
             }
 
-            for (var i = 0; i < np; i++)
+            for (int i = 0; i < np; i++)
             {
-                var j = i * 3;
+                int j = i * 3;
                 xyz[curvesSe[numOfCurves][2] + i][0] = pts[j];
                 xyz[curvesSe[numOfCurves][2] + i][1] = pts[j + 1];
                 xyz[curvesSe[numOfCurves][2] + i][2] = pts[j + 2];
@@ -272,10 +272,10 @@ namespace TSG_Library.UFuncs
         private static int RecallPointsFillArray(int numOfCurves, IReadOnlyList<int[]> curvesSe,
             ref int numOfPts, IReadOnlyList<double[]> pts, IReadOnlyList<double[]> xyz)
         {
-            var done = false;
-            var enableClose = false;
-            var makeStart = false;
-            var dist = 1.0;
+            bool done = false;
+            bool enableClose = false;
+            bool makeStart = false;
+            double dist = 1.0;
             int ii;
             int endCnt = 0, startCnt = 0;
             int startEndCnt = 0,
@@ -285,17 +285,17 @@ namespace TSG_Library.UFuncs
 
             for (ii = 0; ii < numOfCurves; ii++)
             {
-                if(curvesSe[ii][7] == 0)
+                if (curvesSe[ii][7] == 0)
                     ++startCnt;
 
-                if(curvesSe[ii][8] == 0)
+                if (curvesSe[ii][8] == 0)
                     ++endCnt;
             }
 
-            if(startCnt == 2 && endCnt == 0)
+            if (startCnt == 2 && endCnt == 0)
             {
             }
-            else if(endCnt == 2 && startCnt == 0)
+            else if (endCnt == 2 && startCnt == 0)
             {
                 makeStart = true;
             }
@@ -303,7 +303,7 @@ namespace TSG_Library.UFuncs
 
             for (ii = 0; ii < numOfCurves; ii++)
             {
-                if(curvesSe[ii][7] == 0)
+                if (curvesSe[ii][7] == 0)
                 {
                     ++startEndCnt;
                     startCurve = ii;
@@ -311,9 +311,9 @@ namespace TSG_Library.UFuncs
                 }
 
                 // ReSharper disable once InvertIf
-                if(curvesSe[ii][8] == 0)
+                if (curvesSe[ii][8] == 0)
                 {
-                    if(makeStart && startEndCnt == 1)
+                    if (makeStart && startEndCnt == 1)
                     {
                         ++startEndCnt;
                         startCurve = ii;
@@ -328,8 +328,8 @@ namespace TSG_Library.UFuncs
             }
 
 
-            if(startEndCnt != 0 && startEndCnt != 2) return 1; // 0 = Contour is closed, 2 = Contour is open
-            if(startEndCnt == 0)
+            if (startEndCnt != 0 && startEndCnt != 2) return 1; // 0 = Contour is closed, 2 = Contour is open
+            if (startEndCnt == 0)
             {
                 startCurve = 0; // Contour is closed, so just start at 1st curve
                 startCurveEnd = 2;
@@ -337,15 +337,15 @@ namespace TSG_Library.UFuncs
                 curvesSe[0][0] = 0;
             }
 
-            var cc = startCurve;
-            var cce = startCurveEnd;
+            int cc = startCurve;
+            int cce = startCurveEnd;
 
             while (!done)
             {
                 int jj;
                 // ReSharper disable once ConvertIfStatementToSwitchStatement
-                if(cce == 0 &&
-                   cc == endCurve) // current curve end is 0, as in there is NO end, we are on the last curve
+                if (cce == 0 &&
+                    cc == endCurve) // current curve end is 0, as in there is NO end, we are on the last curve
                 {
                     for (jj = curvesSe[cc][2]; jj <= curvesSe[cc][3]; jj++)
                     {
@@ -362,7 +362,7 @@ namespace TSG_Library.UFuncs
                     done = true;
                 }
 
-                else if(cce == 2) // current curve end is start(2), so go from start(2) to end(3)
+                else if (cce == 2) // current curve end is start(2), so go from start(2) to end(3)
                 {
                     for (jj = curvesSe[cc][2]; jj <= curvesSe[cc][3]; jj++)
                     {
@@ -371,30 +371,30 @@ namespace TSG_Library.UFuncs
                     }
 
                     // ReSharper disable once ConvertIfStatementToSwitchStatement
-                    if(curvesSe[cc][8] == 0)
+                    if (curvesSe[cc][8] == 0)
                         done = true;
-                    else if(curvesSe[cc][8] == 2)
+                    else if (curvesSe[cc][8] == 2)
                         dist = CheckDistance(pts[numOfPts - 1][0], pts[numOfPts - 1][1], pts[numOfPts - 1][2],
                             xyz[curvesSe[curvesSe[cc][6]][2]][0], xyz[curvesSe[curvesSe[cc][6]][2]][1],
                             xyz[curvesSe[curvesSe[cc][6]][2]][2]);
-                    else if(curvesSe[cc][8] == 3)
+                    else if (curvesSe[cc][8] == 3)
                         dist = CheckDistance(pts[numOfPts - 1][0], pts[numOfPts - 1][1], pts[numOfPts - 1][2],
                             xyz[curvesSe[curvesSe[cc][6]][3]][0], xyz[curvesSe[curvesSe[cc][6]][3]][1],
                             xyz[curvesSe[curvesSe[cc][6]][3]][2]);
 
-                    if(enableClose && curvesSe[cc][6] == 0)
+                    if (enableClose && curvesSe[cc][6] == 0)
                     {
                     }
                     else
                     {
-                        if(dist < 0.70)
+                        if (dist < 0.70)
                             --numOfPts;
                     }
 
                     cce = curvesSe[cc][8]; // Set cce to the end of next curve
                     cc = curvesSe[cc][6]; // Set cc to the next curve
                 }
-                else if(cce == 3) // current curve end is end(3), so go from end(3) to start(2)
+                else if (cce == 3) // current curve end is end(3), so go from end(3) to start(2)
                 {
                     for (jj = curvesSe[cc][3]; jj >= curvesSe[cc][2]; jj--)
                     {
@@ -404,21 +404,21 @@ namespace TSG_Library.UFuncs
 
 
                     // ReSharper disable once ConvertIfStatementToSwitchStatement
-                    if(curvesSe[cc][7] == 2)
+                    if (curvesSe[cc][7] == 2)
                         dist = CheckDistance(pts[numOfPts - 1][0], pts[numOfPts - 1][1], pts[numOfPts - 1][2],
                             xyz[curvesSe[curvesSe[cc][5]][2]][0], xyz[curvesSe[curvesSe[cc][5]][2]][1],
                             xyz[curvesSe[curvesSe[cc][5]][2]][2]);
-                    else if(curvesSe[cc][7] == 3)
+                    else if (curvesSe[cc][7] == 3)
                         dist = CheckDistance(pts[numOfPts - 1][0], pts[numOfPts - 1][1], pts[numOfPts - 1][2],
                             xyz[curvesSe[curvesSe[cc][5]][3]][0], xyz[curvesSe[curvesSe[cc][5]][3]][1],
                             xyz[curvesSe[curvesSe[cc][5]][3]][2]);
 
-                    if(enableClose && curvesSe[cc][5] == 0)
+                    if (enableClose && curvesSe[cc][5] == 0)
                     {
                     }
                     else
                     {
-                        if(dist < 0.70)
+                        if (dist < 0.70)
                             --numOfPts;
                     }
 
@@ -429,7 +429,7 @@ namespace TSG_Library.UFuncs
 
                 //    if (shit > 75)
                 //        done = true;
-                if(startEndCnt == 0)
+                if (startEndCnt == 0)
                     enableClose = true;
             }
 

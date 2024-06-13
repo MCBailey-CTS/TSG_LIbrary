@@ -46,22 +46,22 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if(__display_part_ is null)
+                if (__display_part_ is null)
                 {
                     print_("No DisplayPart");
                     return;
                 }
 
-                if(!__display_part_.__HasDynamicBlock())
+                if (!__display_part_.__HasDynamicBlock())
                 {
                     print_("No Dynamic Block");
                     return;
                 }
 
-                var dynamic_block = __display_part_.__DynamicBlock();
+                Block dynamic_block = __display_part_.__DynamicBlock();
 
-                if(chkSubtract.Checked)
-                    if(!__work_part_.__HasDynamicBlock())
+                if (chkSubtract.Checked)
+                    if (!__work_part_.__HasDynamicBlock())
                     {
                         print_("Current Work Part doesn't not contain a dynamic block");
 
@@ -72,7 +72,7 @@ namespace TSG_Library.UFuncs
                         __display_part_.WCS.SetOriginAndMatrix(_Point3dOrigin, _Matrix3x3Identity);
                     }
 
-                var workPlane1 = __display_part_.Preferences.Workplane;
+                WorkPlane workPlane1 = __display_part_.Preferences.Workplane;
 
                 using (session_.__UsingFormShowHide(this))
                 {
@@ -193,7 +193,7 @@ namespace TSG_Library.UFuncs
 
             using (session_.__UsingBuilderDestroyer(importer1))
             {
-                var partImporter1 = (PartImporter)importer1;
+                PartImporter partImporter1 = (PartImporter)importer1;
                 partImporter1.FileName = path;
                 partImporter1.Scale = 1.0;
                 partImporter1.CreateNamedGroup = false;
@@ -202,10 +202,10 @@ namespace TSG_Library.UFuncs
                 partImporter1.LayerOption = PartImporter.LayerOptionType.Original;
                 partImporter1.DestinationCoordinateSystemSpecification =
                     PartImporter.DestinationCoordinateSystemSpecificationType.Work;
-                var element1 = __work_part_.WCS.CoordinateSystem.Orientation.Element;
-                var nXMatrix1 = __work_part_.NXMatrices.Create(element1);
+                Matrix3x3 element1 = __work_part_.WCS.CoordinateSystem.Orientation.Element;
+                NXMatrix nXMatrix1 = __work_part_.NXMatrices.Create(element1);
                 partImporter1.DestinationCoordinateSystem = nXMatrix1;
-                var destinationPoint1 = location;
+                Point3d destinationPoint1 = location;
                 partImporter1.DestinationPoint = destinationPoint1;
                 partImporter1.Commit();
             }

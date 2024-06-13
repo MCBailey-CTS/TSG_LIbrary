@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Assemblies;
+using NXOpen.Drawings;
 using NXOpen.Layer;
 using NXOpen.UF;
 using TSG_Library.Attributes;
@@ -114,11 +115,11 @@ namespace TSG_Library.UFuncs
             {
                 //get
                 //{
-                var opRegex = new Regex("^[0-9]{4,}-([0-9]{3,})");
+                Regex opRegex = new Regex("^[0-9]{4,}-([0-9]{3,})");
 
-                var match = opRegex.Match(__display_part_.Leaf);
+                Match match = opRegex.Match(__display_part_.Leaf);
 
-                if(!match.Success)
+                if (!match.Success)
                     return false;
 
                 return match.Groups[1].Value == "010";
@@ -130,21 +131,21 @@ namespace TSG_Library.UFuncs
             {
                 //get
                 //{
-                var opRegex = new Regex("^[0-9]{4,}-([0-9]{3,})");
+                Regex opRegex = new Regex("^[0-9]{4,}-([0-9]{3,})");
 
-                var match = opRegex.Match(__display_part_.Leaf);
+                Match match = opRegex.Match(__display_part_.Leaf);
 
-                if(!match.Success)
+                if (!match.Success)
                     return false;
                 return match.Groups[1].Value == "900";
                 //}
             }
 
-            if(Session.GetSession().Parts.Display is null)
+            if (Session.GetSession().Parts.Display is null)
                 txtInput.Text = $@"{TodaysDate}-";
-            else if(Is010())
+            else if (Is010())
                 txtInput.Text = $@"{TodaysDate}-Strip";
-            else if(Is900())
+            else if (Is900())
                 txtInput.Text = $@"{TodaysDate}-FlowChart";
 
             txtInput.Focus();
@@ -176,45 +177,45 @@ namespace TSG_Library.UFuncs
 
         public static void CheckAssemblyDummyFiles()
         {
-            if(__display_part_.ComponentAssembly.RootComponent is null)
+            if (__display_part_.ComponentAssembly.RootComponent is null)
                 return;
 
-            foreach (var childOfStrip in __display_part_.ComponentAssembly.RootComponent.GetChildren())
+            foreach (Component childOfStrip in __display_part_.ComponentAssembly.RootComponent.GetChildren())
             {
-                if(childOfStrip.IsSuppressed)
+                if (childOfStrip.IsSuppressed)
                     continue;
 
-                if(!(childOfStrip.Prototype is Part))
+                if (!(childOfStrip.Prototype is Part))
                     continue;
 
-                if(!Regex.IsMatch(childOfStrip.DisplayName, Regex_PressAssembly, RegexOptions.IgnoreCase))
+                if (!Regex.IsMatch(childOfStrip.DisplayName, Regex_PressAssembly, RegexOptions.IgnoreCase))
                     continue;
 
 
-                if(childOfStrip.GetChildren().Length == 0)
+                if (childOfStrip.GetChildren().Length == 0)
                     throw new Exception(
                         $"A press exists in your assembly without any children. {childOfStrip._AssemblyPathString()}");
 
 
-                if(childOfStrip.GetChildren().Length == 1)
+                if (childOfStrip.GetChildren().Length == 1)
                     throw new Exception(
                         $"A press exists in your assembly with only one child. Expecting a ram and a bolster. {childOfStrip._AssemblyPathString()}");
 
-                if(childOfStrip.GetChildren().Length != 2)
+                if (childOfStrip.GetChildren().Length != 2)
                     continue;
 
-                foreach (var childOfPress in childOfStrip.GetChildren())
+                foreach (Component childOfPress in childOfStrip.GetChildren())
                 {
-                    if(!(childOfPress.Prototype is Part))
+                    if (!(childOfPress.Prototype is Part))
                         throw new Exception(
                             $"The child of a press must be loaded. {childOfPress._AssemblyPathString()}");
 
-                    if(childOfPress.IsSuppressed)
+                    if (childOfPress.IsSuppressed)
                         throw new Exception(
                             $"The child of a press cannot be suppressed. {childOfPress._AssemblyPathString()}");
 
-                    if(childOfPress.GetChildren().Length != 0 && childOfPress.GetChildren()
-                           .Any(component => !component.IsSuppressed && component.Prototype is Part))
+                    if (childOfPress.GetChildren().Length != 0 && childOfPress.GetChildren()
+                            .Any(component => !component.IsSuppressed && component.Prototype is Part))
                         continue;
 
                     throw new Exception(
@@ -228,20 +229,20 @@ namespace TSG_Library.UFuncs
 
         public static void UpdateForStp()
         {
-            var partsToSave = new HashSet<Part>();
+            HashSet<Part> partsToSave = new HashSet<Part>();
 
-            var currentD = __display_part_;
-            var currentW = session_.Parts.Work;
+            Part currentD = __display_part_;
+            Part currentW = session_.Parts.Work;
 
 
             try
             {
-                foreach (var child in session_.Parts.Work.ComponentAssembly.RootComponent.GetChildren())
+                foreach (Component child in session_.Parts.Work.ComponentAssembly.RootComponent.GetChildren())
                 {
-                    if(child.IsSuppressed)
+                    if (child.IsSuppressed)
                         continue;
 
-                    if(!(child.Prototype is Part))
+                    if (!(child.Prototype is Part))
                         continue;
 
                     session_.Parts.SetDisplay((Part)child.Prototype, false, false, out _);
@@ -253,25 +254,25 @@ namespace TSG_Library.UFuncs
 
                         default:
                         {
-                            var proto = (Part)child.Prototype;
+                            Part proto = (Part)child.Prototype;
 
-                            var referenceSet = proto.GetAllReferenceSets()
+                            ReferenceSet referenceSet = proto.GetAllReferenceSets()
                                 .FirstOrDefault(refset => refset.Name == child.ReferenceSet);
 
-                            if(referenceSet is null)
+                            if (referenceSet is null)
                                 continue;
 
-                            var objectsInReferenceSet = referenceSet.AskMembersInReferenceSet();
+                            NXObject[] objectsInReferenceSet = referenceSet.AskMembersInReferenceSet();
 
-                            foreach (var obj in objectsInReferenceSet)
+                            foreach (NXObject obj in objectsInReferenceSet)
                             {
-                                if(!(obj is DisplayableObject disp))
+                                if (!(obj is DisplayableObject disp))
                                     continue;
 
-                                if(disp.Layer <= 1 || disp.Layer >= 256)
+                                if (disp.Layer <= 1 || disp.Layer >= 256)
                                     continue;
 
-                                if(proto.Layers.GetState(disp.Layer) == State.WorkLayer)
+                                if (proto.Layers.GetState(disp.Layer) == State.WorkLayer)
                                     continue;
 
                                 proto.Layers.SetState(disp.Layer, State.Selectable);
@@ -292,26 +293,26 @@ namespace TSG_Library.UFuncs
                 session_.Parts.SetWork(currentW);
             }
 
-            foreach (var part in partsToSave)
+            foreach (Part part in partsToSave)
                 part.Save(BasePart.SaveComponents.True, BasePart.CloseAfterSave.False);
         }
 
         private static void NewMethod(HashSet<Part> partsToSave, Component child)
         {
-            var proto = (Part)child.Prototype;
-            var referenceSet = proto.GetAllReferenceSets().First(refset => refset.Name == child.ReferenceSet);
+            Part proto = (Part)child.Prototype;
+            ReferenceSet referenceSet = proto.GetAllReferenceSets().First(refset => refset.Name == child.ReferenceSet);
 
-            var objectsInReferenceSet = referenceSet.AskMembersInReferenceSet();
+            NXObject[] objectsInReferenceSet = referenceSet.AskMembersInReferenceSet();
 
-            foreach (var obj in objectsInReferenceSet)
+            foreach (NXObject obj in objectsInReferenceSet)
             {
-                if(!(obj is DisplayableObject disp))
+                if (!(obj is DisplayableObject disp))
                     continue;
 
-                if(disp.Layer <= 1 || disp.Layer >= 256)
+                if (disp.Layer <= 1 || disp.Layer >= 256)
                     continue;
 
-                if(proto.Layers.GetState(disp.Layer) == State.WorkLayer)
+                if (proto.Layers.GetState(disp.Layer) == State.WorkLayer)
                     continue;
 
                 proto.Layers.SetState(disp.Layer, State.Selectable);
@@ -325,25 +326,25 @@ namespace TSG_Library.UFuncs
         private static void Export(bool chkSTP, int numUpDownCopies, bool chkPart, bool chkPDF, string txtInput,
             bool chkCopy)
         {
-            var folder = GFolder.create(__display_part_.FullPath);
+            GFolder folder = GFolder.create(__display_part_.FullPath);
 
             __display_part_.SetUserAttribute("DATE", -1, TodaysDate, NXOpen.Update.Option.Now);
 
-            if(folder is null)
+            if (folder is null)
                 throw new Exception("The current displayed part is not in a GFolder.");
 
-            if(chkSTP)
+            if (chkSTP)
             {
-                var currentD = __display_part_;
-                var currentW = session_.Parts.Work;
+                Part currentD = __display_part_;
+                Part currentW = session_.Parts.Work;
 
 
                 try
                 {
                     CheckAssemblyDummyFiles();
 
-                    var _currentD = __display_part_;
-                    var _currentW = session_.Parts.Work;
+                    Part _currentD = __display_part_;
+                    Part _currentW = session_.Parts.Work;
 
                     try
                     {
@@ -363,28 +364,28 @@ namespace TSG_Library.UFuncs
             }
 
 
-            if(numUpDownCopies > 0)
+            if (numUpDownCopies > 0)
                 ExportStripPrintDrawing(numUpDownCopies);
 
-            if(!chkPart && !chkPDF && !chkSTP)
+            if (!chkPart && !chkPDF && !chkSTP)
                 return;
 
-            if(chkPDF)
+            if (chkPDF)
                 UpdateForPdf();
 
             //if (chkSTP)
 
 
-            var outgoingFolderName = folder.customer_number.Length == 6
+            string outgoingFolderName = folder.customer_number.Length == 6
                 ? $"{folder.dir_layout}\\{txtInput}"
                 : $"{folder.dir_outgoing}\\{txtInput}";
 
-            if(Directory.Exists(outgoingFolderName))
+            if (Directory.Exists(outgoingFolderName))
             {
-                if(MessageBox.Show(
-                       $@"Folder {outgoingFolderName} already exists, is it okay to overwrite the files in the folder?",
-                       @"Warning",
-                       MessageBoxButtons.YesNo) != DialogResult.Yes)
+                if (MessageBox.Show(
+                        $@"Folder {outgoingFolderName} already exists, is it okay to overwrite the files in the folder?",
+                        @"Warning",
+                        MessageBoxButtons.YesNo) != DialogResult.Yes)
                     return;
 
                 Directory.Delete(outgoingFolderName, true);
@@ -396,7 +397,7 @@ namespace TSG_Library.UFuncs
 
             __work_part_.Layers.SetState(1, State.WorkLayer);
 
-            for (var i = 2; i <= 256; i++)
+            for (int i = 2; i <= 256; i++)
                 __work_part_.Layers.SetState(i, State.Hidden);
 
             new[] { 6, 10, 200, 201, 202, 254 }.ToList()
@@ -404,27 +405,27 @@ namespace TSG_Library.UFuncs
 
             const string regex = "^\\d+-(?<op>\\d+)-.+$";
 
-            var op = Regex.Match(session_.Parts.Work.Leaf, regex, RegexOptions.IgnoreCase).Groups["op"].Value;
-            var commonString = $"{folder.customer_number}-{op}-strip {TodaysDate}";
+            string op = Regex.Match(session_.Parts.Work.Leaf, regex, RegexOptions.IgnoreCase).Groups["op"].Value;
+            string commonString = $"{folder.customer_number}-{op}-strip {TodaysDate}";
 
             uf_.Ui.SetPrompt(chkPart
                 ? "Exporting \".prt\" file."
                 : "Finding objects to export.");
 
-            if(chkPDF)
+            if (chkPDF)
             {
                 uf_.Ui.SetPrompt("Exporting PDF......");
 
-                var outputPath = ExportPDF(outgoingFolderName, commonString);
+                string outputPath = ExportPDF(outgoingFolderName, commonString);
 
                 print_(File.Exists(outputPath)
                     ? $"Successfully created \"{outputPath}\"."
                     : $"Did not successfully create \"{outputPath}\".");
             }
 
-            if(chkPart)
+            if (chkPart)
             {
-                var outputPath = ExportStripPart(outgoingFolderName);
+                string outputPath = ExportStripPart(outgoingFolderName);
 
                 print_(File.Exists(outputPath)
                     ? $"Successfully created \"{outputPath}\"."
@@ -432,7 +433,7 @@ namespace TSG_Library.UFuncs
             }
 
 
-            if(chkSTP)
+            if (chkSTP)
             {
                 UpdateForStp();
 
@@ -474,31 +475,31 @@ namespace TSG_Library.UFuncs
 
             uf_.Ui.SetPrompt($"Zipping up {outgoingFolderName}.");
 
-            var filesToZip = Directory.GetFiles($"{outgoingFolderName}");
+            string[] filesToZip = Directory.GetFiles($"{outgoingFolderName}");
 
-            var zipFileName = $"{folder.customer_number}-{txtInput}.7z";
+            string zipFileName = $"{folder.customer_number}-{txtInput}.7z";
 
 
-            var zipFile = $"{outgoingFolderName}\\{zipFileName}";
+            string zipFile = $"{outgoingFolderName}\\{zipFileName}";
 
-            if(filesToZip.Length != 0)
+            if (filesToZip.Length != 0)
             {
-                var zip = new Zip7(zipFile, filesToZip);
+                Zip7 zip = new Zip7(zipFile, filesToZip);
 
                 zip.Start();
 
                 zip.WaitForExit();
             }
 
-            if(chkCopy)
+            if (chkCopy)
             {
-                if(!Directory.Exists(folder.dir_process_sim_data_design))
+                if (!Directory.Exists(folder.dir_process_sim_data_design))
                     Directory.CreateDirectory(folder.dir_process_sim_data_design);
 
-                var zipFiles = Directory.GetFiles(folder.dir_process_sim_data_design, "*.7z",
+                string[] zipFiles = Directory.GetFiles(folder.dir_process_sim_data_design, "*.7z",
                     SearchOption.TopDirectoryOnly);
 
-                foreach (var zipFile1 in zipFiles)
+                foreach (string zipFile1 in zipFiles)
                     // ReSharper disable once SwitchStatementMissingSomeCases
                     switch (MessageBox.Show($@"Delete file ""{zipFile1}""", @"Warning", MessageBoxButtons.YesNo))
                     {
@@ -521,7 +522,7 @@ namespace TSG_Library.UFuncs
 
         public static void UpdateForPdf()
         {
-            var sheets = session_.Parts.Work.DrawingSheets.ToArray();
+            DrawingSheet[] sheets = session_.Parts.Work.DrawingSheets.ToArray();
 
             switch (sheets.Length)
             {
@@ -530,8 +531,8 @@ namespace TSG_Library.UFuncs
                 case 1:
                     session_.ApplicationSwitchImmediate("UG_APP_DRAFTING");
                     sheets[0].Open();
-                    uf_.Draw.IsObjectOutOfDate(sheets[0].Tag, out var outOfDate);
-                    if(outOfDate)
+                    uf_.Draw.IsObjectOutOfDate(sheets[0].Tag, out bool outOfDate);
+                    if (outOfDate)
                         uf_.Draw.UpdOutOfDateViews(sheets[0].Tag);
                     sheets[0].OwningPart.Save(BasePart.SaveComponents.True, BasePart.CloseAfterSave.False);
                     break;
@@ -542,7 +543,7 @@ namespace TSG_Library.UFuncs
 
         public static string ExportPDF(string outPutPath, string fileName)
         {
-            var sheets = session_.Parts.Work.DrawingSheets.ToArray();
+            DrawingSheet[] sheets = session_.Parts.Work.DrawingSheets.ToArray();
 
             ExportStripPdf(session_.Parts.Work.FullPath, sheets[0].Name, $"{outPutPath}\\{fileName}.pdf");
 
@@ -553,12 +554,12 @@ namespace TSG_Library.UFuncs
         {
             Prompt($"Setting layers in {__display_part_.Leaf}.");
 
-            var layerArray = layers.ToArray();
+            int[] layerArray = layers.ToArray();
 
             __display_part_.Layers.WorkLayer = 1;
 
-            for (var i = 2; i < +256; i++)
-                if(layerArray.Contains(i))
+            for (int i = 2; i < +256; i++)
+                if (layerArray.Contains(i))
                     __display_part_.Layers.SetState(i, State.Selectable);
                 else
                     __display_part_.Layers.SetState(i, State.Hidden);
@@ -567,23 +568,23 @@ namespace TSG_Library.UFuncs
 
             __display_part_.Layers.SetState(1, State.Hidden);
 
-            if(part.ComponentAssembly.RootComponent != null)
+            if (part.ComponentAssembly.RootComponent != null)
             {
-                var validChild = part.ComponentAssembly.RootComponent
+                Component validChild = part.ComponentAssembly.RootComponent
                     .GetChildren()
                     .Where(component => component.Prototype is Part)
                     .FirstOrDefault(component => !component.IsSuppressed);
 
-                if(validChild != null)
+                if (validChild != null)
                     return;
             }
 
-            var dummyPart = session_.__FindOrOpen(DummyPath);
+            Part dummyPart = session_.__FindOrOpen(DummyPath);
 
             Prompt($"Adding dummy file to {part.Leaf}.");
 
             session_.Parts.Work.ComponentAssembly.AddComponent(dummyPart, "Entire Part", "DUMMY", _Point3dOrigin,
-                _Matrix3x3Identity, 1, out var status);
+                _Matrix3x3Identity, 1, out PartLoadStatus status);
 
             status.Dispose();
         }
@@ -610,12 +611,12 @@ namespace TSG_Library.UFuncs
 
         public static List<Component> Descendants(Component parent)
         {
-            var _list = new List<Component>
+            List<Component> _list = new List<Component>
             {
                 parent
             };
 
-            foreach (var _child in parent.GetChildren())
+            foreach (Component _child in parent.GetChildren())
                 _list.AddRange(Descendants(_child));
 
             return _list;
@@ -623,59 +624,59 @@ namespace TSG_Library.UFuncs
 
         public static void SetLayersInBlanksAndLayoutsAndAddDummies(Part snapStrip010)
         {
-            if(!Regex.IsMatch(snapStrip010.Leaf, Regex_Strip, RegexOptions.IgnoreCase))
+            if (!Regex.IsMatch(snapStrip010.Leaf, Regex_Strip, RegexOptions.IgnoreCase))
                 throw new ArgumentException(@"Must be an op 010 strip.", nameof(snapStrip010));
 
-            var currentD = __display_part_;
-            var currentW = session_.Parts.Work;
+            Part currentD = __display_part_;
+            Part currentW = session_.Parts.Work;
 
             try
             {
-                var blankNameRegex = new Regex("^BLANK-([0-9]{1,})$");
+                Regex blankNameRegex = new Regex("^BLANK-([0-9]{1,})$");
 
-                var layoutNameRegex = new Regex("^LAYOUT-([0-9]{1,})$");
+                Regex layoutNameRegex = new Regex("^LAYOUT-([0-9]{1,})$");
 
-                var layoutPart = Descendants(__display_part_.ComponentAssembly.RootComponent)
+                Part layoutPart = Descendants(__display_part_.ComponentAssembly.RootComponent)
                     .Select(component => component.Prototype)
                     .OfType<Part>()
                     .FirstOrDefault(component => Regex.IsMatch(component.Leaf, Regex_Layout, RegexOptions.IgnoreCase));
 
                 //var blankPart = TSG_Library.Extensions.DisplayPart.RootComponent.Children
-                var blankPart = Descendants(__display_part_.ComponentAssembly.RootComponent)
+                Part blankPart = Descendants(__display_part_.ComponentAssembly.RootComponent)
                     .Select(component => component.Prototype)
                     .OfType<Part>()
                     .FirstOrDefault(component => Regex.IsMatch(component.Leaf, Regex_Blank, RegexOptions.IgnoreCase));
 
-                var layoutLayers = new HashSet<int>();
+                HashSet<int> layoutLayers = new HashSet<int>();
 
-                var blankLayers = new HashSet<int>();
+                HashSet<int> blankLayers = new HashSet<int>();
 
-                foreach (var child in Descendants(__display_part_.ComponentAssembly.RootComponent))
+                foreach (Component child in Descendants(__display_part_.ComponentAssembly.RootComponent))
                 {
-                    if(!(child.Prototype is Part))
+                    if (!(child.Prototype is Part))
                         continue;
 
-                    if(child.IsSuppressed)
+                    if (child.IsSuppressed)
                         continue;
 
-                    var blankMatch = blankNameRegex.Match(child.Name);
+                    Match blankMatch = blankNameRegex.Match(child.Name);
 
-                    var layoutMatch = layoutNameRegex.Match(child.Name);
+                    Match layoutMatch = layoutNameRegex.Match(child.Name);
 
-                    if(blankMatch.Success)
+                    if (blankMatch.Success)
                         blankLayers.Add(int.Parse(blankMatch.Groups[1].Value) + 10);
 
-                    if(!layoutMatch.Success)
+                    if (!layoutMatch.Success)
                         continue;
 
-                    var layer = int.Parse(layoutMatch.Groups[1].Value) * 10;
+                    int layer = int.Parse(layoutMatch.Groups[1].Value) * 10;
 
                     layoutLayers.Add(layer);
 
                     layoutLayers.Add(layer + 1);
                 }
 
-                if(blankLayers.Count != 0 && blankPart != null)
+                if (blankLayers.Count != 0 && blankPart != null)
                 {
                     session_.Parts.SetDisplay(blankPart, false, false, out _);
 
@@ -689,7 +690,7 @@ namespace TSG_Library.UFuncs
                     __display_part_.Save(BasePart.SaveComponents.False, BasePart.CloseAfterSave.False);
                 }
 
-                if(layoutLayers.Count != 0 && layoutPart != null)
+                if (layoutLayers.Count != 0 && layoutPart != null)
                 {
                     session_.Parts.SetDisplay(layoutPart, false, false, out _);
 
@@ -714,9 +715,9 @@ namespace TSG_Library.UFuncs
 
         public static void ExportStripStp(string outgoingFolderName)
         {
-            var outputPath = $"{outgoingFolderName}\\{session_.Parts.Work.Leaf}-{TodaysDate}.stp";
+            string outputPath = $"{outgoingFolderName}\\{session_.Parts.Work.Leaf}-{TodaysDate}.stp";
 
-            var step = session_.DexManager.CreateStepCreator();
+            StepCreator step = session_.DexManager.CreateStepCreator();
 
             using (session_.__UsingBuilderDestroyer(step))
             {
@@ -742,28 +743,29 @@ namespace TSG_Library.UFuncs
 
         public static void ExportStripPdf(string partPath, string drawingSheetName, string filePath)
         {
-            var directory = Path.GetDirectoryName(filePath);
+            string directory = Path.GetDirectoryName(filePath);
 
 
-            if(!filePath.EndsWith(".pdf"))
+            if (!filePath.EndsWith(".pdf"))
                 throw new Exception("File path for PDF must end with \".pdf\".");
 
-            if(File.Exists(filePath))
+            if (File.Exists(filePath))
                 throw new Exception($"PDF '{filePath}' already exists.");
 
-            var part = session_.__FindOrOpen(partPath);
+            Part part = session_.__FindOrOpen(partPath);
 
             //We can use SingleOrDefault here because NX will prevent the naming of two drawing sheets the exact same string.
-            var sheet = part.DrawingSheets
-                            .ToArray()
-                            .SingleOrDefault(drawingSheet => drawingSheet.Name == drawingSheetName)
-                        ??
-                        throw new Exception($@"Part '{partPath}' does not have a sheet named '{drawingSheetName}'.");
+            DrawingSheet sheet = part.DrawingSheets
+                                     .ToArray()
+                                     .SingleOrDefault(drawingSheet => drawingSheet.Name == drawingSheetName)
+                                 ??
+                                 throw new Exception(
+                                     $@"Part '{partPath}' does not have a sheet named '{drawingSheetName}'.");
 
             __display_part_ = part;
             __work_part_ = __display_part_;
 
-            var pdfBuilder = part.PlotManager.CreatePrintPdfbuilder();
+            PrintPDFBuilder pdfBuilder = part.PlotManager.CreatePrintPdfbuilder();
 
             using (session_.__UsingBuilderDestroyer(pdfBuilder))
             {
@@ -776,8 +778,8 @@ namespace TSG_Library.UFuncs
                 pdfBuilder.RasterImages = true;
                 pdfBuilder.Colors = PrintPDFBuilder.Color.AsDisplayed;
                 pdfBuilder.Watermark = "";
-                UFSession.GetUFSession().Draw.IsObjectOutOfDate(sheet.Tag, out var flag);
-                if(flag)
+                UFSession.GetUFSession().Draw.IsObjectOutOfDate(sheet.Tag, out bool flag);
+                if (flag)
                 {
                     UFSession.GetUFSession().Draw.UpdOutOfDateViews(sheet.Tag);
                     part.__Save();
@@ -792,7 +794,7 @@ namespace TSG_Library.UFuncs
 
         public static string ExportStripPart(string outgoingFolderPath)
         {
-            var assemblyPartPaths = __display_part_.ComponentAssembly.RootComponent.__Descendants()
+            string[] assemblyPartPaths = __display_part_.ComponentAssembly.RootComponent.__Descendants()
                 .Where(component => !component.IsSuppressed)
                 .Select(component => component.Prototype)
                 .OfType<Part>()
@@ -800,7 +802,7 @@ namespace TSG_Library.UFuncs
                 .Select(part => part.FullPath)
                 .ToArray();
 
-            var zip = new Zip7($"{outgoingFolderPath}\\NX StripAssembly.7z", assemblyPartPaths);
+            Zip7 zip = new Zip7($"{outgoingFolderPath}\\NX StripAssembly.7z", assemblyPartPaths);
             zip.Start();
             zip.WaitForExit();
             return $"{outgoingFolderPath}\\NX StripAssembly.7z";
@@ -808,15 +810,15 @@ namespace TSG_Library.UFuncs
 
         public static void ExportStripPrintDrawing(int copies)
         {
-            if(copies == 0)
+            if (copies == 0)
                 return;
 
-            var _WorkPart = Session.GetSession().Parts.Work;
+            Part _WorkPart = Session.GetSession().Parts.Work;
 
-            var TheUFSession = UFSession.GetUFSession();
+            UFSession TheUFSession = UFSession.GetUFSession();
 
             //session_.Execute(@"C:\Repos\NXJournals\JOURNALS\export_strip.py", "ExportStrip", "print_drawing_sheet", new object[] { copies });
-            var printBuilder1 = _WorkPart.PlotManager.CreatePrintBuilder();
+            PrintBuilder printBuilder1 = _WorkPart.PlotManager.CreatePrintBuilder();
 
             try
             {
@@ -826,7 +828,7 @@ namespace TSG_Library.UFuncs
                 printBuilder1.Copies = copies;
                 printBuilder1.RasterImages = true;
                 printBuilder1.Output = PrintBuilder.OutputOption.WireframeBlackWhite;
-                var sheets = _WorkPart.DrawingSheets.ToArray();
+                DrawingSheet[] sheets = _WorkPart.DrawingSheets.ToArray();
                 switch (sheets.Length)
                 {
                     case 0:
@@ -835,8 +837,8 @@ namespace TSG_Library.UFuncs
                     case 1:
                         session_.ApplicationSwitchImmediate("UG_APP_DRAFTING");
                         sheets[0].Open();
-                        TheUFSession.Draw.IsObjectOutOfDate(sheets[0].Tag, out var outOfDate);
-                        if(outOfDate)
+                        TheUFSession.Draw.IsObjectOutOfDate(sheets[0].Tag, out bool outOfDate);
+                        if (outOfDate)
                             try
                             {
                                 TheUFSession.Draw.UpdOutOfDateViews(sheets[0].Tag);
@@ -882,7 +884,8 @@ namespace TSG_Library.UFuncs
             do
             {
                 yield return component;
-            } while ((component = component.Parent) != null);
+            }
+            while ((component = component.Parent) != null);
         }
     }
 }

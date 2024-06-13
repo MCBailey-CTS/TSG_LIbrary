@@ -1,12 +1,12 @@
-﻿using System.Linq;
-using TSG_Library.Attributes;
-using System.ComponentModel;
+﻿using System;
+using System.Linq;
 using System.Reflection;
 using NXOpen;
-using static TSG_Library.Extensions.__Extensions_;
-using System;
-using TSG_Library.UFuncs;
 using NXOpen.UF;
+using TSG_Library.Attributes;
+using TSG_Library.UFuncs;
+using TSG_Library.UFuncs.MirrorComponents.Features;
+using static TSG_Library.Extensions.__Extensions_;
 
 public static class Program
 {
@@ -17,7 +17,7 @@ public static class Program
     {
         try
         {
-            new TSG_Library.UFuncs.MirrorComponents.Features.MainForm().Show();
+            new MainForm().Show();
 
             return;
 
@@ -61,19 +61,16 @@ public static class Program
             }
         }
 
-        if (true)
-        {
-            print_("kdkdk");
-        }
+        if (true) print_("kdkdk");
     }
 
     public static void execute(string ufunc_name)
     {
         _IUFunc __ufunc = null;
 
-        foreach (var type in Assembly.GetAssembly(typeof(Program)).GetTypes())
+        foreach (Type type in Assembly.GetAssembly(typeof(Program)).GetTypes())
         {
-            var ufunc_att = type.GetCustomAttributes().OfType<UFuncAttribute>().SingleOrDefault();
+            UFuncAttribute ufunc_att = type.GetCustomAttributes().OfType<UFuncAttribute>().SingleOrDefault();
 
             if (ufunc_att is null)
                 continue;

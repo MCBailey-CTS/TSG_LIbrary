@@ -19,13 +19,13 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             Component originalComp,
             IDictionary<TaggedObject, TaggedObject> dict)
         {
-            var mirroredComp = (Component)dict[originalComp];
+            Component mirroredComp = (Component)dict[originalComp];
 
-            var mirroredPart = mirroredComp.__Prototype();
+            Part mirroredPart = mirroredComp.__Prototype();
 
-            var mirroredFeature = (Feature)dict[originalFeature];
+            Feature mirroredFeature = (Feature)dict[originalFeature];
 
-            ((EdgeDumbRule)originalRule).GetData(out var originalEdges);
+            ((EdgeDumbRule)originalRule).GetData(out Edge[] originalEdges);
 
             mirroredFeature.Suppress();
 
@@ -37,17 +37,17 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             IList<Edge> newEdges = new List<Edge>();
 
-            foreach (var originalEdge in originalEdges)
+            foreach (Edge originalEdge in originalEdges)
             {
-                var finalStart = originalEdge.__StartPoint().__MirrorMap(plane, originalComp, mirroredComp);
+                Point3d finalStart = originalEdge.__StartPoint().__MirrorMap(plane, originalComp, mirroredComp);
 
-                var finalEnd = originalEdge.__EndPoint().__MirrorMap(plane, originalComp, mirroredComp);
+                Point3d finalEnd = originalEdge.__EndPoint().__MirrorMap(plane, originalComp, mirroredComp);
 
                 mirroredPart.Curves.CreateLine(finalStart, finalEnd);
 
-                foreach (var body in mirroredPart.Bodies.ToArray())
-                foreach (var e in body.GetEdges())
-                    if(e.__HasEndPoints(finalStart, finalEnd))
+                foreach (Body body in mirroredPart.Bodies.ToArray())
+                foreach (Edge e in body.GetEdges())
+                    if (e.__HasEndPoints(finalStart, finalEnd))
                         newEdges.Add(e);
             }
 

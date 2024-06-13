@@ -21,7 +21,7 @@ namespace TSG_Library.Utilities
 
         public override int GetHashCode(Point3d obj)
         {
-            var hash = 17;
+            int hash = 17;
 
             hash = hash * 23 + obj.X.GetHashCode();
             hash = hash * 23 + obj.Y.GetHashCode();

@@ -24,17 +24,17 @@ namespace TSG_Library.Extensions
 
             print_("///////////////////////////////////////////");
 
-            if(!string.IsNullOrEmpty(userMessage))
+            if (!string.IsNullOrEmpty(userMessage))
                 print_($"UserMessage: {userMessage}");
 
             print_($"Message: {ex.Message}");
 
             print_($"Exception: {ex.GetType()}");
 
-            if(ex is NXException nx)
+            if (ex is NXException nx)
                 print_($"Error Code: {nx.ErrorCode}");
 
-            var methods = ex.StackTrace.Split('\n');
+            string[] methods = ex.StackTrace.Split('\n');
 
             //for (int i = 0; i < methods.Length; i++)
             //{
@@ -52,7 +52,7 @@ namespace TSG_Library.Extensions
             //    error_lines.Add($"[{i}]: {substring}");
             //}
 
-            for (var i = 0; i < methods.Length; i++)
+            for (int i = 0; i < methods.Length; i++)
                 //string line = ;
                 //int lastIndex = line.LastIndexOf('\\');
                 //if (lastIndex < 0)

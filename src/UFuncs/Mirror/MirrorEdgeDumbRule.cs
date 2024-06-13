@@ -5,7 +5,6 @@ using NXOpen.Assemblies;
 using NXOpen.Features;
 using TSG_Library.Extensions;
 using TSG_Library.Geom;
-using static TSG_Library.Extensions.__Extensions_;
 
 namespace TSG_Library.UFuncs.MirrorComponents.Features
 {
@@ -15,16 +14,16 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
 
 
         public override SelectionIntentRule Mirror(
-            SelectionIntentRule originalRule, 
-            Feature originalFeature, 
-            Surface.Plane plane, 
-            Component originalComp, 
+            SelectionIntentRule originalRule,
+            Feature originalFeature,
+            Surface.Plane plane,
+            Component originalComp,
             IDictionary<TaggedObject, TaggedObject> dict)
-        {            
+        {
             Component component = (Component)dict[originalComp];
             Part part = component.__Prototype();
             Feature feature = (Feature)dict[originalFeature];
-            ((EdgeDumbRule)originalRule).GetData(out var edges);
+            ((EdgeDumbRule)originalRule).GetData(out Edge[] edges);
             feature.Suppress();
             originalFeature.Suppress();
             IList<Edge> list = new List<Edge>();
@@ -39,12 +38,8 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
                 {
                     Edge[] edges2 = body.GetEdges();
                     foreach (Edge edge2 in edges2)
-                    {
                         if (edge2.__HasEndPoints(val, val2))
-                        {
                             list.Add(edge2);
-                        }
-                    }
                 }
             }
 
@@ -53,8 +48,4 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             return part.ScRuleFactory.CreateRuleEdgeDumb(list.ToArray());
         }
     }
-
-
-
-
 }

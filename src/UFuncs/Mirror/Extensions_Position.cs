@@ -5,6 +5,7 @@ using NXOpen;
 using NXOpen.Assemblies;
 using TSG_Library.Extensions;
 using TSG_Library.Geom;
+using Curve = NXOpen.Curve;
 
 namespace TSG_Library.UFuncs.MirrorComponents.Features
 {
@@ -37,7 +38,8 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
 
         public static Point3d _MidPoint(this Point3d position1, Point3d position2)
         {
-            return new Point3d((position1.X + position2.X) / 2.0, (position1.Y + position2.Y) / 2.0, (position1.Z + position2.Z) / 2.0);
+            return new Point3d((position1.X + position2.X) / 2.0, (position1.Y + position2.Y) / 2.0,
+                (position1.Z + position2.Z) / 2.0);
         }
 
         //public static Point3d _MidPoint(this Point3d position1, Point3d position2)
@@ -52,15 +54,9 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
 
         public static Point3d _AveragePosition(this Point3d[] positions)
         {
-            if (positions == null)
-            {
-                throw new ArgumentNullException("positions");
-            }
+            if (positions == null) throw new ArgumentNullException("positions");
 
-            if (positions.Length == 0)
-            {
-                throw new ArgumentOutOfRangeException("positions");
-            }
+            if (positions.Length == 0) throw new ArgumentOutOfRangeException("positions");
 
             double num = 0.0;
             double num2 = 0.0;
@@ -75,9 +71,9 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             return new Point3d(num, num2, num3);
         }
 
-        public static Point3d _AveragePosition(this NXOpen. Curve[] curves)
+        public static Point3d _AveragePosition(this Curve[] curves)
         {
-            return curves.SelectMany((NXOpen.Curve c) => (IEnumerable<Point3d>)(object)new Point3d[2]
+            return curves.SelectMany(c => (IEnumerable<Point3d>)new Point3d[2]
             {
                 c.__StartPoint(),
                 c.__EndPoint()
@@ -96,13 +92,14 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             return new double[3] { point3D.X, point3D.Y, point3D.Z };
         }
 
-        public static Point3d _Mirror(this Point3d original, Surface. Plane plane)
+        public static Point3d _Mirror(this Point3d original, Surface.Plane plane)
         {
             Transform val = Transform.CreateReflection(plane);
             return original.__Copy(val);
         }
 
-        public static Point3d _MirrorMap(this Point3d origin,Surface. Plane mirrorPlane, Component originalComp, Component newComp)
+        public static Point3d _MirrorMap(this Point3d origin, Surface.Plane mirrorPlane, Component originalComp,
+            Component newComp)
         {
             originalComp.__SetWcsToComponent();
             Point3d original = origin.__MapWcsToAcs();
@@ -116,7 +113,4 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
         //    return _MirrorMap(origin, mirrorPlane, originalComp, newComp);
         //}
     }
-
-
-
 }

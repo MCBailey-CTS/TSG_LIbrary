@@ -25,23 +25,24 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 
         public TreeNode PerformCheck(Part part)
         {
-            var part_node = new TreeNode(part.Leaf) { Tag = part };
+            TreeNode part_node = new TreeNode(part.Leaf) { Tag = part };
 
-            foreach (var feature in part.Features.ToArray())
+            foreach (Feature feature in part.Features.ToArray())
                 try
                 {
-                    if(!(feature is ExtractFace extract_face)
-                       || !extract_face.__IsLinkedBody())
+                    if (!(feature is ExtractFace extract_face)
+                        || !extract_face.__IsLinkedBody())
                         continue;
 
-                    var builder = extract_face.__OwningPart().Features.CreateExtractFaceBuilder(extract_face);
+                    ExtractFaceBuilder builder =
+                        extract_face.__OwningPart().Features.CreateExtractFaceBuilder(extract_face);
 
                     using (session_.__UsingBuilderDestroyer(builder))
                     {
-                        if(!builder.FixAtCurrentTimestamp)
+                        if (!builder.FixAtCurrentTimestamp)
                             continue;
 
-                        var extract_face_node = new TreeNode(extract_face.GetFeatureName())
+                        TreeNode extract_face_node = new TreeNode(extract_face.GetFeatureName())
                         {
                             Tag = extract_face
                         };

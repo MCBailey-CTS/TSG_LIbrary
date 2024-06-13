@@ -50,11 +50,11 @@ namespace TSG_Library.UFuncs
         {
             get
             {
-                if(rdo0062.Checked) return CurrentCheckedRdo.Size0062;
-                if(rdo0125.Checked) return CurrentCheckedRdo.Size0125;
-                if(rdo0250.Checked) return CurrentCheckedRdo.Size0250;
-                if(rdo0500.Checked) return CurrentCheckedRdo.Size0500;
-                if(rdo1000.Checked) return CurrentCheckedRdo.Size1000;
+                if (rdo0062.Checked) return CurrentCheckedRdo.Size0062;
+                if (rdo0125.Checked) return CurrentCheckedRdo.Size0125;
+                if (rdo0250.Checked) return CurrentCheckedRdo.Size0250;
+                if (rdo0500.Checked) return CurrentCheckedRdo.Size0500;
+                if (rdo1000.Checked) return CurrentCheckedRdo.Size1000;
                 return rdo6000.Checked ? CurrentCheckedRdo.Size6000 : CurrentCheckedRdo.None;
             }
         }
@@ -87,7 +87,7 @@ namespace TSG_Library.UFuncs
 
         private void WorkPartChanged(BasePart part)
         {
-            if(Session.GetSession().Parts.Display is null)
+            if (Session.GetSession().Parts.Display is null)
                 return;
 
             TurnGridOff();
@@ -95,10 +95,10 @@ namespace TSG_Library.UFuncs
 
         internal void SetFormToGrid()
         {
-            if(Session.GetSession().Parts.Display is null) return;
-            var gridSize = WorkPlane.GetRectangularUniformGridSize().MajorGridSpacing;
-            var multiplier = __display_part_.PartUnits == BasePart.Units.Inches ? 1.0 : 25.4;
-            if(!rdoGridOff.Checked)
+            if (Session.GetSession().Parts.Display is null) return;
+            double gridSize = WorkPlane.GetRectangularUniformGridSize().MajorGridSpacing;
+            double multiplier = __display_part_.PartUnits == BasePart.Units.Inches ? 1.0 : 25.4;
+            if (!rdoGridOff.Checked)
             {
                 chkShowGrid.Checked = true;
                 chkSnapToGrid.Checked = true;
@@ -121,17 +121,17 @@ namespace TSG_Library.UFuncs
                 rdoButton.Checked = true;
             }
 
-            if(Predicate(Grid.GridSize0062))
+            if (Predicate(Grid.GridSize0062))
                 Action(@"0.0625", rdo0062);
-            else if(Predicate(Grid.GridSize0125))
+            else if (Predicate(Grid.GridSize0125))
                 Action(@"0.125", rdo0125);
-            else if(Predicate(Grid.GridSize0250))
+            else if (Predicate(Grid.GridSize0250))
                 Action(@"0.250", rdo0250);
-            else if(Predicate(Grid.GridSize0500))
+            else if (Predicate(Grid.GridSize0500))
                 Action(@"0.500", rdo0500);
-            else if(Predicate(Grid.GridSize1000))
+            else if (Predicate(Grid.GridSize1000))
                 Action(@"1.000", rdo1000);
-            else if(Predicate(Grid.GridSize6000))
+            else if (Predicate(Grid.GridSize6000))
                 Action(@"6.000", rdo6000);
             else
                 txtGrid.Text = "" + gridSize / multiplier;
@@ -146,12 +146,12 @@ namespace TSG_Library.UFuncs
 
         private void RdoIncrements_Click(object sender, EventArgs e)
         {
-            if(Session.GetSession().Parts.Display is null)
+            if (Session.GetSession().Parts.Display is null)
                 return;
 
             new[] { chkShowGrid, chkSnapToGrid }.Pipe(box => box.Enabled = !rdoGridOff.Checked)
                 .ForEach(box => box.Checked = !rdoGridOff.Checked);
-            if(rdoGridOff.Checked)
+            if (rdoGridOff.Checked)
             {
                 txtGrid.Text = @"Grid Off";
                 return;
@@ -159,34 +159,34 @@ namespace TSG_Library.UFuncs
 
             WorkPlane.SnapToGrid = chkSnapToGrid.Checked;
             WorkPlane.ShowGrid = chkShowGrid.Checked;
-            var multiplier = __display_part_.PartUnits == BasePart.Units.Inches ? 1.0 : 25.4;
+            double multiplier = __display_part_.PartUnits == BasePart.Units.Inches ? 1.0 : 25.4;
             double gridSize;
-            if(sender == rdo0062)
+            if (sender == rdo0062)
             {
                 gridSize = Grid.GridSize0062;
                 txtGrid.Text = @"0.0625";
             }
-            else if(sender == rdo0125)
+            else if (sender == rdo0125)
             {
                 gridSize = Grid.GridSize0125;
                 txtGrid.Text = @"0.125";
             }
-            else if(sender == rdo0250)
+            else if (sender == rdo0250)
             {
                 gridSize = Grid.GridSize0250;
                 txtGrid.Text = @"0.250";
             }
-            else if(sender == rdo0500)
+            else if (sender == rdo0500)
             {
                 gridSize = Grid.GridSize0500;
                 txtGrid.Text = @"0.500";
             }
-            else if(sender == rdo1000)
+            else if (sender == rdo1000)
             {
                 gridSize = Grid.GridSize1000;
                 txtGrid.Text = @"1.000";
             }
-            else if(sender == rdo6000)
+            else if (sender == rdo6000)
             {
                 gridSize = Grid.GridSize6000;
                 txtGrid.Text = @"6.000";
@@ -212,9 +212,9 @@ namespace TSG_Library.UFuncs
 
         public void TxtGrid_KeyPress(object sender, KeyPressEventArgs e)
         {
-            var toLower = char.ToLower(e.KeyChar);
-            if(!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != '.' && toLower != 'i' &&
-               toLower != 'n' && toLower != 'm')
+            char toLower = char.ToLower(e.KeyChar);
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != '.' && toLower != 'i' &&
+                toLower != 'n' && toLower != 'm')
                 e.Handled = true;
         }
 
@@ -222,7 +222,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if(e.KeyCode == Keys.Enter && IsValidString(txtGrid.Text))
+                if (e.KeyCode == Keys.Enter && IsValidString(txtGrid.Text))
                     SetGridToTextBox();
             }
             catch (Exception ex)
@@ -233,15 +233,15 @@ namespace TSG_Library.UFuncs
 
         internal void SetGridToTextBox()
         {
-            if(!txtGrid.Text.ToCharArray().Any(char.IsDigit)) throw new FormatException("Invalid Format in TextBox.");
-            var expression = txtGrid.Text.ToLower().Replace(" ", "");
-            var regex = new Regex("^([0-9]{0,}.?[0-9]{0,})(in|mm)?$");
-            var match = regex.Match(expression);
-            if(!match.Success) throw new FormatException("Invalid Format in TextBox.");
-            var number = double.Parse(match.Groups[1].Value);
-            var units = expression.EndsWith("mm") ? Part.Units.Millimeters : Part.Units.Inches;
-            var displayUnits = __display_part_.PartUnits;
-            var convertedValue = displayUnits == BasePart.Units.Inches
+            if (!txtGrid.Text.ToCharArray().Any(char.IsDigit)) throw new FormatException("Invalid Format in TextBox.");
+            string expression = txtGrid.Text.ToLower().Replace(" ", "");
+            Regex regex = new Regex("^([0-9]{0,}.?[0-9]{0,})(in|mm)?$");
+            Match match = regex.Match(expression);
+            if (!match.Success) throw new FormatException("Invalid Format in TextBox.");
+            double number = double.Parse(match.Groups[1].Value);
+            Part.Units units = expression.EndsWith("mm") ? Part.Units.Millimeters : Part.Units.Inches;
+            BasePart.Units displayUnits = __display_part_.PartUnits;
+            double convertedValue = displayUnits == BasePart.Units.Inches
                 ? units == Part.Units.Inches ? number : number / 25.4
                 : units == Part.Units.Inches
                     ? number
@@ -257,8 +257,8 @@ namespace TSG_Library.UFuncs
 
         internal static bool IsValidString(string expression)
         {
-            if(!expression.ToCharArray().Any(char.IsDigit)) return false;
-            var temp = expression.ToLower().Replace(" ", "");
+            if (!expression.ToCharArray().Any(char.IsDigit)) return false;
+            string temp = expression.ToLower().Replace(" ", "");
             return Regex.IsMatch(temp, "^([0-9]{0,}.?[0-9]{0,})(in|mm)?$");
         }
 
@@ -269,7 +269,7 @@ namespace TSG_Library.UFuncs
 
         private void TxtGrid_MouseUp(object sender, MouseEventArgs e)
         {
-            if(txtGrid.Text == @"Grid Off")
+            if (txtGrid.Text == @"Grid Off")
                 txtGrid.SelectAll();
         }
     }

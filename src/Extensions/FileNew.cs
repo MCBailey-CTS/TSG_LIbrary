@@ -29,24 +29,24 @@ namespace TSG_Library.Extensions
         /// <returns></returns>
         private static string __GetAppName(FileNew fileNew, Templates templateType)
         {
-            var result = "GatewayTemplate";
-            if(templateType == Templates.AeroSheetMetal) result = __SafeAppName(fileNew, "AeroSheetMetalTemplate");
+            string result = "GatewayTemplate";
+            if (templateType == Templates.AeroSheetMetal) result = __SafeAppName(fileNew, "AeroSheetMetalTemplate");
 
-            if(templateType == Templates.Assembly) result = __SafeAppName(fileNew, "AssemblyTemplate");
+            if (templateType == Templates.Assembly) result = __SafeAppName(fileNew, "AssemblyTemplate");
 
-            if(templateType == Templates.Modeling) result = __SafeAppName(fileNew, "ModelTemplate");
+            if (templateType == Templates.Modeling) result = __SafeAppName(fileNew, "ModelTemplate");
 
-            if(templateType == Templates.NXSheetMetal) result = __SafeAppName(fileNew, "NXSheetMetalTemplate");
+            if (templateType == Templates.NXSheetMetal) result = __SafeAppName(fileNew, "NXSheetMetalTemplate");
 
-            if(templateType == Templates.RoutingElectrical)
+            if (templateType == Templates.RoutingElectrical)
                 result = __SafeAppName(fileNew, "RoutingElectricalTemplate");
 
-            if(templateType == Templates.RoutingLogical) result = __SafeAppName(fileNew, "RoutingLogicalTemplate");
+            if (templateType == Templates.RoutingLogical) result = __SafeAppName(fileNew, "RoutingLogicalTemplate");
 
-            if(templateType == Templates.RoutingMechanical)
+            if (templateType == Templates.RoutingMechanical)
                 result = __SafeAppName(fileNew, "RoutingMechanicalTemplate");
 
-            if(templateType == Templates.ShapeStudio) result = __SafeAppName(fileNew, "StudioTemplate");
+            if (templateType == Templates.ShapeStudio) result = __SafeAppName(fileNew, "StudioTemplate");
 
             return result;
         }
@@ -75,56 +75,57 @@ namespace TSG_Library.Extensions
         /// <returns></returns>
         private static string __GetTemplateFileName(FileNew fileNew, Templates templateType, Units unit)
         {
-            var result = "Blank";
-            if(unit == Units.MilliMeters)
+            string result = "Blank";
+            if (unit == Units.MilliMeters)
             {
-                if(templateType == Templates.AeroSheetMetal)
+                if (templateType == Templates.AeroSheetMetal)
                     result = __SafeTemplateName(fileNew, "aero-sheet-metal-mm-template.prt");
 
-                if(templateType == Templates.Assembly) result = __SafeTemplateName(fileNew, "assembly-mm-template.prt");
+                if (templateType == Templates.Assembly)
+                    result = __SafeTemplateName(fileNew, "assembly-mm-template.prt");
 
-                if(templateType == Templates.Modeling)
+                if (templateType == Templates.Modeling)
                     result = __SafeTemplateName(fileNew, "model-plain-1-mm-template.prt");
 
-                if(templateType == Templates.NXSheetMetal)
+                if (templateType == Templates.NXSheetMetal)
                     result = __SafeTemplateName(fileNew, "sheet-metal-mm-template.prt");
 
-                if(templateType == Templates.RoutingElectrical)
+                if (templateType == Templates.RoutingElectrical)
                     result = __SafeTemplateName(fileNew, "routing-elec-mm-template.prt");
 
-                if(templateType == Templates.RoutingLogical)
+                if (templateType == Templates.RoutingLogical)
                     result = __SafeTemplateName(fileNew, "routing-logical-mm-template.prt");
 
-                if(templateType == Templates.RoutingMechanical)
+                if (templateType == Templates.RoutingMechanical)
                     result = __SafeTemplateName(fileNew, "routing-mech-mm-template.prt");
 
-                if(templateType == Templates.ShapeStudio)
+                if (templateType == Templates.ShapeStudio)
                     result = __SafeTemplateName(fileNew, "shape-studio-mm-template.prt");
             }
             else
             {
-                if(templateType == Templates.AeroSheetMetal)
+                if (templateType == Templates.AeroSheetMetal)
                     result = __SafeTemplateName(fileNew, "aero-sheet-metal-inch-template.prt");
 
-                if(templateType == Templates.Assembly)
+                if (templateType == Templates.Assembly)
                     result = __SafeTemplateName(fileNew, "assembly-inch-template.prt");
 
-                if(templateType == Templates.Modeling)
+                if (templateType == Templates.Modeling)
                     result = __SafeTemplateName(fileNew, "model-plain-1-inch-template.prt");
 
-                if(templateType == Templates.NXSheetMetal)
+                if (templateType == Templates.NXSheetMetal)
                     result = __SafeTemplateName(fileNew, "sheet-metal-inch-template.prt");
 
-                if(templateType == Templates.RoutingElectrical)
+                if (templateType == Templates.RoutingElectrical)
                     result = __SafeTemplateName(fileNew, "routing-elec-inch-template.prt");
 
-                if(templateType == Templates.RoutingLogical)
+                if (templateType == Templates.RoutingLogical)
                     result = __SafeTemplateName(fileNew, "routing-logical-inch-template.prt");
 
-                if(templateType == Templates.RoutingMechanical)
+                if (templateType == Templates.RoutingMechanical)
                     result = __SafeTemplateName(fileNew, "routing-mech-inch-template.prt");
 
-                if(templateType == Templates.ShapeStudio)
+                if (templateType == Templates.ShapeStudio)
                     result = __SafeTemplateName(fileNew, "shape-studio-inch-template.prt");
             }
 
@@ -151,9 +152,9 @@ namespace TSG_Library.Extensions
         /// <returns></returns>
         private static string __SafeAppName(FileNew fileNew, string testName)
         {
-            var applicationNames = fileNew.GetApplicationNames();
-            var result = "GatewayTemplate";
-            if(Array.IndexOf(applicationNames, testName) > -1) result = testName;
+            string[] applicationNames = fileNew.GetApplicationNames();
+            string result = "GatewayTemplate";
+            if (Array.IndexOf(applicationNames, testName) > -1) result = testName;
 
             return result;
         }
@@ -178,10 +179,10 @@ namespace TSG_Library.Extensions
         /// <returns></returns>
         private static string __SafeTemplateName(FileNew fileNew, string testName)
         {
-            var availableTemplates = fileNew.GetAvailableTemplates();
-            var result = "Blank";
+            string[] availableTemplates = fileNew.GetAvailableTemplates();
+            string result = "Blank";
 
-            if(Array.IndexOf(availableTemplates, testName) > -1)
+            if (Array.IndexOf(availableTemplates, testName) > -1)
                 result = testName;
 
             return result;

@@ -22,10 +22,10 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 
         public TreeNode PerformCheck(Part part)
         {
-            if(part.__HasAttribute("DETAIL NAME"))
+            if (part.__HasAttribute("DETAIL NAME"))
                 throw new InvalidOperationException($"Part {part.Leaf} doesn't have a 'DETAIL NAME' attribute");
 
-            if(part.__GetAttribute("DETAIL NAME") == "TRIM")
+            if (part.__GetAttribute("DETAIL NAME") == "TRIM")
                 return null;
 
             return part.__TreeNode();

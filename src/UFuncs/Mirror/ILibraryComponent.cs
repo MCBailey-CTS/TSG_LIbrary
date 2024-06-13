@@ -10,10 +10,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
     {
         bool IsLibraryComponent(Component component);
 
-        void Mirror(Surface. Plane plane, Component mirroredComp, ExtractFace originalLinkedBody, Component fromComp, IDictionary<TaggedObject, TaggedObject> dict);
+        void Mirror(Surface.Plane plane, Component mirroredComp, ExtractFace originalLinkedBody, Component fromComp,
+            IDictionary<TaggedObject, TaggedObject> dict);
     }
-
-
-
-
 }

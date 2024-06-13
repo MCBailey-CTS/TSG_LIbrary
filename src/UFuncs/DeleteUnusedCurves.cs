@@ -22,18 +22,18 @@ namespace TSG_Library.UFuncs
         {
             using (session_.__UsingDoUpdate())
             {
-                var selCurves = Selection.SelectCurves();
-                var delCurves = new List<Tag>();
+                Curve[] selCurves = Selection.SelectCurves();
+                List<Tag> delCurves = new List<Tag>();
 
-                foreach (var delete in selCurves)
+                foreach (Curve delete in selCurves)
                 {
-                    TheUFSession.Modl.AskObjectFeat(delete.Tag, out var featTag);
+                    TheUFSession.Modl.AskObjectFeat(delete.Tag, out Tag featTag);
 
-                    if(featTag == Tag.Null)
+                    if (featTag == Tag.Null)
                         delCurves.Add(delete.Tag);
                 }
 
-                foreach (var curveObj in delCurves.Select(curve => (NXObject)NXObjectManager.Get(curve)))
+                foreach (NXObject curveObj in delCurves.Select(curve => (NXObject)NXObjectManager.Get(curve)))
                     session_.UpdateManager.AddToDeleteList(curveObj);
             }
 

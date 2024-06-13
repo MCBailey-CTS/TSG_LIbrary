@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NXOpen;
+using NXOpen.Assemblies;
 using TSG_Library.Attributes;
 using static TSG_Library.Extensions.__Extensions_;
 using static NXOpen.UF.UFConstants;
@@ -24,63 +25,64 @@ namespace TSG_Library.UFuncs
             {
                 using (session_.__usingDisplayPartReset())
                 {
-                    var originalWorkPart = __work_part_;
-                    var refSetName = new List<string>();
+                    Part originalWorkPart = __work_part_;
+                    List<string> refSetName = new List<string>();
                     session_.SetUndoMark(Session.MarkVisibility.Visible, "Copy Reference Sets");
-                    var fromComponent = Selection.SelectManyComponents().ToList();
-                    var toComponents = Selection.SelectManyComponents().ToList();
-                    var cycleRefSet = Tag.Null;
+                    List<Component> fromComponent = Selection.SelectManyComponents().ToList();
+                    List<Component> toComponents = Selection.SelectManyComponents().ToList();
+                    Tag cycleRefSet = Tag.Null;
 
-                    if(fromComponent.Count == 0 || toComponents.Count == 0)
+                    if (fromComponent.Count == 0 || toComponents.Count == 0)
                         return;
 
-                    var copyFromPart = ufsession_.Assem.AskPrototypeOfOcc(fromComponent[0].Tag);
+                    Tag copyFromPart = ufsession_.Assem.AskPrototypeOfOcc(fromComponent[0].Tag);
 
                     do
                     {
                         ufsession_.Obj.CycleObjsInPart(copyFromPart, UF_reference_set_type, ref cycleRefSet);
 
-                        if(cycleRefSet == Tag.Null)
+                        if (cycleRefSet == Tag.Null)
                             break;
 
-                        ufsession_.Obj.AskName(cycleRefSet, out var name);
+                        ufsession_.Obj.AskName(cycleRefSet, out string name);
 
-                        if(!((name != Refset_Body) & (name != "SUB_TOOL") & (name != Refset_EntirePart) &
-                             (name != Refset_Empty)))
+                        if (!((name != Refset_Body) & (name != "SUB_TOOL") & (name != Refset_EntirePart) &
+                              (name != Refset_Empty)))
                             continue;
 
                         refSetName.Add(name);
-                    } while (cycleRefSet != Tag.Null);
+                    }
+                    while (cycleRefSet != Tag.Null);
 
                     //------------------------------------------------------------------------------
                     // Make each copy to component the work part
                     // Create reference sets and add to current work part
                     //------------------------------------------------------------------------------
 
-                    if(refSetName.Count == 0)
+                    if (refSetName.Count == 0)
                         throw new Exception("There are no reference sets other than the component defaults");
 
-                    foreach (var wpComponent in toComponents.Select(__c => __c))
+                    foreach (Component wpComponent in toComponents.Select(__c => __c))
                     {
-                        if(!(wpComponent.Prototype is Part))
+                        if (!(wpComponent.Prototype is Part))
                             continue;
 
-                        var part = (Part)wpComponent.Prototype;
+                        Part part = (Part)wpComponent.Prototype;
 
-                        if(part.PartUnits != BasePart.Units.Inches)
+                        if (part.PartUnits != BasePart.Units.Inches)
                             continue;
 
                         __work_component_ = wpComponent;
                         const int numOfMembers = 0;
-                        var refSetArray = new List<Tag>();
+                        List<Tag> refSetArray = new List<Tag>();
 
-                        foreach (var refName in refSetName)
+                        foreach (string refName in refSetName)
                         {
-                            var origin = new double[3];
-                            ufsession_.Csys.AskWcs(out var wcs);
-                            ufsession_.Csys.AskCsysInfo(wcs, out var wcsMatrix,
+                            double[] origin = new double[3];
+                            ufsession_.Csys.AskWcs(out Tag wcs);
+                            ufsession_.Csys.AskCsysInfo(wcs, out Tag wcsMatrix,
                                 origin); // get origin of current work coordinate system
-                            var matrixValue = new double[9];
+                            double[] matrixValue = new double[9];
                             ufsession_.Csys.AskMatrixValues(wcsMatrix, matrixValue); // gets the matrix values
                             ufsession_.Assem.CreateRefSet(refName, origin, matrixValue, refSetArray.ToArray(),
                                 numOfMembers, out _);

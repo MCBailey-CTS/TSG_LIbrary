@@ -13,8 +13,4 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
         {
         }
     }
-
-
-
-
 }

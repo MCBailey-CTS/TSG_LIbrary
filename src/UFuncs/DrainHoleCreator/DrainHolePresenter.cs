@@ -135,12 +135,12 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
         private static void AddToFeatureGroup(Part owningPart, string featureGroupName, Feature feature)
         {
             // Attempts to get a feature group with the given {featureGroupName} from the {owningPart}.
-            var featureGroup = owningPart.Features
+            FeatureGroup featureGroup = owningPart.Features
                 .OfType<FeatureGroup>()
                 .SingleOrDefault(group => group.Name == featureGroupName);
 
             // If {featureGroup is not null, then add the {feature}.
-            if(featureGroup != null)
+            if (featureGroup != null)
             {
                 featureGroup.AddMembersWithRelocation(new[] { feature }, false, false);
                 return;

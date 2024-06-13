@@ -24,13 +24,13 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 
         public IEnumerable<Feature> AskNXObjects(Part part)
         {
-            var featureNames = new HashSet<string>();
+            HashSet<string> featureNames = new HashSet<string>();
 
             //var featuresToIgnore = new HashSet<NXOpen.Features.Feature>();
 
-            foreach (var feature in part.Features.GetFeatures())
+            foreach (Feature feature in part.Features.GetFeatures())
             {
-                if(!featureNames.Add(feature.GetFeatureName()))
+                if (!featureNames.Add(feature.GetFeatureName()))
                     continue;
 
                 yield return feature;
