@@ -18,9 +18,9 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             Surface.Plane plane,
             Component originalComp)
         {
-            var mirrorFeature = (OffsetFace)dict[originalFeature];
-            var mirrorComponent = (Component)dict[originalComp];
-            var builder = originalComp.__Prototype().Features.CreateOffsetFaceBuilder(originalFeature);
+            OffsetFace mirrorFeature = (OffsetFace)dict[originalFeature];
+            Component mirrorComponent = (Component)dict[originalComp];
+            OffsetFaceBuilder builder = originalComp.__Prototype().Features.CreateOffsetFaceBuilder(originalFeature);
             DisplayableObject[] originalObjects;
 
             using (session_.__UsingBuilderDestroyer(builder))
@@ -35,7 +35,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             {
                 IList<SelectionIntentRule> mirrorRules = new List<SelectionIntentRule>();
 
-                foreach (var originalObj in originalObjects)
+                foreach (DisplayableObject originalObj in originalObjects)
                     switch (originalObj)
                     {
                         case Edge _:
@@ -46,7 +46,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
                             if(!dict.ContainsKey(originalFace))
                                 throw new MirrorException("OffsetFace dictionary did not contain FACE as a key.");
 
-                            var mirrorFace = (Face)dict[originalFace];
+                            Face mirrorFace = (Face)dict[originalFace];
 
                             SelectionIntentRule mirrorRule = mirrorComponent.__Prototype().ScRuleFactory
                                 .CreateRuleFaceDumb(new[] { mirrorFace });

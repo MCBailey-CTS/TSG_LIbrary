@@ -441,7 +441,7 @@ namespace TSG_Library.Geom
             /// <remarks>The plane has equation  ax + by + cz = d</remarks>
             public Plane(double a, double b, double c, double d)
             {
-                var vector = new Vector3d(a, b, c);
+                Vector3d vector = new Vector3d(a, b, c);
                 var num = vector.__Norm();
                 Normal = vector.__Divide(num);
                 D = d / num;

@@ -1,6 +1,7 @@
 ﻿using System;
 using NXOpen;
 using NXOpen.Assemblies;
+using NXOpen.UF;
 using TSG_Library.Geom;
 using Curve = NXOpen.Curve;
 
@@ -22,8 +23,8 @@ namespace TSG_Library.Extensions
         /// </remarks>
         public static Vector3d __Derivative(this Curve curve, double value)
         {
-            var eval = ufsession_.Eval;
-            eval.Initialize2(curve.Tag, out var evaluator);
+            UFEval eval = ufsession_.Eval;
+            eval.Initialize2(curve.Tag, out IntPtr evaluator);
             var array = new double[3];
             var point = array;
             var array2 = new double[3];
@@ -31,7 +32,7 @@ namespace TSG_Library.Extensions
             value /= Factor;
             eval.Evaluate(evaluator, 1, value, point, array3);
             eval.Free(evaluator);
-            var vector = array3.__ToVector3d();
+            Vector3d vector = array3.__ToVector3d();
             return vector.__Divide(Factor);
         }
 
@@ -55,7 +56,7 @@ namespace TSG_Library.Extensions
         //     c.Position(c.Parameter(p)) = p
         public static double __Parameter(this Curve curve, Point3d point)
         {
-            var nXOpenTag = curve.Tag;
+            Tag nXOpenTag = curve.Tag;
             var array = point.__ToArray();
             var direction = 1;
             var offset = 0.0;
@@ -146,8 +147,8 @@ namespace TSG_Library.Extensions
 
             //}
 
-            var eval = ufsession_.Eval;
-            eval.Initialize2(curve.Tag, out var evaluator);
+            UFEval eval = ufsession_.Eval;
+            eval.Initialize2(curve.Tag, out IntPtr evaluator);
             var array = new double[3];
             var array2 = array;
             var array3 = new double[3];
@@ -177,7 +178,7 @@ namespace TSG_Library.Extensions
         [Obsolete(nameof(NotImplementedException))]
         public static Curve[] __Copy(this Curve curve, params Curve[] original)
         {
-            var array = new Curve[original.Length];
+            Curve[] array = new Curve[original.Length];
             for (var i = 0; i < original.Length; i++) array[i] = original[i].__Copy();
 
             return array;
@@ -406,8 +407,8 @@ namespace TSG_Library.Extensions
         /// <returns>The value at the start of the curve</returns>
         public static double __MinU(this Curve curve)
         {
-            var eval = ufsession_.Eval;
-            eval.Initialize2(curve.Tag, out var evaluator);
+            UFEval eval = ufsession_.Eval;
+            eval.Initialize2(curve.Tag, out IntPtr evaluator);
             var array = new double[2] { 0.0, 1.0 };
             eval.AskLimits(evaluator, array);
             eval.Free(evaluator);
@@ -419,8 +420,8 @@ namespace TSG_Library.Extensions
         /// <returns>The value at the end of the curve</returns>
         public static double __MaxU(this Curve curve)
         {
-            var eval = ufsession_.Eval;
-            eval.Initialize2(curve.Tag, out var evaluator);
+            UFEval eval = ufsession_.Eval;
+            eval.Initialize2(curve.Tag, out IntPtr evaluator);
             var array = new double[2] { 0.0, 1.0 };
             eval.AskLimits(evaluator, array);
             eval.Free(evaluator);
@@ -655,7 +656,7 @@ namespace TSG_Library.Extensions
             var array = curve.__Position(baseParameter).__ToArray();
             var tolerance = 0.0001;
             var point_along_curve = new double[3];
-            var uFSession = ufsession_;
+            UFSession uFSession = ufsession_;
 
             uFSession.Modl.AskPointAlongCurve2(
                 array,
@@ -767,8 +768,8 @@ namespace TSG_Library.Extensions
         //     cases where the derivative vector of the curve has zero length.
         public static Vector3d __Tangent(this Curve curve, double value)
         {
-            var eval = ufsession_.Eval;
-            eval.Initialize2(curve.Tag, out var evaluator);
+            UFEval eval = ufsession_.Eval;
+            eval.Initialize2(curve.Tag, out IntPtr evaluator);
             var array = new double[3];
             var point = array;
             var array2 = new double[3];

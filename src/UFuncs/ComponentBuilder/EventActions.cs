@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NXOpen.Assemblies;
 using TSG_Library.Extensions;
 using static NXOpen.UF.UFConstants;
 using static TSG_Library.Extensions.__Extensions_;
@@ -23,14 +24,14 @@ namespace TSG_Library.UFuncs
                 UpdateOriginalParts();
                 buttonApply.Enabled = true;
                 var isBlockComponent = false;
-                var dispUnits = (Part.Units)_displayPart.PartUnits;
+                Part.Units dispUnits = (Part.Units)_displayPart.PartUnits;
                 SetDispUnits(dispUnits);
                 NewMethod2();
 
                 if (_editBody is null)
                     return;
 
-                var editComponent = _editBody.OwningComponent;
+                Component editComponent = _editBody.OwningComponent;
 
                 isBlockComponent = editComponent is null
                     ? EditMoveDisplay(isBlockComponent, editComponent)
@@ -56,7 +57,7 @@ namespace TSG_Library.UFuncs
                 buttonApply.Enabled = true;
                 var isBlockComponent = false;
                 ufsession_.Ui.AskInfoUnits(out var infoUnits);
-                var dispUnits = (Part.Units)_displayPart.PartUnits;
+                Part.Units dispUnits = (Part.Units)_displayPart.PartUnits;
                 SetDispUnits(dispUnits);
 
                 if (_isNewSelection && _updateComponent is null)
@@ -86,7 +87,7 @@ namespace TSG_Library.UFuncs
                 buttonApply.Enabled = true;
                 var isBlockComponent = false;
                 ufsession_.Ui.AskInfoUnits(out var infoUnits);
-                var dispUnits = (Part.Units)_displayPart.PartUnits;
+                Part.Units dispUnits = (Part.Units)_displayPart.PartUnits;
                 SetDispUnits(dispUnits);
 
                 if (_isNewSelection && _updateComponent is null)
@@ -95,7 +96,7 @@ namespace TSG_Library.UFuncs
                 if (_editBody is null)
                     return;
 
-                var editComponent = _editBody.OwningComponent;
+                Component editComponent = _editBody.OwningComponent;
 
                 if (editComponent is null)
                 {
@@ -127,7 +128,7 @@ namespace TSG_Library.UFuncs
             UpdateSessionParts();
             UpdateOriginalParts();
             CoordinateSystem coordSystem = _displayPart.WCS.CoordinateSystem;
-            var orientation = coordSystem.Orientation.Element;
+            Matrix3x3 orientation = coordSystem.Orientation.Element;
             _displayPart.Views.WorkView.Orient(orientation);
         }
 
@@ -141,7 +142,7 @@ namespace TSG_Library.UFuncs
                 buttonApply.Enabled = true;
                 var isBlockComponent = false;
                 ufsession_.Ui.AskInfoUnits(out var infoUnits);
-                var dispUnits = (Part.Units)_displayPart.PartUnits;
+                Part.Units dispUnits = (Part.Units)_displayPart.PartUnits;
                 SetDispUnits(dispUnits);
 
                 if (_isNewSelection)
@@ -183,7 +184,7 @@ namespace TSG_Library.UFuncs
                 buttonApply.Enabled = true;
                 var isBlockComponent = false;
                 ufsession_.Ui.AskInfoUnits(out var infoUnits);
-                var dispUnits = (Part.Units)_displayPart.PartUnits;
+                Part.Units dispUnits = (Part.Units)_displayPart.PartUnits;
                 SetDispUnits(dispUnits);
 
                 if (_isNewSelection && _updateComponent is null)
@@ -192,7 +193,7 @@ namespace TSG_Library.UFuncs
                 if (_editBody is null)
                     return;
 
-                var editComponent = _editBody.OwningComponent;
+                Component editComponent = _editBody.OwningComponent;
 
                 isBlockComponent = editComponent is null
                     ? EditSizeDisplay(isBlockComponent, editComponent)
@@ -218,7 +219,7 @@ namespace TSG_Library.UFuncs
                 buttonApply.Enabled = true;
                 var isBlockComponent = false;
                 ufsession_.Ui.AskInfoUnits(out var infoUnits);
-                var dispUnits = (Part.Units)_displayPart.PartUnits;
+                Part.Units dispUnits = (Part.Units)_displayPart.PartUnits;
                 SetDispUnits(dispUnits);
                 session_.Preferences.EmphasisVisualization.WorkPartEmphasis = false;
 
@@ -248,7 +249,7 @@ namespace TSG_Library.UFuncs
                 buttonApply.Enabled = true;
                 var isBlockComponent = false;
                 ufsession_.Ui.AskInfoUnits(out var infoUnits);
-                var dispUnits = (Part.Units)_displayPart.PartUnits;
+                Part.Units dispUnits = (Part.Units)_displayPart.PartUnits;
                 SetDispUnits(dispUnits);
 
                 if (_isNewSelection && _updateComponent is null)

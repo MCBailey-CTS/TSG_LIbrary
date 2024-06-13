@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CTS_Library.Equality;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
@@ -19,7 +18,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             Component component = (Component)dict[originalComp];
             Part part = component.__Prototype();
             Feature feature = (Feature)dict[originalFeature];
-            ((EdgeBodyRule)originalRule).GetData(out var body);
+            ((EdgeBodyRule)originalRule).GetData(out Body body);
             ISet<Point3d> set = new HashSet<Point3d>(new EqualityPos());
             Edge[] edges = body.GetEdges();
             foreach (Edge edge in edges)

@@ -313,7 +313,7 @@ namespace TSG_Library.Extensions
             //[IgnoreExtensionAspect]
             get
             {
-                ufsession_.Csys.AskWcs(out var wcs_id);
+                ufsession_.Csys.AskWcs(out Tag wcs_id);
                 return (CartesianCoordinateSystem)session_.__GetTaggedObject(wcs_id);
             }
             //[IgnoreExtensionAspect]
@@ -518,16 +518,16 @@ namespace TSG_Library.Extensions
             //[IgnoreExtensionAspect]
             get
             {
-                var uFSession = ufsession_;
-                uFSession.Csys.AskWcs(out var wcs_id);
-                var objectFromTag = (NXObject)session_.__GetTaggedObject(wcs_id);
-                var csys = (CartesianCoordinateSystem)objectFromTag;
+                UFSession uFSession = ufsession_;
+                uFSession.Csys.AskWcs(out Tag wcs_id);
+                NXObject objectFromTag = (NXObject)session_.__GetTaggedObject(wcs_id);
+                CartesianCoordinateSystem csys = (CartesianCoordinateSystem)objectFromTag;
                 return csys;
             }
             //[IgnoreExtensionAspect]
             set
             {
-                var nXOpenTag = value.Tag;
+                Tag nXOpenTag = value.Tag;
                 ufsession_.Csys.SetWcs(nXOpenTag);
             }
         }
@@ -595,7 +595,7 @@ namespace TSG_Library.Extensions
         //[IgnoreExtensionAspect]
         public static void print_(string message)
         {
-            var lw = session_.ListingWindow;
+            ListingWindow lw = session_.ListingWindow;
 
             if(!lw.IsOpen)
                 lw.Open();

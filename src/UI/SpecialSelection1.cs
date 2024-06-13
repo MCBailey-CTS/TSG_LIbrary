@@ -62,14 +62,14 @@ namespace TSG_Library.Ui
                 if(multiple)
                 {
                     Ui.SelectWithClassDialog(Prompt, Prompt, (int)Scope, initialProcess, IntPtr.Zero, out _, out _,
-                        out var selectedObj);
+                        out Tag[] selectedObj);
                     result = selectedObj.Select(x => (T)NXObjectManager.Get(x)).ToArray();
                 }
                 else
                 {
                     var cursor = new double[3];
                     Ui.SelectWithSingleDialog(Prompt, Prompt, (int)Scope, initialProcess, IntPtr.Zero, out _,
-                        out var selectedObj, cursor, out _);
+                        out Tag selectedObj, cursor, out _);
                     result = new[] { (T)NXObjectManager.Get(selectedObj) };
                 }
 
@@ -97,7 +97,7 @@ namespace TSG_Library.Ui
             }
             catch (Exception ex)
             {
-                var lw = Session.GetSession().ListingWindow;
+                ListingWindow lw = Session.GetSession().ListingWindow;
                 if(!lw.IsOpen) lw.Open();
                 lw.WriteLine("Exception occurred in the filtering process of " + taggedObject.JournalIdentifier + ".");
                 lw.WriteLine("Exception: " + ex.GetType() + " : " + ex.Message);

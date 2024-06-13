@@ -15,7 +15,7 @@ namespace TSG_Library.Extensions
             if(file.Contains("\\"))
                 file = Path.GetFileNameWithoutExtension(file);
 
-            var match = Regex.Match(file, regex, RegexOptions.IgnoreCase);
+            Match match = Regex.Match(file, regex, RegexOptions.IgnoreCase);
 
             if(!match.Success)
             {
@@ -165,7 +165,7 @@ namespace TSG_Library.Extensions
         public static string __AskDetailNumber(this string file)
         {
             var leaf = Path.GetFileNameWithoutExtension(file);
-            var match = Regex.Match(leaf, "^\\d+-\\d+-(?<detail>\\d+)$");
+            Match match = Regex.Match(leaf, "^\\d+-\\d+-(?<detail>\\d+)$");
 
             if(!match.Success)
                 throw new FormatException("Could not find detail number.");
@@ -284,7 +284,7 @@ namespace TSG_Library.Extensions
         {
             var leaf = Path.GetFileNameWithoutExtension(path);
 
-            var match = Regex.Match(leaf, "^\\d+-(?<op>\\d+)-\\d+$");
+            Match match = Regex.Match(leaf, "^\\d+-(?<op>\\d+)-\\d+$");
 
             if(!match.Success)
                 throw new Exception($"could not find an op: '{leaf}'");

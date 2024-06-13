@@ -1,5 +1,6 @@
 ﻿using System;
 using NXOpen;
+using NXOpen.UF;
 
 namespace TSG_Library.Extensions
 {
@@ -9,13 +10,13 @@ namespace TSG_Library.Extensions
 
         public static Point3d __StartPoint(this Edge edge)
         {
-            edge.GetVertices(out var vertex1, out _);
+            edge.GetVertices(out Point3d vertex1, out _);
             return vertex1;
         }
 
         public static Point3d __EndPoint(this Edge edge)
         {
-            edge.GetVertices(out _, out var vertex2);
+            edge.GetVertices(out _, out Point3d vertex2);
             return vertex2;
         }
 
@@ -46,7 +47,7 @@ namespace TSG_Library.Extensions
 
         public static Curve __ToCurve(this Edge edge)
         {
-            ufsession_.Modl.CreateCurveFromEdge(edge.Tag, out var ugcrv_id);
+            ufsession_.Modl.CreateCurveFromEdge(edge.Tag, out Tag ugcrv_id);
             return (Curve)session_.__GetTaggedObject(ugcrv_id);
         }
 
@@ -55,8 +56,8 @@ namespace TSG_Library.Extensions
         //     The lower u-value -- the parameter value at the start-point of the edge
         public static double __MinU(this Edge edge)
         {
-            var eval = ufsession_.Eval;
-            eval.Initialize2(edge.Tag, out var evaluator);
+            UFEval eval = ufsession_.Eval;
+            eval.Initialize2(edge.Tag, out IntPtr evaluator);
             var array = new double[2] { 0.0, 1.0 };
             eval.AskLimits(evaluator, array);
             eval.Free(evaluator);
@@ -68,8 +69,8 @@ namespace TSG_Library.Extensions
         //     The upper u-value -- the parameter value at the end-point of the edge
         public static double __MaxU(this Edge edge)
         {
-            var eval = ufsession_.Eval;
-            eval.Initialize2(edge.Tag, out var evaluator);
+            UFEval eval = ufsession_.Eval;
+            eval.Initialize2(edge.Tag, out IntPtr evaluator);
             var array = new double[2] { 0.0, 1.0 };
             eval.AskLimits(evaluator, array);
             eval.Free(evaluator);
@@ -281,8 +282,8 @@ namespace TSG_Library.Extensions
         //     The binormal is the cross product of the tangent and the normal: B = Cross(T,N).
         public static Vector3d __Binormal(this Edge edge, double value)
         {
-            var eval = ufsession_.Eval;
-            eval.Initialize2(edge.Tag, out var evaluator);
+            UFEval eval = ufsession_.Eval;
+            eval.Initialize2(edge.Tag, out IntPtr evaluator);
             var point = new double[3];
             var tangent = new double[3];
             var normal = new double[3];

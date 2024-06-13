@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CTS_Library.Extensions;
-using CTS_Library.Utilities;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
+using TSG_Library.Disposable;
 using TSG_Library.Extensions;
 using TSG_Library.Geom;
 using static TSG_Library.Extensions.__Extensions_;
@@ -27,8 +26,8 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             ExtractFace extractFace = (ExtractFace)dict[originalLinkedBody];
             Point3d val = fromComp.__Origin().__Mirror(plane);
             Matrix3x3 val2 = fromComp.__Orientation().__Mirror(plane);
-            var axisY = val2.__AxisY();
-            var val3 = val2.__AxisX().__Negate();
+            Vector3d axisY = val2.__AxisY();
+            Vector3d val3 = val2.__AxisX().__Negate();
             val2 = axisY.__ToMatrix3x3(val3);
             PartLoadStatus loadStatus;
             Component newFromComp = fromComp.__OwningPart().ComponentAssembly.AddComponent(fromComp.__Prototype(), "Entire Part", fromComp.Name, val, val2, fromComp.Layer, out loadStatus);
@@ -48,7 +47,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             using (new Destroyer(editWithRollbackManager))
             {
                 extractFaceBuilder = __work_part_.Features.CreateExtractFaceBuilder(extractFace);
-                newFromComp._ReferenceSet("Entire Part");
+                newFromComp.__ReferenceSet("Entire Part");
                 using (new Destroyer(extractFaceBuilder))
                 {
                     IList<Body> source = array.Select((Body originalBody) => (Body)newFromComp.FindOccurrence(originalBody)).ToList();
@@ -59,7 +58,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
                 }
             }
 
-            newFromComp._ReferenceSet("BODY");
+            newFromComp.__ReferenceSet("BODY");
         }
     }
 

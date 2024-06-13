@@ -34,7 +34,7 @@ namespace TSG_Library.UFuncUtilities.AssemblyAutoDetailUtilities
             }
 
             // Get the solid body on layer 1
-            var solidBody = __display_part_.__SolidBodyLayer1OrNull();
+            Body solidBody = __display_part_.__SolidBodyLayer1OrNull();
 
             if(solidBody is null)
                 throw new ArgumentException("Display part does not have solid body on layer 1");
@@ -42,7 +42,7 @@ namespace TSG_Library.UFuncUtilities.AssemblyAutoDetailUtilities
             IDictionary<double, Tuple<int[], IList<Face>, string[]>> dict =
                 new Dictionary<double, Tuple<int[], IList<Face>, string[]>>();
 
-            foreach (var face in solidBody.GetFaces())
+            foreach (Face face in solidBody.GetFaces())
             {
                 if(face.SolidFaceType != Face.FaceType.Cylindrical)
                     continue;
@@ -90,13 +90,13 @@ namespace TSG_Library.UFuncUtilities.AssemblyAutoDetailUtilities
 
             foreach (var diameter in dict.Keys)
             {
-                var tuple = dict[diameter];
+                Tuple<int[], IList<Face>, string[]> tuple = dict[diameter];
 
                 var count = tuple.Item1[0];
 
                 IList<string> list = new List<string>();
 
-                var faces = tuple.Item2;
+                IList<Face> faces = tuple.Item2;
 
                 var message = tuple.Item3;
 
@@ -118,7 +118,7 @@ namespace TSG_Library.UFuncUtilities.AssemblyAutoDetailUtilities
                 actualLines.Add(list);
 
 
-                foreach (var face in faces)
+                foreach (Face face in faces)
                 {
                     var point = new double[3];
                     var dir = new double[3];
@@ -128,16 +128,16 @@ namespace TSG_Library.UFuncUtilities.AssemblyAutoDetailUtilities
 
                     using (session_.__UsingDoUpdate())
                     {
-                        using (var letteringPreferences1 =
+                        using (LetteringPreferences letteringPreferences1 =
                                __work_part_.Annotations.Preferences.GetLetteringPreferences())
-                        using (var userSymbolPreferences1 = __work_part_.Annotations.NewUserSymbolPreferences(
+                        using (UserSymbolPreferences userSymbolPreferences1 = __work_part_.Annotations.NewUserSymbolPreferences(
                                    UserSymbolPreferences.SizeType.ScaleAspectRatio,
                                    1.0,
                                    1.0))
                         {
                             userSymbolPreferences1.SetLengthAndHeight(.125, .125);
 
-                            var note1 = __work_part_.Annotations.CreateNote(
+                            Note note1 = __work_part_.Annotations.CreateNote(
                                 new[] { $"{letter}" },
                                 point.__ToPoint3d(),
                                 AxisOrientation.Horizontal,
@@ -151,7 +151,7 @@ namespace TSG_Library.UFuncUtilities.AssemblyAutoDetailUtilities
                             note1.SetName("HOLECHARTNOTE");
                             TheUFSession.View.ConvertToModel(__display_part_.ModelingViews.WorkView.Tag, note1.Tag);
 
-                            var draftingNoteBuilder1 = __work_part_.Annotations.CreateDraftingNoteBuilder(note1);
+                            DraftingNoteBuilder draftingNoteBuilder1 = __work_part_.Annotations.CreateDraftingNoteBuilder(note1);
 
                             using (session_.__UsingBuilderDestroyer(draftingNoteBuilder1))
                             {
@@ -167,7 +167,7 @@ namespace TSG_Library.UFuncUtilities.AssemblyAutoDetailUtilities
 
             IList<string> note = new List<string>();
 
-            foreach (var t in actualLines)
+            foreach (IList<string> t in actualLines)
             {
                 var _letter = t[0];
                 var drill = t[1];

@@ -1,32 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
+﻿//using System;
+//using System.Collections.Generic;
 
-namespace TSG_Library.Attributes
-{
-    [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
-    public class RevisionAttribute : Attribute
-    {
-        public RevisionAttribute(string revisionLevel, string revisionMessage)
-        {
-            RevisionLevel = revisionLevel;
-            RevisionMessage = revisionMessage;
+//namespace TSG_Library.Attributes
+//{
+//    [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
+//    public class RevisionAttribute : Attribute
+//    {
+//        public RevisionAttribute(string revisionLevel, string revisionMessage)
+//        {
+//            RevisionLevel = revisionLevel;
+//            RevisionMessage = revisionMessage;
 
-            var split = revisionLevel.Split('.');
+//            var split = revisionLevel.Split('.');
 
-            var list = new List<int>();
+//            List<int> list = new List<int>();
 
-            foreach (var i in split)
-            {
-                if(!int.TryParse(i, out var number)) continue;
-                list.Add(number);
-            }
+//            foreach (var i in split)
+//            {
+//                if(!int.TryParse(i, out var number)) continue;
+//                list.Add(number);
+//            }
 
-            Levels = list.ToArray();
-        }
+//            Levels = list.ToArray();
+//        }
 
-        public string RevisionLevel { get; }
-        public string RevisionMessage { get; }
+//        public string RevisionLevel { get; }
+//        public string RevisionMessage { get; }
 
-        public int[] Levels { get; }
-    }
-}
+//        public int[] Levels { get; }
+//    }
+//}

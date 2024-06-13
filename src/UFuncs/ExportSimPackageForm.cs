@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using NXOpen;
+using NXOpen.Assemblies;
 using TSG_Library.Attributes;
 using TSG_Library.Utilities;
 using static TSG_Library.Extensions.__Extensions_;
@@ -12,37 +13,37 @@ using Selection = TSG_Library.Ui.Selection;
 
 namespace TSG_Library.UFuncs
 {
-    [RevisionLog("Export Sim Package")]
-    [RevisionEntry("1.0", "2017", "09", "08")]
-    [Revision("1.0.1", "Created fo NX.")]
-    [RevisionEntry("1.1", "2017", "10", "26")]
-    [Revision("1.1.1",
-        "Fixed bug where when you pressed the select button on the form, it would prompt you to delete the export sim folder regardless if the folder existed or not at that time.")]
-    [RevisionEntry("1.2", "2018", "01", "17")]
-    [Revision("1.2.1",
-        "Added a “.dxf” check box. Now if the user selects a component to export that follows the Regex (^CustomerJobNumber-B-) and the dxf checkbox is checked then the program will also export a “.dxf” and place it in the same zip folder.")]
-    [RevisionEntry("1.3", "2018", "04", "26")]
-    [Revision("1.3.1",
-        "Edited the Regex used to find simulation files and customer numbers in a GFolder. It will allow underscores to be a part of the customer job number.")]
-    [Revision("1.3.2",
-        "File created from which the simulation regex is read from. This will allow us to be able to change the regex expression without having to edit the code itself.")]
-    [RevisionEntry("1.4", "2019", "07", "15")]
-    [Revision("1.4.1", "Updated so that the program works with the updated GFolder.")]
-    [Revision("1.4.2", "Program now prints if it successfully creates or does not create the expected files.")]
-    [RevisionEntry("1.5", "2019", "08", "28")]
-    [Revision("1.5.1", "GFolder updated to allow old job number under non cts folder.")]
-    [RevisionEntry("1.6", "2021", "03", "04")]
-    [Revision("1.6.1", "Changed export location for 6 digit jobs.")]
-    [Revision("1.6.2", "The location will now export to {JobFolder\\Layout\\Go}.")]
-    [Revision("1.6.3", "The step files will now be created using the same way as AssemblyExportDesignData.")]
-    [Revision("1.6.4", "Removed the dxf capability from the form. No longer needed.")]
-    [RevisionEntry("1.7", "2021", "03", "08")]
-    [Revision("1.7.1", "Added copy check box to form.")]
-    [Revision("1.7.2",
-        "Checking the copy check box will now copy contents of the created sim package to the \"Process and Sim Data for Design\" directory.")]
-    [RevisionEntry("1.8", "2021", "03", "10")]
-    [Revision("1.8.1",
-        "Checking the copy check box will only copy the created zip file created to the \"Process and Sim Data for Design\".")]
+    //[RevisionLog("Export Sim Package")]
+    //[RevisionEntry("1.0", "2017", "09", "08")]
+    //[Revision("1.0.1", "Created fo NX.")]
+    //[RevisionEntry("1.1", "2017", "10", "26")]
+    //[Revision("1.1.1",
+    //    "Fixed bug where when you pressed the select button on the form, it would prompt you to delete the export sim folder regardless if the folder existed or not at that time.")]
+    //[RevisionEntry("1.2", "2018", "01", "17")]
+    //[Revision("1.2.1",
+    //    "Added a “.dxf” check box. Now if the user selects a component to export that follows the Regex (^CustomerJobNumber-B-) and the dxf checkbox is checked then the program will also export a “.dxf” and place it in the same zip folder.")]
+    //[RevisionEntry("1.3", "2018", "04", "26")]
+    //[Revision("1.3.1",
+    //    "Edited the Regex used to find simulation files and customer numbers in a GFolder. It will allow underscores to be a part of the customer job number.")]
+    //[Revision("1.3.2",
+    //    "File created from which the simulation regex is read from. This will allow us to be able to change the regex expression without having to edit the code itself.")]
+    //[RevisionEntry("1.4", "2019", "07", "15")]
+    //[Revision("1.4.1", "Updated so that the program works with the updated GFolder.")]
+    //[Revision("1.4.2", "Program now prints if it successfully creates or does not create the expected files.")]
+    //[RevisionEntry("1.5", "2019", "08", "28")]
+    //[Revision("1.5.1", "GFolder updated to allow old job number under non cts folder.")]
+    //[RevisionEntry("1.6", "2021", "03", "04")]
+    //[Revision("1.6.1", "Changed export location for 6 digit jobs.")]
+    //[Revision("1.6.2", "The location will now export to {JobFolder\\Layout\\Go}.")]
+    //[Revision("1.6.3", "The step files will now be created using the same way as AssemblyExportDesignData.")]
+    //[Revision("1.6.4", "Removed the dxf capability from the form. No longer needed.")]
+    //[RevisionEntry("1.7", "2021", "03", "08")]
+    //[Revision("1.7.1", "Added copy check box to form.")]
+    //[Revision("1.7.2",
+    //    "Checking the copy check box will now copy contents of the created sim package to the \"Process and Sim Data for Design\" directory.")]
+    //[RevisionEntry("1.8", "2021", "03", "10")]
+    //[Revision("1.8.1",
+    //    "Checking the copy check box will only copy the created zip file created to the \"Process and Sim Data for Design\".")]
     [UFunc(ufunc_export_sim_package)]
     public partial class ExportSimPackageForm : _UFuncForm
     {
@@ -61,7 +62,7 @@ namespace TSG_Library.UFuncs
             {
                 // todo
 
-                var match = Regex.Match(__display_part_.Leaf, SimUcf.SingleValue("SIM_SPECIAL_REGEX"));
+                Match match = Regex.Match(__display_part_.Leaf, SimUcf.SingleValue("SIM_SPECIAL_REGEX"));
 
                 if(!match.Success)
                 {
@@ -71,7 +72,7 @@ namespace TSG_Library.UFuncs
 
                 var customerNumber = match.Groups["CustomerNumber"].Value;
 
-                var folder = GFolder.create_or_null(__work_part_);
+                GFolder folder = GFolder.create_or_null(__work_part_);
 
                 if(folder is null)
                     throw new InvalidOperationException("The current work part does not reside within a GFolder.");
@@ -80,7 +81,7 @@ namespace TSG_Library.UFuncs
 
                 if(Directory.Exists(directory))
                 {
-                    var result = MessageBox.Show($@"{directory} already exists, would you like to replace it?",
+                    DialogResult result = MessageBox.Show($@"{directory} already exists, would you like to replace it?",
                         @"Warning", MessageBoxButtons.YesNo);
                     if(result == DialogResult.No)
                         return;
@@ -90,7 +91,7 @@ namespace TSG_Library.UFuncs
                     Directory.CreateDirectory(directory);
 
                 // Select Components for data export.
-                var selectedComponents = Selection.SelectManyComponents();
+                Component[] selectedComponents = Selection.SelectManyComponents();
 
                 if(selectedComponents.Length == 0)
                     return;
@@ -100,7 +101,7 @@ namespace TSG_Library.UFuncs
 
                 Directory.CreateDirectory(directory);
 
-                foreach (var comp in selectedComponents)
+                foreach (Component comp in selectedComponents)
                     try
                     {
                         var displayName = comp.DisplayName.ToLower();
@@ -249,7 +250,7 @@ namespace TSG_Library.UFuncs
                 if(File.Exists(igesPath))
                     throw new ArgumentException(@"Path for iges file already exists.", nameof(igesPath));
 
-                var igesCreator = Session.GetSession().DexManager.CreateIgesCreator();
+                IgesCreator igesCreator = Session.GetSession().DexManager.CreateIgesCreator();
 
                 using (session_.__UsingBuilderDestroyer(igesCreator))
                 {

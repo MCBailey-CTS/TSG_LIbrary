@@ -31,7 +31,7 @@ namespace TSG_Library.Forms
         public FormCtsReferenceSet(IEnumerable<Component> components)
             : this()
         {
-            var array1 = components.ToArray();
+            Component[] array1 = components.ToArray();
 
             if(!array1.Any())
                 throw new ArgumentOutOfRangeException(nameof(components));
@@ -86,11 +86,11 @@ namespace TSG_Library.Forms
 
         protected IEnumerable<string> MergeStrings(IEnumerable<Component> snapComponents)
         {
-            var array = snapComponents.ToArray();
-            var source = ((Part)array[0].Prototype).GetAllReferenceSets().Select(str => str.Name);
+            Component[] array = snapComponents.ToArray();
+            IEnumerable<string> source = ((Part)array[0].Prototype).GetAllReferenceSets().Select(str => str.Name);
             for (var index = 1; index < array.Length; ++index)
             {
-                var list = ((BasePart)array[index].Prototype).GetAllReferenceSets().Select(str => str
+                List<string> list = ((BasePart)array[index].Prototype).GetAllReferenceSets().Select(str => str
                     .Name).ToList();
                 source = source.Select(x => x).Intersect(list).ToList();
             }
@@ -122,12 +122,12 @@ namespace TSG_Library.Forms
             else
                 lstBox.Height = lstBox.ItemHeight * (array.Length + 1);
             btnOk.Location = new Point(lstBox.Location.X, lstBox.Location.Y + lstBox.Height - 3);
-            var btnExit = this.btnExit;
-            var location = lstBox.Location;
+            Button btnExit = this.btnExit;
+            Point location = lstBox.Location;
             var x = location.X + lstBox.Width - this.btnExit.Size.Width;
             location = btnOk.Location;
             var y = location.Y;
-            var point = new Point(x, y);
+            Point point = new Point(x, y);
             btnExit.Location = point;
             location = lstBox.Location;
             Width = location.X * 2 + lstBox.Size.Width + 20;

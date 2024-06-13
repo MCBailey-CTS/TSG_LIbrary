@@ -16,7 +16,7 @@ namespace TSG_Library.UFuncs
         public override void execute()
 #pragma warning restore CS0809 // Obsolete member overrides non-obsolete member
         {
-            var selectedSplines = SelectSplines();
+            Spline[] selectedSplines = SelectSplines();
 
             if(selectedSplines is null || !selectedSplines.Any())
                 return;
@@ -189,7 +189,7 @@ namespace TSG_Library.UFuncs
                 new[] { spline.Tag },
                 .0005,
                 out var segments,
-                out var segmentTags);
+                out Tag[] segmentTags);
 
             spline.Blank();
 

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using NXOpen;
+using NXOpen.Assemblies;
 using NXOpen.UF;
 using TSG_Library.Attributes;
 using TSG_Library.Utilities;
@@ -15,53 +16,53 @@ using static TSG_Library.UFuncs._UFunc;
 namespace TSG_Library.UFuncs
 {
     [UFunc(ufunc_simulation_data_builder)]
-    [RevisionEntry("1.00", "2017", "06", "05")]
-    [Revision("", "Revision Log Created for NX 11")]
-    [RevisionEntry("1.01", "2017", "08", "22")]
-    [Revision("1.01.1", "Signed so it will run outside of CTS")]
-    [RevisionEntry("2.0", "2017", "09", "13")]
-    [Revision("2.0.1", "Removed a lot of redundant code.")]
-    [Revision("2.0.2", "Added three radio buttons  (.prt, .igs, .stp)")]
-    [Revision("2.0.3", "This gives the user the ability to override the desired export type.")]
-    [RevisionEntry("2.1", "2017", "09", "27")]
-    [Revision("2.1.1", "Fixed bug where original part was being exported versus newly created part.")]
-    [RevisionEntry("2.2", "2018", "01", "03")]
-    [Revision("2.2.1", "Increased the number of versions from 25 to 50.")]
-    [RevisionEntry("2.3", "2018", "04", "26")]
-    [Revision("2.3.1",
-        "Edited the Regex used to find simulation files and customer numbers in a GFolder. It will allow underscores to be a part of the customer job number.")]
-    [Revision("2.3.2",
-        "File created from which the simulation regex is read from. This will allow us to be able to change the regex expression without having to edit the code itself.")]
-    [Revision("2.3.3", "Also some of combo box elements are generated using the same file.")]
-    [RevisionEntry("2.4", "2018", "05", "23")]
-    [Revision("2.4.1", "Moved all hardcoded information that populates the combo boxes to the SimulationUcf file.")]
-    [RevisionEntry("2.5", "2019", "06", "28")]
-    [Revision("2.5.1", "Moved engineering text box and swapped it with the proposal text box.")]
-    [Revision("2.5.2", "Changed the proposal text box to be S/P.")]
-    [RevisionEntry("2.6", "2019", "07", "04")]
-    [Revision("2.6.1", "Incorporated new GFolder into program.")]
-    [Revision("2.6.2", "Program will now allow for job tags after the job number.")]
-    [RevisionEntry("2.7", "2019", "07", "23")]
-    [Revision("2.7.1", "Increased the number of versions to 999.")]
-    [Revision("2.7.2", "Fixed issue that caused nx to lock up when the version number is greater than 99.")]
-    [Revision("2.7.3", "Incorporated stock list check off regex.")]
-    [RevisionEntry("2.8", "2019", "08", "28")]
-    [Revision("2.8.1", "GFolder updated to allow old job number under non cts folder.")]
-    [RevisionEntry("2.9", "2020", "08", "26")]
-    [Revision("2.9.1", "Added delete button.")]
-    [Revision("2.9.2", "Incorporated SimDataDeletion into this button.")]
-    [Revision("2.9.3", "SimData deletion will no longer be it's own ufunc.")]
-    [Revision("2.9.4", "Select button will now be disabled unless the user selects a data/tsg level.")]
-    [Revision("2.9.5", "Added a menu with a top most checked box. Allows the user to select the Top Most form option.")]
-    [RevisionEntry("3.0", "2020", "09", "03")]
-    [Revision("3.0.1", "Updated to use new Sim path, Now: \"P:\\CTS_SIM\\Active\"")]
-    [RevisionEntry("3.1", "2020", "09", "24")]
-    [Revision("3.1.1",
-        "Changed how we find files to overwrite. Chagned from \"Contains\" to \"Equals\" in the \"CheckName\" method in \"Program\".")]
-    [RevisionEntry("11.1", "2023", "01", "09")]
-    [Revision("11.1.1", "Removed validation")]
-    [RevisionEntry("11.2", "2023", "05", "17")]
-    [Revision("11.2.1", "Fixed jons issue where it couldn't find the proper sim folder.")]
+    //[RevisionEntry("1.00", "2017", "06", "05")]
+    //[Revision("", "Revision Log Created for NX 11")]
+    //[RevisionEntry("1.01", "2017", "08", "22")]
+    //[Revision("1.01.1", "Signed so it will run outside of CTS")]
+    //[RevisionEntry("2.0", "2017", "09", "13")]
+    //[Revision("2.0.1", "Removed a lot of redundant code.")]
+    //[Revision("2.0.2", "Added three radio buttons  (.prt, .igs, .stp)")]
+    //[Revision("2.0.3", "This gives the user the ability to override the desired export type.")]
+    //[RevisionEntry("2.1", "2017", "09", "27")]
+    //[Revision("2.1.1", "Fixed bug where original part was being exported versus newly created part.")]
+    //[RevisionEntry("2.2", "2018", "01", "03")]
+    //[Revision("2.2.1", "Increased the number of versions from 25 to 50.")]
+    //[RevisionEntry("2.3", "2018", "04", "26")]
+    //[Revision("2.3.1",
+    //    "Edited the Regex used to find simulation files and customer numbers in a GFolder. It will allow underscores to be a part of the customer job number.")]
+    //[Revision("2.3.2",
+    //    "File created from which the simulation regex is read from. This will allow us to be able to change the regex expression without having to edit the code itself.")]
+    //[Revision("2.3.3", "Also some of combo box elements are generated using the same file.")]
+    //[RevisionEntry("2.4", "2018", "05", "23")]
+    //[Revision("2.4.1", "Moved all hardcoded information that populates the combo boxes to the SimulationUcf file.")]
+    //[RevisionEntry("2.5", "2019", "06", "28")]
+    //[Revision("2.5.1", "Moved engineering text box and swapped it with the proposal text box.")]
+    //[Revision("2.5.2", "Changed the proposal text box to be S/P.")]
+    //[RevisionEntry("2.6", "2019", "07", "04")]
+    //[Revision("2.6.1", "Incorporated new GFolder into program.")]
+    //[Revision("2.6.2", "Program will now allow for job tags after the job number.")]
+    //[RevisionEntry("2.7", "2019", "07", "23")]
+    //[Revision("2.7.1", "Increased the number of versions to 999.")]
+    //[Revision("2.7.2", "Fixed issue that caused nx to lock up when the version number is greater than 99.")]
+    //[Revision("2.7.3", "Incorporated stock list check off regex.")]
+    //[RevisionEntry("2.8", "2019", "08", "28")]
+    //[Revision("2.8.1", "GFolder updated to allow old job number under non cts folder.")]
+    //[RevisionEntry("2.9", "2020", "08", "26")]
+    //[Revision("2.9.1", "Added delete button.")]
+    //[Revision("2.9.2", "Incorporated SimDataDeletion into this button.")]
+    //[Revision("2.9.3", "SimData deletion will no longer be it's own ufunc.")]
+    //[Revision("2.9.4", "Select button will now be disabled unless the user selects a data/tsg level.")]
+    //[Revision("2.9.5", "Added a menu with a top most checked box. Allows the user to select the Top Most form option.")]
+    //[RevisionEntry("3.0", "2020", "09", "03")]
+    //[Revision("3.0.1", "Updated to use new Sim path, Now: \"P:\\CTS_SIM\\Active\"")]
+    //[RevisionEntry("3.1", "2020", "09", "24")]
+    //[Revision("3.1.1",
+    //    "Changed how we find files to overwrite. Chagned from \"Contains\" to \"Equals\" in the \"CheckName\" method in \"Program\".")]
+    //[RevisionEntry("11.1", "2023", "01", "09")]
+    //[Revision("11.1.1", "Removed validation")]
+    //[RevisionEntry("11.2", "2023", "05", "17")]
+    //[Revision("11.2.1", "Fixed jons issue where it couldn't find the proper sim folder.")]
     public partial class SimulationDataBuilderForm : _UFuncForm
     {
         private const string UnfoldMatlThk = "";
@@ -170,7 +171,7 @@ namespace TSG_Library.UFuncs
 
 
                 // Select the objects to export
-                var selObjects = SelectObjects();
+                Tag[] selObjects = SelectObjects();
                 if(selObjects.Length <= 0) return;
 
                 // build export/iges/component name
@@ -187,22 +188,22 @@ namespace TSG_Library.UFuncs
                 if(doesExist)
                 {
                     // MessageBox prompts user if they want to Replace current file or cancel. 
-                    var dResult = MessageBox.Show($@"Replace file {NameBuilder}?", @"File Exist",
+                    DialogResult dResult = MessageBox.Show($@"Replace file {NameBuilder}?", @"File Exist",
                         MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 
                     if(dResult != DialogResult.OK)
                         return;
 
-                    foreach (var simComp in __display_part_.ComponentAssembly.RootComponent.GetChildren())
+                    foreach (Component simComp in __display_part_.ComponentAssembly.RootComponent.GetChildren())
                     {
                         if(simComp.Name != NameBuilder.ToUpper())
                             continue;
 
-                        var closeSimPart = (Part)simComp.Prototype;
+                        Part closeSimPart = (Part)simComp.Prototype;
 
                         closeSimPart.Close(BasePart.CloseWholeTree.False, BasePart.CloseModified.CloseModified, null);
 
-                        var markId1 = session_.SetUndoMark(Session.MarkVisibility.Invisible, "");
+                        Session.UndoMarkId markId1 = session_.SetUndoMark(Session.MarkVisibility.Invisible, "");
                         NXObject[] objects1 = { simComp };
 
                         session_.UpdateManager.AddObjectsToDeleteList(objects1);
@@ -236,10 +237,10 @@ namespace TSG_Library.UFuncs
             new[] { txtJobNumber, txtCustomText }.ToList().ForEach(box => box.Text = "");
 
             // Gets the regex expression to be used for matching a simulation file.
-            var regex = new Regex("^(?<CustomerNumber>[0-9_]+|[0-9_]+-[0-9]+)-simulation$");
+            Regex regex = new Regex("^(?<CustomerNumber>[0-9_]+|[0-9_]+-[0-9]+)-simulation$");
 
             // Matches the current display part to the regex. If not .Success return.
-            var match = regex.Match(__display_part_.Leaf);
+            Match match = regex.Match(__display_part_.Leaf);
 
             if(!match.Success)
                 return;
@@ -289,9 +290,9 @@ namespace TSG_Library.UFuncs
                         return;
                 }
 
-            var folder = GFolder.create_or_null(__work_part_)
-                         ?? throw new InvalidOperationException(
-                             "The current work part does not reside within a GFolder.");
+            GFolder folder = GFolder.create_or_null(__work_part_)
+                             ?? throw new InvalidOperationException(
+                                 "The current work part does not reside within a GFolder.");
 
             ExportPart(partFile, tagObjects);
 
@@ -381,7 +382,7 @@ namespace TSG_Library.UFuncs
                     throw new ArgumentException(@"Path for Step file already exists.", nameof(dwgPath));
                 if(File.Exists(dwgPath))
                     throw new ArgumentException(@"Path for Step file already exists.", nameof(dwgPath));
-                var stepCreator1 = session_.DexManager.CreateStepCreator();
+                StepCreator stepCreator1 = session_.DexManager.CreateStepCreator();
                 stepCreator1.ExportAs = StepCreator.ExportAsOption.Ap214;
                 stepCreator1.ExportFrom = StepCreator.ExportFromOption.ExistingPart;
                 stepCreator1.ObjectTypes.Solids = true;
@@ -405,7 +406,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var igesCreator = Session.GetSession().DexManager.CreateIgesCreator();
+                IgesCreator igesCreator = Session.GetSession().DexManager.CreateIgesCreator();
                 igesCreator.ExportModelData = true;
                 igesCreator.ExportDrawings = true;
                 igesCreator.MapTabCylToBSurf = true;
@@ -507,7 +508,7 @@ namespace TSG_Library.UFuncs
                     }
                 }
 
-                var regex = new Regex($"^{txtJobNumber.Text}-{operation}-v(?<version>[0-9]+)");
+                Regex regex = new Regex($"^{txtJobNumber.Text}-{operation}-v(?<version>[0-9]+)");
                 var versions = __display_part_.ComponentAssembly.RootComponent.GetChildren()
                     .Select(component => component.DisplayName)
                     .Select(displayName => regex.Match(displayName))
@@ -566,16 +567,16 @@ namespace TSG_Library.UFuncs
 
             const string title = "Export data";
 
-            var clientData = IntPtr.Zero;
+            IntPtr clientData = IntPtr.Zero;
 
             TheUFSession.Ui.LockUgAccess(UF_UI_FROM_CUSTOM);
 
             TheUFSession.Ui.SelectWithClassDialog(prompt, title, UF_UI_SEL_SCOPE_ANY_IN_ASSEMBLY, null, clientData,
-                out _, out _, out var selObjects);
+                out _, out _, out Tag[] selObjects);
 
             TheUFSession.Ui.UnlockUgAccess(UF_UI_FROM_CUSTOM);
 
-            foreach (var objs in selObjects)
+            foreach (Tag objs in selObjects)
                 TheUFSession.Disp.SetHighlight(objs, 0);
 
             return selObjects;
@@ -583,7 +584,7 @@ namespace TSG_Library.UFuncs
 
         public static void AddNewSurface(string compSurfacePath, string comboBoxText, string nameBuilder)
         {
-            var basePart1 = session_.__FindOrOpen(compSurfacePath);
+            Part basePart1 = session_.__FindOrOpen(compSurfacePath);
 
             var layer = 1;
 
@@ -616,10 +617,10 @@ namespace TSG_Library.UFuncs
                         break;
                 }
 
-            var surfacePart = basePart1;
+            Part surfacePart = basePart1;
 
             __display_part_.ComponentAssembly.AddComponent(surfacePart, "Entire Part", nameBuilder, _Point3dOrigin,
-                _Matrix3x3Identity, layer, out var sPartLoadStatus);
+                _Matrix3x3Identity, layer, out PartLoadStatus sPartLoadStatus);
 
             print_($"Added Component: {nameBuilder}");
 
@@ -634,12 +635,12 @@ namespace TSG_Library.UFuncs
             if(string.IsNullOrEmpty(operation))
                 return false;
 
-            var displayComp = __display_part_.ComponentAssembly.RootComponent;
+            Component displayComp = __display_part_.ComponentAssembly.RootComponent;
 
             if(displayComp == null)
                 return true;
 
-            var childrenComps = displayComp.GetChildren()
+            Component[] childrenComps = displayComp.GetChildren()
                 .Where(component => component.DisplayName == partName)
                 .ToArray();
 
@@ -647,13 +648,13 @@ namespace TSG_Library.UFuncs
                 return true;
 
             // If the program gets here then there must already be a child with that name.
-            var dResult = MessageBox.Show($@"Replace file {nameBuilder}?", @"File Exist", MessageBoxButtons.OKCancel,
+            DialogResult dResult = MessageBox.Show($@"Replace file {nameBuilder}?", @"File Exist", MessageBoxButtons.OKCancel,
                 MessageBoxIcon.Question);
 
             if(dResult != DialogResult.OK)
                 return false;
 
-            var part = session_.__FindOrOpen(childrenComps[0].DisplayName);
+            Part part = session_.__FindOrOpen(childrenComps[0].DisplayName);
 
             var partFilePath = part.FullPath;
 
@@ -663,7 +664,7 @@ namespace TSG_Library.UFuncs
 
             session_.__DeleteObjects(childrenComps);
 
-            var folder = GFolder.create_or_null(__work_part_);
+            GFolder folder = GFolder.create_or_null(__work_part_);
 
             if(folder is null)
                 throw new InvalidOperationException("The current work part does not reside within a GFolder.");
@@ -681,7 +682,7 @@ namespace TSG_Library.UFuncs
             var temp = $"{simFolder}\\data\\{operation}";
 
             // Revision 3.1
-            var files = Directory.GetFiles(temp)
+            List<string> files = Directory.GetFiles(temp)
                 .Where(path => Path.GetFileNameWithoutExtension(path).ToLower() == partName.ToLower())
                 .ToList();
 
@@ -695,7 +696,7 @@ namespace TSG_Library.UFuncs
             if(File.Exists($"{partFile}.prt"))
                 File.Delete($"{partFile}.prt");
 
-            var exportOptions = new UFPart.ExportOptions
+            UFPart.ExportOptions exportOptions = new UFPart.ExportOptions
             {
                 new_part = true,
                 expression_mode = UFPart.ExportExpMode.CopyExpDeeply,
@@ -741,7 +742,7 @@ namespace TSG_Library.UFuncs
 
             public static object[] ComboVersionItems()
             {
-                var list = new List<object>();
+                List<object> list = new List<object>();
 
                 for (var index = 1; index <= 999; index++)
                     list.Add($"v{(index > 9 ? index + "" : $"0{index}")}");
@@ -756,7 +757,7 @@ namespace TSG_Library.UFuncs
 
             public static object[] ComboDataRLevelsItems()
             {
-                var list = new List<object>();
+                List<object> list = new List<object>();
 
                 for (var index = 1; index <= 20; index++)
                     list.Add($"tsg{index.__PadInt(3)}");
@@ -766,7 +767,7 @@ namespace TSG_Library.UFuncs
 
             public static object[] ComboEcItems()
             {
-                var list = new List<object>();
+                List<object> list = new List<object>();
 
                 for (var index = 501; index <= 520; index++)
                     list.Add($"{index}");
@@ -777,7 +778,7 @@ namespace TSG_Library.UFuncs
 
             public static object[] ComboProposalDataItems()
             {
-                var list = new List<object>();
+                List<object> list = new List<object>();
 
                 for (var index = 1; index <= 10; index++)
                     list.Add($"s{index}");

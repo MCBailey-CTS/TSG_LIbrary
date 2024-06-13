@@ -28,7 +28,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
         {
             
             ExtractFace extractFace = (ExtractFace)dict[originalLinkedBody];
-            var val = fromComp.__Origin()._Mirror(plane);
+            Point3d val = fromComp.__Origin()._Mirror(plane);
             Matrix3x3 val2 = fromComp.__Orientation().__Mirror(plane);
             Vector axisY = val2.__AxisY();
             Vector val3 = val2.__AxisX().__Negate();

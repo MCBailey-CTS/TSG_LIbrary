@@ -28,13 +28,13 @@ namespace TSG_Library.Extensions
             IEqualityComparer<TKey> keyComparer = null)
         {
             // Creates the dictionary with the default equality comparer if one was not provided.
-            var dictionary =
+            Dictionary<TKey, List<TValue>> dictionary =
                 new Dictionary<TKey, List<TValue>>(keyComparer ?? EqualityComparer<TKey>.Default);
 
-            foreach (var value in source)
+            foreach (TValue value in source)
             {
                 // Gets the key from the specified key selector.
-                var key = keySelector(value);
+                TKey key = keySelector(value);
 
                 // Checks to see if the dictionary contains the {key}.
                 if(!dictionary.ContainsKey(key))

@@ -19,26 +19,26 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             Component originalComp,
             IDictionary<TaggedObject, TaggedObject> dict)
         {
-            var mirroredComp = (Component)dict[originalComp];
+            Component mirroredComp = (Component)dict[originalComp];
 
-            var mirroredPart = mirroredComp.__Prototype();
+            Part mirroredPart = mirroredComp.__Prototype();
 
             // ReSharper disable once UnusedVariable
             _ = (Feature)dict[originalFeature];
 
-            ((EdgeTangentRule)originalRule).GetData(out var originalStartEdge, out var originalEndEdge,
+            ((EdgeTangentRule)originalRule).GetData(out Edge originalStartEdge, out Edge originalEndEdge,
                 out var isFromStart, out var angleTolerance, out var hasSameConvexity);
 
             Edge newStartEdge = null;
 
             Edge newEndEdge = null;
 
-            var finalStart = originalStartEdge.__StartPoint().__MirrorMap(plane, originalComp, mirroredComp);
+            Point3d finalStart = originalStartEdge.__StartPoint().__MirrorMap(plane, originalComp, mirroredComp);
 
-            var finalEnd = originalStartEdge.__EndPoint().__MirrorMap(plane, originalComp, mirroredComp);
+            Point3d finalEnd = originalStartEdge.__EndPoint().__MirrorMap(plane, originalComp, mirroredComp);
 
-            foreach (var body in mirroredPart.Bodies.ToArray())
-            foreach (var e in body.GetEdges())
+            foreach (Body body in mirroredPart.Bodies.ToArray())
+            foreach (Edge e in body.GetEdges())
                 if(e.__HasEndPoints(finalStart, finalEnd))
                     newStartEdge = e;
 
@@ -48,8 +48,8 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                 finalEnd = originalEndEdge.__EndPoint().__MirrorMap(plane, originalComp, mirroredComp);
 
-                foreach (var body in mirroredPart.Bodies.ToArray())
-                foreach (var e in body.GetEdges())
+                foreach (Body body in mirroredPart.Bodies.ToArray())
+                foreach (Edge e in body.GetEdges())
                     if(e.__HasEndPoints(finalStart, finalEnd))
                         newEndEdge = e;
             }

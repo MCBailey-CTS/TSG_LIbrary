@@ -1,27 +1,29 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using NXOpen;
 using NXOpen.GeometricUtilities;
 using NXOpen.UF;
 using TSG_Library.Attributes;
 using static TSG_Library.Extensions.__Extensions_;
+using CurveLengthBuilder = NXOpen.Features.CurveLengthBuilder;
 using Selection = TSG_Library.Ui.Selection;
 
 namespace TSG_Library.UFuncs
 {
     [UFunc("blank-development")]
-    [RevisionLog("Blank Development")]
-    [RevisionEntry("1.0", "2017", "06", "05")]
-    [Revision("1.0.1", "Revision Log Created for NX 11.")]
-    [RevisionEntry("1.1", "2017", "08", "22")]
-    [Revision("1.1.1", "Signed so it will run outside of CTS.")]
-    [RevisionEntry("11.1", "2023", "01", "09")]
-    [Revision("11.1.1", "Removed validation")]
+    //[RevisionLog("Blank Development")]
+    //[RevisionEntry("1.0", "2017", "06", "05")]
+    //[Revision("1.0.1", "Revision Log Created for NX 11.")]
+    //[RevisionEntry("1.1", "2017", "08", "22")]
+    //[Revision("1.1.1", "Signed so it will run outside of CTS.")]
+    //[RevisionEntry("11.1", "2023", "01", "09")]
+    //[Revision("11.1.1", "Removed validation")]
     public class BlankDevelopment : _UFunc
     {
         public override void execute()
         {
             session_.SetUndoMark(Session.MarkVisibility.Visible, "Develop Curve");
-            var lengthObjs = Selection.SelectCurves();
+            Curve[] lengthObjs = Selection.SelectCurves();
 
             // get total length of selected lines
             var addLength = lengthObjs.Select(selTag => (Curve)session_.__GetTaggedObject(selTag.Tag))
@@ -29,8 +31,8 @@ namespace TSG_Library.UFuncs
                 .Sum();
 
             // get user input for the line to develop
-            var cursorLocation = new Point3d();
-            var developObj = Selection.SelectSingleLine();
+            Point3d cursorLocation = new Point3d();
+            Line developObj = Selection.SelectSingleLine();
 
             if(developObj is null)
                 return;
@@ -40,14 +42,14 @@ namespace TSG_Library.UFuncs
             AskPositionOnObject(developObj.Tag, cursor);
             AskCloserToStartOrEnd(developObj.Tag, cursor);
             // move closest point distance and direction
-            var devLine = (Line)session_.__GetTaggedObject(developObj.Tag);
+            Line devLine = (Line)session_.__GetTaggedObject(developObj.Tag);
             EditCurveLength(devLine, addLength, cursor);
         }
 
         private static void EditCurveLength(Line editLine, double editLength, double[] cursor)
         {
-            var section1 = __work_part_.Sections.CreateSection(0.0095, 0.01, 0.5);
-            var builder = __work_part_.Features.CreateCurvelengthBuilder(null);
+            Section section1 = __work_part_.Sections.CreateSection(0.0095, 0.01, 0.5);
+            CurveLengthBuilder builder = __work_part_.Features.CreateCurvelengthBuilder(null);
 
             using (session_.__UsingDoUpdate("Edit Curve Length"))
             using (session_.__UsingBuilderDestroyer(builder))
@@ -65,14 +67,14 @@ namespace TSG_Library.UFuncs
                 builder.CurvelengthData.SetEndDistance("0.0");
                 section1.SetAllowedEntityTypes(Section.AllowTypes.OnlyCurves);
                 builder.CurvelengthData.ExtensionSide = ExtensionSide.StartEnd;
-                var curves1 = new Curve[1];
-                var line1 = editLine;
+                Curve[] curves1 = new Curve[1];
+                Line line1 = editLine;
                 curves1[0] = line1;
-                var curveDumbRule1 = __work_part_.ScRuleFactory.CreateRuleCurveDumb(curves1);
+                CurveDumbRule curveDumbRule1 = __work_part_.ScRuleFactory.CreateRuleCurveDumb(curves1);
                 section1.AllowSelfIntersection(true);
-                var rules1 = new SelectionIntentRule[1];
+                SelectionIntentRule[] rules1 = new SelectionIntentRule[1];
                 rules1[0] = curveDumbRule1;
-                var helpPoint1 = new Point3d(cursor[0], cursor[1], cursor[2]);
+                Point3d helpPoint1 = new Point3d(cursor[0], cursor[1], cursor[2]);
                 section1.AddToSection(rules1, line1, null, null, helpPoint1, Section.Mode.Create, false);
                 builder.CurvelengthData.SetStartDistance("0");
                 builder.CurvelengthData.SetEndDistance("0");
@@ -93,7 +95,7 @@ namespace TSG_Library.UFuncs
             var endPoint = new double[3];
             var derivatives = new double[3];
             var closestPoint = new double[3];
-            TheUFSession.Eval.Initialize(curve, out var evaluator);
+            TheUFSession.Eval.Initialize(curve, out IntPtr evaluator);
             TheUFSession.Eval.AskLimits(evaluator, limits);
             TheUFSession.Eval.Evaluate(evaluator, 0, limits[0], startPoint, derivatives);
             TheUFSession.Eval.Evaluate(evaluator, 0, limits[1], endPoint, derivatives);
@@ -160,7 +162,7 @@ namespace TSG_Library.UFuncs
             lp.end_point[2] = cursorLocation[2] - 10000;
             MapViewToAbsolute(ref lp.start_point);
             MapViewToAbsolute(ref lp.end_point);
-            TheUFSession.Curve.CreateLine(ref lp, out var aLine);
+            TheUFSession.Curve.CreateLine(ref lp, out Tag aLine);
             TheUFSession.Modl.AskMinimumDist(obj, aLine, 0, cp, 0, cp, out _, cursorLocation, cp);
             TheUFSession.Obj.DeleteObject(aLine);
         }

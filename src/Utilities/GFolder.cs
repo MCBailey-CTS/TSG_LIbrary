@@ -56,7 +56,7 @@ namespace TSG_Library.Utilities
             {
                 var dir_leaf = Path.GetFileNameWithoutExtension(dir_job);
 
-                var match = Regex.Match(dir_leaf, "^\\d+ \\((?<company>[a-zA-Z]+)-\\d+\\)$");
+                Match match = Regex.Match(dir_leaf, "^\\d+ \\((?<company>[a-zA-Z]+)-\\d+\\)$");
 
                 if(!match.Success)
                     throw new FormatException($"Could not find a company: {dir_job}");
@@ -71,7 +71,7 @@ namespace TSG_Library.Utilities
             {
                 var dir_leaf = Path.GetFileNameWithoutExtension(dir_job);
 
-                var match = Regex.Match(dir_leaf, "^\\d+ \\([a-zA-Z]+-(?<cts>\\d+)\\)$");
+                Match match = Regex.Match(dir_leaf, "^\\d+ \\([a-zA-Z]+-(?<cts>\\d+)\\)$");
 
                 if(!match.Success)
                     throw new FormatException($"Could not find a cts number: {dir_job}");
@@ -103,7 +103,7 @@ namespace TSG_Library.Utilities
 
             if(!dir.ToLower().Contains("\\cts\\"))
             {
-                var match0 = Regex.Match(leaf, @"^(?<num_0>\d{2,})");
+                Match match0 = Regex.Match(leaf, @"^(?<num_0>\d{2,})");
 
                 return new GFolder(dir, match0.Groups["num_0"].Value);
             }
@@ -112,21 +112,21 @@ namespace TSG_Library.Utilities
                 return new GFolder(dir, leaf);
 
             {
-                var match = Regex.Match(leaf, @"^(?<cts_number>\d{2,}) \([A-Z]+-[xX]+\)");
+                Match match = Regex.Match(leaf, @"^(?<cts_number>\d{2,}) \([A-Z]+-[xX]+\)");
 
                 if(match.Success)
                     return new GFolder(dir, match.Groups["cts_number"].Value);
             }
 
             {
-                var match = Regex.Match(leaf, @"^(?<cts_number>\d{2,}) \([A-Za-z]+-(?<customer_number>\d+)\)");
+                Match match = Regex.Match(leaf, @"^(?<cts_number>\d{2,}) \([A-Za-z]+-(?<customer_number>\d+)\)");
 
                 if(match.Success)
                     return new GFolder(dir, match.Groups["customer_number"].Value);
             }
 
             {
-                var match = Regex.Match(leaf, @"^(?<customer_number>\d{2,})");
+                Match match = Regex.Match(leaf, @"^(?<customer_number>\d{2,})");
 
                 if(match.Success)
                     return new GFolder(dir, match.Groups["customer_number"].Value);

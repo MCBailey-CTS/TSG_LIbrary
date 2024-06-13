@@ -24,9 +24,9 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
         [Obsolete]
         public TreeNode PerformCheck(Part part)
         {
-            var part_node = part.__TreeNode();
+            TreeNode part_node = part.__TreeNode();
 
-            foreach (var child in part.ComponentAssembly.RootComponent.GetChildren())
+            foreach (Component child in part.ComponentAssembly.RootComponent.GetChildren())
                 if(child.GetPositionOverrideType() != PositionOverrideType.Explicit)
                     part_node.Nodes.Add(child.__TreeNode());
 

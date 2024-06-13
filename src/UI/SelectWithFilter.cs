@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NXOpen;
+using NXOpen.Assemblies;
 using NXOpen.UF;
 using NXOpen.Utilities;
 using static NXOpen.UF.UFConstants;
@@ -34,11 +35,11 @@ namespace TSG_Library.Utilities
             try
             {
                 Ufs.Ui.SelectWithSingleDialog(prompt, prompt, UF_UI_SEL_SCOPE_ANY_IN_ASSEMBLY, Ip, IntPtr.Zero,
-                    out var response, out var selectedObj,
-                    cursor, out var view);
+                    out var response, out Tag selectedObj,
+                    cursor, out Tag view);
                 Ufs.Ui.UnlockUgAccess(UF_UI_FROM_CUSTOM);
                 if(response != UF_UI_OBJECT_SELECTED || selectedObj == Tag.Null) return null;
-                var comp = (Body)NXObjectManager.Get(selectedObj);
+                Body comp = (Body)NXObjectManager.Get(selectedObj);
                 comp.Unhighlight();
                 return comp;
             }
@@ -56,8 +57,8 @@ namespace TSG_Library.Utilities
 
         public static int filter_proc(Tag _object, int[] type, IntPtr user_data, IntPtr select_)
         {
-            var obj1 = (Body)NXObjectManager.Get(_object);
-            var objComp = obj1.OwningComponent;
+            Body obj1 = (Body)NXObjectManager.Get(_object);
+            Component objComp = obj1.OwningComponent;
             if(objComp == null) return UF_UI_SEL_ACCEPT;
             var isFound = NonValidCandidates.Where(name => objComp.Name != string.Empty)
                 .Any(name => objComp.Name.ToLower().Contains(name));
@@ -66,7 +67,7 @@ namespace TSG_Library.Utilities
 
         public static int init_proc(IntPtr select, IntPtr userdata)
         {
-            var maskTriples = new UFUi.Mask[1];
+            UFUi.Mask[] maskTriples = new UFUi.Mask[1];
             maskTriples[0].object_type = UF_solid_type;
             maskTriples[0].object_subtype = UF_solid_body_subtype;
             maskTriples[0].solid_type = 0;

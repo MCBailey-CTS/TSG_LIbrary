@@ -22,12 +22,12 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             Component mirrorComp = (Component)dict[originalComp];
             Block block = (Block)originalFeature;
             Block block2 = (Block)feature;
-            if (!TryMatchFaces(block.GetFaces(), block2.GetFaces(), plane, originalComp, mirrorComp, out var facePairs))
+            if (!TryMatchFaces(block.GetFaces(), block2.GetFaces(), plane, originalComp, mirrorComp, out Face[] facePairs))
             {
                 throw new Exception("Unable to match faces in " + originalFeature.GetFeatureName());
             }
 
-            if (!TryMatchEdges(block.GetEdges(), block2.GetEdges(), plane, originalComp, mirrorComp, out var edgePairs))
+            if (!TryMatchEdges(block.GetEdges(), block2.GetEdges(), plane, originalComp, mirrorComp, out Edge[] edgePairs))
             {
                 throw new Exception("Unable to match edges in " + originalFeature.GetFeatureName());
             }
@@ -65,7 +65,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             {
                 Edge edge = set.First();
                 set.Remove(edge);
-                if (!TryMatchEdge(edge, set2, plane, originalComp, mirrorComp, out var mirrorEdge))
+                if (!TryMatchEdge(edge, set2, plane, originalComp, mirrorComp, out Edge mirrorEdge))
                 {
                     edgePairs = null;
                     return false;
@@ -89,7 +89,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             {
                 Face face = set.First();
                 set.Remove(face);
-                if (!TryMatchFace(face, set2, plane, originalComp, mirrorComp, out var mirrorFace))
+                if (!TryMatchFace(face, set2, plane, originalComp, mirrorComp, out Face mirrorFace))
                 {
                     facePairs = null;
                     return false;

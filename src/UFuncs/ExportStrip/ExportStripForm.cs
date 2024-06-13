@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Assemblies;
+using NXOpen.Drawings;
 using NXOpen.Layer;
 using NXOpen.UF;
 using TSG_Library.Attributes;
@@ -16,87 +17,87 @@ using static TSG_Library.UFuncs._UFunc;
 namespace TSG_Library.UFuncs
 {
     [UFunc(ufunc_export_strip)]
-    [RevisionEntry("1.0", "2017", "10", "26")]
-    [Revision("1.0.1", "Created for NX.")]
-    [RevisionEntry("1.01", "2017", "08", "30")]
-    [Revision("1.01.1", "Signed so it will run outside of CTS.")]
-    [RevisionEntry("1.02", "2017", "08", "30")]
-    [Revision("1.02.1", "Fixed bug where PDF could not be exported.")]
-    [Revision("1.02.1.1",
-        "Solution: We are now forcing the drawing sheets open before operations are performed on them.")]
-    [RevisionEntry("1.03", "2017", "11", "27")]
-    [Revision("1.03.1", "Updated the settings files used for DWG and STP creation.")]
-    [Revision("1.03.1.1", "They now both use NX11 settings files.")]
-    [RevisionEntry("1.04", "2018", "01", "08")]
-    [Revision("1.04.1", "Restructured code for better maintainability.")]
-    [Revision("1.04.2", "Removed DWG checkbox along with the DWG code.")]
-    [Revision("1.04.3", "Added a “Complete” message when the program is finished executing.")]
-    [Revision("1.04.4",
-        "Fixed bug where the part was unable to export if the selection came back with instances of NXOpen.Annotations.Hatch.")]
-    [RevisionEntry("1.05", "2018", "01", "22")]
-    [Revision("1.05.1", "Changed the load constructor.")]
-    [Revision("1.05.1.1",
-        "Now if the user launches the Ufunc from a 010-strip or a 900-strip, the text box will default to the (date-strip) or (date-flowchart) respectively.")]
-    [Revision("1.05.2", "Added the date to the .stp file create.")]
-    [Revision("1.05.3", "Fixed issue where the reference sets were screwing up the step file.")]
-    [Revision("1.05.3.1",
-        "If the user runs the ufunc from a 900-strip, the ufunc will use the Session.GetSession().Parts.Work.FullPath as the file path for the step file.")]
-    [Revision("1.05.3.2",
-        "If the user runs the ufunc from a 010-strip and checks the step file box, regardless of whether or not the user selects to export a part or not. The ufunc will export the part and use the exported part as the part to use for the step file. And at the end if the user had not check the export part box, the ufunc will delete the newly exported part before the folder gets zipped up.")]
-    [RevisionEntry("2.0", "2018", "02", "14")]
-    [Revision("2.0.1",
-        "For Revision 1.05, we are no longer using the exported part as a file to use for the step file.")]
-    [Revision("2.0.2",
-        "We are no longer exporting an actual .prt file. The ufunc is now zipping up the strip assembly and placing it in the outgoing export folder.")]
-    [Revision("2.0.3",
-        "Updated the .def file being used for the step translator to \"U:\\nxFiles\\Step Translator\\ExternalStep_AllLayers.def\"")]
-    [Revision("2.0.4",
-        "For the strip we are turning on layers (1, 6, 10, 200, 201, 202, 254), and then turning all other layers off.")]
-    [Revision("2.0.5", "For strips only.")]
-    [Revision("2.0.5.1",
-        "Every fully loaded and unsuppressed component under the strip must have at least one fully loaded unsuppressed component under itself. This takes care of the bug the step translator is having when step files are converted to catia.")]
-    [Revision("2.0.5.2",
-        "If any press found as a child of the strip doesn't have a fully loaded component as well as the dummy file under it the program will not run. \"G:\\0Library\\SeedFiles\\Components\\Dummy.prt\"")]
-    [Revision("2.0.5.3",
-        "Foreach layout component under the strip, the ufunc gets the layout number and turns the appropriate layers in the actual layout. The same is done for the blanks.")]
-    [RevisionEntry("2.1", "2018", "03", "05")]
-    [Revision("2.1.1", "Added version number to form.")]
-    [Revision("2.1.2", "Fixed bug where on certain strips layer 6 would be turned off.")]
-    [RevisionEntry("2.2", "2018", "04", "03")]
-    [Revision("2.2.1", "Fixed bug where the drawing sheet was not being updated before it is being printed.")]
-    [RevisionEntry("2.3", "2019", "07", "11")]
-    [Revision("2.3.1", "Updated to use the updated GFolder.")]
-    [RevisionEntry("2.4", "2019", "08", "28")]
-    [Revision("2.4.1", "GFolder updated to allow old job number under non cts folder.")]
-    [RevisionEntry("2.5", "2020", "01", "17")]
-    [Revision("2.5.1", "Edited output path. 4 digit jobs unchanged.")]
-    [Revision("2.5.2", "6 digit jobs will now place their output folder in the Layout folder.")]
-    [RevisionEntry("2.6", "2020", "09", "01")]
-    [Revision("2.6.1", "Updated to use the new Printer definition.")]
-    [RevisionEntry("2.7", "2020", "12", "16")]
-    [Revision("2.7.1",
-        "When exporting a strip, it will now go through all the children of the part to export a step of. Sets layers to selectable and unblanks objects.")]
-    [RevisionEntry("2.8", "2021", "03", "04")]
-    [Revision("2.8.1", "Changed export location for 6 digit jobs.")]
-    [Revision("2.8.2", "The location will now export to {JobFolder\\Layout\\Go}.")]
-    [Revision("2.8.3", "The step files will now be created using the same way as AssemblyExportDesignData.")]
-    [RevisionEntry("2.9", "2021", "03", "08")]
-    [Revision("2.9.1", "Added copy check box to form.")]
-    [Revision("2.9.2",
-        "Checking the copy check box will now copy contents of the created export strip directory to the \"Process and Sim Data for Design\" directory.")]
-    [RevisionEntry("3.0", "2021", "03", "10")]
-    [Revision("3.0.1",
-        "Checking the copy check box will only copy the created zip file created to the \"Process and Sim Data for Design\".")]
-    [Revision("3.0.2",
-        "Fixed issue where the a save was called for each component of the blank or layout in the strip.")]
-    [Revision("3.0.3", "Moved the update process to the beginning of the program. Instead of being per operation.")]
-    [RevisionEntry("3.1", "2021", "05", "27")]
-    [Revision("3.1.1", "When the user checks the checkbox \"Process Sim Data For Design\", the program will now")]
-    [Revision("3.1.2", "go through the \"Process Sim Data For Design\" directory and get all the .7z files.")]
-    [Revision("3.1.3",
-        "The program will then prompt the user to keep or delete the zip files before the newly created zip file is moved to the directory.")]
-    [RevisionEntry("11.1", "2023", "01", "09")]
-    [Revision("11.1.1", "Removed validation")]
+    //[RevisionEntry("1.0", "2017", "10", "26")]
+    //[Revision("1.0.1", "Created for NX.")]
+    //[RevisionEntry("1.01", "2017", "08", "30")]
+    //[Revision("1.01.1", "Signed so it will run outside of CTS.")]
+    //[RevisionEntry("1.02", "2017", "08", "30")]
+    //[Revision("1.02.1", "Fixed bug where PDF could not be exported.")]
+    //[Revision("1.02.1.1",
+    //    "Solution: We are now forcing the drawing sheets open before operations are performed on them.")]
+    //[RevisionEntry("1.03", "2017", "11", "27")]
+    //[Revision("1.03.1", "Updated the settings files used for DWG and STP creation.")]
+    //[Revision("1.03.1.1", "They now both use NX11 settings files.")]
+    //[RevisionEntry("1.04", "2018", "01", "08")]
+    //[Revision("1.04.1", "Restructured code for better maintainability.")]
+    //[Revision("1.04.2", "Removed DWG checkbox along with the DWG code.")]
+    //[Revision("1.04.3", "Added a “Complete” message when the program is finished executing.")]
+    //[Revision("1.04.4",
+    //    "Fixed bug where the part was unable to export if the selection came back with instances of NXOpen.Annotations.Hatch.")]
+    //[RevisionEntry("1.05", "2018", "01", "22")]
+    //[Revision("1.05.1", "Changed the load constructor.")]
+    //[Revision("1.05.1.1",
+    //    "Now if the user launches the Ufunc from a 010-strip or a 900-strip, the text box will default to the (date-strip) or (date-flowchart) respectively.")]
+    //[Revision("1.05.2", "Added the date to the .stp file create.")]
+    //[Revision("1.05.3", "Fixed issue where the reference sets were screwing up the step file.")]
+    //[Revision("1.05.3.1",
+    //    "If the user runs the ufunc from a 900-strip, the ufunc will use the Session.GetSession().Parts.Work.FullPath as the file path for the step file.")]
+    //[Revision("1.05.3.2",
+    //    "If the user runs the ufunc from a 010-strip and checks the step file box, regardless of whether or not the user selects to export a part or not. The ufunc will export the part and use the exported part as the part to use for the step file. And at the end if the user had not check the export part box, the ufunc will delete the newly exported part before the folder gets zipped up.")]
+    //[RevisionEntry("2.0", "2018", "02", "14")]
+    //[Revision("2.0.1",
+    //    "For Revision 1.05, we are no longer using the exported part as a file to use for the step file.")]
+    //[Revision("2.0.2",
+    //    "We are no longer exporting an actual .prt file. The ufunc is now zipping up the strip assembly and placing it in the outgoing export folder.")]
+    //[Revision("2.0.3",
+    //    "Updated the .def file being used for the step translator to \"U:\\nxFiles\\Step Translator\\ExternalStep_AllLayers.def\"")]
+    //[Revision("2.0.4",
+    //    "For the strip we are turning on layers (1, 6, 10, 200, 201, 202, 254), and then turning all other layers off.")]
+    //[Revision("2.0.5", "For strips only.")]
+    //[Revision("2.0.5.1",
+    //    "Every fully loaded and unsuppressed component under the strip must have at least one fully loaded unsuppressed component under itself. This takes care of the bug the step translator is having when step files are converted to catia.")]
+    //[Revision("2.0.5.2",
+    //    "If any press found as a child of the strip doesn't have a fully loaded component as well as the dummy file under it the program will not run. \"G:\\0Library\\SeedFiles\\Components\\Dummy.prt\"")]
+    //[Revision("2.0.5.3",
+    //    "Foreach layout component under the strip, the ufunc gets the layout number and turns the appropriate layers in the actual layout. The same is done for the blanks.")]
+    //[RevisionEntry("2.1", "2018", "03", "05")]
+    //[Revision("2.1.1", "Added version number to form.")]
+    //[Revision("2.1.2", "Fixed bug where on certain strips layer 6 would be turned off.")]
+    //[RevisionEntry("2.2", "2018", "04", "03")]
+    //[Revision("2.2.1", "Fixed bug where the drawing sheet was not being updated before it is being printed.")]
+    //[RevisionEntry("2.3", "2019", "07", "11")]
+    //[Revision("2.3.1", "Updated to use the updated GFolder.")]
+    //[RevisionEntry("2.4", "2019", "08", "28")]
+    //[Revision("2.4.1", "GFolder updated to allow old job number under non cts folder.")]
+    //[RevisionEntry("2.5", "2020", "01", "17")]
+    //[Revision("2.5.1", "Edited output path. 4 digit jobs unchanged.")]
+    //[Revision("2.5.2", "6 digit jobs will now place their output folder in the Layout folder.")]
+    //[RevisionEntry("2.6", "2020", "09", "01")]
+    //[Revision("2.6.1", "Updated to use the new Printer definition.")]
+    //[RevisionEntry("2.7", "2020", "12", "16")]
+    //[Revision("2.7.1",
+    //    "When exporting a strip, it will now go through all the children of the part to export a step of. Sets layers to selectable and unblanks objects.")]
+    //[RevisionEntry("2.8", "2021", "03", "04")]
+    //[Revision("2.8.1", "Changed export location for 6 digit jobs.")]
+    //[Revision("2.8.2", "The location will now export to {JobFolder\\Layout\\Go}.")]
+    //[Revision("2.8.3", "The step files will now be created using the same way as AssemblyExportDesignData.")]
+    //[RevisionEntry("2.9", "2021", "03", "08")]
+    //[Revision("2.9.1", "Added copy check box to form.")]
+    //[Revision("2.9.2",
+    //    "Checking the copy check box will now copy contents of the created export strip directory to the \"Process and Sim Data for Design\" directory.")]
+    //[RevisionEntry("3.0", "2021", "03", "10")]
+    //[Revision("3.0.1",
+    //    "Checking the copy check box will only copy the created zip file created to the \"Process and Sim Data for Design\".")]
+    //[Revision("3.0.2",
+    //    "Fixed issue where the a save was called for each component of the blank or layout in the strip.")]
+    //[Revision("3.0.3", "Moved the update process to the beginning of the program. Instead of being per operation.")]
+    //[RevisionEntry("3.1", "2021", "05", "27")]
+    //[Revision("3.1.1", "When the user checks the checkbox \"Process Sim Data For Design\", the program will now")]
+    //[Revision("3.1.2", "go through the \"Process Sim Data For Design\" directory and get all the .7z files.")]
+    //[Revision("3.1.3",
+    //    "The program will then prompt the user to keep or delete the zip files before the newly created zip file is moved to the directory.")]
+    //[RevisionEntry("11.1", "2023", "01", "09")]
+    //[Revision("11.1.1", "Removed validation")]
     public partial class ExportStripForm : _UFuncForm
     {
         public const string Regex_Strip = "^(?<customerNum>\\d+)-(?<opNum>\\d+)-strip$";
@@ -114,9 +115,9 @@ namespace TSG_Library.UFuncs
             {
                 //get
                 //{
-                var opRegex = new Regex("^[0-9]{4,}-([0-9]{3,})");
+                Regex opRegex = new Regex("^[0-9]{4,}-([0-9]{3,})");
 
-                var match = opRegex.Match(__display_part_.Leaf);
+                Match match = opRegex.Match(__display_part_.Leaf);
 
                 if(!match.Success)
                     return false;
@@ -130,9 +131,9 @@ namespace TSG_Library.UFuncs
             {
                 //get
                 //{
-                var opRegex = new Regex("^[0-9]{4,}-([0-9]{3,})");
+                Regex opRegex = new Regex("^[0-9]{4,}-([0-9]{3,})");
 
-                var match = opRegex.Match(__display_part_.Leaf);
+                Match match = opRegex.Match(__display_part_.Leaf);
 
                 if(!match.Success)
                     return false;
@@ -179,7 +180,7 @@ namespace TSG_Library.UFuncs
             if(__display_part_.ComponentAssembly.RootComponent is null)
                 return;
 
-            foreach (var childOfStrip in __display_part_.ComponentAssembly.RootComponent.GetChildren())
+            foreach (Component childOfStrip in __display_part_.ComponentAssembly.RootComponent.GetChildren())
             {
                 if(childOfStrip.IsSuppressed)
                     continue;
@@ -203,7 +204,7 @@ namespace TSG_Library.UFuncs
                 if(childOfStrip.GetChildren().Length != 2)
                     continue;
 
-                foreach (var childOfPress in childOfStrip.GetChildren())
+                foreach (Component childOfPress in childOfStrip.GetChildren())
                 {
                     if(!(childOfPress.Prototype is Part))
                         throw new Exception(
@@ -228,15 +229,15 @@ namespace TSG_Library.UFuncs
 
         public static void UpdateForStp()
         {
-            var partsToSave = new HashSet<Part>();
+            HashSet<Part> partsToSave = new HashSet<Part>();
 
-            var currentD = __display_part_;
-            var currentW = session_.Parts.Work;
+            Part currentD = __display_part_;
+            Part currentW = session_.Parts.Work;
 
 
             try
             {
-                foreach (var child in session_.Parts.Work.ComponentAssembly.RootComponent.GetChildren())
+                foreach (Component child in session_.Parts.Work.ComponentAssembly.RootComponent.GetChildren())
                 {
                     if(child.IsSuppressed)
                         continue;
@@ -253,17 +254,17 @@ namespace TSG_Library.UFuncs
 
                         default:
                         {
-                            var proto = (Part)child.Prototype;
+                            Part proto = (Part)child.Prototype;
 
-                            var referenceSet = proto.GetAllReferenceSets()
+                            ReferenceSet referenceSet = proto.GetAllReferenceSets()
                                 .FirstOrDefault(refset => refset.Name == child.ReferenceSet);
 
                             if(referenceSet is null)
                                 continue;
 
-                            var objectsInReferenceSet = referenceSet.AskMembersInReferenceSet();
+                            NXObject[] objectsInReferenceSet = referenceSet.AskMembersInReferenceSet();
 
-                            foreach (var obj in objectsInReferenceSet)
+                            foreach (NXObject obj in objectsInReferenceSet)
                             {
                                 if(!(obj is DisplayableObject disp))
                                     continue;
@@ -292,18 +293,18 @@ namespace TSG_Library.UFuncs
                 session_.Parts.SetWork(currentW);
             }
 
-            foreach (var part in partsToSave)
+            foreach (Part part in partsToSave)
                 part.Save(BasePart.SaveComponents.True, BasePart.CloseAfterSave.False);
         }
 
         private static void NewMethod(HashSet<Part> partsToSave, Component child)
         {
-            var proto = (Part)child.Prototype;
-            var referenceSet = proto.GetAllReferenceSets().First(refset => refset.Name == child.ReferenceSet);
+            Part proto = (Part)child.Prototype;
+            ReferenceSet referenceSet = proto.GetAllReferenceSets().First(refset => refset.Name == child.ReferenceSet);
 
-            var objectsInReferenceSet = referenceSet.AskMembersInReferenceSet();
+            NXObject[] objectsInReferenceSet = referenceSet.AskMembersInReferenceSet();
 
-            foreach (var obj in objectsInReferenceSet)
+            foreach (NXObject obj in objectsInReferenceSet)
             {
                 if(!(obj is DisplayableObject disp))
                     continue;
@@ -325,7 +326,7 @@ namespace TSG_Library.UFuncs
         private static void Export(bool chkSTP, int numUpDownCopies, bool chkPart, bool chkPDF, string txtInput,
             bool chkCopy)
         {
-            var folder = GFolder.create(__display_part_.FullPath);
+            GFolder folder = GFolder.create(__display_part_.FullPath);
 
             __display_part_.SetUserAttribute("DATE", -1, TodaysDate, NXOpen.Update.Option.Now);
 
@@ -334,16 +335,16 @@ namespace TSG_Library.UFuncs
 
             if(chkSTP)
             {
-                var currentD = __display_part_;
-                var currentW = session_.Parts.Work;
+                Part currentD = __display_part_;
+                Part currentW = session_.Parts.Work;
 
 
                 try
                 {
                     CheckAssemblyDummyFiles();
 
-                    var _currentD = __display_part_;
-                    var _currentW = session_.Parts.Work;
+                    Part _currentD = __display_part_;
+                    Part _currentW = session_.Parts.Work;
 
                     try
                     {
@@ -483,7 +484,7 @@ namespace TSG_Library.UFuncs
 
             if(filesToZip.Length != 0)
             {
-                var zip = new Zip7(zipFile, filesToZip);
+                Zip7 zip = new Zip7(zipFile, filesToZip);
 
                 zip.Start();
 
@@ -521,7 +522,7 @@ namespace TSG_Library.UFuncs
 
         public static void UpdateForPdf()
         {
-            var sheets = session_.Parts.Work.DrawingSheets.ToArray();
+            DrawingSheet[] sheets = session_.Parts.Work.DrawingSheets.ToArray();
 
             switch (sheets.Length)
             {
@@ -542,7 +543,7 @@ namespace TSG_Library.UFuncs
 
         public static string ExportPDF(string outPutPath, string fileName)
         {
-            var sheets = session_.Parts.Work.DrawingSheets.ToArray();
+            DrawingSheet[] sheets = session_.Parts.Work.DrawingSheets.ToArray();
 
             ExportStripPdf(session_.Parts.Work.FullPath, sheets[0].Name, $"{outPutPath}\\{fileName}.pdf");
 
@@ -569,7 +570,7 @@ namespace TSG_Library.UFuncs
 
             if(part.ComponentAssembly.RootComponent != null)
             {
-                var validChild = part.ComponentAssembly.RootComponent
+                Component validChild = part.ComponentAssembly.RootComponent
                     .GetChildren()
                     .Where(component => component.Prototype is Part)
                     .FirstOrDefault(component => !component.IsSuppressed);
@@ -578,12 +579,12 @@ namespace TSG_Library.UFuncs
                     return;
             }
 
-            var dummyPart = session_.__FindOrOpen(DummyPath);
+            Part dummyPart = session_.__FindOrOpen(DummyPath);
 
             Prompt($"Adding dummy file to {part.Leaf}.");
 
             session_.Parts.Work.ComponentAssembly.AddComponent(dummyPart, "Entire Part", "DUMMY", _Point3dOrigin,
-                _Matrix3x3Identity, 1, out var status);
+                _Matrix3x3Identity, 1, out PartLoadStatus status);
 
             status.Dispose();
         }
@@ -610,12 +611,12 @@ namespace TSG_Library.UFuncs
 
         public static List<Component> Descendants(Component parent)
         {
-            var _list = new List<Component>
+            List<Component> _list = new List<Component>
             {
                 parent
             };
 
-            foreach (var _child in parent.GetChildren())
+            foreach (Component _child in parent.GetChildren())
                 _list.AddRange(Descendants(_child));
 
             return _list;
@@ -626,31 +627,31 @@ namespace TSG_Library.UFuncs
             if(!Regex.IsMatch(snapStrip010.Leaf, Regex_Strip, RegexOptions.IgnoreCase))
                 throw new ArgumentException(@"Must be an op 010 strip.", nameof(snapStrip010));
 
-            var currentD = __display_part_;
-            var currentW = session_.Parts.Work;
+            Part currentD = __display_part_;
+            Part currentW = session_.Parts.Work;
 
             try
             {
-                var blankNameRegex = new Regex("^BLANK-([0-9]{1,})$");
+                Regex blankNameRegex = new Regex("^BLANK-([0-9]{1,})$");
 
-                var layoutNameRegex = new Regex("^LAYOUT-([0-9]{1,})$");
+                Regex layoutNameRegex = new Regex("^LAYOUT-([0-9]{1,})$");
 
-                var layoutPart = Descendants(__display_part_.ComponentAssembly.RootComponent)
+                Part layoutPart = Descendants(__display_part_.ComponentAssembly.RootComponent)
                     .Select(component => component.Prototype)
                     .OfType<Part>()
                     .FirstOrDefault(component => Regex.IsMatch(component.Leaf, Regex_Layout, RegexOptions.IgnoreCase));
 
                 //var blankPart = TSG_Library.Extensions.DisplayPart.RootComponent.Children
-                var blankPart = Descendants(__display_part_.ComponentAssembly.RootComponent)
+                Part blankPart = Descendants(__display_part_.ComponentAssembly.RootComponent)
                     .Select(component => component.Prototype)
                     .OfType<Part>()
                     .FirstOrDefault(component => Regex.IsMatch(component.Leaf, Regex_Blank, RegexOptions.IgnoreCase));
 
-                var layoutLayers = new HashSet<int>();
+                HashSet<int> layoutLayers = new HashSet<int>();
 
-                var blankLayers = new HashSet<int>();
+                HashSet<int> blankLayers = new HashSet<int>();
 
-                foreach (var child in Descendants(__display_part_.ComponentAssembly.RootComponent))
+                foreach (Component child in Descendants(__display_part_.ComponentAssembly.RootComponent))
                 {
                     if(!(child.Prototype is Part))
                         continue;
@@ -658,9 +659,9 @@ namespace TSG_Library.UFuncs
                     if(child.IsSuppressed)
                         continue;
 
-                    var blankMatch = blankNameRegex.Match(child.Name);
+                    Match blankMatch = blankNameRegex.Match(child.Name);
 
-                    var layoutMatch = layoutNameRegex.Match(child.Name);
+                    Match layoutMatch = layoutNameRegex.Match(child.Name);
 
                     if(blankMatch.Success)
                         blankLayers.Add(int.Parse(blankMatch.Groups[1].Value) + 10);
@@ -716,7 +717,7 @@ namespace TSG_Library.UFuncs
         {
             var outputPath = $"{outgoingFolderName}\\{session_.Parts.Work.Leaf}-{TodaysDate}.stp";
 
-            var step = session_.DexManager.CreateStepCreator();
+            StepCreator step = session_.DexManager.CreateStepCreator();
 
             using (session_.__UsingBuilderDestroyer(step))
             {
@@ -751,19 +752,19 @@ namespace TSG_Library.UFuncs
             if(File.Exists(filePath))
                 throw new Exception($"PDF '{filePath}' already exists.");
 
-            var part = session_.__FindOrOpen(partPath);
+            Part part = session_.__FindOrOpen(partPath);
 
             //We can use SingleOrDefault here because NX will prevent the naming of two drawing sheets the exact same string.
-            var sheet = part.DrawingSheets
-                            .ToArray()
-                            .SingleOrDefault(drawingSheet => drawingSheet.Name == drawingSheetName)
-                        ??
-                        throw new Exception($@"Part '{partPath}' does not have a sheet named '{drawingSheetName}'.");
+            DrawingSheet sheet = part.DrawingSheets
+                                     .ToArray()
+                                     .SingleOrDefault(drawingSheet => drawingSheet.Name == drawingSheetName)
+                                 ??
+                                 throw new Exception($@"Part '{partPath}' does not have a sheet named '{drawingSheetName}'.");
 
             __display_part_ = part;
             __work_part_ = __display_part_;
 
-            var pdfBuilder = part.PlotManager.CreatePrintPdfbuilder();
+            PrintPDFBuilder pdfBuilder = part.PlotManager.CreatePrintPdfbuilder();
 
             using (session_.__UsingBuilderDestroyer(pdfBuilder))
             {
@@ -800,7 +801,7 @@ namespace TSG_Library.UFuncs
                 .Select(part => part.FullPath)
                 .ToArray();
 
-            var zip = new Zip7($"{outgoingFolderPath}\\NX StripAssembly.7z", assemblyPartPaths);
+            Zip7 zip = new Zip7($"{outgoingFolderPath}\\NX StripAssembly.7z", assemblyPartPaths);
             zip.Start();
             zip.WaitForExit();
             return $"{outgoingFolderPath}\\NX StripAssembly.7z";
@@ -811,12 +812,12 @@ namespace TSG_Library.UFuncs
             if(copies == 0)
                 return;
 
-            var _WorkPart = Session.GetSession().Parts.Work;
+            Part _WorkPart = Session.GetSession().Parts.Work;
 
-            var TheUFSession = UFSession.GetUFSession();
+            UFSession TheUFSession = UFSession.GetUFSession();
 
             //session_.Execute(@"C:\Repos\NXJournals\JOURNALS\export_strip.py", "ExportStrip", "print_drawing_sheet", new object[] { copies });
-            var printBuilder1 = _WorkPart.PlotManager.CreatePrintBuilder();
+            PrintBuilder printBuilder1 = _WorkPart.PlotManager.CreatePrintBuilder();
 
             try
             {
@@ -826,7 +827,7 @@ namespace TSG_Library.UFuncs
                 printBuilder1.Copies = copies;
                 printBuilder1.RasterImages = true;
                 printBuilder1.Output = PrintBuilder.OutputOption.WireframeBlackWhite;
-                var sheets = _WorkPart.DrawingSheets.ToArray();
+                DrawingSheet[] sheets = _WorkPart.DrawingSheets.ToArray();
                 switch (sheets.Length)
                 {
                     case 0:

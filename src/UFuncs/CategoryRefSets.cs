@@ -12,11 +12,11 @@ namespace TSG_Library.UFuncs
     {
         public override void execute()
         {
-            var workPart = session_.Parts.Work;
-            var bodyRefSet = Tag.Null;
-            var markId1 = session_.SetUndoMark(Session.MarkVisibility.Visible, "Category Reference Sets");
-            var cycleRefSet = Tag.Null;
-            var refSetTag = new List<Tag>();
+            Part workPart = session_.Parts.Work;
+            Tag bodyRefSet = Tag.Null;
+            Session.UndoMarkId markId1 = session_.SetUndoMark(Session.MarkVisibility.Visible, "Category Reference Sets");
+            Tag cycleRefSet = Tag.Null;
+            List<Tag> refSetTag = new List<Tag>();
             var isBodyRefSet = false;
 
             do
@@ -29,7 +29,7 @@ namespace TSG_Library.UFuncs
                 refSetTag.Add(cycleRefSet);
             } while (cycleRefSet != Tag.Null);
 
-            foreach (var refSet in refSetTag)
+            foreach (Tag refSet in refSetTag)
             {
                 ufsession_.Obj.AskName(refSet, out var refSetName);
 
@@ -54,10 +54,10 @@ namespace TSG_Library.UFuncs
                 // add fasteners
 
 
-                ufsession_.Assem.AskRefSetMembers(bodyRefSet, out var memberCount, out var members);
+                ufsession_.Assem.AskRefSetMembers(bodyRefSet, out var memberCount, out Tag[] members);
                 ufsession_.Assem.RemoveRefSetMembers(bodyRefSet, memberCount, members);
 
-                var wpBody = (from Body body in workPart.Bodies
+                List<Tag> wpBody = (from Body body in workPart.Bodies
                         where body.Layer == 1 && body.Tag != Tag.Null
                         select body.Tag)
                     .ToList();
@@ -69,7 +69,7 @@ namespace TSG_Library.UFuncs
                     if(workPart.ComponentAssembly.RootComponent is null)
                         return;
 
-                    var compList = (from component in workPart.ComponentAssembly.RootComponent.GetChildren()
+                    List<Tag> compList = (from component in workPart.ComponentAssembly.RootComponent.GetChildren()
                         where component.Layer == 99 && component.Tag != Tag.Null
                         select component.Tag).ToList();
 
@@ -96,15 +96,15 @@ namespace TSG_Library.UFuncs
                 const int numOfBodyMembers = 0;
                 const int numOfSubMembers = 0;
                 var origin = new double[3];
-                ufsession_.Csys.AskWcs(out var wcs);
-                ufsession_.Csys.AskCsysInfo(wcs, out var wcsMatrix,
+                ufsession_.Csys.AskWcs(out Tag wcs);
+                ufsession_.Csys.AskCsysInfo(wcs, out Tag wcsMatrix,
                     origin); // get origin of current work coordinate system
                 var matrixValue = new double[9];
                 ufsession_.Csys.AskMatrixValues(wcsMatrix, matrixValue); // gets the matrix values
                 ufsession_.Assem.CreateRefSet(bodyRefSetName, origin, matrixValue, new Tag[] { }, numOfBodyMembers,
                     out bodyRefSet);
                 ufsession_.Assem.CreateRefSet(subRefSetName, origin, matrixValue, new Tag[] { }, numOfSubMembers,
-                    out var _);
+                    out Tag _);
                 return;
             }
 
@@ -116,13 +116,13 @@ namespace TSG_Library.UFuncs
                 const int numOfBodyMembers = 1;
                 const int numOfSubMembers = 0;
                 var origin = new double[3];
-                ufsession_.Csys.AskWcs(out var wcs);
-                ufsession_.Csys.AskCsysInfo(wcs, out var wcsMatrix,
+                ufsession_.Csys.AskWcs(out Tag wcs);
+                ufsession_.Csys.AskCsysInfo(wcs, out Tag wcsMatrix,
                     origin); // get origin of current work coordinate system
                 var matrixValue = new double[9];
                 ufsession_.Csys.AskMatrixValues(wcsMatrix, matrixValue); // gets the matrix values
 
-                var bodyArray = (from Body body in workPart.Bodies
+                List<Tag> bodyArray = (from Body body in workPart.Bodies
                         where body.Layer == 1 && body.Tag != Tag.Null
                         select body.Tag)
                     .ToList();
@@ -132,7 +132,7 @@ namespace TSG_Library.UFuncs
                     ufsession_.Assem.CreateRefSet(bodyRefSetName, origin, matrixValue, bodyArray.ToArray(),
                         numOfBodyMembers, out bodyRefSet);
                     ufsession_.Assem.CreateRefSet(subRefSetName, origin, matrixValue, new Tag[] { }, numOfSubMembers,
-                        out var _);
+                        out Tag _);
                 }
                 else
                 {
@@ -149,13 +149,13 @@ namespace TSG_Library.UFuncs
                 const int numOfBodyMembers = 1;
                 const int numOfSubMembers = 0;
                 var origin = new double[3];
-                ufsession_.Csys.AskWcs(out var wcs);
-                ufsession_.Csys.AskCsysInfo(wcs, out var wcsMatrix,
+                ufsession_.Csys.AskWcs(out Tag wcs);
+                ufsession_.Csys.AskCsysInfo(wcs, out Tag wcsMatrix,
                     origin); // get origin of current work coordinate system
                 var matrixValue = new double[9];
                 ufsession_.Csys.AskMatrixValues(wcsMatrix, matrixValue); // gets the matrix values
 
-                var bodyArray = (from Body body in workPart.Bodies
+                List<Tag> bodyArray = (from Body body in workPart.Bodies
                         where body.Layer == 1 && body.Tag != Tag.Null
                         select body.Tag)
                     .ToList();
@@ -165,12 +165,12 @@ namespace TSG_Library.UFuncs
                     ufsession_.Assem.CreateRefSet(bodyRefSetName, origin, matrixValue, bodyArray.ToArray(),
                         numOfBodyMembers, out bodyRefSet);
                     ufsession_.Assem.CreateRefSet(subRefSetName, origin, matrixValue, new Tag[] { }, numOfSubMembers,
-                        out var _);
+                        out Tag _);
 
                     if(workPart.ComponentAssembly.RootComponent is null)
                         return;
 
-                    var compList = (from component in workPart.ComponentAssembly.RootComponent.GetChildren()
+                    List<Tag> compList = (from component in workPart.ComponentAssembly.RootComponent.GetChildren()
                         where component.Layer == 99 && component.Tag != Tag.Null
                         select component.Tag).ToList();
 

@@ -50,7 +50,7 @@ namespace TSG_Library.UFuncs
                 _isNewSelection = false;
             }
 
-            var pHandle = SelectHandlePoint();
+            List<Point> pHandle = SelectHandlePoint();
 
             _isDynamic = true;
 
@@ -60,12 +60,12 @@ namespace TSG_Library.UFuncs
 
                 _udoPointHandle = pHandle[0];
 
-                var blockOrigin = new Point3d();
+                Point3d blockOrigin = new Point3d();
                 var blockLength = 0.00;
                 var blockWidth = 0.00;
                 var blockHeight = 0.00;
 
-                foreach (var eLine in _edgeRepLines)
+                foreach (Line eLine in _edgeRepLines)
                 {
                     if (eLine.Name == "XBASE1")
                     {
@@ -85,20 +85,20 @@ namespace TSG_Library.UFuncs
                 else
                     pointPrototype = _udoPointHandle;
 
-                var doNotMovePts = new List<NXObject>();
-                var movePtsHalf = new List<NXObject>();
-                var movePtsFull = new List<NXObject>();
+                List<NXObject> doNotMovePts = new List<NXObject>();
+                List<NXObject> movePtsHalf = new List<NXObject>();
+                List<NXObject> movePtsFull = new List<NXObject>();
 
                 MotionCallbackDynamic1(pointPrototype, doNotMovePts, movePtsHalf, movePtsFull, pointPrototype.Name.Contains("POS"));
 
-                var posXObjs = new List<Line>();
-                var negXObjs = new List<Line>();
-                var posYObjs = new List<Line>();
-                var negYObjs = new List<Line>();
-                var posZObjs = new List<Line>();
-                var negZObjs = new List<Line>();
+                List<Line> posXObjs = new List<Line>();
+                List<Line> negXObjs = new List<Line>();
+                List<Line> posYObjs = new List<Line>();
+                List<Line> negYObjs = new List<Line>();
+                List<Line> posZObjs = new List<Line>();
+                List<Line> negZObjs = new List<Line>();
 
-                foreach (var eLine in _edgeRepLines)
+                foreach (Line eLine in _edgeRepLines)
                 {
                     if (eLine.Name == "YBASE1" || eLine.Name == "YCEILING1" || eLine.Name == "ZBASE1" ||
                        eLine.Name == "ZBASE3") negXObjs.Add(eLine);
@@ -119,11 +119,11 @@ namespace TSG_Library.UFuncs
                        eLine.Name == "YCEILING1" || eLine.Name == "YCEILING2") posZObjs.Add(eLine);
                 }
 
-                var allxAxisLines = new List<Line>();
-                var allyAxisLines = new List<Line>();
-                var allzAxisLines = new List<Line>();
+                List<Line> allxAxisLines = new List<Line>();
+                List<Line> allyAxisLines = new List<Line>();
+                List<Line> allzAxisLines = new List<Line>();
 
-                foreach (var eLine in _edgeRepLines)
+                foreach (Line eLine in _edgeRepLines)
                 {
                     if (eLine.Name.StartsWith("X")) allxAxisLines.Add(eLine);
 
@@ -247,9 +247,9 @@ namespace TSG_Library.UFuncs
         private double EditSizeDisplayPosZ(double blockHeight, List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posZObjs, List<Line> allzAxisLines, double editSize)
         {
             var distance = editSize - blockHeight;
-            foreach (var addLine in posZObjs) movePtsFull.Add(addLine);
+            foreach (Line addLine in posZObjs) movePtsFull.Add(addLine);
 
-            foreach (var zAxisLine in allzAxisLines)
+            foreach (Line zAxisLine in allzAxisLines)
             {
                 ZEndPoint(distance, zAxisLine);
             }
@@ -265,9 +265,9 @@ namespace TSG_Library.UFuncs
         private double EditSizeNegZ(double blockHeight, List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> negZObjs, List<Line> allzAxisLines, double editSize)
         {
             var distance = blockHeight - editSize;
-            foreach (var addLine in negZObjs) movePtsFull.Add(addLine);
+            foreach (Line addLine in negZObjs) movePtsFull.Add(addLine);
 
-            foreach (var zAxisLine in allzAxisLines)
+            foreach (Line zAxisLine in allzAxisLines)
             {
                 ZStartPoint(distance, zAxisLine);
             }
@@ -279,9 +279,9 @@ namespace TSG_Library.UFuncs
         private double EditSizePosZ(double blockHeight, List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posZObjs, List<Line> allzAxisLines, double editSize)
         {
             var distance = editSize - blockHeight;
-            foreach (var addLine in posZObjs) movePtsFull.Add(addLine);
+            foreach (Line addLine in posZObjs) movePtsFull.Add(addLine);
 
-            foreach (var zAxisLine in allzAxisLines)
+            foreach (Line zAxisLine in allzAxisLines)
             {
                 ZEndPoint(distance, zAxisLine);
             }
@@ -295,9 +295,9 @@ namespace TSG_Library.UFuncs
         private double EditSizeNegY(double blockWidth, List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> negYObjs, List<Line> allyAxisLines, double editSize)
         {
             var distance = blockWidth - editSize;
-            foreach (var addLine in negYObjs) movePtsFull.Add(addLine);
+            foreach (Line addLine in negYObjs) movePtsFull.Add(addLine);
 
-            foreach (var yAxisLine in allyAxisLines)
+            foreach (Line yAxisLine in allyAxisLines)
             {
                 YStartPoint(distance, yAxisLine);
             }
@@ -309,9 +309,9 @@ namespace TSG_Library.UFuncs
         private double EditSizePosY(double blockWidth, List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posYObjs, List<Line> allyAxisLines, double editSize)
         {
             var distance = editSize - blockWidth;
-            foreach (var addLine in posYObjs) movePtsFull.Add(addLine);
+            foreach (Line addLine in posYObjs) movePtsFull.Add(addLine);
 
-            foreach (var yAxisLine in allyAxisLines)
+            foreach (Line yAxisLine in allyAxisLines)
             {
                 YEndPoint(distance, yAxisLine);
             }
@@ -324,9 +324,9 @@ namespace TSG_Library.UFuncs
         private double EditSizeNegX(double blockLength, List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> negXObjs, List<Line> allxAxisLines, double editSize)
         {
             var distance = blockLength - editSize;
-            foreach (var addLine in negXObjs) movePtsFull.Add(addLine);
+            foreach (Line addLine in negXObjs) movePtsFull.Add(addLine);
 
-            foreach (var xAxisLine in allxAxisLines)
+            foreach (Line xAxisLine in allxAxisLines)
             {
                 XStartPoint(distance, xAxisLine);
             }
@@ -338,9 +338,9 @@ namespace TSG_Library.UFuncs
         private double EditSizePosX(double blockLength, List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posXObjs, List<Line> allxAxisLines, double editSize)
         {
             var distance = editSize - blockLength;
-            foreach (var posXLine in posXObjs) movePtsFull.Add(posXLine);
+            foreach (Line posXLine in posXObjs) movePtsFull.Add(posXLine);
 
-            foreach (var xAxisLine in allxAxisLines)
+            foreach (Line xAxisLine in allxAxisLines)
             {
                 XEndPoint(distance, xAxisLine);
             }
@@ -355,9 +355,9 @@ namespace TSG_Library.UFuncs
         private double EditSizeDisplayNegY(double blockWidth, List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> negYObjs, List<Line> allyAxisLines, double editSize)
         {
             var distance = blockWidth - editSize;
-            foreach (var addLine in negYObjs) movePtsFull.Add(addLine);
+            foreach (Line addLine in negYObjs) movePtsFull.Add(addLine);
 
-            foreach (var yAxisLine in allyAxisLines)
+            foreach (Line yAxisLine in allyAxisLines)
             {
                 YStartPoint(distance, yAxisLine);
             }
@@ -370,9 +370,9 @@ namespace TSG_Library.UFuncs
         private double EditSizeDisplayPosY(double blockWidth, List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posYObjs, List<Line> allyAxisLines, double editSize)
         {
             var distance = editSize - blockWidth;
-            foreach (var addLine in posYObjs) movePtsFull.Add(addLine);
+            foreach (Line addLine in posYObjs) movePtsFull.Add(addLine);
 
-            foreach (var yAxisLine in allyAxisLines)
+            foreach (Line yAxisLine in allyAxisLines)
             {
                 YEndPoint(distance, yAxisLine);
             }
@@ -386,9 +386,9 @@ namespace TSG_Library.UFuncs
         private double EditSizeDisplayPosX(double blockLength, List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posXObjs, List<Line> allxAxisLines, double editSize)
         {
             var distance = editSize - blockLength;
-            foreach (var posXLine in posXObjs) movePtsFull.Add(posXLine);
+            foreach (Line posXLine in posXObjs) movePtsFull.Add(posXLine);
 
-            foreach (var xAxisLine in allxAxisLines)
+            foreach (Line xAxisLine in allxAxisLines)
             {
                 XEndPoint(distance, xAxisLine);
             }
@@ -400,9 +400,9 @@ namespace TSG_Library.UFuncs
         private double EditSizeDisplayNegX(double blockLength, List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> negXObjs, List<Line> allxAxisLines, double editSize)
         {
             var distance = blockLength - editSize;
-            foreach (var addLine in negXObjs) movePtsFull.Add(addLine);
+            foreach (Line addLine in negXObjs) movePtsFull.Add(addLine);
 
-            foreach (var xAxisLine in allxAxisLines)
+            foreach (Line xAxisLine in allxAxisLines)
             {
                 XStartPoint(distance, xAxisLine);
             }
@@ -414,9 +414,9 @@ namespace TSG_Library.UFuncs
         private double EditSizeDisplayNegZ(double blockHeight, List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> negZObjs, List<Line> allzAxisLines, double editSize)
         {
             var distance = blockHeight - editSize;
-            foreach (var addLine in negZObjs) movePtsFull.Add(addLine);
+            foreach (Line addLine in negZObjs) movePtsFull.Add(addLine);
 
-            foreach (var zAxisLine in allzAxisLines)
+            foreach (Line zAxisLine in allzAxisLines)
             {
                 ZStartPoint(distance, zAxisLine);
             }

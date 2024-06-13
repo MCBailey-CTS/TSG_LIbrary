@@ -18,14 +18,14 @@ namespace TSG_Library.Utilities
 
         public void Execute()
         {
-            var selComponents = Selection.SelectManyComponents().ToList();
+            List<Component> selComponents = Selection.SelectManyComponents().ToList();
 
             if(selComponents.Count <= 0)
                 return;
 
-            var filesToDelete = new HashSet<string>();
+            HashSet<string> filesToDelete = new HashSet<string>();
 
-            var selectedDisplayNames = new HashSet<string>(selComponents.Select(component => component.DisplayName));
+            HashSet<string> selectedDisplayNames = new HashSet<string>(selComponents.Select(component => component.DisplayName));
 
             foreach (var selectedDisplayName in selectedDisplayNames)
 
@@ -34,7 +34,7 @@ namespace TSG_Library.Utilities
                     print_($"Deleting the {selectedDisplayName} is forbidden.");
 
 
-            var folder = GFolder.create(__work_part_.FullPath);
+            GFolder folder = GFolder.create(__work_part_.FullPath);
 
             var currentDisplayNameJob = __display_part_.Leaf.Replace("-simulation", "");
 
@@ -51,13 +51,13 @@ namespace TSG_Library.Utilities
 
             var simDir = $"{SimActive}\\{Path.GetFileNameWithoutExtension(folder.dir_job)}";
 
-            var dictionary = new Dictionary<string, string>();
+            Dictionary<string, string> dictionary = new Dictionary<string, string>();
 
             foreach (var displayName in selectedDisplayNames)
                 switch (folder.customer_number.Length)
                 {
                     case 6:
-                        var tsgMatch = Regex.Match(displayName, "-(?<tsgLevel>tsg\\d+)");
+                        Match tsgMatch = Regex.Match(displayName, "-(?<tsgLevel>tsg\\d+)");
 
                         if(!tsgMatch.Success)
                             continue;
@@ -66,7 +66,7 @@ namespace TSG_Library.Utilities
                         continue;
                     default:
 
-                        var ecMatch = Regex.Match(displayName, "-(?<engineeringChange>5[0-9]{2})[-]*");
+                        Match ecMatch = Regex.Match(displayName, "-(?<engineeringChange>5[0-9]{2})[-]*");
 
                         if(ecMatch.Success)
                         {
@@ -78,7 +78,7 @@ namespace TSG_Library.Utilities
                         continue;
                 }
 
-            foreach (var pair in dictionary)
+            foreach (KeyValuePair<string, string> pair in dictionary)
             foreach (var file in Directory.EnumerateFiles(pair.Value, "*", SearchOption.AllDirectories))
             {
                 var fileName = Path.GetFileNameWithoutExtension(file);
@@ -93,7 +93,7 @@ namespace TSG_Library.Utilities
             }
 
 
-            var simDeleteConfirm = new SimDataDeleteConfirm(filesToDelete);
+            SimDataDeleteConfirm simDeleteConfirm = new SimDataDeleteConfirm(filesToDelete);
 
             switch (simDeleteConfirm.ShowDialog())
             {
@@ -120,7 +120,7 @@ namespace TSG_Library.Utilities
 
         private static void CloseAndDelete(List<Component> selComponents)
         {
-            foreach (var comp in selComponents.Select(__c => __c))
+            foreach (Component comp in selComponents.Select(__c => __c))
             {
                 if(comp.Prototype is Part part)
                     part.Close(BasePart.CloseWholeTree.False, BasePart.CloseModified.CloseModified, null);

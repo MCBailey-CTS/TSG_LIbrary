@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Features;
+using NXOpen.UF;
 using NXOpen.Utilities;
 using static TSG_Library.Extensions.__Extensions_;
 
@@ -217,7 +218,7 @@ MATERIAL
             //            new Tuple<Dictionary<string, Dictionary<string, string>>, Match>(englishDepths, englishMatch);
             //}
 
-            var hashedLinkedBodies = new HashSet<ExtractFace>();
+            HashSet<ExtractFace> hashedLinkedBodies = new HashSet<ExtractFace>();
 
             //foreach (NXOpen.Assemblies.Component component in Model.AssemblyComponents)
             //{
@@ -260,7 +261,7 @@ MATERIAL
 #pragma warning disable CS0162 // Unreachable code detected
             string[] lines = null; // Model.Ucf[delimeter]; //     GetValuesFromFile(delimeter);
 #pragma warning restore CS0162 // Unreachable code detected
-            var dictionary = new Dictionary<string, Dictionary<string, string>>();
+            Dictionary<string, Dictionary<string, string>> dictionary = new Dictionary<string, Dictionary<string, string>>();
             var firstLineSplit = lines[0].Split('\t');
             // We want to set the length - 1 because the first element in the first row is "NA".
             var tempKeyHolder = new string[firstLineSplit.Length];
@@ -280,7 +281,7 @@ MATERIAL
                     var element = split[colindex];
                     if(!double.TryParse(element, out var unused)) continue;
                     var diameterKey = tempKeyHolder[colindex];
-                    var diameterDictionary = dictionary[diameterKey];
+                    Dictionary<string, string> diameterDictionary = dictionary[diameterKey];
                     diameterDictionary.Add(split[0], element);
                 }
             }
@@ -303,7 +304,7 @@ MATERIAL
 #pragma warning restore CS0162 // Unreachable code detected
 
             // Gets all the faces in the parts layer 1 body that is named "SHCS_CBORE_HOLECHART.
-            var validFaces = part.Bodies.OfType<Body>()
+            Face[] validFaces = part.Bodies.OfType<Body>()
                 .SelectMany(body => body.GetFaces())
                 .Where(face => face.Name == ShcsHoleChart)
                 .ToArray();
@@ -315,13 +316,13 @@ MATERIAL
             //    yield break;
             //}
 
-            var dictionary = new Dictionary<Face, string>();
+            Dictionary<Face, string> dictionary = new Dictionary<Face, string>();
 
-            foreach (var face in validFaces)
+            foreach (Face face in validFaces)
             {
-                ufsession_.Modl.AskFaceFeats(face.Tag, out var features);
+                ufsession_.Modl.AskFaceFeats(face.Tag, out Tag[] features);
 
-                var extractFaceFeatures = features.Select(NXObjectManager.Get)
+                ExtractFace[] extractFaceFeatures = features.Select(NXObjectManager.Get)
                     .OfType<ExtractFace>()
                     .ToArray();
 
@@ -332,8 +333,8 @@ MATERIAL
                     //continue;
                 }
 
-                ufsession_.Wave.AskLinkedFeatureGeom(extractFaceFeatures[0].Tag, out var linkedGeom);
-                ufsession_.Wave.AskLinkedFeatureInfo(linkedGeom, out var linkedFeatureInfo);
+                ufsession_.Wave.AskLinkedFeatureGeom(extractFaceFeatures[0].Tag, out Tag linkedGeom);
+                ufsession_.Wave.AskLinkedFeatureInfo(linkedGeom, out UFWave.LinkedFeatureInfo linkedFeatureInfo);
 
                 if(linkedFeatureInfo.source_part_name == null ||
                    !linkedFeatureInfo.source_part_name.__IsShcs()) continue;
@@ -346,7 +347,7 @@ MATERIAL
             //    ? Model.Ucf.SingleValue("Metric_Tolerance")
             //    : Model.Ucf.SingleValue("English_Tolerance"));
 
-            foreach (var pair in dictionary)
+            foreach (KeyValuePair<Face, string> pair in dictionary)
             {
                 //if (!_fastenerMatches.ContainsKey(pair.Value))
                 //{
@@ -355,7 +356,7 @@ MATERIAL
                 //    continue;
                 //}
 
-                var tuple = _fastenerMatches[pair.Value];
+                Tuple<Dictionary<string, Dictionary<string, string>>, Match> tuple = _fastenerMatches[pair.Value];
                 var diameter = tuple.Item2.Groups["Diameter"].Value;
                 var length = tuple.Item2.Groups["Length"].Value;
                 var expectedDepth = double.Parse(tuple.Item1[diameter][length]);
@@ -378,10 +379,10 @@ MATERIAL
                     //continue;
                 }
 
-                var binormal = pair.Key.GetEdges()[0].__Binormal(0);
+                Vector3d binormal = pair.Key.GetEdges()[0].__Binormal(0);
                 // Check that both edges only have 3 different faces associated with them.
                 // And that only one of them is cylindrical and the other two are planar.
-                var associatedFaces = pair.Key.GetEdges()
+                Face[] associatedFaces = pair.Key.GetEdges()
                     .SelectMany(edge => edge.GetFaces())
                     .Distinct()
                     .ToArray();
@@ -396,7 +397,7 @@ MATERIAL
                     //continue;
                 }
 
-                var planarFaces = associatedFaces
+                Face[] planarFaces = associatedFaces
                     .Where(face => face.SolidFaceType == Face.FaceType.Planar)
                     .ToArray();
 

@@ -63,7 +63,7 @@ namespace TSG_Library.UFuncs
             //excelApp.SetCell(checkerStockListPath, 1, rowIndex, colIndex, data.Data.ToUpper().Replace("-ALTER", ""));
             for (var index = 0; index < data.Count; index++)
             {
-                var nxExcelData = data[index];
+                NXExcelData nxExcelData = data[index];
                 UFSession.GetUFSession().Ui.SetPrompt($"Writing BOM sheet. Cell {index + 1} of {data.Count}.");
                 worksheet.Cells[nxExcelData.RowIndex, nxExcelData.ColumnIndex] =
                     nxExcelData.Data.ToUpper().ToUpper().Replace("-ALTER", "");
@@ -73,7 +73,7 @@ namespace TSG_Library.UFuncs
 
         public static void Color(string[] strings, _Worksheet worksheet, IEnumerable<NXExcelData> data)
         {
-            foreach (var excelData in data)
+            foreach (NXExcelData excelData in data)
             {
                 if(strings.All(str =>
                        !string.Equals(str, excelData.Data, StringComparison.CurrentCultureIgnoreCase))) continue;

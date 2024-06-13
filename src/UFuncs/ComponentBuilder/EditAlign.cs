@@ -23,7 +23,7 @@ namespace TSG_Library.UFuncs
 
             if (mappedBase[index] < mappedPoint[index]) distance *= -1;
 
-            foreach (var zAxisLine in allzAxisLines)
+            foreach (Line zAxisLine in allzAxisLines)
                 switch (dir_xyz)
                 {
                     case "X":
@@ -83,7 +83,7 @@ namespace TSG_Library.UFuncs
             if (mappedBase[index] < mappedPoint[index])
                 distance *= -1;
 
-            foreach (var zAxisLine in allzAxisLines)
+            foreach (Line zAxisLine in allzAxisLines)
                 ZEndPoint(distance, zAxisLine);
 
             MoveObjects(movePtsHalf, movePtsFull, distance, dir_xyz, false);
@@ -97,7 +97,7 @@ namespace TSG_Library.UFuncs
             if (mappedBase[index] < mappedPoint[index])
                 distance *= -1;
 
-            foreach (var yAxisLine in allyAxisLines)
+            foreach (Line yAxisLine in allyAxisLines)
                 YStartPoint(distance, yAxisLine);
 
             MoveObjects(movePtsHalf, movePtsFull, distance, dir_xyz, false);
@@ -111,7 +111,7 @@ namespace TSG_Library.UFuncs
             if (mappedBase[index] < mappedPoint[index])
                 distance *= -1;
 
-            foreach (var yAxisLine in allyAxisLines)
+            foreach (Line yAxisLine in allyAxisLines)
                 YEndPoint(distance, yAxisLine);
 
             MoveObjects(movePtsHalf, movePtsFull, distance, dir_xyz, false);
@@ -126,7 +126,7 @@ namespace TSG_Library.UFuncs
             if (mappedBase[index] < mappedPoint[index])
                 distance *= -1;
 
-            foreach (var xAxisLine in allxAxisLines)
+            foreach (Line xAxisLine in allxAxisLines)
                 XStartPoint(distance, xAxisLine);
 
             MoveObjects(movePtsHalf, movePtsFull, distance, dir_xyz, false);
@@ -148,7 +148,7 @@ namespace TSG_Library.UFuncs
             if (mappedBase[index] < mappedPoint[index])
                 distance *= -1;
 
-            foreach (var xAxisLine in allxAxisLines)
+            foreach (Line xAxisLine in allxAxisLines)
                 XEndPoint(distance, xAxisLine);
 
             MoveObjects(movePtsHalf, movePtsFull, distance, dir_xyz, false);

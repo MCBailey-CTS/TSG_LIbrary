@@ -20,16 +20,16 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             Component originalComp,
             IDictionary<TaggedObject, TaggedObject> dict)
         {
-            var mirroredComp = (Component)dict[originalComp];
+            Component mirroredComp = (Component)dict[originalComp];
 
-            var mirroredPart = mirroredComp.__Prototype();
+            Part mirroredPart = mirroredComp.__Prototype();
 
-            var mirroredFeature = (Feature)dict[originalFeature];
+            Feature mirroredFeature = (Feature)dict[originalFeature];
 
             mirroredFeature.Suppress();
 
 #pragma warning disable 618
-            ((FaceTangentRule)originalRule).GetData(out var originalStartFace, out var originalEndFace, out var _,
+            ((FaceTangentRule)originalRule).GetData(out Face originalStartFace, out Face originalEndFace, out var _,
                 out var _, out var _);
 #pragma warning restore 618
 
@@ -47,17 +47,17 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             Face mirrorEndFace = null;
 
-            var originalOwningFeatureOfStartFace =
+            Feature originalOwningFeatureOfStartFace =
                 originalStartFace.__OwningPart().Features.GetParentFeatureOfFace(originalStartFace);
 
-            var mirrorOwningFeatureOfStartFace = (BodyFeature)dict[originalOwningFeatureOfStartFace];
+            BodyFeature mirrorOwningFeatureOfStartFace = (BodyFeature)dict[originalOwningFeatureOfStartFace];
 
-            foreach (var body in mirrorOwningFeatureOfStartFace.GetBodies())
+            foreach (Body body in mirrorOwningFeatureOfStartFace.GetBodies())
             {
                 if(!(mirrorStartFace is null) && !(mirrorEndFace is null))
                     break;
 
-                foreach (var face in body.GetFaces())
+                foreach (Face face in body.GetFaces())
                 {
                     if(mirrorStartFace is null && EdgePointsMatchFace(face, expectedStartFaceEdgePoints))
                     {

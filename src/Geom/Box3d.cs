@@ -100,14 +100,14 @@ namespace TSG_Library.Geom
         {
             get
             {
-                var position = new Point3d(MinX, MinY, MinZ);
-                var position2 = new Point3d(MinX, MinY, MaxZ);
-                var position3 = new Point3d(MinX, MaxY, MinZ);
-                var position4 = new Point3d(MinX, MaxY, MaxZ);
-                var position5 = new Point3d(MaxX, MinY, MinZ);
-                var position6 = new Point3d(MaxX, MinY, MaxZ);
-                var position7 = new Point3d(MaxX, MaxY, MinZ);
-                var position8 = new Point3d(MaxX, MaxY, MaxZ);
+                Point3d position = new Point3d(MinX, MinY, MinZ);
+                Point3d position2 = new Point3d(MinX, MinY, MaxZ);
+                Point3d position3 = new Point3d(MinX, MaxY, MinZ);
+                Point3d position4 = new Point3d(MinX, MaxY, MaxZ);
+                Point3d position5 = new Point3d(MaxX, MinY, MinZ);
+                Point3d position6 = new Point3d(MaxX, MinY, MaxZ);
+                Point3d position7 = new Point3d(MaxX, MaxY, MinZ);
+                Point3d position8 = new Point3d(MaxX, MaxY, MaxZ);
                 return new Point3d[8]
                     { position, position2, position3, position4, position5, position6, position7, position8 };
             }
@@ -126,7 +126,7 @@ namespace TSG_Library.Geom
             var num6 = num2;
             var num7 = num2;
             var num8 = num2;
-            foreach (var box3d in inputBoxes)
+            foreach (Box3d box3d in inputBoxes)
                 if(box3d != null)
                 {
                     num3 = System.Math.Min(num3, box3d.MinX);

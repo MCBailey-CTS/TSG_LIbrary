@@ -65,7 +65,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var myUdOclass = session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoDynamicHandle");
+                UserDefinedClass myUdOclass = session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoDynamicHandle");
 
                 if (myUdOclass is null)
                     return;
@@ -77,17 +77,17 @@ namespace TSG_Library.UFuncs
                     return;
 
                 BasePart myBasePart = _workPart;
-                var myUdOmanager = myBasePart.UserDefinedObjectManager;
+                UserDefinedObjectManager myUdOmanager = myBasePart.UserDefinedObjectManager;
 
-                foreach (var blkFace in editBody.GetFaces())
+                foreach (Face blkFace in editBody.GetFaces())
                 {
-                    var myUdo = myUdOmanager.CreateUserDefinedObject(myUdOclass);
-                    var myLinks = new UserDefinedObject.LinkDefinition[1];
+                    UserDefinedObject myUdo = myUdOmanager.CreateUserDefinedObject(myUdOclass);
+                    UserDefinedObject.LinkDefinition[] myLinks = new UserDefinedObject.LinkDefinition[1];
 
                     var pointOnFace = new double[3];
                     var dir = new double[3];
                     var box = new double[6];
-                    var matrix1 = _displayPart.WCS.CoordinateSystem.Orientation.Element;
+                    Matrix3x3 matrix1 = _displayPart.WCS.CoordinateSystem.Orientation.Element;
 
                     ufsession_.Modl.AskFaceData(blkFace.Tag, out var type, pointOnFace, dir, box,
                         out var radius, out var radData, out var normDir);

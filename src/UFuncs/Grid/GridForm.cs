@@ -11,16 +11,16 @@ using Part = NXOpen.Part;
 
 namespace TSG_Library.UFuncs
 {
-    [RevisionLog("Grd Stand Alone")]
-    [RevisionEntry("1.0", "2017", "06", "05")]
-    [Revision("1.0.1", "Revision Log Created for NX 11.")]
-    [RevisionEntry("1.1", "2017", "08", "22")]
-    [Revision("1.1.1", "Signed so it will run outside of CTS.")]
-    [RevisionEntry("1.2", "2018", "01", "24")]
-    [Revision("1.2.1",
-        "No longer reads current work part grid (work plane) values, but defaults to grid off and show grid off.")]
-    [RevisionEntry("11.1", "2023", "01", "09")]
-    [Revision("11.1.1", "Removed validation")]
+    //[RevisionLog("Grd Stand Alone")]
+    //[RevisionEntry("1.0", "2017", "06", "05")]
+    //[Revision("1.0.1", "Revision Log Created for NX 11.")]
+    //[RevisionEntry("1.1", "2017", "08", "22")]
+    //[Revision("1.1.1", "Signed so it will run outside of CTS.")]
+    //[RevisionEntry("1.2", "2018", "01", "24")]
+    //[Revision("1.2.1",
+    //    "No longer reads current work part grid (work plane) values, but defaults to grid off and show grid off.")]
+    //[RevisionEntry("11.1", "2023", "01", "09")]
+    //[Revision("11.1.1", "Removed validation")]
     public partial class GridForm : Form
     {
         public enum CurrentCheckedRdo
@@ -235,12 +235,12 @@ namespace TSG_Library.UFuncs
         {
             if(!txtGrid.Text.ToCharArray().Any(char.IsDigit)) throw new FormatException("Invalid Format in TextBox.");
             var expression = txtGrid.Text.ToLower().Replace(" ", "");
-            var regex = new Regex("^([0-9]{0,}.?[0-9]{0,})(in|mm)?$");
-            var match = regex.Match(expression);
+            Regex regex = new Regex("^([0-9]{0,}.?[0-9]{0,})(in|mm)?$");
+            Match match = regex.Match(expression);
             if(!match.Success) throw new FormatException("Invalid Format in TextBox.");
             var number = double.Parse(match.Groups[1].Value);
-            var units = expression.EndsWith("mm") ? Part.Units.Millimeters : Part.Units.Inches;
-            var displayUnits = __display_part_.PartUnits;
+            Part.Units units = expression.EndsWith("mm") ? Part.Units.Millimeters : Part.Units.Inches;
+            BasePart.Units displayUnits = __display_part_.PartUnits;
             var convertedValue = displayUnits == BasePart.Units.Inches
                 ? units == Part.Units.Inches ? number : number / 25.4
                 : units == Part.Units.Inches

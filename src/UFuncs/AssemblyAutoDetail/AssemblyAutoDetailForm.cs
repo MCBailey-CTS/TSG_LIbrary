@@ -8,7 +8,9 @@ using MoreLinq;
 using NXOpen;
 using NXOpen.Annotations;
 using NXOpen.Assemblies;
+using NXOpen.Drafting;
 using NXOpen.Drawings;
+using NXOpen.Features;
 using NXOpen.Layer;
 using NXOpen.Preferences;
 using NXOpen.UF;
@@ -28,66 +30,66 @@ using View = NXOpen.View;
 
 namespace TSG_Library.UFuncs
 {
-    [RevisionEntry("1.1", "2015", "05", "18")]
-    [Revision("1.1.1",
-        "Added filter for Scrap Chutes to have 4 view created.  Description attribute has to be set to \"CHUTE TO SUIT\".")]
-    [RevisionEntry("1.2", "2016", "11", "17")]
-    [Revision("1.2.1", "Changed Line 1142 from \"TSG STANDARD\" to \"STANDARD\" - to work with the GE Border file.")]
-    [RevisionEntry("1.3", "2017", "06", "05")]
-    [Revision("1.3.1", "Fixed issue with hole charting coming in awkwardly.")]
-    [RevisionEntry("1.4", "2017", "06", "15")]
-    [Revision("1.4.1", "Now cuts the display and still able to have hole charts come in at the proper orientation.")]
-    [RevisionEntry("1.45", "2017", "08", "02")]
-    [Revision("1.45.1", "Changed criteria for HOLECHARTS.")]
-    [Revision("1.45.1.1",
-        "It now will accept any input the contains the word HOLECHART instead of equaling HOLECHART.")]
-    [Revision("1.45.1.2", "Performs ToUpper() before check.")]
-    [RevisionEntry("1.50", "2017", "08", "22")]
-    [Revision("1.50.1", "Signed so it can run outside of CTS.")]
-    [RevisionEntry("1.60", "2017", "09", "08")]
-    [Revision("1.60.1", "Added validation check")]
-    [RevisionEntry("1.61", "2017", "12", "07")]
-    [Revision("1.61.1", "Added a message to the portion of code that creates the detail sheets.")]
-    [Revision("1.61.1.1",
-        "If any exception is thrown during this process the user will be informed that some sort of error occurred during that component detail creation. They should then check to see if they can determine what happened the.")]
-    [RevisionEntry("1.62", "2017", "12", "13")]
-    [Revision("1.62.1", "CIT 2017-0049")]
-    [Revision("1.62.2", "Edited the functionality of the “Delete-4-Views” checkbox.")]
-    [Revision("1.62.3",
-        "It now will delete all “Notes” on layer 230 in the selected parts. Effectively deleting the hole charts.")]
-    [RevisionEntry("1.7", "2018", "02", "09")]
-    [Revision("1.7.1", "Set the option to extract edges upon the creation of drawing sheet to none.")]
-    [Revision("1.7.2",
-        "Edited the functionality of updating the drawing sheets. It will now skip drawing sheets in parts that are not out of date.")]
-    [RevisionEntry("1.8", "2018", "11", "26")]
-    [Revision("1.8.1", "Put a try catch surrounding the process that goes out and finds details to actual process.")]
-    [Revision("1.8.2", "Removed, minimize, maximize, and cancel buttons.")]
-    [RevisionEntry("1.81", "2018", "11", "29")]
-    [Revision("1.81.1", "Fixed bug that occurred when the “Select” button was pressed and caused an exception.")]
-    [RevisionEntry("1.82", "2020", "09", "03")]
-    [Revision("1.82.1", "Fixed issue where the maximum shoe op level was 305.")]
-    [RevisionEntry("1.9", "2021", "05", "27")]
-    [Revision("1.9.1", "The ConceptControlFile now points to \"U:\\nxFiles\\UfuncFiles\\ConceptControlFile.ucf\"")]
-    [RevisionEntry("2.0", "2021", "11", "17")]
-    [Revision("2.0.1", "Added 'Shaded Views' checkbox to form.")]
-    [Revision("2.0.2", "When checked 'Shaded Views' will now produce a 4-View with the block shaded and colored.")]
-    [RevisionEntry("3.0", "2022", "01", "11")]
-    [Revision("3.0.1", "Added drill chart check box to form.")]
-    [Revision("3.0.2", "If checked, then the program will add a drill chart to the 4-View")]
-    [RevisionEntry("3.1", "2022", "10", "05")]
-    [Revision("3.1.1",
-        "Details that have a DESCRIPTION attribute value of 'Diemaker To Alter' will now create a 4-VIEW.")]
-    [Revision("3.1.2", "Bodies on Layer 111 will now show up in the 4-VIEW and will be included with the dimensions.")]
-    [RevisionEntry("3.2", "2022", "10", "10")]
-    [Revision("3.2.1",
-        "Details now will move all non solid body on layers 1 and 111 to layer 169 so they won't show up in the 4-View")]
-    [Revision("3.2.2", "Before 4-VIEW is created, the program runs the same MakePlanView method from AddFasteners.")]
-    [RevisionEntry("3.3", "2022", "11", "02")]
-    [Revision("3.3.1", "Fixed bug that resulted in non Dynamic Block parts not getting a 4-View.")]
-    [RevisionEntry("3.4", "2022", "12", "01")]
-    [Revision("3.4.1", "Fixed bug where details were getting changed to shaded without edges.")]
-    [RevisionEntry("11.1", "2023", "01", "09")]
-    [Revision("11.1.1", "Removed validation")]
+    //[RevisionEntry("1.1", "2015", "05", "18")]
+    //[Revision("1.1.1",
+    //    "Added filter for Scrap Chutes to have 4 view created.  Description attribute has to be set to \"CHUTE TO SUIT\".")]
+    //[RevisionEntry("1.2", "2016", "11", "17")]
+    //[Revision("1.2.1", "Changed Line 1142 from \"TSG STANDARD\" to \"STANDARD\" - to work with the GE Border file.")]
+    //[RevisionEntry("1.3", "2017", "06", "05")]
+    //[Revision("1.3.1", "Fixed issue with hole charting coming in awkwardly.")]
+    //[RevisionEntry("1.4", "2017", "06", "15")]
+    //[Revision("1.4.1", "Now cuts the display and still able to have hole charts come in at the proper orientation.")]
+    //[RevisionEntry("1.45", "2017", "08", "02")]
+    //[Revision("1.45.1", "Changed criteria for HOLECHARTS.")]
+    //[Revision("1.45.1.1",
+    //    "It now will accept any input the contains the word HOLECHART instead of equaling HOLECHART.")]
+    //[Revision("1.45.1.2", "Performs ToUpper() before check.")]
+    //[RevisionEntry("1.50", "2017", "08", "22")]
+    //[Revision("1.50.1", "Signed so it can run outside of CTS.")]
+    //[RevisionEntry("1.60", "2017", "09", "08")]
+    //[Revision("1.60.1", "Added validation check")]
+    //[RevisionEntry("1.61", "2017", "12", "07")]
+    //[Revision("1.61.1", "Added a message to the portion of code that creates the detail sheets.")]
+    //[Revision("1.61.1.1",
+    //    "If any exception is thrown during this process the user will be informed that some sort of error occurred during that component detail creation. They should then check to see if they can determine what happened the.")]
+    //[RevisionEntry("1.62", "2017", "12", "13")]
+    //[Revision("1.62.1", "CIT 2017-0049")]
+    //[Revision("1.62.2", "Edited the functionality of the “Delete-4-Views” checkbox.")]
+    //[Revision("1.62.3",
+    //    "It now will delete all “Notes” on layer 230 in the selected parts. Effectively deleting the hole charts.")]
+    //[RevisionEntry("1.7", "2018", "02", "09")]
+    //[Revision("1.7.1", "Set the option to extract edges upon the creation of drawing sheet to none.")]
+    //[Revision("1.7.2",
+    //    "Edited the functionality of updating the drawing sheets. It will now skip drawing sheets in parts that are not out of date.")]
+    //[RevisionEntry("1.8", "2018", "11", "26")]
+    //[Revision("1.8.1", "Put a try catch surrounding the process that goes out and finds details to actual process.")]
+    //[Revision("1.8.2", "Removed, minimize, maximize, and cancel buttons.")]
+    //[RevisionEntry("1.81", "2018", "11", "29")]
+    //[Revision("1.81.1", "Fixed bug that occurred when the “Select” button was pressed and caused an exception.")]
+    //[RevisionEntry("1.82", "2020", "09", "03")]
+    //[Revision("1.82.1", "Fixed issue where the maximum shoe op level was 305.")]
+    //[RevisionEntry("1.9", "2021", "05", "27")]
+    //[Revision("1.9.1", "The ConceptControlFile now points to \"U:\\nxFiles\\UfuncFiles\\ConceptControlFile.ucf\"")]
+    //[RevisionEntry("2.0", "2021", "11", "17")]
+    //[Revision("2.0.1", "Added 'Shaded Views' checkbox to form.")]
+    //[Revision("2.0.2", "When checked 'Shaded Views' will now produce a 4-View with the block shaded and colored.")]
+    //[RevisionEntry("3.0", "2022", "01", "11")]
+    //[Revision("3.0.1", "Added drill chart check box to form.")]
+    //[Revision("3.0.2", "If checked, then the program will add a drill chart to the 4-View")]
+    //[RevisionEntry("3.1", "2022", "10", "05")]
+    //[Revision("3.1.1",
+    //    "Details that have a DESCRIPTION attribute value of 'Diemaker To Alter' will now create a 4-VIEW.")]
+    //[Revision("3.1.2", "Bodies on Layer 111 will now show up in the 4-VIEW and will be included with the dimensions.")]
+    //[RevisionEntry("3.2", "2022", "10", "10")]
+    //[Revision("3.2.1",
+    //    "Details now will move all non solid body on layers 1 and 111 to layer 169 so they won't show up in the 4-View")]
+    //[Revision("3.2.2", "Before 4-VIEW is created, the program runs the same MakePlanView method from AddFasteners.")]
+    //[RevisionEntry("3.3", "2022", "11", "02")]
+    //[Revision("3.3.1", "Fixed bug that resulted in non Dynamic Block parts not getting a 4-View.")]
+    //[RevisionEntry("3.4", "2022", "12", "01")]
+    //[Revision("3.4.1", "Fixed bug where details were getting changed to shaded without edges.")]
+    //[RevisionEntry("11.1", "2023", "01", "09")]
+    //[Revision("11.1.1", "Removed validation")]
     [UFunc(ufunc_assembly_auto_detail)]
     public partial class AssemblyAutoDetailForm : _UFuncForm
     {
@@ -132,7 +134,7 @@ namespace TSG_Library.UFuncs
         private void ButtonSelectBorderFile_Click(object sender, EventArgs e)
         {
             openFileDialog.InitialDirectory = "G:\\0Library\\Drafting";
-            var dialogResult = openFileDialog.ShowDialog();
+            DialogResult dialogResult = openFileDialog.ShowDialog();
 
             _borderFile = dialogResult == DialogResult.OK
                 ? openFileDialog.FileName
@@ -170,14 +172,14 @@ namespace TSG_Library.UFuncs
                 {
                     _allComponents.Clear();
 
-                    var selectComponents = Selection.SelectManyComponents();
+                    Component[] selectComponents = Selection.SelectManyComponents();
 
                     if(selectComponents.Length == 0)
                         return;
 
                     _allComponents.AddRange(selectComponents);
 
-                    var trimmedComponents = _allComponents.Where(comp => !comp.IsSuppressed)
+                    List<Component> trimmedComponents = _allComponents.Where(comp => !comp.IsSuppressed)
                         .DistinctBy(__c => __c.DisplayName)
                         .ToList();
 
@@ -210,13 +212,13 @@ namespace TSG_Library.UFuncs
                         return;
                     }
 
-                    var materials = CreateMaterialList();
-                    var passedComponents = new List<Component>();
+                    List<CtsAttributes> materials = CreateMaterialList();
+                    List<Component> passedComponents = new List<Component>();
 
-                    foreach (var comp in _allComponents)
+                    foreach (Component comp in _allComponents)
                         try
                         {
-                            foreach (var attr in comp.GetUserAttributes())
+                            foreach (NXObject.AttributeInformation attr in comp.GetUserAttributes())
                             {
                                 if(attr.Title.ToUpper() == "MATERIAL")
                                 {
@@ -267,7 +269,7 @@ namespace TSG_Library.UFuncs
                         return;
                     }
 
-                    var selectDeselectComps = passedComponents.ToArray();
+                    Component[] selectDeselectComps = passedComponents.ToArray();
                     passedComponents = Preselect.GetUserSelections(selectDeselectComps);
 
                     if(passedComponents.Count == 0)
@@ -293,11 +295,11 @@ namespace TSG_Library.UFuncs
         {
             using (session_.__usingDisplayPartReset())
             {
-                var componentArray = selectedComponents.ToArray();
+                Component[] componentArray = selectedComponents.ToArray();
 
                 for (var index = 0; index < componentArray.Length; index++)
                 {
-                    var detailComp = componentArray[index];
+                    Component detailComp = componentArray[index];
 
                     try
                     {
@@ -318,7 +320,7 @@ namespace TSG_Library.UFuncs
 
         public static void SetWcsToWorkPart()
         {
-            var dynamic = __work_part_.__DynamicBlock();
+            Block dynamic = __work_part_.__DynamicBlock();
 
             if(__work_part_.Tag == __display_part_.Tag)
             {
@@ -330,12 +332,12 @@ namespace TSG_Library.UFuncs
             {
                 __work_component_.__ReferenceSet("Entire Part");
 
-                var system = __work_part_.CoordinateSystems.CreateCoordinateSystem(
+                CartesianCoordinateSystem system = __work_part_.CoordinateSystems.CreateCoordinateSystem(
                     _Point3dOrigin,
                     dynamic.__Orientation(),
                     false);
 
-                var ject = __work_component_.FindOccurrence(system);
+                NXObject ject = __work_component_.FindOccurrence(system);
 
                 if(!(ject is CartesianCoordinateSystem cart))
                     throw new Exception();
@@ -365,7 +367,7 @@ namespace TSG_Library.UFuncs
             const string top = "Top";
             const string plan = "PLAN";
             __display_part_ = __work_part_;
-            var planView = GetPlanView();
+            ModelingView planView = GetPlanView();
             ModelingView modelingView1, modelingView2;
             Layout layout;
 
@@ -375,12 +377,12 @@ namespace TSG_Library.UFuncs
                 modelingView1 = __work_part_.ModelingViews.WorkView;
                 modelingView2 = __work_part_.ModelingViews.FindObject(top);
                 layout.ReplaceView(modelingView1, modelingView2, true);
-                var tempView = __work_part_.ModelingViews.FindObject(plan);
+                ModelingView tempView = __work_part_.ModelingViews.FindObject(plan);
                 ufsession_.Obj.DeleteName(tempView.Tag);
             }
 
             ufsession_.View.SetViewMatrix("", 3, csys.Tag, null);
-            var newView = __display_part_.Views.SaveAs(__display_part_.ModelingViews.WorkView, plan, false, false);
+            View newView = __display_part_.Views.SaveAs(__display_part_.ModelingViews.WorkView, plan, false, false);
             layout = __display_part_.Layouts.FindObject(l1);
             modelingView1 = (ModelingView)newView;
             modelingView2 = __display_part_.ModelingViews.FindObject(top);
@@ -432,7 +434,7 @@ namespace TSG_Library.UFuncs
 
                 using (new ResetShadeRendering())
                 {
-                    var preferencesBuilder1 = __work_part_.SettingsManager.CreatePreferencesBuilder();
+                    PreferencesBuilder preferencesBuilder1 = __work_part_.SettingsManager.CreatePreferencesBuilder();
 
                     using (new Destroyer(preferencesBuilder1))
                     {
@@ -447,17 +449,17 @@ namespace TSG_Library.UFuncs
                     ufsession_.Draw.SetDisplayState(1);
                     __display_part_.ModelingViews.WorkView.RenderingStyle = View.RenderingStyleType.ShadedWithEdges;
 
-                    foreach (var dispRefSet in __display_part_.GetAllReferenceSets())
+                    foreach (ReferenceSet dispRefSet in __display_part_.GetAllReferenceSets())
                     {
                         if(dispRefSet.Name != "BODY")
                             continue;
 
-                        foreach (var refMember in dispRefSet.AskMembersInReferenceSet())
+                        foreach (NXObject refMember in dispRefSet.AskMembersInReferenceSet())
                         {
                             if(!(refMember is Arc || refMember is Line || refMember is Ellipse || refMember is Spline))
                                 continue;
 
-                            var lineLayer = (Curve)refMember;
+                            Curve lineLayer = (Curve)refMember;
 
                             if(lineLayer.Layer != 1)
                                 continue;
@@ -475,10 +477,10 @@ namespace TSG_Library.UFuncs
                             SetCsysToPlanView();
                             SetHoleChartLayers();
                             // get work view and part units and set lettering preferences
-                            var workView = __display_part_.Views.WorkView;
+                            View workView = __display_part_.Views.WorkView;
                             SetLetteringPreferences(__display_part_.PartUnits);
 
-                            var deleteNote = __display_part_.Notes
+                            List<NXObject> deleteNote = __display_part_.Notes
                                 .Cast<Note>()
                                 .Where(holeNote => holeNote.Layer == 230)
                                 .Cast<NXObject>()
@@ -494,7 +496,7 @@ namespace TSG_Library.UFuncs
                                 if(solidBody.Layer != 1 && solidBody.Layer != 94 && solidBody.Layer != 96)
                                     continue;
 
-                                foreach (var cylFace in solidBody.GetFaces())
+                                foreach (Face cylFace in solidBody.GetFaces())
                                 {
                                     const int cylinder = 16;
                                     var point = new double[3];
@@ -510,7 +512,7 @@ namespace TSG_Library.UFuncs
                                     if(!cylFace.Name.ToUpper().Contains("HOLECHART"))
                                         continue;
 
-                                    var cfOrigin = new Point3d(point[0], point[1], point[2]);
+                                    Point3d cfOrigin = new Point3d(point[0], point[1], point[2]);
                                     var cfNote = new string[1];
                                     var multiplier = __display_part_.PartUnits == BasePart.Units.Inches ? 1.0 : 25.4;
 
@@ -543,11 +545,11 @@ namespace TSG_Library.UFuncs
                     if(chkDetailSheet.Checked)
                         try
                         {
-                            var objects = __display_part_.Layers.GetAllObjectsOnLayer(1);
+                            NXObject[] objects = __display_part_.Layers.GetAllObjectsOnLayer(1);
 
-                            var objectsToMove = new List<DisplayableObject>();
+                            List<DisplayableObject> objectsToMove = new List<DisplayableObject>();
 
-                            foreach (var obj in objects)
+                            foreach (NXObject obj in objects)
                             {
                                 if(obj is Body)
                                     continue;
@@ -567,7 +569,7 @@ namespace TSG_Library.UFuncs
                             SetCsysToPlanView();
 
                             // delete existing 4-VIEW
-                            var deleteView = __display_part_.DrawingSheets
+                            List<NXObject> deleteView = __display_part_.DrawingSheets
                                 .Cast<DrawingSheet>()
                                 .Where(dwg => dwg.Name == "4-VIEW")
                                 .Cast<NXObject>()
@@ -612,7 +614,7 @@ namespace TSG_Library.UFuncs
 
                                 dwg.Open();
 
-                                foreach (var drfView in dwg.GetDraftingViews())
+                                foreach (DraftingView drfView in dwg.GetDraftingViews())
                                 {
                                     drfView.Update();
                                     print_($"Updated view {drfView.Name} in {__display_part_.Leaf}");
@@ -641,7 +643,7 @@ namespace TSG_Library.UFuncs
                     }
 
                     // delete existing 4-VIEW
-                    var deleteView1 = __display_part_.DrawingSheets.Cast<DrawingSheet>()
+                    List<NXObject> deleteView1 = __display_part_.DrawingSheets.Cast<DrawingSheet>()
                         .Where(dwg => dwg.Name == "4-VIEW")
                         .Cast<NXObject>()
                         .ToList();
@@ -654,7 +656,7 @@ namespace TSG_Library.UFuncs
 
         private static DraftingView ImportPlanView(double xPlacement, double yPlacement)
         {
-            var baseViewBuilder = __work_part_.DraftingViews.CreateBaseViewBuilder(null);
+            BaseViewBuilder baseViewBuilder = __work_part_.DraftingViews.CreateBaseViewBuilder(null);
 
             using (new Destroyer(baseViewBuilder))
             {
@@ -676,15 +678,15 @@ namespace TSG_Library.UFuncs
                 baseViewBuilder.SelectModelView.SelectedView = isPlan ? planView : topView;
                 baseViewBuilder.Style.ViewStyleBase.Part = __work_part_;
                 baseViewBuilder.Style.ViewStyleBase.PartName = __work_part_.FullPath;
-                var loadStatus = __work_part_.LoadFully();
+                PartLoadStatus loadStatus = __work_part_.LoadFully();
                 loadStatus.Dispose();
                 baseViewBuilder.Style.ViewStyleGeneral.UVGrid = false;
                 baseViewBuilder.Style.ViewStyleGeneral.AutomaticAnchorPoint = false;
                 baseViewBuilder.Style.ViewStyleGeneral.Centerlines = false;
-                var point = new Point3d(xPlacement, yPlacement, 0.0);
+                Point3d point = new Point3d(xPlacement, yPlacement, 0.0);
                 baseViewBuilder.Placement.Placement.SetValue(null, __work_part_.Views.WorkView, point);
-                var nXObject1 = baseViewBuilder.Commit();
-                var nPlanView = (DraftingView)nXObject1;
+                NXObject nXObject1 = baseViewBuilder.Commit();
+                DraftingView nPlanView = (DraftingView)nXObject1;
                 return nPlanView;
             }
         }
@@ -703,9 +705,9 @@ namespace TSG_Library.UFuncs
         {
             // get all displayable objects for the current drafting view
             drfView.Update();
-            var viewMatrix = drfView.Matrix;
-            var objInView = new List<DisplayableObject>();
-            var visObj = NXOpen.Tag.Null;
+            Matrix3x3 viewMatrix = drfView.Matrix;
+            List<DisplayableObject> objInView = new List<DisplayableObject>();
+            Tag visObj = NXOpen.Tag.Null;
 
             do
             {
@@ -715,14 +717,14 @@ namespace TSG_Library.UFuncs
                     continue;
 
                 ufsession_.Obj.AskTypeAndSubtype(visObj, out _, out _);
-                var visEdge = (DisplayableObject)NXObjectManager.Get(visObj);
+                DisplayableObject visEdge = (DisplayableObject)NXObjectManager.Get(visObj);
                 objInView.Add(visEdge);
             } while (visObj != NXOpen.Tag.Null);
 
             // ask extreme of all displayed edges and then create CtsDimensionData for each edge
-            var dimData = new List<CtsDimensionData>();
+            List<CtsDimensionData> dimData = new List<CtsDimensionData>();
 
-            foreach (var dispObj in objInView)
+            foreach (DisplayableObject dispObj in objInView)
             {
                 var drfLocation = new double[2];
                 var extremePoint = new double[3];
@@ -737,7 +739,7 @@ namespace TSG_Library.UFuncs
                             extremePoint);
                         break;
                     case "NXOpen.Line":
-                        var line = (Line)dispObj;
+                        Line line = (Line)dispObj;
                         extremePoint = line.StartPoint.__ToArray();
                         break;
                     default:
@@ -746,7 +748,7 @@ namespace TSG_Library.UFuncs
 
                 ufsession_.View.MapModelToDrawing(drfView.Tag, extremePoint, drfLocation);
 
-                var dimObject = new CtsDimensionData
+                CtsDimensionData dimObject = new CtsDimensionData
                 {
                     DimXvalue = drfLocation[0],
                     DimYvalue = drfLocation[1],
@@ -761,7 +763,7 @@ namespace TSG_Library.UFuncs
             if(dimData.Count <= 0)
                 return;
 
-            var objInfo = dimData.ToArray();
+            CtsDimensionData[] objInfo = dimData.ToArray();
             Array.Sort(objInfo, CtsDimensionData.SortXdescending());
 
             CtsDimensionData CreateCtsData(int index, CtsDimensionData.ExtremePointId id)
@@ -776,11 +778,11 @@ namespace TSG_Library.UFuncs
                 };
             }
 
-            var minX = CreateCtsData(objInfo.Length - 1, CtsDimensionData.ExtremePointId.MinX);
-            var maxX = CreateCtsData(0, CtsDimensionData.ExtremePointId.MaxX);
+            CtsDimensionData minX = CreateCtsData(objInfo.Length - 1, CtsDimensionData.ExtremePointId.MinX);
+            CtsDimensionData maxX = CreateCtsData(0, CtsDimensionData.ExtremePointId.MaxX);
             Array.Sort(objInfo, CtsDimensionData.SortYdescending());
-            var minY = CreateCtsData(objInfo.Length - 1, CtsDimensionData.ExtremePointId.MinY);
-            var maxY = CreateCtsData(0, CtsDimensionData.ExtremePointId.MaxY);
+            CtsDimensionData minY = CreateCtsData(objInfo.Length - 1, CtsDimensionData.ExtremePointId.MinY);
+            CtsDimensionData maxY = CreateCtsData(0, CtsDimensionData.ExtremePointId.MaxY);
             minY.ExtPointId = (int)CtsDimensionData.ExtremePointId.MaxY;
             maxY.Type = objInfo[0].Type;
 
@@ -789,7 +791,7 @@ namespace TSG_Library.UFuncs
                 case "4-VIEW-BOTTOM":
                 {
                     // get minX greatest Y vertex
-                    FindEndPoints(ref minX, out var vertex1, out var vertex2);
+                    FindEndPoints(ref minX, out Point3d vertex1, out Point3d vertex2);
                     var drfVertex1 = new double[2];
                     ufsession_.View.MapModelToDrawing(drfView.Tag, vertex1.__ToArray(), drfVertex1);
                     var drfVertex2 = new double[2];
@@ -798,7 +800,7 @@ namespace TSG_Library.UFuncs
                     minX.ExtPointId = drfVertex1[0] <= drfVertex2[0] ? (int)FirstEndPoint : (int)LastEndPoint;
                     minX.DimYvalue = drfVertex1[1] >= drfVertex2[1] ? drfVertex1[1] : drfVertex2[1];
                     // get maxX greatest Y vertex
-                    FindEndPoints(ref maxX, out var vertex3, out var vertex4);
+                    FindEndPoints(ref maxX, out Point3d vertex3, out Point3d vertex4);
                     var drfVertex3 = new double[2];
                     ufsession_.View.MapModelToDrawing(drfView.Tag, vertex3.__ToArray(), drfVertex3);
                     var drfVertex4 = new double[2];
@@ -807,24 +809,20 @@ namespace TSG_Library.UFuncs
                     maxX.ExtPointId = drfVertex3[0] >= drfVertex4[0] ? (int)FirstEndPoint : (int)LastEndPoint;
                     maxX.DimYvalue = drfVertex3[1] >= drfVertex4[1] ? drfVertex3[1] : drfVertex4[1];
                     // get minY greatest X vertex
-                    FindEndPoints(ref minY, out var vertex5, out var vertex6);
+                    FindEndPoints(ref minY, out Point3d vertex5, out Point3d vertex6);
                     var drfVertex5 = new double[2];
                     ufsession_.View.MapModelToDrawing(drfView.Tag, vertex5.__ToArray(), drfVertex5);
                     var drfVertex6 = new double[2];
                     ufsession_.View.MapModelToDrawing(drfView.Tag, vertex6.__ToArray(), drfVertex6);
                     minY.DimXvalue = drfVertex5[0] >= drfVertex6[0] ? drfVertex5[0] : drfVertex6[0];
-                    minY.DimYvalue = drfVertex5[0] >= drfVertex6[0]
-                        ? drfVertex5[1] <= drfVertex6[1] ? drfVertex5[1] : drfVertex6[1]
-                        : drfVertex5[1] <= drfVertex6[1]
-                            ? drfVertex5[1]
-                            : drfVertex6[1];
+                    minY.DimYvalue = drfVertex5[1] <= drfVertex6[1] ? drfVertex5[1] : drfVertex6[1];
                     minY.ExtPointId = drfVertex5[0] >= drfVertex6[0]
                         ? drfVertex5[1] <= drfVertex6[1] ? (int)FirstEndPoint : (int)LastEndPoint
                         : drfVertex5[1] <= drfVertex6[1]
                             ? (int)FirstEndPoint
                             : (int)LastEndPoint;
                     // get maxY greatest X vertex
-                    FindEndPoints(ref maxY, out var vertex7, out var vertex8);
+                    FindEndPoints(ref maxY, out Point3d vertex7, out Point3d vertex8);
                     var drfVertex7 = new double[2];
                     ufsession_.View.MapModelToDrawing(drfView.Tag, vertex7.__ToArray(), drfVertex7);
                     var drfVertex8 = new double[2];
@@ -845,7 +843,7 @@ namespace TSG_Library.UFuncs
                 case "4-VIEW-RIGHT":
                 {
                     // get minY least X vertex
-                    FindEndPoints(ref minY, out var vertex1, out var vertex2);
+                    FindEndPoints(ref minY, out Point3d vertex1, out Point3d vertex2);
                     var drfVertex1 = new double[2];
                     ufsession_.View.MapModelToDrawing(drfView.Tag, vertex1.__ToArray(), drfVertex1);
                     var drfVertex2 = new double[2];
@@ -862,7 +860,7 @@ namespace TSG_Library.UFuncs
                             ? (int)FirstEndPoint
                             : (int)LastEndPoint;
                     // get maxY least X vertex
-                    FindEndPoints(ref maxY, out var vertex3, out var vertex4);
+                    FindEndPoints(ref maxY, out Point3d vertex3, out Point3d vertex4);
                     var drfVertex3 = new double[2];
                     ufsession_.View.MapModelToDrawing(drfView.Tag, vertex3.__ToArray(), drfVertex3);
                     var drfVertex4 = new double[2];
@@ -890,29 +888,29 @@ namespace TSG_Library.UFuncs
             var zDistance = size[2];
 
             // orthoRight dimension placement and text value
-            var orthoRightDimText = new UFDrf.Text();
+            UFDrf.Text orthoRightDimText = new UFDrf.Text();
             var orthoRightDimOrigin = new double[3];
             orthoRightDimOrigin[0] = drfViewPosition[0] - zDistance / 2 - dimSpace * viewScale;
             orthoRightDimOrigin[1] = drfViewPosition[1];
             orthoRightDimOrigin[2] = 0;
 
             // orthoBottom horizontal dimension placement and text value
-            var orthoBtmDimText = new UFDrf.Text();
+            UFDrf.Text orthoBtmDimText = new UFDrf.Text();
             var orthoBtmHorizDimOrigin = new double[3];
             orthoBtmHorizDimOrigin[0] = drfViewPosition[0];
             orthoBtmHorizDimOrigin[1] = drfViewPosition[1] + zDistance / 2 + dimSpace * viewScale;
             orthoBtmHorizDimOrigin[2] = 0;
 
             // orthoBottom vertical dimension placement and text value
-            var orthoBtmVertDimText = new UFDrf.Text();
+            UFDrf.Text orthoBtmVertDimText = new UFDrf.Text();
             var orthoBtmVertDimOrigin = new double[3];
             orthoBtmVertDimOrigin[0] = drfViewPosition[0] + xDistance / 2 + dimSpace * viewScale;
             orthoBtmVertDimOrigin[1] = drfViewPosition[1];
             orthoBtmVertDimOrigin[2] = 0;
-            var drfObjMaxX = new UFDrf.Object();
-            var drfObjMinX = new UFDrf.Object();
-            var drfObjMaxY = new UFDrf.Object();
-            var drfObjMinY = new UFDrf.Object();
+            UFDrf.Object drfObjMaxX = new UFDrf.Object();
+            UFDrf.Object drfObjMinX = new UFDrf.Object();
+            UFDrf.Object drfObjMaxY = new UFDrf.Object();
+            UFDrf.Object drfObjMinY = new UFDrf.Object();
             ufsession_.Drf.InitObjectStructure(ref drfObjMaxX);
             ufsession_.Drf.InitObjectStructure(ref drfObjMinX);
             ufsession_.Drf.InitObjectStructure(ref drfObjMaxY);
@@ -943,13 +941,13 @@ namespace TSG_Library.UFuncs
         {
             if(NXObjectManager.Get(maxY.DimEntity).GetType().ToString() == "NXOpen.Line")
             {
-                var line1 = (Line)NXObjectManager.Get(maxY.DimEntity);
+                Line line1 = (Line)NXObjectManager.Get(maxY.DimEntity);
                 vertex3 = line1.StartPoint;
                 vertex4 = line1.EndPoint;
             }
             else
             {
-                var edge = (Edge)NXObjectManager.Get(maxY.DimEntity);
+                Edge edge = (Edge)NXObjectManager.Get(maxY.DimEntity);
                 edge.GetVertices(out vertex3, out vertex4);
             }
         }
@@ -1041,15 +1039,15 @@ namespace TSG_Library.UFuncs
 
         private static void CreateHoleChartNote(Point3d noteOrigin, string[] holeDia, Tag view)
         {
-            var markIdNote = session_.SetUndoMark(Session.MarkVisibility.Invisible, "CreateOrNull Annotation");
-            var letteringPreferences1 = __work_part_.Annotations.Preferences.GetLetteringPreferences();
+            Session.UndoMarkId markIdNote = session_.SetUndoMark(Session.MarkVisibility.Invisible, "CreateOrNull Annotation");
+            LetteringPreferences letteringPreferences1 = __work_part_.Annotations.Preferences.GetLetteringPreferences();
 
-            var userSymbolPreferences1 = __work_part_.Annotations.NewUserSymbolPreferences(
+            UserSymbolPreferences userSymbolPreferences1 = __work_part_.Annotations.NewUserSymbolPreferences(
                 UserSymbolPreferences.SizeType.ScaleAspectRatio,
                 1.0,
                 1.0);
 
-            var note1 = __work_part_.Annotations.CreateNote(
+            Note note1 = __work_part_.Annotations.CreateNote(
                 holeDia,
                 noteOrigin,
                 AxisOrientation.Horizontal,
@@ -1066,9 +1064,9 @@ namespace TSG_Library.UFuncs
 
         private static void SetLayerVisibility(Tag viewToSet)
         {
-            var viewObj = (View)NXObjectManager.Get(viewToSet);
+            View viewObj = (View)NXObjectManager.Get(viewToSet);
 
-            var layerVisibleInView = new StateInfo[256];
+            StateInfo[] layerVisibleInView = new StateInfo[256];
 
             for (var i = 0; i < layerVisibleInView.Length - 1; i++)
             {
@@ -1099,9 +1097,9 @@ namespace TSG_Library.UFuncs
         {
             var size = units == BasePart.Units.Inches ? .125 : 3.175;
 
-            using (var letteringPreferences = __display_part_.Annotations.Preferences.GetLetteringPreferences())
+            using (LetteringPreferences letteringPreferences = __display_part_.Annotations.Preferences.GetLetteringPreferences())
             {
-                var generalText = new Lettering
+                Lettering generalText = new Lettering
                 {
                     Size = size,
                     CharacterSpaceFactor = 1.0,
@@ -1121,7 +1119,7 @@ namespace TSG_Library.UFuncs
         {
             var unitMultiplier = units == BasePart.Units.Inches ? 1.0 : 25.4;
 
-            using (var letteringPreferences1 = __work_part_.Annotations.Preferences.GetLetteringPreferences())
+            using (LetteringPreferences letteringPreferences1 = __work_part_.Annotations.Preferences.GetLetteringPreferences())
             {
                 Lettering CreateLettering(double value)
                 {
@@ -1143,7 +1141,7 @@ namespace TSG_Library.UFuncs
                 __work_part_.Annotations.Preferences.SetLetteringPreferences(letteringPreferences1);
             }
 
-            using (var lineAndArrowPreferences1 = __work_part_.Annotations.Preferences.GetLineAndArrowPreferences())
+            using (LineAndArrowPreferences lineAndArrowPreferences1 = __work_part_.Annotations.Preferences.GetLineAndArrowPreferences())
             {
                 LineCfw Cfw(int color)
                 {
@@ -1169,17 +1167,17 @@ namespace TSG_Library.UFuncs
                 __display_part_.Annotations.Preferences.SetLineAndArrowPreferences(lineAndArrowPreferences1);
             }
 
-            using (var dimensionPreferences = __display_part_.Annotations.Preferences.GetDimensionPreferences())
+            using (DimensionPreferences dimensionPreferences = __display_part_.Annotations.Preferences.GetDimensionPreferences())
             {
                 dimensionPreferences.ExtensionLineDisplay = ExtensionLineDisplay.Two;
                 dimensionPreferences.ArrowDisplay = ArrowDisplay.Two;
                 dimensionPreferences.TextPlacement = TextPlacement.Automatic;
                 dimensionPreferences.TextOrientation = TextOrientation.Horizontal;
-                var linearTolerance1 = __display_part_.Annotations.Preferences.GetLinearTolerances();
+                LinearTolerance linearTolerance1 = __display_part_.Annotations.Preferences.GetLinearTolerances();
                 linearTolerance1.PrimaryDimensionDecimalPlaces = units == BasePart.Units.Inches ? 3 : 2;
                 __display_part_.Annotations.Preferences.SetLinearTolerances(linearTolerance1);
 
-                using (var unitsFormatPreferences = dimensionPreferences.GetUnitsFormatPreferences())
+                using (UnitsFormatPreferences unitsFormatPreferences = dimensionPreferences.GetUnitsFormatPreferences())
                 {
                     if(chkDualDimensions.Checked)
                         unitsFormatPreferences.DualDimensionPlacement = DualDimensionPlacement.Below;
@@ -1199,7 +1197,7 @@ namespace TSG_Library.UFuncs
 
         private static void SetViewPreferences()
         {
-            var viewPreferences = __work_part_.ViewPreferences;
+            ViewPreferences viewPreferences = __work_part_.ViewPreferences;
             viewPreferences.HiddenLines.HiddenlineColor = 0;
             viewPreferences.HiddenLines.HiddenlineFont = NXOpen.Preferences.Font.Dashed;
             viewPreferences.VisibleLines.VisibleColor = 0;
@@ -1219,11 +1217,11 @@ namespace TSG_Library.UFuncs
             // This entire method was rewritten.
             try
             {
-                var layout = __work_part_.Layouts.FindObject("L1");
-                var backView = __work_part_.ModelingViews.FindObject("Back");
+                Layout layout = __work_part_.Layouts.FindObject("L1");
+                ModelingView backView = __work_part_.ModelingViews.FindObject("Back");
                 layout.ReplaceView(__work_part_.ModelingViews.WorkView, backView, true);
                 var viewName = __display_part_.ModelingViews.ToArray().Any(__k => __k.Name == "PLAN") ? "PLAN" : "Top";
-                var view = __display_part_.__FindModelingView(viewName);
+                ModelingView view = __display_part_.__FindModelingView(viewName);
                 layout.ReplaceView(backView, view, true);
                 __display_part_.WCS.SetOriginAndMatrix(view.Origin, view.Matrix);
             }
@@ -1243,7 +1241,7 @@ namespace TSG_Library.UFuncs
 
         private void GetChildComponents(Component assembly)
         {
-            foreach (var child in assembly.GetChildren())
+            foreach (Component child in assembly.GetChildren())
             {
                 if(child.IsSuppressed)
                 {
@@ -1262,7 +1260,7 @@ namespace TSG_Library.UFuncs
                     continue;
                 }
 
-                var instance = ufsession_.Assem.AskInstOfPartOcc(child.Tag);
+                Tag instance = ufsession_.Assem.AskInstOfPartOcc(child.Tag);
 
                 if(instance == NXOpen.Tag.Null)
                     continue;
@@ -1281,7 +1279,7 @@ namespace TSG_Library.UFuncs
                 if(status != 0)
                     continue;
 
-                ufsession_.Part.OpenQuiet(partName, out var partOpen, out _);
+                ufsession_.Part.OpenQuiet(partName, out Tag partOpen, out _);
 
                 if(partOpen == NXOpen.Tag.Null)
                     continue;
@@ -1300,9 +1298,9 @@ namespace TSG_Library.UFuncs
         {
             var getMaterial = PerformStreamReaderString(FilePath_Ucf, ":MATERIAL_ATTRIBUTE_NAME:",
                 ":END_MATERIAL_ATTRIBUTE_NAME:");
-            var compMaterials =
+            List<CtsAttributes> compMaterials =
                 PerformStreamReaderList(FilePath_Ucf, ":COMPONENT_MATERIALS:", ":END_COMPONENT_MATERIALS:");
-            foreach (var cMaterial in compMaterials)
+            foreach (CtsAttributes cMaterial in compMaterials)
                 cMaterial.AttrName = getMaterial != string.Empty ? getMaterial : "MATERIAL";
             return compMaterials;
         }
@@ -1311,7 +1309,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var sr = new StreamReader(path);
+                StreamReader sr = new StreamReader(path);
                 var content = sr.ReadToEnd();
                 sr.Close();
                 var startSplit = Regex.Split(content, startSearchString);
@@ -1332,14 +1330,14 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var sr = new StreamReader(path);
+                StreamReader sr = new StreamReader(path);
                 var content = sr.ReadToEnd();
                 sr.Close();
                 var startSplit = Regex.Split(content, startSearchString);
                 var endSplit = Regex.Split(startSplit[1], endSearchString);
                 var textData = endSplit[0];
                 var splitData = Regex.Split(textData, "\r\n");
-                var compData = (from sData in splitData
+                List<CtsAttributes> compData = (from sData in splitData
                     where sData != string.Empty
                     select new CtsAttributes { AttrValue = sData }).ToList();
                 return compData.Count > 0 ? compData : null;
@@ -1365,7 +1363,7 @@ namespace TSG_Library.UFuncs
 
         private static void SetLayers(params int[] layers)
         {
-            using (var layerState = __display_part_.Layers.GetStates())
+            using (StateCollection layerState = __display_part_.Layers.GetStates())
             {
                 foreach (Category category in __display_part_.LayerCategories)
                     if(category.Name == "ALL")
@@ -1416,7 +1414,7 @@ namespace TSG_Library.UFuncs
 
         private void CreateDetailSheet(string[] drillChart)
         {
-            var preferencesBuilder1 = __work_part_.SettingsManager.CreatePreferencesBuilder();
+            PreferencesBuilder preferencesBuilder1 = __work_part_.SettingsManager.CreatePreferencesBuilder();
 
             using (new Destroyer(preferencesBuilder1))
             {
@@ -1446,7 +1444,7 @@ namespace TSG_Library.UFuncs
                     return;
                 }
 
-                var sBody = __display_part_.__SolidBodyLayer1OrNull();
+                Body sBody = __display_part_.__SolidBodyLayer1OrNull();
 
                 if(sBody is null)
                 {
@@ -1454,14 +1452,14 @@ namespace TSG_Library.UFuncs
                     return;
                 }
 
-                var units = __display_part_.PartUnits;
+                BasePart.Units units = __display_part_.PartUnits;
                 double scaledWidth;
                 double scaledHeight;
                 var minCorner = new double[3];
                 var distances = new double[3];
 
                 // import 4-VIEW border part
-                var modes = new ImportPartModes
+                ImportPartModes modes = new ImportPartModes
                 {
                     layer_mode = 1,
                     group_mode = 1,
@@ -1477,12 +1475,12 @@ namespace TSG_Library.UFuncs
                 minCorner = results[0];
                 distances = results[1];
 
-                var layer111SolidBodies = __display_part_.Bodies
+                Body[] layer111SolidBodies = __display_part_.Bodies
                     .ToArray()
                     .Where(b => b.IsSolidBody && b.Layer == 111)
                     .ToArray();
 
-                foreach (var body111 in layer111SolidBodies)
+                foreach (Body body111 in layer111SolidBodies)
                 {
                     var tempResult = GetMinsMaxs(body111);
                     var minCorner1 = tempResult[0];
@@ -1520,7 +1518,7 @@ namespace TSG_Library.UFuncs
                 var sheetWidth = baseWidthXDir * unitMultiplier * scale;
                 var sheetHeight = baseHeightYDir * unitMultiplier * scale;
 
-                var drawingSheetUnits = units == BasePart.Units.Inches
+                DrawingSheet.Unit drawingSheetUnits = units == BasePart.Units.Inches
                     ? DrawingSheet.Unit.Inches
                     : DrawingSheet.Unit.Millimeters;
 
@@ -1537,13 +1535,13 @@ namespace TSG_Library.UFuncs
                 SetViewPreferences();
                 ufsession_.Part.Import(_borderFile, ref modes, new double[] { 1, 0, 0, 0, 1, 0 },
                     new double[] { 0, 0, 0 }, scale, out _);
-                var temp = __display_part_;
+                Part temp = __display_part_;
 
                 try
                 {
                     if(chkDrillChart.Checked && drillChart.Length > 0)
                     {
-                        var note = (Note)session_.__FindByName(@"GRUMBLEGRUMBLE");
+                        Note note = (Note)session_.__FindByName(@"GRUMBLEGRUMBLE");
 
                         note.SetText(drillChart);
                     }
@@ -1571,30 +1569,30 @@ namespace TSG_Library.UFuncs
                     : (viewMinFromBtm * unitMultiplier + viewSpace * unitMultiplier) * scale + zDistance +
                       yDistance / 2;
 
-                var planDrfView = ImportPlanView(pvRefPoint[0], pvRefPoint[1]);
+                DraftingView planDrfView = ImportPlanView(pvRefPoint[0], pvRefPoint[1]);
                 planDrfView.Update();
                 var orthogonalBtm = new double[2];
                 var orthogonalRight = new double[2];
                 orthogonalRight[0] = pvRefPoint[0] + xDistance / 2 + viewSpace * unitMultiplier * scale + zDistance / 2;
                 orthogonalRight[1] = pvRefPoint[1];
                 ufsession_.Draw.AddOrthographicView(fourViewSheet.Tag, planDrfView.Tag, UFDraw.ProjDir.ProjectRight,
-                    orthogonalRight, out var rOrthoTag);
-                var rightDrfView = (DraftingView)NXObjectManager.Get(rOrthoTag);
+                    orthogonalRight, out Tag rOrthoTag);
+                DraftingView rightDrfView = (DraftingView)NXObjectManager.Get(rOrthoTag);
                 rightDrfView.SetName("4-VIEW-RIGHT");
                 SetLayerVisibility(rOrthoTag);
-                var stateArray = new StateInfo(111, State.Visible);
+                StateInfo stateArray = new StateInfo(111, State.Visible);
                 __display_part_.Layers.SetObjectsVisibilityOnLayer(rightDrfView, new[] { stateArray }, true);
                 orthogonalBtm[0] = pvRefPoint[0];
                 orthogonalBtm[1] = pvRefPoint[1] - yDistance / 2 - viewSpace * unitMultiplier * .667 * scale -
                                    zDistance / 2;
                 ufsession_.Draw.AddOrthographicView(fourViewSheet.Tag, planDrfView.Tag, UFDraw.ProjDir.ProjectBelow,
-                    orthogonalBtm, out var bOrthoTag);
-                var btmDrfView = (DraftingView)NXObjectManager.Get(bOrthoTag);
+                    orthogonalBtm, out Tag bOrthoTag);
+                DraftingView btmDrfView = (DraftingView)NXObjectManager.Get(bOrthoTag);
                 btmDrfView.SetName("4-VIEW-BOTTOM");
                 SetLayerVisibility(bOrthoTag);
                 __display_part_.Layers.SetObjectsVisibilityOnLayer(btmDrfView, new[] { stateArray }, true);
 
-                foreach (var attributeNote in __display_part_.GetUserAttributes())
+                foreach (NXObject.AttributeInformation attributeNote in __display_part_.GetUserAttributes())
                 {
                     if(attributeNote.Title.ToUpper() != "DESCRIPTION")
                         continue;
@@ -1613,7 +1611,7 @@ namespace TSG_Library.UFuncs
                 var isWireTaper = false;
                 var isWaitForDev = false;
 
-                foreach (var attrNote in __display_part_.GetUserAttributes())
+                foreach (NXObject.AttributeInformation attrNote in __display_part_.GetUserAttributes())
                 {
                     if(attrNote.Title.ToUpper() == "WTN")
                     {
@@ -1634,7 +1632,7 @@ namespace TSG_Library.UFuncs
                         isWaitForDev = true;
                 }
 
-                var addToDelete = new List<NXObject>();
+                List<NXObject> addToDelete = new List<NXObject>();
 
                 foreach (Note drfNote in __display_part_.Notes)
                 {

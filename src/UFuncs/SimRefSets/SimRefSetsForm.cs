@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -13,17 +14,17 @@ using Selection = TSG_Library.Ui.Selection;
 namespace TSG_Library.UFuncs
 {
     [UFunc(ufunc_sim_ref_sets)]
-    [RevisionLog("Sim Ref Sets")]
-    [RevisionEntry("1.0", "2017", "06", "05")]
-    [Revision("1.0.1", "Revision Log Created for NX 11")]
-    [RevisionEntry("1.1", "2017", "08", "22")]
-    [Revision("1.1.1", "Signed so it will run outside of CTS")]
-    [RevisionEntry("1.2", "2017", "09", "08")]
-    [Revision("1.2.1", "Added validation check")]
-    [RevisionEntry("1.3", "2017", "10", "26")]
-    [Revision("1.3.1", "Fixed bug where the Master-Tip reference sets were being delete from the simulation file.")]
-    [RevisionEntry("11.1", "2023", "01", "09")]
-    [Revision("11.1.1", "Removed validation")]
+    //[RevisionLog("Sim Ref Sets")]
+    //[RevisionEntry("1.0", "2017", "06", "05")]
+    //[Revision("1.0.1", "Revision Log Created for NX 11")]
+    //[RevisionEntry("1.1", "2017", "08", "22")]
+    //[Revision("1.1.1", "Signed so it will run outside of CTS")]
+    //[RevisionEntry("1.2", "2017", "09", "08")]
+    //[Revision("1.2.1", "Added validation check")]
+    //[RevisionEntry("1.3", "2017", "10", "26")]
+    //[Revision("1.3.1", "Fixed bug where the Master-Tip reference sets were being delete from the simulation file.")]
+    //[RevisionEntry("11.1", "2023", "01", "09")]
+    //[Revision("11.1.1", "Removed validation")]
     public partial class SimRefSetsForm : _UFuncForm
     {
         public SimRefSetsForm()
@@ -55,7 +56,7 @@ namespace TSG_Library.UFuncs
 
                     if(chkDelete.Checked)
                     {
-                        var listOfRefs = __display_part_.GetAllReferenceSets()
+                        List<ReferenceSet> listOfRefs = __display_part_.GetAllReferenceSets()
                             // Revision • 1.3 – 2017 – 10 – 26 
                             .Where(set => !set.Name.ToUpper().Contains("MASTER"))
                             .ToList();
@@ -85,7 +86,7 @@ namespace TSG_Library.UFuncs
                 .Select(__c => __c.Name)
                 .ToArray();
 
-            foreach (var nxComp in nxComponents)
+            foreach (Component nxComp in nxComponents)
                 try
                 {
                     // Checks to make sure that there aren't two components with the same "Component Name".
@@ -113,7 +114,7 @@ namespace TSG_Library.UFuncs
                         continue;
 
                     // Checks to make sure that there aren't two components with the same "Component Name".
-                    var alreadyNamedRefSet = __display_part_
+                    ReferenceSet alreadyNamedRefSet = __display_part_
                         .GetAllReferenceSets()
                         .SingleOrDefault(set => set.Name == newRefSetName);
 
@@ -123,7 +124,7 @@ namespace TSG_Library.UFuncs
                     // reference set and create a new one, or just continue on and not override the reference set.
                     if(!(alreadyNamedRefSet is null))
                     {
-                        var result = MessageBox.Show(
+                        DialogResult result = MessageBox.Show(
                             $@"A reference set named {newRefSetName} already exists. Would you like to override it?",
                             @"Warning",
                             MessageBoxButtons.YesNo);
@@ -146,7 +147,7 @@ namespace TSG_Library.UFuncs
                     }
 
 
-                    var referenceSet = __display_part_.__FindReferenceSetOrNull(newRefSetName);
+                    ReferenceSet referenceSet = __display_part_.__FindReferenceSetOrNull(newRefSetName);
 
                     if(referenceSet is null)
                     {

@@ -14,82 +14,83 @@ using TSG_Library.Attributes;
 using TSG_Library.Utilities;
 using static TSG_Library.Extensions.__Extensions_;
 using static TSG_Library.UFuncs._UFunc;
+using Point = System.Drawing.Point;
 using Selection = TSG_Library.Ui.Selection;
 
 namespace TSG_Library.UFuncs
 {
     [UFunc(ufunc_proposal_data_wizard)]
-    [RevisionEntry("1.0", "2017", "06", "05")]
-    [Revision("1.0.1", "Revision Log Created for NX 11.")]
-    [RevisionEntry("1.1", "2017", "08", "22")]
-    [Revision("1.1.1", "Signed so it will run outside of CTS.")]
-    [RevisionEntry("1.2", "2017", "08", "29")]
-    [Revision("1.2.1", "Fixed bug where the new component wasn't being created.")]
-    [Revision("1.2.1.1", "Something changed between nx9 and nx11.")]
-    [Revision("1.2.1.2", "Original code did not need a template specified when created a new component in 9.")]
-    [Revision("1.2.1.3", "It appears in 11 that you do in fact need to specify a template.")]
-    [Revision("1.2.2", "Also added a revision number to the form.")]
-    [RevisionEntry("2.0", "2017", "10", "24")]
-    [Revision("2.0.1",
-        "Fixed bug where during the FindMasters() method, Object Null Reference would occur if one of the child components wasn't loaded.")]
-    [Revision("2.0.1.1", "Unloaded components will be ignored.")]
-    [Revision("2.0.1.2", "Suppressed components will also be ignored.")]
-    [Revision("2.0.2", "Changed Step Translator to use NX11.")]
-    [Revision("2.0.3",
-        "The last step of the creating the proposal data process is now saving the Master and the simulation file. This only occurs if the process gets all the way to the end without throwing an exception.")]
-    [Revision("2.0.4", "Copy of the step file that is created is also copied to the MathData-P Level folder.")]
-    [Revision("2.0.5",
-        "Made a change so that if the name of the selected Master is just Master then name the reference set the corresponding RXXPX number, else it functions as normal.")]
-    [Revision("2.0.6",
-        "In the case of an error that occurs during any point of CreateProposalData method, the program will call a CleanUp() method, it performs the following.")]
-    [Revision("2.0.6.1", "It resets the Master to the state that it was in prior to the previous Proposal Run")]
-    [Revision("2.0.6.2", "It deletes the P Level folder in MathData if it exists.")]
-    [Revision("2.0.6.3", "It deletes the P Level folder in Outgoing if it exists.")]
-    [Revision("2.0.7", "Created a method called CheckPLevels() which performs the following.")]
-    [Revision("2.0.7.1", "Takes the selected P-Level and determines if there are any children under the master, and ")]
-    [Revision("2.0.7.2",
-        "If there are any children under the Master, any Reference Sets in the Master, any proposal data folders in the outgoing folder, or any proposal data folders in the Mathdata folder with the same P-Level as the selected P-Level. If any of these exist then the user will be prompted to overwrite these occurrences. ")]
-    [RevisionEntry("2.1", "2017", "12", "07")]
-    [Revision("2.1.1", "Fixed issue where the proposal data part file name was being named incorrectly.")]
-    [RevisionEntry("2.2", "2018", "01", "03")]
-    [Revision("2.2.1",
-        "Made it so that selected masters that are set to “Entire Part” cannot be processed and a subsequent message is displayed to the user.")]
-    [RevisionEntry("2.3", "2018", "11", "29")]
-    [Revision("2.3.1",
-        "Re arranged form, so that the user can stretch the box and incorporate longer master file names.")]
-    [RevisionEntry("2.4", "2019", "02", "26")]
-    [Revision("2.4.1", "Reorganized code so that is will work with the current folder structure but will allow for,")]
-    [Revision("2.4.1.1", "Either “mathdata” or “Math Data”")]
-    [Revision("2.4.1.2", "And either “outgoingData” or “Outgoing”.")]
-    [Revision("2.4.1.3", "Will not work with the new folder structure yet.")]
-    [Revision("2.4.2",
-        "When the list box is populated with the masters, it will now show the component name of the master in stead of the actual display of the master.")]
-    [Revision("2.4.2.1",
-        "This should make it more difficult for the user to accidentally pick one master and then picking the incorrect corresponding sheet body for proposal.")]
-    [Revision("2.4.3",
-        "Also, when the user hovers over the one of the masters in the list box, the corresponding master in the actual model will highlight.")]
-    [Revision("2.4.3.1", "This will make it easier to determine which master is actually being selected.")]
-    [Revision("2.4.4", "Moved all the code from the proposal data project, to CTS_Library.")]
-    [Revision("2.4.5",
-        "Instead of having a Release level text box, it has now been changed to a Release and Study radio buttons.")]
-    [Revision("2.4.5.1", "This gives the user the ability to make both release and study data.")]
-    [RevisionEntry("2.5", "2019", "07", "11")]
-    [Revision("2.5.1", "Updated to use the updated GFolder.")]
-    [RevisionEntry("3.0", "2019", "08", "29")]
-    [Revision("3.0.1", "Edited back end of code to make easier to make changes in the future.")]
-    [RevisionEntry("3.1", "2020", "02", "19")]
-    [Revision("3.1.1",
-        "Updated so that that proposal data will now look for data starting with either \"R\" or \"TSG\".")]
-    [RevisionEntry("3.2", "2020", "09", "24")]
-    [Revision("3.2.1", "Changd \"GetPartNumber\" method in \"Program\".")]
-    [Revision("3.2.2", "It now provides a more descriptive error message when an invalid part is found.")]
-    [RevisionEntry("3.3", "2021", "03", "15")]
-    [Revision("3.3.1", "Removed method that copies the created data to the outgoing folder.")]
-    [RevisionEntry("3.3", "2022", "10", "04")]
-    [Revision("3.3.1",
-        "Updated the regular expresion of 'PartNumberWithDateRegex' to include \" dash, whitespace, underscore\"")]
-    [RevisionEntry("11.1", "2023", "01", "09")]
-    [Revision("11.1.1", "Removed validation")]
+    //[RevisionEntry("1.0", "2017", "06", "05")]
+    //[Revision("1.0.1", "Revision Log Created for NX 11.")]
+    //[RevisionEntry("1.1", "2017", "08", "22")]
+    //[Revision("1.1.1", "Signed so it will run outside of CTS.")]
+    //[RevisionEntry("1.2", "2017", "08", "29")]
+    //[Revision("1.2.1", "Fixed bug where the new component wasn't being created.")]
+    //[Revision("1.2.1.1", "Something changed between nx9 and nx11.")]
+    //[Revision("1.2.1.2", "Original code did not need a template specified when created a new component in 9.")]
+    //[Revision("1.2.1.3", "It appears in 11 that you do in fact need to specify a template.")]
+    //[Revision("1.2.2", "Also added a revision number to the form.")]
+    //[RevisionEntry("2.0", "2017", "10", "24")]
+    //[Revision("2.0.1",
+    //    "Fixed bug where during the FindMasters() method, Object Null Reference would occur if one of the child components wasn't loaded.")]
+    //[Revision("2.0.1.1", "Unloaded components will be ignored.")]
+    //[Revision("2.0.1.2", "Suppressed components will also be ignored.")]
+    //[Revision("2.0.2", "Changed Step Translator to use NX11.")]
+    //[Revision("2.0.3",
+    //    "The last step of the creating the proposal data process is now saving the Master and the simulation file. This only occurs if the process gets all the way to the end without throwing an exception.")]
+    //[Revision("2.0.4", "Copy of the step file that is created is also copied to the MathData-P Level folder.")]
+    //[Revision("2.0.5",
+    //    "Made a change so that if the name of the selected Master is just Master then name the reference set the corresponding RXXPX number, else it functions as normal.")]
+    //[Revision("2.0.6",
+    //    "In the case of an error that occurs during any point of CreateProposalData method, the program will call a CleanUp() method, it performs the following.")]
+    //[Revision("2.0.6.1", "It resets the Master to the state that it was in prior to the previous Proposal Run")]
+    //[Revision("2.0.6.2", "It deletes the P Level folder in MathData if it exists.")]
+    //[Revision("2.0.6.3", "It deletes the P Level folder in Outgoing if it exists.")]
+    //[Revision("2.0.7", "Created a method called CheckPLevels() which performs the following.")]
+    //[Revision("2.0.7.1", "Takes the selected P-Level and determines if there are any children under the master, and ")]
+    //[Revision("2.0.7.2",
+    //    "If there are any children under the Master, any Reference Sets in the Master, any proposal data folders in the outgoing folder, or any proposal data folders in the Mathdata folder with the same P-Level as the selected P-Level. If any of these exist then the user will be prompted to overwrite these occurrences. ")]
+    //[RevisionEntry("2.1", "2017", "12", "07")]
+    //[Revision("2.1.1", "Fixed issue where the proposal data part file name was being named incorrectly.")]
+    //[RevisionEntry("2.2", "2018", "01", "03")]
+    //[Revision("2.2.1",
+    //    "Made it so that selected masters that are set to “Entire Part” cannot be processed and a subsequent message is displayed to the user.")]
+    //[RevisionEntry("2.3", "2018", "11", "29")]
+    //[Revision("2.3.1",
+    //    "Re arranged form, so that the user can stretch the box and incorporate longer master file names.")]
+    //[RevisionEntry("2.4", "2019", "02", "26")]
+    //[Revision("2.4.1", "Reorganized code so that is will work with the current folder structure but will allow for,")]
+    //[Revision("2.4.1.1", "Either “mathdata” or “Math Data”")]
+    //[Revision("2.4.1.2", "And either “outgoingData” or “Outgoing”.")]
+    //[Revision("2.4.1.3", "Will not work with the new folder structure yet.")]
+    //[Revision("2.4.2",
+    //    "When the list box is populated with the masters, it will now show the component name of the master in stead of the actual display of the master.")]
+    //[Revision("2.4.2.1",
+    //    "This should make it more difficult for the user to accidentally pick one master and then picking the incorrect corresponding sheet body for proposal.")]
+    //[Revision("2.4.3",
+    //    "Also, when the user hovers over the one of the masters in the list box, the corresponding master in the actual model will highlight.")]
+    //[Revision("2.4.3.1", "This will make it easier to determine which master is actually being selected.")]
+    //[Revision("2.4.4", "Moved all the code from the proposal data project, to CTS_Library.")]
+    //[Revision("2.4.5",
+    //    "Instead of having a Release level text box, it has now been changed to a Release and Study radio buttons.")]
+    //[Revision("2.4.5.1", "This gives the user the ability to make both release and study data.")]
+    //[RevisionEntry("2.5", "2019", "07", "11")]
+    //[Revision("2.5.1", "Updated to use the updated GFolder.")]
+    //[RevisionEntry("3.0", "2019", "08", "29")]
+    //[Revision("3.0.1", "Edited back end of code to make easier to make changes in the future.")]
+    //[RevisionEntry("3.1", "2020", "02", "19")]
+    //[Revision("3.1.1",
+    //    "Updated so that that proposal data will now look for data starting with either \"R\" or \"TSG\".")]
+    //[RevisionEntry("3.2", "2020", "09", "24")]
+    //[Revision("3.2.1", "Changd \"GetPartNumber\" method in \"Program\".")]
+    //[Revision("3.2.2", "It now provides a more descriptive error message when an invalid part is found.")]
+    //[RevisionEntry("3.3", "2021", "03", "15")]
+    //[Revision("3.3.1", "Removed method that copies the created data to the outgoing folder.")]
+    //[RevisionEntry("3.3", "2022", "10", "04")]
+    //[Revision("3.3.1",
+    //    "Updated the regular expresion of 'PartNumberWithDateRegex' to include \" dash, whitespace, underscore\"")]
+    //[RevisionEntry("11.1", "2023", "01", "09")]
+    //[Revision("11.1.1", "Removed validation")]
     public partial class ProposalDataWizardForm : _UFuncForm
     {
         public enum DataLevelType1
@@ -182,9 +183,9 @@ namespace TSG_Library.UFuncs
         {
             ClearMasters();
 
-            var _folder = GFolder.create(__display_part_.FullPath);
+            GFolder _folder = GFolder.create(__display_part_.FullPath);
 
-            foreach (var master in FindMasters(__display_part_, MathdataType1))
+            foreach (Component master in FindMasters(__display_part_, MathdataType1))
                 AddTag(master.Tag, master.Name);
 
             var regexString = MathdataType1 == MathdataType.History ? Regex_History : Regex_Master;
@@ -193,7 +194,7 @@ namespace TSG_Library.UFuncs
             {
                 case DataLevelType1.Revision:
 
-                    var rootComponent = __display_part_.__RootComponentOrNull();
+                    Component rootComponent = __display_part_.__RootComponentOrNull();
 
                     if(rootComponent is null)
                     {
@@ -205,7 +206,7 @@ namespace TSG_Library.UFuncs
 
                     var identifier = "";
 
-                    foreach (var child in rootComponent.GetChildren())
+                    foreach (Component child in rootComponent.GetChildren())
                     {
                         if(child.IsSuppressed) continue;
 
@@ -213,13 +214,13 @@ namespace TSG_Library.UFuncs
 
                         if(!Regex.IsMatch(child.DisplayName, regexString, RegexOptions.IgnoreCase)) continue;
 
-                        var rootMasterHistory = prototype.__RootComponentOrNull();
+                        Component rootMasterHistory = prototype.__RootComponentOrNull();
 
                         if(rootMasterHistory is null) continue;
 
-                        foreach (var descendant in rootMasterHistory.GetChildren())
+                        foreach (Component descendant in rootMasterHistory.GetChildren())
                         {
-                            var match = Regex.Match(descendant.DisplayName, RLevel, RegexOptions.IgnoreCase);
+                            Match match = Regex.Match(descendant.DisplayName, RLevel, RegexOptions.IgnoreCase);
 
                             if(!match.Success) continue;
 
@@ -276,7 +277,7 @@ namespace TSG_Library.UFuncs
                 if(sender == btnReset)
                     Reset();
                 else if(sender == btnCreate)
-                    foreach (var master in _selectedMasters)
+                    foreach (Tuple<Component, Body> master in _selectedMasters)
                         using (session_.__usingDisplayPartReset())
                         {
                             CreateData(master.Item1, master.Item2, txtDataLevel.Text, txtPLevel.Text,
@@ -291,28 +292,28 @@ namespace TSG_Library.UFuncs
 
         private static void OnViewTagMouseOn(object sender, Tag tag)
         {
-            var master = (Component)NXObjectManager.Get(tag);
+            Component master = (Component)NXObjectManager.Get(tag);
 
             master.Highlight();
         }
 
         private static void OnViewTagMouseOff(object sender, Tag tag)
         {
-            var master = (Component)NXObjectManager.Get(tag);
+            Component master = (Component)NXObjectManager.Get(tag);
 
             master.Unhighlight();
         }
 
         private void OnViewTagClicked(object sender, Tag tag)
         {
-            var master = (Component)NXObjectManager.Get(tag);
+            Component master = (Component)NXObjectManager.Get(tag);
 
-            foreach (var tempMaster in FindMasters(__display_part_, MathdataType1))
+            foreach (Component tempMaster in FindMasters(__display_part_, MathdataType1))
                 tempMaster.Blank();
 
-            var selectedBody = Selection.SelectBody();
+            Body selectedBody = Selection.SelectBody();
 
-            foreach (var tempMaster in FindMasters(__display_part_, MathdataType1))
+            foreach (Component tempMaster in FindMasters(__display_part_, MathdataType1))
                 tempMaster.Unblank();
 
             if(selectedBody is null)
@@ -338,7 +339,7 @@ namespace TSG_Library.UFuncs
             if(sender != lstMasters) return;
 
             // Get the position that the mouse is currently over
-            var cursorPoint = Cursor.Position;
+            Point cursorPoint = Cursor.Position;
 
             cursorPoint = lstMasters.PointToClient(cursorPoint);
 
@@ -346,7 +347,7 @@ namespace TSG_Library.UFuncs
 
             if(itemIndex < 0) return;
 
-            var item = (ListItem)lstMasters.Items[itemIndex];
+            ListItem item = (ListItem)lstMasters.Items[itemIndex];
 
             if(_overTag != NXOpen.Tag.Null)
                 TagMouseOff?.Invoke(this, _overTag);
@@ -361,7 +362,7 @@ namespace TSG_Library.UFuncs
             if(sender != lstMasters) return;
 
             // Get the position that the mouse is currently over
-            var cursorPoint = Cursor.Position;
+            Point cursorPoint = Cursor.Position;
 
             cursorPoint = lstMasters.PointToClient(cursorPoint);
 
@@ -380,7 +381,7 @@ namespace TSG_Library.UFuncs
             // If the {itemIndex} is less, than zero, then that means the users mouse is 
             // in the {lstMasters} control but not over one of the 
             // valid masters/items in the control.
-            var item = (ListItem)lstMasters.Items[itemIndex];
+            ListItem item = (ListItem)lstMasters.Items[itemIndex];
 
             if(_overTag == item.Tag) return;
 
@@ -407,7 +408,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var listItem = lstMasters.Items.OfType<ListItem>().FirstOrDefault(item => item.Tag == masterTag);
+                ListItem listItem = lstMasters.Items.OfType<ListItem>().FirstOrDefault(item => item.Tag == masterTag);
 
                 lstMasters.Items.Remove(listItem);
             }
@@ -426,7 +427,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var display = Session.GetSession().Parts.Display;
+                Part display = Session.GetSession().Parts.Display;
 
                 if(display is null)
                 {
@@ -434,7 +435,7 @@ namespace TSG_Library.UFuncs
                     return;
                 }
 
-                var folder = GFolder.create(display.FullPath);
+                GFolder folder = GFolder.create(display.FullPath);
 
                 if(!Directory.Exists(folder.dir_math_data))
                 {
@@ -447,13 +448,13 @@ namespace TSG_Library.UFuncs
                 if(!chkHistoryType.Checked && !chkMasterType.Checked)
                     chkMasterType.Checked = true;
 
-                var mathdataType = chkHistoryType.Checked ? MathdataType.History : MathdataType.Master;
+                MathdataType mathdataType = chkHistoryType.Checked ? MathdataType.History : MathdataType.Master;
 
-                var dataLevelType = rdoR.Checked ? DataLevelType1.Revision : DataLevelType1.Study;
+                DataLevelType1 dataLevelType = rdoR.Checked ? DataLevelType1.Revision : DataLevelType1.Study;
 
                 ClearMasters();
 
-                foreach (var master in _selectedMasters)
+                foreach (Tuple<Component, Body> master in _selectedMasters)
                 {
                     master.Item1.Unblank();
                     master.Item2.Unblank();
@@ -464,9 +465,9 @@ namespace TSG_Library.UFuncs
                 // todo: Need to make it so that the _folder will change with the work part changed handler.
                 // the folder will default to the one that was open when the proposal data form was fired.
 
-                var _folder = GFolder.create_or_null(__display_part_);
+                GFolder _folder = GFolder.create_or_null(__display_part_);
 
-                foreach (var master in FindMasters(__display_part_, mathdataType))
+                foreach (Component master in FindMasters(__display_part_, mathdataType))
                     AddTag(master.Tag, master.Name);
 
                 var regexString = mathdataType == MathdataType.History ? Regex_History : Regex_Master;
@@ -478,7 +479,7 @@ namespace TSG_Library.UFuncs
                         //language=regexp
 
 
-                        var rootComponent = __display_part_.__RootComponentOrNull();
+                        Component rootComponent = __display_part_.__RootComponentOrNull();
 
                         if(rootComponent is null)
                         {
@@ -488,7 +489,7 @@ namespace TSG_Library.UFuncs
 
                         var maxRLevelString = "001";
 
-                        foreach (var child in rootComponent.GetChildren())
+                        foreach (Component child in rootComponent.GetChildren())
                         {
                             if(child.IsSuppressed)
                                 continue;
@@ -499,14 +500,14 @@ namespace TSG_Library.UFuncs
                             if(!Regex.IsMatch(child.DisplayName, regexString, RegexOptions.IgnoreCase))
                                 continue;
 
-                            var rootMasterHistory = prototype.__RootComponentOrNull();
+                            Component rootMasterHistory = prototype.__RootComponentOrNull();
 
                             if(rootMasterHistory is null)
                                 continue;
 
-                            foreach (var descendant in rootMasterHistory.GetChildren())
+                            foreach (Component descendant in rootMasterHistory.GetChildren())
                             {
-                                var match = Regex.Match(descendant.DisplayName, RLevel, RegexOptions.IgnoreCase);
+                                Match match = Regex.Match(descendant.DisplayName, RLevel, RegexOptions.IgnoreCase);
 
                                 if(!match.Success) continue;
 
@@ -542,7 +543,7 @@ namespace TSG_Library.UFuncs
                 var selectedIndex = lstMasters.SelectedIndex;
 
                 if(selectedIndex < 0 || selectedIndex >= lstMasters.Items.Count) return;
-                var selectedMaster = (ListItem)lstMasters.Items[selectedIndex];
+                ListItem selectedMaster = (ListItem)lstMasters.Items[selectedIndex];
 
                 TagClicked?.Invoke(this, selectedMaster.Tag);
             }
@@ -557,11 +558,11 @@ namespace TSG_Library.UFuncs
         // ReSharper disable once ReturnTypeCanBeEnumerable.Global
         public static Component[] FindMasters(Part simulation, MathdataType mathdataType)
         {
-            var list = new List<Component>();
+            List<Component> list = new List<Component>();
 
             var regexString = mathdataType == MathdataType.History ? Regex_History : Regex_Master;
 
-            foreach (var child in simulation.ComponentAssembly.RootComponent?.GetChildren() ?? new Component[0])
+            foreach (Component child in simulation.ComponentAssembly.RootComponent?.GetChildren() ?? new Component[0])
                 if(Regex.IsMatch(child.DisplayName, regexString))
                 {
                     if(simulation.Layers.GetState(child.Layer) != State.WorkLayer)
@@ -596,7 +597,7 @@ namespace TSG_Library.UFuncs
                 if(directoryName is null) continue;
 
                 // Matches the {directoryName}.
-                var match = Regex.Match(directoryName, ProposalRegex);
+                Match match = Regex.Match(directoryName, ProposalRegex);
 
                 // If the {match} is not successful, then we can continue.
                 if(!match.Success) continue;
@@ -629,8 +630,8 @@ namespace TSG_Library.UFuncs
                     throw new ArgumentException(@"Path for Step file already exists.", nameof(stepPath));
 
 
-                var undoMarkId1 = session_.SetUndoMark(0, "Start");
-                var stepCreator = session_.DexManager.CreateStepCreator();
+                Session.UndoMarkId undoMarkId1 = session_.SetUndoMark(0, "Start");
+                StepCreator stepCreator = session_.DexManager.CreateStepCreator();
                 stepCreator.ExportAs = (StepCreator.ExportAsOption)1;
                 stepCreator.ExportFrom = (StepCreator.ExportFromOption)1;
                 stepCreator.ObjectTypes.Solids = true;
@@ -643,7 +644,7 @@ namespace TSG_Library.UFuncs
                 stepCreator.ObjectTypes.Solids = true;
                 session_.DeleteUndoMark(session_.SetUndoMark((Session.MarkVisibility)1, "Export to STEP Options"),
                     null);
-                var undoMarkId2 = session_.SetUndoMark((Session.MarkVisibility)1, "Export to STEP Options");
+                Session.UndoMarkId undoMarkId2 = session_.SetUndoMark((Session.MarkVisibility)1, "Export to STEP Options");
                 stepCreator.FileSaveFlag = false;
                 stepCreator.ProcessHoldFlag = wait;
                 stepCreator.LayerMask = "1-256";
@@ -684,10 +685,10 @@ namespace TSG_Library.UFuncs
             try
             {
                 TheUFSession.So.CreateXformAssyCtxt(master.__Prototype().Tag, NXOpen.Tag.Null, master.Tag,
-                    out var xform);
+                    out Tag xform);
 
                 TheUFSession.Wave.CreateLinkedBody(simulationBody.Tag, xform, master.__Prototype().Tag, false,
-                    out var linkedFeature);
+                    out Tag linkedFeature);
 
                 UFSession.GetUFSession().Modl.Update();
 
@@ -715,15 +716,15 @@ namespace TSG_Library.UFuncs
             var referenceSetTitle = master.ReferenceSet;
 
             // Gets the reference set from the {prototype}.
-            var referenceSet = prototype.__FindReferenceSet(referenceSetTitle);
+            ReferenceSet referenceSet = prototype.__FindReferenceSet(referenceSetTitle);
 
             // Gets the objects from the {referenceSet} that are components.
-            var componentsInReferenceSet = referenceSet.AskAllDirectMembers()
+            Component[] componentsInReferenceSet = referenceSet.AskAllDirectMembers()
                 .OfType<Component>()
                 .ToArray();
 
             // Gets the GFolder that the {master} sits in.
-            var folder = GFolder.create_or_null(prototype);
+            GFolder folder = GFolder.create_or_null(prototype);
 
             if(folder is null) throw new DirectoryNotFoundException("Master did not reside within a GFolder.");
 
@@ -733,7 +734,7 @@ namespace TSG_Library.UFuncs
                     $"The reference set \"{referenceSetTitle}\" in the master doesn't contain exactly one component.");
 
             // Gets the component that is a descendant of the {master}.
-            var descendantOfMaster = componentsInReferenceSet[0];
+            Component descendantOfMaster = componentsInReferenceSet[0];
 
             // Gets the display name of the {descendantOfMaster}.
             var displayName = descendantOfMaster.DisplayName;
@@ -756,7 +757,7 @@ namespace TSG_Library.UFuncs
 
         public static string GetPartNumber(string displayName)
         {
-            var match = Regex.Match(displayName, PartNumberWithDateRegex);
+            Match match = Regex.Match(displayName, PartNumberWithDateRegex);
 
             if(!match.Success)
                 throw new InvalidOperationException(
@@ -768,7 +769,7 @@ namespace TSG_Library.UFuncs
 
         public static Component CreateProposalComponent(Body proposalBody, string newPartPath)
         {
-            var fileNew1 = session_.Parts.FileNew();
+            FileNew fileNew1 = session_.Parts.FileNew();
             fileNew1.Units = (Part.Units)__work_part_.PartUnits;
             var directoryName = Path.GetDirectoryName(newPartPath) ?? throw new DirectoryNotFoundException();
 
@@ -784,7 +785,7 @@ namespace TSG_Library.UFuncs
             //fileNew1.TemplateFileName = "seed-part-metric.prt";
             fileNew1.UseBlankTemplate = true;
             ////////////////////////////////////////////////////////
-            var createNewComponentBuilder1 =
+            CreateNewComponentBuilder createNewComponentBuilder1 =
                 Session.GetSession().Parts.Work.AssemblyManager.CreateNewComponentBuilder();
             createNewComponentBuilder1.ReferenceSet = CreateNewComponentBuilder.ComponentReferenceSetType.Other;
             createNewComponentBuilder1.LayerOption = CreateNewComponentBuilder.ComponentLayerOptionType.AsSpecified;
@@ -794,7 +795,7 @@ namespace TSG_Library.UFuncs
             createNewComponentBuilder1.ObjectForNewComponent.Add(proposalBody);
             createNewComponentBuilder1.NewFile = fileNew1;
             createNewComponentBuilder1.Commit();
-            var ject = createNewComponentBuilder1.GetObject();
+            NXObject ject = createNewComponentBuilder1.GetObject();
             createNewComponentBuilder1.Destroy();
             return (Component)ject;
         }
@@ -803,7 +804,7 @@ namespace TSG_Library.UFuncs
             params NXObject[] objectsToAdd)
         {
             // Creates a reference set derived from the prototype of the {master}.
-            var masterReferenceSet = masterPart.CreateReferenceSet();
+            ReferenceSet masterReferenceSet = masterPart.CreateReferenceSet();
 
             // Sets the name of the {masterReferenceSet} to be the display name of the {proposalComponent}.
             masterReferenceSet.SetName(referenceSetName);
@@ -818,14 +819,14 @@ namespace TSG_Library.UFuncs
             params NXObject[] objectsToAdd)
         {
             // Attempts to get the BODY reference set from the {proposalPrototype}.
-            var tempBodyReferenceSet = proposalPart.__FindReferenceSetOrNull(referenceSetName);
+            ReferenceSet tempBodyReferenceSet = proposalPart.__FindReferenceSetOrNull(referenceSetName);
 
             // If thw {tempBodyReferenceSet} is not null, then we can delete it.
             if(!(tempBodyReferenceSet is null))
                 proposalPart.DeleteReferenceSet(tempBodyReferenceSet);
 
             // Creates a reference set derived from the {proposalPrototype}.
-            var proposalReferenceSet = proposalPart.CreateReferenceSet();
+            ReferenceSet proposalReferenceSet = proposalPart.CreateReferenceSet();
 
             // Names the {proposalReferenceSet} to {referenceSetName}.
             proposalReferenceSet.SetName(referenceSetName);

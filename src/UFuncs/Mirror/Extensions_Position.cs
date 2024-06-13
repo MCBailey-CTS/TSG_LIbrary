@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CTS_Library.Extensions;
 using NXOpen;
 using NXOpen.Assemblies;
 using TSG_Library.Extensions;
@@ -108,7 +107,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             originalComp.__SetWcsToComponent();
             Point3d original = origin.__MapWcsToAcs();
             Point3d val = original._Mirror(mirrorPlane);
-            newComp._SetWcsToComponent();
+            newComp.__SetWcsToComponent();
             return val.__MapAcsToWcs();
         }
 

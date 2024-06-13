@@ -10,12 +10,12 @@ using static TSG_Library.Extensions.__Extensions_;
 namespace TSG_Library.UFuncs
 {
     [UFunc(ufunc_show_only)]
-    [RevisionEntry("1.0", "2018", "06", "20")]
-    [Revision("1.0.1", "Revision Log Created for NX 11.")]
-    [RevisionEntry("1.1", "2019", "03", "11")]
-    [Revision("1.1.1", "Code moved to CTS_Library and updated for new server.")]
-    [RevisionEntry("11.1", "2023", "01", "09")]
-    [Revision("11.1.1", "Removed validation")]
+    //[RevisionEntry("1.0", "2018", "06", "20")]
+    //[Revision("1.0.1", "Revision Log Created for NX 11.")]
+    //[RevisionEntry("1.1", "2019", "03", "11")]
+    //[Revision("1.1.1", "Code moved to CTS_Library and updated for new server.")]
+    //[RevisionEntry("11.1", "2023", "01", "09")]
+    //[Revision("11.1.1", "Removed validation")]
     public partial class ShowOnlyForm : _UFuncForm
     {
         private readonly HashSet<Tag> _blankedOffObjects = new HashSet<Tag>();
@@ -24,7 +24,7 @@ namespace TSG_Library.UFuncs
         {
             InitializeComponent();
 
-            var materialValues = from part in session_.Parts.OfType<Part>()
+            IEnumerable<string> materialValues = from part in session_.Parts.OfType<Part>()
                 from att in part.GetUserAttributes()
                 where att.Title.ToUpper() == "MATERIAL"
                 where att.Type == NXObject.AttributeType.String
@@ -40,10 +40,10 @@ namespace TSG_Library.UFuncs
         private void BlankOff(TaggedObject part)
         {
             // Gets all the occurrences of {part} in the current assembly.
-            ufsession_.Assem.AskOccsOfPart(__display_part_.Tag, part.Tag, out var partOccs);
+            ufsession_.Assem.AskOccsOfPart(__display_part_.Tag, part.Tag, out Tag[] partOccs);
 
             // Iterates through the partOccurrences if {part} in the current {DisplayedPart}.
-            foreach (var partOcc in partOccs)
+            foreach (Tag partOcc in partOccs)
             {
                 // Blanks off the object.
                 ufsession_.Obj.SetBlankStatus(partOcc, UFConstants.UF_OBJ_BLANKED);
@@ -55,10 +55,10 @@ namespace TSG_Library.UFuncs
         private void Unblank(TaggedObject part)
         {
             // Gets all the occurrences of {part} in the current assembly.
-            ufsession_.Assem.AskOccsOfPart(__display_part_.Tag, part.Tag, out var partOccs);
+            ufsession_.Assem.AskOccsOfPart(__display_part_.Tag, part.Tag, out Tag[] partOccs);
 
             // Iterates through the partOccurrences if {part} in the current {DisplayedPart}.
-            foreach (var partOcc in partOccs)
+            foreach (Tag partOcc in partOccs)
             {
                 // Blanks off the object.
                 ufsession_.Obj.SetBlankStatus(partOcc, UFConstants.UF_OBJ_NOT_BLANKED);
@@ -107,7 +107,7 @@ namespace TSG_Library.UFuncs
         {
             var counter = 0;
 
-            foreach (var obj in _blankedOffObjects)
+            foreach (Tag obj in _blankedOffObjects)
             {
                 ufsession_.Ui.SetPrompt($"Unblanking {++counter} of {_blankedOffObjects.Count}");
 

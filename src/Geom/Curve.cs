@@ -153,14 +153,14 @@ namespace TSG_Library.Geom
             /// </remarks>
             public static Arc Fillet(Point3d p0, Point3d pa, Point3d p1, double radius)
             {
-                var vector = p0.__Subtract(pa).__Unit();
-                var vector2 = p1.__Subtract(pa).__Unit();
-                var vector3 = vector.__Add(vector2).__Unit();
+                Vector3d vector = p0.__Subtract(pa).__Unit();
+                Vector3d vector2 = p1.__Subtract(pa).__Unit();
+                Vector3d vector3 = vector.__Add(vector2).__Unit();
                 var num = vector.__Angle(vector2) / 2.0;
                 var num2 = radius / Math.SinD(num);
-                var center = vector3.__Multiply(num2).__Add(pa);
-                var vector4 = vector3.__Negate();
-                var vector5 = vector2.__Subtract(vector).__Unit();
+                Point3d center = vector3.__Multiply(num2).__Add(pa);
+                Vector3d vector4 = vector3.__Negate();
+                Vector3d vector5 = vector2.__Subtract(vector).__Unit();
                 var num3 = 90.0 - num;
                 var startAngle = 0.0 - num3;
                 var endAngle = num3;

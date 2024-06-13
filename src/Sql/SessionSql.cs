@@ -19,7 +19,7 @@ namespace TSG_Library.Forms
         {
             get
             {
-                var lw = Session.GetSession().ListingWindow;
+                ListingWindow lw = Session.GetSession().ListingWindow;
 
                 if(lw.IsOpen) return lw;
 
@@ -43,7 +43,7 @@ namespace TSG_Library.Forms
             }
             catch (Exception ex)
             {
-                var lw = Session.GetSession().ListingWindow;
+                ListingWindow lw = Session.GetSession().ListingWindow;
                 lw.Open();
                 lw.WriteLine(ex.Message);
             }
@@ -53,15 +53,15 @@ namespace TSG_Library.Forms
 
         private static void NewMethod2(int? user_id)
         {
-            using (var cnn = new SqlConnection(conn_str))
+            using (SqlConnection cnn = new SqlConnection(conn_str))
             {
                 cnn.Open();
 
-                UFSession.GetUFSession().UF.AskSystemInfo(out var info);
+                UFSession.GetUFSession().UF.AskSystemInfo(out SystemInfo info);
 
                 var is_batch = _session_.IsBatch ? 1 : 0;
 
-                using (var sql = new SqlCommand
+                using (SqlCommand sql = new SqlCommand
                        {
                            Connection = cnn,
 
@@ -91,7 +91,7 @@ namespace TSG_Library.Forms
                     _session__id = Convert.ToInt32(Convert.ToDecimal(sql.ExecuteScalar()));
                 }
 
-                using (var sql = new SqlCommand
+                using (SqlCommand sql = new SqlCommand
                        {
                            Connection = cnn,
 
@@ -113,13 +113,13 @@ namespace TSG_Library.Forms
         private static int? NewMethod1()
         {
             int? user_id;
-            using (var cnn = new SqlConnection(conn_str))
+            using (SqlConnection cnn = new SqlConnection(conn_str))
             {
                 cnn.Open();
 
-                UFSession.GetUFSession().UF.AskSystemInfo(out var info);
+                UFSession.GetUFSession().UF.AskSystemInfo(out SystemInfo info);
 
-                using (var sql = new SqlCommand
+                using (SqlCommand sql = new SqlCommand
                        {
                            Connection = cnn,
 
@@ -135,13 +135,13 @@ namespace TSG_Library.Forms
 
         private static int? NewMethod(int? user_id)
         {
-            using (var cnn = new SqlConnection(conn_str))
+            using (SqlConnection cnn = new SqlConnection(conn_str))
             {
                 cnn.Open();
 
-                UFSession.GetUFSession().UF.AskSystemInfo(out var info);
+                UFSession.GetUFSession().UF.AskSystemInfo(out SystemInfo info);
 
-                using (var sql = new SqlCommand
+                using (SqlCommand sql = new SqlCommand
                        {
                            Connection = cnn,
 
@@ -166,10 +166,10 @@ namespace TSG_Library.Forms
 
         public static void UnloadLibrary()
         {
-            using (var cnn = new SqlConnection(conn_str))
+            using (SqlConnection cnn = new SqlConnection(conn_str))
             {
                 cnn.Open();
-                using (var sql = new SqlCommand
+                using (SqlCommand sql = new SqlCommand
                        {
                            Connection = cnn,
 

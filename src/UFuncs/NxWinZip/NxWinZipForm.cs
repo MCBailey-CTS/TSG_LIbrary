@@ -14,12 +14,12 @@ using static TSG_Library.Extensions.__Extensions_;
 namespace TSG_Library.UFuncs
 {
     [UFunc("nx-win-zip")]
-    [RevisionEntry("1.0", "2017", "06", "05")]
-    [Revision("1.0.1", "Revision Log Created for NX 11.")]
-    [RevisionEntry("1.1", "2017", "08", "22")]
-    [Revision("1.1.1", "Signed so it will run outside of CTS.")]
-    [RevisionEntry("11.1", "2023", "01", "09")]
-    [Revision("11.1.1", "Removed validation")]
+    //[RevisionEntry("1.0", "2017", "06", "05")]
+    //[Revision("1.0.1", "Revision Log Created for NX 11.")]
+    //[RevisionEntry("1.1", "2017", "08", "22")]
+    //[Revision("1.1.1", "Signed so it will run outside of CTS.")]
+    //[RevisionEntry("11.1", "2023", "01", "09")]
+    //[Revision("11.1.1", "Removed validation")]
     public partial class NxWinZipForm : _UFuncForm
     {
         private static Part displayPart = session_.Parts.Display;
@@ -84,7 +84,7 @@ namespace TSG_Library.UFuncs
                     count++;
 
                     if(part.IsFullyLoaded) continue;
-                    session_.Parts.Open(part.FullPath, out var loadStatus2);
+                    session_.Parts.Open(part.FullPath, out PartLoadStatus loadStatus2);
                     loadStatus2.Dispose();
                 }
 
@@ -100,7 +100,7 @@ namespace TSG_Library.UFuncs
                 selComponents = allComponents.DistinctBy(__c => __c.DisplayName).ToList();
 
                 if(selComponents != null)
-                    foreach (var comp in selComponents)
+                    foreach (Component comp in selComponents)
                         assmParts.Add((Part)comp.Prototype);
 
                 buttonSelectAssm.Enabled = false;
@@ -129,7 +129,7 @@ namespace TSG_Library.UFuncs
 
                     displayPathText = assemblyPart;
 
-                    session_.Parts.Open(openAssembly, out var partLoadStatus);
+                    session_.Parts.Open(openAssembly, out PartLoadStatus partLoadStatus);
                     partLoadStatus.Dispose();
 
                     labelAssmText.Text = openAssembly;
@@ -144,7 +144,7 @@ namespace TSG_Library.UFuncs
                         count++;
 
                         if(part.IsFullyLoaded) continue;
-                        session_.Parts.Open(part.FullPath, out var loadStatus2);
+                        session_.Parts.Open(part.FullPath, out PartLoadStatus loadStatus2);
                         loadStatus2.Dispose();
                     }
 
@@ -168,7 +168,7 @@ namespace TSG_Library.UFuncs
 
         private void ButtonCloseAssm_Click(object sender, EventArgs e)
         {
-            var closeResult = MessageBox.Show("This will close the loaded assembly", "Verify",
+            DialogResult closeResult = MessageBox.Show("This will close the loaded assembly", "Verify",
                 MessageBoxButtons.OKCancel, MessageBoxIcon.Warning,
                 MessageBoxDefaultButton.Button1);
 
@@ -221,24 +221,24 @@ namespace TSG_Library.UFuncs
             try
             {
                 if(assmParts.Count == 0) return;
-                var compressionLevel = (WinZipCompression)comboBoxCompression.SelectedItem;
+                WinZipCompression compressionLevel = (WinZipCompression)comboBoxCompression.SelectedItem;
                 var compression = compressionLevel.CompressValue;
                 var tempFile = Path.GetTempPath() + "zipData.txt";
                 // ReSharper disable once StringLiteralTypo
                 const string winZip = "C:\\Program Files (x86)\\WinZip\\wzzip";
 
-                using (var fs = File.Open(tempFile, FileMode.Create))
+                using (FileStream fs = File.Open(tempFile, FileMode.Create))
                 {
                     fs.Close();
                 }
 
-                using (var writer = new StreamWriter(tempFile))
+                using (StreamWriter writer = new StreamWriter(tempFile))
                 {
-                    foreach (var part in assmParts)
+                    foreach (Part part in assmParts)
                         writer.WriteLine(part.FullPath);
                 }
 
-                var process = new Process();
+                Process process = new Process();
 
                 if(checkBoxDirPath.Checked)
                 {
@@ -292,15 +292,15 @@ namespace TSG_Library.UFuncs
             comboBoxCompression.Items.Clear();
 
             // ReSharper disable once StringLiteralTypo
-            var zipComp1 = new WinZipCompression("Maximum (.zipx)", "-el");
+            WinZipCompression zipComp1 = new WinZipCompression("Maximum (.zipx)", "-el");
             comboBoxCompression.Items.Add(zipComp1);
-            var zipComp2 = new WinZipCompression("Normal (.zip)", "-en");
+            WinZipCompression zipComp2 = new WinZipCompression("Normal (.zip)", "-en");
             comboBoxCompression.Items.Add(zipComp2);
-            var zipComp3 = new WinZipCompression("Extra (.zip)", "-ex");
+            WinZipCompression zipComp3 = new WinZipCompression("Extra (.zip)", "-ex");
             comboBoxCompression.Items.Add(zipComp3);
-            var zipComp4 = new WinZipCompression("FastenerType (.zip)", "-ef");
+            WinZipCompression zipComp4 = new WinZipCompression("FastenerType (.zip)", "-ef");
             comboBoxCompression.Items.Add(zipComp4);
-            var zipComp5 = new WinZipCompression("SuperFast (.zip)", "-es");
+            WinZipCompression zipComp5 = new WinZipCompression("SuperFast (.zip)", "-es");
             comboBoxCompression.Items.Add(zipComp5);
 
             comboBoxCompression.SelectedIndex = 0;
@@ -344,7 +344,7 @@ namespace TSG_Library.UFuncs
 
         private static void GetAllChildComponents(Component assemblyPart1)
         {
-            foreach (var descendant in assemblyPart1.__DescendantsAll())
+            foreach (Component descendant in assemblyPart1.__DescendantsAll())
             {
                 if(descendant.IsSuppressed) continue;
                 if(descendant.Prototype is Part)
@@ -361,10 +361,10 @@ namespace TSG_Library.UFuncs
             try
             {
                 if(assemblyPart1.GetChildren() == null) return;
-                foreach (var child in assemblyPart1.GetChildren())
+                foreach (Component child in assemblyPart1.GetChildren())
                 {
                     if(child.IsSuppressed) continue;
-                    var instance = TheUFSession.Assem.AskInstOfPartOcc(child.Tag);
+                    Tag instance = TheUFSession.Assem.AskInstOfPartOcc(child.Tag);
                     if(instance == NXOpen.Tag.Null) continue;
                     TheUFSession.Assem.AskPartNameOfChild(instance, out var partName);
                     var partLoad = TheUFSession.Part.IsLoaded(partName);
@@ -379,7 +379,7 @@ namespace TSG_Library.UFuncs
                         //var partOpened = CTS_Library.Globals.Find
 
                         print_(partName);
-                        TheUFSession.Part.OpenQuiet(partName, out var partOpen, out _);
+                        TheUFSession.Part.OpenQuiet(partName, out Tag partOpen, out _);
 
                         if(partOpen == NXOpen.Tag.Null) continue;
                         allComponents.Add(child);

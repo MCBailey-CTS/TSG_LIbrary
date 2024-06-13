@@ -53,7 +53,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 
         public void Dispose()
         {
-            foreach (var part in _parts_opened)
+            foreach (Part part in _parts_opened)
                 part.Close(BasePart.CloseWholeTree.True, BasePart.CloseModified.CloseModified, null);
         }
 

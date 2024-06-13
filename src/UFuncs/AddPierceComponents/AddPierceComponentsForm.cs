@@ -84,8 +84,8 @@ namespace TSG_Library.UFuncs
         {
             var detailDirectory = Path.GetDirectoryName(snapUspLsp.FullPath);
             var partLeaf = snapUspLsp.Leaf.ToLower();
-            var shortRegex = new Regex("^([0-9]+)-([0-9]{3,})-(lsp|usp)([0-9]{1})$");
-            var match = shortRegex.Match(partLeaf);
+            Regex shortRegex = new Regex("^([0-9]+)-([0-9]{3,})-(lsp|usp)([0-9]{1})$");
+            Match match = shortRegex.Match(partLeaf);
             if(match.Success)
             {
                 var customerJobNumber = match.Groups[1].Value;
@@ -120,7 +120,7 @@ namespace TSG_Library.UFuncs
                 } while (true);
             }
 
-            var longRegex = new Regex("^([0-9]{4,5})-([0-9]{3,})-(lsp|usp)([0-9]{3})$");
+            Regex longRegex = new Regex("^([0-9]{4,5})-([0-9]{3,})-(lsp|usp)([0-9]{3})$");
             match = longRegex.Match(partLeaf);
             if(!match.Success) throw new ArgumentException("Part is not a valid Usp or Lsp.", nameof(snapUspLsp));
             {
@@ -360,7 +360,7 @@ namespace TSG_Library.UFuncs
         public static int GetFaceNameInteger(Face snapFace)
         {
             if(snapFace == null) throw new ArgumentNullException(nameof(snapFace));
-            var match = PierceProperties.PiercedFaceRegex.Match(snapFace.Name);
+            Match match = PierceProperties.PiercedFaceRegex.Match(snapFace.Name);
             if(!match.Success) throw new FormatException("\"" + snapFace.Name + "\" is invalid.");
             return int.Parse(match.Groups[1].Value);
         }
@@ -396,11 +396,11 @@ namespace TSG_Library.UFuncs
                     throw new ArgumentOutOfRangeException(nameof(buttonUnit));
             }
 
-            var absCys = __display_part_.__CreateCsys();
-            var tempCsys = __display_part_.__CreateCsys(csys.Origin, csys.Orientation.Element);
-            var mappedOrigin = csys.Origin.__MapCsysToCsys(absCys, tempCsys);
+            CartesianCoordinateSystem absCys = __display_part_.__CreateCsys();
+            CartesianCoordinateSystem tempCsys = __display_part_.__CreateCsys(csys.Origin, csys.Orientation.Element);
+            Point3d mappedOrigin = csys.Origin.__MapCsysToCsys(absCys, tempCsys);
             mappedOrigin = new Point3d(mappedOrigin.X, mappedOrigin.Y, mappedOrigin.Z + 6 / multiplier);
-            var newOrigin = mappedOrigin.__MapCsysToCsys(tempCsys, absCys);
+            Point3d newOrigin = mappedOrigin.__MapCsysToCsys(tempCsys, absCys);
             return __work_part_.ComponentAssembly.AddComponent(buttonPath, "ALIGN",
                 Path.GetFileNameWithoutExtension(buttonPath), newOrigin, csys.Orientation.Element, csys.Layer, out _);
         }
@@ -445,10 +445,10 @@ namespace TSG_Library.UFuncs
 
         private static Component AddComponent(string path, CoordinateSystem csys, string referenceSet)
         {
-            var absCys = __display_part_.__CreateCsys();
-            var tempCsys = __display_part_.__CreateCsys(csys.Origin, csys.Orientation.Element);
-            var mappedOrigin = csys.Origin.__MapCsysToCsys(absCys, tempCsys);
-            var newOrigin = mappedOrigin.__MapCsysToCsys(tempCsys, absCys);
+            CartesianCoordinateSystem absCys = __display_part_.__CreateCsys();
+            CartesianCoordinateSystem tempCsys = __display_part_.__CreateCsys(csys.Origin, csys.Orientation.Element);
+            Point3d mappedOrigin = csys.Origin.__MapCsysToCsys(absCys, tempCsys);
+            Point3d newOrigin = mappedOrigin.__MapCsysToCsys(tempCsys, absCys);
 
             return __work_part_.ComponentAssembly.AddComponent(
                 path,
@@ -486,7 +486,7 @@ namespace TSG_Library.UFuncs
                                 throw new InvalidOperationException("Could not find a detail with # \'" + ButtonDetail +
                                                                     "\' in folderWithCtsNumber \'" + directory + "\'.");
 
-                var tempPart = session_.__FindOrOpen(argDetail.file);
+                Part tempPart = session_.__FindOrOpen(argDetail.file);
 
                 if(!tempPart.HasUserAttribute("LIBRARY", NXObject.AttributeType.String, -1))
                     throw new InvalidOperationException("The selected part does not have a \'LIBRARY\' attribute.");
@@ -515,7 +515,7 @@ namespace TSG_Library.UFuncs
                                 throw new InvalidOperationException("Could not find a detail with # \'" + PunchDetail +
                                                                     "\' in folderWithCtsNumber \'" + directory + "\'.");
 
-                var tempPart = session_.__FindOrOpen(argDetail.file);
+                Part tempPart = session_.__FindOrOpen(argDetail.file);
 
                 if(!tempPart.HasUserAttribute("LIBRARY", NXObject.AttributeType.String, -1))
                     throw new InvalidOperationException("The selected part does not have a \'LIBRARY\' attribute.");
@@ -548,7 +548,7 @@ namespace TSG_Library.UFuncs
                                                                     RetainerDetail + "\' in folderWithCtsNumber \'" +
                                                                     directory + "\'.");
 
-                var tempPart = session_.__FindOrOpen(argDetail.file);
+                Part tempPart = session_.__FindOrOpen(argDetail.file);
 
                 if(!tempPart.HasUserAttribute("LIBRARY", NXObject.AttributeType.String, -1))
                     throw new InvalidOperationException("The selected part does not have a \'LIBRARY\' attribute.");
@@ -594,18 +594,18 @@ namespace TSG_Library.UFuncs
             ConfirmStripControlAndEExpression();
             _addedComponents = new List<Tuple<Component, Face>>();
             GetPartPaths(isMetric, out var buttonPath, out var retainerPath, out var punchPath);
-            var uspLspRegex = new Regex("^[0-9]{4,5}-([0-9]{3})-[l|u]sp([0-9]{1,})$");
+            Regex uspLspRegex = new Regex("^[0-9]{4,5}-([0-9]{3})-[l|u]sp([0-9]{1,})$");
             var _display_part_DisplayName = Path.GetFileNameWithoutExtension(__display_part_.FullPath);
             if(_display_part_DisplayName == null) throw new NullReferenceException("_display_part_DisplayName");
-            var nameMatch = uspLspRegex.Match(_display_part_DisplayName);
+            Match nameMatch = uspLspRegex.Match(_display_part_DisplayName);
             if(!nameMatch.Success)
                 throw new FormatException(_display_part_DisplayName + " is not a valid usp or lsp.");
-            var folder = GFolder.create_or_null(__work_part_);
+            GFolder folder = GFolder.create_or_null(__work_part_);
             if(folder is null)
                 throw new InvalidOperationException("The current displayed part does not reside within a GFolder.");
             var op = nameMatch.Groups[1].Value;
             var uspLspNumberAsInteger = int.Parse(nameMatch.Groups[2].Value);
-            var uspLspPart = session_.__FindOrOpen(_display_part_DisplayName);
+            Part uspLspPart = session_.__FindOrOpen(_display_part_DisplayName);
 
             /////////////////////////////////////////////
             /////////////////////////////////////////////
@@ -614,21 +614,21 @@ namespace TSG_Library.UFuncs
 
             try
             {
-                var faces = Ui.Selection.SelectManyFaces();
+                Face[] faces = Ui.Selection.SelectManyFaces();
 
-                var dictionaryShape = faces.__ToILookIDict(face => face.GetStringUserAttribute("PIERCED_TYPE", -1));
+                IDictionary<string, List<Face>> dictionaryShape = faces.__ToILookIDict(face => face.GetStringUserAttribute("PIERCED_TYPE", -1));
 
                 foreach (var keyShape in dictionaryShape.Keys)
                 {
-                    var shapeFaces = dictionaryShape[keyShape];
+                    List<Face> shapeFaces = dictionaryShape[keyShape];
                     // Revision • 1.2 – 2017 / 12 / 07
-                    var dictionaryP = shapeFaces.__ToILookIDict(face =>
+                    IDictionary<double, List<Face>> dictionaryP = shapeFaces.__ToILookIDict(face =>
                         System.Math.Round(face.GetRealUserAttribute("PIERCED_P", -1), 4));
                     foreach (var keyP in dictionaryP.Keys)
                     {
-                        var pFaces = dictionaryP[keyP];
+                        List<Face> pFaces = dictionaryP[keyP];
                         // Revision • 1.2 – 2017 / 12 / 07
-                        var dictionaryW = pFaces.__ToILookIDict(face =>
+                        IDictionary<double, List<Face>> dictionaryW = pFaces.__ToILookIDict(face =>
                             System.Math.Round(face.GetRealUserAttribute("PIERCED_W", -1), 4));
                         foreach (var keyW in dictionaryW.Keys)
                         {
@@ -653,13 +653,13 @@ namespace TSG_Library.UFuncs
                             var newPunchPath = punchPath.StartsWith("G:\\0Library")
                                 ? GetNewPartPath(partOfThePath, punchPath, currentLowerDetailNumber)
                                 : punchPath;
-                            foreach (var faceW in dictionaryW[keyW])
+                            foreach (Face faceW in dictionaryW[keyW])
                             {
                                 Component button = null, punch = null, retainer = null;
-                                var layoutComponent = faceW.OwningComponent;
+                                Component layoutComponent = faceW.OwningComponent;
                                 var originalRefset = layoutComponent.ReferenceSet;
                                 layoutComponent.__ReferenceSet(PierceProperties.SlugRefsetName);
-                                var expression = __display_part_.Expressions
+                                Expression expression = __display_part_.Expressions
                                     .ToArray()
                                     .SingleOrDefault(tempExpression => tempExpression.Name == "e");
                                 var layer = uspLspPart.Leaf.Contains("lsp") ? 1 : 101;
@@ -679,7 +679,7 @@ namespace TSG_Library.UFuncs
                                 if(retainer != null && punch != null)
                                     ConstrainPunchAndRetainer(punch, retainer);
 
-                                var listComps = new List<Component>();
+                                List<Component> listComps = new List<Component>();
 
                                 if(button != null)
                                     listComps.Add(button);
@@ -705,10 +705,10 @@ namespace TSG_Library.UFuncs
 
         public static void DifferentAssemblies(bool isMetric, bool addButton, bool addPunch, bool addRetainer)
         {
-            var folder = GFolder.create_or_null(__work_part_)
-                         ??
-                         throw new InvalidOperationException(
-                             "The current work part does not reside within a job folder.");
+            GFolder folder = GFolder.create_or_null(__work_part_)
+                             ??
+                             throw new InvalidOperationException(
+                                 "The current work part does not reside within a job folder.");
 
             ConfirmStripControlAndEExpression();
             _addedComponents = new List<Tuple<Component, Face>>();
@@ -718,7 +718,7 @@ namespace TSG_Library.UFuncs
                                             ??
                                             throw new NullReferenceException("_display_part_DisplayName");
 
-            var nameMatch = Regex.Match(_display_part_DisplayName, Regex_LspUsp);
+            Match nameMatch = Regex.Match(_display_part_DisplayName, Regex_LspUsp);
 
             if(!nameMatch.Success)
                 throw new FormatException($"{_display_part_DisplayName} is not a valid usp or lsp.");
@@ -728,8 +728,8 @@ namespace TSG_Library.UFuncs
             var uspLspNumberAsInteger = int.Parse(uspLspNumberAsString);
             var lspName = $"{folder.customer_number}-{op}-lsp{uspLspNumberAsString}";
             var uspName = $"{folder.customer_number}-{op}-usp{uspLspNumberAsString}";
-            var lspPart = session_.Parts.ToArray().SingleOrDefault(part => part.FullPath.Contains(lspName));
-            var uspPart = session_.Parts.ToArray().SingleOrDefault(part => part.FullPath.Contains(uspName));
+            BasePart lspPart = session_.Parts.ToArray().SingleOrDefault(part => part.FullPath.Contains(lspName));
+            BasePart uspPart = session_.Parts.ToArray().SingleOrDefault(part => part.FullPath.Contains(uspName));
 
             if(addButton && lspPart == null)
                 throw new InvalidOperationException($"Could not find part \"{lspName}\" loaded in your session.");
@@ -744,21 +744,21 @@ namespace TSG_Library.UFuncs
             __SetUndoMark(MarkVisibility.Visible, "FastClass");
             try
             {
-                var faces = Ui.Selection.SelectManyFaces();
+                Face[] faces = Ui.Selection.SelectManyFaces();
 
-                var dictionaryShape = faces.__ToILookIDict(face => face.GetStringUserAttribute("PIERCED_TYPE", -1));
+                IDictionary<string, List<Face>> dictionaryShape = faces.__ToILookIDict(face => face.GetStringUserAttribute("PIERCED_TYPE", -1));
 
                 foreach (var keyShape in dictionaryShape.Keys)
                 {
-                    var shapeFaces = dictionaryShape[keyShape];
+                    List<Face> shapeFaces = dictionaryShape[keyShape];
                     // Revision • 1.2 – 2017 / 12 / 01
-                    var dictionaryP = shapeFaces.__ToILookIDict(face =>
+                    IDictionary<double, List<Face>> dictionaryP = shapeFaces.__ToILookIDict(face =>
                         System.Math.Round(face.GetRealUserAttribute("PIERCED_P", -1), 4));
                     foreach (var keyP in dictionaryP.Keys)
                     {
-                        var pFaces = dictionaryP[keyP];
+                        List<Face> pFaces = dictionaryP[keyP];
                         // Revision • 1.2 – 2017 / 12 / 01
-                        var dictionaryW = pFaces.__ToILookIDict(face =>
+                        IDictionary<double, List<Face>> dictionaryW = pFaces.__ToILookIDict(face =>
                             System.Math.Round(face.GetRealUserAttribute("PIERCED_W", -1), 4));
                         foreach (var keyW in dictionaryW.Keys)
                         {
@@ -804,13 +804,13 @@ namespace TSG_Library.UFuncs
                             }
 
 
-                            foreach (var faceW in dictionaryW[keyW])
+                            foreach (Face faceW in dictionaryW[keyW])
                             {
                                 Component button = null, punch = null, retainer = null;
-                                var layoutComponent = faceW.OwningComponent;
+                                Component layoutComponent = faceW.OwningComponent;
                                 var originalRefset = layoutComponent.ReferenceSet;
                                 layoutComponent.__ReferenceSet(PierceProperties.SlugRefsetName);
-                                var expression = __display_part_.Expressions
+                                Expression expression = __display_part_.Expressions
                                     .ToArray()
                                     .SingleOrDefault(tempExpression => tempExpression.Name == "e");
 
@@ -831,7 +831,7 @@ namespace TSG_Library.UFuncs
                                 if(retainer != null && punch != null)
                                     ConstrainPunchAndRetainer(punch, retainer);
 
-                                var listComps = new List<Component>();
+                                List<Component> listComps = new List<Component>();
 
                                 if(button != null)
                                     listComps.Add(button);
@@ -860,8 +860,8 @@ namespace TSG_Library.UFuncs
             try
             {
                 print_("Results:");
-                var stripControl = session_.Parts.ToArray().Single(part => part.Leaf.Contains("strip-control"));
-                var materialThicknessExp = stripControl.Expressions.ToArray()
+                BasePart stripControl = session_.Parts.ToArray().Single(part => part.Leaf.Contains("strip-control"));
+                Expression materialThicknessExp = stripControl.Expressions.ToArray()
                     .SingleOrDefault(expression => expression.Name == "M");
                 if(materialThicknessExp == null)
                     print_("Unable to find Material Thickness.");
@@ -880,7 +880,7 @@ namespace TSG_Library.UFuncs
                     return;
                 }
 
-                var trimmedTuples = _addedComponents.DistinctBy(tup => tup.Item1.DisplayName)
+                IOrderedEnumerable<Tuple<Component, Face>> trimmedTuples = _addedComponents.DistinctBy(tup => tup.Item1.DisplayName)
                     .OrderBy(tuple => tuple, new Comparer());
 
                 var divider = isMetric ? 1.0 : 25.4;
@@ -959,16 +959,16 @@ namespace TSG_Library.UFuncs
             var integer = GetFaceNameInteger(snapFace);
 
             // Revision • 1.2 – 2017 / 12 / 07
-            var layout = snapFace.OwningComponent;
-            var xAxis = layout.__Members().OfType<DatumAxis>().Single(axis => axis.Name == "PIERCED_AXIS_X_" + integer);
-            var yAxis = layout.__Members().OfType<DatumAxis>().Single(axis => axis.Name == "PIERCED_AXIS_Y_" + integer);
-            var zAxis = layout.__Members().OfType<DatumAxis>().Single(axis => axis.Name == "PIERCED_AXIS_Z_" + integer);
-            var orientation = xAxis.Direction.__ToMatrix3x3(yAxis.Direction);
-            var newOrigin = xAxis.Origin;
+            Component layout = snapFace.OwningComponent;
+            DatumAxis xAxis = layout.__Members().OfType<DatumAxis>().Single(axis => axis.Name == "PIERCED_AXIS_X_" + integer);
+            DatumAxis yAxis = layout.__Members().OfType<DatumAxis>().Single(axis => axis.Name == "PIERCED_AXIS_Y_" + integer);
+            DatumAxis zAxis = layout.__Members().OfType<DatumAxis>().Single(axis => axis.Name == "PIERCED_AXIS_Z_" + integer);
+            Matrix3x3 orientation = xAxis.Direction.__ToMatrix3x3(yAxis.Direction);
+            Point3d newOrigin = xAxis.Origin;
             if(zOffsetExpression != null)
                 newOrigin = new Point3d(xAxis.Origin.X, xAxis.Origin.Y, xAxis.Origin.Z + zOffsetExpression.Value);
 
-            var addedComponent = part.ComponentAssembly.AddComponent(
+            Component addedComponent = part.ComponentAssembly.AddComponent(
                 path,
                 referenceSet,
                 Path.GetFileNameWithoutExtension(path),
@@ -977,30 +977,30 @@ namespace TSG_Library.UFuncs
                 layer,
                 out _);
 
-            addedComponent.SetUserAttribute(PierceProperties.Pierced_P, -1,
-                snapFace.GetStringUserAttribute(PierceProperties.Pierced_P, -1), NXOpen.Update.Option.Now);
+            addedComponent.SetUserAttribute(PierceProperties.PiercedP, -1,
+                snapFace.GetStringUserAttribute(PierceProperties.PiercedP, -1), NXOpen.Update.Option.Now);
 
-            addedComponent.SetUserAttribute(PierceProperties.Pierced_W, -1,
-                snapFace.GetStringUserAttribute(PierceProperties.Pierced_W, -1), NXOpen.Update.Option.Now);
+            addedComponent.SetUserAttribute(PierceProperties.PiercedW, -1,
+                snapFace.GetStringUserAttribute(PierceProperties.PiercedW, -1), NXOpen.Update.Option.Now);
 
-            addedComponent.SetUserAttribute(PierceProperties.Pierced_Type, -1,
-                snapFace.GetStringUserAttribute(PierceProperties.Pierced_Type, -1), NXOpen.Update.Option.Now);
+            addedComponent.SetUserAttribute(PierceProperties.PiercedType, -1,
+                snapFace.GetStringUserAttribute(PierceProperties.PiercedType, -1), NXOpen.Update.Option.Now);
 
             addedComponent.__ReferenceSet(referenceSet);
 
             using (new ReferenceSetReset(addedComponent))
             {
                 addedComponent.__ReferenceSet("BODY");
-                var owningPart = addedComponent.OwningComponent.__Prototype();
-                var bodyReferenceSet = owningPart.__FindReferenceSetOrNull("BODY");
+                Part owningPart = addedComponent.OwningComponent.__Prototype();
+                ReferenceSet bodyReferenceSet = owningPart.__FindReferenceSetOrNull("BODY");
                 bodyReferenceSet?.AddObjectsToReferenceSet(new NXObject[] { addedComponent });
             }
 
-            var zAxisComponent = addedComponent.__Members()
+            DatumAxis zAxisComponent = addedComponent.__Members()
                 .OfType<DatumAxis>()
                 .Single(axis => axis.Direction.__IsEqualTo(__Vector3dZ()));
 
-            var constraint = Constraints.CreateAlign(__work_part_, zAxisComponent, zAxis);
+            DisplayedConstraint constraint = Constraints.CreateAlign(__work_part_, zAxisComponent, zAxis);
             session_.__DeleteObjects(constraint);
 
             if(!addedComponent.GetStringUserAttribute("LIBRARY", -1).ToLower().Contains("retainer"))
@@ -1018,7 +1018,7 @@ namespace TSG_Library.UFuncs
                 const string message = "Select Faces";
                 const int scope = UFConstants.UF_UI_SEL_SCOPE_ANY_IN_ASSEMBLY;
                 UFUi.SelInitFnT initialProcess = InitialProcess;
-                var userData = IntPtr.Zero;
+                IntPtr userData = IntPtr.Zero;
                 Tag[] objects = null;
                 try
                 {
@@ -1042,7 +1042,7 @@ namespace TSG_Library.UFuncs
 
             private static int InitialProcess(IntPtr select, IntPtr userData)
             {
-                var mask = new UFUi.Mask
+                UFUi.Mask mask = new UFUi.Mask
                 {
                     object_type = UFConstants.UF_face_type,
                     object_subtype = 0,
@@ -1162,15 +1162,15 @@ namespace TSG_Library.UFuncs
                 Constraint.Alignment alignmentType,
                 NXObject movableObject, NXObject nonMovableObject)
             {
-                var componentAssembly = part.ComponentAssembly;
-                var positioner = componentAssembly.Positioner;
+                ComponentAssembly componentAssembly = part.ComponentAssembly;
+                ComponentPositioner positioner = componentAssembly.Positioner;
                 positioner.ClearNetwork();
                 positioner.PrimaryArrangement = componentAssembly.Arrangements.FindObject("Arrangement 1");
                 positioner.BeginAssemblyConstraints();
-                var componentNetwork = (ComponentNetwork)positioner.EstablishNetwork();
+                ComponentNetwork componentNetwork = (ComponentNetwork)positioner.EstablishNetwork();
                 componentNetwork.MoveObjectsState = true;
                 componentNetwork.NetworkArrangementsMode = ComponentNetwork.ArrangementsMode.Existing;
-                var constraint = (ComponentConstraint)positioner.CreateConstraint(true);
+                ComponentConstraint constraint = (ComponentConstraint)positioner.CreateConstraint(true);
                 constraint.ConstraintAlignment = alignmentType;
                 constraint.ConstraintType = Constraint.Type.Touch;
                 constraint.CreateConstraintReference(movableObject.OwningComponent, movableObject, false, false, false);
@@ -1247,13 +1247,13 @@ namespace TSG_Library.UFuncs
 
             public static DisplayedConstraint CreateFixedConstraint(Component component)
             {
-                var positioner = __work_part_.ComponentAssembly.Positioner;
+                ComponentPositioner positioner = __work_part_.ComponentAssembly.Positioner;
                 positioner.ClearNetwork();
                 positioner.PrimaryArrangement = __work_part_.ComponentAssembly.Arrangements.FindObject("Arrangement 1");
                 positioner.BeginAssemblyConstraints();
-                var constraint = (ComponentConstraint)positioner.CreateConstraint(true);
+                ComponentConstraint constraint = (ComponentConstraint)positioner.CreateConstraint(true);
                 constraint.ConstraintType = (Constraint.Type)3;
-                var component1 = component;
+                Component component1 = component;
                 constraint.CreateConstraintReference(component1, component1, false, false, false);
                 positioner.EndAssemblyConstraints();
                 return constraint.GetDisplayedConstraint();

@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Layer;
+using NXOpen.Positioning;
 using NXOpen.UF;
 using TSG_Library.Attributes;
 using TSG_Library.Properties;
@@ -54,12 +55,12 @@ namespace TSG_Library.UFuncs
 
         private void btnCreateStationNew_Click(object sender, EventArgs e)
         {
-            var stopwatch = Stopwatch.StartNew();
+            Stopwatch stopwatch = Stopwatch.StartNew();
             try
             {
                 //System.Diagnostics.Debugger.Launch();
 
-                var lw = Session.GetSession().ListingWindow;
+                ListingWindow lw = Session.GetSession().ListingWindow;
                 var jobDir = txtJobPath.Text;
                 var transfer = (int)numUpDownTransfer.Value;
                 var prog = (int)numUpDownProg.Value;
@@ -67,7 +68,7 @@ namespace TSG_Library.UFuncs
                 var tranPresses = (int)numUpDownTranPresses.Value;
                 var start005 = chk005.Checked;
 
-                var match = Regex.Match(jobDir, @"^([gcph]:)\\(cts|rts|hts|dts|ats|ets)\\(?<top_dir>\d{4,6})",
+                Match match = Regex.Match(jobDir, @"^([gcph]:)\\(cts|rts|hts|dts|ats|ets)\\(?<top_dir>\d{4,6})",
                     RegexOptions.IgnoreCase);
 
                 if(!match.Success)
@@ -79,7 +80,7 @@ namespace TSG_Library.UFuncs
                 var top_dir = match.Groups["top_dir"].Value.Trim();
 
 
-                var __folder = GFolder.create(jobDir);
+                GFolder __folder = GFolder.create(jobDir);
 
                 var leaf = Path.GetFileNameWithoutExtension(jobDir);
 
@@ -123,7 +124,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var sim_comp = __display_part_.ComponentAssembly.RootComponent.GetChildren()
+                Component sim_comp = __display_part_.ComponentAssembly.RootComponent.GetChildren()
                     .Where(__c => __c.Layer == 8)
                     .SingleOrDefault(__c => __c.Name.ToLower().StartsWith("simulation"));
 
@@ -139,7 +140,7 @@ namespace TSG_Library.UFuncs
                     return;
                 }
 
-                foreach (var child in __display_part_.ComponentAssembly.RootComponent.GetChildren())
+                foreach (Component child in __display_part_.ComponentAssembly.RootComponent.GetChildren())
                     if(child.Name.EndsWith("-WORK"))
                     {
                         child.__Prototype().__AddComponent(
@@ -172,7 +173,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var id = session_.SetUndoMark(Session.MarkVisibility.Visible, "");
+                Session.UndoMarkId id = session_.SetUndoMark(Session.MarkVisibility.Visible, "");
 
                 __display_part_.ComponentAssembly.RootComponent.GetChildren()
                     .Where(__c => __c.Layer != 8)
@@ -388,7 +389,7 @@ namespace TSG_Library.UFuncs
 
         private void txtJobPath_DoubleClick(object sender, EventArgs e)
         {
-            var dialog = new FolderBrowserDialog();
+            FolderBrowserDialog dialog = new FolderBrowserDialog();
             dialog.SelectedPath = "G:\\";
 
             dialog.ShowDialog();
@@ -441,21 +442,21 @@ namespace TSG_Library.UFuncs
             var __next_op = __Op10To010(op_next);
             var leaf = $"{cust_num}-{selected_prefix}{__old_op}-Layout";
             //    # new_leaf =
-            var old_part = session_.__FindOrOpen(leaf);
+            Part old_part = session_.__FindOrOpen(leaf);
             var old_file_path = old_part.FullPath;
             var new_file_path = old_file_path.Replace(leaf, $"{cust_num}-{selected_prefix}{__next_op}-Layout");
             __work_part_ = old_part;
             old_part.SaveAs(new_file_path);
             __work_part_ = __display_part_;
             File.Delete(old_file_path);
-            var length = uf_.Assem.AskOccsOfPart(__display_part_.Tag, old_part.Tag, out var __part_occs);
+            var length = uf_.Assem.AskOccsOfPart(__display_part_.Tag, old_part.Tag, out Tag[] __part_occs);
             for (var i = 0; i < length; i++)
             {
-                var comp = (Component)session_.__GetTaggedObject(__part_occs[i]);
+                Component comp = (Component)session_.__GetTaggedObject(__part_occs[i]);
 
                 comp.SetName(comp.Name.Replace(__old_op, __next_op));
 
-                foreach (var __const in comp.GetConstraints())
+                foreach (ComponentConstraint __const in comp.GetConstraints())
                 {
                     var new_formula = __const.Expression.RightHandSide.Replace(__old_op, __next_op);
                     __const.Expression.RightHandSide = new_formula;
@@ -475,16 +476,16 @@ namespace TSG_Library.UFuncs
 
         public static void add_station()
         {
-            var selected_comp = Selection.SelectSingleComponent();
+            Component selected_comp = Selection.SelectSingleComponent();
 
             var selected_part_path = selected_comp.__Prototype().FullPath;
 
-            var __match0 = Regex.Match(selected_comp.DisplayName,
+            Match __match0 = Regex.Match(selected_comp.DisplayName,
                 "^(?<cust_num>\\d{6})-(?<prefix>[TP])(?<detail>\\d{3})-Layout$");
 
-            var progs = ask_prog_station_10();
+            List<int> progs = ask_prog_station_10();
 
-            var trans = ask_tran_station_10();
+            List<int> trans = ask_tran_station_10();
 
             if(!__match0.Success)
                 throw new Exception("Please select a valid transfer or progressive station");
@@ -544,7 +545,7 @@ namespace TSG_Library.UFuncs
                     if(max_op > 0)
                     {
                         var max_op_str = __Op10To010(max_op);
-                        var __comp = __display_part_.ComponentAssembly.RootComponent.GetChildren()
+                        Component __comp = __display_part_.ComponentAssembly.RootComponent.GetChildren()
                             .Single(__c => __c.Name == $"P{__Op10To010(max_op)}-TRANSFER");
                         __comp.__DeleteSelfAndConstraints();
                     }
@@ -564,7 +565,7 @@ namespace TSG_Library.UFuncs
 
         public static void delete_station()
         {
-            var result = Selection.SelectSingleComponent();
+            Component result = Selection.SelectSingleComponent();
             delete_station(result);
         }
 
@@ -583,7 +584,7 @@ namespace TSG_Library.UFuncs
             //    #     .where(lambda __child: __child.startswith(f"{__folder.customer_number}-T"))
 
 
-            var __match0 = Regex.Match(selected_comp.DisplayName,
+            Match __match0 = Regex.Match(selected_comp.DisplayName,
                 "^(?<cust_num>\\d{6})-(?<prefix>[TP])(?<detail>\\d{3})-Layout$");
 
             if(!__match0.Success)
@@ -618,10 +619,10 @@ namespace TSG_Library.UFuncs
             var selected_display_name = selected_comp.DisplayName;
             var selected_full_path = selected_comp.__Prototype().FullPath;
 
-            var selected_part = selected_comp.__Prototype();
+            Part selected_part = selected_comp.__Prototype();
             File.Delete(selected_part.FullPath);
 
-            uf_.Assem.AskOccsOfPart(__display_part_.Tag, selected_comp.__Prototype().Tag, out var part_occs);
+            uf_.Assem.AskOccsOfPart(__display_part_.Tag, selected_comp.__Prototype().Tag, out Tag[] part_occs);
             for (var i = 0; i < part_occs.Length; i++)
                 ((Component)session_.__GetTaggedObject(part_occs[i])).__DeleteSelfAndConstraints();
 
@@ -649,7 +650,7 @@ namespace TSG_Library.UFuncs
 
             if(prog_ops.Length > 0 && tran_ops.Length > 0 && __prefix == "P")
             {
-                var folder = GFolder.create(__display_part_.FullPath);
+                GFolder folder = GFolder.create(__display_part_.FullPath);
 
                 var paths = __display_part_.ComponentAssembly.RootComponent.GetChildren()
                     .Where(__c => __c.__IsLoaded())
@@ -936,7 +937,7 @@ namespace TSG_Library.UFuncs
             {
                 session_.__FindOrOpen(__folder.path_strip_flange);
 
-                var obj = __display_part_.ComponentAssembly.RootComponent.__FindComponent(
+                Component obj = __display_part_.ComponentAssembly.RootComponent.__FindComponent(
                     $"COMPONENT {__folder.customer_number}-Strip Flange Carrier_Tracking Tab 1");
 
                 session_.__DeleteObjects(obj);
@@ -991,7 +992,7 @@ namespace TSG_Library.UFuncs
 
         public static void ExecuteCloneStrip1(GFolder __folder, string op, string strip_prog_path)
         {
-            var clone = uf_.Clone;
+            UFClone clone = uf_.Clone;
             clone.Terminate();
             clone.Initialise(UFClone.OperationClass.CloneOperation);
             clone.SetDefNaming(UFClone.NamingTechnique.UserName);
@@ -1005,7 +1006,7 @@ namespace TSG_Library.UFuncs
                     __folder.path_strip_flange);
             }
 
-            clone.InitNamingFailures(out var failures);
+            clone.InitNamingFailures(out UFClone.NamingFailures failures);
             clone.PerformClone(ref failures);
             clone.Terminate();
         }
@@ -1013,7 +1014,7 @@ namespace TSG_Library.UFuncs
 
         public static void ExecuteCloneStrip(GFolder __folder, string strip_tran_path)
         {
-            var clone = uf_.Clone;
+            UFClone clone = uf_.Clone;
             clone.Terminate();
             clone.Initialise(UFClone.OperationClass.CloneOperation);
             clone.SetDefNaming(UFClone.NamingTechnique.UserName);
@@ -1028,7 +1029,7 @@ namespace TSG_Library.UFuncs
                     __folder.path_strip_flange);
             }
 
-            clone.InitNamingFailures(out var failures);
+            clone.InitNamingFailures(out UFClone.NamingFailures failures);
             clone.PerformClone(ref failures);
             clone.Terminate();
         }

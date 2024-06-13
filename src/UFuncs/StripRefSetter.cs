@@ -27,7 +27,7 @@ namespace TSG_Library.UFuncs
             // Need to remove the objects from the reference sets first.
             __SetUndoMark(MarkVisibility.Visible, "StripRefSetter");
 
-            var display = __display_part_;
+            Part display = __display_part_;
 
             var leaf = display.Leaf.ToLower();
 
@@ -37,46 +37,46 @@ namespace TSG_Library.UFuncs
                 return;
             }
 
-            var layer100Components = display.ComponentAssembly.RootComponent
+            NXObject[] layer100Components = display.ComponentAssembly.RootComponent
                 .GetChildren()
                 .Where(child => child.Layer == 100)
                 .Cast<NXObject>()
                 .ToArray();
 
-            var layer100Objects = display
+            NXObject[] layer100Objects = display
                 .Layers.GetAllObjectsOnLayer(100)
                 .Where(obj => obj is Curve || obj is Body)
                 .Where(obj => !obj.IsOccurrence)
                 .Concat(layer100Components)
                 .ToArray();
 
-            var layer101Components = display.ComponentAssembly.RootComponent
+            NXObject[] layer101Components = display.ComponentAssembly.RootComponent
                 .GetChildren()
                 .Where(child => child.Layer == 101)
                 .Cast<NXObject>()
                 .ToArray();
 
-            var layer101Objects = display
+            NXObject[] layer101Objects = display
                 .Layers.GetAllObjectsOnLayer(101)
                 .Where(obj => obj is Curve || obj is Body)
                 .Where(obj => !obj.IsOccurrence)
                 .Concat(layer101Components)
                 .ToArray();
 
-            var layer102Components = display.ComponentAssembly.RootComponent
+            NXObject[] layer102Components = display.ComponentAssembly.RootComponent
                 .GetChildren()
                 .Where(child => child.Layer == 102)
                 .Cast<NXObject>()
                 .ToArray();
 
-            var layer102Objects = display.Layers
+            NXObject[] layer102Objects = display.Layers
                 .GetAllObjectsOnLayer(102)
                 .Where(obj => obj is Curve || obj is Body)
                 .Where(obj => !obj.IsOccurrence)
                 .Concat(layer102Components)
                 .ToArray();
 
-            var presses = display.ComponentAssembly.RootComponent.GetChildren()
+            NXObject[] presses = display.ComponentAssembly.RootComponent.GetChildren()
                 .Where(child => child.Name.ToUpper().Contains("PRESS"))
                 .Cast<NXObject>()
                 .ToArray();
@@ -101,7 +101,7 @@ namespace TSG_Library.UFuncs
             {
                 // WORK_PARTS
                 const string WORK_PARTS = nameof(WORK_PARTS);
-                var work_parts_refset = display.GetAllReferenceSets().SingleOrDefault(set => set.Name == WORK_PARTS);
+                ReferenceSet work_parts_refset = display.GetAllReferenceSets().SingleOrDefault(set => set.Name == WORK_PARTS);
                 if(work_parts_refset is null)
                 {
                     work_parts_refset = display.CreateReferenceSet();
@@ -115,7 +115,7 @@ namespace TSG_Library.UFuncs
             {
                 // LIFTED_PARTS
                 const string LIFTED_PARTS = nameof(LIFTED_PARTS);
-                var lifted_parts_refset =
+                ReferenceSet lifted_parts_refset =
                     display.GetAllReferenceSets().SingleOrDefault(set => set.Name == LIFTED_PARTS);
                 if(lifted_parts_refset is null)
                 {
@@ -133,7 +133,7 @@ namespace TSG_Library.UFuncs
             {
                 // ALL_WITH_PRESSES
                 const string ALL_WITH_PRESSES = nameof(ALL_WITH_PRESSES);
-                var all_with_presses_refset =
+                ReferenceSet all_with_presses_refset =
                     display.GetAllReferenceSets().SingleOrDefault(set => set.Name == ALL_WITH_PRESSES);
                 if(all_with_presses_refset is null)
                 {
@@ -151,7 +151,7 @@ namespace TSG_Library.UFuncs
                         layer102Objects); // set children to body-no-slugs reference set before adding
                 all_with_presses_refset
                     .AddObjectsToReferenceSet(presses); // set children to body reference set before adding
-                var grippers = display.ComponentAssembly.RootComponent
+                Component[] grippers = display.ComponentAssembly.RootComponent
                     .GetChildren()
                     .Where(child => child.Layer == 235)
                     .ToArray();
@@ -163,7 +163,7 @@ namespace TSG_Library.UFuncs
             {
                 // ALL_PARTS
                 const string ALL_PARTS = nameof(ALL_PARTS);
-                var all_parts_refset = display.GetAllReferenceSets().SingleOrDefault(set => set.Name == ALL_PARTS);
+                ReferenceSet all_parts_refset = display.GetAllReferenceSets().SingleOrDefault(set => set.Name == ALL_PARTS);
                 if(all_parts_refset is null)
                 {
                     all_parts_refset = display.CreateReferenceSet();
@@ -184,7 +184,7 @@ namespace TSG_Library.UFuncs
             if(layer102Components.Length > 0 && leaf.EndsWith("-900-strip"))
             {
                 const string TRANSFER_PARTS = nameof(TRANSFER_PARTS);
-                var transfer_parts_refset =
+                ReferenceSet transfer_parts_refset =
                     display.GetAllReferenceSets().SingleOrDefault(set => set.Name == TRANSFER_PARTS);
                 if(transfer_parts_refset is null)
                 {
@@ -202,7 +202,7 @@ namespace TSG_Library.UFuncs
             {
                 // PROG_ONLY_WORK
                 const string PROG_ONLY_WORK = nameof(PROG_ONLY_WORK);
-                var prog_only_work_refset =
+                ReferenceSet prog_only_work_refset =
                     display.GetAllReferenceSets().SingleOrDefault(set => set.Name == PROG_ONLY_WORK);
                 if(prog_only_work_refset is null)
                 {

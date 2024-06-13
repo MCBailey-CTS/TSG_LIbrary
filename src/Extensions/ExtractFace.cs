@@ -15,7 +15,7 @@ namespace TSG_Library.Extensions
 
         public static void __Layer(this ExtractFace ext, int layer)
         {
-            foreach (var body in ext.GetBodies())
+            foreach (Body body in ext.GetBodies())
                 body.__Layer(layer);
         }
 
@@ -38,7 +38,7 @@ namespace TSG_Library.Extensions
 
         public static Tag __XFormTag(this ExtractFace extractFace)
         {
-            ufsession_.Wave.AskLinkXform(extractFace.Tag, out var xform);
+            ufsession_.Wave.AskLinkXform(extractFace.Tag, out Tag xform);
             return xform;
         }
 

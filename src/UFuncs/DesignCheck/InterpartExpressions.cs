@@ -52,11 +52,13 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 
         public DCResult PerformCheck(Part part, out TreeNode result_node)
         {
-            var folder = GFolder.create(part.FullPath);
+            GFolder folder = GFolder.create(part.FullPath);
             result_node = new TreeNode(part.Leaf) { Tag = part };
+#pragma warning disable CS0219 // Variable is assigned but its value is never used
             var passed = true;
+#pragma warning restore CS0219 // Variable is assigned but its value is never used
 
-            foreach (var expression in part.Expressions.ToArray())
+            foreach (Expression expression in part.Expressions.ToArray())
                 try
                 {
                     if(!expression.IsInterpartExpression)
@@ -67,7 +69,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
                     if(partName.StartsWith(folder.dir_job))
                         continue;
 
-                    var exp_node = new TreeNode(expression.Name) { Tag = expression };
+                    TreeNode exp_node = new TreeNode(expression.Name) { Tag = expression };
                     result_node.Nodes.Add(exp_node);
                     passed = false;
                 }

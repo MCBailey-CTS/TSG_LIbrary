@@ -41,9 +41,9 @@ namespace TSG_Library.Extensions
         /// <returns></returns>
         internal static Part __CreatePart(string pathName, Templates templateType, Units unitType)
         {
-            var nXOpenPart = __work_part_;
-            var nXOpenPart2 = __display_part_;
-            var fileNew = session_.Parts.FileNew();
+            Part nXOpenPart = __work_part_;
+            Part nXOpenPart2 = __display_part_;
+            FileNew fileNew = session_.Parts.FileNew();
             fileNew.ApplicationName = __GetAppName(fileNew, templateType);
             fileNew.TemplateFileName = __GetTemplateFileName(fileNew, templateType, unitType);
             fileNew.UseBlankTemplate = fileNew.TemplateFileName == "Blank";
@@ -55,7 +55,7 @@ namespace TSG_Library.Extensions
             fileNew.NewFileName = pathName;
             fileNew.MasterFileName = "";
             fileNew.MakeDisplayedPart = true;
-            var nXObject = fileNew.Commit();
+            NXObject nXObject = fileNew.Commit();
             fileNew.Destroy();
 
             if (nXOpenPart != null)
@@ -69,14 +69,14 @@ namespace TSG_Library.Extensions
 
         public static void __SetWorkPlane(this Session _, double gridSpace, bool snapToGrid, bool showGrid)
         {
-            var workPlane1 = __display_part_.Preferences.Workplane;
+            WorkPlane workPlane1 = __display_part_.Preferences.Workplane;
 
             if (workPlane1 is null)
                 return;
 
             workPlane1.GridType = WorkPlane.Grid.Rectangular;
             workPlane1.GridIsNonUniform = false;
-            var gridSize1 = new WorkPlane.GridSize(gridSpace, 1, 1);
+            WorkPlane.GridSize gridSize1 = new WorkPlane.GridSize(gridSpace, 1, 1);
             workPlane1.SetRectangularUniformGridSize(gridSize1);
             workPlane1.ShowGrid = showGrid;
             workPlane1.ShowLabels = false;
@@ -96,7 +96,7 @@ namespace TSG_Library.Extensions
         {
             IList<string[]> separated = new List<string[]>();
 
-            var list_items = items.ToList();
+            List<string> list_items = items.ToList();
 
             const string __next__ = "...NEXT...";
             const int max = 14;
@@ -422,7 +422,7 @@ namespace TSG_Library.Extensions
 
         public static IEnumerable<TaggedObject> __FindAllByName(this Session _, string __name)
         {
-            var __tag = Tag.Null;
+            Tag __tag = Tag.Null;
 
             do
             {
@@ -436,7 +436,7 @@ namespace TSG_Library.Extensions
         public static void __DeleteObjects(this Session session_,
             params TaggedObject[] __objects_to_delete)
         {
-            var mark =
+            UndoMarkId mark =
                 session_.SetUndoMark(MarkVisibility.Visible, "Delete Operation");
 
             session_.UpdateManager.ClearDeleteList();

@@ -13,36 +13,36 @@ using static TSG_Library.Extensions.__Extensions_;
 namespace TSG_Library.UFuncs
 {
     [UFunc(ufunc_clean_job_directory)]
-    [RevisionLog("Clean Up job Directory")]
-    [RevisionEntry("1.00", "2017", "06", "05")]
-    [Revision("1.00.1", "Revision Log Created for NX 11")]
-    [RevisionEntry("1.01", "2017", "08", "22")]
-    [Revision("1.01.1", "Signed so it can be run outside of CTS")]
-    [RevisionEntry("1.02", "2017", "09", "08")]
-    [Revision("1.02.1", "Added validation check")]
-    [RevisionEntry("2.0", "2018", "03", "22")]
-    [Revision("2.0.1", "CIT – 2018 – 0008")]
-    [Revision("2.0.2", "Program will now not run unless the assembly is fully loaded.")]
-    [Revision("2.0.3", "Program must be ran from a valid “000” detail that is not located in the 900 folder.")]
-    [Revision("2.0.3.1", "Therefore assembly holders are not allowed either.")]
-    [Revision("2.0.4", "Instead of making a file cleanup folder at the base of the displayed part folder.")]
-    [Revision("2.0.4.1",
-        "It will now create a file cleanup folder at the base of the current displayed parts GFolder.")]
-    [Revision("2.0.5", "In the folder a zip file will be created with all the parts to be cleaned from the job.")]
-    [Revision("2.0.5.1", "YYYY-MM-DD-OP-#-Cleanup")]
-    [RevisionEntry("2.1", "2019", "08", "28")]
-    [Revision("2.1.1", "GFolder updated to allow old job number under non cts folder.")]
-    [RevisionEntry("2.2", "2020", "02", "10")]
-    [Revision("2.2.1",
-        "Updated output folder. 6 digit jobs will now place FileCleanup folder in the Design Information folder. 4 digit jobs are unchanged.")]
-    [RevisionEntry("11.1", "2023", "01", "09")]
-    [Revision("11.1.1", "Removed validation")]
+    //[RevisionLog("Clean Up job Directory")]
+    //[RevisionEntry("1.00", "2017", "06", "05")]
+    //[Revision("1.00.1", "Revision Log Created for NX 11")]
+    //[RevisionEntry("1.01", "2017", "08", "22")]
+    //[Revision("1.01.1", "Signed so it can be run outside of CTS")]
+    //[RevisionEntry("1.02", "2017", "09", "08")]
+    //[Revision("1.02.1", "Added validation check")]
+    //[RevisionEntry("2.0", "2018", "03", "22")]
+    //[Revision("2.0.1", "CIT – 2018 – 0008")]
+    //[Revision("2.0.2", "Program will now not run unless the assembly is fully loaded.")]
+    //[Revision("2.0.3", "Program must be ran from a valid “000” detail that is not located in the 900 folder.")]
+    //[Revision("2.0.3.1", "Therefore assembly holders are not allowed either.")]
+    //[Revision("2.0.4", "Instead of making a file cleanup folder at the base of the displayed part folder.")]
+    //[Revision("2.0.4.1",
+    //    "It will now create a file cleanup folder at the base of the current displayed parts GFolder.")]
+    //[Revision("2.0.5", "In the folder a zip file will be created with all the parts to be cleaned from the job.")]
+    //[Revision("2.0.5.1", "YYYY-MM-DD-OP-#-Cleanup")]
+    //[RevisionEntry("2.1", "2019", "08", "28")]
+    //[Revision("2.1.1", "GFolder updated to allow old job number under non cts folder.")]
+    //[RevisionEntry("2.2", "2020", "02", "10")]
+    //[Revision("2.2.1",
+    //    "Updated output folder. 6 digit jobs will now place FileCleanup folder in the Design Information folder. 4 digit jobs are unchanged.")]
+    //[RevisionEntry("11.1", "2023", "01", "09")]
+    //[Revision("11.1.1", "Removed validation")]
     public class CleanJobDirectory : _UFunc
     {
         public override void execute()
         {
             // Creates an instance of GFolderWithCtsNumber using the current Displayed Part as it's source.
-            var folder = GFolder.create(__work_part_.FullPath);
+            GFolder folder = GFolder.create(__work_part_.FullPath);
 
             if(folder is null)
             {
@@ -50,13 +50,13 @@ namespace TSG_Library.UFuncs
                 return;
             }
 
-            var result = MessageBox.Show(@"Are you sure you want to run Clean Job Directory?", @"Alert",
+            DialogResult result = MessageBox.Show(@"Are you sure you want to run Clean Job Directory?", @"Alert",
                 MessageBoxButtons.YesNo);
 
             if(result == DialogResult.No)
                 return;
 
-            var match = Regex.Match(__display_part_.Leaf, Regex_Detail);
+            Match match = Regex.Match(__display_part_.Leaf, Regex_Detail);
 
             if(!match.Success || match.Groups[3].Value != "000")
                 throw new InvalidOperationException(
@@ -78,13 +78,13 @@ namespace TSG_Library.UFuncs
             // 1. It gets all the part paths that define the currently displayed assembly.
             // 2. It is also checking to make sure that the assembly is fully loaded.
             // Throws exception if assembly is not fully loaded.
-            var partPathsInAssembly = Find(__display_part_.__RootComponent())
+            IEnumerable<string> partPathsInAssembly = Find(__display_part_.__RootComponent())
                 .Select(component => component.Prototype)
                 .OfType<Part>()
                 .Select(part => part.FullPath);
 
             // Creates a hashset of the part paths in the currently displayed assembly.
-            var hashedAssemblyPartPaths = new HashSet<string>(partPathsInAssembly);
+            HashSet<string> hashedAssemblyPartPaths = new HashSet<string>(partPathsInAssembly);
 
             // Gets the directory the Displayed Part resides in.
             var displayedPartDirectory = Path.GetDirectoryName(__display_part_.FullPath);
@@ -93,7 +93,7 @@ namespace TSG_Library.UFuncs
                 Directory.GetFiles(displayedPartDirectory, "*.prt", SearchOption.TopDirectoryOnly);
 
             // Represents the part file paths in the displayed part directory that are not in the current assembly.
-            var fileCleanUpSet = new HashSet<string>();
+            HashSet<string> fileCleanUpSet = new HashSet<string>();
             foreach (var path in partFilesInDirectory)
             {
                 var flag = hashedAssemblyPartPaths.Contains(path);
@@ -166,7 +166,7 @@ namespace TSG_Library.UFuncs
             if(snapComp is null)
                 throw new ArgumentNullException(nameof(snapComp));
 
-            var nxComponent = snapComp;
+            Component nxComponent = snapComp;
 
             if(!(nxComponent.Prototype is Part) && !nxComponent.IsSuppressed)
                 throw new ArgumentException(
@@ -178,8 +178,8 @@ namespace TSG_Library.UFuncs
 
             yield return snapComp;
 
-            foreach (var child in snapComp.GetChildren())
-            foreach (var descendant in Find(child))
+            foreach (Component child in snapComp.GetChildren())
+            foreach (Component descendant in Find(child))
                 yield return descendant;
         }
     }

@@ -13,11 +13,11 @@ namespace TSG_Library.Extensions
 
         public static object __ExecuteScalar(string command_text)
         {
-            using (var cnn = new SqlConnection(conn_str))
+            using (SqlConnection cnn = new SqlConnection(conn_str))
             {
                 cnn.Open();
 
-                using (var sql = new SqlCommand
+                using (SqlCommand sql = new SqlCommand
                        {
                            Connection = cnn,
 
@@ -36,11 +36,11 @@ namespace TSG_Library.Extensions
 
         public static SqlDataReader __ExecuteDataReader(string command_text)
         {
-            using (var cnn = new SqlConnection(conn_str))
+            using (SqlConnection cnn = new SqlConnection(conn_str))
             {
                 cnn.Open();
 
-                using (var sql = new SqlCommand
+                using (SqlCommand sql = new SqlCommand
                        {
                            Connection = cnn,
 

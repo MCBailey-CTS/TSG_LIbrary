@@ -19,7 +19,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             Component component = (Component)dict[originalComp];
             Part part = component.__Prototype();
             Feature feature = (Feature)dict[originalFeature];
-            ((EdgeMultipleSeedTangentRule)originalRule).GetData(out var seedEdges, out var angleTolerance, out var hasSameConvexity);
+            ((EdgeMultipleSeedTangentRule)originalRule).GetData(out Edge[] seedEdges, out var angleTolerance, out var hasSameConvexity);
             IList<Edge> list = new List<Edge>();
             Edge[] array = seedEdges;
             foreach (Edge edge in array)

@@ -13,8 +13,8 @@ namespace TSG_Library.Extensions
             this Line line,
             Surface.Plane plane)
         {
-            var start = line.StartPoint.__Mirror(plane);
-            var end = line.EndPoint.__Mirror(plane);
+            Point3d start = line.StartPoint.__Mirror(plane);
+            Point3d end = line.EndPoint.__Mirror(plane);
             return line.__OwningPart().Curves.CreateLine(start, end);
         }
 

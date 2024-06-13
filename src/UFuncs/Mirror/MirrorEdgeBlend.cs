@@ -29,8 +29,8 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
                 int numberOfValidChainsets = edgeBlendBuilder.GetNumberOfValidChainsets();
                 for (int i = 0; i < numberOfValidChainsets; i++)
                 {
-                    edgeBlendBuilder.GetChainset(i, out var collector, out var radius);
-                    collector.GetRules(out var rules);
+                    edgeBlendBuilder.GetChainset(i, out ScCollector collector, out Expression radius);
+                    collector.GetRules(out SelectionIntentRule[] rules);
                     IList<SelectionIntentRule> source = rules.Select((SelectionIntentRule originalRule) => BaseMirrorRule.MirrorRule(originalRule, originalFeature, plane, originalComp, dict)).ToList();
                     dictionary.Add(i, Tuple.Create(source.ToArray(), radius));
                 }
@@ -45,7 +45,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
                 {
                     for (int j = 0; j < edgeBlendBuilder2.GetNumberOfValidChainsets(); j++)
                     {
-                        edgeBlendBuilder2.GetChainsetAndStatus(j, out var collector2, out var _, out var _);
+                        edgeBlendBuilder2.GetChainsetAndStatus(j, out ScCollector collector2, out Expression _, out var _);
                         SelectionIntentRule[] item = dictionary[j].Item1;
                         collector2.ReplaceRules(item, createRulesWoUpdate: false);
                     }

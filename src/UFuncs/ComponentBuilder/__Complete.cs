@@ -19,7 +19,7 @@ namespace TSG_Library.UFuncs
         {
             _displayPart.Views.Refresh();
 
-            foreach (var eLine in _edgeRepLines)
+            foreach (Line eLine in _edgeRepLines)
             {
                 if (eLine.Name != "XBASE1" && eLine.Name != "YBASE1" && eLine.Name != "ZBASE1")
                     continue;
@@ -29,7 +29,7 @@ namespace TSG_Library.UFuncs
                     : $"{Math.Round(eLine.GetLength(), 3) / 25.4:0.000}";
 
                 var midPoint = new double[3];
-                var dispProps = new UFObj.DispProps { color = 31 };
+                UFObj.DispProps dispProps = new UFObj.DispProps { color = 31 };
                 midPoint[0] = (eLine.StartPoint.X + eLine.EndPoint.X) / 2;
                 midPoint[1] = (eLine.StartPoint.Y + eLine.EndPoint.Y) / 2;
                 midPoint[2] = (eLine.StartPoint.Z + eLine.EndPoint.Z) / 2;
@@ -49,8 +49,8 @@ namespace TSG_Library.UFuncs
         }
         private static void CreatePointBlkOrigin()
         {
-            var pointLocationOrigin = _displayPart.WCS.Origin;
-            var point1Origin = _workPart.Points.CreatePoint(pointLocationOrigin);
+            Point3d pointLocationOrigin = _displayPart.WCS.Origin;
+            Point point1Origin = _workPart.Points.CreatePoint(pointLocationOrigin);
             point1Origin.SetVisibility(SmartObject.VisibilityOption.Visible);
             point1Origin.Blank();
             point1Origin.SetName("BLKORIGIN");
@@ -77,8 +77,8 @@ namespace TSG_Library.UFuncs
 
         private static Point CreatePoint(double[] pointOnFace, string name)
         {
-            var pointLocation = pointOnFace.__ToPoint3d();
-            var point1 = _workPart.Points.CreatePoint(pointLocation);
+            Point3d pointLocation = pointOnFace.__ToPoint3d();
+            Point point1 = _workPart.Points.CreatePoint(pointLocation);
             point1.SetVisibility(SmartObject.VisibilityOption.Visible);
             point1.SetName(name);
             point1.Layer = _displayPart.Layers.WorkLayer;
@@ -91,7 +91,7 @@ namespace TSG_Library.UFuncs
         {
             using (session_.__UsingDoUpdate())
             {
-                var myUdOclass = session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoDynamicHandle");
+                UserDefinedClass myUdOclass = session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoDynamicHandle");
 
                 if (myUdOclass != null)
                 {
@@ -103,7 +103,7 @@ namespace TSG_Library.UFuncs
                     if (namedPt.Name != "")
                         session_.UpdateManager.AddToDeleteList(namedPt);
 
-                foreach (var dLine in _edgeRepLines)
+                foreach (Line dLine in _edgeRepLines)
                     session_.UpdateManager.AddToDeleteList(dLine);
             }
 
@@ -232,44 +232,44 @@ namespace TSG_Library.UFuncs
         {
             var lineColor = 7;
 
-            var mappedStartPoint1 = MapAbsoluteToWcs(wcsOrigin);
-            var endPointX1 = mappedStartPoint1.__AddX(lineLength);
-            var mappedEndPointX1 = MapWcsToAbsolute(endPointX1);
+            Point3d mappedStartPoint1 = MapAbsoluteToWcs(wcsOrigin);
+            Point3d endPointX1 = mappedStartPoint1.__AddX(lineLength);
+            Point3d mappedEndPointX1 = MapWcsToAbsolute(endPointX1);
             CreateBlockLine(lineColor, wcsOrigin, mappedEndPointX1, "XBASE1");
 
-            var endPointY1 = mappedStartPoint1.__AddY(lineWidth);
-            var mappedEndPointY1 = MapWcsToAbsolute(endPointY1);
+            Point3d endPointY1 = mappedStartPoint1.__AddY(lineWidth);
+            Point3d mappedEndPointY1 = MapWcsToAbsolute(endPointY1);
             CreateBlockLine(lineColor, wcsOrigin, mappedEndPointY1, "YBASE1");
 
-            var endPointZ1 = mappedStartPoint1.__AddZ(lineHeight);
-            var mappedEndPointZ1 = MapWcsToAbsolute(endPointZ1);
+            Point3d endPointZ1 = mappedStartPoint1.__AddZ(lineHeight);
+            Point3d mappedEndPointZ1 = MapWcsToAbsolute(endPointZ1);
             CreateBlockLine(lineColor, wcsOrigin, mappedEndPointZ1, "ZBASE1");
 
             //==================================================================================================================
 
-            var mappedStartPoint2 = MapAbsoluteToWcs(mappedEndPointY1);
+            Point3d mappedStartPoint2 = MapAbsoluteToWcs(mappedEndPointY1);
 
-            var endPointX2 = mappedStartPoint2.__AddX(lineLength);
-            var mappedEndPointX2 = MapWcsToAbsolute(endPointX2);
+            Point3d endPointX2 = mappedStartPoint2.__AddX(lineLength);
+            Point3d mappedEndPointX2 = MapWcsToAbsolute(endPointX2);
             CreateBlockLine(lineColor, mappedEndPointY1, mappedEndPointX2, "XBASE2");
             CreateBlockLine(lineColor, mappedEndPointX1, mappedEndPointX2, "YBASE2");
 
             //==================================================================================================================
 
-            var mappedStartPoint3 = MapAbsoluteToWcs(mappedEndPointZ1);
-            var endPointX1Ceiling = mappedStartPoint3.__AddX(lineLength);
-            var mappedEndPointX1Ceiling = MapWcsToAbsolute(endPointX1Ceiling);
+            Point3d mappedStartPoint3 = MapAbsoluteToWcs(mappedEndPointZ1);
+            Point3d endPointX1Ceiling = mappedStartPoint3.__AddX(lineLength);
+            Point3d mappedEndPointX1Ceiling = MapWcsToAbsolute(endPointX1Ceiling);
             CreateBlockLine(lineColor, mappedEndPointZ1, mappedEndPointX1Ceiling, "XCEILING1");
 
-            var endPointY1Ceiling = mappedStartPoint3.__AddY(lineWidth);
-            var mappedEndPointY1Ceiling = MapWcsToAbsolute(endPointY1Ceiling);
+            Point3d endPointY1Ceiling = mappedStartPoint3.__AddY(lineWidth);
+            Point3d mappedEndPointY1Ceiling = MapWcsToAbsolute(endPointY1Ceiling);
             CreateBlockLine(lineColor, mappedEndPointZ1, mappedEndPointY1Ceiling, "YCEILING1");
 
             //==================================================================================================================
 
-            var mappedStartPoint4 = MapAbsoluteToWcs(mappedEndPointY1Ceiling);
-            var endPointX2Ceiling = mappedStartPoint4.__AddX(lineLength);
-            var mappedEndPointX2Ceiling = MapWcsToAbsolute(endPointX2Ceiling);
+            Point3d mappedStartPoint4 = MapAbsoluteToWcs(mappedEndPointY1Ceiling);
+            Point3d endPointX2Ceiling = mappedStartPoint4.__AddX(lineLength);
+            Point3d mappedEndPointX2Ceiling = MapWcsToAbsolute(endPointX2Ceiling);
 
             CreateBlockLine(lineColor, mappedEndPointY1Ceiling, mappedEndPointX2Ceiling, "XCEILING2");
             CreateBlockLine(lineColor, mappedEndPointX1Ceiling, mappedEndPointX2Ceiling, "YCEILING2");
@@ -285,7 +285,7 @@ namespace TSG_Library.UFuncs
 
         private static void CreateBlockLine(int lineColor, Point3d start, Point3d end, string name)
         {
-            var yBase2 = _workPart.Curves.CreateLine(start, end);
+            Line yBase2 = _workPart.Curves.CreateLine(start, end);
             yBase2.SetName(name);
             yBase2.Color = lineColor;
             yBase2.RedisplayObject();
@@ -313,29 +313,29 @@ namespace TSG_Library.UFuncs
 
         private void ZEndPoint(double distance, Line zAxisLine)
         {
-            var mappedEndPoint = MapAbsoluteToWcs(zAxisLine.EndPoint);
-            var addZ = new Point3d(mappedEndPoint.X, mappedEndPoint.Y,
+            Point3d mappedEndPoint = MapAbsoluteToWcs(zAxisLine.EndPoint);
+            Point3d addZ = new Point3d(mappedEndPoint.X, mappedEndPoint.Y,
                 mappedEndPoint.Z + distance);
-            var mappedAddZ = MapWcsToAbsolute(addZ);
+            Point3d mappedAddZ = MapWcsToAbsolute(addZ);
             zAxisLine.SetEndPoint(mappedAddZ);
         }
 
 
         private void XStartPoint(double distance, Line xAxisLine)
         {
-            var mappedStartPoint = MapAbsoluteToWcs(xAxisLine.StartPoint);
-            var addX = new Point3d(mappedStartPoint.X + distance,
+            Point3d mappedStartPoint = MapAbsoluteToWcs(xAxisLine.StartPoint);
+            Point3d addX = new Point3d(mappedStartPoint.X + distance,
                 mappedStartPoint.Y, mappedStartPoint.Z);
-            var mappedAddX = MapWcsToAbsolute(addX);
+            Point3d mappedAddX = MapWcsToAbsolute(addX);
             xAxisLine.SetStartPoint(mappedAddX);
         }
 
         private void YStartPoint(double distance, Line yAxisLine)
         {
-            var mappedStartPoint = MapAbsoluteToWcs(yAxisLine.StartPoint);
-            var addY = new Point3d(mappedStartPoint.X,
+            Point3d mappedStartPoint = MapAbsoluteToWcs(yAxisLine.StartPoint);
+            Point3d addY = new Point3d(mappedStartPoint.X,
                 mappedStartPoint.Y + distance, mappedStartPoint.Z);
-            var mappedAddY = MapWcsToAbsolute(addY);
+            Point3d mappedAddY = MapWcsToAbsolute(addY);
             yAxisLine.SetStartPoint(mappedAddY);
         }
 
@@ -344,10 +344,10 @@ namespace TSG_Library.UFuncs
 
         private void ZStartPoint(double distance, Line zAxisLine)
         {
-            var mappedStartPoint = MapAbsoluteToWcs(zAxisLine.StartPoint);
-            var addZ = new Point3d(mappedStartPoint.X, mappedStartPoint.Y,
+            Point3d mappedStartPoint = MapAbsoluteToWcs(zAxisLine.StartPoint);
+            Point3d addZ = new Point3d(mappedStartPoint.X, mappedStartPoint.Y,
                 mappedStartPoint.Z + distance);
-            var mappedAddZ = MapWcsToAbsolute(addZ);
+            Point3d mappedAddZ = MapWcsToAbsolute(addZ);
             zAxisLine.SetStartPoint(mappedAddZ);
         }
 
@@ -356,19 +356,19 @@ namespace TSG_Library.UFuncs
 
         private void YEndPoint(double distance, Line yAxisLine)
         {
-            var mappedEndPoint = MapAbsoluteToWcs(yAxisLine.EndPoint);
-            var addY = new Point3d(mappedEndPoint.X, mappedEndPoint.Y + distance,
+            Point3d mappedEndPoint = MapAbsoluteToWcs(yAxisLine.EndPoint);
+            Point3d addY = new Point3d(mappedEndPoint.X, mappedEndPoint.Y + distance,
                 mappedEndPoint.Z);
-            var mappedAddY = MapWcsToAbsolute(addY);
+            Point3d mappedAddY = MapWcsToAbsolute(addY);
             yAxisLine.SetEndPoint(mappedAddY);
         }
 
         private void XEndPoint(double distance, Line xAxisLine)
         {
-            var mappedEndPoint = MapAbsoluteToWcs(xAxisLine.EndPoint);
-            var addX = new Point3d(mappedEndPoint.X + distance, mappedEndPoint.Y,
+            Point3d mappedEndPoint = MapAbsoluteToWcs(xAxisLine.EndPoint);
+            Point3d addX = new Point3d(mappedEndPoint.X + distance, mappedEndPoint.Y,
                 mappedEndPoint.Z);
-            var mappedAddX = MapWcsToAbsolute(addX);
+            Point3d mappedAddX = MapWcsToAbsolute(addX);
             xAxisLine.SetEndPoint(mappedAddX);
         }
 

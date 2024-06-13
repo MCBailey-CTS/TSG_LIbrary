@@ -24,7 +24,7 @@ namespace TSG_Library.Extensions
 
         public static void __GetDirections(this CoordinateSystem obj)
         {
-            obj.GetDirections(out var xDirection, out var yDirection);
+            obj.GetDirections(out Vector3d xDirection, out Vector3d yDirection);
         }
 
         [Obsolete]

@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Assemblies;
+using NXOpen.UF;
 using TSG_Library.Attributes;
 using TSG_Library.Utilities;
 using static TSG_Library.Extensions.__Extensions_;
@@ -12,12 +13,12 @@ using static TSG_Library.Extensions.__Extensions_;
 namespace TSG_Library.UFuncs
 {
     [UFunc("nx-7-zip")]
-    [RevisionEntry("1.0", "2017", "06", "05")]
-    [Revision("1.0.1", "Revision Log Created for NX 11.")]
-    [RevisionEntry("1.1", "2017", "08", "22")]
-    [Revision("1.1.1", "Signed so it will run outside of CTS.")]
-    [RevisionEntry("11.1", "2023", "01", "09")]
-    [Revision("11.1.1", "Removed validation")]
+    //[RevisionEntry("1.0", "2017", "06", "05")]
+    //[Revision("1.0.1", "Revision Log Created for NX 11.")]
+    //[RevisionEntry("1.1", "2017", "08", "22")]
+    //[Revision("1.1.1", "Signed so it will run outside of CTS.")]
+    //[RevisionEntry("11.1", "2023", "01", "09")]
+    //[Revision("11.1.1", "Removed validation")]
     public partial class Nx7zipForm : _UFuncForm
     {
         private static Part displayPart = session_.Parts.Display;
@@ -95,7 +96,7 @@ namespace TSG_Library.UFuncs
                 selComponents = GetOneComponentOfMany(allComponents);
 
                 if(!(selComponents is null))
-                    foreach (var comp in selComponents)
+                    foreach (Component comp in selComponents)
                         assmParts.Add((Part)comp.Prototype);
 
                 buttonSelectAssm.Enabled = false;
@@ -158,7 +159,7 @@ namespace TSG_Library.UFuncs
 
         private void ButtonCloseAssm_Click(object sender, EventArgs e)
         {
-            var closeResult = MessageBox.Show("This will close the loaded assembly", "Verify",
+            DialogResult closeResult = MessageBox.Show("This will close the loaded assembly", "Verify",
                 MessageBoxButtons.OKCancel, MessageBoxIcon.Warning,
                 MessageBoxDefaultButton.Button1);
 
@@ -198,23 +199,23 @@ namespace TSG_Library.UFuncs
                 if(assmParts.Count == 0)
                     return;
 
-                var compressionLevel = (Nx7ZipCompression)comboBoxCompression.SelectedItem;
+                Nx7ZipCompression compressionLevel = (Nx7ZipCompression)comboBoxCompression.SelectedItem;
                 var compression = compressionLevel.CompressValue;
                 var tempFile = Path.GetTempPath() + "zipData.txt";
                 var nx7zip = "C:\\Program Files\\7-Zip\\7z";
 
-                using (var fs = File.Open(tempFile, FileMode.Create))
+                using (FileStream fs = File.Open(tempFile, FileMode.Create))
                 {
                     fs.Close();
                 }
 
-                using (var writer = new StreamWriter(tempFile))
+                using (StreamWriter writer = new StreamWriter(tempFile))
                 {
-                    foreach (var part in assmParts)
+                    foreach (Part part in assmParts)
                         writer.WriteLine(part.FullPath);
                 }
 
-                var process = new Process { EnableRaisingEvents = false };
+                Process process = new Process { EnableRaisingEvents = false };
                 process.StartInfo.FileName = nx7zip;
                 process.StartInfo.Arguments = $"a -t7z \"{fileName}\" \"@{tempFile}\" {compression}";
                 process.Start();
@@ -250,13 +251,13 @@ namespace TSG_Library.UFuncs
             labelZipText.Text = string.Empty;
             displayPathText = string.Empty;
             comboBoxCompression.Items.Clear();
-            var zipComp1 = new Nx7ZipCompression("Ultra", "-mx9");
+            Nx7ZipCompression zipComp1 = new Nx7ZipCompression("Ultra", "-mx9");
             comboBoxCompression.Items.Add(zipComp1);
-            var zipComp2 = new Nx7ZipCompression("Maximum", "-mx7");
+            Nx7ZipCompression zipComp2 = new Nx7ZipCompression("Maximum", "-mx7");
             comboBoxCompression.Items.Add(zipComp2);
-            var zipComp3 = new Nx7ZipCompression("Normal", "-mx5");
+            Nx7ZipCompression zipComp3 = new Nx7ZipCompression("Normal", "-mx5");
             comboBoxCompression.Items.Add(zipComp3);
-            var zipComp4 = new Nx7ZipCompression("Auto", "-mx3");
+            Nx7ZipCompression zipComp4 = new Nx7ZipCompression("Auto", "-mx3");
             comboBoxCompression.Items.Add(zipComp4);
             comboBoxCompression.SelectedIndex = 0;
             buttonSelectAssm.Enabled = true;
@@ -304,7 +305,7 @@ namespace TSG_Library.UFuncs
                 if(assemblyPart.GetChildren() is null)
                     return;
 
-                foreach (var child in assemblyPart.GetChildren())
+                foreach (Component child in assemblyPart.GetChildren())
                 {
                     if(child.IsSuppressed)
                         continue;
@@ -324,7 +325,7 @@ namespace TSG_Library.UFuncs
                         continue;
                     }
 
-                    ufsession_.Part.OpenQuiet(partName, out var partOpen, out var loadStatus);
+                    ufsession_.Part.OpenQuiet(partName, out Tag partOpen, out UFPart.LoadStatus loadStatus);
 
                     if(partOpen == NXOpen.Tag.Null)
                         continue;
@@ -341,14 +342,14 @@ namespace TSG_Library.UFuncs
 
         private static List<Component> GetOneComponentOfMany(List<Component> compList)
         {
-            var oneComp = new List<Component>
+            List<Component> oneComp = new List<Component>
             {
                 compList[0]
             };
 
-            foreach (var comp in compList)
+            foreach (Component comp in compList)
             {
-                var foundComponent = oneComp.Find(delegate(Component c) { return c.DisplayName == comp.DisplayName; });
+                Component foundComponent = oneComp.Find(delegate(Component c) { return c.DisplayName == comp.DisplayName; });
 
                 if(foundComponent is null)
                     oneComp.Add(comp);

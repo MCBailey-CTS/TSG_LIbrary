@@ -19,7 +19,7 @@ namespace TSG_Library.Extensions
 
         public static Body[] __Data(this BodyDumbRule rule)
         {
-            rule.GetData(out var bodies);
+            rule.GetData(out Body[] bodies);
             return bodies;
         }
 

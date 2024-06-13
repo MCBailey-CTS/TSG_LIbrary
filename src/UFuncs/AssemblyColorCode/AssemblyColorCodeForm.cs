@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using NXOpen;
+using NXOpen.Features;
 using TSG_Library.Attributes;
 using TSG_Library.Properties;
 using TSG_Library.Utilities;
@@ -16,39 +17,39 @@ using Point = System.Drawing.Point;
 namespace TSG_Library.UFuncs
 {
     [UFunc(ufunc_assembly_color_code)]
-    [RevisionLog("Assembly Color Code")]
-    [RevisionEntry("1.00", "2017", "06", "05")]
-    [Revision("1.00.1", "Created for NX 11")]
-    [RevisionEntry("1.10", "2017", "08", "22")]
-    [Revision("1.10.1", "Signed so it can run outside of CTS")]
-    [RevisionEntry("1.15", "2017", "11", "09")]
-    [Revision("1.15.1", "Removed exit button from form. ")]
-    [Revision("1.15.1.1", "This only leaves the “X” in the upper right of the form.")]
-    [Revision("1.15.2", "Added two new colors to select from, “DarkRed” and “PaleRed”.")]
-    [Revision("1.15.3",
-        "Restructured form so that it is now “163” pixels across. Fixes issue where the form would show up misshapen on big tv in conference room.")]
-    [Revision("1.15.4", "Added a curves selection filter to the form.")]
-    [RevisionEntry("1.2", "2017", "11", "27")]
-    [Revision("1.2.1",
-        "Created an undo mark every time the user colors an object or inherits a color followed up by a subsequent coloring.")]
-    [RevisionEntry("1.3", "2018", "02", "28")]
-    [Revision("1.3.1", "Added the ability to pick conic curve types. (Ellipse, Hyperbola, and Parabola)")]
-    [Revision("1.3.1.1", "There isn’t a new radio button; they are just under the umbrella of “Curves”.")]
-    [RevisionEntry("1.4", "2018", "09", "13")]
-    [Revision("1.4.1",
-        "Restructured the form. Colors moved to bottom of the form so that it can grow with more colors being added automatically.")]
-    [Revision("1.4.2", "Converted form to use a UCF file. ")]
-    [Revision("1.4.2.1", "Colors are now constructed at the load up and read from the ucf file.")]
-    [Revision("1.4.3", "Added a new color. #80 = Light Weak Magenta.")]
-    [RevisionEntry("1.41", "2018", "09", "13")]
-    [Revision("1.41.1",
-        "Fixed bug where when coloring a feature, the entire body of the feature was colored instead of just the faces of the feature.")]
-    [RevisionEntry("1.5", "2019", "03", "20")]
-    [Revision("1.5.1", "Moved the body of the code to be located in CTS_Library.")]
-    [RevisionEntry("1.6", "2021", "05", "27")]
-    [Revision("1.6.1", "The ConceptControlFile now points to \"U:\\nxFiles\\UfuncFiles\\ConceptControlFile.ucf\"")]
-    [RevisionEntry("11.1", "2023", "01", "09")]
-    [Revision("11.1.1", "Removed validation")]
+    //[RevisionLog("Assembly Color Code")]
+    //[RevisionEntry("1.00", "2017", "06", "05")]
+    //[Revision("1.00.1", "Created for NX 11")]
+    //[RevisionEntry("1.10", "2017", "08", "22")]
+    //[Revision("1.10.1", "Signed so it can run outside of CTS")]
+    //[RevisionEntry("1.15", "2017", "11", "09")]
+    //[Revision("1.15.1", "Removed exit button from form. ")]
+    //[Revision("1.15.1.1", "This only leaves the “X” in the upper right of the form.")]
+    //[Revision("1.15.2", "Added two new colors to select from, “DarkRed” and “PaleRed”.")]
+    //[Revision("1.15.3",
+    //    "Restructured form so that it is now “163” pixels across. Fixes issue where the form would show up misshapen on big tv in conference room.")]
+    //[Revision("1.15.4", "Added a curves selection filter to the form.")]
+    //[RevisionEntry("1.2", "2017", "11", "27")]
+    //[Revision("1.2.1",
+    //    "Created an undo mark every time the user colors an object or inherits a color followed up by a subsequent coloring.")]
+    //[RevisionEntry("1.3", "2018", "02", "28")]
+    //[Revision("1.3.1", "Added the ability to pick conic curve types. (Ellipse, Hyperbola, and Parabola)")]
+    //[Revision("1.3.1.1", "There isn’t a new radio button; they are just under the umbrella of “Curves”.")]
+    //[RevisionEntry("1.4", "2018", "09", "13")]
+    //[Revision("1.4.1",
+    //    "Restructured the form. Colors moved to bottom of the form so that it can grow with more colors being added automatically.")]
+    //[Revision("1.4.2", "Converted form to use a UCF file. ")]
+    //[Revision("1.4.2.1", "Colors are now constructed at the load up and read from the ucf file.")]
+    //[Revision("1.4.3", "Added a new color. #80 = Light Weak Magenta.")]
+    //[RevisionEntry("1.41", "2018", "09", "13")]
+    //[Revision("1.41.1",
+    //    "Fixed bug where when coloring a feature, the entire body of the feature was colored instead of just the faces of the feature.")]
+    //[RevisionEntry("1.5", "2019", "03", "20")]
+    //[Revision("1.5.1", "Moved the body of the code to be located in CTS_Library.")]
+    //[RevisionEntry("1.6", "2021", "05", "27")]
+    //[Revision("1.6.1", "The ConceptControlFile now points to \"U:\\nxFiles\\UfuncFiles\\ConceptControlFile.ucf\"")]
+    //[RevisionEntry("11.1", "2023", "01", "09")]
+    //[Revision("11.1.1", "Removed validation")]
     public partial class AssemblyColorCodeForm : _UFuncForm
     {
         public enum AssemblyColorCodeType
@@ -144,7 +145,7 @@ namespace TSG_Library.UFuncs
 
         public void LoadColors(string ucfPath)
         {
-            var ucf = new Ucf(ucfPath);
+            Ucf ucf = new Ucf(ucfPath);
 
             // The regular expression to match the rgb colors from the file.
             // language=regexp
@@ -158,7 +159,7 @@ namespace TSG_Library.UFuncs
             foreach (var colorLine in ucf["COLORS"])
             {
                 // Matches the {colorLine}.
-                var match = Regex.Match(colorLine, rgbRegex);
+                Match match = Regex.Match(colorLine, rgbRegex);
 
                 // If the {colorLine} doesn't match, ignore it.
                 if(!match.Success)
@@ -197,7 +198,7 @@ namespace TSG_Library.UFuncs
                 // Creates a button. 
                 var nxColor = int.Parse(match.Groups["NX"].Value);
                 // ReSharper disable once UseObjectOrCollectionInitializer
-                var button = new Button
+                Button button = new Button
                 {
                     BackColor = Color.FromArgb(aValue, rValue, gValue, bValue),
                     Location = new Point(10 + (36 - 10) * xCounter++, (45 - 19) * yCounter - 10),
@@ -236,9 +237,9 @@ namespace TSG_Library.UFuncs
             if(__triples is null && rdoFeature.Checked)
             {
                 UI.GetUI().SelectionManager.SelectFeatures("Select Features", Selection.SelectionFeatureType.Browsable,
-                    out var features);
+                    out Feature[] features);
 
-                foreach (var feature in features)
+                foreach (Feature feature in features)
                     feature.GetEntities()
                         .OfType<DisplayableObject>()
                         .ToList()
@@ -261,7 +262,7 @@ namespace TSG_Library.UFuncs
                 false,
                 false,
                 __triples,
-                out var objects);
+                out TaggedObject[] objects);
 
             objects.OfType<DisplayableObject>()
                 .ToList()
@@ -303,7 +304,7 @@ namespace TSG_Library.UFuncs
             {
                 try
                 {
-                    var button = (Button)sender;
+                    Button button = (Button)sender;
                     ChooseColoring((int)button.Tag);
                 }
                 catch (Exception ex)
@@ -327,7 +328,7 @@ namespace TSG_Library.UFuncs
                         false,
                         false,
                         all_triples,
-                        out var object_,
+                        out TaggedObject object_,
                         out _);
 
                     if(!(object_ is DisplayableObject disp))

@@ -1,5 +1,6 @@
 ﻿using System;
 using NXOpen;
+using NXOpen.UF;
 
 namespace TSG_Library.Extensions
 {
@@ -14,7 +15,9 @@ namespace TSG_Library.Extensions
                 case Curve __curve__:
                     return __curve__.__Parameter(point);
                 case Edge __edge__:
+#pragma warning disable CS0612 // Type or member is obsolete
                     return __edge__.__Parameter(point);
+#pragma warning restore CS0612 // Type or member is obsolete
                 default:
                     throw new ArgumentException("Unknown curve type");
             }
@@ -52,8 +55,8 @@ namespace TSG_Library.Extensions
         //     The binormal is the cross product of the tangent and the normal: B = Cross(T,N).
         public static Vector3d __Binormal(this ICurve curve, double value)
         {
-            var eval = ufsession_.Eval;
-            eval.Initialize2(curve.__Tag(), out var evaluator);
+            UFEval eval = ufsession_.Eval;
+            eval.Initialize2(curve.__Tag(), out IntPtr evaluator);
             var array = new double[3];
             var point = array;
             var array2 = new double[3];

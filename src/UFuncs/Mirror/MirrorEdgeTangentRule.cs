@@ -19,7 +19,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             Component component = (Component)dict[originalComp];
             Part part = component.__Prototype();
             Feature feature = (Feature)dict[originalFeature];
-            ((EdgeTangentRule)originalRule).GetData(out var startEdge, out var endEdge, out var isFromStart, out var angleTolerance, out var hasSameConvexity);
+            ((EdgeTangentRule)originalRule).GetData(out Edge startEdge, out Edge endEdge, out var isFromStart, out var angleTolerance, out var hasSameConvexity);
             Edge edge = null;
             Edge endEdge2 = null;
             Point3d pos = startEdge.__StartPoint()._MirrorMap(plane, originalComp, component);

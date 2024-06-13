@@ -57,7 +57,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
                 default:
                     var isInch = false;
                     const double maxSize = 72;
-                    var baseLocation = jjPoint3D[0];
+                    Point3d baseLocation = jjPoint3D[0];
 
                     for (var i = 1; i < jjPoint3D.Length; i++)
                     {

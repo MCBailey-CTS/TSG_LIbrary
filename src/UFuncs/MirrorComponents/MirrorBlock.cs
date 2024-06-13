@@ -20,24 +20,24 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             Component originalComp)
         {
             originalFeature.Unsuppress();
-            var mirrorFeature = (Feature)dict[originalFeature];
+            Feature mirrorFeature = (Feature)dict[originalFeature];
             mirrorFeature.Unsuppress();
-            var mirrorComp = (Component)dict[originalComp];
-            var originalBlock = (Block)originalFeature;
-            var mirrorBlock = (Block)mirrorFeature;
+            Component mirrorComp = (Component)dict[originalComp];
+            Block originalBlock = (Block)originalFeature;
+            Block mirrorBlock = (Block)mirrorFeature;
 
             if(!TryMatchFaces(originalBlock.GetFaces(), mirrorBlock.GetFaces(), plane, originalComp, mirrorComp,
-                   out var facePairs))
+                   out Face[] facePairs))
                 throw new Exception($"Unable to match faces in {originalFeature.GetFeatureName()}");
 
             if(!TryMatchEdges(originalBlock.GetEdges(), mirrorBlock.GetEdges(), plane, originalComp, mirrorComp,
-                   out var edgePairs))
+                   out Edge[] edgePairs))
                 throw new Exception($"Unable to match edges in {originalFeature.GetFeatureName()}");
 
             for (var index = 0; index < facePairs.Length; index += 2)
             {
-                var originalFace = facePairs[index];
-                var mirrorFace = facePairs[index + 1];
+                Face originalFace = facePairs[index];
+                Face mirrorFace = facePairs[index + 1];
                 mirrorFace.__Color(originalFace.Color);
                 mirrorFace.RedisplayObject();
                 originalFace.SetName($"Face {index}");
@@ -47,8 +47,8 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             for (var index = 0; index < edgePairs.Length; index += 2)
             {
-                var originalEdge = edgePairs[index];
-                var mirrorEdge = edgePairs[index + 1];
+                Edge originalEdge = edgePairs[index];
+                Edge mirrorEdge = edgePairs[index + 1];
                 originalEdge.SetName($"Edge {index / 2}");
                 mirrorEdge.SetName($"Edge {index / 2}");
                 dict.Add(originalEdge, mirrorEdge);
@@ -72,10 +72,10 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             while (originalEdges1.Count > 0)
             {
-                var originalEdge = originalEdges1.First();
+                Edge originalEdge = originalEdges1.First();
                 originalEdges1.Remove(originalEdge);
 
-                if(!TryMatchEdge(originalEdge, mirrorEdges1, plane, originalComp, mirrorComp, out var mirrorEdge))
+                if(!TryMatchEdge(originalEdge, mirrorEdges1, plane, originalComp, mirrorComp, out Edge mirrorEdge))
                 {
                     edgePairs = null;
 
@@ -105,10 +105,10 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             while (originalFaces1.Count > 0)
             {
-                var originalFace = originalFaces1.First();
+                Face originalFace = originalFaces1.First();
                 originalFaces1.Remove(originalFace);
 
-                if(!TryMatchFace(originalFace, mirrorFaces1, plane, originalComp, mirrorComp, out var mirrorFace))
+                if(!TryMatchFace(originalFace, mirrorFaces1, plane, originalComp, mirrorComp, out Face mirrorFace))
                 {
                     facePairs = null;
 
@@ -129,13 +129,13 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             Surface.Plane plane, Component originalComp,
             Component mirrorComp, out Face mirrorFace)
         {
-            var expectedMirrorVector = originalFace.__NormalVector()
+            Vector3d expectedMirrorVector = originalFace.__NormalVector()
                 .__MirrorMap(plane, originalComp, mirrorComp)
                 .__Unit();
 
-            foreach (var tempMirrorFace in mirrorFaces)
+            foreach (Face tempMirrorFace in mirrorFaces)
             {
-                var mirrorVector = tempMirrorFace.__NormalVector().__Unit();
+                Vector3d mirrorVector = tempMirrorFace.__NormalVector().__Unit();
 
                 if(!mirrorVector.__IsEqualTo(expectedMirrorVector))
                     continue;
@@ -156,10 +156,10 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             Component mirrorComp,
             out Edge mirrorEdge)
         {
-            var expectedStartPoint = originalEdge.__StartPoint().__MirrorMap(plane, originalComp, mirrorComp);
-            var expectedEndPoint = originalEdge.__EndPoint().__MirrorMap(plane, originalComp, mirrorComp);
+            Point3d expectedStartPoint = originalEdge.__StartPoint().__MirrorMap(plane, originalComp, mirrorComp);
+            Point3d expectedEndPoint = originalEdge.__EndPoint().__MirrorMap(plane, originalComp, mirrorComp);
 
-            foreach (var tempMirrorEdge in mirrorEdges)
+            foreach (Edge tempMirrorEdge in mirrorEdges)
                 if(tempMirrorEdge.__HasEndPoints(expectedStartPoint, expectedEndPoint))
                 {
                     mirrorEdge = tempMirrorEdge;

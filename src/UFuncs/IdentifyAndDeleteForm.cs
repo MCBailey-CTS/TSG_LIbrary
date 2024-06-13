@@ -7,10 +7,10 @@ using static TSG_Library.Extensions.__Extensions_;
 namespace TSG_Library.UFuncs
 {
     [UFunc("identify-and-delet")]
-    [RevisionEntry("1.0", "2021", "09", "27")]
-    [Revision("1.0.1", "Created for NX 11")]
-    [RevisionEntry("11.1", "2023", "01", "09")]
-    [Revision("11.1.1", "Removed validation")]
+    //[RevisionEntry("1.0", "2021", "09", "27")]
+    //[Revision("1.0.1", "Created for NX 11")]
+    //[RevisionEntry("11.1", "2023", "01", "09")]
+    //[Revision("11.1.1", "Removed validation")]
     public partial class IdentifyAndDeleteForm : _UFuncForm
     {
         public IdentifyAndDeleteForm()
@@ -34,7 +34,7 @@ namespace TSG_Library.UFuncs
                 return;
             }
 
-            var objects = __display_part_.Layers.GetAllObjectsOnLayer(layer);
+            NXObject[] objects = __display_part_.Layers.GetAllObjectsOnLayer(layer);
 
             if(objects.Length == 0)
             {
@@ -43,16 +43,16 @@ namespace TSG_Library.UFuncs
                 return;
             }
 
-            foreach (var nxObject in objects)
+            foreach (NXObject nxObject in objects)
             {
                 var key = nxObject.GetType().Name;
 
-                var objectNode = treeView1.Nodes[key];
+                TreeNode objectNode = treeView1.Nodes[key];
 
                 if(objectNode is null)
                     objectNode = treeView1.Nodes.Add(key, key);
 
-                var node = objectNode.Nodes.Add($"{nxObject.Tag}");
+                TreeNode node = objectNode.Nodes.Add($"{nxObject.Tag}");
 
                 node.Tag = nxObject;
             }
@@ -73,7 +73,7 @@ namespace TSG_Library.UFuncs
             if(!treeView1.Focused)
                 return;
 
-            var selectedNode = treeView1.SelectedNode;
+            TreeNode selectedNode = treeView1.SelectedNode;
 
             if(selectedNode is null)
                 return;
@@ -82,7 +82,7 @@ namespace TSG_Library.UFuncs
                 return;
             session_.UpdateManager.ClearErrorList();
 
-            var id = session_.SetUndoMark(Session.MarkVisibility.Visible, "Delete");
+            Session.UndoMarkId id = session_.SetUndoMark(Session.MarkVisibility.Visible, "Delete");
 
             foreach (TreeNode node in selectedNode.Nodes)
             {

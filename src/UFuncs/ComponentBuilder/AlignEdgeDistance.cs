@@ -16,9 +16,9 @@ namespace TSG_Library.UFuncs
         {
             var distance = MapAndConvert(inputDist, mappedBase, mappedPoint,2);
 
-            foreach (var addLine in negZObjs) movePtsFull.Add(addLine);
+            foreach (Line addLine in negZObjs) movePtsFull.Add(addLine);
 
-            foreach (var zAxisLine in allzAxisLines)
+            foreach (Line zAxisLine in allzAxisLines)
             {
                 ZStartPoint(distance, zAxisLine);
             }
@@ -35,9 +35,9 @@ namespace TSG_Library.UFuncs
         {
             var distance = MapAndConvert(inputDist, mappedBase, mappedPoint,2);
 
-            foreach (var addLine in posZObjs) movePtsFull.Add(addLine);
+            foreach (Line addLine in posZObjs) movePtsFull.Add(addLine);
 
-            foreach (var zAxisLine in allzAxisLines)
+            foreach (Line zAxisLine in allzAxisLines)
             {
                 ZEndPoint(distance, zAxisLine);
             }
@@ -54,9 +54,9 @@ namespace TSG_Library.UFuncs
         {
             var distance = MapAndConvert(inputDist, mappedBase, mappedPoint, 1);
 
-            foreach (var addLine in negYObjs) movePtsFull.Add(addLine);
+            foreach (Line addLine in negYObjs) movePtsFull.Add(addLine);
 
-            foreach (var yAxisLine in allyAxisLines)
+            foreach (Line yAxisLine in allyAxisLines)
             {
                 YStartPoint(distance, yAxisLine);
             }
@@ -72,9 +72,9 @@ namespace TSG_Library.UFuncs
         {
             var distance = MapAndConvert(inputDist, mappedBase, mappedPoint, 1);
 
-            foreach (var addLine in posYObjs) movePtsFull.Add(addLine);
+            foreach (Line addLine in posYObjs) movePtsFull.Add(addLine);
 
-            foreach (var yAxisLine in allyAxisLines)
+            foreach (Line yAxisLine in allyAxisLines)
             {
                 YEndPoint(distance, yAxisLine);
             }
@@ -91,9 +91,9 @@ namespace TSG_Library.UFuncs
         {
             var distance = MapAndConvert(inputDist, mappedBase, mappedPoint, 0);
 
-            foreach (var addLine in negXObjs) movePtsFull.Add(addLine);
+            foreach (Line addLine in negXObjs) movePtsFull.Add(addLine);
 
-            foreach (var xAxisLine in allxAxisLines)
+            foreach (Line xAxisLine in allxAxisLines)
             {
                 XStartPoint(distance, xAxisLine);
             }
@@ -109,9 +109,9 @@ namespace TSG_Library.UFuncs
             
             var distance = MapAndConvert(inputDist, mappedBase, mappedPoint, 0);
 
-            foreach (var posXLine in posXObjs) movePtsFull.Add(posXLine);
+            foreach (Line posXLine in posXObjs) movePtsFull.Add(posXLine);
 
-            foreach (var xAxisLine in allxAxisLines)
+            foreach (Line xAxisLine in allxAxisLines)
             {
                 XEndPoint(distance, xAxisLine);
             }

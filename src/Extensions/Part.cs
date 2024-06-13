@@ -23,7 +23,7 @@ namespace TSG_Library.Extensions
 
         public static Body __SolidBodyLayer1OrNull(this Part part)
         {
-            var bodiesOnLayer1 = part.Bodies
+            Body[] bodiesOnLayer1 = part.Bodies
                 .OfType<Body>()
                 .Where(body => !body.IsOccurrence)
                 .Where(body => body.IsSolidBody)
@@ -35,7 +35,7 @@ namespace TSG_Library.Extensions
 
         public static Body __SingleSolidBodyOnLayer1(this Part part)
         {
-            var __solid_bodies__on_layer_1 = part.Bodies
+            Body[] __solid_bodies__on_layer_1 = part.Bodies
                 .ToArray()
                 .Where(__body => __body.IsSolidBody)
                 .Where(__body => __body.Layer == 1)

@@ -9,18 +9,18 @@ using static TSG_Library.Extensions.__Extensions_;
 namespace TSG_Library.UFuncs
 {
     [UFunc("nitro-travels")]
-    [RevisionLog("NitroTravels")]
-    [RevisionEntry("1.0", "2020", "02", "17")]
-    [Revision("1.0.1", "Revision Log Created for NX 11.")]
-    [RevisionEntry("11.1", "2023", "01", "09")]
-    [Revision("11.1.1", "Removed validation")]
+    //[RevisionLog("NitroTravels")]
+    //[RevisionEntry("1.0", "2020", "02", "17")]
+    //[Revision("1.0.1", "Revision Log Created for NX 11.")]
+    //[RevisionEntry("11.1", "2023", "01", "09")]
+    //[Revision("11.1.1", "Removed validation")]
     public class NitroTravels
     {
         public void execute()
         {
             try
             {
-                var partFiles = Directory.GetFiles(@"G:\0Library\NitroCylinders", "*.prt", SearchOption.AllDirectories)
+                IEnumerable<string> partFiles = Directory.GetFiles(@"G:\0Library\NitroCylinders", "*.prt", SearchOption.AllDirectories)
                     .Select(Path.GetFileNameWithoutExtension)
                     .Select(t => t.ToUpper());
 
@@ -32,12 +32,12 @@ namespace TSG_Library.UFuncs
                     return;
                 }
 
-                var parts = __display_part_.ComponentAssembly.RootComponent
+                Part[] parts = __display_part_.ComponentAssembly.RootComponent
                     .__Descendants()
                     .Select(__c => __c.Prototype).OfType<Part>()
                     .OrderBy(p => p.Leaf).ToArray();
 
-                foreach (var part in parts)
+                foreach (Part part in parts)
                 {
                     if(!part.HasUserAttribute("LIBRARY", NXObject.AttributeType.String, -1))
                         continue;
@@ -47,7 +47,7 @@ namespace TSG_Library.UFuncs
                     if(!hash.Contains(att))
                         continue;
 
-                    var expression = part.__FindExpressionOrNull("TRAVEL");
+                    Expression expression = part.__FindExpressionOrNull("TRAVEL");
 
                     if(expression is null)
                         continue;

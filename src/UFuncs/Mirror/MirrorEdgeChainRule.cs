@@ -20,7 +20,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             Component component = (Component)dict[originalComp];
             Part part = component.__Prototype();
             Feature feature = (Feature)dict[originalFeature];
-            ((EdgeChainRule)originalRule).GetData(out var startEdge, out var endEdge, out var isFromStart);
+            ((EdgeChainRule)originalRule).GetData(out Edge startEdge, out Edge endEdge, out var isFromStart);
             Edge edge = null;
             Edge endEdge2 = null;
             Point3d pos = startEdge.__StartPoint()._MirrorMap(plane, originalComp, component);

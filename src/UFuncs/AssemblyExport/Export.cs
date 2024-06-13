@@ -48,18 +48,18 @@ namespace TSG_Library.Utilities
             {
                 try
                 {
-                    var components = __components;
+                    Component[] components = __components;
                     TheUFSession.Ui.SetPrompt("Filtering components to export.");
-                    var folder = GFolder.create(topLevelAssembly.FullPath);
+                    GFolder folder = GFolder.create(topLevelAssembly.FullPath);
 
                     if(!components.All(comp => comp.OwningPart.Tag == topLevelAssembly.Tag))
                         throw new InvalidOperationException(
                             "All valid components must be under the top level display part.");
 
                     var isSixDigit = folder.customer_number.Length == 6;
-                    var hashedParts = new HashSet<Part>();
+                    HashSet<Part> hashedParts = new HashSet<Part>();
 
-                    foreach (var comp in components)
+                    foreach (Component comp in components)
                     {
                         if(!(comp.Prototype is Part part))
                             continue;
@@ -67,7 +67,7 @@ namespace TSG_Library.Utilities
                         hashedParts.Add(part);
                     }
 
-                    var validParts = hashedParts.ToArray();
+                    Part[] validParts = hashedParts.ToArray();
 
                     const string sevenZip = @"C:\Program Files\7-Zip\7z.exe";
 
@@ -112,10 +112,10 @@ namespace TSG_Library.Utilities
                     if(exportDirectory != null)
                         Directory.CreateDirectory(exportDirectory);
 
-                    var detailRegex = new Regex(Regex_Detail, RegexOptions.IgnoreCase);
+                    Regex detailRegex = new Regex(Regex_Detail, RegexOptions.IgnoreCase);
                     validParts = validParts.DistinctBy(part => part.Leaf).ToArray();
 
-                    var exportDict = SortPartsForExport(validParts);
+                    IDictionary<string, ISet<Part>> exportDict = SortPartsForExport(validParts);
 
                     if(!CheckSizeDescriptions(exportDict["PDF_4-VIEW"]))
                         switch (MessageBox.Show(
@@ -130,7 +130,7 @@ namespace TSG_Library.Utilities
 
                     __display_part_.__Save();
 
-                    var stop_watch = new Stopwatch();
+                    Stopwatch stop_watch = new Stopwatch();
 
                     stop_watch.Start();
 
@@ -163,7 +163,7 @@ namespace TSG_Library.Utilities
                             paraCasting, exportDict["X_T_CASTING"],
                             components);
 
-                        var dict = new Dictionary<string, Process>();
+                        Dictionary<string, Process> dict = new Dictionary<string, Process>();
 
                         if(isRto && detailRegex.IsMatch(topLevelAssembly.Leaf))
                         {
@@ -189,7 +189,7 @@ namespace TSG_Library.Utilities
 
                         // Gets the processes that will create the pdf 4-Views.
                         if(isRto || pdf4Views)
-                            foreach (var part in exportDict["PDF_4-VIEW"])
+                            foreach (Part part in exportDict["PDF_4-VIEW"])
                                 try
                                 {
                                     if(part.Leaf.EndsWith("000"))
@@ -214,7 +214,7 @@ namespace TSG_Library.Utilities
 
                         // If this is a RTO then 
                         if(isRto || stpDetails)
-                            foreach (var part in exportDict["PDF_4-VIEW"])
+                            foreach (Part part in exportDict["PDF_4-VIEW"])
                                 try
                                 {
                                     var stpPath = CreatePath(folder, part, "-Step-Details", ".stp");
@@ -350,7 +350,7 @@ namespace TSG_Library.Utilities
 
                         // Creates casting parasolids.
                         if(isRto || paraCasting)
-                            foreach (var castingPart in exportDict["X_T_CASTING"])
+                            foreach (Part castingPart in exportDict["X_T_CASTING"])
                                 try
                                 {
                                     CreateCasting(castingPart, folder);
@@ -360,9 +360,9 @@ namespace TSG_Library.Utilities
                                     ex.__PrintException();
                                 }
 
-                        var expectedFiles = new HashSet<string>(dict.Keys);
+                        HashSet<string> expectedFiles = new HashSet<string>(dict.Keys);
 
-                        var directoriesToExport = new HashSet<string>(expectedFiles.Select(Path.GetDirectoryName));
+                        HashSet<string> directoriesToExport = new HashSet<string>(expectedFiles.Select(Path.GetDirectoryName));
 
                         CreateDirectoriesDeleteFiles(expectedFiles);
 
@@ -390,7 +390,7 @@ namespace TSG_Library.Utilities
                         foreach (var file_key in dict.Keys)
                             try
                             {
-                                var process = dict[file_key];
+                                Process process = dict[file_key];
 
                                 if(File.Exists(file_key))
                                     continue;
@@ -444,7 +444,7 @@ namespace TSG_Library.Utilities
                 throw new ArgumentException();
 
             // Matches the {part.Leaf} to 000 regex.
-            var top_match = Regex.Match(part.Leaf, Regex_Op000Holder, RegexOptions.IgnoreCase);
+            Match top_match = Regex.Match(part.Leaf, Regex_Op000Holder, RegexOptions.IgnoreCase);
 
             // If the {match} is not a success, then {part} is not a "000".
             if(!top_match.Success)
@@ -454,7 +454,7 @@ namespace TSG_Library.Utilities
             var op = top_match.Groups["opNum"].Value;
 
             // The set that holds the data directories to delete.
-            var directoriesToDelete = new HashSet<string>();
+            HashSet<string> directoriesToDelete = new HashSet<string>();
 
             switch (op)
             {
@@ -463,9 +463,9 @@ namespace TSG_Library.Utilities
                 {
                     directoriesToDelete.Add($"{folder.dir_op("900")}\\{folder.customer_number}-900-Step-Assembly");
 
-                    foreach (var component in part.ComponentAssembly.RootComponent.GetChildren())
+                    foreach (Component component in part.ComponentAssembly.RootComponent.GetChildren())
                     {
-                        var match = Regex.Match(component.DisplayName, Regex_Lwr);
+                        Match match = Regex.Match(component.DisplayName, Regex_Lwr);
 
                         if(!match.Success)
                             continue;
@@ -524,7 +524,7 @@ namespace TSG_Library.Utilities
                 case var assemblyHolder when assemblyHolder.Length % 2 == 0:
                 {
                     // A list to hold the ops.
-                    var opList = new List<string>();
+                    List<string> opList = new List<string>();
 
                     // Gets the character array of the {assemblyHolder}.
                     var charArray = assemblyHolder.ToCharArray();
@@ -600,7 +600,7 @@ namespace TSG_Library.Utilities
         public static bool CheckSizeDescriptions(IEnumerable<Part> partsInBom)
         {
             var allPassed = true;
-            foreach (var part in partsInBom)
+            foreach (Part part in partsInBom)
                 try
                 {
                     if(!SizeDescription1.Validate(part, out var message))
@@ -689,7 +689,7 @@ namespace TSG_Library.Utilities
                     using (session_.__UsingLockUgUpdates())
 
                     {
-                        foreach (var child in __display_part_.ComponentAssembly.RootComponent.GetChildren())
+                        foreach (Component child in __display_part_.ComponentAssembly.RootComponent.GetChildren())
                         {
                             if(child.Layer == 96)
                                 continue;
@@ -702,9 +702,9 @@ namespace TSG_Library.Utilities
                     }
 
 
-                    var theSession = Session.GetSession();
-                    var workPart = theSession.Parts.Work;
-                    var displayPart = theSession.Parts.Display;
+                    Session theSession = Session.GetSession();
+                    Part workPart = theSession.Parts.Work;
+                    Part displayPart = theSession.Parts.Display;
                     // ----------------------------------------------
                     //   Menu: File->Export->STEP...
                     // ----------------------------------------------
@@ -762,7 +762,7 @@ namespace TSG_Library.Utilities
                 if(File.Exists(castingPath))
                     File.Delete(castingPath);
 
-                var tagBodies = part.Bodies
+                List<Tag> tagBodies = part.Bodies
                     .ToArray()
                     .OfType<Body>()
                     .Where(body => body.Layer == 1)
@@ -777,7 +777,7 @@ namespace TSG_Library.Utilities
                 }
 
                 if(!(part.ComponentAssembly.RootComponent is null))
-                    foreach (var child in part.ComponentAssembly.RootComponent.GetChildren())
+                    foreach (Component child in part.ComponentAssembly.RootComponent.GetChildren())
                     {
                         if(child.IsSuppressed)
                             continue;
@@ -788,7 +788,7 @@ namespace TSG_Library.Utilities
                         if(child.ReferenceSet == "Empty")
                             continue;
 
-                        foreach (var __body in child.__Members().OfType<Body>().Where(__b => __b.IsSolidBody))
+                        foreach (Body __body in child.__Members().OfType<Body>().Where(__b => __b.IsSolidBody))
                             tagBodies.Add(__body.Tag);
                     }
 
@@ -812,25 +812,25 @@ namespace TSG_Library.Utilities
 
             using (session_.__usingDisplayPartReset())
             {
-                var blankNameRegex = new Regex("^BLANK-([0-9]{1,})$");
+                Regex blankNameRegex = new Regex("^BLANK-([0-9]{1,})$");
 
-                var layoutNameRegex = new Regex("^LAYOUT-([0-9]{1,})$");
+                Regex layoutNameRegex = new Regex("^LAYOUT-([0-9]{1,})$");
 
-                var layoutPart = __display_part_.ComponentAssembly.RootComponent.__Descendants()
+                Part layoutPart = __display_part_.ComponentAssembly.RootComponent.__Descendants()
                     .Select(component => component.Prototype)
                     .OfType<Part>()
                     .FirstOrDefault(component => Regex.IsMatch(component.Leaf, Regex_Layout, RegexOptions.IgnoreCase));
 
-                var blankPart = __display_part_.ComponentAssembly.RootComponent.__Descendants()
+                Part blankPart = __display_part_.ComponentAssembly.RootComponent.__Descendants()
                     .Select(component => component.Prototype)
                     .OfType<Part>()
                     .FirstOrDefault(component => Regex.IsMatch(component.Leaf, Regex_Blank, RegexOptions.IgnoreCase));
 
-                var layoutLayers = new HashSet<int>();
+                HashSet<int> layoutLayers = new HashSet<int>();
 
-                var blankLayers = new HashSet<int>();
+                HashSet<int> blankLayers = new HashSet<int>();
 
-                foreach (var child in __display_part_.ComponentAssembly.RootComponent.__Descendants())
+                foreach (Component child in __display_part_.ComponentAssembly.RootComponent.__Descendants())
                 {
                     if(!(child.Prototype is Part))
                         continue;
@@ -838,8 +838,8 @@ namespace TSG_Library.Utilities
                     if(child.IsSuppressed)
                         continue;
 
-                    var blankMatch = blankNameRegex.Match(child.Name);
-                    var layoutMatch = layoutNameRegex.Match(child.Name);
+                    Match blankMatch = blankNameRegex.Match(child.Name);
+                    Match layoutMatch = layoutNameRegex.Match(child.Name);
 
                     if(blankMatch.Success)
                     {
@@ -894,7 +894,7 @@ namespace TSG_Library.Utilities
 
             if(!(part.ComponentAssembly.RootComponent is null))
             {
-                var validChild = part.ComponentAssembly.RootComponent
+                Component validChild = part.ComponentAssembly.RootComponent
                     .GetChildren()
                     .Where(component => component.__IsLoaded())
                     .FirstOrDefault(component => !component.IsSuppressed);
@@ -903,7 +903,7 @@ namespace TSG_Library.Utilities
                     return;
             }
 
-            var dummyPart = session_.__FindOrOpen(DummyPath);
+            Part dummyPart = session_.__FindOrOpen(DummyPath);
             TheUFSession.Ui.SetPrompt($"Adding dummy file to {part.Leaf}.");
             __work_part_.ComponentAssembly.AddComponent(dummyPart, "Entire Part", "DUMMY", _Point3dOrigin,
                 _Matrix3x3Identity, 1, out _);
@@ -916,7 +916,7 @@ namespace TSG_Library.Utilities
             if(__display_part_.ComponentAssembly.RootComponent == null)
                 return;
 
-            foreach (var childOfStrip in __display_part_.ComponentAssembly.RootComponent.GetChildren())
+            foreach (Component childOfStrip in __display_part_.ComponentAssembly.RootComponent.GetChildren())
             {
                 if(childOfStrip.IsSuppressed)
                     continue;
@@ -927,7 +927,7 @@ namespace TSG_Library.Utilities
                 if(!Regex.IsMatch(childOfStrip.DisplayName, Regex_PressAssembly, RegexOptions.IgnoreCase))
                     continue;
 
-                var pressComponent = childOfStrip;
+                Component pressComponent = childOfStrip;
 
                 if(pressComponent.GetChildren().Length == 0)
                     throw new InvalidOperationException(
@@ -939,7 +939,7 @@ namespace TSG_Library.Utilities
                         throw new InvalidOperationException(
                             $"A press exists in your assembly with only one child. Expecting a ram and a bolster. {pressComponent.__AssemblyPathString()}");
                     case 2:
-                        foreach (var childOfPress in pressComponent.GetChildren())
+                        foreach (Component childOfPress in pressComponent.GetChildren())
                         {
                             if(!childOfPress.__IsLoaded())
                                 throw new InvalidOperationException(
@@ -974,7 +974,7 @@ namespace TSG_Library.Utilities
                 {
                     var displayName = Path.GetFileNameWithoutExtension(stpFilesInOutGoingFolder.First());
 
-                    var stpZipProcess = Create7ZipProcess($"{exportDirectory}\\{displayName}_STP.7z",
+                    Process stpZipProcess = Create7ZipProcess($"{exportDirectory}\\{displayName}_STP.7z",
                         stpFilesInOutGoingFolder);
 
                     stpZipProcess.Start();
@@ -1024,7 +1024,7 @@ namespace TSG_Library.Utilities
 
         public static IDictionary<string, ISet<Part>> SortPartsForExport(IEnumerable<Part> validParts)
         {
-            var detailRegex = new Regex(Regex_Detail, RegexOptions.IgnoreCase);
+            Regex detailRegex = new Regex(Regex_Detail, RegexOptions.IgnoreCase);
 
             IDictionary<string, ISet<Part>> exportDict = new Dictionary<string, ISet<Part>>
             {
@@ -1038,9 +1038,9 @@ namespace TSG_Library.Utilities
                 { "X_T", new HashSet<Part>() }
             };
 
-            foreach (var part in validParts)
+            foreach (Part part in validParts)
             {
-                var match = detailRegex.Match(part.Leaf);
+                Match match = detailRegex.Match(part.Leaf);
 
                 if(!match.Success)
                     continue;
@@ -1094,32 +1094,32 @@ namespace TSG_Library.Utilities
                 ISet<Part> partsToUpdate = new HashSet<Part>();
 
                 if(isRto || pdf4Views || dwg4Views || stpDetails)
-                    foreach (var part in partsWith4ViewsNoAssemblyHolders)
+                    foreach (Part part in partsWith4ViewsNoAssemblyHolders)
                         if(selected_parts.Contains(part))
                             partsToUpdate.Add(part);
 
                 if(isRto || dwgBurnout)
-                    foreach (var part in burnoutParts)
+                    foreach (Part part in burnoutParts)
                         if(selected_parts.Contains(part))
                             partsToUpdate.Add(part);
 
                 if(isRto || print4Views)
-                    foreach (var part in partsWith4Views)
+                    foreach (Part part in partsWith4Views)
                         if(selected_parts.Contains(part))
                             partsToUpdate.Add(part);
 
                 if(isRto || paraCasting)
-                    foreach (var part in castingParts)
+                    foreach (Part part in castingParts)
                         if(selected_parts.Contains(part))
                             partsToUpdate.Add(part);
 
                 if(isRto || stp999)
-                    foreach (var part in nine99Parts)
+                    foreach (Part part in nine99Parts)
                         if(selected_parts.Contains(part))
                             partsToUpdate.Add(part);
 
                 if(isRto || stpSee3DData)
-                    foreach (var part in see3DDataParts)
+                    foreach (Part part in see3DDataParts)
                         if(selected_parts.Contains(part))
                             partsToUpdate.Add(part);
 
@@ -1137,7 +1137,7 @@ namespace TSG_Library.Utilities
                     $"d \"{zipPath}\" -r {directoriesToExport.Select(Path.GetFileName).Where(dir => dir != null).Aggregate("", (s1, s2) => $"{s1} \"{s2}\"")}";
 
                 // Starts the actual delete process.
-                var deleteProcess = Process.Start(sevenZip, arguments);
+                Process deleteProcess = Process.Start(sevenZip, arguments);
 
                 // Waits for the {deleteProcess} to finish.
                 deleteProcess?.WaitForExit();
@@ -1191,7 +1191,7 @@ namespace TSG_Library.Utilities
                 var length = numberOfProcesses > processes.Length
                     ? processes.Length
                     : numberOfProcesses;
-                var hashProcesses = new HashSet<Process>();
+                HashSet<Process> hashProcesses = new HashSet<Process>();
                 for (var i = 0; i < length; i++)
                 {
                     processes[i].Start();
@@ -1201,7 +1201,7 @@ namespace TSG_Library.Utilities
 
                 for (var i = length; processesCompleted < processes.Length; i++)
                 {
-                    var first = hashProcesses.FirstOrDefault(process => process != null && process.HasExited);
+                    Process first = hashProcesses.FirstOrDefault(process => process != null && process.HasExited);
                     if(first == null)
                     {
                         i--;
@@ -1212,7 +1212,7 @@ namespace TSG_Library.Utilities
                     processesCompleted++;
                     if(i < processes.Length)
                     {
-                        var nextProcess = processes[i];
+                        Process nextProcess = processes[i];
                         nextProcess.Start();
                         hashProcesses.Add(nextProcess);
                     }
@@ -1232,14 +1232,14 @@ namespace TSG_Library.Utilities
 
         public static void UpdateParts(params Part[] parts)
         {
-            var validParts = parts.Where(part => !part.Leaf.__IsAssemblyHolder()).DistinctBy(part => part.Leaf)
+            Part[] validParts = parts.Where(part => !part.Leaf.__IsAssemblyHolder()).DistinctBy(part => part.Leaf)
                 .ToArray();
 
             for (var i = 0; i < validParts.Length; i++)
                 try
                 {
                     var report = $"Updating: {i + 1} of {validParts.Length}. ";
-                    var part = validParts[i];
+                    Part part = validParts[i];
                     TheUFSession.Ui.SetPrompt($"{report}Setting Display Part to {part.Leaf}. ");
                     __display_part_ = part;
                     __work_part_ = __display_part_;
@@ -1258,7 +1258,7 @@ namespace TSG_Library.Utilities
                     TheUFSession.Ui.SetPrompt($"{report}Setting layers in {part.Leaf}.");
                     SetLayers();
                     TheUFSession.Ui.SetPrompt($"{report}Finding DisplayableObjects in {part.Leaf}.");
-                    var objects = new List<DisplayableObject>();
+                    List<DisplayableObject> objects = new List<DisplayableObject>();
 
                     foreach (var layer in Layers)
                         objects.AddRange(__display_part_.Layers.GetAllObjectsOnLayer(layer)
@@ -1291,7 +1291,7 @@ namespace TSG_Library.Utilities
                 if(File.Exists(strip_010))
                     session_.__FindOrOpen(strip_010);
 
-                var op010Strip = session_.__FindOrOpen(strip_010);
+                Part op010Strip = session_.__FindOrOpen(strip_010);
 
                 SetLayersInBlanksAndLayoutsAndAddDummies(op010Strip);
 
@@ -1307,9 +1307,9 @@ namespace TSG_Library.Utilities
 
         public static Process Assembly(Part snapPart, bool waitForProcess, string zipPath)
         {
-            var filePaths = new HashSet<string>();
+            HashSet<string> filePaths = new HashSet<string>();
 
-            foreach (var component in GetAssembly(snapPart.ComponentAssembly.RootComponent))
+            foreach (Component component in GetAssembly(snapPart.ComponentAssembly.RootComponent))
                 filePaths.Add(component.__Prototype().FullPath);
 
             return Create7ZipProcess(zipPath, filePaths.ToArray());
@@ -1331,8 +1331,8 @@ namespace TSG_Library.Utilities
 
             yield return snapComponent;
 
-            foreach (var child in snapComponent.GetChildren())
-            foreach (var comp in GetAssembly(child))
+            foreach (Component child in snapComponent.GetChildren())
+            foreach (Component comp in GetAssembly(child))
                 yield return comp;
         }
 
@@ -1365,9 +1365,9 @@ namespace TSG_Library.Utilities
                 print_(
                     "Created files will have to be manually moved to outgoingData folderWithCtsNumber if that is desired. (Example: RTO)");
 
-            var filesThatWereNotCreated = enumerable.Where(s => !File.Exists(s)).ToList();
+            List<string> filesThatWereNotCreated = enumerable.Where(s => !File.Exists(s)).ToList();
 
-            var errorList = new List<Tuple<string, string>>();
+            List<Tuple<string, string>> errorList = new List<Tuple<string, string>>();
 
             foreach (var file in filesThatWereNotCreated)
             {
@@ -1429,7 +1429,7 @@ namespace TSG_Library.Utilities
                     return !name.Contains("lsp") && !name.Contains("usp");
                 }
 
-                var parts = allParts.Where(part => Regex.IsMatch(part.Leaf, Regex_Detail, RegexOptions.IgnoreCase))
+                List<Part> parts = allParts.Where(part => Regex.IsMatch(part.Leaf, Regex_Detail, RegexOptions.IgnoreCase))
                     .Where(IsNotAssembly)
                     .Where(part => part.DraftingDrawingSheets.ToArray().Any(__d => __d.Name.ToUpper() == "4-VIEW"))
                     .ToList();
@@ -1438,7 +1438,7 @@ namespace TSG_Library.Utilities
 
                 for (var i = 0; i < parts.Count; i++)
                 {
-                    var part = parts[i];
+                    Part part = parts[i];
 
                     TheUFSession.Ui.SetPrompt($"{i + 1} of {parts.Count}. Printing 4-VIEW of {part.Leaf}.");
 
@@ -1446,7 +1446,7 @@ namespace TSG_Library.Utilities
 
                     __work_part_ = __display_part_;
 
-                    var printBuilder = __work_part_.PlotManager.CreatePrintBuilder();
+                    PrintBuilder printBuilder = __work_part_.PlotManager.CreatePrintBuilder();
 
                     using (new Destroyer(printBuilder))
                     {
@@ -1512,12 +1512,12 @@ namespace TSG_Library.Utilities
         {
             var tempFile = $"{Path.GetTempPath()}zipData{filesToZip.GetHashCode()}.txt";
 
-            using (var fs = File.Open(tempFile, FileMode.Create))
+            using (FileStream fs = File.Open(tempFile, FileMode.Create))
             {
                 fs.Close();
             }
 
-            using (var writer = new StreamWriter(tempFile))
+            using (StreamWriter writer = new StreamWriter(tempFile))
             {
                 filesToZip.ToList().ForEach(writer.WriteLine);
             }
@@ -1544,12 +1544,12 @@ namespace TSG_Library.Utilities
 
             try
             {
-                using (var fileStream = File.Open(str, FileMode.Create))
+                using (FileStream fileStream = File.Open(str, FileMode.Create))
                 {
                     fileStream.Close();
                 }
 
-                using (var streamWriter = new StreamWriter(str))
+                using (StreamWriter streamWriter = new StreamWriter(str))
                 {
                     foreach (var fileName in fileNames)
                         streamWriter.WriteLine(fileName);
@@ -1576,7 +1576,7 @@ namespace TSG_Library.Utilities
 
             var fileToRead = "a -t7z \"" + path + "\" \"@" + textFileToRead + "\" -mx9";
 
-            var process = new Process
+            Process process = new Process
             {
                 EnableRaisingEvents = false,
                 StartInfo =
@@ -1609,19 +1609,19 @@ namespace TSG_Library.Utilities
                 throw new ArgumentOutOfRangeException("output_path", "PDF \"" + filePath + "\" already exists.");
 
             //We can use SingleOrDefault here because NX will prevent the naming of two drawing sheets the exact same string.
-            var sheet = part.DrawingSheets
-                            .ToArray()
-                            .SingleOrDefault(drawingSheet => drawingSheet.Name == drawingSheetName)
-                        ??
-                        throw new ArgumentException(
-                            $@"Part ""{part.Leaf}"" does not have a sheet named ""{drawingSheetName}"".",
-                            "drawingSheetName");
+            DrawingSheet sheet = part.DrawingSheets
+                                     .ToArray()
+                                     .SingleOrDefault(drawingSheet => drawingSheet.Name == drawingSheetName)
+                                 ??
+                                 throw new ArgumentException(
+                                     $@"Part ""{part.Leaf}"" does not have a sheet named ""{drawingSheetName}"".",
+                                     "drawingSheetName");
 
             __display_part_ = part;
             session_.__SetDisplayToWork();
             SetLayers();
 
-            var pdfBuilder = part.PlotManager.CreatePrintPdfbuilder();
+            PrintPDFBuilder pdfBuilder = part.PlotManager.CreatePrintPdfbuilder();
 
             using (session_.__UsingBuilderDestroyer(pdfBuilder))
             {
@@ -1662,7 +1662,7 @@ namespace TSG_Library.Utilities
 
             session_.__FindOrOpen(partPath);
 
-            var stepCreator = Session.GetSession().DexManager.CreateStepCreator();
+            StepCreator stepCreator = Session.GetSession().DexManager.CreateStepCreator();
 
             using (session_.__UsingBuilderDestroyer(stepCreator))
             {
@@ -1693,15 +1693,15 @@ namespace TSG_Library.Utilities
             if(File.Exists(filePath))
                 throw new ArgumentOutOfRangeException("output_path", "DWG \"" + filePath + "\" already exists.");
 
-            var part = session_.__FindOrOpen(partPath);
+            Part part = session_.__FindOrOpen(partPath);
 
-            var sheet = part.DrawingSheets
-                            .ToArray()
-                            .SingleOrDefault(drawingSheet => drawingSheet.Name == drawingSheetName)
-                        ??
-                        throw new ArgumentException(
-                            $"Part \"{part.Leaf}\" does not have a sheet named \"{drawingSheetName}\".",
-                            "drawingSheetName");
+            DrawingSheet sheet = part.DrawingSheets
+                                     .ToArray()
+                                     .SingleOrDefault(drawingSheet => drawingSheet.Name == drawingSheetName)
+                                 ??
+                                 throw new ArgumentException(
+                                     $"Part \"{part.Leaf}\" does not have a sheet named \"{drawingSheetName}\".",
+                                     "drawingSheetName");
 
             UFSession.GetUFSession().Draw.IsObjectOutOfDate(sheet.Tag, out var flag);
 
@@ -1712,7 +1712,7 @@ namespace TSG_Library.Utilities
                 part.__Save();
             }
 
-            var dxfdwgCreator1 = session_.DexManager.CreateDxfdwgCreator();
+            DxfdwgCreator dxfdwgCreator1 = session_.DexManager.CreateDxfdwgCreator();
             using (session_.__UsingBuilderDestroyer(dxfdwgCreator1))
             {
                 dxfdwgCreator1.ExportData = DxfdwgCreator.ExportDataOption.Drawing;

@@ -18,7 +18,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 
         public DCResult PerformCheck(Part part, out TreeNode result_node)
         {
-            var folder = GFolder.create_or_null(part);
+            GFolder folder = GFolder.create_or_null(part);
 
             if(!(folder is null))
             {

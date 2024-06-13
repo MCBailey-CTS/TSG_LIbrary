@@ -23,8 +23,8 @@ namespace TSG_Library.Extensions
             CartesianCoordinateSystem outputCsys)
         {
 #pragma warning disable CS0612 // Type or member is obsolete
-            var mappedXVector = __MapCsysToCsys(orientation.__AxisX(), inputCsys, outputCsys);
-            var mappedYVector = __MapCsysToCsys(orientation.__AxisY(), inputCsys, outputCsys);
+            Vector3d mappedXVector = __MapCsysToCsys(orientation.__AxisX(), inputCsys, outputCsys);
+            Vector3d mappedYVector = __MapCsysToCsys(orientation.__AxisY(), inputCsys, outputCsys);
 #pragma warning restore CS0612 // Type or member is obsolete
             return mappedXVector.__ToMatrix3x3(mappedYVector);
         }
@@ -33,9 +33,9 @@ namespace TSG_Library.Extensions
         public static Matrix3x3 __MirrorMap(this Matrix3x3 orientation, Surface.Plane plane,
             Component fromComponent, Component toComponent)
         {
-            var newXVector = __MirrorMap(orientation.__AxisY(), plane, fromComponent, toComponent);
+            Vector3d newXVector = __MirrorMap(orientation.__AxisY(), plane, fromComponent, toComponent);
 
-            var newYVector = __MirrorMap(orientation.__AxisX(), plane, fromComponent, toComponent);
+            Vector3d newYVector = __MirrorMap(orientation.__AxisX(), plane, fromComponent, toComponent);
 
             return newXVector.__ToMatrix3x3(newYVector);
         }
@@ -76,8 +76,8 @@ namespace TSG_Library.Extensions
 
         public static Matrix3x3 __Mirror(this Matrix3x3 matrix, Surface.Plane plane)
         {
-            var new_y = matrix.__AxisX().__Mirror(plane);
-            var new_x = matrix.__AxisY().__Mirror(plane);
+            Vector3d new_y = matrix.__AxisX().__Mirror(plane);
+            Vector3d new_x = matrix.__AxisY().__Mirror(plane);
             return new_x.__ToMatrix3x3(new_y);
         }
 

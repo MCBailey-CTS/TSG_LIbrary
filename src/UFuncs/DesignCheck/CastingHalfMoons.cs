@@ -40,7 +40,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
             const string halfMoonConst = "HALFMOON";
 #pragma warning restore CS0162 // Unreachable code detected
 
-            var allHalfMoonFacesInPart = part.Bodies
+            Face[] allHalfMoonFacesInPart = part.Bodies
                 .ToArray()
                 .SelectMany(body => body.GetFaces())
                 .Where(face => face.Name.StartsWith(halfMoonConst))
@@ -74,11 +74,11 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
                 //yield break;
             }
 
-            var dictionary = allHalfMoonFacesInPart.ToLookup(face => face.Name);
+            ILookup<string, Face> dictionary = allHalfMoonFacesInPart.ToLookup(face => face.Name);
 
-            var halfMoons1 = dictionary[halfMoonConst + "1"].ToArray();
+            Face[] halfMoons1 = dictionary[halfMoonConst + "1"].ToArray();
 
-            var halfMoons2 = dictionary[halfMoonConst + "2"].ToArray();
+            Face[] halfMoons2 = dictionary[halfMoonConst + "2"].ToArray();
 
             // Checks to make sure that the program found 2 and only 2 NXOpen.Face's named HALFMOON1.
             if(halfMoons1.Length != 2)

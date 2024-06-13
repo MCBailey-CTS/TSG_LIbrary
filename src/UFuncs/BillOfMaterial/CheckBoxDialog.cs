@@ -19,7 +19,7 @@ namespace TSG_Library.UFuncUtilities.BomUtilities
 
         private void Button1_Click(object sender, EventArgs e)
         {
-            foreach (var box in _checkBoxes)
+            foreach (CheckBox box in _checkBoxes)
                 if(box.Checked)
                     _strings.Add(box.Text);
             Close();
@@ -27,7 +27,7 @@ namespace TSG_Library.UFuncUtilities.BomUtilities
 
         public static string[] ShowBoxes(IEnumerable<string> purchased, string[] array, Point formLocation)
         {
-            var dialog = new CheckBoxDialog
+            CheckBoxDialog dialog = new CheckBoxDialog
             {
                 Location = formLocation,
                 StartPosition = FormStartPosition.Manual
@@ -37,7 +37,7 @@ namespace TSG_Library.UFuncUtilities.BomUtilities
             var i = 0;
             foreach (var str in purchased)
             {
-                var box = new CheckBox { Size = new Size(80, 17), Location = new Point(12, 19 + 23 * i++), Text = str };
+                CheckBox box = new CheckBox { Size = new Size(80, 17), Location = new Point(12, 19 + 23 * i++), Text = str };
                 foreach (var arr in array)
                     if(arr == str)
                         box.Checked = true;

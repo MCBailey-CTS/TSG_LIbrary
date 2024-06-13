@@ -10,16 +10,16 @@ using static TSG_Library.Extensions.__Extensions_;
 namespace TSG_Library.Attributes
 {
     [UFunc("auto-size-component")]
-    [RevisionEntry("1.0", "2017", "06", "05")]
-    [Revision("1.0.1", "Revision Log Created for NX 11.")]
-    [RevisionEntry("1.1", "2017", "08", "22")]
-    [Revision("1.1.1", "Signed so it will run outside of CTS.")]
-    [RevisionEntry("1.2", "2018", "06", "11")]
-    [Revision("1.2.1",
-        "When updating the “Description” attribute, if the part in question contains an expression named “lwrParallel” or “uprParallel” and its’ value == “yes” then we simply just add the text “PARALLEL” to the end of the “DESCRIPTION” attribute.")]
-    [Revision("1.2.2", "Per Tsg-Cit #2018-0198")]
-    [RevisionEntry("11.1", "2023", "01", "09")]
-    [Revision("11.1.1", "Removed validation")]
+    //[RevisionEntry("1.0", "2017", "06", "05")]
+    //[Revision("1.0.1", "Revision Log Created for NX 11.")]
+    //[RevisionEntry("1.1", "2017", "08", "22")]
+    //[Revision("1.1.1", "Signed so it will run outside of CTS.")]
+    //[RevisionEntry("1.2", "2018", "06", "11")]
+    //[Revision("1.2.1",
+    //    "When updating the “Description” attribute, if the part in question contains an expression named “lwrParallel” or “uprParallel” and its’ value == “yes” then we simply just add the text “PARALLEL” to the end of the “DESCRIPTION” attribute.")]
+    //[Revision("1.2.2", "Per Tsg-Cit #2018-0198")]
+    //[RevisionEntry("11.1", "2023", "01", "09")]
+    //[Revision("11.1.1", "Removed validation")]
     public class AutoSizeComponent : _UFunc
     {
         private const double Tolerance = .0001;
@@ -78,9 +78,9 @@ namespace TSG_Library.Attributes
                     return 0;
 
                 var assocObjStatus = TheUFSession.Obj.AskStatus(updateEvent.AssociatedObject.Tag);
-                var solidBodyTag = updateEvent.AssociatedObject.Tag;
-                var udoBody = (Body)NXObjectManager.Get(solidBodyTag);
-                var updatePart = (Part)udoBody.OwningPart;
+                Tag solidBodyTag = updateEvent.AssociatedObject.Tag;
+                Body udoBody = (Body)NXObjectManager.Get(solidBodyTag);
+                Part updatePart = (Part)udoBody.OwningPart;
 
                 if(assocObjStatus != 3)
                     return 0;
@@ -105,13 +105,13 @@ namespace TSG_Library.Attributes
             const int retValue = 0;
             try
             {
-                var myUdoClass =
+                UserDefinedClass myUdoClass =
                     session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoAutoSizeComponent");
 
                 if(myUdoClass is null)
                     return retValue;
 
-                var currentUdo = __work_part_.UserDefinedObjectManager.GetUdosOfClass(myUdoClass);
+                UserDefinedObject[] currentUdo = __work_part_.UserDefinedObjectManager.GetUdosOfClass(myUdoClass);
 
                 if(currentUdo.Length != 0)
                     SizeComponent(__work_part_);
@@ -134,16 +134,16 @@ namespace TSG_Library.Attributes
                 if(basePart.PartUnits == BasePart.Units.Millimeters)
                     isMetric = true;
 
-                foreach (var featDynamic in __work_part_.Features.ToArray())
+                foreach (Feature featDynamic in __work_part_.Features.ToArray())
                 {
                     if(featDynamic.FeatureType != "BLOCK") continue;
                     if(featDynamic.Name != "DYNAMIC BLOCK") continue;
-                    var block1 = (Block)featDynamic;
-                    var sizeBody = block1.GetBodies();
+                    Block block1 = (Block)featDynamic;
+                    Body[] sizeBody = block1.GetBodies();
 
-                    var blockFeatureBuilderSize = __work_part_.Features.CreateBlockFeatureBuilder(block1);
+                    BlockFeatureBuilder blockFeatureBuilderSize = __work_part_.Features.CreateBlockFeatureBuilder(block1);
 
-                    blockFeatureBuilderSize.GetOrientation(out var xAxis, out var yAxis);
+                    blockFeatureBuilderSize.GetOrientation(out Vector3d xAxis, out Vector3d yAxis);
 
                     double[] initOrigin =
                     {
@@ -154,8 +154,8 @@ namespace TSG_Library.Attributes
                     double[] yVector = { yAxis.X, yAxis.Y, yAxis.Z };
                     var initMatrix = new double[9];
                     TheUFSession.Mtx3.Initialize(xVector, yVector, initMatrix);
-                    TheUFSession.Csys.CreateMatrix(initMatrix, out var tempMatrix);
-                    TheUFSession.Csys.CreateTempCsys(initOrigin, tempMatrix, out var tempCsys);
+                    TheUFSession.Csys.CreateMatrix(initMatrix, out Tag tempMatrix);
+                    TheUFSession.Csys.CreateTempCsys(initOrigin, tempMatrix, out Tag tempCsys);
 
                     if(tempCsys != Tag.Null)
                     {
@@ -173,7 +173,7 @@ namespace TSG_Library.Attributes
                         var grindTolValue = string.Empty;
                         var diesetValue = string.Empty;
 
-                        foreach (var exp in __work_part_.Expressions.ToArray())
+                        foreach (Expression exp in __work_part_.Expressions.ToArray())
                         {
                             // ReSharper disable once ConvertIfStatementToSwitchStatement
                             if(exp.Name == "AddX")
@@ -447,7 +447,7 @@ namespace TSG_Library.Attributes
                 var descriptionAtt =
                     updatePartSize.GetUserAttributeAsString("DESCRIPTION", NXObject.AttributeType.String, -1);
 
-                var expressions = updatePartSize.Expressions.ToArray();
+                Expression[] expressions = updatePartSize.Expressions.ToArray();
 
                 // Checks to see if the {_workPart} contains an expression with value {"yes"} and name of {lwrParallel} or {uprParallel}.
                 if(expressions.Any(exp =>

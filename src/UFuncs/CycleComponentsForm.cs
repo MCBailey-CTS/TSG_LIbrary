@@ -6,10 +6,12 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using MoreLinq;
 using NXOpen;
+using NXOpen.Annotations;
 using NXOpen.Assemblies;
 using NXOpen.Drawings;
 using NXOpen.Features;
 using NXOpen.Layer;
+using NXOpen.UF;
 using TSG_Library.Attributes;
 using TSG_Library.Properties;
 using TSG_Library.Ui;
@@ -54,7 +56,7 @@ namespace TSG_Library.UFuncs
                 Location = Settings.Default.cycle_components_form_window_location;
                 _compMaterials = CreateMaterialList();
 
-                foreach (var matl in _compMaterials)
+                foreach (CtsAttributes matl in _compMaterials)
                     materialComboBox.Items.Add(matl);
 
                 materialSelectButton.Enabled = false;
@@ -68,7 +70,7 @@ namespace TSG_Library.UFuncs
 
         private static string PerformStreamReaderString(string path, string startSearchString, string endSearchString)
         {
-            var sr = new StreamReader(path);
+            StreamReader sr = new StreamReader(path);
             var content = sr.ReadToEnd();
             sr.Close();
             var startSplit = Regex.Split(content, startSearchString);
@@ -99,7 +101,7 @@ namespace TSG_Library.UFuncs
                         return;
                     }
 
-                    foreach (var component in _selComponents)
+                    foreach (Component component in _selComponents)
                         DisplayName?.Add(component.DisplayName);
 
                     if(DisplayName != null)
@@ -109,7 +111,7 @@ namespace TSG_Library.UFuncs
                     selCompListBox.SelectedIndex = 0;
                     var dispComponent = (string)selCompListBox.SelectedItem;
 
-                    foreach (var component in _selComponents.Where(component => component.DisplayName == dispComponent))
+                    foreach (Component component in _selComponents.Where(component => component.DisplayName == dispComponent))
                         SetDisplayPart(component);
 
                     selectButton.Enabled = false;
@@ -148,11 +150,11 @@ namespace TSG_Library.UFuncs
                     if(AllComponents.Count == 0)
                         return;
 
-                    var materials = CreateMaterialList();
-                    var passedComponents = new List<Component>();
+                    List<CtsAttributes> materials = CreateMaterialList();
+                    List<Component> passedComponents = new List<Component>();
 
-                    foreach (var comp in AllComponents)
-                    foreach (var attr in comp.GetUserAttributes())
+                    foreach (Component comp in AllComponents)
+                    foreach (NXObject.AttributeInformation attr in comp.GetUserAttributes())
                     {
                         if(attr.Title.ToUpper() != "MATERIAL")
                             continue;
@@ -168,7 +170,7 @@ namespace TSG_Library.UFuncs
                     if(passedComponents.Count == 0)
                         return;
 
-                    var selectDeselectComps = passedComponents.ToArray();
+                    Component[] selectDeselectComps = passedComponents.ToArray();
                     passedComponents = Preselect.GetUserSelections(selectDeselectComps);
 
                     if(passedComponents.Count == 0)
@@ -177,7 +179,7 @@ namespace TSG_Library.UFuncs
                     _selComponents = GetOneComponentOfMany(passedComponents);
                     _selComponents.Sort((c1, c2) => string.Compare(c1.Name, c2.Name, StringComparison.Ordinal));
 
-                    foreach (var compName in _selComponents)
+                    foreach (Component compName in _selComponents)
                         DisplayName.Add(compName.DisplayName);
 
                     foreach (var name in DisplayName)
@@ -186,7 +188,7 @@ namespace TSG_Library.UFuncs
                     selCompListBox.SelectedIndex = 0;
                     var dispComponent = (string)selCompListBox.SelectedItem;
 
-                    foreach (var component in _selComponents.Where(component => component.DisplayName == dispComponent))
+                    foreach (Component component in _selComponents.Where(component => component.DisplayName == dispComponent))
                         SetDisplayPart(component);
 
                     selectButton.Enabled = false;
@@ -231,8 +233,8 @@ namespace TSG_Library.UFuncs
                 if(__display_part_.ComponentAssembly.RootComponent == null) return;
                 GetChildComponents(__display_part_.ComponentAssembly.RootComponent);
                 if(AllComponents.Count == 0) return;
-                var selOneComp = GetOneComponentOfMany(AllComponents);
-                foreach (var comp in
+                List<Component> selOneComp = GetOneComponentOfMany(AllComponents);
+                foreach (Component comp in
                          from comp in selOneComp
                          from attrAll in comp.GetUserAttributes()
                          where attrAll.Title.ToUpper() == "MATERIAL"
@@ -251,7 +253,7 @@ namespace TSG_Library.UFuncs
                         selCompListBox.Items.Add(name);
                     selCompListBox.SelectedIndex = 0;
                     var dispComponent = (string)selCompListBox.SelectedItem;
-                    foreach (var component in _selComponents)
+                    foreach (Component component in _selComponents)
                         if(component.DisplayName == dispComponent)
                             SetDisplayPart(component);
                     selectButton.Enabled = false;
@@ -312,12 +314,12 @@ namespace TSG_Library.UFuncs
                 UpdateOriginalParts();
                 _selComponents = new List<Component>();
                 selCompListBox.Items.Clear();
-                var descendants = __display_part_.ComponentAssembly.RootComponent.__DescendantsAll()
+                IEnumerable<Component> descendants = __display_part_.ComponentAssembly.RootComponent.__DescendantsAll()
                     .Where(__c => !__c.IsSuppressed);
-                var hashSet = new HashSet<Component>(descendants.DistinctBy(__d => __d.DisplayName));
-                var trimmedComponents = hashSet.Select(component => component).ToArray();
+                HashSet<Component> hashSet = new HashSet<Component>(descendants.DistinctBy(__d => __d.DisplayName));
+                Component[] trimmedComponents = hashSet.Select(component => component).ToArray();
 
-                foreach (var component in trimmedComponents)
+                foreach (Component component in trimmedComponents)
                 {
                     if(!(component.Prototype is Part part))
                         continue;
@@ -360,17 +362,17 @@ namespace TSG_Library.UFuncs
                 if(__display_part_.ComponentAssembly.RootComponent == null) return;
                 GetChildComponents(__display_part_.ComponentAssembly.RootComponent);
                 if(AllComponents.Count == 0) return;
-                var selOneComp = GetOneComponentOfMany(AllComponents);
+                List<Component> selOneComp = GetOneComponentOfMany(AllComponents);
 
-                var materials = new HashSet<string>();
+                HashSet<string> materials = new HashSet<string>();
                 //const string path = @"U:\NX110\Concept\ConceptControlFile.UCF";
                 const string start = ":NXOpen.Assemblies.ComponentBURN_MATERIALS:";
                 const string end = ":END_NXOpen.Assemblies.ComponentBURN_MATERIALS:";
-                var result = Ucf.StaticRead(FilePath_Ucf, start, end, StringComparison.InvariantCultureIgnoreCase);
+                IEnumerable<string> result = Ucf.StaticRead(FilePath_Ucf, start, end, StringComparison.InvariantCultureIgnoreCase);
                 foreach (var temp in result)
                     materials.Add(temp);
 
-                foreach (var comp in
+                foreach (Component comp in
                          from comp in selOneComp
                          from attrAll in comp.GetUserAttributes()
                          where attrAll.Title.ToUpper() == "MATERIAL"
@@ -394,7 +396,7 @@ namespace TSG_Library.UFuncs
                     selCompListBox.Items.Add(name);
                 selCompListBox.SelectedIndex = 0;
                 var dispComponent = (string)selCompListBox.SelectedItem;
-                foreach (var component in _selComponents.Where(component => component.DisplayName == dispComponent))
+                foreach (Component component in _selComponents.Where(component => component.DisplayName == dispComponent))
                     SetDisplayPart(component);
                 if(_isBurnout)
                     SetBurnoutComponentState();
@@ -432,15 +434,15 @@ namespace TSG_Library.UFuncs
                 if(AllComponents.Count == 0)
                     return;
 
-                var selOneComp = GetOneComponentOfMany(AllComponents);
+                List<Component> selOneComp = GetOneComponentOfMany(AllComponents);
 
-                foreach (var comp in selOneComp)
+                foreach (Component comp in selOneComp)
                 {
                     if(!(comp.Prototype is Part))
                         continue;
 
-                    var compPart = (Part)comp.Prototype;
-                    var drawingCollection = compPart.DrawingSheets;
+                    Part compPart = (Part)comp.Prototype;
+                    DrawingSheetCollection drawingCollection = compPart.DrawingSheets;
 
                     if(drawingCollection is null)
                         continue;
@@ -470,7 +472,7 @@ namespace TSG_Library.UFuncs
                 selCompListBox.SelectedIndex = 0;
                 var dispComponent = (string)selCompListBox.SelectedItem;
 
-                foreach (var component in _selComponents.Where(component => component.DisplayName == dispComponent))
+                foreach (Component component in _selComponents.Where(component => component.DisplayName == dispComponent))
                     SetDisplayPart(component);
 
                 if(_is4View)
@@ -510,16 +512,16 @@ namespace TSG_Library.UFuncs
                 if(AllComponents.Count == 0)
                     return;
 
-                var selOneComp = GetOneComponentOfMany(AllComponents);
+                List<Component> selOneComp = GetOneComponentOfMany(AllComponents);
 
-                foreach (var comp in selOneComp)
+                foreach (Component comp in selOneComp)
                 {
                     if(!(comp.Prototype is Part))
                         continue;
 
                     //Get all dims and symbols to check the associativity
-                    var part = (Part)comp.Prototype;
-                    var dims = part.Dimensions;
+                    Part part = (Part)comp.Prototype;
+                    DimensionCollection dims = part.Dimensions;
 
                     if((from dimension in dims.ToArray() select dimension.IsRetained).Any(isRetained => isRetained))
                     {
@@ -527,7 +529,7 @@ namespace TSG_Library.UFuncs
                         DisplayName.Add(comp.DisplayName);
                     }
 
-                    var drfEnt = NXOpen.Tag.Null;
+                    Tag drfEnt = NXOpen.Tag.Null;
                     var isSymbolRetained = false;
                     ufsession_.Obj.CycleObjsInPart(part.Tag, UF_drafting_entity_type, ref drfEnt);
 
@@ -538,9 +540,9 @@ namespace TSG_Library.UFuncs
                         if(type == UF_drafting_entity_type && subtype == UF_draft_id_symbol_subtype)
                         {
                             var origin = new double[3];
-                            ufsession_.Drf.AskIdSymbolInfo(drfEnt, out _, origin, out var symbolInfo);
+                            ufsession_.Drf.AskIdSymbolInfo(drfEnt, out _, origin, out UFDrf.IdSymbolInfo[] symbolInfo);
 
-                            foreach (var info in symbolInfo)
+                            foreach (UFDrf.IdSymbolInfo info in symbolInfo)
                             {
                                 if((from leaderInfo in info.leader_info
                                        let numAssocObj = 0
@@ -572,7 +574,7 @@ namespace TSG_Library.UFuncs
                 selCompListBox.SelectedIndex = 0;
                 var dispComponent = (string)selCompListBox.SelectedItem;
 
-                foreach (var component in _selComponents.Where(component => component.DisplayName == dispComponent))
+                foreach (Component component in _selComponents.Where(component => component.DisplayName == dispComponent))
                     SetDisplayPart(component);
 
                 selectButton.Enabled = false;
@@ -594,7 +596,7 @@ namespace TSG_Library.UFuncs
             try
             {
                 var DisplayName1 = (string)selCompListBox.SelectedItem;
-                foreach (var component in _selComponents.Where(component => component.DisplayName == DisplayName1))
+                foreach (Component component in _selComponents.Where(component => component.DisplayName == DisplayName1))
                 {
                     SetDisplayPart(component);
                     SetDefaultLayers();
@@ -646,7 +648,7 @@ namespace TSG_Library.UFuncs
                 selCompListBox.SelectedIndex = prevIndex;
                 var prevName = (string)selCompListBox.SelectedItem;
 
-                foreach (var component in _selComponents.Where(component => component.DisplayName == prevName))
+                foreach (Component component in _selComponents.Where(component => component.DisplayName == prevName))
                 {
                     SetDisplayPart(component);
 
@@ -702,7 +704,7 @@ namespace TSG_Library.UFuncs
                 selCompListBox.SelectedIndex = nextIndex;
                 var nextName = (string)selCompListBox.SelectedItem;
 
-                foreach (var component in _selComponents.Where(component => component.DisplayName == nextName))
+                foreach (Component component in _selComponents.Where(component => component.DisplayName == nextName))
                 {
                     SetDisplayPart(component);
 
@@ -743,7 +745,7 @@ namespace TSG_Library.UFuncs
             {
                 const int modeling = 1;
                 ufsession_.Draw.SetDisplayState(modeling);
-                var part2 = _originalDisplayPart;
+                Part part2 = _originalDisplayPart;
                 __display_part_ = part2;
                 UpdateSessionParts();
                 UpdateOriginalParts();
@@ -779,9 +781,9 @@ namespace TSG_Library.UFuncs
             //if (settingsFile.Length != 1) return compMaterials;
             var getMaterial = PerformStreamReaderString(FilePath_Ucf, ":COMPONENT_BURN_MATERIALS:",
                 ":END_COMPONENT_BURN_MATERIALS:");
-            var compMaterials =
+            List<CtsAttributes> compMaterials =
                 PerformStreamReaderList(FilePath_Ucf, ":COMPONENT_MATERIALS:", ":END_COMPONENT_MATERIALS:");
-            foreach (var cMaterial in compMaterials)
+            foreach (CtsAttributes cMaterial in compMaterials)
                 cMaterial.AttrName = getMaterial != string.Empty ? getMaterial : "MATERIAL";
             return compMaterials;
         }
@@ -794,9 +796,9 @@ namespace TSG_Library.UFuncs
             //if (settingsFile.Length != 1) return compMaterials;
             var getMaterial = PerformStreamReaderString(FilePath_Ucf, ":MATERIAL_ATTRIBUTE_NAME:",
                 ":END_MATERIAL_ATTRIBUTE_NAME:");
-            var compMaterials =
+            List<CtsAttributes> compMaterials =
                 PerformStreamReaderList(FilePath_Ucf, ":COMPONENT_MATERIALS:", ":END_COMPONENT_MATERIALS:");
-            foreach (var cMaterial in compMaterials)
+            foreach (CtsAttributes cMaterial in compMaterials)
                 cMaterial.AttrName = getMaterial != string.Empty ? getMaterial : "MATERIAL";
             return compMaterials;
         }
@@ -804,14 +806,14 @@ namespace TSG_Library.UFuncs
         private static List<CtsAttributes> PerformStreamReaderList(string path, string startSearchString,
             string endSearchString)
         {
-            var sr = new StreamReader(path);
+            StreamReader sr = new StreamReader(path);
             var content = sr.ReadToEnd();
             sr.Close();
             var startSplit = Regex.Split(content, startSearchString);
             var endSplit = Regex.Split(startSplit[1], endSearchString);
             var textData = endSplit[0];
             var splitData = Regex.Split(textData, "\r\n");
-            var compData = (from sData in splitData
+            List<CtsAttributes> compData = (from sData in splitData
                 where sData != string.Empty
                 select new CtsAttributes { AttrValue = sData }).ToList();
             return compData.Count > 0 ? compData : null;
@@ -836,7 +838,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                foreach (var child in assembly.GetChildren())
+                foreach (Component child in assembly.GetChildren())
                 {
                     if(child.IsSuppressed)
                         continue;
@@ -849,7 +851,7 @@ namespace TSG_Library.UFuncs
                         continue;
                     }
 
-                    var instance = ufsession_.Assem.AskInstOfPartOcc(child.Tag);
+                    Tag instance = ufsession_.Assem.AskInstOfPartOcc(child.Tag);
 
                     if(instance == NXOpen.Tag.Null)
                         continue;
@@ -869,7 +871,7 @@ namespace TSG_Library.UFuncs
                     if(status != 0)
                         continue;
 
-                    ufsession_.Part.OpenQuiet(partName, out var partOpen, out _);
+                    ufsession_.Part.OpenQuiet(partName, out Tag partOpen, out _);
 
                     if(partOpen == NXOpen.Tag.Null)
                         continue;
@@ -888,7 +890,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                foreach (var child in assembly.GetChildren())
+                foreach (Component child in assembly.GetChildren())
                 {
                     if(child.IsSuppressed)
                         continue;
@@ -901,7 +903,7 @@ namespace TSG_Library.UFuncs
                         return;
                     }
 
-                    var instance = ufsession_.Assem.AskInstOfPartOcc(child.Tag);
+                    Tag instance = ufsession_.Assem.AskInstOfPartOcc(child.Tag);
 
                     if(instance == NXOpen.Tag.Null)
                         continue;
@@ -916,7 +918,7 @@ namespace TSG_Library.UFuncs
                         continue;
                     }
 
-                    ufsession_.Part.OpenQuiet(partName, out var partOpen, out _);
+                    ufsession_.Part.OpenQuiet(partName, out Tag partOpen, out _);
 
                     if(partOpen == NXOpen.Tag.Null)
                         continue;
@@ -953,8 +955,8 @@ namespace TSG_Library.UFuncs
 
         private static List<Component> GetOneComponentOfMany(List<Component> compList)
         {
-            var oneComp = new List<Component> { compList[0] };
-            foreach (var comp in from comp in compList
+            List<Component> oneComp = new List<Component> { compList[0] };
+            foreach (Component comp in from comp in compList
                      let foundComponent = oneComp.Find(c => c.DisplayName == comp.DisplayName)
                      where foundComponent == null
                      select comp) oneComp.Add(comp);
@@ -977,7 +979,7 @@ namespace TSG_Library.UFuncs
             try
             {
                 __display_part_.Layers.SetState(1, State.WorkLayer);
-                using (var layerState = __display_part_.Layers.GetStates())
+                using (StateCollection layerState = __display_part_.Layers.GetStates())
                 {
                     foreach (Category category in __display_part_.LayerCategories)
                         if(category.Name == "ALL")
@@ -985,7 +987,7 @@ namespace TSG_Library.UFuncs
                     __display_part_.Layers.SetStates(layerState, true);
                 }
 
-                var layers = new List<int>(new[] { 96, 99, 100, 200, 230 });
+                List<int> layers = new List<int>(new[] { 96, 99, 100, 200, 230 });
 
                 if(__display_part_.Leaf.ToLower().Contains("layout"))
                     layers.Add(10);
@@ -1007,7 +1009,7 @@ namespace TSG_Library.UFuncs
                 const int modeling = 1;
                 ufsession_.Draw.SetDisplayState(modeling);
                 __display_part_.Layers.SetState(100, State.WorkLayer);
-                var layerState = __display_part_.Layers.GetStates();
+                StateCollection layerState = __display_part_.Layers.GetStates();
 
                 foreach (Category category in __display_part_.LayerCategories)
                     if(category.Name == "ALL")
@@ -1027,7 +1029,7 @@ namespace TSG_Library.UFuncs
                     if(!checkBoxUpdateViews.Checked)
                         continue;
 
-                    foreach (var view in dwgSheet.GetDraftingViews())
+                    foreach (DraftingView view in dwgSheet.GetDraftingViews())
                         view.Update();
                 }
             }
@@ -1044,7 +1046,7 @@ namespace TSG_Library.UFuncs
                 const int modeling = 1;
                 ufsession_.Draw.SetDisplayState(modeling);
                 __display_part_.Layers.SetState(1, State.WorkLayer);
-                var layerState = __display_part_.Layers.GetStates();
+                StateCollection layerState = __display_part_.Layers.GetStates();
 
                 foreach (Category category in __display_part_.LayerCategories)
                     if(category.Name == "ALL")
@@ -1067,7 +1069,7 @@ namespace TSG_Library.UFuncs
                     if(!checkBoxUpdateViews.Checked)
                         continue;
 
-                    foreach (var view in dwgSheet.GetDraftingViews())
+                    foreach (DraftingView view in dwgSheet.GetDraftingViews())
                         view.Update();
                 }
             }

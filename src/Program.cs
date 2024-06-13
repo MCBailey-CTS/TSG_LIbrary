@@ -45,9 +45,9 @@ public static class Program
     {
         _IUFunc __ufunc = null;
 
-        foreach (var type in Assembly.GetAssembly(typeof(Program)).GetTypes())
+        foreach (Type type in Assembly.GetAssembly(typeof(Program)).GetTypes())
         {
-            var ufunc_att = type.GetCustomAttributes().OfType<UFuncAttribute>().SingleOrDefault();
+            UFuncAttribute ufunc_att = type.GetCustomAttributes().OfType<UFuncAttribute>().SingleOrDefault();
 
             if(ufunc_att is null)
                 continue;

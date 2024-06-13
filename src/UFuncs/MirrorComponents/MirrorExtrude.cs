@@ -19,11 +19,11 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             Surface.Plane plane,
             Component originalComp)
         {
-            var mirroredComp = (Component)dict[originalComp];
+            Component mirroredComp = (Component)dict[originalComp];
 
-            var mirroredPart = mirroredComp.__Prototype();
+            Part mirroredPart = mirroredComp.__Prototype();
 
-            var originalPart = originalComp.__Prototype();
+            Part originalPart = originalComp.__Prototype();
 
             originalFeature.Suppress();
 
@@ -31,11 +31,11 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             Vector3d mirrorVector;
 
-            var mirroredFeature = (Extrude)dict[originalFeature];
+            Extrude mirroredFeature = (Extrude)dict[originalFeature];
 
             _WorkPart = originalPart;
 
-            var builder = originalPart.Features.CreateExtrudeBuilder(originalFeature);
+            ExtrudeBuilder builder = originalPart.Features.CreateExtrudeBuilder(originalFeature);
 
             IList<SelectionIntentRule> mirrorRules = new List<SelectionIntentRule>();
 
@@ -45,27 +45,27 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                 mirrorVector = builder.Direction.Vector.__MirrorMap(plane, originalComp, mirroredComp);
 
-                builder.Section.GetSectionData(out var originalSectionDatas);
+                builder.Section.GetSectionData(out SectionData[] originalSectionDatas);
 
-                foreach (var originalSectionData in originalSectionDatas)
+                foreach (SectionData originalSectionData in originalSectionDatas)
                 {
-                    originalSectionData.GetRules(out var originalRules);
+                    originalSectionData.GetRules(out SelectionIntentRule[] originalRules);
 
-                    foreach (var originalRule in originalRules)
+                    foreach (SelectionIntentRule originalRule in originalRules)
                         switch (originalRule)
                         {
                             case EdgeBoundaryRule originalEdgeBoundaryRule:
 
-                                originalEdgeBoundaryRule.GetData(out var originalFaces);
+                                originalEdgeBoundaryRule.GetData(out Face[] originalFaces);
 
                                 IList<Face> mirrorFaces = new List<Face>();
 
-                                foreach (var originalFace in originalFaces)
+                                foreach (Face originalFace in originalFaces)
                                 {
                                     if(!dict.ContainsKey(originalFace))
                                         throw new MirrorException("Extrude, dictionary did not contain FACE as a key.");
 
-                                    var mirrorFace = (Face)dict[originalFace];
+                                    Face mirrorFace = (Face)dict[originalFace];
 
                                     mirrorFaces.Add(mirrorFace);
                                 }
@@ -92,7 +92,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             using (new Destroyer(builder))
             {
-                var point = mirroredComp.__Prototype().Points.CreatePoint(mirrorOrigin);
+                Point point = mirroredComp.__Prototype().Points.CreatePoint(mirrorOrigin);
 
                 builder.Direction = mirroredComp.__Prototype().Directions.CreateDirection(point, mirrorVector);
 

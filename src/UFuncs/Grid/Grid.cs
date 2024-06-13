@@ -1,5 +1,6 @@
 ﻿using System;
 using NXOpen;
+using NXOpen.Assemblies;
 using NXOpen.Preferences;
 using static TSG_Library.Extensions.__Extensions_;
 
@@ -53,7 +54,7 @@ namespace TSG_Library.UFuncs
             var multiplier = __display_part_.PartUnits == BasePart.Units.Inches ? 1.0 : 25.4;
             var gridSpacing = Convert(size) * multiplier;
             WorkPlane.SetRectangularUniformGridSize(new WorkPlane.GridSize(gridSpacing, 1, 1));
-            var comp = __display_part_.ComponentAssembly.RootComponent;
+            Component comp = __display_part_.ComponentAssembly.RootComponent;
             comp.DirectOwner.ReplaceReferenceSet(comp, "BODY");
         }
 

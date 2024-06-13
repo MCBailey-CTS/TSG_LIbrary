@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using MoreLinq.Extensions;
 using NXOpen;
+using NXOpen.Assemblies;
 using TSG_Library.Attributes;
 using static TSG_Library.Extensions.__Extensions_;
 
@@ -18,7 +19,7 @@ namespace TSG_Library.UFuncs
                 return;
             }
 
-            var result = MessageBox.Show(
+            DialogResult result = MessageBox.Show(
                 "Question?",
                 "Are you sure you want to delete all bodies on layer 50-55 in the current assembly",
                 MessageBoxButtons.YesNo);
@@ -28,23 +29,23 @@ namespace TSG_Library.UFuncs
 
             using (session_.__UsingSuppressDisplay())
             {
-                var part = __work_part_;
+                Part part = __work_part_;
 
-                var comps = __work_part_.ComponentAssembly.RootComponent
+                Component[] comps = __work_part_.ComponentAssembly.RootComponent
                     .__Descendants()
                     .Where(__c => !__c.IsSuppressed)
                     .Where(__c => __c.__IsLoaded())
                     .DistinctBy(__c => __c)
                     .ToArray();
 
-                var components = comps.DistinctBy(__c => __c.DisplayName)
+                Component[] components = comps.DistinctBy(__c => __c.DisplayName)
                     .ToArray();
 
                 var foundBodies = false;
 
                 var message = "";
 
-                foreach (var component in components)
+                foreach (Component component in components)
                 {
                     if(component.IsSuppressed)
                         continue;
@@ -54,7 +55,7 @@ namespace TSG_Library.UFuncs
 
                     __display_part_ = component.__Prototype();
 
-                    var bodiesToDelete = __work_part_.Bodies
+                    Body[] bodiesToDelete = __work_part_.Bodies
                         .ToArray()
                         .Where(body => body.Layer >= 50
                                        && body.Layer <= 55

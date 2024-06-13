@@ -16,7 +16,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             Surface.Plane plane,
             Component originalComp)
         {
-            var mirrorFeature = (Feature)dict[originalFeature];
+            Feature mirrorFeature = (Feature)dict[originalFeature];
 
             originalFeature.Unsuppress();
 

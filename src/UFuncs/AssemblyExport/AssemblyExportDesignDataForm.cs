@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -39,7 +40,7 @@ namespace TSG_Library.UFuncs
                !rdoReview100.Checked && !rdoOther.Checked)
                 rdoReview50.Checked = true;
 
-            var folder = GFolder.create_or_null(_WorkPart);
+            GFolder folder = GFolder.create_or_null(_WorkPart);
 
             if(folder is null)
                 return;
@@ -95,9 +96,9 @@ namespace TSG_Library.UFuncs
 
         private void ManualExport(bool selectAll)
         {
-            var __display_part_ = Session.GetSession().Parts.Display;
+            Part __display_part_ = Session.GetSession().Parts.Display;
 
-            var components = selectAll
+            List<Component> components = selectAll
                 ? __display_part_.ComponentAssembly.RootComponent.__Descendants().ToList()
                 : Selection.SelectManyComponents().ToList();
 
@@ -176,7 +177,7 @@ namespace TSG_Library.UFuncs
                 if(__display_part_ is null)
                     return;
 
-                var folder = GFolder.create_or_null(_WorkPart);
+                GFolder folder = GFolder.create_or_null(_WorkPart);
 
                 if(folder is null)
                     return;

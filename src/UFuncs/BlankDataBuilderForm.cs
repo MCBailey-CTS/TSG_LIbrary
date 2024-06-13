@@ -5,6 +5,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using NXOpen;
+using NXOpen.Assemblies;
 using NXOpen.UF;
 using TSG_Library.Attributes;
 using TSG_Library.Properties;
@@ -15,16 +16,16 @@ using static TSG_Library.Extensions.__Extensions_;
 namespace TSG_Library.UFuncs
 {
     [UFunc("blank-data-builder")]
-    [RevisionEntry("1.0", "2017", "06", "05")]
-    [Revision("1.0.1", "Revision Log Created for NX 11.")]
-    [RevisionEntry("1.1", "2017", "08", "22")]
-    [Revision("1.1.1", "Signed so it will run outside of CTS.")]
-    [RevisionEntry("1.2", "2018", "08", "22")]
-    [Revision("1.2.1", "Fixed dxf settings path to point to NX11 instead of NX9.")]
-    [RevisionEntry("1.3", "2019", "08", "28")]
-    [Revision("1.3.1", "GFolder updated to allow old job number under non cts folder.")]
-    [RevisionEntry("11.1", "2023", "01", "09")]
-    [Revision("11.1.1", "Removed validation")]
+    //[RevisionEntry("1.0", "2017", "06", "05")]
+    //[Revision("1.0.1", "Revision Log Created for NX 11.")]
+    //[RevisionEntry("1.1", "2017", "08", "22")]
+    //[Revision("1.1.1", "Signed so it will run outside of CTS.")]
+    //[RevisionEntry("1.2", "2018", "08", "22")]
+    //[Revision("1.2.1", "Fixed dxf settings path to point to NX11 instead of NX9.")]
+    //[RevisionEntry("1.3", "2019", "08", "28")]
+    //[Revision("1.3.1", "GFolder updated to allow old job number under non cts folder.")]
+    //[RevisionEntry("11.1", "2023", "01", "09")]
+    //[Revision("11.1.1", "Removed validation")]
     public partial class BlankDataBuilderForm : _UFuncForm
     {
         private const string dxfCmd = "dxfdwg.cmd /c ";
@@ -57,11 +58,11 @@ namespace TSG_Library.UFuncs
 
                 try
                 {
-                    var names = new List<int>();
+                    List<int> names = new List<int>();
 
                     if(workPart.ComponentAssembly.RootComponent != null)
                     {
-                        foreach (var comp in workPart.ComponentAssembly.RootComponent.GetChildren())
+                        foreach (Component comp in workPart.ComponentAssembly.RootComponent.GetChildren())
                         {
                             var indexOf = comp.DisplayName.LastIndexOf("-V", StringComparison.Ordinal);
                             if(indexOf == -1) continue;
@@ -101,12 +102,12 @@ namespace TSG_Library.UFuncs
 
             try
             {
-                var names = new List<int>();
+                List<int> names = new List<int>();
 
                 if(workPart.ComponentAssembly.RootComponent is null)
                     return;
 
-                foreach (var comp in workPart.ComponentAssembly.RootComponent.GetChildren())
+                foreach (Component comp in workPart.ComponentAssembly.RootComponent.GetChildren())
                 {
                     var indexOf = comp.DisplayName.LastIndexOf("-V", StringComparison.Ordinal);
                     if(indexOf == -1) continue;
@@ -147,16 +148,16 @@ namespace TSG_Library.UFuncs
 
             const string prompt = "Select objects to export";
             const string title = "Export data";
-            var clientData = IntPtr.Zero;
+            IntPtr clientData = IntPtr.Zero;
 
             TheUFSession.Ui.LockUgAccess(UF_UI_FROM_CUSTOM);
 
             TheUFSession.Ui.SelectWithClassDialog(prompt, title, UF_UI_SEL_SCOPE_ANY_IN_ASSEMBLY, null, clientData,
-                out _, out _, out var selObjects);
+                out _, out _, out Tag[] selObjects);
 
             TheUFSession.Ui.UnlockUgAccess(UF_UI_FROM_CUSTOM);
 
-            foreach (var objs in selObjects)
+            foreach (Tag objs in selObjects)
                 TheUFSession.Disp.SetHighlight(objs, 0);
 
             // build export/dxf/component name
@@ -194,13 +195,13 @@ namespace TSG_Library.UFuncs
 
 
                 if(displayPart.ComponentAssembly.RootComponent != null)
-                    foreach (var simComp in displayPart.ComponentAssembly.RootComponent.GetChildren())
+                    foreach (Component simComp in displayPart.ComponentAssembly.RootComponent.GetChildren())
                         if(simComp.Name == nameBuilder.ToUpper())
                             doesExist = true;
 
                 if(doesExist)
                 {
-                    var dResult = MessageBox.Show($"Replace file {nameBuilder}?", "File Exist",
+                    DialogResult dResult = MessageBox.Show($"Replace file {nameBuilder}?", "File Exist",
                         MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 
 
@@ -208,13 +209,13 @@ namespace TSG_Library.UFuncs
                 }
 
                 if(!(displayPart.ComponentAssembly.RootComponent is null))
-                    foreach (var simComp in displayPart.ComponentAssembly.RootComponent.GetChildren())
+                    foreach (Component simComp in displayPart.ComponentAssembly.RootComponent.GetChildren())
                     {
                         if(simComp.Name != nameBuilder.ToUpper()) continue;
-                        var closeSimPart = (Part)simComp.Prototype;
+                        Part closeSimPart = (Part)simComp.Prototype;
                         closeSimPart.Close(BasePart.CloseWholeTree.False, BasePart.CloseModified.CloseModified, null);
 
-                        var markId1 = session_.SetUndoMark(Session.MarkVisibility.Invisible, "");
+                        Session.UndoMarkId markId1 = session_.SetUndoMark(Session.MarkVisibility.Invisible, "");
 
                         NXObject[] objects1 = { simComp };
 
@@ -265,7 +266,7 @@ namespace TSG_Library.UFuncs
 
             textBoxRevisionLevel.Clear();
 
-            var match = Regex.Match(workPart.Leaf, Regex_Simulation);
+            Match match = Regex.Match(workPart.Leaf, Regex_Simulation);
 
             textBoxJobNumber.Text = match.Success ? match.Groups["customerNum"].Value : "JOB #";
 
@@ -310,15 +311,15 @@ namespace TSG_Library.UFuncs
                     throw new InvalidOperationException("Invalid version number.");
 
 
-                var folder = GFolder.create_or_null(displayPart)
-                             ??
-                             throw new InvalidOperationException(
-                                 "The current display part does not reside within in a GFolder.");
+                GFolder folder = GFolder.create_or_null(displayPart)
+                                 ??
+                                 throw new InvalidOperationException(
+                                     "The current display part does not reside within in a GFolder.");
 
                 if(File.Exists(partFile + ".prt"))
                     File.Delete(partFile + ".prt");
 
-                var exportOptions = new UFPart.ExportOptions
+                UFPart.ExportOptions exportOptions = new UFPart.ExportOptions
                 {
                     new_part = true, expression_mode = UFPart.ExportExpMode.CopyExpDeeply,
                     params_mode = UFPart.ExportParamsMode.RemoveParams
@@ -349,11 +350,11 @@ namespace TSG_Library.UFuncs
 
                 // add  component to Blanks file
 
-                var basePart1 = session_.Parts.OpenBase(compBlanksPath, out var basePartLoadStatus);
+                BasePart basePart1 = session_.Parts.OpenBase(compBlanksPath, out PartLoadStatus basePartLoadStatus);
                 basePartLoadStatus.Dispose();
 
-                var sPartOrigin = new Point3d(0.0, 0.0, 0.0);
-                var sPartMatrix = _Matrix3x3Identity;
+                Point3d sPartOrigin = new Point3d(0.0, 0.0, 0.0);
+                Matrix3x3 sPartMatrix = _Matrix3x3Identity;
 
                 int layer;
 
@@ -370,9 +371,9 @@ namespace TSG_Library.UFuncs
                         break;
                 }
 
-                var surfacePart = (Part)basePart1;
+                Part surfacePart = (Part)basePart1;
                 displayPart.ComponentAssembly.AddComponent(surfacePart, Refset_EntirePart, nameBuilder, sPartOrigin,
-                    sPartMatrix, layer, out var sPartLoadStatus);
+                    sPartMatrix, layer, out PartLoadStatus sPartLoadStatus);
                 sPartLoadStatus.Dispose();
 
                 displayPart.Save(BasePart.SaveComponents.True, BasePart.CloseAfterSave.False);
@@ -386,12 +387,12 @@ namespace TSG_Library.UFuncs
                 var dxfBatch = partFile + ".bat";
                 dxfArguments = $"{dxfCmd}\"{partFile}.prt\" o=\"{blankDxf}\" d=\"{dxfSettings}\"";
 
-                using (var fs = File.Open(dxfBatch, FileMode.Create))
+                using (FileStream fs = File.Open(dxfBatch, FileMode.Create))
                 {
                     fs.Close();
                 }
 
-                using (var writer = new StreamWriter(dxfBatch))
+                using (StreamWriter writer = new StreamWriter(dxfBatch))
                 {
                     writer.WriteLine("c:");
                     writer.WriteLine("cd " + "\"" + "C:\\Program Files\\Siemens\\NX 11.0\\DXFDWG" + "\"");
@@ -429,9 +430,9 @@ namespace TSG_Library.UFuncs
             if(textBoxCustomText.Text != string.Empty)
                 nameBuilder += "-" + textBoxCustomText.Text;
 
-            var attrInfo = displayPart.GetUserAttributes();
+            NXObject.AttributeInformation[] attrInfo = displayPart.GetUserAttributes();
 
-            foreach (var attr in attrInfo)
+            foreach (NXObject.AttributeInformation attr in attrInfo)
             {
                 if(attr.Title != "REVISION TEXT") continue;
                 var attrValue = displayPart.GetStringUserAttribute(attr.Title, -1);
@@ -439,7 +440,7 @@ namespace TSG_Library.UFuncs
                 if(attrValue != "")
                 {
                     displayPart.SetUserAttribute("REVISION TEXT", -1, nameBuilder, NXOpen.Update.Option.Now);
-                    var layout1 = workPart.Layouts.FindObject("L1");
+                    Layout layout1 = workPart.Layouts.FindObject("L1");
                     layout1.ReplaceView(workPart.ModelingViews.WorkView, workPart.ModelingViews.WorkView, true);
                 }
                 else

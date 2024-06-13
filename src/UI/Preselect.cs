@@ -21,13 +21,13 @@ namespace TSG_Library.Ui
 
         public static int PreselectComponents(IntPtr select, IntPtr userData)
         {
-            var preselectedData = (PreselectData)Marshal.PtrToStructure(userData, new PreselectData().GetType());
+            PreselectData preselectedData = (PreselectData)Marshal.PtrToStructure(userData, new PreselectData().GetType());
 
             if(preselectedData.ItemCount > 0)
                 UFSession.GetUFSession().Ui
                     .AddToSelList(select, preselectedData.ItemCount, preselectedData.Items, true);
 
-            var maskTriples = new UFUi.Mask[1];
+            UFUi.Mask[] maskTriples = new UFUi.Mask[1];
             maskTriples[0].object_type = UF_component_type;
             maskTriples[0].object_subtype = UF_component_subtype;
             maskTriples[0].solid_type = 0;
@@ -40,18 +40,18 @@ namespace TSG_Library.Ui
 
         public static void SelectAndDeselectComponents(string prompt, ref Component[] theComponents)
         {
-            var preselectComponentsData = new PreselectData { Items = null, ItemCount = 0 };
+            PreselectData preselectComponentsData = new PreselectData { Items = null, ItemCount = 0 };
 
             if(theComponents != null)
             {
-                var compTags = new Tag[theComponents.Length];
+                Tag[] compTags = new Tag[theComponents.Length];
                 for (var ii = 0; ii < theComponents.Length; ii++) compTags[ii] = theComponents[ii].Tag;
 
                 preselectComponentsData.Items = compTags;
                 preselectComponentsData.ItemCount = theComponents.Length;
             }
 
-            var preselectIntPtr = Marshal.AllocHGlobal(Marshal.SizeOf(preselectComponentsData));
+            IntPtr preselectIntPtr = Marshal.AllocHGlobal(Marshal.SizeOf(preselectComponentsData));
 
             Marshal.StructureToPtr(preselectComponentsData, preselectIntPtr, false);
 
@@ -60,7 +60,7 @@ namespace TSG_Library.Ui
 
             UFSession.GetUFSession().Ui.SelectWithClassDialog("Select Components", prompt,
                 UF_UI_SEL_SCOPE_ANY_IN_ASSEMBLY, PreselectComponents, preselectIntPtr, out _, out var cnt,
-                out var theTags);
+                out Tag[] theTags);
 
             UFSession.GetUFSession().Ui.UnlockUgAccess(UF_UI_FROM_CUSTOM);
 

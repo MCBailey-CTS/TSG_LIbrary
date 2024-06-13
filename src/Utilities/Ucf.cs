@@ -37,7 +37,7 @@ namespace TSG_Library.Utilities
                 {
                     var startLine = lines[index];
                     if(!startLine.StartsWith(":") || !startLine.EndsWith(":")) continue;
-                    var list = new List<string>();
+                    List<string> list = new List<string>();
                     for (var endIndex = index + 1; endIndex < lines.Length; endIndex++)
                     {
                         var line = lines[endIndex];
@@ -79,7 +79,7 @@ namespace TSG_Library.Utilities
                 throw new FileNotFoundException($"Could not find file \"{filePath}\".", filePath);
 
             // Reads in all the lines from the {filePath}.
-            var filePathLines = File.ReadAllLines(filePath).ToList();
+            List<string> filePathLines = File.ReadAllLines(filePath).ToList();
 
             // Checks to make sure that {filePathLines} contains at least one line in it.
             if(filePathLines.Count == 0)
@@ -160,7 +160,7 @@ namespace TSG_Library.Utilities
             if(startIndex < 0 && endIndex < 0)
                 // "str" doesn't contain any recursive entities.
                 return str;
-            var strings = ParseString(dictionary, str, true);
+            IEnumerable<string> strings = ParseString(dictionary, str, true);
             return strings.Aggregate("", (current, next) => current + next);
         }
 
@@ -178,7 +178,7 @@ namespace TSG_Library.Utilities
                         break;
                     case 0:
                     {
-                        var strings = ParseString(dictionary, currentString.Substring(startIndex + RecStart.Length),
+                        IEnumerable<string> strings = ParseString(dictionary, currentString.Substring(startIndex + RecStart.Length),
                             false);
                         foreach (var str in strings)
                             yield return str;
@@ -189,7 +189,7 @@ namespace TSG_Library.Utilities
                         // The first index of <rec> is not 0, therefore we want to return the string leading up to <rec>.
                         yield return currentString.Substring(0, startIndex);
 
-                        var strings = ParseString(dictionary, currentString.Substring(startIndex + RecStart.Length),
+                        IEnumerable<string> strings = ParseString(dictionary, currentString.Substring(startIndex + RecStart.Length),
                             false);
                         foreach (var str in strings)
                             yield return str;
@@ -228,7 +228,7 @@ namespace TSG_Library.Utilities
                 if(substring.Length == 0)
                     yield break;
 
-                var strings = ParseString(dictionary, substring, true);
+                IEnumerable<string> strings = ParseString(dictionary, substring, true);
 
                 foreach (var str in strings)
                     yield return str;

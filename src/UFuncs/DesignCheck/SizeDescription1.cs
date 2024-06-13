@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using NXOpen;
+using NXOpen.Features;
 using static TSG_Library.Extensions.__Extensions_;
 
 namespace TSG_Library.Utilities
@@ -36,7 +37,7 @@ namespace TSG_Library.Utilities
                     ? .0254
                     : .001;
 
-                var descriptionMatch = Regex.Match(descriptionAttributeValue, _regex3XPattern, RegexOptions.IgnoreCase);
+                Match descriptionMatch = Regex.Match(descriptionAttributeValue, _regex3XPattern, RegexOptions.IgnoreCase);
 
                 if(!CheckDescriptionMatch(descriptionMatch, out var message))
                 {
@@ -44,7 +45,7 @@ namespace TSG_Library.Utilities
                     return true;
                 }
 
-                var solidBodyLayer1 = part.__SolidBodyLayer1OrNull();
+                Body solidBodyLayer1 = part.__SolidBodyLayer1OrNull();
 
                 if(solidBodyLayer1 is null)
                 {
@@ -52,7 +53,7 @@ namespace TSG_Library.Utilities
                     return false;
                 }
 
-                var __part = part;
+                Part __part = part;
 
                 if(!__part.__HasDynamicBlock())
                 {
@@ -61,14 +62,14 @@ namespace TSG_Library.Utilities
                 }
 
                 // Get the dynamic block of "part".
-                var dynamicBlock = part.__DynamicBlock();
+                Block dynamicBlock = part.__DynamicBlock();
 
 
-                var nMatrix = part.NXMatrices.Create(dynamicBlock.__Orientation());
+                NXMatrix nMatrix = part.NXMatrices.Create(dynamicBlock.__Orientation());
 
                 var origin = dynamicBlock.__Origin().__ToArray();
 
-                ufsession_.Csys.CreateTempCsys(origin, nMatrix.Tag, out var tagCsys);
+                ufsession_.Csys.CreateTempCsys(origin, nMatrix.Tag, out Tag tagCsys);
                 var minCorner = new double[3];
                 var directions = new double[3, 3];
                 var distances = new double[3];

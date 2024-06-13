@@ -5,6 +5,8 @@ using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
+using NXOpen.Positioning;
+using NXOpen.UF;
 using TSG_Library.Disposable;
 using TSG_Library.UFuncs;
 
@@ -29,7 +31,7 @@ namespace TSG_Library.Extensions
             if(includeRoot)
                 yield return rootComponent;
 
-            var children = rootComponent.GetChildren();
+            Component[] children = rootComponent.GetChildren();
 
             for (var index = 0; index < children.Length; index++)
             {
@@ -39,7 +41,7 @@ namespace TSG_Library.Extensions
                 if(!children[index].__IsLoaded() && !includeUnloaded)
                     continue;
 
-                foreach (var descendant in children[index]
+                foreach (Component descendant in children[index]
                              .__Descendants(includeRoot, includeSuppressed, includeUnloaded))
                     yield return descendant;
             }
@@ -52,9 +54,9 @@ namespace TSG_Library.Extensions
 
         public static IEnumerable<NXObject> __Members(this Component component)
         {
-            var uFSession = ufsession_;
-            var tag = Tag.Null;
-            var list = new List<NXObject>();
+            UFSession uFSession = ufsession_;
+            Tag tag = Tag.Null;
+            List<NXObject> list = new List<NXObject>();
 
             do
             {
@@ -65,7 +67,7 @@ namespace TSG_Library.Extensions
 
                 try
                 {
-                    var nXObject = session_.__GetTaggedObject(tag) as NXObject;
+                    NXObject nXObject = session_.__GetTaggedObject(tag) as NXObject;
 
                     if(nXObject is null)
                         continue;
@@ -88,28 +90,28 @@ namespace TSG_Library.Extensions
 
         public static Component __ProtoChildComp(this Component component)
         {
-            var instance = component.__InstanceTag();
-            var root_component = component.OwningComponent.__Prototype().ComponentAssembly.RootComponent.Tag;
-            var proto_child_fastener_tag = ufsession_.Assem.AskPartOccOfInst(root_component, instance);
+            Tag instance = component.__InstanceTag();
+            Tag root_component = component.OwningComponent.__Prototype().ComponentAssembly.RootComponent.Tag;
+            Tag proto_child_fastener_tag = ufsession_.Assem.AskPartOccOfInst(root_component, instance);
             return (Component)session_.__GetTaggedObject(proto_child_fastener_tag);
         }
 
         public static ExtractFace __CreateLinkedBody(this Component child)
         {
-            var builder = __work_part_.BaseFeatures.CreateWaveLinkBuilder(null);
+            WaveLinkBuilder builder = __work_part_.BaseFeatures.CreateWaveLinkBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(builder))
             {
                 builder.ExtractFaceBuilder.ParentPart = ExtractFaceBuilder.ParentPartType.OtherPart;
                 builder.Type = WaveLinkBuilder.Types.BodyLink;
                 builder.ExtractFaceBuilder.Associative = true;
-                var scCollector1 = builder.ExtractFaceBuilder.ExtractBodyCollector;
+                ScCollector scCollector1 = builder.ExtractFaceBuilder.ExtractBodyCollector;
                 builder.ExtractFaceBuilder.FeatureOption =
                     ExtractFaceBuilder.FeatureOptionType.OneFeatureForAllBodies;
-                var bodies1 = new Body[1];
-                var bodyDumbRule1 =
+                Body[] bodies1 = new Body[1];
+                BodyDumbRule bodyDumbRule1 =
                     __work_part_.ScRuleFactory.CreateRuleBodyDumb(child.__SolidBodyMembers(), false);
-                var rules1 = new SelectionIntentRule[1];
+                SelectionIntentRule[] rules1 = new SelectionIntentRule[1];
                 rules1[0] = bodyDumbRule1;
                 scCollector1.ReplaceRules(rules1, false);
                 builder.ExtractFaceBuilder.FixAtCurrentTimestamp = false;
@@ -183,7 +185,7 @@ namespace TSG_Library.Extensions
 
         public static Component __InstOfPartOcc(this Component component)
         {
-            var instance = ufsession_.Assem.AskInstOfPartOcc(component.Tag);
+            Tag instance = ufsession_.Assem.AskInstOfPartOcc(component.Tag);
             return (Component)session_.__GetTaggedObject(instance);
         }
 
@@ -201,7 +203,7 @@ namespace TSG_Library.Extensions
         public static void __ReplaceComponent(this Component component, string path, string name,
             bool replace_all)
         {
-            var replace_builder =
+            ReplaceComponentBuilder replace_builder =
                 __work_part_.AssemblyManager.CreateReplaceComponentBuilder();
 
             using (session_.__UsingBuilderDestroyer(replace_builder))
@@ -221,7 +223,7 @@ namespace TSG_Library.Extensions
 
         public static void __DeleteSelfAndConstraints(this Component component)
         {
-            var constraints = component.GetConstraints();
+            ComponentConstraint[] constraints = component.GetConstraints();
 
             if(constraints.Length > 0)
                 session_.__DeleteObjects(constraints);
@@ -375,7 +377,7 @@ namespace TSG_Library.Extensions
 
         public static Matrix3x3 __Orientation(this Component component)
         {
-            component.GetPosition(out _, out var orientation);
+            component.GetPosition(out _, out Matrix3x3 orientation);
             return orientation;
         }
 
@@ -386,7 +388,7 @@ namespace TSG_Library.Extensions
 
         public static Point3d __Origin(this Component component)
         {
-            component.GetPosition(out var origin, out _);
+            component.GetPosition(out Point3d origin, out _);
             return origin;
         }
 

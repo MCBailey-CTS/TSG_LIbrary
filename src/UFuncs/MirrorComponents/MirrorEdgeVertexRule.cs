@@ -20,15 +20,15 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             Component originalComp,
             IDictionary<TaggedObject, TaggedObject> dict)
         {
-            var mirroredComp = (Component)dict[originalComp];
+            Component mirroredComp = (Component)dict[originalComp];
 
-            var mirroredPart = mirroredComp.__Prototype();
+            Part mirroredPart = mirroredComp.__Prototype();
 
-            var mirroredFeature = (Feature)dict[originalFeature];
+            Feature mirroredFeature = (Feature)dict[originalFeature];
 
-            ((EdgeVertexRule)originalRule).GetData(out var originalStartEdge, out var isFromStart);
+            ((EdgeVertexRule)originalRule).GetData(out Edge originalStartEdge, out var isFromStart);
 
-            var originalBody = originalStartEdge.GetBody();
+            Body originalBody = originalStartEdge.GetBody();
 
             Body mirrorBody;
 
@@ -38,9 +38,9 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
                 originalFeature.Suppress();
 
-                var originalOwningFeature = originalComp.__Prototype().Features.GetParentFeatureOfBody(originalBody);
+                Feature originalOwningFeature = originalComp.__Prototype().Features.GetParentFeatureOfBody(originalBody);
 
-                var mirrorOwningFeature = (BodyFeature)dict[originalOwningFeature];
+                BodyFeature mirrorOwningFeature = (BodyFeature)dict[originalOwningFeature];
 
                 if(mirrorOwningFeature.GetBodies().Length != 1)
                     throw new InvalidOperationException("Invalid number of bodies for feature");
@@ -52,11 +52,11 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
                 mirrorBody = (Body)dict[originalBody];
             }
 
-            var newStart = originalStartEdge.__StartPoint().__MirrorMap(plane, originalComp, mirroredComp);
+            Point3d newStart = originalStartEdge.__StartPoint().__MirrorMap(plane, originalComp, mirroredComp);
 
-            var newEnd = originalStartEdge.__EndPoint().__MirrorMap(plane, originalComp, mirroredComp);
+            Point3d newEnd = originalStartEdge.__EndPoint().__MirrorMap(plane, originalComp, mirroredComp);
 
-            var mirrorEdge = mirrorBody.GetEdges().FirstOrDefault(edge => edge.__HasEndPoints(newStart, newEnd));
+            Edge mirrorEdge = mirrorBody.GetEdges().FirstOrDefault(edge => edge.__HasEndPoints(newStart, newEnd));
 
             if(mirrorEdge is null)
                 throw new InvalidOperationException("Could not find mirror edge");

@@ -46,7 +46,7 @@ namespace TSG_Library.UFuncs
                     {
                         using (session_.__usingDisplayPartReset())
                         {
-                            foreach (var comp in selComponents.Select(__c => __c))
+                            foreach (Component comp in selComponents.Select(__c => __c))
                             {
                                 __display_part_ = (Part)comp.Prototype;
 
@@ -68,7 +68,7 @@ namespace TSG_Library.UFuncs
 
                                     is4View = true;
 
-                                    foreach (var drfView in drwSheet.GetDraftingViews())
+                                    foreach (DraftingView drfView in drwSheet.GetDraftingViews())
                                         drfView.Update();
                                 }
 
@@ -86,7 +86,7 @@ namespace TSG_Library.UFuncs
                                 // delete selected notes from 4-VIEW
 
                                 if(!is4View) continue;
-                                var addToDelete = new List<NXObject>();
+                                List<NXObject> addToDelete = new List<NXObject>();
 
                                 foreach (Note drfNote in __display_part_.Notes)
                                 {
@@ -175,7 +175,7 @@ namespace TSG_Library.UFuncs
 
             Importer importer1 = __work_part_.ImportManager.CreatePartImporter();
 
-            var partImporter1 = (PartImporter)importer1;
+            PartImporter partImporter1 = (PartImporter)importer1;
             partImporter1.FileName = notePath;
             partImporter1.Scale = importScale;
             partImporter1.CreateNamedGroup = false;
@@ -186,14 +186,14 @@ namespace TSG_Library.UFuncs
             partImporter1.DestinationCoordinateSystemSpecification =
                 PartImporter.DestinationCoordinateSystemSpecificationType.Work;
 
-            var nXMatrix1 = __work_part_.NXMatrices.Create(_Matrix3x3Identity);
+            NXMatrix nXMatrix1 = __work_part_.NXMatrices.Create(_Matrix3x3Identity);
 
             partImporter1.DestinationCoordinateSystem = nXMatrix1;
 
-            var destinationPoint1 = _Point3dOrigin;
+            Point3d destinationPoint1 = _Point3dOrigin;
             partImporter1.DestinationPoint = destinationPoint1;
 
-            var markId2 = session_.SetUndoMark(Session.MarkVisibility.Invisible, "Import Part Commit");
+            Session.UndoMarkId markId2 = session_.SetUndoMark(Session.MarkVisibility.Invisible, "Import Part Commit");
 
             partImporter1.Commit();
 
@@ -206,7 +206,7 @@ namespace TSG_Library.UFuncs
         {
             part.Layers.SetState(200, State.WorkLayer);
 
-            var layerState = part.Layers.GetStates();
+            StateCollection layerState = part.Layers.GetStates();
 
             foreach (Category category in part.LayerCategories)
                 if(category.Name == "ALL")
@@ -225,7 +225,7 @@ namespace TSG_Library.UFuncs
         {
             part.Layers.SetState(1, State.WorkLayer);
 
-            var layerState = part.Layers.GetStates();
+            StateCollection layerState = part.Layers.GetStates();
 
             foreach (Category category in part.LayerCategories)
                 if(category.Name == "ALL")

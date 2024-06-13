@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
+using NXOpen.UF;
 using TSG_Library.Disposable;
 using TSG_Library.Extensions;
 using TSG_Library.Geom;
@@ -34,10 +35,10 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             }
 
             Tag assy_context_xform = extractFace2.__XFormTag();
-            ufsession_.So.AskAssyCtxtPartOcc(assy_context_xform, originalComp.Tag, out var from_part_occ);
+            ufsession_.So.AskAssyCtxtPartOcc(assy_context_xform, originalComp.Tag, out Tag from_part_occ);
             Component component2 = (Component)session_.GetObjectManager().GetTaggedObject(from_part_occ);
-            ufsession_.Wave.AskLinkedFeatureGeom(extractFace2.Tag, out var linked_geom);
-            ufsession_.Wave.AskLinkedFeatureInfo(linked_geom, out var _);
+            ufsession_.Wave.AskLinkedFeatureGeom(extractFace2.Tag, out Tag linked_geom);
+            ufsession_.Wave.AskLinkedFeatureInfo(linked_geom, out UFWave.LinkedFeatureInfo _);
             if (component2 == null)
             {
                 throw new MirrorException("Linked component was null in " + originalFeature.__OwningPart().Leaf + " from " + originalFeature.GetFeatureName());

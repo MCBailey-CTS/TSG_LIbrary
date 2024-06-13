@@ -26,7 +26,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             IList<SelectionIntentRule> list = new List<SelectionIntentRule>();
             using (new Destroyer(chamferBuilder))
             {
-                chamferBuilder.SmartCollector.GetRules(out var rules);
+                chamferBuilder.SmartCollector.GetRules(out SelectionIntentRule[] rules);
                 SelectionIntentRule[] array = rules;
                 foreach (SelectionIntentRule originalRule in array)
                 {

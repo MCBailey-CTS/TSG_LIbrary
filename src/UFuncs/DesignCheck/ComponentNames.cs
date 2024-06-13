@@ -30,14 +30,14 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
         {
             throw new NotImplementedException();
 #pragma warning disable CS0162 // Unreachable code detected
-            var part_node = new TreeNode(part.Leaf) { Tag = part };
+            TreeNode part_node = new TreeNode(part.Leaf) { Tag = part };
 #pragma warning restore CS0162 // Unreachable code detected
-            ufsession_.Assem.AskOccsOfPart(__display_part_.Tag, part.Tag, out var partOccsTags);
-            var failedComponents = new List<Tuple<Component, IEnumerable<string>>>();
+            ufsession_.Assem.AskOccsOfPart(__display_part_.Tag, part.Tag, out Tag[] partOccsTags);
+            List<Tuple<Component, IEnumerable<string>>> failedComponents = new List<Tuple<Component, IEnumerable<string>>>();
 
-            foreach (var partOcc in partOccsTags)
+            foreach (Tag partOcc in partOccsTags)
             {
-                var component = (Component)NXObjectManager.Get(partOcc);
+                Component component = (Component)NXObjectManager.Get(partOcc);
 
                 if(component.IsSuppressed)
                     continue;

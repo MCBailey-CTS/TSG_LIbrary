@@ -15,11 +15,11 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
         {
             InitializeComponent();
 
-            var creator = new DrainHoleCreator();
+            DrainHoleCreator creator = new DrainHoleCreator();
 
-            var model = new DrainHoleModel(creator, settings);
+            DrainHoleModel model = new DrainHoleModel(creator, settings);
 
-            var presenter = new DrainHolePresenter(this, model);
+            DrainHolePresenter presenter = new DrainHolePresenter(this, model);
 
             chkCorners.Checked = settings.Corners;
             chkMidPoints.Checked = settings.MidPoints;
@@ -89,7 +89,7 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
         {
             try
             {
-                var drainModel = new DrainHoleModel
+                DrainHoleModel drainModel = new DrainHoleModel
                 {
                     DrainHoleCreator = new DrainHoleCreator(),
 #if DEBUG
@@ -100,7 +100,7 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
                 };
 
 
-                var form = new Form
+                Form form = new Form
                 (
                     drainModel.DrainHoleSettings.DiameterUnits,
                     drainModel.DrainHoleSettings.Diameter,
@@ -111,7 +111,7 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
                     drainModel.DrainHoleSettings.ExtrusionEndLimit
                 );
 
-                var presenter = new DrainHolePresenter(form, drainModel);
+                DrainHolePresenter presenter = new DrainHolePresenter(form, drainModel);
 
 
                 form.Show();

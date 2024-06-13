@@ -1,5 +1,6 @@
 ﻿using System;
 using NXOpen;
+using NXOpen.UF;
 using static TSG_Library.Extensions.__Extensions_;
 
 namespace TSG_Library.Geom
@@ -202,7 +203,7 @@ namespace TSG_Library.Geom
         /// </remarks>
         public static Transform CreateScale(Point3d basePoint, double scaleFactor)
         {
-            var uFSession = ufsession_;
+            UFSession uFSession = ufsession_;
             var array = new double[12];
             var type = 1;
             var scales = new double[3] { scaleFactor, 1.0, 1.0 };
@@ -263,7 +264,7 @@ namespace TSG_Library.Geom
         /// </remarks>
         public static Transform Composition(Transform xform1, Transform xform2)
         {
-            var uFSession = ufsession_;
+            UFSession uFSession = ufsession_;
             var array = new double[12];
             uFSession.Trns.MultiplyMatrices(xform1.Matrix, xform2.Matrix, array);
             return new Transform(array);

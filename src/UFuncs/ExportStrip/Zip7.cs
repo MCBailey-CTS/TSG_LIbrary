@@ -37,12 +37,12 @@ namespace TSG_Library.Utilities
         {
             var tempFile = $"{Path.GetTempPath()}zipData{_filesToZip.GetHashCode()}.txt";
 
-            using (var fs = File.Open(tempFile, FileMode.Create))
+            using (FileStream fs = File.Open(tempFile, FileMode.Create))
             {
                 fs.Close();
             }
 
-            using (var writer = new StreamWriter(tempFile))
+            using (StreamWriter writer = new StreamWriter(tempFile))
             {
                 _filesToZip.ToList().ForEach(writer.WriteLine);
             }

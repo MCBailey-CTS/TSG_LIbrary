@@ -11,7 +11,7 @@ namespace TSG_Library
     {
         internal static Unit GetUnit(string abbreviation)
         {
-            var unitCollection = __work_part_.UnitCollection;
+            UnitCollection unitCollection = __work_part_.UnitCollection;
             Unit result = null;
             foreach (Unit item in unitCollection)
                 if(item.Symbol == abbreviation)
@@ -366,10 +366,10 @@ namespace TSG_Library
         //     to use the Compute.Intersect function.
         public static IntersectionResult IntersectInfo(ICurve icurve1, ICurve icurve2, Point3d nearPoint)
         {
-            var nXOpenTag = icurve1.__Tag();
-            var nXOpenTag2 = icurve2.__Tag();
+            Tag nXOpenTag = icurve1.__Tag();
+            Tag nXOpenTag2 = icurve2.__Tag();
             var array = nearPoint.__ToArray();
-            ufsession_.Curve.Intersect(nXOpenTag, nXOpenTag2, array, out var out_info);
+            ufsession_.Curve.Intersect(nXOpenTag, nXOpenTag2, array, out UFCurve.IntersectInfo out_info);
             out_info.curve_parm = IcurveParameter(icurve1, out_info.curve_parm);
             out_info.entity_parms[0] = IcurveParameter(icurve2, out_info.entity_parms[0]);
             return IntersectionResult.Create(out_info);
@@ -379,7 +379,7 @@ namespace TSG_Library
         {
             if(icurve is NXOpen.Curve)
             {
-                var curve = (NXOpen.Curve)icurve;
+                NXOpen.Curve curve = (NXOpen.Curve)icurve;
 
                 if(curve.__Factor() != 1.0)
                     return param * curve.__Factor();
@@ -387,7 +387,7 @@ namespace TSG_Library
                 return param * (curve.__MaxU() - curve.__MinU()) + curve.__MinU();
             }
 
-            var edge = (Edge)icurve;
+            Edge edge = (Edge)icurve;
 
             if(edge.__Factor() != 1.0)
                 return param * edge.__Factor();
@@ -421,13 +421,13 @@ namespace TSG_Library
         //     to use the Compute.Intersect function.
         public static IntersectionResult IntersectInfo(ICurve icurve, Surface.Plane plane, Point3d nearPoint)
         {
-            var nXOpenTag = icurve.__Tag();
+            Tag nXOpenTag = icurve.__Tag();
             var array = plane.Normal.__ToArray();
             var array2 = plane.Normal.__Multiply(plane.D).__ToArray();
-            var markId = session_.SetUndoMark(Session.MarkVisibility.Invisible, "TmpIntersectMark_999");
-            ufsession_.Modl.CreatePlane(array2, array, out var plane_tag);
+            Session.UndoMarkId markId = session_.SetUndoMark(Session.MarkVisibility.Invisible, "TmpIntersectMark_999");
+            ufsession_.Modl.CreatePlane(array2, array, out Tag plane_tag);
             var array3 = nearPoint.__ToArray();
-            ufsession_.Curve.Intersect(nXOpenTag, plane_tag, array3, out var out_info);
+            ufsession_.Curve.Intersect(nXOpenTag, plane_tag, array3, out UFCurve.IntersectInfo out_info);
             session_.UndoToMark(markId, "TmpIntersectMark_999");
             out_info.curve_parm = IcurveParameter(icurve, out_info.curve_parm);
             return IntersectionResult.Create(out_info);
@@ -459,9 +459,9 @@ namespace TSG_Library
         //     to use the Compute.Intersect function.
         public static IntersectionResult IntersectInfo(ICurve icurve, Face face, Point3d nearPoint)
         {
-            var nXOpenTag = icurve.__Tag();
+            Tag nXOpenTag = icurve.__Tag();
             var array = nearPoint.__ToArray();
-            ufsession_.Curve.Intersect(nXOpenTag, face.Tag, array, out var out_info);
+            ufsession_.Curve.Intersect(nXOpenTag, face.Tag, array, out UFCurve.IntersectInfo out_info);
             out_info.curve_parm = IcurveParameter(icurve, out_info.curve_parm);
 #pragma warning disable CS0618 // Type or member is obsolete
             out_info.entity_parms = new double[2]
@@ -591,8 +591,8 @@ namespace TSG_Library
         //     to use the Compute.Intersect functions.
         public static IntersectionResult[] IntersectInfo(ICurve icurve, Surface.Plane plane)
         {
-            var markId = session_.SetUndoMark(Session.MarkVisibility.Invisible, "TmpIntersectMark_999");
-            var plane_tag = Tag.Null;
+            Session.UndoMarkId markId = session_.SetUndoMark(Session.MarkVisibility.Invisible, "TmpIntersectMark_999");
+            Tag plane_tag = Tag.Null;
             ufsession_.Modl.CreatePlane(plane.Origin.__ToArray(), plane.Normal.__ToArray(), out plane_tag);
             ufsession_.Modl.IntersectCurveToPlane(icurve.__Tag(), plane_tag, out var num_intersections, out var data);
             session_.UndoToMark(markId, "TmpIntersectMark_999");
@@ -678,9 +678,9 @@ namespace TSG_Library
         //     to use the Compute.Intersect function.
         public static IntersectionResult[] IntersectInfo(Curve.Ray ray, Face face)
         {
-            var markId = session_.SetUndoMark(Session.MarkVisibility.Invisible, "TmpIntersectMark_999");
-            var array = ClipRay(ray);
-            var line = __work_part_.Curves.CreateLine(array[0], array[1]);
+            Session.UndoMarkId markId = session_.SetUndoMark(Session.MarkVisibility.Invisible, "TmpIntersectMark_999");
+            Point3d[] array = ClipRay(ray);
+            Line line = __work_part_.Curves.CreateLine(array[0], array[1]);
             ufsession_.Modl.IntersectCurveToFace(line.__Tag(), face.Tag, out var num_intersections, out var data);
             IntersectionResult[] array2 = null;
 
@@ -692,7 +692,7 @@ namespace TSG_Library
                 for (var j = 0; j < num_intersections; j++)
                 {
                     array2[j].Position = new Point3d(data[6 * j], data[6 * j + 1], data[6 * j + 2]);
-                    var temp = line.__Position(data[6 * j + 3]);
+                    Point3d temp = line.__Position(data[6 * j + 3]);
                     array2[j].CurveParameter = temp.__Subtract(ray.Origin).__Multiply(ray.Axis);
                     array2[j].ObjectParameters = new double[2];
                     array2[j].ObjectParameters[0] = face.__Parameters(array2[j].Position)[0];
@@ -728,13 +728,13 @@ namespace TSG_Library
         [Obsolete]
         public static IntersectionResult IntersectInfo(Curve.Ray ray, Body body, Point3d nearPoint)
         {
-            var markId = session_.SetUndoMark(Session.MarkVisibility.Invisible, "TmpIntersectMark_999");
-            var array = ClipRay(ray);
-            var line = __work_part_.Curves.CreateLine(array[0], array[1]);
+            Session.UndoMarkId markId = session_.SetUndoMark(Session.MarkVisibility.Invisible, "TmpIntersectMark_999");
+            Point3d[] array = ClipRay(ray);
+            Line line = __work_part_.Curves.CreateLine(array[0], array[1]);
             var array2 = nearPoint.__ToArray();
-            ufsession_.Curve.Intersect(line.Tag, body.Tag, array2, out var out_info);
+            ufsession_.Curve.Intersect(line.Tag, body.Tag, array2, out UFCurve.IntersectInfo out_info);
             session_.UndoToMark(markId, "TmpIntersectMark_999");
-            var intersectionResult = IntersectionResult.Create(out_info);
+            IntersectionResult intersectionResult = IntersectionResult.Create(out_info);
 
             //if (intersectionResult != null)
             //    intersectionResult.CurveParameter = ((intersectionResult.Position - ray.Origin) * ray.Axis).Value;

@@ -115,8 +115,8 @@ namespace TSG_Library
                 num2 = System.Math.Min(val4, num2);
             }
 
-            var position = ray.Origin.__Add(ray.Axis.__Multiply(num));
-            var position2 = ray.Origin.__Add(ray.Axis.__Multiply(num2));
+            Point3d position = ray.Origin.__Add(ray.Axis.__Multiply(num));
+            Point3d position2 = ray.Origin.__Add(ray.Axis.__Multiply(num2));
             return new Point3d[2] { position, position2 };
             throw new NotImplementedException();
         }
@@ -160,7 +160,7 @@ namespace TSG_Library
         [Obsolete(nameof(NotImplementedException))]
         public static Arc __Copy(this Arc arc)
         {
-            var xform = Transform.CreateTranslation(0.0, 0.0, 0.0);
+            Transform xform = Transform.CreateTranslation(0.0, 0.0, 0.0);
             return arc.__Copy(xform);
         }
 
@@ -242,7 +242,7 @@ namespace TSG_Library
         [Obsolete(nameof(NotImplementedException))]
         private static Arc[] __ArcArray(this Curve[] curveArray)
         {
-            var array = new Arc[curveArray.Length];
+            Arc[] array = new Arc[curveArray.Length];
 
             for (var i = 0; i < curveArray.Length; i++)
                 array[i] = (Arc)curveArray[i];

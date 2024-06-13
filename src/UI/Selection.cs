@@ -44,7 +44,7 @@ namespace TSG_Library.Ui
                 NXOpen.Selection.SelectionScope.AnyInAssembly,
                 false,
                 new[] { NXOpen.Selection.SelectionType.Curves },
-                out var __objects);
+                out TaggedObject[] __objects);
 
             return __objects.Cast<Curve>().ToArray();
         }
@@ -60,7 +60,7 @@ namespace TSG_Library.Ui
                 false,
                 false,
                 new[] { SolidBodyMask, SheetBodyMask },
-                out var __object,
+                out TaggedObject __object,
                 out _);
 
             return (Body)__object;
@@ -233,7 +233,7 @@ namespace TSG_Library.Ui
                     __init_proc,
                     IntPtr.Zero,
                     out var __response,
-                    out var __object,
+                    out Tag __object,
                     cursor,
                     out _);
 
@@ -248,7 +248,7 @@ namespace TSG_Library.Ui
                 }
 
 
-                var __obj = __object.__To<TSource>();
+                TSource __obj = __object.__To<TSource>();
 
                 if(__obj is DisplayableObject disp)
                     disp.Unhighlight();
@@ -320,7 +320,7 @@ namespace TSG_Library.Ui
                     IntPtr.Zero,
                     out var __response,
                     out var count,
-                    out var objects);
+                    out Tag[] objects);
 
                 switch (__response)
                 {
@@ -329,7 +329,7 @@ namespace TSG_Library.Ui
                         break;
                 }
 
-                var objs = objects.Select(__o => __o.__To<TSource>()).ToArray();
+                TSource[] objs = objects.Select(__o => __o.__To<TSource>()).ToArray();
 
                 objs.OfType<DisplayableObject>().ToList().ForEach(__o => __o.Unhighlight());
 

@@ -172,7 +172,7 @@ namespace TSG_Library.Disposable
             if(_rules is null)
                 return;
 
-            foreach (var rule in _rules)
+            foreach (SelectionIntentRule rule in _rules)
                 if(!(rule is null))
                     using (rule)
                     {

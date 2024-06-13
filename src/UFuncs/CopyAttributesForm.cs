@@ -17,29 +17,29 @@ using Selection = TSG_Library.Ui.Selection;
 namespace TSG_Library.UFuncs
 {
     [UFunc("copy-attributes")]
-    [RevisionEntry("1.1", "2015", "07", "07")]
-    [Revision("1.1.1", "Fixed issue with quantity counting components with long file names.")]
-    [Revision("1.1.2", "It now only counts components with 3 digit component names.")]
-    [RevisionEntry("1.2", "2016", "05", "20")]
-    [Revision("1.2.1", "Made “SHOP”, “SHOP 1 NAME” & “UNITS” as drop down selections.")]
-    [RevisionEntry("1.21", "2016", "06", "02")]
-    [Revision("1.21.1", "Fixed issue with DETAIL NUMBER Attribute not working.")]
-    [RevisionEntry("1.3", "2017", "06", "26")]
-    [Revision("1.3.1", "Added revision number to form.")]
-    [Revision("1.3.2", "Completely took out CTS_Methods.")]
-    [Revision("1.3.3", "Changed IsNameValid method so that it can include different op numbers.")]
-    [Revision("1.3.3.1", "Most notably RTS 500 numbers.")]
-    [RevisionEntry("1.4", "2017", "08", "22")]
-    [Revision("1.4.1", "Signed so that it will run outside of CTS")]
-    [RevisionEntry("1.5", "2017", "09", "08")]
-    [Revision("1.5.1", "Added validation check")]
-    [RevisionEntry("1.6", "2017", "10", "10")]
-    [Revision("1.6.1", "Changed how the quantity is handled.")]
-    [Revision("1.6.1.1", "Added a check to make sure that a components.OwningComponent.ReferenceSet != “Empty”.")]
-    [RevisionEntry("1.7", "2021", "05", "27")]
-    [Revision("1.7.1", "The ConceptControlFile now points to \"U:\\nxFiles\\UfuncFiles\\ConceptControlFile.ucf\"")]
-    [RevisionEntry("11.1", "2023", "01", "09")]
-    [Revision("11.1.1", "Removed validation")]
+    //[RevisionEntry("1.1", "2015", "07", "07")]
+    //[Revision("1.1.1", "Fixed issue with quantity counting components with long file names.")]
+    //[Revision("1.1.2", "It now only counts components with 3 digit component names.")]
+    //[RevisionEntry("1.2", "2016", "05", "20")]
+    //[Revision("1.2.1", "Made “SHOP”, “SHOP 1 NAME” & “UNITS” as drop down selections.")]
+    //[RevisionEntry("1.21", "2016", "06", "02")]
+    //[Revision("1.21.1", "Fixed issue with DETAIL NUMBER Attribute not working.")]
+    //[RevisionEntry("1.3", "2017", "06", "26")]
+    //[Revision("1.3.1", "Added revision number to form.")]
+    //[Revision("1.3.2", "Completely took out CTS_Methods.")]
+    //[Revision("1.3.3", "Changed IsNameValid method so that it can include different op numbers.")]
+    //[Revision("1.3.3.1", "Most notably RTS 500 numbers.")]
+    //[RevisionEntry("1.4", "2017", "08", "22")]
+    //[Revision("1.4.1", "Signed so that it will run outside of CTS")]
+    //[RevisionEntry("1.5", "2017", "09", "08")]
+    //[Revision("1.5.1", "Added validation check")]
+    //[RevisionEntry("1.6", "2017", "10", "10")]
+    //[Revision("1.6.1", "Changed how the quantity is handled.")]
+    //[Revision("1.6.1.1", "Added a check to make sure that a components.OwningComponent.ReferenceSet != “Empty”.")]
+    //[RevisionEntry("1.7", "2021", "05", "27")]
+    //[Revision("1.7.1", "The ConceptControlFile now points to \"U:\\nxFiles\\UfuncFiles\\ConceptControlFile.ucf\"")]
+    //[RevisionEntry("11.1", "2023", "01", "09")]
+    //[Revision("11.1.1", "Removed validation")]
     public partial class CopyAttributesForm : _UFuncForm
     {
         private static readonly List<Component> _childComponents = new List<Component>();
@@ -190,8 +190,8 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var info = ((MyAttribute)listBoxAttributes.SelectedItem).Attribute;
-                var info1 = session_.Parts.Display.GetUserAttribute(info.Title, NXObject.AttributeType.String, 0);
+                NXObject.AttributeInformation info = ((MyAttribute)listBoxAttributes.SelectedItem).Attribute;
+                NXObject.AttributeInformation info1 = session_.Parts.Display.GetUserAttribute(info.Title, NXObject.AttributeType.String, 0);
                 info1.StringValue = _flag ? attributeCombo.SelectedItem as string : textBoxAttrValue.Text;
                 session_.Parts.Display.SetUserAttribute(info1, NXOpen.Update.Option.Later);
                 UpdateLoadedAttributes();
@@ -237,8 +237,8 @@ namespace TSG_Library.UFuncs
 
         public static string[] InputFromUcf(string start, string end)
         {
-            var strings = new List<string>();
-            using (var textFile = new StreamReader(FilePath_Ucf))
+            List<string> strings = new List<string>();
+            using (StreamReader textFile = new StreamReader(FilePath_Ucf))
             {
                 while (textFile.ReadLine() != start)
                 {
@@ -292,7 +292,7 @@ namespace TSG_Library.UFuncs
 
         private void buttonCopyApply_Click(object sender, EventArgs e)
         {
-            var attributes = new List<NXObject.AttributeInformation>();
+            List<NXObject.AttributeInformation> attributes = new List<NXObject.AttributeInformation>();
             if(listBoxAttributes.SelectedItems.Count == 0)
                 attributes.AddRange(from MyAttribute attribute in listBoxAttributes.Items select attribute.Attribute);
             else
@@ -306,10 +306,10 @@ namespace TSG_Library.UFuncs
         {
             progressBarCopyAttr.Maximum = _selectedComponents.Count;
             progressBarCopyAttr.Value = 0;
-            foreach (var comp in _selectedComponents.Select(__c => __c))
+            foreach (Component comp in _selectedComponents.Select(__c => __c))
             {
-                var part = (Part)comp.Prototype;
-                foreach (var attribute in attributes)
+                Part part = (Part)comp.Prototype;
+                foreach (NXObject.AttributeInformation attribute in attributes)
                     part.SetUserAttribute(attribute, NXOpen.Update.Option.Later);
                 UpdateQuantity(part);
                 UpdateDetail(part, comp.DisplayName.Substring(comp.DisplayName.Length - 3, 3));
@@ -319,7 +319,7 @@ namespace TSG_Library.UFuncs
 
         public static void UpdateQuantity(Part part)
         {
-            UFSession.GetUFSession().Assem.AskOccsOfPart(__display_part_.Tag, part.Tag, out var partOccs);
+            UFSession.GetUFSession().Assem.AskOccsOfPart(__display_part_.Tag, part.Tag, out Tag[] partOccs);
 
             var __count = partOccs.Select(session_.__GetTaggedObject)
                 .Cast<Component>()
@@ -339,7 +339,7 @@ namespace TSG_Library.UFuncs
                 return;
 
             // Added the following back in to make DETAIL NUMBER work again.  2016-06-02
-            var detailNumber = new NXObject.AttributeInformation
+            NXObject.AttributeInformation detailNumber = new NXObject.AttributeInformation
             {
                 Type = NXObject.AttributeType.String,
                 Title = "DETAIL NUMBER",
@@ -382,11 +382,11 @@ namespace TSG_Library.UFuncs
             }
             else
             {
-                foreach (var attr in _attrInfo)
+                foreach (NXObject.AttributeInformation attr in _attrInfo)
                     if(MyAttribute.IsValidAttribute(attr))
                         MyAttributes.Add(new MyAttribute(attr));
 
-                foreach (var attribute in MyAttributes)
+                foreach (MyAttribute attribute in MyAttributes)
                     listBoxAttributes.Items.Add(attribute);
             }
 
@@ -398,7 +398,7 @@ namespace TSG_Library.UFuncs
 
         private void GetChildComponents(Component assembly)
         {
-            foreach (var child in assembly.GetChildren().Select(__c => __c))
+            foreach (Component child in assembly.GetChildren().Select(__c => __c))
             {
                 if(child.IsSuppressed)
                 {
@@ -415,7 +415,7 @@ namespace TSG_Library.UFuncs
                     continue;
                 }
 
-                var instance = ufsession_.Assem.AskInstOfPartOcc(child.Tag);
+                Tag instance = ufsession_.Assem.AskInstOfPartOcc(child.Tag);
 
                 if(instance == NXOpen.Tag.Null)
                     continue;
@@ -434,7 +434,7 @@ namespace TSG_Library.UFuncs
                 if(status != 0)
                     continue;
 
-                ufsession_.Part.OpenQuiet(partName, out var partOpen, out _);
+                ufsession_.Part.OpenQuiet(partName, out Tag partOpen, out _);
 
                 if(partOpen == NXOpen.Tag.Null)
                     continue;
@@ -455,7 +455,7 @@ namespace TSG_Library.UFuncs
 
         public void CleanUpHighlight()
         {
-            using (var partCleanup1 = session_.NewPartCleanup())
+            using (PartCleanup partCleanup1 = session_.NewPartCleanup())
             {
                 partCleanup1.TurnOffHighlighting = true;
                 partCleanup1.DoCleanup();
@@ -464,9 +464,9 @@ namespace TSG_Library.UFuncs
 
         private static List<Component> GetOneComponentOfMany(List<Component> compList)
         {
-            var oneComp = new List<Component> { compList[0] };
+            List<Component> oneComp = new List<Component> { compList[0] };
 
-            foreach (var comp in from comp in compList
+            foreach (Component comp in from comp in compList
                      let foundComponent = oneComp.Find(c => c.DisplayName == comp.DisplayName)
                      where foundComponent == null
                      select comp) oneComp.Add(comp);

@@ -14,7 +14,7 @@ namespace TSG_Library.Disposable
         {
             _compStringDictionary = new Dictionary<Component, string>();
 
-            foreach (var component in components)
+            foreach (Component component in components)
             {
                 // Checks to see if the {component} is already in the {_compStringDictionary}.
                 // If it is we can ignore it.
@@ -33,7 +33,7 @@ namespace TSG_Library.Disposable
 
         public void Dispose()
         {
-            foreach (var keyComponent in _compStringDictionary.Keys)
+            foreach (Component keyComponent in _compStringDictionary.Keys)
             {
                 keyComponent.__ReferenceSet(_compStringDictionary[keyComponent]);
                 keyComponent.RedisplayObject();

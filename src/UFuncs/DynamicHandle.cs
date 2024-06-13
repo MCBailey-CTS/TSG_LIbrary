@@ -27,7 +27,7 @@ namespace TSG_Library.Ufuncs
                     return 0;
 
                 var myUdoDoubles = displayEvent.UserDefinedObject.GetDoubles();
-                var udoLocation = new Point3d[1];
+                Point3d[] udoLocation = new Point3d[1];
                 udoLocation[0].X = myUdoDoubles[0];
                 udoLocation[0].Y = myUdoDoubles[1];
                 udoLocation[0].Z = myUdoDoubles[2];

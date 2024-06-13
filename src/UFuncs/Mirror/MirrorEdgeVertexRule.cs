@@ -21,7 +21,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             Component component = (Component)dict[originalComp];
             Part part = component.__Prototype();
             Feature feature = (Feature)dict[originalFeature];
-            ((EdgeVertexRule)originalRule).GetData(out var startEdge, out var isFromStart);
+            ((EdgeVertexRule)originalRule).GetData(out Edge startEdge, out var isFromStart);
             Body body = startEdge.GetBody();
             Body body2;
             if (!dict.ContainsKey(body))

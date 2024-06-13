@@ -71,31 +71,31 @@ namespace TSG_Library.UFuncs
 
                 _customDescriptions = PerformStreamReaderList(settingsFile[0], ":CUSTOM_DESCRIPTIONS:",
                     ":END_CUSTOM_DESCRIPTIONS:");
-                foreach (var cDescription in _customDescriptions)
+                foreach (CtsAttributes cDescription in _customDescriptions)
                     cDescription.AttrName = getDescription != string.Empty ? getDescription : "DESCRIPTION";
 
                 _compNames = PerformStreamReaderList(settingsFile[0], ":COMPONENT_NAMES:", ":END_COMPONENT_NAMES:");
-                foreach (var cName in _compNames)
+                foreach (CtsAttributes cName in _compNames)
                     cName.AttrName = getName != string.Empty ? getName : "DETAIL NAME";
 
                 _compMaterials = PerformStreamReaderList(settingsFile[0], ":COMPONENT_MATERIALS:",
                     ":END_COMPONENT_MATERIALS:");
-                foreach (var cMaterial in _compMaterials)
+                foreach (CtsAttributes cMaterial in _compMaterials)
                     cMaterial.AttrName = getMaterial != string.Empty ? getMaterial : "MATERIAL";
 
                 _burnCompMaterials = PerformStreamReaderList(settingsFile[0], ":COMPONENT_BURN_MATERIALS:",
                     ":END_COMPONENT_BURN_MATERIALS:");
-                foreach (var cMaterial in _burnCompMaterials)
+                foreach (CtsAttributes cMaterial in _burnCompMaterials)
                     cMaterial.AttrName = getMaterial != string.Empty ? getMaterial : "MATERIAL";
 
                 _purchasedMaterials = PerformStreamReaderList(settingsFile[0], ":PURCHASED_MATERIALS:",
                     ":END_PURCHASED_MATERIALS:");
-                foreach (var purMaterial in _purchasedMaterials)
+                foreach (CtsAttributes purMaterial in _purchasedMaterials)
                     purMaterial.AttrName = getMaterial != string.Empty ? getMaterial : "MATERIAL";
 
                 _compTolerances = PerformStreamReaderList(settingsFile[0], ":COMPONENT_TOLERANCES:",
                     ":END_COMPONENT_TOLERANCES:");
-                foreach (var cTolerance in _compTolerances)
+                foreach (CtsAttributes cTolerance in _compTolerances)
                     cTolerance.AttrName = "TOLERANCE";
 
                 LoadDefaultFormData();
@@ -158,7 +158,7 @@ namespace TSG_Library.UFuncs
                 textBoxMaterial.Text = string.Empty;
                 comboBoxPurMaterials.SelectedIndex = -1;
 
-                var material = (CtsAttributes)comboBoxCustomMaterials.SelectedItem;
+                CtsAttributes material = (CtsAttributes)comboBoxCustomMaterials.SelectedItem;
 
                 if(material.AttrValue == "STEELCRAFT")
                     textBoxDescription.Text = "NITROGEN PLATE SYSTEM";
@@ -214,14 +214,14 @@ namespace TSG_Library.UFuncs
                 checkBoxBurnDirZ.Checked = true;
                 comboBoxMaterial.Items.Clear();
                 //Add code here to populate list for Burn Components
-                foreach (var custBurnMatl in _burnCompMaterials)
+                foreach (CtsAttributes custBurnMatl in _burnCompMaterials)
                     comboBoxMaterial.Items.Add(custBurnMatl);
             }
             else if(!checkBoxBurnout.Checked)
             {
                 checkBoxBurnDirZ.Checked = false;
                 comboBoxMaterial.Items.Clear();
-                foreach (var matl in _compMaterials)
+                foreach (CtsAttributes matl in _compMaterials)
                     comboBoxMaterial.Items.Add(matl);
             }
             else
@@ -275,7 +275,7 @@ namespace TSG_Library.UFuncs
 
                 if(_selComp != null)
                 {
-                    var compProto = (Part)_selComp.Prototype;
+                    Part compProto = (Part)_selComp.Prototype;
 
                     foreach (Feature featDynamic in compProto.Features)
                         if(featDynamic.FeatureType == "BLOCK")
@@ -328,10 +328,10 @@ namespace TSG_Library.UFuncs
 
                 if(_selComp != null)
                 {
-                    var attrInfo = _selComp.__GetAttributes();
+                    NXObject.AttributeInformation[] attrInfo = _selComp.__GetAttributes();
 
                     if(attrInfo.Length != 0)
-                        foreach (var attr in _selComp.__GetAttributes())
+                        foreach (NXObject.AttributeInformation attr in _selComp.__GetAttributes())
                         {
                             if(attr.Title == "DESCRIPTION")
                                 if(_selComp.__GetStringAttribute(attr.Title) != "")
@@ -351,10 +351,10 @@ namespace TSG_Library.UFuncs
                 }
                 else
                 {
-                    var attrInfo = _workPart.__GetAttributes();
+                    NXObject.AttributeInformation[] attrInfo = _workPart.__GetAttributes();
 
                     if(attrInfo.Length != 0)
-                        foreach (var attr in _workPart.__GetAttributes())
+                        foreach (NXObject.AttributeInformation attr in _workPart.__GetAttributes())
                         {
                             if(attr.Title == "DESCRIPTION")
                                 if(_workPart.__GetStringAttribute(attr.Title) != "")
@@ -430,10 +430,10 @@ namespace TSG_Library.UFuncs
                 {
                     ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
-                    foreach (var diesetComp in _selectedComponents)
+                    foreach (Component diesetComp in _selectedComponents)
                     {
-                        var makeDisp = (BasePart)diesetComp.Prototype;
-                        session_.Parts.SetDisplay(makeDisp, false, false, out var partLoadStatus1);
+                        BasePart makeDisp = (BasePart)diesetComp.Prototype;
+                        session_.Parts.SetDisplay(makeDisp, false, false, out PartLoadStatus partLoadStatus1);
                         partLoadStatus1.Dispose();
                         UpdateSessionParts();
 
@@ -450,7 +450,7 @@ namespace TSG_Library.UFuncs
                         var isDescription = false;
                         var description = string.Empty;
 
-                        foreach (var attr in _workPart.__GetAttributes())
+                        foreach (NXObject.AttributeInformation attr in _workPart.__GetAttributes())
                             if(attr.Title == "DESCRIPTION")
                                 isDescription = true;
 
@@ -473,7 +473,7 @@ namespace TSG_Library.UFuncs
                             }
                             else
                             {
-                                var diesetExp = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
+                                Expression diesetExp = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
                             }
                         }
                         else
@@ -484,12 +484,12 @@ namespace TSG_Library.UFuncs
                             }
                             else
                             {
-                                var diesetExp = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
+                                Expression diesetExp = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
                             }
                         }
                     }
 
-                    session_.Parts.SetDisplay(_originalDisplayPart, false, false, out var partLoadStatus2);
+                    session_.Parts.SetDisplay(_originalDisplayPart, false, false, out PartLoadStatus partLoadStatus2);
                     partLoadStatus2.Dispose();
                     UpdateSessionParts();
 
@@ -527,10 +527,10 @@ namespace TSG_Library.UFuncs
                 {
                     ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
-                    foreach (var diesetComp in _selectedComponents)
+                    foreach (Component diesetComp in _selectedComponents)
                     {
-                        var makeDisp = (BasePart)diesetComp.Prototype;
-                        session_.Parts.SetDisplay(makeDisp, false, false, out var partLoadStatus1);
+                        BasePart makeDisp = (BasePart)diesetComp.Prototype;
+                        session_.Parts.SetDisplay(makeDisp, false, false, out PartLoadStatus partLoadStatus1);
                         partLoadStatus1.Dispose();
                         UpdateSessionParts();
 
@@ -557,7 +557,7 @@ namespace TSG_Library.UFuncs
                             }
                             else
                             {
-                                var diesetExp = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
+                                Expression diesetExp = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
                             }
                         }
                         else
@@ -568,12 +568,12 @@ namespace TSG_Library.UFuncs
                             }
                             else
                             {
-                                var diesetExp = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
+                                Expression diesetExp = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
                             }
                         }
                     }
 
-                    session_.Parts.SetDisplay(_originalDisplayPart, false, false, out var partLoadStatus2);
+                    session_.Parts.SetDisplay(_originalDisplayPart, false, false, out PartLoadStatus partLoadStatus2);
                     partLoadStatus2.Dispose();
                     UpdateSessionParts();
 
@@ -611,10 +611,10 @@ namespace TSG_Library.UFuncs
                 {
                     ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
-                    foreach (var weldmentComp in _selectedComponents)
+                    foreach (Component weldmentComp in _selectedComponents)
                     {
-                        var makeDisp = (BasePart)weldmentComp.Prototype;
-                        session_.Parts.SetDisplay(makeDisp, false, false, out var partLoadStatus1);
+                        BasePart makeDisp = (BasePart)weldmentComp.Prototype;
+                        session_.Parts.SetDisplay(makeDisp, false, false, out PartLoadStatus partLoadStatus1);
                         partLoadStatus1.Dispose();
                         UpdateSessionParts();
 
@@ -631,7 +631,7 @@ namespace TSG_Library.UFuncs
                         var isDescription = false;
                         var description = string.Empty;
 
-                        foreach (var attr in _workPart.__GetAttributes())
+                        foreach (NXObject.AttributeInformation attr in _workPart.__GetAttributes())
                             if(attr.Title == "DESCRIPTION")
                                 isDescription = true;
 
@@ -654,7 +654,7 @@ namespace TSG_Library.UFuncs
                             }
                             else
                             {
-                                var weldmentExp =
+                                Expression weldmentExp =
                                     _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"yes\"");
                             }
                         }
@@ -666,13 +666,13 @@ namespace TSG_Library.UFuncs
                             }
                             else
                             {
-                                var weldmentExp =
+                                Expression weldmentExp =
                                     _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"yes\"");
                             }
                         }
                     }
 
-                    session_.Parts.SetDisplay(_originalDisplayPart, false, false, out var partLoadStatus2);
+                    session_.Parts.SetDisplay(_originalDisplayPart, false, false, out PartLoadStatus partLoadStatus2);
                     partLoadStatus2.Dispose();
                     UpdateSessionParts();
 
@@ -711,10 +711,10 @@ namespace TSG_Library.UFuncs
                 {
                     ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
-                    foreach (var weldmentComp in _selectedComponents)
+                    foreach (Component weldmentComp in _selectedComponents)
                     {
-                        var makeDisp = (BasePart)weldmentComp.Prototype;
-                        session_.Parts.SetDisplay(makeDisp, false, false, out var partLoadStatus1);
+                        BasePart makeDisp = (BasePart)weldmentComp.Prototype;
+                        session_.Parts.SetDisplay(makeDisp, false, false, out PartLoadStatus partLoadStatus1);
                         partLoadStatus1.Dispose();
                         UpdateSessionParts();
 
@@ -741,7 +741,7 @@ namespace TSG_Library.UFuncs
                             }
                             else
                             {
-                                var weldmentExp =
+                                Expression weldmentExp =
                                     _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"no\"");
                             }
                         }
@@ -753,13 +753,13 @@ namespace TSG_Library.UFuncs
                             }
                             else
                             {
-                                var weldmentExp =
+                                Expression weldmentExp =
                                     _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"no\"");
                             }
                         }
                     }
 
-                    session_.Parts.SetDisplay(_originalDisplayPart, false, false, out var partLoadStatus2);
+                    session_.Parts.SetDisplay(_originalDisplayPart, false, false, out PartLoadStatus partLoadStatus2);
                     partLoadStatus2.Dispose();
                     UpdateSessionParts();
 
@@ -829,7 +829,7 @@ namespace TSG_Library.UFuncs
 
                 if(_sizeBody == null) return;
                 const string autoUpdate = "AUTO UPDATE";
-                var owningPart = _sizeBody.IsOccurrence
+                Part owningPart = _sizeBody.IsOccurrence
                     ? (Part)_sizeBody.OwningComponent.Prototype
                     : (Part)_sizeBody.OwningPart;
                 var hasAutoUpdate = owningPart.HasUserAttribute(autoUpdate, NXObject.AttributeType.String, -1);
@@ -840,13 +840,13 @@ namespace TSG_Library.UFuncs
                     {
                         const string message =
                             "Auto Update is currently off.\nClicking yes will turn it on.\nClicking no will cancel the current selection process.";
-                        var dislogResult = MessageBox.Show(message, "Continue?", MessageBoxButtons.YesNo);
+                        DialogResult dislogResult = MessageBox.Show(message, "Continue?", MessageBoxButtons.YesNo);
 
                         if(dislogResult == DialogResult.No)
                             return;
 
                         owningPart.SetUserAttribute(autoUpdate, -1, "ON", NXOpen.Update.Option.Now);
-                        var listingWindow = Session.GetSession().ListingWindow;
+                        ListingWindow listingWindow = Session.GetSession().ListingWindow;
                         listingWindow.Open();
                         listingWindow.WriteLine($"{autoUpdate} has been set to \"On\".");
                     }
@@ -862,14 +862,14 @@ namespace TSG_Library.UFuncs
                     {
                         _selComp.Unhighlight();
 
-                        var makeWork = (Part)_selComp.Prototype;
-                        var wpUnits = makeWork.PartUnits;
+                        Part makeWork = (Part)_selComp.Prototype;
+                        BasePart.Units wpUnits = makeWork.PartUnits;
 
                         if(__display_part_.PartUnits == wpUnits)
                         {
                             session_.Parts.SetWorkComponent(_selComp, PartCollection.RefsetOption.Current,
                                 PartCollection.WorkComponentOption.Given,
-                                out var loadStatus1);
+                                out PartLoadStatus loadStatus1);
                             loadStatus1.Dispose();
 
                             UpdateSessionParts();
@@ -894,7 +894,7 @@ namespace TSG_Library.UFuncs
 
                             // get named expressions
 
-                            foreach (var exp in _workPart.Expressions.ToArray())
+                            foreach (Expression exp in _workPart.Expressions.ToArray())
                             {
                                 if(exp.Name == "AddX")
                                 {
@@ -1062,7 +1062,7 @@ namespace TSG_Library.UFuncs
 
                                 // get named expressions
 
-                                foreach (var exp in _workPart.Expressions.ToArray())
+                                foreach (Expression exp in _workPart.Expressions.ToArray())
                                 {
                                     if(exp.Name == "AddX")
                                     {
@@ -1319,14 +1319,14 @@ namespace TSG_Library.UFuncs
                     {
                         _selComp.Unhighlight();
 
-                        var makeWork = (Part)_selComp.Prototype;
-                        var wpUnits = makeWork.PartUnits;
+                        Part makeWork = (Part)_selComp.Prototype;
+                        BasePart.Units wpUnits = makeWork.PartUnits;
 
                         if(__display_part_.PartUnits == wpUnits)
                         {
                             session_.Parts.SetWorkComponent(_selComp, PartCollection.RefsetOption.Current,
                                 PartCollection.WorkComponentOption.Given,
-                                out var loadStatus1);
+                                out PartLoadStatus loadStatus1);
                             loadStatus1.Dispose();
 
                             UpdateSessionParts();
@@ -1349,7 +1349,7 @@ namespace TSG_Library.UFuncs
                         {
                             // get named expressions
 
-                            foreach (var exp in _workPart.Expressions.ToArray())
+                            foreach (Expression exp in _workPart.Expressions.ToArray())
                             {
                                 if(exp.Name == "AddX")
                                 {
@@ -1509,7 +1509,7 @@ namespace TSG_Library.UFuncs
                             {
                                 CreateCompExpressions();
 
-                                foreach (var exp in _workPart.Expressions.ToArray())
+                                foreach (Expression exp in _workPart.Expressions.ToArray())
                                 {
                                     if(exp.Name == "AddX")
                                     {
@@ -1714,22 +1714,22 @@ namespace TSG_Library.UFuncs
                 UpdateSessionParts();
                 UpdateOriginalParts();
 
-                var myUDOclass =
+                UserDefinedClass myUDOclass =
                     session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoAutoSizeComponent");
 
                 if(myUDOclass != null)
                 {
-                    var selectedComps = SelectMultipleComponents();
+                    List<Component> selectedComps = SelectMultipleComponents();
 
                     if(selectedComps.Count > 0)
                     {
                         ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
-                        foreach (var sComp in selectedComps)
+                        foreach (Component sComp in selectedComps)
                         {
                             sComp.Unhighlight();
 
-                            var wpComp = (Part)sComp.Prototype;
+                            Part wpComp = (Part)sComp.Prototype;
 
                             ufsession_.Part.SetDisplayPart(wpComp.Tag);
                             ufsession_.Assem.SetWorkPart(wpComp.Tag);
@@ -1740,7 +1740,7 @@ namespace TSG_Library.UFuncs
 
                             if(currentUdo.Length == 1)
                             {
-                                var myUDO = currentUdo[0];
+                                UserDefinedObject myUDO = currentUdo[0];
 
                                 var updateFlag = myUDO.GetIntegers();
 
@@ -1766,7 +1766,7 @@ namespace TSG_Library.UFuncs
 
                         if(currentUdo.Length == 1)
                         {
-                            var myUDO = currentUdo[0];
+                            UserDefinedObject myUDO = currentUdo[0];
 
                             var updateFlag = myUDO.GetIntegers();
 
@@ -1796,7 +1796,7 @@ namespace TSG_Library.UFuncs
             session_.Parts.SetWork(__display_part_);
 
             if(_selectedComponents.Count > 0)
-                foreach (var comp in _selectedComponents)
+                foreach (Component comp in _selectedComponents)
                     comp.Unhighlight();
 
             if(_selComp != null)
@@ -1865,7 +1865,7 @@ namespace TSG_Library.UFuncs
                 if(_isSelectMultiple)
                 {
                     if(_selectedComponents.Count > 0)
-                        foreach (var sComp in _selectedComponents)
+                        foreach (Component sComp in _selectedComponents)
                         {
                             _selComp = sComp;
                             UpdateCompAttributes();
@@ -1927,16 +1927,16 @@ namespace TSG_Library.UFuncs
             comboBoxDieset.Items.Clear();
             comboBoxWeldment.Items.Clear();
 
-            foreach (var desc in _customDescriptions)
+            foreach (CtsAttributes desc in _customDescriptions)
                 comboBoxDescription.Items.Add(desc);
-            foreach (var purMatl in _purchasedMaterials)
+            foreach (CtsAttributes purMatl in _purchasedMaterials)
                 comboBoxPurMaterials.Items.Add(purMatl);
-            foreach (var custMatl in _compMaterials)
+            foreach (CtsAttributes custMatl in _compMaterials)
                 comboBoxCustomMaterials.Items.Add(custMatl);
 
             for (double i = 0; i < 1.125; i += .125)
             {
-                var addStock = new CtsAttributes("", string.Format("{0:f3}", i));
+                CtsAttributes addStock = new CtsAttributes("", string.Format("{0:f3}", i));
 
                 if(addStock.AttrValue.StartsWith("0"))
                     addStock.AttrValue = addStock.AttrValue.Remove(0, 1);
@@ -1953,31 +1953,31 @@ namespace TSG_Library.UFuncs
             comboBoxAddz.SelectedIndex = 0;
             ///////////////////////////////
 
-            foreach (var tol in _compTolerances)
+            foreach (CtsAttributes tol in _compTolerances)
                 comboBoxTolerance.Items.Add(tol);
-            foreach (var matl in _compMaterials)
+            foreach (CtsAttributes matl in _compMaterials)
                 comboBoxMaterial.Items.Add(matl);
-            foreach (var name in _compNames)
+            foreach (CtsAttributes name in _compNames)
                 comboBoxName.Items.Add(name);
 
-            var wireDev1 = new CtsAttributes("WFTD", "YES");
+            CtsAttributes wireDev1 = new CtsAttributes("WFTD", "YES");
             comboBoxWireDev.Items.Add(wireDev1);
-            var wireDev2 = new CtsAttributes("WFTD", "NO");
+            CtsAttributes wireDev2 = new CtsAttributes("WFTD", "NO");
             comboBoxWireDev.Items.Add(wireDev2);
 
-            var wireTaper1 = new CtsAttributes("WTN", "YES");
+            CtsAttributes wireTaper1 = new CtsAttributes("WTN", "YES");
             comboBoxWireTaper.Items.Add(wireTaper1);
-            var wireTaper2 = new CtsAttributes("WTN", "NO");
+            CtsAttributes wireTaper2 = new CtsAttributes("WTN", "NO");
             comboBoxWireTaper.Items.Add(wireTaper2);
 
-            var dieset1 = new CtsAttributes("DIESET NOTE", "YES");
+            CtsAttributes dieset1 = new CtsAttributes("DIESET NOTE", "YES");
             comboBoxDieset.Items.Add(dieset1);
-            var dieset2 = new CtsAttributes("DIESET NOTE", "NO");
+            CtsAttributes dieset2 = new CtsAttributes("DIESET NOTE", "NO");
             comboBoxDieset.Items.Add(dieset2);
 
-            var weldment1 = new CtsAttributes("WELDMENT NOTE", "YES");
+            CtsAttributes weldment1 = new CtsAttributes("WELDMENT NOTE", "YES");
             comboBoxWeldment.Items.Add(weldment1);
-            var weldment2 = new CtsAttributes("WELDMENT NOTE", "NO");
+            CtsAttributes weldment2 = new CtsAttributes("WELDMENT NOTE", "NO");
             comboBoxWeldment.Items.Add(weldment2);
         }
 
@@ -2007,7 +2007,7 @@ namespace TSG_Library.UFuncs
                 grindValue = string.Empty,
                 grindTolValue = string.Empty;
 
-            foreach (var exp in _workPart.Expressions.ToArray())
+            foreach (Expression exp in _workPart.Expressions.ToArray())
             {
                 if(exp.Name == "AddX")
                 {
@@ -2109,7 +2109,7 @@ namespace TSG_Library.UFuncs
 
             if(_workPart.PartUnits == BasePart.Units.Inches)
             {
-                var unit1 = _workPart.UnitCollection.FindObject("Inch");
+                Unit unit1 = _workPart.UnitCollection.FindObject("Inch");
 
                 if(comboBoxAddx.SelectedIndex > 0)
                     _ = _workPart.Expressions.CreateWithUnits("AddX=" + comboBoxAddx.Text, unit1);
@@ -2126,7 +2126,7 @@ namespace TSG_Library.UFuncs
             }
             else
             {
-                var unit1 = _workPart.UnitCollection.FindObject("MilliMeter");
+                Unit unit1 = _workPart.UnitCollection.FindObject("MilliMeter");
 
                 if(comboBoxAddx.SelectedIndex > 0)
                     _ = _workPart.Expressions.CreateWithUnits("AddX=" + comboBoxAddx.Text, unit1);
@@ -2181,7 +2181,7 @@ namespace TSG_Library.UFuncs
                 if(_selComp != null)
                     session_.Parts.SetWork((Part)_selComp.Prototype);
 
-                var tempCsys = __display_part_.WCS.Save();
+                CartesianCoordinateSystem tempCsys = __display_part_.WCS.Save();
 
                 var isMetric = false;
 
@@ -2213,7 +2213,7 @@ namespace TSG_Library.UFuncs
                         grindTolValue = string.Empty,
                         diesetValue = string.Empty;
 
-                    foreach (var exp in _workPart.Expressions.ToArray())
+                    foreach (Expression exp in _workPart.Expressions.ToArray())
                     {
                         if(exp.Name == "AddX")
                         {
@@ -2494,7 +2494,7 @@ namespace TSG_Library.UFuncs
                         }
                     }
 
-                    var delObj = new List<NXObject>();
+                    List<NXObject> delObj = new List<NXObject>();
                     delObj.Add(tempCsys);
                     DeleteNxObjects(delObj);
 
@@ -2506,7 +2506,7 @@ namespace TSG_Library.UFuncs
                     if(_selComp == null)
                         __display_part_.Views.Regenerate();
 
-                    session_.Parts.SetDisplay(_originalDisplayPart, false, false, out var setDispLoadStatus1);
+                    session_.Parts.SetDisplay(_originalDisplayPart, false, false, out PartLoadStatus setDispLoadStatus1);
                     setDispLoadStatus1.Dispose();
                     UpdateSessionParts();
                 }
@@ -2535,7 +2535,7 @@ namespace TSG_Library.UFuncs
                 var isMetric = false;
 
                 BasePart basePart = _workPart;
-                var partUnits = basePart.PartUnits;
+                BasePart.Units partUnits = basePart.PartUnits;
 
                 if(partUnits == BasePart.Units.Millimeters)
                     isMetric = true;
@@ -2545,13 +2545,13 @@ namespace TSG_Library.UFuncs
                 {
                     if(featDynamic.FeatureType != "BLOCK") continue;
                     if(featDynamic.Name != "DYNAMIC BLOCK") continue;
-                    var block1 = (Block)featDynamic;
-                    var sizeBody = block1.GetBodies();
+                    Block block1 = (Block)featDynamic;
+                    Body[] sizeBody = block1.GetBodies();
 
                     BlockFeatureBuilder blockFeatureBuilderSize;
                     blockFeatureBuilderSize = _workPart.Features.CreateBlockFeatureBuilder(block1);
 
-                    blockFeatureBuilderSize.GetOrientation(out var xAxis, out var yAxis);
+                    blockFeatureBuilderSize.GetOrientation(out Vector3d xAxis, out Vector3d yAxis);
 
                     double[] initOrigin =
                     {
@@ -2561,9 +2561,9 @@ namespace TSG_Library.UFuncs
                     double[] xVector = { xAxis.X, xAxis.Y, xAxis.Z };
                     double[] yVector = { yAxis.X, yAxis.Y, yAxis.Z };
                     var initMatrix = new double[9];
-                    var tempCsys = NXOpen.Tag.Null;
+                    Tag tempCsys = NXOpen.Tag.Null;
                     ufsession_.Mtx3.Initialize(xVector, yVector, initMatrix);
-                    ufsession_.Csys.CreateMatrix(initMatrix, out var tempMatrix);
+                    ufsession_.Csys.CreateMatrix(initMatrix, out Tag tempMatrix);
                     ufsession_.Csys.CreateTempCsys(initOrigin, tempMatrix, out tempCsys);
 
                     if(tempCsys != NXOpen.Tag.Null)
@@ -2582,7 +2582,7 @@ namespace TSG_Library.UFuncs
                             grindTolValue = string.Empty,
                             diesetValue = string.Empty;
 
-                        foreach (var exp in _workPart.Expressions.ToArray())
+                        foreach (Expression exp in _workPart.Expressions.ToArray())
                         {
                             if(exp.Name == "AddX")
                             {
@@ -2695,7 +2695,7 @@ namespace TSG_Library.UFuncs
                             Array.Sort(distances);
                             Array.Sort(grindDistances);
 
-                            var text = (CtsAttributes)comboBoxTolerance.SelectedItem;
+                            CtsAttributes text = (CtsAttributes)comboBoxTolerance.SelectedItem;
                             if(burnoutValue.ToLower() == "no" && grindValue.ToLower() == "no")
                             {
                                 _workPart.SetUserAttribute("DESCRIPTION", -1,
@@ -2893,7 +2893,7 @@ namespace TSG_Library.UFuncs
                 var descriptionAtt =
                     _workPart.GetUserAttributeAsString("DESCRIPTION", NXObject.AttributeType.String, -1);
 
-                var expressions = _workPart.Expressions.ToArray();
+                Expression[] expressions = _workPart.Expressions.ToArray();
 
                 // Checks to see if the {_workPart} contains an expression with value {"yes"} and name of {lwrParallel} or {uprParallel}.
                 if(expressions.Any(exp =>
@@ -2944,7 +2944,7 @@ namespace TSG_Library.UFuncs
             {
                 if(_selComp != null)
                 {
-                    var selCompProto = (Part)_selComp.Prototype;
+                    Part selCompProto = (Part)_selComp.Prototype;
 
                     if(textBoxDescription.Text != "")
                     {
@@ -2957,7 +2957,7 @@ namespace TSG_Library.UFuncs
 
                             if(_selComp != null)
                             {
-                                var compProto = (Part)_selComp.Prototype;
+                                Part compProto = (Part)_selComp.Prototype;
 
                                 foreach (Feature featDynamic in compProto.Features)
                                     if(featDynamic.FeatureType == "BLOCK")
@@ -2999,7 +2999,7 @@ namespace TSG_Library.UFuncs
                     if(comboBoxDieset.Text != "")
                         if(comboBoxDieset.Text == "YES")
                         {
-                            var prevWp = NXOpen.Tag.Null;
+                            Tag prevWp = NXOpen.Tag.Null;
 #pragma warning disable CS0618 // Type or member is obsolete
                             ufsession_.Assem.SetWorkPartQuietly(selCompProto.Tag, out prevWp);
 #pragma warning restore CS0618 // Type or member is obsolete
@@ -3007,7 +3007,7 @@ namespace TSG_Library.UFuncs
 
                             Expression Dieset = null;
 
-                            foreach (var exp in _workPart.Expressions.ToArray())
+                            foreach (Expression exp in _workPart.Expressions.ToArray())
                                 if(exp.Name == "DiesetNote")
                                     Dieset = exp;
 
@@ -3029,7 +3029,7 @@ namespace TSG_Library.UFuncs
                         }
                         else
                         {
-                            var prevWp = NXOpen.Tag.Null;
+                            Tag prevWp = NXOpen.Tag.Null;
 #pragma warning disable CS0618 // Type or member is obsolete
                             ufsession_.Assem.SetWorkPartQuietly(selCompProto.Tag, out prevWp);
 #pragma warning restore CS0618 // Type or member is obsolete
@@ -3037,7 +3037,7 @@ namespace TSG_Library.UFuncs
 
                             Expression Dieset = null;
 
-                            foreach (var exp in _workPart.Expressions.ToArray())
+                            foreach (Expression exp in _workPart.Expressions.ToArray())
                                 if(exp.Name == "DiesetNote")
                                     Dieset = exp;
 
@@ -3058,7 +3058,7 @@ namespace TSG_Library.UFuncs
                     if(comboBoxWeldment.Text != "")
                         if(comboBoxWeldment.Text == "YES")
                         {
-                            var prevWp = NXOpen.Tag.Null;
+                            Tag prevWp = NXOpen.Tag.Null;
 #pragma warning disable CS0618 // Type or member is obsolete
                             ufsession_.Assem.SetWorkPartQuietly(selCompProto.Tag, out prevWp);
 #pragma warning restore CS0618 // Type or member is obsolete
@@ -3066,7 +3066,7 @@ namespace TSG_Library.UFuncs
 
                             Expression Weldment = null;
 
-                            foreach (var exp in _workPart.Expressions.ToArray())
+                            foreach (Expression exp in _workPart.Expressions.ToArray())
                                 if(exp.Name == "WeldmentNote")
                                     Weldment = exp;
 
@@ -3092,12 +3092,12 @@ namespace TSG_Library.UFuncs
                             //#pragma warning disable CS0618 // Type or member is obsolete
                             //                            ufsession_.Assem.SetWorkPartQuietly(selCompProto.Tag, out prevWp);
                             //#pragma warning restore CS0618 // Type or member is obsolete
-                            ufsession_.Assem.SetWorkPartContextQuietly(selCompProto.Tag, out var prevWp);
+                            ufsession_.Assem.SetWorkPartContextQuietly(selCompProto.Tag, out IntPtr prevWp);
                             UpdateSessionParts();
 
                             Expression Weldment = null;
 
-                            foreach (var exp in _workPart.Expressions.ToArray())
+                            foreach (Expression exp in _workPart.Expressions.ToArray())
                                 if(exp.Name == "WeldmentNote")
                                     Weldment = exp;
 
@@ -3146,7 +3146,7 @@ namespace TSG_Library.UFuncs
                         {
                             Expression Dieset = null;
 
-                            foreach (var exp in _workPart.Expressions.ToArray())
+                            foreach (Expression exp in _workPart.Expressions.ToArray())
                                 if(exp.Name == "DiesetNote")
                                     Dieset = exp;
 
@@ -3166,7 +3166,7 @@ namespace TSG_Library.UFuncs
                         {
                             Expression Dieset = null;
 
-                            foreach (var exp in _workPart.Expressions.ToArray())
+                            foreach (Expression exp in _workPart.Expressions.ToArray())
                                 if(exp.Name == "DiesetNote")
                                     Dieset = exp;
 
@@ -3186,7 +3186,7 @@ namespace TSG_Library.UFuncs
                         {
                             Expression Weldment = null;
 
-                            foreach (var exp in _workPart.Expressions.ToArray())
+                            foreach (Expression exp in _workPart.Expressions.ToArray())
                                 if(exp.Name == "WeldmentNote")
                                     Weldment = exp;
 
@@ -3206,7 +3206,7 @@ namespace TSG_Library.UFuncs
                         {
                             Expression Weldment = null;
 
-                            foreach (var exp in _workPart.Expressions.ToArray())
+                            foreach (Expression exp in _workPart.Expressions.ToArray())
                                 if(exp.Name == "WeldmentNote")
                                     Weldment = exp;
 
@@ -3237,7 +3237,7 @@ namespace TSG_Library.UFuncs
                     {
                         Expression Dieset = null;
 
-                        foreach (var exp in _workPart.Expressions.ToArray())
+                        foreach (Expression exp in _workPart.Expressions.ToArray())
                             if(exp.Name == "DiesetNote")
                                 Dieset = exp;
 
@@ -3258,7 +3258,7 @@ namespace TSG_Library.UFuncs
                     {
                         Expression Dieset = null;
 
-                        foreach (var exp in _workPart.Expressions.ToArray())
+                        foreach (Expression exp in _workPart.Expressions.ToArray())
                             if(exp.Name == "DiesetNote")
                                 Dieset = exp;
 
@@ -3278,7 +3278,7 @@ namespace TSG_Library.UFuncs
                     {
                         Expression Weldment = null;
 
-                        foreach (var exp in _workPart.Expressions.ToArray())
+                        foreach (Expression exp in _workPart.Expressions.ToArray())
                             if(exp.Name == "WeldmentNote")
                                 Weldment = exp;
 
@@ -3299,7 +3299,7 @@ namespace TSG_Library.UFuncs
                     {
                         Expression Weldment = null;
 
-                        foreach (var exp in _workPart.Expressions.ToArray())
+                        foreach (Expression exp in _workPart.Expressions.ToArray())
                             if(exp.Name == "WeldmentNote")
                                 Weldment = exp;
 
@@ -3323,7 +3323,7 @@ namespace TSG_Library.UFuncs
                 UpdateSessionParts();
                 UpdateOriginalParts();
 
-                var myUDOclass =
+                UserDefinedClass myUDOclass =
                     session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoAutoSizeComponent");
 
                 if(myUDOclass != null)
@@ -3333,7 +3333,7 @@ namespace TSG_Library.UFuncs
 
                     if(currentUdo.Length == 1)
                     {
-                        var myUDO = currentUdo[0];
+                        UserDefinedObject myUDO = currentUdo[0];
 
                         var updateFlag = myUDO.GetIntegers();
 
@@ -3352,14 +3352,14 @@ namespace TSG_Library.UFuncs
 
         private Component SelectOneComponent()
         {
-            var mask = new Selection.MaskTriple[1];
+            Selection.MaskTriple[] mask = new Selection.MaskTriple[1];
             mask[0] = new Selection.MaskTriple(UF_component_type, 0, 0);
             Selection.Response sel;
             Component compSelection = null;
             sel = TheUi.SelectionManager.SelectTaggedObject("Select component to get attributes", "Select Component",
                 Selection.SelectionScope.AnyInAssembly,
                 Selection.SelectionAction.ClearAndEnableSpecific,
-                false, true, mask, out var selectedComp, out _);
+                false, true, mask, out TaggedObject selectedComp, out _);
 
             if(sel == Selection.Response.Ok || sel == Selection.Response.ObjectSelected ||
                sel == Selection.Response.ObjectSelectedByName)
@@ -3370,14 +3370,14 @@ namespace TSG_Library.UFuncs
 
         private Body SelectOneComponentBody()
         {
-            var mask = new Selection.MaskTriple[1];
+            Selection.MaskTriple[] mask = new Selection.MaskTriple[1];
             mask[0] = new Selection.MaskTriple(UF_solid_type, UF_solid_body_subtype, 0);
             Selection.Response sel;
             Body returnBody = null;
             sel = TheUi.SelectionManager.SelectTaggedObject("Select Body", "Select Body",
                 Selection.SelectionScope.AnyInAssembly,
                 Selection.SelectionAction.ClearAndEnableSpecific,
-                false, false, mask, out var selectedBody, out _);
+                false, false, mask, out TaggedObject selectedBody, out _);
 
             if(sel == Selection.Response.Ok || sel == Selection.Response.ObjectSelected ||
                sel == Selection.Response.ObjectSelectedByName)
@@ -3388,20 +3388,20 @@ namespace TSG_Library.UFuncs
 
         private List<Component> SelectMultipleComponents()
         {
-            var mask = new Selection.MaskTriple[1];
+            Selection.MaskTriple[] mask = new Selection.MaskTriple[1];
             mask[0] = new Selection.MaskTriple(UF_component_type, 0, 0);
             Selection.Response sel;
-            var compsSelection = new List<Component>();
+            List<Component> compsSelection = new List<Component>();
 
             sel = TheUi.SelectionManager.SelectTaggedObjects("Select Components", "Select Components",
                 Selection.SelectionScope.AnyInAssembly,
                 Selection.SelectionAction.ClearAndEnableSpecific,
-                false, true, mask, out var selectedCompArray);
+                false, true, mask, out TaggedObject[] selectedCompArray);
 
             if(sel == Selection.Response.Ok)
-                foreach (var comp in selectedCompArray)
+                foreach (TaggedObject comp in selectedCompArray)
                 {
-                    var component = (Component)comp;
+                    Component component = (Component)comp;
                     compsSelection.Add(component);
                 }
 
@@ -3410,13 +3410,13 @@ namespace TSG_Library.UFuncs
 
         private List<Component> GetOneComponentOfMany(List<Component> compList)
         {
-            var oneComp = new List<Component>();
+            List<Component> oneComp = new List<Component>();
 
             oneComp.Add(compList[0]);
 
-            foreach (var comp in compList)
+            foreach (Component comp in compList)
             {
-                var foundComponent = oneComp.Find(delegate(Component c) { return c.DisplayName == comp.DisplayName; });
+                Component foundComponent = oneComp.Find(delegate(Component c) { return c.DisplayName == comp.DisplayName; });
                 if(foundComponent == null)
                     oneComp.Add(comp);
             }
@@ -3434,9 +3434,9 @@ namespace TSG_Library.UFuncs
                 {
                     ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
-                    var compBase = (BasePart)compRefCsys.Prototype;
+                    BasePart compBase = (BasePart)compRefCsys.Prototype;
 
-                    session_.Parts.SetDisplay(compBase, false, false, out var setDispLoadStatus);
+                    session_.Parts.SetDisplay(compBase, false, false, out PartLoadStatus setDispLoadStatus);
                     setDispLoadStatus.Dispose();
                     UpdateSessionParts();
 
@@ -3444,11 +3444,11 @@ namespace TSG_Library.UFuncs
                         if(featBlk.FeatureType == "BLOCK")
                             if(featBlk.Name == "DYNAMIC BLOCK")
                             {
-                                var block1 = (Block)featBlk;
+                                Block block1 = (Block)featBlk;
 
                                 BlockFeatureBuilder blockFeatureBuilderMatch;
                                 blockFeatureBuilderMatch = _workPart.Features.CreateBlockFeatureBuilder(block1);
-                                var bOrigin = blockFeatureBuilderMatch.Origin;
+                                Point3d bOrigin = blockFeatureBuilderMatch.Origin;
                                 var blength = blockFeatureBuilderMatch.Length.RightHandSide;
                                 var bwidth = blockFeatureBuilderMatch.Width.RightHandSide;
                                 var bheight = blockFeatureBuilderMatch.Height.RightHandSide;
@@ -3456,37 +3456,37 @@ namespace TSG_Library.UFuncs
                                 var mWidth = blockFeatureBuilderMatch.Width.Value;
                                 var mHeight = blockFeatureBuilderMatch.Height.Value;
 
-                                blockFeatureBuilderMatch.GetOrientation(out var xAxis, out var yAxis);
+                                blockFeatureBuilderMatch.GetOrientation(out Vector3d xAxis, out Vector3d yAxis);
 
                                 double[] initOrigin = { bOrigin.X, bOrigin.Y, bOrigin.Z };
                                 double[] xVector = { xAxis.X, xAxis.Y, xAxis.Z };
                                 double[] yVector = { yAxis.X, yAxis.Y, yAxis.Z };
                                 var initMatrix = new double[9];
                                 ufsession_.Mtx3.Initialize(xVector, yVector, initMatrix);
-                                ufsession_.Csys.CreateMatrix(initMatrix, out var tempMatrix);
-                                ufsession_.Csys.CreateTempCsys(initOrigin, tempMatrix, out var tempCsys);
-                                var setTempCsys = (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
+                                ufsession_.Csys.CreateMatrix(initMatrix, out Tag tempMatrix);
+                                ufsession_.Csys.CreateTempCsys(initOrigin, tempMatrix, out Tag tempCsys);
+                                CartesianCoordinateSystem setTempCsys = (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
 
                                 __display_part_.WCS.SetOriginAndMatrix(setTempCsys.Origin,
                                     setTempCsys.Orientation.Element);
 
-                                var featBlkCsys = __display_part_.WCS.Save();
+                                CartesianCoordinateSystem featBlkCsys = __display_part_.WCS.Save();
                                 featBlkCsys.SetName("EDITCSYS");
                                 featBlkCsys.Layer = 254;
 
                                 NXObject[] addToBody = { featBlkCsys };
 
-                                foreach (var bRefSet in __display_part_.GetAllReferenceSets())
+                                foreach (ReferenceSet bRefSet in __display_part_.GetAllReferenceSets())
                                     if(bRefSet.Name == "BODY")
                                         bRefSet.AddObjectsToReferenceSet(addToBody);
 
                                 session_.Parts.SetDisplay(_originalDisplayPart, false, false,
-                                    out var setDispLoadStatus1);
+                                    out PartLoadStatus setDispLoadStatus1);
                                 setDispLoadStatus1.Dispose();
 
                                 session_.Parts.SetWorkComponent(compRefCsys, PartCollection.RefsetOption.Current,
                                     PartCollection.WorkComponentOption.Given,
-                                    out var partLoadStatusWorkComp);
+                                    out PartLoadStatus partLoadStatusWorkComp);
                                 partLoadStatusWorkComp.Dispose();
                                 UpdateSessionParts();
 
@@ -3497,7 +3497,7 @@ namespace TSG_Library.UFuncs
                                             NXObject csysOccurrence;
                                             csysOccurrence = session_.Parts.WorkComponent.FindOccurrence(wpCsys);
 
-                                            var editCsys = (CartesianCoordinateSystem)csysOccurrence;
+                                            CartesianCoordinateSystem editCsys = (CartesianCoordinateSystem)csysOccurrence;
 
                                             if(editCsys != null)
                                                 __display_part_.WCS.SetOriginAndMatrix(editCsys.Origin,
@@ -3523,11 +3523,11 @@ namespace TSG_Library.UFuncs
                         if(featBlk.FeatureType == "BLOCK")
                             if(featBlk.Name == "DYNAMIC BLOCK")
                             {
-                                var block1 = (Block)featBlk;
+                                Block block1 = (Block)featBlk;
 
                                 BlockFeatureBuilder blockFeatureBuilderMatch;
                                 blockFeatureBuilderMatch = _workPart.Features.CreateBlockFeatureBuilder(block1);
-                                var bOrigin = blockFeatureBuilderMatch.Origin;
+                                Point3d bOrigin = blockFeatureBuilderMatch.Origin;
                                 var blength = blockFeatureBuilderMatch.Length.RightHandSide;
                                 var bwidth = blockFeatureBuilderMatch.Width.RightHandSide;
                                 var bheight = blockFeatureBuilderMatch.Height.RightHandSide;
@@ -3535,16 +3535,16 @@ namespace TSG_Library.UFuncs
                                 var mWidth = blockFeatureBuilderMatch.Width.Value;
                                 var mHeight = blockFeatureBuilderMatch.Height.Value;
 
-                                blockFeatureBuilderMatch.GetOrientation(out var xAxis, out var yAxis);
+                                blockFeatureBuilderMatch.GetOrientation(out Vector3d xAxis, out Vector3d yAxis);
 
                                 double[] initOrigin = { bOrigin.X, bOrigin.Y, bOrigin.Z };
                                 double[] xVector = { xAxis.X, xAxis.Y, xAxis.Z };
                                 double[] yVector = { yAxis.X, yAxis.Y, yAxis.Z };
                                 var initMatrix = new double[9];
                                 ufsession_.Mtx3.Initialize(xVector, yVector, initMatrix);
-                                ufsession_.Csys.CreateMatrix(initMatrix, out var tempMatrix);
-                                ufsession_.Csys.CreateTempCsys(initOrigin, tempMatrix, out var tempCsys);
-                                var setTempCsys = (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
+                                ufsession_.Csys.CreateMatrix(initMatrix, out Tag tempMatrix);
+                                ufsession_.Csys.CreateTempCsys(initOrigin, tempMatrix, out Tag tempCsys);
+                                CartesianCoordinateSystem setTempCsys = (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
 
                                 __display_part_.WCS.SetOriginAndMatrix(setTempCsys.Origin,
                                     setTempCsys.Orientation.Element);
@@ -3598,8 +3598,8 @@ namespace TSG_Library.UFuncs
 
         private void ShowTemporarySizeText(double length, Point3d start, Point3d end)
         {
-            var view = __display_part_.Views.WorkView.Tag;
-            var viewType = UFDisp.ViewType.UseWorkView;
+            Tag view = __display_part_.Views.WorkView.Tag;
+            UFDisp.ViewType viewType = UFDisp.ViewType.UseWorkView;
             var dim = string.Empty;
 
             if(__display_part_.PartUnits == BasePart.Units.Inches)
@@ -3614,7 +3614,7 @@ namespace TSG_Library.UFuncs
             }
 
             var midPoint = new double[3];
-            var dispProps = new UFObj.DispProps();
+            UFObj.DispProps dispProps = new UFObj.DispProps();
             dispProps.color = 31;
             double charSize;
             var font = 1;
@@ -3634,19 +3634,19 @@ namespace TSG_Library.UFuncs
 
         private void CreateTempBlockLines(Point3d wcsOrigin, double lineLength, double lineWidth, double lineHeight)
         {
-            var prevWork = NXOpen.Tag.Null;
+            Tag prevWork = NXOpen.Tag.Null;
 #pragma warning disable CS0618 // Type or member is obsolete
             ufsession_.Assem.SetWorkPartQuietly(__display_part_.Tag, out prevWork);
 #pragma warning restore CS0618 // Type or member is obsolete
 
-            var mappedStartPoint1 = MapAbsoluteToWcs(wcsOrigin);
+            Point3d mappedStartPoint1 = MapAbsoluteToWcs(wcsOrigin);
 
-            var dispProps = new UFObj.DispProps();
+            UFObj.DispProps dispProps = new UFObj.DispProps();
             dispProps.color = 7;
-            var lineData1 = new UFCurve.Line();
+            UFCurve.Line lineData1 = new UFCurve.Line();
 
-            var endPointX1 = new Point3d(mappedStartPoint1.X + lineLength, mappedStartPoint1.Y, mappedStartPoint1.Z);
-            var mappedEndPointX1 = MapWcsToAbsolute(endPointX1);
+            Point3d endPointX1 = new Point3d(mappedStartPoint1.X + lineLength, mappedStartPoint1.Y, mappedStartPoint1.Z);
+            Point3d mappedEndPointX1 = MapWcsToAbsolute(endPointX1);
             double[] startX1 = { wcsOrigin.X, wcsOrigin.Y, wcsOrigin.Z };
             double[] endX1 = { mappedEndPointX1.X, mappedEndPointX1.Y, mappedEndPointX1.Z };
             lineData1.start_point = startX1;
@@ -3656,8 +3656,8 @@ namespace TSG_Library.UFuncs
                 ref dispProps);
             ShowTemporarySizeText(lineLength, wcsOrigin, mappedEndPointX1);
 
-            var endPointY1 = new Point3d(mappedStartPoint1.X, mappedStartPoint1.Y + lineWidth, mappedStartPoint1.Z);
-            var mappedEndPointY1 = MapWcsToAbsolute(endPointY1);
+            Point3d endPointY1 = new Point3d(mappedStartPoint1.X, mappedStartPoint1.Y + lineWidth, mappedStartPoint1.Z);
+            Point3d mappedEndPointY1 = MapWcsToAbsolute(endPointY1);
             double[] startY1 = { wcsOrigin.X, wcsOrigin.Y, wcsOrigin.Z };
             double[] endY1 = { mappedEndPointY1.X, mappedEndPointY1.Y, mappedEndPointY1.Z };
             lineData1.start_point = startY1;
@@ -3667,8 +3667,8 @@ namespace TSG_Library.UFuncs
                 ref dispProps);
             ShowTemporarySizeText(lineWidth, wcsOrigin, mappedEndPointY1);
 
-            var endPointZ1 = new Point3d(mappedStartPoint1.X, mappedStartPoint1.Y, mappedStartPoint1.Z + lineHeight);
-            var mappedEndPointZ1 = MapWcsToAbsolute(endPointZ1);
+            Point3d endPointZ1 = new Point3d(mappedStartPoint1.X, mappedStartPoint1.Y, mappedStartPoint1.Z + lineHeight);
+            Point3d mappedEndPointZ1 = MapWcsToAbsolute(endPointZ1);
             double[] startZ1 = { wcsOrigin.X, wcsOrigin.Y, wcsOrigin.Z };
             double[] endZ1 = { mappedEndPointZ1.X, mappedEndPointZ1.Y, mappedEndPointZ1.Z };
             lineData1.start_point = startZ1;
@@ -3680,10 +3680,10 @@ namespace TSG_Library.UFuncs
 
             //==================================================================================================================
 
-            var mappedStartPoint2 = MapAbsoluteToWcs(mappedEndPointY1);
+            Point3d mappedStartPoint2 = MapAbsoluteToWcs(mappedEndPointY1);
 
-            var endPointX2 = new Point3d(mappedStartPoint2.X + lineLength, mappedStartPoint2.Y, mappedStartPoint2.Z);
-            var mappedEndPointX2 = MapWcsToAbsolute(endPointX2);
+            Point3d endPointX2 = new Point3d(mappedStartPoint2.X + lineLength, mappedStartPoint2.Y, mappedStartPoint2.Z);
+            Point3d mappedEndPointX2 = MapWcsToAbsolute(endPointX2);
             double[] startX2 = { mappedEndPointY1.X, mappedEndPointY1.Y, mappedEndPointY1.Z };
             double[] endX2 = { mappedEndPointX2.X, mappedEndPointX2.Y, mappedEndPointX2.Z };
             lineData1.start_point = startX2;
@@ -3702,11 +3702,11 @@ namespace TSG_Library.UFuncs
 
             //==================================================================================================================
 
-            var mappedStartPoint3 = MapAbsoluteToWcs(mappedEndPointZ1);
+            Point3d mappedStartPoint3 = MapAbsoluteToWcs(mappedEndPointZ1);
 
-            var endPointX1Ceiling =
+            Point3d endPointX1Ceiling =
                 new Point3d(mappedStartPoint3.X + lineLength, mappedStartPoint3.Y, mappedStartPoint3.Z);
-            var mappedEndPointX1Ceiling = MapWcsToAbsolute(endPointX1Ceiling);
+            Point3d mappedEndPointX1Ceiling = MapWcsToAbsolute(endPointX1Ceiling);
             double[] startX3 = { mappedEndPointZ1.X, mappedEndPointZ1.Y, mappedEndPointZ1.Z };
             double[] endX3 = { mappedEndPointX1Ceiling.X, mappedEndPointX1Ceiling.Y, mappedEndPointX1Ceiling.Z };
             lineData1.start_point = startX3;
@@ -3715,9 +3715,9 @@ namespace TSG_Library.UFuncs
                 lineData1.start_point, lineData1.end_point,
                 ref dispProps);
 
-            var endPointY1Ceiling =
+            Point3d endPointY1Ceiling =
                 new Point3d(mappedStartPoint3.X, mappedStartPoint3.Y + lineWidth, mappedStartPoint3.Z);
-            var mappedEndPointY1Ceiling = MapWcsToAbsolute(endPointY1Ceiling);
+            Point3d mappedEndPointY1Ceiling = MapWcsToAbsolute(endPointY1Ceiling);
             double[] startY3 = { mappedEndPointZ1.X, mappedEndPointZ1.Y, mappedEndPointZ1.Z };
             double[] endY3 = { mappedEndPointY1Ceiling.X, mappedEndPointY1Ceiling.Y, mappedEndPointY1Ceiling.Z };
             lineData1.start_point = startY3;
@@ -3728,11 +3728,11 @@ namespace TSG_Library.UFuncs
 
             //==================================================================================================================
 
-            var mappedStartPoint4 = MapAbsoluteToWcs(mappedEndPointY1Ceiling);
+            Point3d mappedStartPoint4 = MapAbsoluteToWcs(mappedEndPointY1Ceiling);
 
-            var endPointX2Ceiling =
+            Point3d endPointX2Ceiling =
                 new Point3d(mappedStartPoint4.X + lineLength, mappedStartPoint4.Y, mappedStartPoint4.Z);
-            var mappedEndPointX2Ceiling = MapWcsToAbsolute(endPointX2Ceiling);
+            Point3d mappedEndPointX2Ceiling = MapWcsToAbsolute(endPointX2Ceiling);
             double[] startX4 = { mappedEndPointY1Ceiling.X, mappedEndPointY1Ceiling.Y, mappedEndPointY1Ceiling.Z };
             double[] endX4 = { mappedEndPointX2Ceiling.X, mappedEndPointX2Ceiling.Y, mappedEndPointX2Ceiling.Z };
             lineData1.start_point = startX4;
@@ -3778,7 +3778,7 @@ namespace TSG_Library.UFuncs
             if(_selComp != null)
             {
                 session_.Parts.SetWorkComponent(_selComp, PartCollection.RefsetOption.Current,
-                    PartCollection.WorkComponentOption.Given, out var partLoad1);
+                    PartCollection.WorkComponentOption.Given, out PartLoadStatus partLoad1);
                 partLoad1.Dispose();
             }
             else
@@ -3808,7 +3808,7 @@ namespace TSG_Library.UFuncs
                     yValue = 0,
                     zValue = 0;
 
-                foreach (var exp in _workPart.Expressions.ToArray())
+                foreach (Expression exp in _workPart.Expressions.ToArray())
                 {
                     if(exp.Name == "AddX")
                     {
@@ -3913,7 +3913,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var sr = new StreamReader(path);
+                StreamReader sr = new StreamReader(path);
                 var content = sr.ReadToEnd();
                 sr.Close();
                 string[] startSplit;
@@ -3940,13 +3940,13 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var sr = new StreamReader(path);
+                StreamReader sr = new StreamReader(path);
                 var content = sr.ReadToEnd();
                 sr.Close();
                 string[] startSplit;
                 string[] endSplit;
                 string textData;
-                var compData = new List<CtsAttributes>();
+                List<CtsAttributes> compData = new List<CtsAttributes>();
 
                 startSplit = Regex.Split(content, startSearchString);
                 endSplit = Regex.Split(startSplit[1], endSearchString);
@@ -3957,7 +3957,7 @@ namespace TSG_Library.UFuncs
                 foreach (var sData in splitData)
                     if(sData != string.Empty)
                     {
-                        var cData = new CtsAttributes();
+                        CtsAttributes cData = new CtsAttributes();
                         cData.AttrValue = sData;
                         compData.Add(cData);
                     }

@@ -24,7 +24,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             Component component = (Component)dict[originalComp];
             Part part = component.__Prototype();
             Feature feature = (Feature)dict[originalFeature];
-            ((EdgeDumbRule)originalRule).GetData(out var edges);
+            ((EdgeDumbRule)originalRule).GetData(out Edge[] edges);
             feature.Suppress();
             originalFeature.Suppress();
             IList<Edge> list = new List<Edge>();

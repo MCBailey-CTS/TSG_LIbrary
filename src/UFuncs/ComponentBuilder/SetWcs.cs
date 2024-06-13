@@ -66,11 +66,11 @@ namespace TSG_Library.UFuncs
                 if (featBlk.FeatureType == "BLOCK")
                     if (featBlk.Name == "DYNAMIC BLOCK")
                     {
-                        var block1 = (Block)featBlk;
+                        Block block1 = (Block)featBlk;
 
                         BlockFeatureBuilder blockFeatureBuilderMatch;
                         blockFeatureBuilderMatch = _workPart.Features.CreateBlockFeatureBuilder(block1);
-                        var bOrigin = blockFeatureBuilderMatch.Origin;
+                        Point3d bOrigin = blockFeatureBuilderMatch.Origin;
                         var blength = blockFeatureBuilderMatch.Length.RightHandSide;
                         var bwidth = blockFeatureBuilderMatch.Width.RightHandSide;
                         var bheight = blockFeatureBuilderMatch.Height.RightHandSide;
@@ -90,16 +90,16 @@ namespace TSG_Library.UFuncs
                             _parallelWidthExp = "lwrParallelWidth";
                         }
 
-                        blockFeatureBuilderMatch.GetOrientation(out var xAxis, out var yAxis);
+                        blockFeatureBuilderMatch.GetOrientation(out Vector3d xAxis, out Vector3d yAxis);
 
                         double[] initOrigin = { bOrigin.X, bOrigin.Y, bOrigin.Z };
                         double[] xVector = { xAxis.X, xAxis.Y, xAxis.Z };
                         double[] yVector = { yAxis.X, yAxis.Y, yAxis.Z };
                         var initMatrix = new double[9];
                         ufsession_.Mtx3.Initialize(xVector, yVector, initMatrix);
-                        ufsession_.Csys.CreateMatrix(initMatrix, out var tempMatrix);
-                        ufsession_.Csys.CreateTempCsys(initOrigin, tempMatrix, out var tempCsys);
-                        var setTempCsys = (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
+                        ufsession_.Csys.CreateMatrix(initMatrix, out Tag tempMatrix);
+                        ufsession_.Csys.CreateTempCsys(initOrigin, tempMatrix, out Tag tempCsys);
+                        CartesianCoordinateSystem setTempCsys = (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
 
                         _displayPart.WCS.SetOriginAndMatrix(setTempCsys.Origin,
                             setTempCsys.Orientation.Element);
@@ -112,7 +112,7 @@ namespace TSG_Library.UFuncs
         {
             ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
-            var compBase = (BasePart)compRefCsys.Prototype;
+            BasePart compBase = (BasePart)compRefCsys.Prototype;
 
             __display_part_ = (Part)compBase;
             UpdateSessionParts();
@@ -145,11 +145,11 @@ namespace TSG_Library.UFuncs
                 if (featBlk.FeatureType == "BLOCK")
                     if (featBlk.Name == "DYNAMIC BLOCK")
                     {
-                        var block1 = (Block)featBlk;
+                        Block block1 = (Block)featBlk;
 
                         BlockFeatureBuilder blockFeatureBuilderMatch;
                         blockFeatureBuilderMatch = _workPart.Features.CreateBlockFeatureBuilder(block1);
-                        var bOrigin = blockFeatureBuilderMatch.Origin;
+                        Point3d bOrigin = blockFeatureBuilderMatch.Origin;
                         var blength = blockFeatureBuilderMatch.Length.RightHandSide;
                         var bwidth = blockFeatureBuilderMatch.Width.RightHandSide;
                         var bheight = blockFeatureBuilderMatch.Height.RightHandSide;
@@ -169,27 +169,27 @@ namespace TSG_Library.UFuncs
                             _parallelWidthExp = "lwrParallelWidth";
                         }
 
-                        blockFeatureBuilderMatch.GetOrientation(out var xAxis, out var yAxis);
+                        blockFeatureBuilderMatch.GetOrientation(out Vector3d xAxis, out Vector3d yAxis);
 
                         double[] initOrigin = { bOrigin.X, bOrigin.Y, bOrigin.Z };
                         double[] xVector = { xAxis.X, xAxis.Y, xAxis.Z };
                         double[] yVector = { yAxis.X, yAxis.Y, yAxis.Z };
                         var initMatrix = new double[9];
                         ufsession_.Mtx3.Initialize(xVector, yVector, initMatrix);
-                        ufsession_.Csys.CreateMatrix(initMatrix, out var tempMatrix);
-                        ufsession_.Csys.CreateTempCsys(initOrigin, tempMatrix, out var tempCsys);
-                        var setTempCsys = (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
+                        ufsession_.Csys.CreateMatrix(initMatrix, out Tag tempMatrix);
+                        ufsession_.Csys.CreateTempCsys(initOrigin, tempMatrix, out Tag tempCsys);
+                        CartesianCoordinateSystem setTempCsys = (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
 
                         _displayPart.WCS.SetOriginAndMatrix(setTempCsys.Origin,
                             setTempCsys.Orientation.Element);
 
-                        var featBlkCsys = _displayPart.WCS.Save();
+                        CartesianCoordinateSystem featBlkCsys = _displayPart.WCS.Save();
                         featBlkCsys.SetName("EDITCSYS");
                         featBlkCsys.Layer = 254;
 
                         NXObject[] addToBody = { featBlkCsys };
 
-                        foreach (var bRefSet in _displayPart.GetAllReferenceSets())
+                        foreach (ReferenceSet bRefSet in _displayPart.GetAllReferenceSets())
                             if (bRefSet.Name == "BODY")
                                 bRefSet.AddObjectsToReferenceSet(addToBody);
 
@@ -204,7 +204,7 @@ namespace TSG_Library.UFuncs
                                     NXObject csysOccurrence;
                                     csysOccurrence = session_.Parts.WorkComponent.FindOccurrence(wpCsys);
 
-                                    var editCsys = (CartesianCoordinateSystem)csysOccurrence;
+                                    CartesianCoordinateSystem editCsys = (CartesianCoordinateSystem)csysOccurrence;
 
                                     if (editCsys != null)
                                     {

@@ -1,5 +1,6 @@
 ﻿using System;
 using NXOpen;
+using NXOpen.UF;
 
 namespace TSG_Library.Extensions
 {
@@ -108,10 +109,10 @@ namespace TSG_Library.Extensions
         //     outside the face.
         public static double[] __Parameters(this Face face, Point3d point)
         {
-            var evalsf = ufsession_.Evalsf;
-            evalsf.Initialize2(face.Tag, out var evaluator);
+            UFEvalsf evalsf = ufsession_.Evalsf;
+            evalsf.Initialize2(face.Tag, out IntPtr evaluator);
             var array = point.__ToArray();
-            evalsf.FindClosestPoint(evaluator, array, out var srf_pos);
+            evalsf.FindClosestPoint(evaluator, array, out UFEvalsf.Pos3 srf_pos);
             evalsf.Free(out evaluator);
             var uv = srf_pos.uv;
 #pragma warning disable CS0618 // Type or member is obsolete

@@ -122,7 +122,7 @@ namespace TSG_Library.UFuncs
             foreach (var colorLine in colors)
             {
                 // Matches the {colorLine}.
-                var match = Regex.Match(colorLine, rgbRegex);
+                Match match = Regex.Match(colorLine, rgbRegex);
 
                 // If the {colorLine} doesn't match, ignore it.
                 if(!match.Success)
@@ -161,7 +161,7 @@ namespace TSG_Library.UFuncs
                 // Creates a button. 
                 var nxColor = int.Parse(match.Groups["NX"].Value);
                 // ReSharper disable once UseObjectOrCollectionInitializer
-                var button = new Button
+                Button button = new Button
                 {
                     BackColor = Color.FromArgb(aValue, rValue, gValue, bValue),
                     Location = new Point(10 + (36 - 10) * xCounter++, (45 - 19) * yCounter - 10),
@@ -292,7 +292,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var button = (Button)sender;
+                Button button = (Button)sender;
 
                 Hide();
 

@@ -53,14 +53,14 @@ namespace TSG_Library.Utilities
                 if(multiple)
                 {
                     ufsession_.Ui.SelectWithClassDialog(Prompt, Prompt, (int)Scope, initialProcess, IntPtr.Zero,
-                        out var _, out var _, out var selectedObj);
+                        out var _, out var _, out Tag[] selectedObj);
                     result = selectedObj.Select(x => (T)NXObjectManager.Get(x)).ToArray();
                 }
                 else
                 {
                     var cursor = new double[3];
                     ufsession_.Ui.SelectWithSingleDialog(Prompt, Prompt, (int)Scope, initialProcess, IntPtr.Zero,
-                        out var _, out var selectedObj, cursor, out _);
+                        out var _, out Tag selectedObj, cursor, out _);
                     result = new[] { (T)NXObjectManager.Get(selectedObj) };
                 }
 

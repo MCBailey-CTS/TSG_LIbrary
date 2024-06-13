@@ -93,7 +93,7 @@ namespace TSG_Library.UFuncs
 
                     if(_selComponents.Count != 0)
                     {
-                        var burnComponent = (from comp in _selComponents
+                        List<Component> burnComponent = (from comp in _selComponents
                             from attrAll in comp.GetUserAttributes()
                             where attrAll.Title.ToUpper() == "MATERIAL"
                             let attrValue = comp.GetStringUserAttribute(attrAll.Title, -1)
@@ -106,11 +106,11 @@ namespace TSG_Library.UFuncs
                             CreateBurnoutSheet(burnComponent);
 
                         if(checkBoxDeleteBurnout.Checked)
-                            foreach (var burnComp in burnComponent)
+                            foreach (Component burnComp in burnComponent)
                             {
-                                var compProto = (Part)burnComp.Prototype;
+                                Part compProto = (Part)burnComp.Prototype;
                                 ufsession_.Part.SetDisplayPart(compProto.Tag);
-                                var deleteView = __display_part_.DrawingSheets
+                                List<NXObject> deleteView = __display_part_.DrawingSheets
                                     .Cast<DrawingSheet>()
                                     .Where(dwg => dwg.Name == "BURNOUT")
                                     .Cast<NXObject>()
@@ -131,15 +131,15 @@ namespace TSG_Library.UFuncs
 
         private static void SetAnnotationPreferences()
         {
-            var letteringPreferences1 = __work_part_.Annotations.Preferences.GetLetteringPreferences();
+            LetteringPreferences letteringPreferences1 = __work_part_.Annotations.Preferences.GetLetteringPreferences();
 
-            var cfw = new TextCfw
+            TextCfw cfw = new TextCfw
             {
                 Color = 7,
                 Font = 1,
                 Width = LineWidth.Thin
             };
-            var dimensionText1 = new Lettering
+            Lettering dimensionText1 = new Lettering
             {
                 Size = 0.5,
                 CharacterSpaceFactor = 0.9,
@@ -150,7 +150,7 @@ namespace TSG_Library.UFuncs
             };
             letteringPreferences1.SetDimensionText(dimensionText1);
 
-            var appendedText1 = new Lettering
+            Lettering appendedText1 = new Lettering
             {
                 Size = 0.5,
                 CharacterSpaceFactor = 0.9,
@@ -161,7 +161,7 @@ namespace TSG_Library.UFuncs
             };
             letteringPreferences1.SetAppendedText(appendedText1);
 
-            var toleranceText1 = new Lettering
+            Lettering toleranceText1 = new Lettering
             {
                 Size = 0.125,
                 CharacterSpaceFactor = 0.9,
@@ -172,7 +172,7 @@ namespace TSG_Library.UFuncs
             };
             letteringPreferences1.SetToleranceText(toleranceText1);
 
-            var generalText1 = new Lettering
+            Lettering generalText1 = new Lettering
             {
                 Size = 0.5,
                 CharacterSpaceFactor = 0.9,
@@ -187,37 +187,37 @@ namespace TSG_Library.UFuncs
 
             letteringPreferences1.Dispose();
 
-            var lineAndArrowPreferences1 = __work_part_.Annotations.Preferences.GetLineAndArrowPreferences();
+            LineAndArrowPreferences lineAndArrowPreferences1 = __work_part_.Annotations.Preferences.GetLineAndArrowPreferences();
 
-            var firstExtensionLineCfw1 = new LineCfw(7, DisplayableObject.ObjectFont.Solid, LineWidth.Thin);
+            LineCfw firstExtensionLineCfw1 = new LineCfw(7, DisplayableObject.ObjectFont.Solid, LineWidth.Thin);
             lineAndArrowPreferences1.SetFirstExtensionLineCfw(firstExtensionLineCfw1);
 
-            var firstArrowheadCfw1 = new LineCfw(7, DisplayableObject.ObjectFont.Solid, LineWidth.Thin);
+            LineCfw firstArrowheadCfw1 = new LineCfw(7, DisplayableObject.ObjectFont.Solid, LineWidth.Thin);
             lineAndArrowPreferences1.SetFirstArrowheadCfw(firstArrowheadCfw1);
 
-            var firstArrowLineCfw1 = new LineCfw(7, DisplayableObject.ObjectFont.Solid, LineWidth.Thin);
+            LineCfw firstArrowLineCfw1 = new LineCfw(7, DisplayableObject.ObjectFont.Solid, LineWidth.Thin);
             lineAndArrowPreferences1.SetFirstArrowLineCfw(firstArrowLineCfw1);
 
-            var secondExtensionLineCfw1 = new LineCfw(7, DisplayableObject.ObjectFont.Solid, LineWidth.Thin);
+            LineCfw secondExtensionLineCfw1 = new LineCfw(7, DisplayableObject.ObjectFont.Solid, LineWidth.Thin);
             lineAndArrowPreferences1.SetSecondExtensionLineCfw(secondExtensionLineCfw1);
 
-            var secondArrowheadCfw1 = new LineCfw(7, DisplayableObject.ObjectFont.Solid, LineWidth.Thin);
+            LineCfw secondArrowheadCfw1 = new LineCfw(7, DisplayableObject.ObjectFont.Solid, LineWidth.Thin);
             lineAndArrowPreferences1.SetSecondArrowheadCfw(secondArrowheadCfw1);
 
-            var secondArrowLineCfw1 = new LineCfw(7, DisplayableObject.ObjectFont.Solid, LineWidth.Thin);
+            LineCfw secondArrowLineCfw1 = new LineCfw(7, DisplayableObject.ObjectFont.Solid, LineWidth.Thin);
             lineAndArrowPreferences1.SetSecondArrowLineCfw(secondArrowLineCfw1);
 
             __work_part_.Annotations.Preferences.SetLineAndArrowPreferences(lineAndArrowPreferences1);
 
             lineAndArrowPreferences1.Dispose();
 
-            var dimensionPreferences1 = __work_part_.Annotations.Preferences.GetDimensionPreferences();
+            DimensionPreferences dimensionPreferences1 = __work_part_.Annotations.Preferences.GetDimensionPreferences();
             dimensionPreferences1.TextPlacement = TextPlacement.Automatic;
             dimensionPreferences1.TrimDimensionLineStyle = TrimDimensionLineStyle.Trim;
             __work_part_.Annotations.Preferences.SetDimensionPreferences(dimensionPreferences1);
             dimensionPreferences1.Dispose();
 
-            var unitsFormatPreferences1 = new UFDrf.UnitsFormatPreferences
+            UFDrf.UnitsFormatPreferences unitsFormatPreferences1 = new UFDrf.UnitsFormatPreferences
             {
                 dimension_linear_units = UFDrf.LinearUnits.Inches,
                 linear_fraction_type = UFDrf.FractionType.Decimal,
@@ -267,7 +267,7 @@ namespace TSG_Library.UFuncs
             var isDescription = false;
             var isShop = false;
 
-            foreach (var comp in nxCompList)
+            foreach (Component comp in nxCompList)
             {
                 if(!(comp.Prototype is Part))
                 {
@@ -275,11 +275,11 @@ namespace TSG_Library.UFuncs
                     continue;
                 }
 
-                var snapPart = (Part)comp.Prototype;
+                Part snapPart = (Part)comp.Prototype;
 
                 bool ValidateExpression(string str)
                 {
-                    var exp = snapPart.__FindExpression(str);
+                    Expression exp = snapPart.__FindExpression(str);
 
                     if(exp == null)
                     {
@@ -301,7 +301,7 @@ namespace TSG_Library.UFuncs
                 if(!addX || !addY || !addZ)
                     continue;
 
-                foreach (var attrBurn in comp.GetUserAttributes())
+                foreach (NXObject.AttributeInformation attrBurn in comp.GetUserAttributes())
                 {
                     var title = attrBurn.Title.ToUpper();
 
@@ -346,7 +346,7 @@ namespace TSG_Library.UFuncs
 
                 if(isJobNumber && isQty && isDetailNumber && isMaterial && isDescription && isShop)
                 {
-                    var compProto = (Part)comp.Prototype;
+                    Part compProto = (Part)comp.Prototype;
                     ufsession_.Part.SetDisplayPart(compProto.Tag);
 
                     __display_part_.WCS.SetOriginAndMatrix(_Point3dOrigin, _Matrix3x3Identity);
@@ -365,11 +365,11 @@ namespace TSG_Library.UFuncs
                             250.0, 1.0, 1.0,
                             DrawingSheet.ProjectionAngleType.ThirdAngle);
 
-                        var burnoutDwg = NXOpen.Tag.Null;
+                        Tag burnoutDwg = NXOpen.Tag.Null;
                         ufsession_.Obj.CycleByNameAndType(__display_part_.Tag, "BURNOUT", UFConstants.UF_drawing_type,
                             false, ref burnoutDwg);
 
-                        ufsession_.Draw.AskCurrentDrawing(out var currentDwg);
+                        ufsession_.Draw.AskCurrentDrawing(out Tag currentDwg);
 
                         ufsession_.Obj.AskName(currentDwg, out var dwgName);
 
@@ -386,7 +386,7 @@ namespace TSG_Library.UFuncs
                         // Import plan view
 
 
-                        var baseViewBuilder1 = __work_part_.DraftingViews.CreateBaseViewBuilder(null);
+                        BaseViewBuilder baseViewBuilder1 = __work_part_.DraftingViews.CreateBaseViewBuilder(null);
 
                         var isPlan = false;
 
@@ -403,10 +403,10 @@ namespace TSG_Library.UFuncs
 
                                     baseViewBuilder1.SelectModelView.SelectedView = mView;
 
-                        var point1 = new Point3d(125.0, 75.0, 0.0);
+                        Point3d point1 = new Point3d(125.0, 75.0, 0.0);
                         baseViewBuilder1.Placement.Placement.SetValue(null, __work_part_.Views.WorkView, point1);
 
-                        var nXObject1 = baseViewBuilder1.Commit();
+                        NXObject nXObject1 = baseViewBuilder1.Commit();
 
                         baseViewBuilder1.Destroy();
 
@@ -414,9 +414,9 @@ namespace TSG_Library.UFuncs
 
                         __display_part_.Layers.SetState(100, State.WorkLayer);
 
-                        var importedViewObj = (View)nXObject1;
+                        View importedViewObj = (View)nXObject1;
 
-                        var layerVisibleInView = new StateInfo[256];
+                        StateInfo[] layerVisibleInView = new StateInfo[256];
 
                         for (var i = 0; i < layerVisibleInView.Length - 1; i++)
                         {
@@ -429,16 +429,16 @@ namespace TSG_Library.UFuncs
 
                         __work_part_.Layers.SetObjectsVisibilityOnLayer(importedViewObj, layerVisibleInView, true);
 
-                        var draftingViews = __work_part_.DraftingViews.ToArray();
+                        DraftingView[] draftingViews = __work_part_.DraftingViews.ToArray();
                         __work_part_.DraftingViews.UpdateViews(draftingViews);
 
                         // Add annotation note
 
-                        var markId3 = session_.SetUndoMark(Session.MarkVisibility.Invisible, "CreateOrNull Annotation");
+                        Session.UndoMarkId markId3 = session_.SetUndoMark(Session.MarkVisibility.Invisible, "CreateOrNull Annotation");
 
-                        var letteringPreferences2 = __work_part_.Annotations.Preferences.GetLetteringPreferences();
+                        LetteringPreferences letteringPreferences2 = __work_part_.Annotations.Preferences.GetLetteringPreferences();
 
-                        var userSymbolPreferences2 = __work_part_.Annotations.NewUserSymbolPreferences(
+                        UserSymbolPreferences userSymbolPreferences2 = __work_part_.Annotations.NewUserSymbolPreferences(
                             UserSymbolPreferences.SizeType.ScaleAspectRatio, 1.0,
                             1.0);
 
@@ -449,8 +449,8 @@ namespace TSG_Library.UFuncs
                         textLines1[3] = "MATL: <W@MATERIAL>";
                         textLines1[4] = "SIZE: <W@DESCRIPTION>";
                         textLines1[5] = "SEND ALL SLUGS TO <W@SHOP>";
-                        var origin2 = new Point3d(0.0, 0.0, 0.0);
-                        var note1 = __work_part_.Annotations.CreateNote(textLines1, origin2, AxisOrientation.Horizontal,
+                        Point3d origin2 = new Point3d(0.0, 0.0, 0.0);
+                        Note note1 = __work_part_.Annotations.CreateNote(textLines1, origin2, AxisOrientation.Horizontal,
                             letteringPreferences2,
                             userSymbolPreferences2);
 
@@ -462,12 +462,12 @@ namespace TSG_Library.UFuncs
                         lines1[4] = "SIZE: <W@DESCRIPTION>";
                         lines1[5] = "SEND ALL SLUGS TO <W@SHOP>";
                         note1.SetText(lines1);
-                        var origin3 = new Point3d(125.0, 100.0, 0.0);
+                        Point3d origin3 = new Point3d(125.0, 100.0, 0.0);
                         note1.AnnotationOrigin = origin3;
 
                         session_.UpdateManager.DoUpdate(markId3);
 
-                        var markId4 = session_.SetUndoMark(Session.MarkVisibility.Invisible, "CreateOrNull Annotation");
+                        Session.UndoMarkId markId4 = session_.SetUndoMark(Session.MarkVisibility.Invisible, "CreateOrNull Annotation");
 
                         var textLines2 = new string[6];
                         textLines2[0] = "<W@SHOP> JOB NO.: <W@JOB NUMBER>";
@@ -476,8 +476,8 @@ namespace TSG_Library.UFuncs
                         textLines2[3] = "MATL: <W@MATERIAL>";
                         textLines2[4] = "SIZE: <W@DESCRIPTION>";
                         textLines2[5] = "SEND ALL SLUGS TO <W@SHOP>";
-                        var origin4 = new Point3d(125.0, 100.0, 0.0);
-                        var note2 = __work_part_.Annotations.CreateNote(textLines2, origin4, AxisOrientation.Horizontal,
+                        Point3d origin4 = new Point3d(125.0, 100.0, 0.0);
+                        Note note2 = __work_part_.Annotations.CreateNote(textLines2, origin4, AxisOrientation.Horizontal,
                             letteringPreferences2,
                             userSymbolPreferences2);
 

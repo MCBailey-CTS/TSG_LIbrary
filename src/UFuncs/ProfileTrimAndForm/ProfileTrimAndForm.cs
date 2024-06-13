@@ -46,9 +46,9 @@ namespace TSG_Library.UFuncs
             {
                 Hide();
 
-                var selectCurves = new SelectCurveGroups();
+                SelectCurveGroups selectCurves = new SelectCurveGroups();
 
-                var pairs = selectCurves.SelectCurveGroups1(rdoAllCurves.Checked, Layer).ToArray();
+                Tuple<Vector3d, ISet<Curve>>[] pairs = selectCurves.SelectCurveGroups1(rdoAllCurves.Checked, Layer).ToArray();
 
                 if(pairs.Length == 0)
                     return;
@@ -56,12 +56,12 @@ namespace TSG_Library.UFuncs
                 Create(pairs);
 
 
-                var display = Session.GetSession().Parts.Display;
+                Part display = Session.GetSession().Parts.Display;
 
                 try
                 {
                     const string lwr_prof_name = "LWR-PROFILE";
-                    var lwrProfRefset = display.GetAllReferenceSets()
+                    ReferenceSet lwrProfRefset = display.GetAllReferenceSets()
                         .SingleOrDefault(refset => refset.Name == lwr_prof_name);
                     if(lwrProfRefset is null)
                     {
@@ -70,7 +70,7 @@ namespace TSG_Library.UFuncs
                     }
 
                     // offset face lower body
-                    var lowerObjects = display.Features
+                    NXObject[] lowerObjects = display.Features
                         .GetFeatures()
                         .Where(feat => feat.Name.ToUpper() == "LOWER")
                         .OfType<ExtractFace>()
@@ -89,7 +89,7 @@ namespace TSG_Library.UFuncs
                 try
                 {
                     const string upr_prof_name = "UPR-PROFILE";
-                    var uprProfRefset = display.GetAllReferenceSets()
+                    ReferenceSet uprProfRefset = display.GetAllReferenceSets()
                         .SingleOrDefault(refset => refset.Name == upr_prof_name);
                     if(uprProfRefset is null)
                     {
@@ -98,7 +98,7 @@ namespace TSG_Library.UFuncs
                     }
 
                     // unite retainer body
-                    var uniteObjects = display.Features
+                    NXObject[] uniteObjects = display.Features
                         .GetFeatures()
                         .Where(feat => feat.Name.ToUpper() == "UNITETARGET")
                         .OfType<Extrude>()
@@ -115,7 +115,7 @@ namespace TSG_Library.UFuncs
                 try
                 {
                     const string pad_prof_name = "PAD-PROFILE";
-                    var padProfRefset = display.GetAllReferenceSets()
+                    ReferenceSet padProfRefset = display.GetAllReferenceSets()
                         .SingleOrDefault(refset => refset.Name == pad_prof_name);
                     if(padProfRefset is null)
                     {
@@ -124,7 +124,7 @@ namespace TSG_Library.UFuncs
                     }
 
                     // offset face pad body
-                    var padObjects = display.Features
+                    NXObject[] padObjects = display.Features
                         .GetFeatures()
                         .Where(feat => feat.Name.ToUpper() == "PAD")
                         .OfType<ExtractFace>()
@@ -154,7 +154,7 @@ namespace TSG_Library.UFuncs
 
         private void Create(IEnumerable<Tuple<Vector3d, ISet<Curve>>> pairs)
         {
-            var pairArray = pairs.ToArray();
+            Tuple<Vector3d, ISet<Curve>>[] pairArray = pairs.ToArray();
 
             if(pairArray.Length == 0)
                 return;
@@ -163,7 +163,7 @@ namespace TSG_Library.UFuncs
 
             var padOffset = rdoTrim.Checked ? "p" : ".5";
 
-            var offsetDirection = rdoTrim.Checked || rdoOuter.Checked
+            Offset offsetDirection = rdoTrim.Checked || rdoOuter.Checked
                 ? Offset.Out
                 : Offset.In;
 
@@ -206,18 +206,18 @@ namespace TSG_Library.UFuncs
                 if(!_dict.ContainsKey(datumAxis))
                     throw new ArgumentOutOfRangeException(nameof(datumAxis), "Unknown datum axis selected.");
 
-                var curves = _dict[datumAxis];
+                ISet<Curve> curves = _dict[datumAxis];
 
                 _dict.Remove(datumAxis);
 
-                var newDatumAxis = datumAxis.__OwningPart()
+                DatumAxis newDatumAxis = datumAxis.__OwningPart()
                     .__CreateFixedDatumAxis(datumAxis.Origin, datumAxis.Direction.__Negate());
 
                 _dict.Add(newDatumAxis, curves);
 
                 session_.__DeleteObjects(datumAxis);
 
-                foreach (var curve in curves)
+                foreach (Curve curve in curves)
                 {
                     if(_dictCurveAxis.ContainsKey(curve))
                     {
@@ -249,9 +249,9 @@ namespace TSG_Library.UFuncs
                 if(!(curve is Conic conic))
                     return;
 
-                conic.GetOrientation(out var center, out var xDirection, out var yDirection);
-                var orientation = xDirection.__ToMatrix3x3(yDirection);
-                var datumAxis = conic.__OwningPart().__CreateFixedDatumAxis(center, orientation.__AxisZ());
+                conic.GetOrientation(out Point3d center, out Vector3d xDirection, out Vector3d yDirection);
+                Matrix3x3 orientation = xDirection.__ToMatrix3x3(yDirection);
+                DatumAxis datumAxis = conic.__OwningPart().__CreateFixedDatumAxis(center, orientation.__AxisZ());
                 _dict.Add(datumAxis, new HashSet<Curve>(new[] { conic }));
                 selectedObjects++;
                 _dictColors.Add(conic, conic.Color);
@@ -272,15 +272,15 @@ namespace TSG_Library.UFuncs
                 if(snap_curves.Length < 3)
                     throw new InvalidOperationException("Selected a set of curves that has less than 3 curves.");
 
-                var a_vec = snap_curves[0].__StartPoint().__Subtract(snap_curves[0].__EndPoint());
-                var b_vec = snap_curves[1].__StartPoint().__Subtract(snap_curves[1].__EndPoint());
-                var cross_vec = b_vec.__Cross(a_vec);
+                Vector3d a_vec = snap_curves[0].__StartPoint().__Subtract(snap_curves[0].__EndPoint());
+                Vector3d b_vec = snap_curves[1].__StartPoint().__Subtract(snap_curves[1].__EndPoint());
+                Vector3d cross_vec = b_vec.__Cross(a_vec);
 
                 var __all_on_plane = true;
 
                 for (var i = 2; i < snap_curves.Length; i++)
                 {
-                    var c_vec = snap_curves[i].__StartPoint().__Subtract(snap_curves[i].__EndPoint());
+                    Vector3d c_vec = snap_curves[i].__StartPoint().__Subtract(snap_curves[i].__EndPoint());
 
                     UFSession.GetUFSession().Vec3.Dot(cross_vec.__ToArray(), c_vec.__ToArray(), out var dot_product);
 
@@ -359,11 +359,11 @@ namespace TSG_Library.UFuncs
             {
                 deselectedCurve.__Color(_dictColors[deselectedCurve]);
 
-                var connectedDatumAxis = _dictCurveAxis[deselectedCurve];
+                DatumAxis connectedDatumAxis = _dictCurveAxis[deselectedCurve];
 
-                var curveSet = _dict[connectedDatumAxis];
+                ISet<Curve> curveSet = _dict[connectedDatumAxis];
 
-                foreach (var curve in curveSet)
+                foreach (Curve curve in curveSet)
                 {
                     selectedObjects--;
                     curve.__Color(_dictColors[curve]);
@@ -384,11 +384,11 @@ namespace TSG_Library.UFuncs
             {
                 //deselectedCurve._SetDisplayColor(_dictColors[deselectedCurve]);
 
-                var connectedDatumAxis = _dictCurveAxis[deselectedCurves[0]];
+                DatumAxis connectedDatumAxis = _dictCurveAxis[deselectedCurves[0]];
 
-                var curveSet = _dict[connectedDatumAxis];
+                ISet<Curve> curveSet = _dict[connectedDatumAxis];
 
-                foreach (var curve in curveSet)
+                foreach (Curve curve in curveSet)
                 {
                     selectedObjects--;
                     curve.__Color(_dictColors[curve]);
@@ -405,7 +405,7 @@ namespace TSG_Library.UFuncs
 
             private void Select(Curve curve)
             {
-                var collector = curve.__OwningPart().ScCollectors.CreateCollector();
+                ScCollector collector = curve.__OwningPart().ScCollectors.CreateCollector();
                 try
                 {
                     using (SelectionIntentRule rule = curve.__OwningPart().ScRuleFactory
@@ -413,7 +413,7 @@ namespace TSG_Library.UFuncs
                     {
                         collector.ReplaceRules(new[] { rule }, false);
 
-                        var collectedCurves = collector.GetObjects().Cast<Curve>().ToArray();
+                        Curve[] collectedCurves = collector.GetObjects().Cast<Curve>().ToArray();
 
                         switch (collectedCurves.Length)
                         {
@@ -503,9 +503,9 @@ namespace TSG_Library.UFuncs
                             Init_Proc,
                             IntPtr.Zero,
                             out var response,
-                            out var obj,
+                            out Tag obj,
                             cursor,
-                            out var view);
+                            out Tag view);
 
                         switch (response)
                         {
@@ -533,11 +533,11 @@ namespace TSG_Library.UFuncs
                         }
                     }
 
-                    foreach (var pair in _dict)
+                    foreach (KeyValuePair<DatumAxis, ISet<Curve>> pair in _dict)
                     {
-                        var datumAxis = pair.Key;
+                        DatumAxis datumAxis = pair.Key;
 
-                        var curveSet = pair.Value;
+                        ISet<Curve> curveSet = pair.Value;
 
                         if(returnFag)
                             yield return new Tuple<Vector3d, ISet<Curve>>(datumAxis.Direction.__Negate(), curveSet);
@@ -545,7 +545,7 @@ namespace TSG_Library.UFuncs
 
                         session_.__DeleteObjects(datumAxis);
 
-                        foreach (var curve in curveSet)
+                        foreach (Curve curve in curveSet)
                             curve.__Color(_dictColors[curve]);
                     }
 

@@ -20,7 +20,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             Part mirroredPart = mirroredComp.__Prototype();
             Feature feature = (Feature)dict[originalFeature];
             feature.Suppress();
-            ((EdgeBoundaryRule)originalRule).GetData(out var facesOfFeatures);
+            ((EdgeBoundaryRule)originalRule).GetData(out Face[] facesOfFeatures);
             IList<Face> source = (from originalFace in facesOfFeatures
                                   select (from originalEdge in originalFace.GetEdges()
                                           let finalStart = originalEdge.__StartPoint().__MirrorMap(plane, originalComp, mirroredComp)

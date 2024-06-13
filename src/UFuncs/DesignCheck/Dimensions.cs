@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using NXOpen;
+using NXOpen.Annotations;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 {
@@ -21,7 +22,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
             var passed = true;
 #pragma warning restore CS0219 // Variable is assigned but its value is never used
 
-            foreach (var dimension in part.Dimensions.ToArray())
+            foreach (Dimension dimension in part.Dimensions.ToArray())
                 //if (dimension._IsAssociative())
                 //    continue;
                 //passed = false;

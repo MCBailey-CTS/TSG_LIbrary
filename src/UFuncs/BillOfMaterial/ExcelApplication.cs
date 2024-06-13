@@ -40,15 +40,15 @@ namespace TSG_Library.Utilities
             GC.Collect();
             GC.WaitForPendingFinalizers();
 
-            foreach (var range in _ranges)
+            foreach (Range range in _ranges)
                 if(range != null)
                     Marshal.ReleaseComObject(range);
 
-            foreach (var range in _workSheets)
+            foreach (_Worksheet range in _workSheets)
                 if(range != null)
                     Marshal.ReleaseComObject(range);
 
-            foreach (var range in _workBooks)
+            foreach (KeyValuePair<string, Workbook> range in _workBooks)
                 if(range.Value != null)
                 {
                     range.Value.Close();
@@ -64,11 +64,11 @@ namespace TSG_Library.Utilities
             if(!_workBooks.ContainsKey(excelFilePath))
                 _workBooks.Add(excelFilePath, _application.Workbooks.Open(excelFilePath));
 
-            var workSheet = (_Worksheet)_workBooks[excelFilePath].Sheets[sheetIndex];
+            _Worksheet workSheet = (_Worksheet)_workBooks[excelFilePath].Sheets[sheetIndex];
 
             _workSheets.Add(workSheet);
 
-            var range = workSheet.UsedRange;
+            Range range = workSheet.UsedRange;
 
             _ranges.Add(range);
 
@@ -85,11 +85,11 @@ namespace TSG_Library.Utilities
             if(!_workBooks.ContainsKey(excelFilePath))
                 _workBooks.Add(excelFilePath, _application.Workbooks.Open(excelFilePath));
 
-            var workSheet = (_Worksheet)_workBooks[excelFilePath].Sheets[sheetIndex];
+            _Worksheet workSheet = (_Worksheet)_workBooks[excelFilePath].Sheets[sheetIndex];
 
             _workSheets.Add(workSheet);
 
-            var range = workSheet.UsedRange;
+            Range range = workSheet.UsedRange;
 
             _ranges.Add(range);
 
@@ -131,7 +131,7 @@ namespace TSG_Library.Utilities
             if(!_workBooks.ContainsKey(excelFilePath))
                 _workBooks.Add(excelFilePath, _application.Workbooks.Open(excelFilePath));
 
-            var workSheet = (_Worksheet)_workBooks[excelFilePath].ActiveSheet;
+            _Worksheet workSheet = (_Worksheet)_workBooks[excelFilePath].ActiveSheet;
 
             _workSheets.Add(workSheet);
 

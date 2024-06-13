@@ -43,13 +43,13 @@ namespace TSG_Library.UFuncs
                 var curvesSe = new int[200][];
                 for (var i = 0; i < 200; i++)
                     curvesSe[i] = new int[9];
-                var pointData = new UFCurve.PtSlopeCrvatr[MaxLength];
+                UFCurve.PtSlopeCrvatr[] pointData = new UFCurve.PtSlopeCrvatr[MaxLength];
 
                 // UFSession.GetUFSession().Modl.AskDistanceTolerance(out _);
 
                 GetPartUnits(tolerances, ref jumpGap, ref tolerance);
 
-                var curves = Selection.SelectCurves().Select(curve => curve.Tag).ToArray();
+                Tag[] curves = Selection.SelectCurves().Select(curve => curve.Tag).ToArray();
                 UFSession.GetUFSession().Disp.Refresh();
 
                 for (cc = 0; cc < curves.Length; cc++)
@@ -76,7 +76,7 @@ namespace TSG_Library.UFuncs
                     pointData[ii].crvatr_type = UFConstants.UF_CURVE_CRVATR_NONE;
                 }
 
-                UFSession.GetUFSession().Curve.CreateSplineThruPts(3, 0, numOfPts, pointData, null, 0, out var spline);
+                UFSession.GetUFSession().Curve.CreateSplineThruPts(3, 0, numOfPts, pointData, null, 0, out Tag spline);
                 UFSession.GetUFSession().Curve.CreateSimplifiedCurve(1, new[] { spline }, tolerance, out _, out _);
 
                 UFSession.GetUFSession().Obj.DeleteObject(spline);
@@ -99,7 +99,7 @@ namespace TSG_Library.UFuncs
 
         private static void GetPartUnits(IList<double> gTolerances, ref double jumpGap, ref double tolerance)
         {
-            var partTag = UFSession.GetUFSession().Part.AskDisplayPart();
+            Tag partTag = UFSession.GetUFSession().Part.AskDisplayPart();
             UFSession.GetUFSession().Part.AskUnits(partTag, out var partUnits);
 
             if(partUnits != UFConstants.UF_PART_ENGLISH) return;
@@ -243,11 +243,11 @@ namespace TSG_Library.UFuncs
             curvesSe[numOfCurves][0] = -1; // recall order
 
 
-            UFSession.GetUFSession().Eval.Initialize(curve, out var eval);
+            UFSession.GetUFSession().Eval.Initialize(curve, out IntPtr eval);
             UFSession.GetUFSession().Eval.IsLine(eval, out var isLine);
             if(isLine)
             {
-                UFSession.GetUFSession().Eval.AskLine(eval, out var uFEvalLine);
+                UFSession.GetUFSession().Eval.AskLine(eval, out UFEval.Line uFEvalLine);
                 origLineData[numOfLines][0] = uFEvalLine.start[0];
                 origLineData[numOfLines][1] = uFEvalLine.start[1];
                 origLineData[numOfLines][2] = uFEvalLine.start[2];
