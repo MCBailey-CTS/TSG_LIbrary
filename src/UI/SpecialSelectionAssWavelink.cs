@@ -73,9 +73,9 @@ namespace TSG_Library.Utilities
             }
         }
 
-        private int FilterProcess(Tag _object, int[] type, IntPtr userData, IntPtr select)
+        private int FilterProcess(Tag @object, int[] type, IntPtr userData, IntPtr select)
         {
-            if (!(NXObjectManager.Get(_object) is T obj))
+            if (!(NXObjectManager.Get(@object) is T obj))
                 return 0;
             try
             {

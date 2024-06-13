@@ -3,11 +3,18 @@ using NXOpen;
 using NXOpen.UF;
 using TSG_Library.Extensions;
 using static NXOpen.UF.UFConstants;
+// ReSharper disable UnusedMember.Global
+// ReSharper disable InconsistentNaming
+// ReSharper disable UnusedParameter.Global
+// ReSharper disable LocalVariableHidesMember
+// ReSharper disable MemberCanBePrivate.Global
 
+// ReSharper disable once CheckNamespace
 namespace TSG_Library.Utilities
 {
     public static class Masks
     {
+        // ReSharper disable once MemberCanBePrivate.Global
         public const int mask_object_type_spline = UF_spline_type;
         public static Selection.MaskTriple[] Mask = new Selection.MaskTriple[5];
         public static Selection.MaskTriple ComponentType = new Selection.MaskTriple(63, 0, 0);
@@ -240,7 +247,7 @@ namespace TSG_Library.Utilities
 
         public static int mask_for_curves(IntPtr select_, IntPtr handle)
         {
-            UFUi.Mask[] mask =
+            UFUi.Mask[] mask1 =
             {
                 new UFUi.Mask { object_type = UF_line_type, object_subtype = 0, solid_type = 0 },
                 new UFUi.Mask { object_type = UF_circle_type, object_subtype = 0, solid_type = 0 },
@@ -250,7 +257,7 @@ namespace TSG_Library.Utilities
 
             try
             {
-                __uf.Ui.SetSelMask(select_, UFUi.SelMaskAction.SelMaskClearAndEnableSpecific, 4, mask);
+                __uf.Ui.SetSelMask(select_, UFUi.SelMaskAction.SelMaskClearAndEnableSpecific, 4, mask1);
                 return UF_UI_SEL_SUCCESS;
             }
             catch (Exception ex)
@@ -458,13 +465,13 @@ namespace TSG_Library.Utilities
             return __uf.Ui.AskStringInput(prompt, ref text, out _);
         }
 
-        public static int mask_for_components_add_fasteners(IntPtr select_, IntPtr handle)
+        public static int mask_for_components_add_fasteners(IntPtr select, IntPtr handle)
         {
             UFUi.Mask mask = new UFUi.Mask { object_type = UF_component_type, object_subtype = 0, solid_type = 0 };
 
             try
             {
-                __uf.Ui.SetSelMask(select_, UFUi.SelMaskAction.SelMaskClearAndEnableSpecific, 1, new[] { mask });
+                __uf.Ui.SetSelMask(select, UFUi.SelMaskAction.SelMaskClearAndEnableSpecific, 1, new[] { mask });
 
                 return UF_UI_SEL_SUCCESS;
             }

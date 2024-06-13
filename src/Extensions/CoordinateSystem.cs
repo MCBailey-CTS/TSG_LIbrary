@@ -1,5 +1,8 @@
 ﻿using System;
 using NXOpen;
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedVariable
+// ReSharper disable InconsistentNaming
 
 namespace TSG_Library.Extensions
 {

@@ -108,7 +108,7 @@ namespace TSG_Library.Geom
                 Point3d position6 = new Point3d(MaxX, MinY, MaxZ);
                 Point3d position7 = new Point3d(MaxX, MaxY, MinZ);
                 Point3d position8 = new Point3d(MaxX, MaxY, MaxZ);
-                return new Point3d[8]
+                return new Point3d[]
                     { position, position2, position3, position4, position5, position6, position7, position8 };
             }
         }

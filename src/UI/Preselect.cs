@@ -7,6 +7,7 @@ using NXOpen.Assemblies;
 using NXOpen.UF;
 using NXOpen.Utilities;
 using static NXOpen.UF.UFConstants;
+// ReSharper disable MemberCanBePrivate.Global
 
 namespace TSG_Library.Ui
 {

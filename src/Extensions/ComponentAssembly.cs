@@ -1,4 +1,5 @@
 ﻿using NXOpen.Assemblies;
+// ReSharper disable InconsistentNaming
 
 namespace TSG_Library.Extensions
 {

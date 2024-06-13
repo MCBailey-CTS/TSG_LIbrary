@@ -1,6 +1,7 @@
 ﻿using NXOpen;
 using static NXOpen.Selection;
 using Curve = TSG_Library.Geom.Curve;
+// ReSharper disable ClassNeverInstantiated.Global
 
 namespace TSG_Library.Ui
 {
@@ -38,6 +39,7 @@ namespace TSG_Library.Ui
         //     • Ok -- the user clicked the "OK" button
         //     • ObjectSelectedByName -- the user selected an object by entering its name
         //     • ObjectSelected -- the user selected an object using the mouse
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public Response Response { get; internal set; }
 
         //
@@ -57,6 +59,7 @@ namespace TSG_Library.Ui
         //     In some situations (like selecting by rectangle, selecting by name, or selecting
         //     multiple objects) the Selection.Result returned will have its CursorRay set to
         //     Nothing.
+        // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
         public Curve.Ray CursorRay { get; internal set; }
 
         //

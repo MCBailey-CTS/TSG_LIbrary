@@ -10,6 +10,8 @@ using TSG_Library.Disposable;
 using TSG_Library.Enum;
 using static NXOpen.Session;
 using static NXOpen.UF.UFConstants;
+// ReSharper disable InconsistentNaming
+// ReSharper disable UnusedMember.Global
 
 namespace TSG_Library.Extensions
 {
@@ -92,6 +94,7 @@ namespace TSG_Library.Extensions
             return new LockUiFromCustom();
         }
 
+        // ReSharper disable once ParameterHidesMember
         public static string __SelectMenuItem14gt(this Session session_, string title, string[] items)
         {
             IList<string[]> separated = new List<string[]>();

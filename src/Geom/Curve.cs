@@ -1,6 +1,7 @@
 ﻿using System;
 using NXOpen;
 using TSG_Library.Extensions;
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace TSG_Library.Geom
 {

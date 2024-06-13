@@ -6,6 +6,8 @@ using NXOpen.UF;
 using TSG_Library.Utilities;
 using static NXOpen.UF.UFConstants;
 using static TSG_Library.Extensions.__Extensions_;
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedMember.Global
 
 namespace TSG_Library.Ui
 {
@@ -16,6 +18,7 @@ namespace TSG_Library.Ui
         public static readonly NXOpen.Selection.MaskTriple SolidBodyMask =
             CreateMask(UF_solid_type, 0, UF_UI_SEL_FEATURE_BODY);
 
+        // ReSharper disable once MemberCanBePrivate.Global
         public static readonly NXOpen.Selection.MaskTriple SheetBodyMask =
             CreateMask(UF_solid_type, 0, UF_UI_SEL_FEATURE_SHEET_BODY);
 
@@ -26,13 +29,13 @@ namespace TSG_Library.Ui
 
         public static readonly NXOpen.Selection.MaskTriple SplineMask = CreateMask(UF_spline_type, 0, 0);
 
-        private static NXOpen.Selection.MaskTriple CreateMask(int object_type, int object_subtype, int solid_type)
+        private static NXOpen.Selection.MaskTriple CreateMask(int objectType, int objectSubtype, int solidType)
         {
             return new NXOpen.Selection.MaskTriple
             {
-                Type = object_type,
-                Subtype = object_subtype,
-                SolidBodySubtype = solid_type
+                Type = objectType,
+                Subtype = objectSubtype,
+                SolidBodySubtype = solidType
             };
         }
 
@@ -44,9 +47,9 @@ namespace TSG_Library.Ui
                 NXOpen.Selection.SelectionScope.AnyInAssembly,
                 false,
                 new[] { NXOpen.Selection.SelectionType.Curves },
-                out TaggedObject[] __objects);
+                out TaggedObject[] objects);
 
-            return __objects.Cast<Curve>().ToArray();
+            return objects.Cast<Curve>().ToArray();
         }
 
 
@@ -60,10 +63,10 @@ namespace TSG_Library.Ui
                 false,
                 false,
                 new[] { SolidBodyMask, SheetBodyMask },
-                out TaggedObject __object,
+                out TaggedObject @object,
                 out _);
 
-            return (Body)__object;
+            return (Body)@object;
         }
 
         public static Component SelectSingleComponent(Predicate<Component> predicate = null)
@@ -180,17 +183,14 @@ namespace TSG_Library.Ui
             UFUi.Mask[] masks = null,
             Predicate<TSource> pred = null) where TSource : TaggedObject
         {
-            int __filter_proc(Tag _object, int[] type, IntPtr user_data, IntPtr select_)
+            int FilterProc(Tag @object, int[] type, IntPtr userData, IntPtr select)
             {
                 try
                 {
-                    if (!(_object.__ToTaggedObject() is TSource source_obj))
+                    if (!(@object.__ToTaggedObject() is TSource sourceObj))
                         return UF_UI_SEL_REJECT;
 
-                    if (!pred(source_obj))
-                        return UF_UI_SEL_REJECT;
-
-                    return UF_UI_SEL_ACCEPT;
+                    return pred != null && !pred(sourceObj) ? UF_UI_SEL_REJECT : UF_UI_SEL_ACCEPT;
                 }
                 catch (Exception ex)
                 {
@@ -200,15 +200,15 @@ namespace TSG_Library.Ui
                 return UF_UI_SEL_REJECT;
             }
 
-            int __init_proc(IntPtr __select, IntPtr __user_data)
+            int InitProc(IntPtr select, IntPtr userData)
             {
                 try
                 {
-                    ufsession_.Ui.SetSelProcs(__select, __filter_proc, null, __user_data);
+                    ufsession_.Ui.SetSelProcs(select, FilterProc, null, userData);
 
                     if (!(masks is null) && masks.Length > 0)
                         ufsession_.Ui.SetSelMask(
-                            __select,
+                            select,
                             UFUi.SelMaskAction.SelMaskClearAndEnableSpecific,
                             masks.Length,
                             masks);
@@ -230,14 +230,14 @@ namespace TSG_Library.Ui
                     message,
                     title,
                     UF_UI_SEL_SCOPE_ANY_IN_ASSEMBLY,
-                    __init_proc,
+                    InitProc,
                     IntPtr.Zero,
-                    out int __response,
-                    out Tag __object,
+                    out int response,
+                    out Tag @object,
                     cursor,
                     out _);
 
-                switch (__response)
+                switch (response)
                 {
                     case UF_UI_BACK:
                     case UF_UI_CANCEL:
@@ -248,12 +248,12 @@ namespace TSG_Library.Ui
                 }
 
 
-                TSource __obj = __object.__To<TSource>();
+                TSource obj = @object.__To<TSource>();
 
-                if (__obj is DisplayableObject disp)
+                if (obj is DisplayableObject disp)
                     disp.Unhighlight();
 
-                return __obj;
+                return obj;
             }
         }
 
@@ -263,20 +263,17 @@ namespace TSG_Library.Ui
             UFUi.Mask[] masks = null,
             Predicate<TSource> pred = null) where TSource : TaggedObject
         {
-            int __filter_proc(Tag _object, int[] type, IntPtr user_data, IntPtr select_)
+            int FilterProc(Tag @object, int[] type, IntPtr userData, IntPtr select)
             {
                 try
                 {
-                    if (!(_object.__ToTaggedObject() is TSource source_obj))
+                    if (!(@object.__ToTaggedObject() is TSource sourceObj))
                         return UF_UI_SEL_REJECT;
 
                     if (pred is null)
                         return UF_UI_SEL_ACCEPT;
 
-                    if (!pred(source_obj))
-                        return UF_UI_SEL_REJECT;
-
-                    return UF_UI_SEL_ACCEPT;
+                    return !pred(sourceObj) ? UF_UI_SEL_REJECT : UF_UI_SEL_ACCEPT;
                 }
                 catch (Exception ex)
                 {
@@ -286,15 +283,15 @@ namespace TSG_Library.Ui
                 return UF_UI_SEL_REJECT;
             }
 
-            int __init_proc(IntPtr __select, IntPtr __user_data)
+            int InitProc(IntPtr select, IntPtr userData)
             {
                 try
                 {
-                    ufsession_.Ui.SetSelProcs(__select, __filter_proc, null, __user_data);
+                    ufsession_.Ui.SetSelProcs(select, FilterProc, null, userData);
 
                     if (!(masks is null) && masks.Length > 0)
                         ufsession_.Ui.SetSelMask(
-                            __select,
+                            select,
                             UFUi.SelMaskAction.SelMaskClearAndEnableSpecific,
                             masks.Length,
                             masks);
@@ -310,28 +307,30 @@ namespace TSG_Library.Ui
 
             using (session_.__UsingLockUiFromCustom())
             {
+                // ReSharper disable once UnusedVariable
                 double[] cursor = new double[3];
 
                 ufsession_.Ui.SelectWithClassDialog(
                     message,
                     title,
                     UF_UI_SEL_SCOPE_ANY_IN_ASSEMBLY,
-                    __init_proc,
+                    InitProc,
                     IntPtr.Zero,
-                    out int __response,
+                    out int response,
+                    // ReSharper disable once UnusedVariable
                     out int count,
                     out Tag[] objects);
 
-                switch (__response)
+                switch (response)
                 {
                     case UF_UI_CANCEL:
                     case UF_UI_OK:
                         break;
                 }
 
-                TSource[] objs = objects.Select(__o => __o.__To<TSource>()).ToArray();
+                TSource[] objs = objects.Select(o => o.__To<TSource>()).ToArray();
 
-                objs.OfType<DisplayableObject>().ToList().ForEach(__o => __o.Unhighlight());
+                objs.OfType<DisplayableObject>().ToList().ForEach(o => o.Unhighlight());
 
                 return objs.ToArray();
             }

@@ -4,6 +4,7 @@ using System.Linq;
 using NXOpen;
 using NXOpen.UF;
 using NXOpen.Utilities;
+// ReSharper disable UnusedType.Global
 
 namespace TSG_Library.Ui
 {
@@ -82,9 +83,9 @@ namespace TSG_Library.Ui
             }
         }
 
-        protected virtual int FilterProcess(Tag _object, int[] type, IntPtr userData, IntPtr select)
+        protected virtual int FilterProcess(Tag @object, int[] type, IntPtr userData, IntPtr select)
         {
-            if (!(NXObjectManager.Get(_object) is T taggedObject)) return Reject;
+            if (!(NXObjectManager.Get(@object) is T taggedObject)) return Reject;
 
             //Snap.UI.Selection.SelectObject("").Show().
 

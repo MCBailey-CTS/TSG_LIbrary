@@ -6,6 +6,7 @@ using NXOpen.Assemblies;
 using NXOpen.UF;
 using NXOpen.Utilities;
 using static NXOpen.UF.UFConstants;
+// ReSharper disable UnusedVariable
 
 namespace TSG_Library.Utilities
 {
@@ -55,9 +56,9 @@ namespace TSG_Library.Utilities
             }
         }
 
-        public static int filter_proc(Tag _object, int[] type, IntPtr user_data, IntPtr select_)
+        public static int filter_proc(Tag @object, int[] type, IntPtr userData, IntPtr select)
         {
-            Body obj1 = (Body)NXObjectManager.Get(_object);
+            Body obj1 = (Body)NXObjectManager.Get(@object);
             Component objComp = obj1.OwningComponent;
             if (objComp == null) return UF_UI_SEL_ACCEPT;
             bool isFound = NonValidCandidates.Where(name => objComp.Name != string.Empty)

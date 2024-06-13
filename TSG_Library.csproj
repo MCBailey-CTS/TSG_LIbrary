@@ -486,42 +486,6 @@
     </Compile>
     <Compile Include="src\UFuncs\LayoutRefSets.cs" />
     <Compile Include="src\UFuncs\LoadColorPalette.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\BaseMirrorFeature.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\BaseMirrorRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\ILibraryComponent.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\IMirrorFeature.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\IMirrorRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorBlock.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorChamfer.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorComponentsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorComponentsForm.Designer.cs">
-      <DependentUpon>MirrorComponentsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeBlend.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeBodyRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeBoundaryRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeChainRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeDumbRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeMultipleSeedTangentRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeTangentRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeVertexRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorException.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorExtractedBody.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorExtrude.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorFaceAndAdjacentFacesRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorFaceDumbRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorFaceTangentRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorIntersect.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorLinkedBody.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorOffset.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorSmartButton.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorSmartKey.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorSmartStandardLiftersGuidedKeepersMetric.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorSmartStockEjector.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorSubtract.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorUnite.cs" />
     <Compile Include="src\UFuncs\Mirror\BaseMirrorFeature.cs" />
     <Compile Include="src\UFuncs\Mirror\BaseMirrorRule.cs" />
     <Compile Include="src\UFuncs\Mirror\Extensions_Position.cs" />

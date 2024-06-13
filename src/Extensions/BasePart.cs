@@ -20,6 +20,7 @@ using TSG_Library.Utilities;
 using static NXOpen.Session;
 using Curve = NXOpen.Curve;
 using Type = NXOpen.GeometricUtilities.Type;
+// ReSharper disable UnusedMember.Global
 
 namespace TSG_Library.Extensions
 {

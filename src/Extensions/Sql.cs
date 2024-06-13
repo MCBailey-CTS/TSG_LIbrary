@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Data.SqlClient;
+// ReSharper disable UnusedMember.Global
+// ReSharper disable InconsistentNaming
+// ReSharper disable UsingStatementResourceInitialization
 
 namespace TSG_Library.Extensions
 {

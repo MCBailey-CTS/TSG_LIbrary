@@ -1,4 +1,5 @@
 ﻿using NXOpen;
+// ReSharper disable UnusedMember.Global
 
 namespace TSG_Library.Extensions
 {

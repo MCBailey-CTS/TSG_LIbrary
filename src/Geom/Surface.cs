@@ -1,6 +1,8 @@
 ﻿using System;
 using NXOpen;
 using static TSG_Library.Extensions.__Extensions_;
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedParameter.Local
 
 namespace TSG_Library.Geom
 {
