@@ -7,7 +7,7 @@ using TSG_Library.Attributes;
 using TSG_Library.Properties;
 using static TSG_Library.UFuncs._UFunc;
 using static TSG_Library.UFuncs.AssemblyColorCodeForm;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 using Point = System.Drawing.Point;
 
 namespace TSG_Library.UFuncs

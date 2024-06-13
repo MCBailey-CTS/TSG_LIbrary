@@ -3,7 +3,7 @@ using NXOpen;
 using NXOpen.Features;
 using TSG_Library.Geom;
 using Curve = NXOpen.Curve;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 
 namespace TSG_Library
 {

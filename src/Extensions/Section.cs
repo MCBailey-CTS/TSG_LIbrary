@@ -2,10 +2,12 @@
 using NXOpen;
 using NXOpen.Assemblies;
 using TSG_Library.Geom;
+// ReSharper disable UnusedParameter.Global
+// ReSharper disable UnusedMember.Global
 
 namespace TSG_Library.Extensions
 {
-    public static partial class __Extensions_
+    public static partial class Extensions
     {
         #region Section
 

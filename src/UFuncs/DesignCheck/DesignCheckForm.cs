@@ -7,7 +7,7 @@ using NXOpen;
 using NXOpen.Assemblies;
 using TSG_Library.Properties;
 using TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 
 namespace TSG_Library.UFuncs
 {

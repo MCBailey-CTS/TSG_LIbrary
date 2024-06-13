@@ -11,7 +11,7 @@ using TSG_Library.Attributes;
 using TSG_Library.Properties;
 using TSG_Library.Utilities;
 using static NXOpen.UF.UFConstants;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 
 namespace TSG_Library.UFuncs
 {
@@ -266,7 +266,7 @@ namespace TSG_Library.UFuncs
 
             textBoxRevisionLevel.Clear();
 
-            Match match = Regex.Match(workPart.Leaf, Regex_Simulation);
+            Match match = Regex.Match(workPart.Leaf, RegexSimulation);
 
             textBoxJobNumber.Text = match.Success ? match.Groups["customerNum"].Value : "JOB #";
 
@@ -372,7 +372,7 @@ namespace TSG_Library.UFuncs
                 }
 
                 Part surfacePart = (Part)basePart1;
-                displayPart.ComponentAssembly.AddComponent(surfacePart, Refset_EntirePart, nameBuilder, sPartOrigin,
+                displayPart.ComponentAssembly.AddComponent(surfacePart, RefsetEntirePart, nameBuilder, sPartOrigin,
                     sPartMatrix, layer, out PartLoadStatus sPartLoadStatus);
                 sPartLoadStatus.Dispose();
 

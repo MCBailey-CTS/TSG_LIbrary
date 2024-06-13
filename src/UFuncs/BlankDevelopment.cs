@@ -4,7 +4,7 @@ using NXOpen;
 using NXOpen.GeometricUtilities;
 using NXOpen.UF;
 using TSG_Library.Attributes;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 using CurveLengthBuilder = NXOpen.Features.CurveLengthBuilder;
 using Selection = TSG_Library.Ui.Selection;
 

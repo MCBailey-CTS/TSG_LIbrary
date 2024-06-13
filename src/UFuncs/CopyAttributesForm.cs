@@ -10,7 +10,7 @@ using NXOpen.Assemblies;
 using NXOpen.UF;
 using TSG_Library.Attributes;
 using TSG_Library.Utilities;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 using Point = System.Drawing.Point;
 using Selection = TSG_Library.Ui.Selection;
 
@@ -239,7 +239,7 @@ namespace TSG_Library.UFuncs
         public static string[] InputFromUcf(string start, string end)
         {
             List<string> strings = new List<string>();
-            using (StreamReader textFile = new StreamReader(FilePath_Ucf))
+            using (StreamReader textFile = new StreamReader(FilePathUcf))
             {
                 while (textFile.ReadLine() != start)
                 {

@@ -7,7 +7,7 @@ using NXOpen.UF;
 using TSG_Library.Attributes;
 using TSG_Library.Disposable;
 using TSG_Library.Utilities;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 
 namespace TSG_Library.UFuncs
 {

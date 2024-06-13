@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Utilities;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 {

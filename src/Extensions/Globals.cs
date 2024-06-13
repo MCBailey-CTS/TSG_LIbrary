@@ -8,7 +8,7 @@ using static NXOpen.Session;
 
 namespace TSG_Library.Extensions
 {
-    public static partial class __Extensions_
+    public static partial class Extensions
     {
         #region Globals
 

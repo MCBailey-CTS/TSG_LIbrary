@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using MoreLinq;
 using NXOpen;
 using NXOpen.Preferences;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 using Part = NXOpen.Part;
 
 namespace TSG_Library.UFuncs

@@ -18,7 +18,7 @@ using TSG_Library.Ui;
 using TSG_Library.Utilities;
 using static NXOpen.UF.UFConstants;
 using static TSG_Library.UFuncs._UFunc;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 using Selection = TSG_Library.Ui.Selection;
 using View = NXOpen.View;
 
@@ -371,7 +371,7 @@ namespace TSG_Library.UFuncs
                 const string start = ":NXOpen.Assemblies.ComponentBURN_MATERIALS:";
                 const string end = ":END_NXOpen.Assemblies.ComponentBURN_MATERIALS:";
                 IEnumerable<string> result =
-                    Ucf.StaticRead(FilePath_Ucf, start, end, StringComparison.InvariantCultureIgnoreCase);
+                    Ucf.StaticRead(FilePathUcf, start, end, StringComparison.InvariantCultureIgnoreCase);
                 foreach (string temp in result)
                     materials.Add(temp);
 
@@ -786,10 +786,10 @@ namespace TSG_Library.UFuncs
             //const string settingsPath = "U:\\NX110\\Concept";
             //var settingsFile = Directory.GetFiles(settingsPath, "*.UCF");
             //if (settingsFile.Length != 1) return compMaterials;
-            string getMaterial = PerformStreamReaderString(FilePath_Ucf, ":COMPONENT_BURN_MATERIALS:",
+            string getMaterial = PerformStreamReaderString(FilePathUcf, ":COMPONENT_BURN_MATERIALS:",
                 ":END_COMPONENT_BURN_MATERIALS:");
             List<CtsAttributes> compMaterials =
-                PerformStreamReaderList(FilePath_Ucf, ":COMPONENT_MATERIALS:", ":END_COMPONENT_MATERIALS:");
+                PerformStreamReaderList(FilePathUcf, ":COMPONENT_MATERIALS:", ":END_COMPONENT_MATERIALS:");
             foreach (CtsAttributes cMaterial in compMaterials)
                 cMaterial.AttrName = getMaterial != string.Empty ? getMaterial : "MATERIAL";
             return compMaterials;
@@ -801,10 +801,10 @@ namespace TSG_Library.UFuncs
             //const string settingsPath = "U:\\NX110\\Concept";
             //var settingsFile = Directory.GetFiles(settingsPath, "*.UCF");
             //if (settingsFile.Length != 1) return compMaterials;
-            string getMaterial = PerformStreamReaderString(FilePath_Ucf, ":MATERIAL_ATTRIBUTE_NAME:",
+            string getMaterial = PerformStreamReaderString(FilePathUcf, ":MATERIAL_ATTRIBUTE_NAME:",
                 ":END_MATERIAL_ATTRIBUTE_NAME:");
             List<CtsAttributes> compMaterials =
-                PerformStreamReaderList(FilePath_Ucf, ":COMPONENT_MATERIALS:", ":END_COMPONENT_MATERIALS:");
+                PerformStreamReaderList(FilePathUcf, ":COMPONENT_MATERIALS:", ":END_COMPONENT_MATERIALS:");
             foreach (CtsAttributes cMaterial in compMaterials)
                 cMaterial.AttrName = getMaterial != string.Empty ? getMaterial : "MATERIAL";
             return compMaterials;

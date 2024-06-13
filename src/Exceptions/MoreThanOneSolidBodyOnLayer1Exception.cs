@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using NXOpen;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 
 namespace TSG_Library.Exceptions
 {

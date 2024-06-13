@@ -1,6 +1,8 @@
-﻿namespace TSG_Library.Extensions
+﻿// ReSharper disable UnusedMember.Local
+// ReSharper disable UnusedMember.Global
+namespace TSG_Library.Extensions
 {
-    public partial class __Extensions_
+    public partial class Extensions
     {
         #region Constants
 
@@ -14,20 +16,20 @@
         //public const string DetailNumberRegex = @"^(?<jobNum>\d+)-(?<opNum>\d+)-(?<detailNum>\d+)$";
 
 
-        public const string View_Plan = "PLAN";
+        public const string ViewPlan = "PLAN";
 
 
         /// <summary>The layer to put tooling holes on.</summary>
         /// <remarks>Layer = 97</remarks>
-        public const int Layer_DwlTooling = 97;
+        public const int LayerDwlTooling = 97;
 
         /// <summary>The layer to place regular fasteners on.</summary>
         /// <remarks>Layer = 99</remarks>
-        public const int Layer_Fastener = 99;
+        public const int LayerFastener = 99;
 
         /// <summary>The layer to put handling holes and wire taps on.</summary>
         /// <remarks>Layer = 98</remarks>
-        public const int Layer_ShcsHandlingWireTap = 98;
+        public const int LayerShcsHandlingWireTap = 98;
 
 
         /// <summary>The regular expression that matches a n assembly folderWithCtsNumber.</summary>
@@ -37,7 +39,7 @@
         ///         <description></description>
         ///     </item>
         /// </list>
-        public const string Regex_AssemblyFolder = @"^(?<customerNum>\d+)-(?<opNum>\d+)$";
+        public const string RegexAssemblyFolder = @"^(?<customerNum>\d+)-(?<opNum>\d+)$";
 
 
         /// <summary>The regular expression pattern that matches either a metric or an english blind headed cap screw (bhcs).</summary>
@@ -50,7 +52,7 @@
         ///         <description>length</description>
         ///     </item>
         /// </list>
-        public const string Regex_Bhcs = @"^(?<diameter>\d+)(?:mm)?-bhcs-(?<length>\d+)$";
+        public const string RegexBhcs = @"^(?<diameter>\d+)(?:mm)?-bhcs-(?<length>\d+)$";
 
 
         /// <summary>The regular expression pattern that matches an english blind headed cap screw (bhcs).</summary>
@@ -63,7 +65,7 @@
         ///         <description>length</description>
         ///     </item>
         /// </list>
-        public const string Regex_BhcsEnglish = @"^(?<diameter>\d+)-bhcs-(?<length>\d+)$";
+        public const string RegexBhcsEnglish = @"^(?<diameter>\d+)-bhcs-(?<length>\d+)$";
 
 
         /// <summary>The regular expression pattern that matches a metric blind headed cap screw (bhcs).</summary>
@@ -76,7 +78,7 @@
         ///         <description>length</description>
         ///     </item>
         /// </list>
-        public const string Regex_BhcsMetric = @"^(?<diameter>\d+)mm-bhcs-(?<length>\d+)$";
+        public const string RegexBhcsMetric = @"^(?<diameter>\d+)mm-bhcs-(?<length>\d+)$";
 
 
         /// <summary>The regular expression that matches a blank.</summary>
@@ -89,7 +91,7 @@
         ///         <description>opNum</description>
         ///     </item>
         /// </list>
-        public const string Regex_Blank = @"^(?<customerNum>\d+)-(?<opNum>\d+)-blank$";
+        public const string RegexBlank = @"^(?<customerNum>\d+)-(?<opNum>\d+)-blank$";
 
 
         /// <summary>The regular expression pattern that matches a metric castle nut.</summary>
@@ -99,7 +101,7 @@
         ///         <description>diameter</description>
         ///     </item>
         /// </list>
-        public const string Regex_CastleNutMetric = @"^Hexagon Castle Nut M(?<diameter>\d+)$";
+        public const string RegexCastleNutMetric = @"^Hexagon Castle Nut M(?<diameter>\d+)$";
 
 
         /// <summary>The regular expression that matches a detail.</summary>
@@ -116,7 +118,7 @@
         ///     </item>
         ///     >
         /// </list>
-        public const string Regex_Detail = @"^(?<customerNum>\d+)-(?<opNum>\d+)-(?<detailNum>\d+)$";
+        public const string RegexDetail = @"^(?<customerNum>\d+)-(?<opNum>\d+)-(?<detailNum>\d+)$";
 
 
         /// <summary>The regular expression that matches a dieset control.</summary>
@@ -129,7 +131,7 @@
         ///         <description>opNum</description>
         ///     </item>
         /// </list>
-        public const string Regex_DiesetControl = @"^(?<customerNum>\d+)-(?<opNum>\d+)-dieset-control$";
+        public const string RegexDiesetControl = @"^(?<customerNum>\d+)-(?<opNum>\d+)-dieset-control$";
 
 
         /// <summary>The regular expression that matches a double.</summary>
@@ -139,7 +141,7 @@
         ///         <description>double</description>
         ///     </item>
         /// </list>
-        public const string Regex_DoubleDecimal = @"(?<double>\d+\.\\d+|\\d+\\.|\\.\\d+|\\d+)";
+        public const string RegexDoubleDecimal = @"(?<double>\d+\.\\d+|\\d+\\.|\\.\\d+|\\d+)";
 
 
         /// <summary>The regular expression pattern that matches a metric or an english dowel (dwl).</summary>
@@ -152,7 +154,7 @@
         ///         <description>length</description>
         ///     </item>
         /// </list>
-        public const string Regex_Dwl = @"^(?<diameter>\d+)(?:mm)?-dwl-(?<length>\d+)$";
+        public const string RegexDwl = @"^(?<diameter>\d+)(?:mm)?-dwl-(?<length>\d+)$";
 
 
         /// <summary>The regular expression pattern that matches an english dowel (dwl).</summary>
@@ -165,7 +167,7 @@
         ///         <description>length</description>
         ///     </item>
         /// </list>
-        public const string Regex_DwlEnglish = @"^(?<diameter>\d+)-dwl-(?<length>\d+)$";
+        public const string RegexDwlEnglish = @"^(?<diameter>\d+)-dwl-(?<length>\d+)$";
 
 
         /// <summary>The regular expression pattern that matches a metric dowel lock (dwl-lck).</summary>
@@ -178,7 +180,7 @@
         ///         <description>length</description>
         ///     </item>
         /// </list>
-        public const string Regex_DwlLckMetric = @"^(?<diameter>\d+)mm-dwl-lck-(?<length>\d+)$";
+        public const string RegexDwlLckMetric = @"^(?<diameter>\d+)mm-dwl-lck-(?<length>\d+)$";
 
 
         /// <summary>The regular expression pattern that matches a metric misumi dowel lock (SWA).</summary>
@@ -188,7 +190,7 @@
         ///         <description>diameter</description>
         ///     </item>
         /// </list>
-        public const string Regex_DwlLckMisumiMetric = @"^SWA(?<diameter>\d+)$";
+        public const string RegexDwlLckMisumiMetric = @"^SWA(?<diameter>\d+)$";
 
 
         /// <summary>
@@ -204,7 +206,7 @@
         ///         <description>length</description>
         ///     </item>
         /// </list>
-        public const string Regex_DwlMetric = @"^(?<diameter>\d+)mm-dwl-(?<length>\d+)$";
+        public const string RegexDwlMetric = @"^(?<diameter>\d+)mm-dwl-(?<length>\d+)$";
 
 
         /// <summary>The regular expression pattern that matches either a metric or an english flat headed cap screw (fhcs).</summary>
@@ -217,7 +219,7 @@
         ///         <description>length</description>
         ///     </item>
         /// </list>
-        public const string Regex_Fhcs = @"^(?<diameter>\d+)(?:mm)?-fhcs-(?<length>\d+)$";
+        public const string RegexFhcs = @"^(?<diameter>\d+)(?:mm)?-fhcs-(?<length>\d+)$";
 
 
         /// <summary>The regular expression pattern that matches an english flat headed cap screw (fhcs).</summary>
@@ -230,7 +232,7 @@
         ///         <description>length</description>
         ///     </item>
         /// </list>
-        public const string Regex_FhcsEnglish = @"^(?<diameter>\d+)-fhcs-(?<length>\d+)$";
+        public const string RegexFhcsEnglish = @"^(?<diameter>\d+)-fhcs-(?<length>\d+)$";
 
 
         /// <summary>The regular expression pattern that matches a metric flat headed cap screw (fhcs).</summary>
@@ -243,7 +245,7 @@
         ///         <description>length</description>
         ///     </item>
         /// </list>
-        public const string Regex_FhcsMetric = @"^(?<diameter>\d+)mm-fhcs-(?<length>\d+)$";
+        public const string RegexFhcsMetric = @"^(?<diameter>\d+)mm-fhcs-(?<length>\d+)$";
 
 
         /// <summary>The regular expression pattern that matches a metric or an english jack screw (jck-screw).</summary>
@@ -256,7 +258,7 @@
         ///         <description>length</description>
         ///     </item>
         /// </list>
-        public const string Regex_JckScrew = @"^_?(?<diameter>\d+)(?:mm)?-jck-screw$";
+        public const string RegexJckScrew = @"^_?(?<diameter>\d+)(?:mm)?-jck-screw$";
 
 
         /// <summary>The regular expression pattern that matches an english jack screw (jck-screw).</summary>
@@ -266,7 +268,7 @@
         ///         <description>diameter</description>
         ///     </item>
         /// </list>
-        public const string Regex_JckScrewEnglish = @"^_(?<diameter>\d+)-jck-screw$";
+        public const string RegexJckScrewEnglish = @"^_(?<diameter>\d+)-jck-screw$";
 
 
         /// <summary>The regular expression pattern that matches a metric jack screw (jck-screw).</summary>
@@ -279,7 +281,7 @@
         ///         <description>length</description>
         ///     </item>
         /// </list>
-        public const string Regex_JckScrewMetric = @"^(?<diameter>\d+)mm-jck-screw$";
+        public const string RegexJckScrewMetric = @"^(?<diameter>\d+)mm-jck-screw$";
 
 
         /// <summary>The regular expression pattern that matches a metric or an english tsg jack screw (jck-screw-tsg).</summary>
@@ -292,7 +294,7 @@
         ///         <description>length</description>
         ///     </item>
         /// </list>
-        public const string Regex_JckScrewTsg = @"^_?(?<diameter>\d+)(?:mm)?-jck-screw-tsg$";
+        public const string RegexJckScrewTsg = @"^_?(?<diameter>\d+)(?:mm)?-jck-screw-tsg$";
 
 
         /// <summary>The regular expression pattern that matches an english tsg jack screw (jck-screw-tsg).</summary>
@@ -302,7 +304,7 @@
         ///         <description>diameter</description>
         ///     </item>
         /// </list>
-        public const string Regex_JckScrewTsgEnglish = @"^_(?<diameter>\d+)-jck-screw-tsg$";
+        public const string RegexJckScrewTsgEnglish = @"^_(?<diameter>\d+)-jck-screw-tsg$";
 
 
         /// <summary>The regular expression pattern that matches a metric tsg jack screw (jck-screw-tsg).</summary>
@@ -315,7 +317,7 @@
         ///         <description>length</description>
         ///     </item>
         /// </list>
-        public const string Regex_JckScrewTsgMetric = @"^(?<diameter>\d+)mm-jck-screw-tsg$";
+        public const string RegexJckScrewTsgMetric = @"^(?<diameter>\d+)mm-jck-screw-tsg$";
 
 
         /// <summary>The regular expression that matches a layout.</summary>
@@ -328,7 +330,7 @@
         ///         <description>opNum</description>
         ///     </item>
         /// </list>
-        public const string Regex_Layout = @"^(?<customerNum>\d+)-(?<opNum>\d+)-layout$";
+        public const string RegexLayout = @"^(?<customerNum>\d+)-(?<opNum>\d+)-layout$";
 
 
         /// <summary>The regular expression pattern that matches either a metric or an english low head cap screw (lhcs).</summary>
@@ -341,7 +343,7 @@
         ///         <description>length</description>
         ///     </item>
         /// </list>
-        public const string Regex_Lhcs = @"^(?<diameter>\d+)(?:mm)?-lhcs-(?<length>\d+)$";
+        public const string RegexLhcs = @"^(?<diameter>\d+)(?:mm)?-lhcs-(?<length>\d+)$";
 
 
         /// <summary>The regular expression pattern that matches an english low head cap screw (lhcs).</summary>
@@ -354,7 +356,7 @@
         ///         <description>length</description>
         ///     </item>
         /// </list>
-        public const string Regex_LhcsEnglish = @"^(?<diameter>\d+)-lhcs-(?<length>\d+)$";
+        public const string RegexLhcsEnglish = @"^(?<diameter>\d+)-lhcs-(?<length>\d+)$";
 
 
         /// <summary>The regular expression pattern that matches a metric low head cap screw (lhcs).</summary>
@@ -367,7 +369,7 @@
         ///         <description>length</description>
         ///     </item>
         /// </list>
-        public const string Regex_LhcsMetric = @"^(?<diameter>\d+)mm-lhcs-(?<length>\d+)$";
+        public const string RegexLhcsMetric = @"^(?<diameter>\d+)mm-lhcs-(?<length>\d+)$";
 
 
         /// <summary>The regular expression pattern that matches a metric lock washer.</summary>
@@ -377,7 +379,7 @@
         ///         <description>diameter</description>
         ///     </item>
         /// </list>
-        public const string Regex_LockWasherMetric = @"^lock washer for (?<diameter>\d+)mm shcs$";
+        public const string RegexLockWasherMetric = @"^lock washer for (?<diameter>\d+)mm shcs$";
 
 
         /// <summary>The regular expression that matches a lower shoe (lsh).</summary>
@@ -390,7 +392,7 @@
         ///         <description>opNum</description>
         ///     </item>
         /// </list>
-        public const string Regex_Lsh = @"^(?<customerNum>\d+)-(?<opNum>\d+)-lsh$";
+        public const string RegexLsh = @"^(?<customerNum>\d+)-(?<opNum>\d+)-lsh$";
 
 
         /// <summary>The regular expression that matches either a lower shoe (lsh) or an upper shoe (ush).</summary>
@@ -405,7 +407,7 @@
         ///         <description>shoe</description>
         ///     </item>
         /// </list>
-        public const string Regex_LshUsh = @"^(?<customerNum>\d+)-(?<opNum>\d+)-(?<shoe>lsh|ush)$";
+        public const string RegexLshUsh = @"^(?<customerNum>\d+)-(?<opNum>\d+)-(?<shoe>lsh|ush)$";
 
 
         /// <summary>The regular expression that matches a lower sub plate (lsp).</summary>
@@ -421,7 +423,7 @@
         ///     </item>
         ///     >
         /// </list>
-        public const string Regex_Lsp = @"^(?<customerNum>\d+)-(?<opNum>\d+)-lsp(?<extraOpNum>\d+)?.*$";
+        public const string RegexLsp = @"^(?<customerNum>\d+)-(?<opNum>\d+)-lsp(?<extraOpNum>\d+)?.*$";
 
 
         /// <summary>The regular expression that matches either a lower sub plate (lsp) or an upper sub plate (usp).</summary>
@@ -439,7 +441,7 @@
         ///         <description>extraOpNum</description>
         ///     </item>
         /// </list>
-        public const string Regex_LspUsp =
+        public const string RegexLspUsp =
             @"^(?<customerNum>\d+)-(?<opNum>\d+)-(?<subPlate>lsp|usp)(?<extraOpNum>\d+)?$";
 
 
@@ -453,7 +455,7 @@
         ///         <description>opNum</description>
         ///     </item>
         /// </list>
-        public const string Regex_Lwr = @"^(?<customerNum>\d+)-(?<opNum>\d+)-lwr$";
+        public const string RegexLwr = @"^(?<customerNum>\d+)-(?<opNum>\d+)-lwr$";
 
 
         /// <summary>The regular expression that matches either a lower (lwr) or upper (upr) assembly holder (upr).</summary>
@@ -466,7 +468,7 @@
         ///         <description>opNum</description>
         ///     </item>
         /// </list>
-        public const string Regex_LwrUpr = @"^(?<customerNum>\d+)-(?<opNum>\d+)-[lwr|upr]$";
+        public const string RegexLwrUpr = @"^(?<customerNum>\d+)-(?<opNum>\d+)-[lwr|upr]$";
 
 
         /// <summary>The regular expression that matches a mathdata part.</summary>
@@ -476,7 +478,7 @@
         ///         <description>customerNum</description>
         ///     </item>
         /// </list>
-        public const string Regex_Mathdata = @"^(?<customerNum>\d+)-mathdata$";
+        public const string RegexMathdata = @"^(?<customerNum>\d+)-mathdata$";
 
 
         /// <summary>The regular expression that matches a master part.</summary>
@@ -486,7 +488,7 @@
         ///         <description>customerNum</description>
         ///     </item>
         /// </list>
-        public const string Regex_Master = @"^(?<customerNum>\d+)-Master$";
+        public const string RegexMaster = @"^(?<customerNum>\d+)-Master$";
 
 
         /// <summary>The regular expression that matches a history part.</summary>
@@ -496,7 +498,7 @@
         ///         <description>customerNum</description>
         ///     </item>
         /// </list>
-        public const string Regex_History = @"^(?<customerNum>\d+)-History$";
+        public const string RegexHistory = @"^(?<customerNum>\d+)-History$";
 
 
         /// <summary>The regular expression pattern that matches a metric or an english nut.</summary>
@@ -509,7 +511,7 @@
         ///         <description>threadCount</description>
         ///     </item>
         /// </list>
-        public const string Regex_Nut = @"^nut-(?<diameter>\d+)-M?(?<threadCount>\d+(?:\.\d+)?)$";
+        public const string RegexNut = @"^nut-(?<diameter>\d+)-M?(?<threadCount>\d+(?:\.\d+)?)$";
 
 
         /// <summary>The regular expression pattern that matches an english nut.</summary>
@@ -522,7 +524,7 @@
         ///         <description>threadCount</description>
         ///     </item>
         /// </list>
-        public const string Regex_NutEnglish = @"^nut-(?<diameter>\d+)-(?<threadCount>\d+)$";
+        public const string RegexNutEnglish = @"^nut-(?<diameter>\d+)-(?<threadCount>\d+)$";
 
 
         /// <summary>The regular expression pattern that matches a metric nut.</summary>
@@ -535,7 +537,7 @@
         ///         <description>threadCount</description>
         ///     </item>
         /// </list>
-        public const string Regex_NutMetric = @"^nut-(?<diameter>\d+)-M(?<threadCount>\d+(?:\.\d+)?)$";
+        public const string RegexNutMetric = @"^nut-(?<diameter>\d+)-M(?<threadCount>\d+(?:\.\d+)?)$";
 
 
         /// <summary>The regular expression that matches a top level "000" part.</summary>
@@ -548,7 +550,7 @@
         ///         <description>opNum</description>
         ///     </item>
         /// </list>
-        public const string Regex_Op000Holder = @"^(?<customerNum>\d+)-(?<opNum>\d+)-000$";
+        public const string RegexOp000Holder = @"^(?<customerNum>\d+)-(?<opNum>\d+)-000$";
 
 
         /// <summary>The regular expression that matches a press assembly.</summary>
@@ -561,7 +563,7 @@
         ///         <description>opNum</description>
         ///     </item>
         /// </list>
-        public const string Regex_PressAssembly = @"^(?<customerNum>\d+)-Press-(?<opNum>\d+)-Assembly$";
+        public const string RegexPressAssembly = @"^(?<customerNum>\d+)-Press-(?<opNum>\d+)-Assembly$";
 
 
         /// <summary>The regular expression pattern that matches either a metric or an english socket head cap screw (shcs).</summary>
@@ -574,7 +576,7 @@
         ///         <description>length</description>
         ///     </item>
         /// </list>
-        public const string Regex_Shcs = @"^(?<diameter>\d+)(?:mm)?-shcs-(?<length>\d+)$";
+        public const string RegexShcs = @"^(?<diameter>\d+)(?:mm)?-shcs-(?<length>\d+)$";
 
 
         /// <summary>The regular expression pattern that matches an english socket head cap screw (shcs).</summary>
@@ -587,7 +589,7 @@
         ///         <description>length</description>
         ///     </item>
         /// </list>
-        public const string Regex_ShcsEnglish = @"^(?<diameter>\d+)-shcs-(?<length>\d+)$";
+        public const string RegexShcsEnglish = @"^(?<diameter>\d+)-shcs-(?<length>\d+)$";
 
 
         /// <summary>The regular expression pattern that matches a metric socket head cap screw (shcs).</summary>
@@ -600,7 +602,7 @@
         ///         <description>length</description>
         ///     </item>
         /// </list>
-        public const string Regex_ShcsMetric = @"^(?<diameter>\d+)mm-shcs-(?<length>\d+)$";
+        public const string RegexShcsMetric = @"^(?<diameter>\d+)mm-shcs-(?<length>\d+)$";
 
 
         /// <summary>The regular expression pattern that matches either a metric or an english socket head shoulder screw (shss).</summary>
@@ -613,7 +615,7 @@
         ///         <description>length</description>
         ///     </item>
         /// </list>
-        public const string Regex_Shss = @"^(?<diameter>\d+)(?:mm)?-shss-(?<length>\d+)$";
+        public const string RegexShss = @"^(?<diameter>\d+)(?:mm)?-shss-(?<length>\d+)$";
 
 
         /// <summary>The regular expression pattern that matches an english socket head shoulder screw (shss).</summary>
@@ -626,7 +628,7 @@
         ///         <description>length</description>
         ///     </item>
         /// </list>
-        public const string Regex_ShssEnglish = @"^(?<diameter>\d+)-shss-(?<length>\d+)$";
+        public const string RegexShssEnglish = @"^(?<diameter>\d+)-shss-(?<length>\d+)$";
 
 
         /// <summary>The regular expression pattern that matches a metric socket head shoulder screw (shss).</summary>
@@ -639,7 +641,7 @@
         ///         <description>length</description>
         ///     </item>
         /// </list>
-        public const string Regex_ShssMetric = @"^(?<diameter>\d+)mm-shss-(?<length>\d+)$";
+        public const string RegexShssMetric = @"^(?<diameter>\d+)mm-shss-(?<length>\d+)$";
 
 
         /// <summary>The regular expression that matches a simulation part.</summary>
@@ -649,7 +651,7 @@
         ///         <description>customerNum</description>
         ///     </item>
         /// </list>
-        internal const string Regex_Simulation = @"^(?<customerNum>\d+)-simulation$";
+        internal const string RegexSimulation = @"^(?<customerNum>\d+)-simulation$";
 
 
         /// <summary>The regular expression pattern that matches either a metric or an english socket set screw (sss).</summary>
@@ -662,7 +664,7 @@
         ///         <description>length</description>
         ///     </item>
         /// </list>
-        public const string Regex_Sss = @"^(?<diameter>\d+)(?:mm)?-sss-(?<length>\d+)$";
+        public const string RegexSss = @"^(?<diameter>\d+)(?:mm)?-sss-(?<length>\d+)$";
 
 
         /// <summary>The regular expression pattern that matches an english socket set screw (shss).</summary>
@@ -675,7 +677,7 @@
         ///         <description>length</description>
         ///     </item>
         /// </list>
-        public const string Regex_SssEnglish = @"^(?<diameter>\d+)-sss-(?<length>\d+)$";
+        public const string RegexSssEnglish = @"^(?<diameter>\d+)-sss-(?<length>\d+)$";
 
 
         /// <summary>The regular expression pattern that matches a metric socket set screw (sss).</summary>
@@ -688,7 +690,7 @@
         ///         <description>length</description>
         ///     </item>
         /// </list>
-        public const string Regex_SssMetric = @"^(?<diameter>\d+)mm-sss-(?<length>\d+)$";
+        public const string RegexSssMetric = @"^(?<diameter>\d+)mm-sss-(?<length>\d+)$";
 
 
         /// <summary>The regular expression that matches a strip.</summary>
@@ -698,7 +700,7 @@
         ///         <description></description>
         ///     </item>
         /// </list>
-        public const string Regex_Strip = @"^(?<customerNum>\d+)-(?<opNum>\d+)-strip$";
+        public const string RegexStrip = @"^(?<customerNum>\d+)-(?<opNum>\d+)-strip$";
 
 
         /// <summary>The regular expression that matches a strip control.</summary>
@@ -708,7 +710,7 @@
         ///         <description>customerNum</description>
         ///     </item>
         /// </list>
-        public const string Regex_StripControl = @"^(?<customerNum>\d+)-strip-control$";
+        public const string RegexStripControl = @"^(?<customerNum>\d+)-strip-control$";
 
 
         /// <summary>The regular expression that matches an upper assembly holder (upr).</summary>
@@ -721,7 +723,7 @@
         ///         <description>opNum</description>
         ///     </item>
         /// </list>
-        public const string Regex_Upr = @"^(?<customerNum>\d+)-(?<opNum>\d+)-upr$";
+        public const string RegexUpr = @"^(?<customerNum>\d+)-(?<opNum>\d+)-upr$";
 
 
         /// <summary>The regular expression that matches an upper shoe (ush).</summary>
@@ -734,7 +736,7 @@
         ///         <description>opNum</description>
         ///     </item>
         /// </list>
-        public const string Regex_Ush = @"^(?<customerNum>\d+)-(?<opNum>\d+)-ush$";
+        public const string RegexUsh = @"^(?<customerNum>\d+)-(?<opNum>\d+)-ush$";
 
 
         /// <summary>The regular expression that matches an upper sub plate (usp).</summary>
@@ -751,7 +753,7 @@
         ///     </item>
         ///     >
         /// </list>
-        public const string Regex_Usp = @"^(?<customerNum>\d+)-(?<opNum>\d+)-usp(?<extraOpNum>\d+)?.*$";
+        public const string RegexUsp = @"^(?<customerNum>\d+)-(?<opNum>\d+)-usp(?<extraOpNum>\d+)?.*$";
 
 
         /// <summary>The regular expression that matches a 999 block/detail.</summary>
@@ -768,32 +770,32 @@
         ///     </item>
         ///     >
         /// </list>
-        public const string Regex_999 = @"^(?<customerNum>\d+)-(?<opNum>\d+)-(?<detailNum>99\d)$";
+        public const string Regex999 = @"^(?<customerNum>\d+)-(?<opNum>\d+)-(?<detailNum>99\d)$";
 
-        public const string FilePath_WireTap =
-            FilePath_0LibraryFasteners + "\\Metric\\SocketHeadCapScrews\\008\\8mm-shcs-020.prt";
+        public const string FilePathWireTap =
+            FilePath0LibraryFasteners + "\\Metric\\SocketHeadCapScrews\\008\\8mm-shcs-020.prt";
 
-        public const string FilePath_0Library = "G:\\0Library";
+        public const string FilePath0Library = "G:\\0Library";
 
-        public const string FilePath_0Press = "G:\\0Press";
+        public const string FilePath0Press = "G:\\0Press";
 
-        public const string FilePath_0LibraryFasteners = FilePath_0Library + "\\Fasteners";
+        public const string FilePath0LibraryFasteners = FilePath0Library + "\\Fasteners";
 
-        public const string FilePath_DxfDwgDef = "C:\\Program Files\\Siemens\\NX 11.0\\dxfdwg\\dxfdwg.def";
+        public const string FilePathDxfDwgDef = "C:\\Program Files\\Siemens\\NX 11.0\\dxfdwg\\dxfdwg.def";
 
-        public const string FilePath_Ucf = @"U:\nxFiles\UfuncFiles\ConceptControlFile.ucf";
+        public const string FilePathUcf = @"U:\nxFiles\UfuncFiles\ConceptControlFile.ucf";
 
-        public const string FilePath_Step214Ug = "C:\\Program Files\\Siemens\\NX 11.0\\NXBIN\\step214ug.exe";
+        public const string FilePathStep214Ug = "C:\\Program Files\\Siemens\\NX 11.0\\NXBIN\\step214ug.exe";
 
-        public const string FilePath_ExternalStep_AllLayers_def =
+        public const string FilePathExternalStepAllLayersDef =
             "U:\\nxFiles\\Step Translator\\ExternalStep_AllLayers.def";
 
-        public const string FilePath_ExternalStep_Design_def = "U:\\nxFiles\\Step Translator\\ExternalStep_Design.def";
+        public const string FilePathExternalStepDesignDef = "U:\\nxFiles\\Step Translator\\ExternalStep_Design.def";
 
-        public const string FilePath_ExternalStep_Assembly_def =
+        public const string FilePathExternalStepAssemblyDef =
             @"U:\nxFiles\Step Translator\ExternalStep_Assembly.def";
 
-        public const string FilePath_ExternalStep_Detail_def = @"U:\nxFiles\Step Translator\ExternalStep_Detail.def";
+        public const string FilePathExternalStepDetailDef = @"U:\nxFiles\Step Translator\ExternalStep_Detail.def";
 
         /// <summary>Returns the path to the folderWithCtsNumber 0Components.</summary>
         public const string Folder0Components = "G:\\0Library";
@@ -879,57 +881,57 @@
         public const string SeedDiesetControl = "G:\\0Library\\SeedFiles\\Assembly\\seed-dieset-control.prt";
 
 
-        public const int Color_Trim = 186;
+        public const int ColorTrim = 186;
 
-        public const int Color_Finish = 42;
-
-
-        public const string Refset_EntirePart = "Entire Part";
-
-        public const string Refset_Empty = "Empty";
-
-        public const string Refset_Body = "BODY";
-
-        public const string Refset_SubTool = "SUB_TOOL";
-
-        public const string Refset_CBore = "CBORE";
-
-        public const string Refset_ShortTap = "SHORT-TAP";
-
-        public const string Refset_Ream = "REAM";
-
-        public const string Refset_ReamShort = "REAM_SHORT";
-
-        public const string Refset_BodyEdge = "BODY_EDGE";
-
-        public const string Refset_ClrHole = "CLR_HOLE";
-
-        public const string Refset_ClrScrewHead = "CLR_SCREW_HEAD";
-
-        public const string Refset_HardTapClr = "HARD_TAP_CLR";
-
-        public const string Refset_SlotCBore = "SLOT_CBORE";
-
-        public const string Refset_CBoreBlind = "CBORE_BLIND";
-
-        public const string Refset_CBoreBlindOpp = "CBORE_BLIND_OPP";
-
-        public const string Refset_Grid = "GRID";
-
-        public const string Refset_Tap = "TAP";
-
-        public const string Refset_Handling = "HANDLING";
-
-        public const string Refset_Tooling = "TOOLING";
-
-        public const string Refset_BlindReam = "BLIND_REAM";
-
-        public const string Refset_WireTap = "WIRE_TAP";
+        public const int ColorFinish = 42;
 
 
-        public const double Tolerance_English = .001;
+        public const string RefsetEntirePart = "Entire Part";
 
-        public const double Tolerance_Metric = Tolerance_English * 25.4;
+        public const string RefsetEmpty = "Empty";
+
+        public const string RefsetBody = "BODY";
+
+        public const string RefsetSubTool = "SUB_TOOL";
+
+        public const string RefsetCBore = "CBORE";
+
+        public const string RefsetShortTap = "SHORT-TAP";
+
+        public const string RefsetReam = "REAM";
+
+        public const string RefsetReamShort = "REAM_SHORT";
+
+        public const string RefsetBodyEdge = "BODY_EDGE";
+
+        public const string RefsetClrHole = "CLR_HOLE";
+
+        public const string RefsetClrScrewHead = "CLR_SCREW_HEAD";
+
+        public const string RefsetHardTapClr = "HARD_TAP_CLR";
+
+        public const string RefsetSlotCBore = "SLOT_CBORE";
+
+        public const string RefsetCBoreBlind = "CBORE_BLIND";
+
+        public const string RefsetCBoreBlindOpp = "CBORE_BLIND_OPP";
+
+        public const string RefsetGrid = "GRID";
+
+        public const string RefsetTap = "TAP";
+
+        public const string RefsetHandling = "HANDLING";
+
+        public const string RefsetTooling = "TOOLING";
+
+        public const string RefsetBlindReam = "BLIND_REAM";
+
+        public const string RefsetWireTap = "WIRE_TAP";
+
+
+        public const double ToleranceEnglish = .001;
+
+        public const double ToleranceMetric = ToleranceEnglish * 25.4;
 
 
         public const string ShcsCBoreHolechart = "SHCS_CBORE_HOLECHART";
@@ -951,13 +953,13 @@
         public const string DetailNumberRegex = @"^(?<jobNum>\d+)-(?<opNum>\d+)-(?<detailNum>\d+)$";
 
 
-        private const int lowerA = 97;
+        private const int LowerA = 97;
 
-        private const int lowerZ = 122;
+        private const int LowerZ = 122;
 
-        private const int upperA = 65;
+        private const int UpperA = 65;
 
-        private const int upperZ = 90;
+        private const int UpperZ = 90;
 
         #endregion
     }

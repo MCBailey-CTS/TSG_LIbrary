@@ -12,7 +12,7 @@ using NXOpen.UF;
 using NXOpen.Utilities;
 using TSG_Library.Attributes;
 using TSG_Library.Utilities;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 using static TSG_Library.UFuncs._UFunc;
 using Point = System.Drawing.Point;
 using Selection = TSG_Library.Ui.Selection;
@@ -188,7 +188,7 @@ namespace TSG_Library.UFuncs
             foreach (Component master in FindMasters(__display_part_, MathdataType1))
                 AddTag(master.Tag, master.Name);
 
-            string regexString = MathdataType1 == MathdataType.History ? Regex_History : Regex_Master;
+            string regexString = MathdataType1 == MathdataType.History ? RegexHistory : RegexMaster;
 
             switch (DataLevelType)
             {
@@ -470,7 +470,7 @@ namespace TSG_Library.UFuncs
                 foreach (Component master in FindMasters(__display_part_, mathdataType))
                     AddTag(master.Tag, master.Name);
 
-                string regexString = mathdataType == MathdataType.History ? Regex_History : Regex_Master;
+                string regexString = mathdataType == MathdataType.History ? RegexHistory : RegexMaster;
 
                 switch (dataLevelType)
                 {
@@ -560,7 +560,7 @@ namespace TSG_Library.UFuncs
         {
             List<Component> list = new List<Component>();
 
-            string regexString = mathdataType == MathdataType.History ? Regex_History : Regex_Master;
+            string regexString = mathdataType == MathdataType.History ? RegexHistory : RegexMaster;
 
             foreach (Component child in simulation.ComponentAssembly.RootComponent?.GetChildren() ?? new Component[0])
                 if (Regex.IsMatch(child.DisplayName, regexString))
@@ -709,7 +709,7 @@ namespace TSG_Library.UFuncs
                 throw new ArgumentOutOfRangeException(nameof(master), "The master must be loaded.");
 
             // The {master} cannot be set to neither "Entire Part" nor "Empty" reference set.
-            if (master.ReferenceSet == Refset_EntirePart || master.ReferenceSet == Refset_Empty)
+            if (master.ReferenceSet == RefsetEntirePart || master.ReferenceSet == RefsetEmpty)
                 throw new ArgumentException(
                     "The master cannot be set to the \"Entire Part\" nor \"Empty\" reference set.", nameof(master));
 

@@ -5,7 +5,7 @@ using NXOpen;
 using NXOpen.UF;
 using NXOpen.Utilities;
 using static NXOpen.Selection;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 
 namespace TSG_Library.Utilities
 {

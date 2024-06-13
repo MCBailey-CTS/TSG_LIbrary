@@ -4,7 +4,7 @@ using TSG_Library.Geom;
 
 namespace TSG_Library.Extensions
 {
-    public static partial class __Extensions_
+    public static partial class Extensions
     {
         #region Line
 

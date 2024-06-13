@@ -21,10 +21,15 @@ using static NXOpen.Session;
 using Curve = NXOpen.Curve;
 using Type = NXOpen.GeometricUtilities.Type;
 // ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedParameter.Global
+// ReSharper disable LocalizableElement
+// ReSharper disable InvalidXmlDocComment
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedMethodReturnValue.Global
 
 namespace TSG_Library.Extensions
 {
-    public static partial class __Extensions_
+    public static partial class Extensions
     {
         #region BasePart
 
@@ -67,7 +72,7 @@ namespace TSG_Library.Extensions
         //    return basePart.ComponentAssembly.AddComponent(partToAdd, referenceSet, __name, __origin, __orientation, layer, out _);
         //}
 
-        public static void __NXOpenBasePart(BasePart base_part)
+        public static void __NXOpenBasePart(BasePart basePart)
         {
             //base_part.Annotations
             //base_part.Arcs
@@ -258,8 +263,8 @@ namespace TSG_Library.Extensions
         public static IEnumerable<BasePart> __DescendantParts(this BasePart nxPart)
         {
             return nxPart.ComponentAssembly.RootComponent.__Descendants(true, true)
-                .DistinctBy(__c => __c.DisplayName)
-                .Select(__c => __c.Prototype)
+                .DistinctBy(c => c.DisplayName)
+                .Select(c => c.Prototype)
                 .OfType<BasePart>()
                 .ToArray();
         }
@@ -273,7 +278,7 @@ namespace TSG_Library.Extensions
                 ":END_CASTING_MATERIALS:", StringComparison.OrdinalIgnoreCase).ToArray();
             const string material = "MATERIAL";
 
-            if (!Regex.IsMatch(part.Leaf, Regex_Detail))
+            if (!Regex.IsMatch(part.Leaf, RegexDetail))
                 return false;
 
             if (!part.HasUserAttribute(material, NXObject.AttributeType.String, -1))
@@ -350,17 +355,17 @@ namespace TSG_Library.Extensions
         public static TaggedObject[] __CycleByName(this BasePart basePart, string name)
         {
             basePart.__AssertIsWorkPart();
-            Tag _tag = Tag.Null;
+            Tag tag = Tag.Null;
             List<TaggedObject> list = new List<TaggedObject>();
 
             while (true)
             {
-                ufsession_.Obj.CycleByName(name, ref _tag);
+                ufsession_.Obj.CycleByName(name, ref tag);
 
-                if (_tag == Tag.Null)
+                if (tag == Tag.Null)
                     break;
 
-                list.Add(session_.GetObjectManager().GetTaggedObject(_tag));
+                list.Add(session_.GetObjectManager().GetTaggedObject(tag));
             }
 
             return list.ToArray();
@@ -494,12 +499,12 @@ namespace TSG_Library.Extensions
             part.WCS.SetOriginAndMatrix(_Point3dOrigin, _Matrix3x3Identity);
         }
 
-        public static void __Save(this BasePart part, bool save_child_components = false,
-            bool close_after_save = false)
+        public static void __Save(this BasePart part, bool saveChildComponents = false,
+            bool closeAfterSave = false)
         {
             part.Save(
-                save_child_components ? BasePart.SaveComponents.True : BasePart.SaveComponents.False,
-                close_after_save ? BasePart.CloseAfterSave.True : BasePart.CloseAfterSave.False);
+                saveChildComponents ? BasePart.SaveComponents.True : BasePart.SaveComponents.False,
+                closeAfterSave ? BasePart.CloseAfterSave.True : BasePart.CloseAfterSave.False);
         }
 
         /// <summary>Creates a layer category with a given name</summary>
@@ -965,8 +970,8 @@ namespace TSG_Library.Extensions
         {
             basePart.__AssertIsWorkPart();
             UFSession uFSession = ufsession_;
-            double[] point_coords = new double[3] { x, y, z };
-            uFSession.Curve.CreatePoint(point_coords, out Tag point);
+            double[] pointCoords = new double[3] { x, y, z };
+            uFSession.Curve.CreatePoint(pointCoords, out Tag point);
             return (Point)session_.__GetTaggedObject(point);
         }
 
@@ -979,19 +984,19 @@ namespace TSG_Library.Extensions
             return basePart.__CreatePoint(x, y, 0.0);
         }
 
-
-        public static void __Close(this BasePart part, bool close_whole_tree = false,
-            bool close_modified = false)
+[Obsolete]
+        public static void __Close(this BasePart part, bool closeWholeTree = false,
+            bool closeModified = false)
         {
-            BasePart.CloseWholeTree __close_whole_tree = close_whole_tree
-                ? BasePart.CloseWholeTree.True
-                : BasePart.CloseWholeTree.False;
-
-            BasePart.CloseModified __close_modified = close_modified
-                ? BasePart.CloseModified.CloseModified
-                : BasePart.CloseModified.DontCloseModified;
-
-            part.Close(__close_whole_tree, __close_modified, null);
+            // BasePart.CloseWholeTree closeWholeTree = closeWholeTree
+            //     ? BasePart.CloseWholeTree.True
+            //     : BasePart.CloseWholeTree.False;
+            //
+            // BasePart.CloseModified closeModified = closeModified
+            //     ? BasePart.CloseModified.CloseModified
+            //     : BasePart.CloseModified.DontCloseModified;
+            //
+            // part.Close(closeWholeTree, closeModified, null);
         }
 
 
@@ -1401,6 +1406,7 @@ namespace TSG_Library.Extensions
         /// <summary>
         ///     Creates an offset curve feature from given curve, direction, distance
         /// </summary>
+        /// <param name="basePart"></param>
         /// <param name="icurve">Array of curves to be offset</param>
         /// <param name="point">Point on offset plane</param>
         /// <param name="distance">Offset Distance</param>
@@ -1460,10 +1466,10 @@ namespace TSG_Library.Extensions
             bool doTrim)
         {
             basePart.__AssertIsWorkPart();
-            Tag[] curve_objs = new Tag[2] { curve1.Tag, curve2.Tag };
+            Tag[] curveObjs = new Tag[2] { curve1.Tag, curve2.Tag };
             double[] array = center.__ToArray();
             int[] array2 = new int[3];
-            int[] arc_opts = new int[3];
+            int[] arcOpts = new int[3];
             if (doTrim)
             {
                 array2[0] = 1;
@@ -1475,8 +1481,8 @@ namespace TSG_Library.Extensions
                 array2[1] = 0;
             }
 
-            ufsession_.Curve.CreateFillet(0, curve_objs, array, radius, array2, arc_opts, out Tag fillet_obj);
-            return (Arc)session_.__GetTaggedObject(fillet_obj);
+            ufsession_.Curve.CreateFillet(0, curveObjs, array, radius, array2, arcOpts, out Tag filletObj);
+            return (Arc)session_.__GetTaggedObject(filletObj);
         }
 
         public static void __AssertIsWorkPart(this BasePart basePart)
@@ -1789,6 +1795,7 @@ namespace TSG_Library.Extensions
 
 
         /// <summary>Unites an array of tool bodies with a target body</summary>
+        /// <param name="basePart"></param>
         /// <param name="targetBody">Target body</param>
         /// <param name="toolBodies">Array of tool bodies</param>
         /// <returns><see cref="T:Snap.NX.Boolean">Snap.NX.Boolean</see> feature formed by uniting tools with target</returns>
@@ -1864,7 +1871,7 @@ namespace TSG_Library.Extensions
 
         public static bool __Is999(this BasePart part)
         {
-            Match match = Regex.Match(part.Leaf, Regex_Detail);
+            Match match = Regex.Match(part.Leaf, RegexDetail);
             //GFolderWithCtsNumber.DetailPart.DetailExclusiveRegex.Match(nxPart.Leaf);
             if (!match.Success) return false;
             int detailNumber = int.Parse(match.Groups[3].Value);
@@ -2017,7 +2024,7 @@ namespace TSG_Library.Extensions
             double gapTolerance = 0.001)
         {
             if (features.Length == 0)
-                throw new ArgumentException($"Cannot create rule from 0 {nameof(features)}.", nameof(features));
+                throw new ArgumentException($@"Cannot create rule from 0 {nameof(features)}.", nameof(features));
 
             return part.ScRuleFactory.CreateRuleCurveFeatureChain(features, startCurve, endCurve, isFromSeedStart,
                 gapTolerance);
@@ -2080,8 +2087,8 @@ namespace TSG_Library.Extensions
 
         public static void __CreateInterpartExpression(
             this BasePart part,
-            Expression source_expression,
-            string destination_name)
+            Expression sourceExpression,
+            string destinationName)
         {
             if (part.Tag != __display_part_.Tag)
                 throw new Exception("Part must be displayed part to create interpart expressions");
@@ -2091,7 +2098,7 @@ namespace TSG_Library.Extensions
 
             using (new Destroyer(builder))
             {
-                builder.SetExpressions(new[] { source_expression }, new[] { destination_name });
+                builder.SetExpressions(new[] { sourceExpression }, new[] { destinationName });
                 builder.Commit();
             }
         }
@@ -2136,38 +2143,38 @@ namespace TSG_Library.Extensions
 
         public static ComponentConstraint __ConstrainOccProtoDistance(
             this BasePart part,
-            DatumPlane __occ_plane,
-            DatumPlane __proto_plane,
-            string __distance_or_expression_name)
+            DatumPlane occPlane,
+            DatumPlane protoPlane,
+            string distanceOrExpressionName)
         {
             if (__work_part_.Tag != __display_part_.Tag)
                 throw new Exception("Display part must be Work part");
 
-            if (!__occ_plane.IsOccurrence)
+            if (!occPlane.IsOccurrence)
                 throw new Exception("Occurrence plane for constraint was actually a prototype.");
 
-            if (__proto_plane.IsOccurrence)
+            if (protoPlane.IsOccurrence)
                 throw new Exception("Prototype plane for constraint was actually an occurrence.");
 
             part.__AssertIsDisplayPart();
             UndoMarkId markId3 = session_.SetUndoMark(MarkVisibility.Visible, "Start");
-            ComponentPositioner component_positioner1 = part.ComponentAssembly.Positioner;
-            component_positioner1.ClearNetwork();
-            component_positioner1.BeginAssemblyConstraints();
-            Network component_network1 = component_positioner1.EstablishNetwork();
+            ComponentPositioner componentPositioner1 = part.ComponentAssembly.Positioner;
+            componentPositioner1.ClearNetwork();
+            componentPositioner1.BeginAssemblyConstraints();
+            Network componentNetwork1 = componentPositioner1.EstablishNetwork();
             ComponentConstraint componentConstraint1 =
-                (ComponentConstraint)component_positioner1.CreateConstraint(true);
+                (ComponentConstraint)componentPositioner1.CreateConstraint(true);
             componentConstraint1.ConstraintType = Constraint.Type.Distance;
-            componentConstraint1.__CreateConstRefOcc(__occ_plane);
-            componentConstraint1.__CreateConstRefProto(__proto_plane);
-            componentConstraint1.SetExpression(__distance_or_expression_name);
-            component_network1.AddConstraint(componentConstraint1);
-            component_network1.Solve();
-            component_positioner1.ClearNetwork();
-            session_.UpdateManager.AddToDeleteList(component_network1);
+            componentConstraint1.__CreateConstRefOcc(occPlane);
+            componentConstraint1.__CreateConstRefProto(protoPlane);
+            componentConstraint1.SetExpression(distanceOrExpressionName);
+            componentNetwork1.AddConstraint(componentConstraint1);
+            componentNetwork1.Solve();
+            componentPositioner1.ClearNetwork();
+            session_.UpdateManager.AddToDeleteList(componentNetwork1);
             session_.UpdateManager.DoUpdate(markId3);
-            component_positioner1.EndAssemblyConstraints();
-            session_.DisplayManager.BlankObjects(new[] { componentConstraint1.GetDisplayedConstraint() });
+            componentPositioner1.EndAssemblyConstraints();
+            session_.DisplayManager.BlankObjects(new DisplayableObject[] { componentConstraint1.GetDisplayedConstraint() });
             return componentConstraint1;
         }
 
@@ -2207,27 +2214,27 @@ namespace TSG_Library.Extensions
 
         public static CartesianCoordinateSystem __AbsoluteCsys(this BasePart part)
         {
-            ufsession_.Modl.AskDatumCsysComponents(part.__AbsoluteDatumCsys().Tag, out Tag csys_tag, out _,
+            ufsession_.Modl.AskDatumCsysComponents(part.__AbsoluteDatumCsys().Tag, out Tag csysTag, out _,
                 out _, out _);
-            return (CartesianCoordinateSystem)session_.__GetTaggedObject(csys_tag);
+            return (CartesianCoordinateSystem)session_.__GetTaggedObject(csysTag);
         }
 
-        public static void __ReplaceRefSets(this BasePart part, Component[] __components,
-            string __refset_name)
+        public static void __ReplaceRefSets(this BasePart part, Component[] components,
+            string refsetName)
         {
-            part.ComponentAssembly.ReplaceReferenceSetInOwners(__refset_name, __components);
+            part.ComponentAssembly.ReplaceReferenceSetInOwners(refsetName, components);
         }
 
-        public static Expression __FindExpression(this BasePart part, string __expression_name)
+        public static Expression __FindExpression(this BasePart part, string expressionName)
         {
             try
             {
-                return part.Expressions.FindObject(__expression_name);
+                return part.Expressions.FindObject(expressionName);
             }
             catch (NXException ex) when (ex.ErrorCode == 3520016)
             {
                 throw NXException.Create(ex.ErrorCode,
-                    $"Could not find expression '{__expression_name}' in part {part.Leaf}");
+                    $"Could not find expression '{expressionName}' in part {part.Leaf}");
             }
         }
 
@@ -2253,6 +2260,7 @@ namespace TSG_Library.Extensions
                 out _);
         }
 
+        [Obsolete]
         public static Component __AddComponent(
             this BasePart part,
             string path,
@@ -2262,13 +2270,14 @@ namespace TSG_Library.Extensions
             Matrix3x3? orientation = null,
             int layer = 1)
         {
-            Point3d __origin = origin ?? _Point3dOrigin;
-            Matrix3x3 __orientation = orientation ?? _Matrix3x3Identity;
-            return part.__AddComponent(session_.__FindOrOpen(path), referenceSet, componentName, __origin,
-                __orientation, layer);
+            //Point3d origin = origin ?? _Point3dOrigin;
+            //Matrix3x3 orientation = orientation ?? _Matrix3x3Identity;
+            //return part.__AddComponent(session_.__FindOrOpen(path), referenceSet, componentName, origin,
+            //    orientation, layer);
+            throw new NotImplementedException();
         }
 
-
+[Obsolete]
         public static Component __AddComponent(
             this BasePart part,
             BasePart prototype,
@@ -2278,10 +2287,11 @@ namespace TSG_Library.Extensions
             Matrix3x3? orientation = null,
             int layer = 1)
         {
-            Point3d __origin = origin ?? _Point3dOrigin;
-            Matrix3x3 __orientation = orientation ?? _Matrix3x3Identity;
-            return part.ComponentAssembly.AddComponent(prototype, referenceSet, componentName, __origin, __orientation,
-                layer, out _);
+            throw new NotImplementedException();
+            //Point3d origin = origin ?? _Point3dOrigin;
+            //Matrix3x3 orientation = orientation ?? _Matrix3x3Identity;
+            //return part.ComponentAssembly.AddComponent(prototype, referenceSet, componentName, origin, orientation,
+            //    layer, out _);
         }
 
 
@@ -2308,13 +2318,13 @@ namespace TSG_Library.Extensions
             return __work_part_.Curves.CreateArc(center, axisX, axisY, radius, startAngle, endAngle);
         }
 
-        public static PartCollection.SdpsStatus __SetActiveDisplay(this BasePart __part)
+        public static PartCollection.SdpsStatus __SetActiveDisplay(this BasePart part)
         {
             if (session_.Parts.AllowMultipleDisplayedParts != PartCollection.MultipleDisplayedPartStatus.Enabled)
                 throw new Exception("Session does not allow multiple displayed parts");
 
             return session_.Parts.SetActiveDisplay(
-                __part,
+                part,
                 DisplayPartOption.AllowAdditional,
                 PartDisplayPartWorkPartOption.UseLast,
                 out _);

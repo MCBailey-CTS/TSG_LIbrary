@@ -4,7 +4,7 @@ using System.Linq;
 using NXOpen;
 using NXOpen.Assemblies;
 using TSG_Library.Attributes;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 using static NXOpen.UF.UFConstants;
 using Selection = TSG_Library.Ui.Selection;
 
@@ -46,8 +46,8 @@ namespace TSG_Library.UFuncs
 
                         ufsession_.Obj.AskName(cycleRefSet, out string name);
 
-                        if (!((name != Refset_Body) & (name != "SUB_TOOL") & (name != Refset_EntirePart) &
-                              (name != Refset_Empty)))
+                        if (!((name != RefsetBody) & (name != "SUB_TOOL") & (name != RefsetEntirePart) &
+                              (name != RefsetEmpty)))
                             continue;
 
                         refSetName.Add(name);

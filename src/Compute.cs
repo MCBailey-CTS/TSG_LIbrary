@@ -2,7 +2,7 @@
 using NXOpen;
 using NXOpen.UF;
 using TSG_Library.Geom;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 using Curve = TSG_Library.Geom.Curve;
 
 namespace TSG_Library

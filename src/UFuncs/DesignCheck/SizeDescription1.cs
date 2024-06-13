@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using NXOpen;
 using NXOpen.Features;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 
 namespace TSG_Library.Utilities
 {

@@ -5,7 +5,7 @@ using NXOpen.Drawings;
 
 namespace TSG_Library.Extensions
 {
-    public static partial class __Extensions_
+    public static partial class Extensions
     {
         #region Part
 
@@ -35,21 +35,21 @@ namespace TSG_Library.Extensions
 
         public static Body __SingleSolidBodyOnLayer1(this Part part)
         {
-            Body[] __solid_bodies__on_layer_1 = part.Bodies
+            Body[] solidBodiesOnLayer1 = part.Bodies
                 .ToArray()
-                .Where(__body => __body.IsSolidBody)
-                .Where(__body => __body.Layer == 1)
+                .Where(body => body.IsSolidBody)
+                .Where(body => body.Layer == 1)
                 .ToArray();
 
-            switch (__solid_bodies__on_layer_1.Length)
+            switch (solidBodiesOnLayer1.Length)
             {
                 case 0:
                     throw new InvalidOperationException($"Could not find a solid body on layer 1 in part {part.Leaf}");
                 case 1:
-                    return __solid_bodies__on_layer_1[0];
+                    return solidBodiesOnLayer1[0];
                 default:
                     throw new InvalidOperationException(
-                        $"Found {__solid_bodies__on_layer_1.Length} solid bodies on layer 1 in part {part.Leaf}");
+                        $"Found {solidBodiesOnLayer1.Length} solid bodies on layer 1 in part {part.Leaf}");
             }
         }
 

@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.UserDefinedObjects;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 using Part = NXOpen.Part;
 
 namespace TSG_Library.UFuncs

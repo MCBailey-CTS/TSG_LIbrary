@@ -12,7 +12,7 @@ using NXOpen.Drawings;
 using NXOpen.Layer;
 using NXOpen.UF;
 using TSG_Library.Disposable;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 
 namespace TSG_Library.Utilities
 {
@@ -111,7 +111,7 @@ namespace TSG_Library.Utilities
                     if (exportDirectory != null)
                         Directory.CreateDirectory(exportDirectory);
 
-                    Regex detailRegex = new Regex(Regex_Detail, RegexOptions.IgnoreCase);
+                    Regex detailRegex = new Regex(RegexDetail, RegexOptions.IgnoreCase);
                     validParts = validParts.DistinctBy(part => part.Leaf).ToArray();
 
                     IDictionary<string, ISet<Part>> exportDict = SortPartsForExport(validParts);
@@ -174,7 +174,7 @@ namespace TSG_Library.Utilities
                             if (!Directory.Exists(dir))
                                 Directory.CreateDirectory(dir);
 
-                            Stp(topLevelAssembly.FullPath, stpPath, FilePath_ExternalStep_Assembly_def);
+                            Stp(topLevelAssembly.FullPath, stpPath, FilePathExternalStepAssemblyDef);
                         }
 
                         // Prints the parts with 4-Views.
@@ -224,7 +224,7 @@ namespace TSG_Library.Utilities
                                     if (File.Exists(stpPath))
                                         File.Delete(stpPath);
 
-                                    Stp(part.FullPath, stpPath, FilePath_ExternalStep_Detail_def);
+                                    Stp(part.FullPath, stpPath, FilePathExternalStepDetailDef);
                                 }
                                 catch (Exception ex)
                                 {
@@ -240,7 +240,7 @@ namespace TSG_Library.Utilities
                                 if (!Directory.Exists(dir))
                                     Directory.CreateDirectory(dir);
 
-                                Stp(topLevelAssembly.FullPath, path, FilePath_ExternalStep_Detail_def);
+                                Stp(topLevelAssembly.FullPath, path, FilePathExternalStepDetailDef);
                             }
                             catch (Exception ex)
                             {
@@ -442,7 +442,7 @@ namespace TSG_Library.Utilities
                 throw new ArgumentException();
 
             // Matches the {part.Leaf} to 000 regex.
-            Match top_match = Regex.Match(part.Leaf, Regex_Op000Holder, RegexOptions.IgnoreCase);
+            Match top_match = Regex.Match(part.Leaf, RegexOp000Holder, RegexOptions.IgnoreCase);
 
             // If the {match} is not a success, then {part} is not a "000".
             if (!top_match.Success)
@@ -463,7 +463,7 @@ namespace TSG_Library.Utilities
 
                     foreach (Component component in part.ComponentAssembly.RootComponent.GetChildren())
                     {
-                        Match match = Regex.Match(component.DisplayName, Regex_Lwr);
+                        Match match = Regex.Match(component.DisplayName, RegexLwr);
 
                         if (!match.Success)
                             continue;
@@ -805,7 +805,7 @@ namespace TSG_Library.Utilities
 
         public static void SetLayersInBlanksAndLayoutsAndAddDummies(Part snapStrip010)
         {
-            if (!Regex.IsMatch(snapStrip010.Leaf, Regex_Strip, RegexOptions.IgnoreCase))
+            if (!Regex.IsMatch(snapStrip010.Leaf, RegexStrip, RegexOptions.IgnoreCase))
                 throw new ArgumentException(@"Must be an op 010 strip.", nameof(snapStrip010));
 
             using (session_.__usingDisplayPartReset())
@@ -817,12 +817,12 @@ namespace TSG_Library.Utilities
                 Part layoutPart = __display_part_.ComponentAssembly.RootComponent.__Descendants()
                     .Select(component => component.Prototype)
                     .OfType<Part>()
-                    .FirstOrDefault(component => Regex.IsMatch(component.Leaf, Regex_Layout, RegexOptions.IgnoreCase));
+                    .FirstOrDefault(component => Regex.IsMatch(component.Leaf, RegexLayout, RegexOptions.IgnoreCase));
 
                 Part blankPart = __display_part_.ComponentAssembly.RootComponent.__Descendants()
                     .Select(component => component.Prototype)
                     .OfType<Part>()
-                    .FirstOrDefault(component => Regex.IsMatch(component.Leaf, Regex_Blank, RegexOptions.IgnoreCase));
+                    .FirstOrDefault(component => Regex.IsMatch(component.Leaf, RegexBlank, RegexOptions.IgnoreCase));
 
                 HashSet<int> layoutLayers = new HashSet<int>();
 
@@ -922,7 +922,7 @@ namespace TSG_Library.Utilities
                 if (!childOfStrip.__IsLoaded())
                     continue;
 
-                if (!Regex.IsMatch(childOfStrip.DisplayName, Regex_PressAssembly, RegexOptions.IgnoreCase))
+                if (!Regex.IsMatch(childOfStrip.DisplayName, RegexPressAssembly, RegexOptions.IgnoreCase))
                     continue;
 
                 if (childOfStrip.GetChildren().Length == 0)
@@ -1020,7 +1020,7 @@ namespace TSG_Library.Utilities
 
         public static IDictionary<string, ISet<Part>> SortPartsForExport(IEnumerable<Part> validParts)
         {
-            Regex detailRegex = new Regex(Regex_Detail, RegexOptions.IgnoreCase);
+            Regex detailRegex = new Regex(RegexDetail, RegexOptions.IgnoreCase);
 
             IDictionary<string, ISet<Part>> exportDict = new Dictionary<string, ISet<Part>>
             {
@@ -1245,9 +1245,9 @@ namespace TSG_Library.Utilities
                         if ((from child in part.ComponentAssembly.RootComponent.GetChildren()
                                 where child.Prototype is Part
                                 where child.__Prototype().FullPath.Contains("LiftLugs")
-                                where child.ReferenceSet != Refset_Empty
+                                where child.ReferenceSet != RefsetEmpty
                                 select child)
-                            .Any(child => child.ReferenceSet == Refset_EntirePart))
+                            .Any(child => child.ReferenceSet == RefsetEntirePart))
                             print_(
                                 $"Casting part {__display_part_.Leaf} contains a Lift Lug that is set to Entire Part. Casting Part cannot be made.");
 
@@ -1426,7 +1426,7 @@ namespace TSG_Library.Utilities
                 }
 
                 List<Part> parts = allParts
-                    .Where(part => Regex.IsMatch(part.Leaf, Regex_Detail, RegexOptions.IgnoreCase))
+                    .Where(part => Regex.IsMatch(part.Leaf, RegexDetail, RegexOptions.IgnoreCase))
                     .Where(IsNotAssembly)
                     .Where(part => part.DraftingDrawingSheets.ToArray().Any(__d => __d.Name.ToUpper() == "4-VIEW"))
                     .ToList();

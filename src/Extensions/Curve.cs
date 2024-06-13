@@ -7,7 +7,7 @@ using Curve = NXOpen.Curve;
 
 namespace TSG_Library.Extensions
 {
-    public static partial class __Extensions_
+    public static partial class Extensions
     {
         #region Curve
 
@@ -57,10 +57,10 @@ namespace TSG_Library.Extensions
             Tag nXOpenTag = curve.Tag;
             double[] array = point.__ToArray();
             int direction = 1;
-            double offset = 0.0;
+            const double offset = 0.0;
             double tolerance = 0.0001;
-            double[] point_along_curve = new double[3];
-            ufsession_.Modl.AskPointAlongCurve2(array, nXOpenTag, offset, direction, tolerance, point_along_curve,
+            double[] pointAlongCurve = new double[3];
+            ufsession_.Modl.AskPointAlongCurve2(array, nXOpenTag, offset, direction, tolerance, pointAlongCurve,
                 out double parameter);
             return (1.0 - parameter) * curve.__MinU() + parameter * curve.__MaxU();
         }
@@ -418,7 +418,7 @@ namespace TSG_Library.Extensions
         {
             UFEval eval = ufsession_.Eval;
             eval.Initialize2(curve.Tag, out IntPtr evaluator);
-            double[] array = new double[2] { 0.0, 1.0 };
+            double[] array = { 0.0, 1.0 };
             eval.AskLimits(evaluator, array);
             eval.Free(evaluator);
             return 1.0 * array[1];
@@ -651,7 +651,7 @@ namespace TSG_Library.Extensions
 
             double[] array = curve.__Position(baseParameter).__ToArray();
             double tolerance = 0.0001;
-            double[] point_along_curve = new double[3];
+            double[] pointAlongCurve = new double[3];
             UFSession uFSession = ufsession_;
 
             uFSession.Modl.AskPointAlongCurve2(
@@ -660,7 +660,7 @@ namespace TSG_Library.Extensions
                 Math.Abs(arclength),
                 direction,
                 tolerance,
-                point_along_curve,
+                pointAlongCurve,
                 out double parameter);
 
             return parameter * (curve.__MaxU() - curve.__MinU()) + curve.__MinU();

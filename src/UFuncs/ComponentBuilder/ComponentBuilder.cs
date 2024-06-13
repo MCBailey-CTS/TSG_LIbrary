@@ -15,7 +15,7 @@ using NXOpen.Utilities;
 using TSG_Library.Attributes;
 using TSG_Library.Properties;
 using TSG_Library.Utilities;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 using static NXOpen.UF.UFConstants;
 using static TSG_Library.UFuncs._UFunc;
 using Part = NXOpen.Part;
@@ -65,25 +65,25 @@ namespace TSG_Library.UFuncs
             toolTip1.SetToolTip(buttonPurple, CtsComponentColor.Purple.ToString());
             toolTip1.SetToolTip(buttonDarkDullBlue, CtsComponentColor.DarkDullBlue.ToString());
 
-            string getName = PerformStreamReaderString(FilePath_Ucf, ":DETAIL_TYPE_ATTRIBUTE_NAME:",
+            string getName = PerformStreamReaderString(FilePathUcf, ":DETAIL_TYPE_ATTRIBUTE_NAME:",
                 ":END_DETAIL_TYPE_ATTRIBUTE_NAME:");
 
-            string getMaterial = PerformStreamReaderString(FilePath_Ucf, ":MATERIAL_ATTRIBUTE_NAME:",
+            string getMaterial = PerformStreamReaderString(FilePathUcf, ":MATERIAL_ATTRIBUTE_NAME:",
                 ":END_MATERIAL_ATTRIBUTE_NAME:");
 
-            _compNames = PerformStreamReaderList(FilePath_Ucf, ":COMPONENT_NAMES:", ":END_COMPONENT_NAMES:");
+            _compNames = PerformStreamReaderList(FilePathUcf, ":COMPONENT_NAMES:", ":END_COMPONENT_NAMES:");
 
             foreach (CtsAttributes cName in _compNames)
                 cName.AttrName = getName != string.Empty ? getName : "DETAIL NAME";
 
             _compMaterials =
-                PerformStreamReaderList(FilePath_Ucf, ":COMPONENT_MATERIALS:", ":END_COMPONENT_MATERIALS:");
+                PerformStreamReaderList(FilePathUcf, ":COMPONENT_MATERIALS:", ":END_COMPONENT_MATERIALS:");
 
             foreach (CtsAttributes cMaterial in _compMaterials)
                 cMaterial.AttrName = getMaterial != string.Empty ? getMaterial : "MATERIAL";
 
             _compTolerances =
-                PerformStreamReaderList(FilePath_Ucf, ":COMPONENT_TOLERANCES:", ":END_COMPONENT_TOLERANCES:");
+                PerformStreamReaderList(FilePathUcf, ":COMPONENT_TOLERANCES:", ":END_COMPONENT_TOLERANCES:");
 
             foreach (CtsAttributes cTolerance in _compTolerances)
                 cTolerance.AttrName = "TOLERANCE";

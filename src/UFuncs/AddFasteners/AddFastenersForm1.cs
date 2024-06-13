@@ -16,7 +16,7 @@ using TSG_Library.Attributes;
 using TSG_Library.Disposable;
 using TSG_Library.Exceptions;
 using TSG_Library.Properties;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 using static NXOpen.UF.UFConstants;
 using Selection = TSG_Library.Ui.Selection;
 
@@ -511,8 +511,8 @@ namespace TSG_Library.UFuncs
 
                         switch (protoPartOcc.Layer)
                         {
-                            case Layer_DwlTooling:
-                            case Layer_ShcsHandlingWireTap:
+                            case LayerDwlTooling:
+                            case LayerShcsHandlingWireTap:
                                 break;
                             default:
                                 child.__ReferenceSet(protoPartOcc.ReferenceSet);

@@ -4,10 +4,11 @@ using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
 using TSG_Library.Geom;
+// ReSharper disable UnusedMember.Global
 
 namespace TSG_Library.Extensions
 {
-    public partial class __Extensions_
+    public partial class Extensions
     {
         #region Body
 

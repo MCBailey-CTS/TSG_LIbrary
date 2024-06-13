@@ -1,7 +1,7 @@
 ﻿using System;
 using NXOpen.Drafting;
 using NXOpen.Preferences;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 
 namespace TSG_Library.Disposable
 {

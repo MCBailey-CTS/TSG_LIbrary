@@ -8,7 +8,7 @@ using NXOpen.Features;
 using NXOpen.UF;
 using TSG_Library.Ui;
 using static NXOpen.UF.UFConstants;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 
 namespace TSG_Library.UFuncs.DrainHoleCreator
 {

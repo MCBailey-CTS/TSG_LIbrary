@@ -12,7 +12,7 @@ using TSG_Library.Disposable;
 using TSG_Library.Properties;
 using static NXOpen.Selection;
 using static NXOpen.UF.UFConstants;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 using static TSG_Library.UFuncs._UFunc;
 using Assembly = System.Reflection.Assembly;
 using Selection = TSG_Library.Ui.Selection;

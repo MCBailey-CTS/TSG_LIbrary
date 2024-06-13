@@ -21,7 +21,7 @@ using TSG_Library.Properties;
 using TSG_Library.UFuncUtilities.AssemblyAutoDetailUtilities;
 using TSG_Library.Ui;
 using TSG_Library.Utilities;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 using static TSG_Library.UFuncs._UFunc;
 using static TSG_Library.UFuncs.CtsDimensionData.EndPointAssociativity;
 using DecimalPointCharacter = NXOpen.Annotations.DecimalPointCharacter;
@@ -108,10 +108,10 @@ namespace TSG_Library.UFuncs
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            _sizeFile = PerformStreamReaderString(FilePath_Ucf, ":HOLESIZE_FILE_LOCATION:",
+            _sizeFile = PerformStreamReaderString(FilePathUcf, ":HOLESIZE_FILE_LOCATION:",
                 ":END_HOLESIZE_FILE_LOCATION:");
             _borderFile =
-                PerformStreamReaderString(FilePath_Ucf, ":BORDER_FILE_LOCATION:", ":END_BORDER_FILE_LOCATION:");
+                PerformStreamReaderString(FilePathUcf, ":BORDER_FILE_LOCATION:", ":END_BORDER_FILE_LOCATION:");
 
             string[] lines = File.ReadAllLines(_sizeFile)
                 .Where(__s => !__s.StartsWith("--"))
@@ -138,7 +138,7 @@ namespace TSG_Library.UFuncs
 
             _borderFile = dialogResult == DialogResult.OK
                 ? openFileDialog.FileName
-                : PerformStreamReaderString(FilePath_Ucf, ":BORDER_FILE_LOCATION:", ":END_BORDER_FILE_LOCATION:");
+                : PerformStreamReaderString(FilePathUcf, ":BORDER_FILE_LOCATION:", ":END_BORDER_FILE_LOCATION:");
         }
 
         private void CheckBox_Clicked(object sender, EventArgs e)
@@ -354,7 +354,7 @@ namespace TSG_Library.UFuncs
             ModelingView planView = null;
 
             foreach (ModelingView view in __work_part_.ModelingViews)
-                if (view.Name == View_Plan)
+                if (view.Name == ViewPlan)
                 {
                     planView = view;
                     break;
@@ -1301,15 +1301,15 @@ namespace TSG_Library.UFuncs
 
         public static bool IsNameValid(Component comp)
         {
-            return Regex.IsMatch(comp.DisplayName, Regex_Detail);
+            return Regex.IsMatch(comp.DisplayName, RegexDetail);
         }
 
         public static List<CtsAttributes> CreateMaterialList()
         {
-            string getMaterial = PerformStreamReaderString(FilePath_Ucf, ":MATERIAL_ATTRIBUTE_NAME:",
+            string getMaterial = PerformStreamReaderString(FilePathUcf, ":MATERIAL_ATTRIBUTE_NAME:",
                 ":END_MATERIAL_ATTRIBUTE_NAME:");
             List<CtsAttributes> compMaterials =
-                PerformStreamReaderList(FilePath_Ucf, ":COMPONENT_MATERIALS:", ":END_COMPONENT_MATERIALS:");
+                PerformStreamReaderList(FilePathUcf, ":COMPONENT_MATERIALS:", ":END_COMPONENT_MATERIALS:");
             foreach (CtsAttributes cMaterial in compMaterials)
                 cMaterial.AttrName = getMaterial != string.Empty ? getMaterial : "MATERIAL";
             return compMaterials;

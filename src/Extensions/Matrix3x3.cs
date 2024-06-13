@@ -3,10 +3,12 @@ using System.Linq;
 using NXOpen;
 using NXOpen.Assemblies;
 using TSG_Library.Geom;
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedParameter.Global
 
 namespace TSG_Library.Extensions
 {
-    public static partial class __Extensions_
+    public static partial class Extensions
     {
         #region Matrix3x3
 
@@ -101,7 +103,7 @@ namespace TSG_Library.Extensions
 
         public static double[,] __ToTwoDimArray(this Matrix3x3 matrix)
         {
-            return new double[3, 3]
+            return new[,]
             {
                 { matrix.Xx, matrix.Xy, matrix.Xz },
                 { matrix.Yx, matrix.Yy, matrix.Yz },

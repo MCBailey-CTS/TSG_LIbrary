@@ -5,7 +5,7 @@ using NXOpen.Assemblies;
 using NXOpen.UF;
 using TSG_Library.Utilities;
 using static NXOpen.UF.UFConstants;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedMember.Global
 

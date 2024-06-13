@@ -10,7 +10,7 @@ using TSG_Library.Exceptions;
 using TSG_Library.Extensions;
 using TSG_Library.Forms;
 using TSG_Library.Utilities;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 using static NXOpen.Selection;
 using Selection = TSG_Library.Ui.Selection;
 
@@ -138,7 +138,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                     .ToArray();
                 string currentRefset = target.OwningComponent.ReferenceSet;
 
-                if (currentRefset != Refset_EntirePart
+                if (currentRefset != RefsetEntirePart
                     && target.OwningComponent.Prototype is Part prototype
                     && prototype.__FindReferenceSetOrNull(currentRefset) is ReferenceSet refset)
                     using (refset.__UsingRedisplayObject())
@@ -221,13 +221,13 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
             switch (buttonsBooleans)
             {
                 case Feature.BooleanType.Subtract:
-                    booleanFunc = __Extensions_.__CreateSubtract;
+                    booleanFunc = Extensions.Extensions.__CreateSubtract;
                     break;
                 case Feature.BooleanType.Unite:
-                    booleanFunc = __Extensions_.__CreateUnite;
+                    booleanFunc = Extensions.Extensions.__CreateUnite;
                     break;
                 case Feature.BooleanType.Intersect:
-                    booleanFunc = __Extensions_.__CreateIntersect;
+                    booleanFunc = Extensions.Extensions.__CreateIntersect;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(buttonsBooleans), buttonsBooleans, null);
@@ -473,7 +473,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                                         string original_ref_set = child.ReferenceSet;
                                         Component proto_child_fastener = child.__ProtoChildComp();
 
-                                        if (proto_child_fastener.Layer != Layer_Fastener)
+                                        if (proto_child_fastener.Layer != LayerFastener)
                                             continue;
 
                                         try

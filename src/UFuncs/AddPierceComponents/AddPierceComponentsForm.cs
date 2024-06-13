@@ -11,7 +11,7 @@ using NXOpen.UF;
 using TSG_Library.Attributes;
 using TSG_Library.Disposable;
 using TSG_Library.Utilities;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 using static TSG_Library.UFuncs._UFunc;
 using static NXOpen.Session;
 
@@ -325,7 +325,7 @@ namespace TSG_Library.UFuncs
         {
             int[] validDetailNumbers = snapComponent.GetChildren()
                 .Select(component => component.DisplayName)
-                .Select(s => Regex.Match(s, Regex_Detail))
+                .Select(s => Regex.Match(s, RegexDetail))
                 .Where(match => match.Success)
                 .Select(match => int.Parse(match.Groups[3].Value))
                 .ToArray();
@@ -721,7 +721,7 @@ namespace TSG_Library.UFuncs
                                                ??
                                                throw new NullReferenceException("_display_part_DisplayName");
 
-            Match nameMatch = Regex.Match(_display_part_DisplayName, Regex_LspUsp);
+            Match nameMatch = Regex.Match(_display_part_DisplayName, RegexLspUsp);
 
             if (!nameMatch.Success)
                 throw new FormatException($"{_display_part_DisplayName} is not a valid usp or lsp.");

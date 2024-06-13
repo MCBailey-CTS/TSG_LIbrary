@@ -6,7 +6,7 @@ using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.UF;
 using TSG_Library.Attributes;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 
 namespace TSG_Library.UFuncs
 {

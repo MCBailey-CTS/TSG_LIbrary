@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace TSG_Library.Extensions
 {
-    public static partial class __Extensions_
+    public static partial class Extensions
     {
         #region Collections
 

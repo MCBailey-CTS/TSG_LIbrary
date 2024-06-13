@@ -1,6 +1,6 @@
 ﻿using System;
 using NXOpen;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedParameter.Local
 

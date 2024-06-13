@@ -12,7 +12,7 @@ using NXOpen.Utilities;
 using TSG_Library.Disposable;
 using TSG_Library.Geom;
 using TSG_Library.Properties;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 using Component = NXOpen.Assemblies.Component;
 using Curve = NXOpen.Curve;
 using Point = System.Drawing.Point;

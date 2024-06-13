@@ -12,7 +12,7 @@ using TSG_Library.UFuncs;
 
 namespace TSG_Library.Extensions
 {
-    public static partial class __Extensions_
+    public static partial class Extensions
     {
         #region Component
 
@@ -343,8 +343,8 @@ namespace TSG_Library.Extensions
             //   part._RightClickOpen
             switch (referenceSetTitle)
             {
-                case Refset_EntirePart:
-                case Refset_Empty:
+                case RefsetEntirePart:
+                case RefsetEmpty:
                     component.DirectOwner.ReplaceReferenceSet(component, referenceSetTitle);
                     break;
                 default:

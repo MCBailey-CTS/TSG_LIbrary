@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Assemblies;
 using static NXOpen.UF.UFConstants;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 
 namespace TSG_Library.UFuncs
 {

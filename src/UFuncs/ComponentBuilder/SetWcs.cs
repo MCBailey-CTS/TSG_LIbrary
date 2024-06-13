@@ -3,7 +3,7 @@ using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
 using NXOpen.Utilities;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 using static NXOpen.UF.UFConstants;
 
 namespace TSG_Library.UFuncs

@@ -6,7 +6,7 @@ using NXOpen.Assemblies;
 
 namespace TSG_Library.Extensions
 {
-    public static partial class __Extensions_
+    public static partial class Extensions
     {
         #region String
 
@@ -198,7 +198,7 @@ namespace TSG_Library.Extensions
             out string diameter,
             out string length)
         {
-            return __FastenerInfo(file, Regex_Shcs, out diameter, out length);
+            return __FastenerInfo(file, RegexShcs, out diameter, out length);
         }
 
         public static bool __IsDwl(
@@ -206,7 +206,7 @@ namespace TSG_Library.Extensions
             out string diameter,
             out string length)
         {
-            return __FastenerInfo(file, Regex_Dwl, out diameter, out length);
+            return __FastenerInfo(file, RegexDwl, out diameter, out length);
         }
 
         public static bool __IsFastener(this string file)
@@ -232,14 +232,14 @@ namespace TSG_Library.Extensions
             this string file,
             out string diameter)
         {
-            return __FastenerInfo(file, Regex_JckScrew, out diameter, out _);
+            return __FastenerInfo(file, RegexJckScrew, out diameter, out _);
         }
 
         public static bool __IsJckScrewTsg(
             this string file,
             out string diameter)
         {
-            return __FastenerInfo(file, Regex_JckScrewTsg, out diameter, out _);
+            return __FastenerInfo(file, RegexJckScrewTsg, out diameter, out _);
         }
 
         public static bool __IsFastener(this string file, out string diameter)
@@ -358,37 +358,37 @@ namespace TSG_Library.Extensions
 
         public static bool __IsLsh(this string str)
         {
-            return Regex.IsMatch(str, Regex_Lsh, RegexOptions.IgnoreCase);
+            return Regex.IsMatch(str, RegexLsh, RegexOptions.IgnoreCase);
         }
 
         public static bool __IsUsh(this string str)
         {
-            return Regex.IsMatch(str, Regex_Ush, RegexOptions.IgnoreCase);
+            return Regex.IsMatch(str, RegexUsh, RegexOptions.IgnoreCase);
         }
 
         public static bool __IsLsp(this string str)
         {
-            return Regex.IsMatch(str, Regex_Lsp, RegexOptions.IgnoreCase);
+            return Regex.IsMatch(str, RegexLsp, RegexOptions.IgnoreCase);
         }
 
         public static bool __IsUsp(this string str)
         {
-            return Regex.IsMatch(str, Regex_Usp, RegexOptions.IgnoreCase);
+            return Regex.IsMatch(str, RegexUsp, RegexOptions.IgnoreCase);
         }
 
         public static bool __IsLwr(this string str)
         {
-            return Regex.IsMatch(str, Regex_Lwr, RegexOptions.IgnoreCase);
+            return Regex.IsMatch(str, RegexLwr, RegexOptions.IgnoreCase);
         }
 
         public static bool __IsUpr(this string str)
         {
-            return Regex.IsMatch(str, Regex_Upr, RegexOptions.IgnoreCase);
+            return Regex.IsMatch(str, RegexUpr, RegexOptions.IgnoreCase);
         }
 
         public static bool __Is000(this string str)
         {
-            return Regex.IsMatch(str, Regex_Op000Holder, RegexOptions.IgnoreCase);
+            return Regex.IsMatch(str, RegexOp000Holder, RegexOptions.IgnoreCase);
         }
 
         #endregion

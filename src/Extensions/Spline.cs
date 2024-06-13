@@ -3,7 +3,7 @@ using NXOpen;
 
 namespace TSG_Library.Extensions
 {
-    public partial class __Extensions_
+    public partial class Extensions
     {
         #region Spline
 

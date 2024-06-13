@@ -8,7 +8,7 @@ using NXOpen;
 using NXOpen.Assemblies;
 using TSG_Library.Attributes;
 using TSG_Library.Utilities;
-using static TSG_Library.Extensions.__Extensions_;
+using static TSG_Library.Extensions.Extensions;
 
 namespace TSG_Library.UFuncs
 {
@@ -56,7 +56,7 @@ namespace TSG_Library.UFuncs
             if (result == DialogResult.No)
                 return;
 
-            Match match = Regex.Match(__display_part_.Leaf, Regex_Detail);
+            Match match = Regex.Match(__display_part_.Leaf, RegexDetail);
 
             if (!match.Success || match.Groups[3].Value != "000")
                 throw new InvalidOperationException(
