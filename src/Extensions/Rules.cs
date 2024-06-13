@@ -2,6 +2,8 @@
 using NXOpen;
 using NXOpen.Assemblies;
 using TSG_Library.Geom;
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedParameter.Global
 
 namespace TSG_Library.Extensions
 {

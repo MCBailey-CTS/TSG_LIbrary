@@ -26,6 +26,7 @@ using Type = NXOpen.GeometricUtilities.Type;
 // ReSharper disable InvalidXmlDocComment
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMethodReturnValue.Global
+// ReSharper disable SpecifyACultureInStringConversionExplicitly
 
 namespace TSG_Library.Extensions
 {

@@ -5,6 +5,7 @@ using NXOpen.Features;
 using NXOpen.GeometricUtilities;
 using TSG_Library.Geom;
 using Curve = TSG_Library.Geom.Curve;
+// ReSharper disable SpecifyACultureInStringConversionExplicitly
 
 namespace TSG_Library.Extensions
 {
@@ -469,7 +470,7 @@ namespace TSG_Library.Extensions
             plane.SetMethod(PlaneTypes.MethodType.PointDir);
             Direction direction2 = __work_part_.Directions.CreateDirection(position, direction,
                 SmartObject.UpdateOption.WithinModeling);
-            plane.SetGeometry(new NXObject[2]
+            plane.SetGeometry(new NXObject[]
             {
                 part.Points.CreatePoint(position),
                 direction2
@@ -497,6 +498,7 @@ namespace TSG_Library.Extensions
         }
 
         /// <summary>Creates a rectangle (an array of four lines) from given center and side lengths</summary>
+        /// <param name="basePart"></param>
         /// <param name="center">Center location</param>
         /// <param name="width">Width in the x-direction</param>
         /// <param name="height">Height in the y-direction</param>
@@ -704,6 +706,7 @@ namespace TSG_Library.Extensions
 
 
         /// <summary>Creates an NX.Arc from three points</summary>
+        /// <param name="basePart"></param>
         /// <param name="startPoint">Start point</param>
         /// <param name="pointOn">Point that the arc passes through</param>
         /// <param name="endPoint">End point</param>

@@ -33,24 +33,24 @@ namespace TSG_Library.Extensions
 
 
         public static ConstraintReference __CreateConstRefOcc(
-            this ComponentConstraint __constraint,
-            NXObject __occ_object)
+            this ComponentConstraint constraint,
+            NXObject occObject)
         {
-            return __constraint.CreateConstraintReference(
-                __occ_object.OwningComponent,
-                __occ_object,
+            return constraint.CreateConstraintReference(
+                occObject.OwningComponent,
+                occObject,
                 false,
                 false,
                 false);
         }
 
         public static ConstraintReference __CreateConstRefProto(
-            this ComponentConstraint __constraint,
-            NXObject __proto_object)
+            this ComponentConstraint constraint,
+            NXObject protoObject)
         {
-            return __constraint.CreateConstraintReference(
-                __proto_object.OwningPart.ComponentAssembly,
-                __proto_object,
+            return constraint.CreateConstraintReference(
+                protoObject.OwningPart.ComponentAssembly,
+                protoObject,
                 false,
                 false,
                 false);

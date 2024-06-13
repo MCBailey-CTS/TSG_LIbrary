@@ -52,12 +52,12 @@ namespace TSG_Library.Extensions
             return new Vector3d(matrix.Zx, matrix.Zy, matrix.Zz);
         }
 
-        public static Matrix3x3 __MapAcsToWcs(this Matrix3x3 __ori)
+        public static Matrix3x3 __MapAcsToWcs(this Matrix3x3 ori)
         {
-            double[] x_vec = __MapAcsToWcs(__ori.__AxisX()).__ToArray();
-            double[] y_vec = __MapAcsToWcs(__ori.__AxisY()).__ToArray();
-            double[] z_vec = __MapAcsToWcs(__ori.__AxisZ()).__ToArray();
-            return x_vec.Concat(y_vec).Concat(z_vec).ToArray().__ToMatrix3x3();
+            double[] xVec = __MapAcsToWcs(ori.__AxisX()).__ToArray();
+            double[] yVec = __MapAcsToWcs(ori.__AxisY()).__ToArray();
+            double[] zVec = __MapAcsToWcs(ori.__AxisZ()).__ToArray();
+            return xVec.Concat(yVec).Concat(zVec).ToArray().__ToMatrix3x3();
         }
 
 
@@ -78,9 +78,9 @@ namespace TSG_Library.Extensions
 
         public static Matrix3x3 __Mirror(this Matrix3x3 matrix, Surface.Plane plane)
         {
-            Vector3d new_y = matrix.__AxisX().__Mirror(plane);
-            Vector3d new_x = matrix.__AxisY().__Mirror(plane);
-            return new_x.__ToMatrix3x3(new_y);
+            Vector3d newY = matrix.__AxisX().__Mirror(plane);
+            Vector3d newX = matrix.__AxisY().__Mirror(plane);
+            return newX.__ToMatrix3x3(newY);
         }
 
         [Obsolete(nameof(NotImplementedException))]
@@ -96,9 +96,9 @@ namespace TSG_Library.Extensions
 
         public static Matrix3x3 __Copy(this Matrix3x3 matrix)
         {
-            double[] mtx_dst = new double[9];
-            ufsession_.Mtx3.Copy(matrix.__Array(), mtx_dst);
-            return mtx_dst.__ToMatrix3x3();
+            double[] mtxDst = new double[9];
+            ufsession_.Mtx3.Copy(matrix.__Array(), mtxDst);
+            return mtxDst.__ToMatrix3x3();
         }
 
         public static double[,] __ToTwoDimArray(this Matrix3x3 matrix)
