@@ -31,15 +31,15 @@ namespace TSG_Library.Forms
         public FormCtsReferenceSet(IEnumerable<Component> components)
             : this()
         {
-            var array1 = components.ToArray();
+            Component[] array1 = components.ToArray();
 
-            if(!array1.Any())
+            if (!array1.Any())
                 throw new ArgumentOutOfRangeException(nameof(components));
 
-            var array2 = MergeStrings(array1).ToArray();
-            if(array1.Length == 1)
+            string[] array2 = MergeStrings(array1).ToArray();
+            if (array1.Length == 1)
             {
-                var strArray = new string[2]
+                string[] strArray = new string[2]
                 {
                     "layout",
                     "blank"
@@ -60,7 +60,7 @@ namespace TSG_Library.Forms
         {
             get
             {
-                if(!Session.GetSession().ListingWindow.IsOpen)
+                if (!Session.GetSession().ListingWindow.IsOpen)
                     Session.GetSession().ListingWindow.Open();
                 return Session.GetSession().ListingWindow;
             }
@@ -72,7 +72,7 @@ namespace TSG_Library.Forms
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-            if(lstBox.SelectedIndex < 0)
+            if (lstBox.SelectedIndex < 0)
                 return;
             SelectedReferenceSetName = lstBox.Text;
             IsSelected = true;
@@ -86,11 +86,11 @@ namespace TSG_Library.Forms
 
         protected IEnumerable<string> MergeStrings(IEnumerable<Component> snapComponents)
         {
-            var array = snapComponents.ToArray();
-            var source = ((Part)array[0].Prototype).GetAllReferenceSets().Select(str => str.Name);
-            for (var index = 1; index < array.Length; ++index)
+            Component[] array = snapComponents.ToArray();
+            IEnumerable<string> source = ((Part)array[0].Prototype).GetAllReferenceSets().Select(str => str.Name);
+            for (int index = 1; index < array.Length; ++index)
             {
-                var list = ((BasePart)array[index].Prototype).GetAllReferenceSets().Select(str => str
+                List<string> list = ((BasePart)array[index].Prototype).GetAllReferenceSets().Select(str => str
                     .Name).ToList();
                 source = source.Select(x => x).Intersect(list).ToList();
             }
@@ -105,29 +105,29 @@ namespace TSG_Library.Forms
 
         protected virtual void SetFormToListBox()
         {
-            var array = lstBox.Items.OfType<string>().ToArray();
+            string[] array = lstBox.Items.OfType<string>().ToArray();
             FormBorderStyle = FormBorderStyle.FixedSingle;
             lstBox.Location = new Point(12, 12);
-            var num = array.Select(str =>
+            int num = array.Select(str =>
                 {
                     var data = new { str, font = lstBox.Font };
                     return data;
                 }).Select(_param0 => TextRenderer.MeasureText(_param0.str, _param0.font)).Select(size => size.Width)
                 .Concat(new int[1]).Max();
             lstBox.Width = num + 20 < 156 ? 156 : num + 20;
-            if(array.Length > 40)
+            if (array.Length > 40)
                 lstBox.Height = lstBox.ItemHeight * 41;
-            else if(array.Length < 10)
+            else if (array.Length < 10)
                 lstBox.Height = lstBox.ItemHeight * 10;
             else
                 lstBox.Height = lstBox.ItemHeight * (array.Length + 1);
             btnOk.Location = new Point(lstBox.Location.X, lstBox.Location.Y + lstBox.Height - 3);
-            var btnExit = this.btnExit;
-            var location = lstBox.Location;
-            var x = location.X + lstBox.Width - this.btnExit.Size.Width;
+            Button btnExit = this.btnExit;
+            Point location = lstBox.Location;
+            int x = location.X + lstBox.Width - this.btnExit.Size.Width;
             location = btnOk.Location;
-            var y = location.Y;
-            var point = new Point(x, y);
+            int y = location.Y;
+            Point point = new Point(x, y);
             btnExit.Location = point;
             location = lstBox.Location;
             Width = location.X * 2 + lstBox.Size.Width + 20;
@@ -152,7 +152,7 @@ namespace TSG_Library.Forms
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if(disposing && components != null)
+            if (disposing && components != null)
                 components.Dispose();
             base.Dispose(disposing);
         }

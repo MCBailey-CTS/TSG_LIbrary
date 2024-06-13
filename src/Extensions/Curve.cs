@@ -1,6 +1,7 @@
 ﻿using System;
 using NXOpen;
 using NXOpen.Assemblies;
+using NXOpen.UF;
 using TSG_Library.Geom;
 using Curve = NXOpen.Curve;
 
@@ -22,16 +23,16 @@ namespace TSG_Library.Extensions
         /// </remarks>
         public static Vector3d __Derivative(this Curve curve, double value)
         {
-            var eval = ufsession_.Eval;
-            eval.Initialize2(curve.Tag, out var evaluator);
-            var array = new double[3];
-            var point = array;
-            var array2 = new double[3];
-            var array3 = array2;
+            UFEval eval = ufsession_.Eval;
+            eval.Initialize2(curve.Tag, out IntPtr evaluator);
+            double[] array = new double[3];
+            double[] point = array;
+            double[] array2 = new double[3];
+            double[] array3 = array2;
             value /= Factor;
             eval.Evaluate(evaluator, 1, value, point, array3);
             eval.Free(evaluator);
-            var vector = array3.__ToVector3d();
+            Vector3d vector = array3.__ToVector3d();
             return vector.__Divide(Factor);
         }
 
@@ -55,14 +56,14 @@ namespace TSG_Library.Extensions
         //     c.Position(c.Parameter(p)) = p
         public static double __Parameter(this Curve curve, Point3d point)
         {
-            var nXOpenTag = curve.Tag;
-            var array = point.__ToArray();
-            var direction = 1;
-            var offset = 0.0;
-            var tolerance = 0.0001;
-            var point_along_curve = new double[3];
+            Tag nXOpenTag = curve.Tag;
+            double[] array = point.__ToArray();
+            int direction = 1;
+            double offset = 0.0;
+            double tolerance = 0.0001;
+            double[] point_along_curve = new double[3];
             ufsession_.Modl.AskPointAlongCurve2(array, nXOpenTag, offset, direction, tolerance, point_along_curve,
-                out var parameter);
+                out double parameter);
             return (1.0 - parameter) * curve.__MinU() + parameter * curve.__MaxU();
         }
 
@@ -146,12 +147,12 @@ namespace TSG_Library.Extensions
 
             //}
 
-            var eval = ufsession_.Eval;
-            eval.Initialize2(curve.Tag, out var evaluator);
-            var array = new double[3];
-            var array2 = array;
-            var array3 = new double[3];
-            var derivatives = array3;
+            UFEval eval = ufsession_.Eval;
+            eval.Initialize2(curve.Tag, out IntPtr evaluator);
+            double[] array = new double[3];
+            double[] array2 = array;
+            double[] array3 = new double[3];
+            double[] derivatives = array3;
             value /= Factor;
             eval.Evaluate(evaluator, 0, value, array2, derivatives);
             eval.Free(evaluator);
@@ -177,8 +178,8 @@ namespace TSG_Library.Extensions
         [Obsolete(nameof(NotImplementedException))]
         public static Curve[] __Copy(this Curve curve, params Curve[] original)
         {
-            var array = new Curve[original.Length];
-            for (var i = 0; i < original.Length; i++) array[i] = original[i].__Copy();
+            Curve[] array = new Curve[original.Length];
+            for (int i = 0; i < original.Length; i++) array[i] = original[i].__Copy();
 
             return array;
         }
@@ -372,7 +373,7 @@ namespace TSG_Library.Extensions
 
         public static bool __IsClosed(this Curve curve)
         {
-            var result = ufsession_.Modl.AskCurveClosed(curve.Tag);
+            int result = ufsession_.Modl.AskCurveClosed(curve.Tag);
 
             switch (result)
             {
@@ -406,9 +407,9 @@ namespace TSG_Library.Extensions
         /// <returns>The value at the start of the curve</returns>
         public static double __MinU(this Curve curve)
         {
-            var eval = ufsession_.Eval;
-            eval.Initialize2(curve.Tag, out var evaluator);
-            var array = new double[2] { 0.0, 1.0 };
+            UFEval eval = ufsession_.Eval;
+            eval.Initialize2(curve.Tag, out IntPtr evaluator);
+            double[] array = new double[2] { 0.0, 1.0 };
             eval.AskLimits(evaluator, array);
             eval.Free(evaluator);
             return 1.0 * array[0];
@@ -419,9 +420,9 @@ namespace TSG_Library.Extensions
         /// <returns>The value at the end of the curve</returns>
         public static double __MaxU(this Curve curve)
         {
-            var eval = ufsession_.Eval;
-            eval.Initialize2(curve.Tag, out var evaluator);
-            var array = new double[2] { 0.0, 1.0 };
+            UFEval eval = ufsession_.Eval;
+            eval.Initialize2(curve.Tag, out IntPtr evaluator);
+            double[] array = new double[2] { 0.0, 1.0 };
             eval.AskLimits(evaluator, array);
             eval.Free(evaluator);
             return 1.0 * array[1];
@@ -457,11 +458,11 @@ namespace TSG_Library.Extensions
 
         public static Point3d __MidPoint(this Curve curve)
         {
-            var max = curve.__MaxU();
-            var min = curve.__MinU();
-            var diff = max - min;
-            var quotient = diff / 2;
-            var total = max - quotient;
+            double max = curve.__MaxU();
+            double min = curve.__MinU();
+            double diff = max - min;
+            double quotient = diff / 2;
+            double total = max - quotient;
             return curve.__Position(total);
         }
 
@@ -647,15 +648,15 @@ namespace TSG_Library.Extensions
         /// <returns>The curve parameter value at the far end of the step</returns>
         public static double __Parameter(this Curve curve, double baseParameter, double arclength)
         {
-            var direction = 1;
+            int direction = 1;
 
-            if(arclength < 0.0)
+            if (arclength < 0.0)
                 direction = -1;
 
-            var array = curve.__Position(baseParameter).__ToArray();
-            var tolerance = 0.0001;
-            var point_along_curve = new double[3];
-            var uFSession = ufsession_;
+            double[] array = curve.__Position(baseParameter).__ToArray();
+            double tolerance = 0.0001;
+            double[] point_along_curve = new double[3];
+            UFSession uFSession = ufsession_;
 
             uFSession.Modl.AskPointAlongCurve2(
                 array,
@@ -664,7 +665,7 @@ namespace TSG_Library.Extensions
                 direction,
                 tolerance,
                 point_along_curve,
-                out var parameter);
+                out double parameter);
 
             return parameter * (curve.__MaxU() - curve.__MinU()) + curve.__MinU();
         }
@@ -690,7 +691,7 @@ namespace TSG_Library.Extensions
         //     parameter values corresponding to points on the extension of the curve.
         public static double __Parameter(this Curve curve, double arclengthFraction)
         {
-            var arclength = curve.GetLength() * arclengthFraction;
+            double arclength = curve.GetLength() * arclengthFraction;
             return curve.__Parameter(curve.__MinU(), arclength);
         }
 
@@ -767,16 +768,16 @@ namespace TSG_Library.Extensions
         //     cases where the derivative vector of the curve has zero length.
         public static Vector3d __Tangent(this Curve curve, double value)
         {
-            var eval = ufsession_.Eval;
-            eval.Initialize2(curve.Tag, out var evaluator);
-            var array = new double[3];
-            var point = array;
-            var array2 = new double[3];
-            var array3 = array2;
-            var array4 = new double[3];
-            var normal = array4;
-            var array5 = new double[3];
-            var binormal = array5;
+            UFEval eval = ufsession_.Eval;
+            eval.Initialize2(curve.Tag, out IntPtr evaluator);
+            double[] array = new double[3];
+            double[] point = array;
+            double[] array2 = new double[3];
+            double[] array3 = array2;
+            double[] array4 = new double[3];
+            double[] normal = array4;
+            double[] array5 = new double[3];
+            double[] binormal = array5;
             value /= Factor;
             eval.EvaluateUnitVectors(evaluator, value, point, array3, normal, binormal);
             eval.Free(evaluator);

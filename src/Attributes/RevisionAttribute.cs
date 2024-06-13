@@ -11,13 +11,17 @@ namespace TSG_Library.Attributes
             RevisionLevel = revisionLevel;
             RevisionMessage = revisionMessage;
 
-            var split = revisionLevel.Split('.');
+            string[] split = revisionLevel.Split('.');
 
-            var list = new List<int>();
+            List<int> list = new List<int>();
 
-            foreach (var i in split)
+            foreach (string i in split)
             {
-                if(!int.TryParse(i, out var number)) continue;
+                if (!int.TryParse(i, out int number))
+                {
+                    continue;
+                }
+
                 list.Add(number);
             }
 

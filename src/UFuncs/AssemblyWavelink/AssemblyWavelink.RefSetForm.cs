@@ -31,7 +31,7 @@ namespace TSG_Library.UFuncs
 
             protected override void Dispose(bool disposing)
             {
-                if(disposing)
+                if (disposing)
                     components?.Dispose();
                 base.Dispose(disposing);
             }

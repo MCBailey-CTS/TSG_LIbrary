@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Windows.Forms;
 using NXOpen;
 using TSG_Library.Extensions;
@@ -56,13 +55,13 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
         {
             result_node = part.__TreeNode();
 
-            if(!part.__IsPartDetail())
+            if (!part.__IsPartDetail())
             {
                 result_node.Nodes.Add("Is not a part detail");
                 return DCResult.ignore;
             }
 
-            if(!part.__HasAttribute("MATERIAL"))
+            if (!part.__HasAttribute("MATERIAL"))
             {
                 result_node.Nodes.Add("No MATERIAL attribute");
                 return DCResult.ignore;

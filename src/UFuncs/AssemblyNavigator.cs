@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using NXOpen;
+using NXOpen.Features;
 using TSG_Library.Properties;
 using static TSG_Library.Extensions.__Extensions_;
 
@@ -163,19 +164,19 @@ namespace TSG_Library.UFuncs
         {
             treeView1.Nodes.Clear();
 
-            if(__display_part_ is null)
+            if (__display_part_ is null)
             {
                 treeView1.Nodes.Add("There is no display part");
                 return;
             }
 
-            var features = __work_part_.Features.ToArray();
+            Feature[] features = __work_part_.Features.ToArray();
 
-            if(features.Length > 0)
+            if (features.Length > 0)
             {
-                var feature_node = treeView1.Nodes.Add("Features");
+                TreeNode feature_node = treeView1.Nodes.Add("Features");
 
-                foreach (var feature in features)
+                foreach (Feature feature in features)
                     feature_node.Nodes.Add($"{feature.GetFeatureName()}, {feature.FeatureType}");
             }
         }

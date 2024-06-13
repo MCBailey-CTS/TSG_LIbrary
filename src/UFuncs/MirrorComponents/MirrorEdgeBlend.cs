@@ -23,34 +23,34 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             //originalFeature.Suppress();
 
 
-            var mirroredComp = (Component)dict[originalComp];
+            Component mirroredComp = (Component)dict[originalComp];
 
             // ReSharper disable once UnusedVariable
-            var mirroredPart = mirroredComp.__Prototype();
+            Part mirroredPart = mirroredComp.__Prototype();
 
-            var originalPart = originalComp.__Prototype();
+            Part originalPart = originalComp.__Prototype();
 
             //originalFeature.Suppress();
 
 
             // throw new NotImplementedException();
 
-            var mirroredFeature = (EdgeBlend)dict[originalFeature];
+            EdgeBlend mirroredFeature = (EdgeBlend)dict[originalFeature];
 
             IDictionary<int, Tuple<SelectionIntentRule[], Expression>> chainSetDict =
                 new Dictionary<int, Tuple<SelectionIntentRule[], Expression>>();
 
-            var builder = originalPart.Features.CreateEdgeBlendBuilder(originalFeature);
+            EdgeBlendBuilder builder = originalPart.Features.CreateEdgeBlendBuilder(originalFeature);
 
             using (new Destroyer(builder))
             {
-                var chainSetLength = builder.GetNumberOfValidChainsets();
+                int chainSetLength = builder.GetNumberOfValidChainsets();
 
-                for (var i = 0; i < chainSetLength; i++)
+                for (int i = 0; i < chainSetLength; i++)
                 {
-                    builder.GetChainset(i, out var originalCollector, out var radius);
+                    builder.GetChainset(i, out ScCollector originalCollector, out Expression radius);
 
-                    originalCollector.GetRules(out var originalRules);
+                    originalCollector.GetRules(out SelectionIntentRule[] originalRules);
 
                     IList<SelectionIntentRule> newRules = originalRules.Select(originalRule =>
                         BaseMirrorRule.MirrorRule(originalRule, originalFeature, plane, originalComp, dict)).ToList();
@@ -59,21 +59,23 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
                 }
             }
 
-            var markId1 = session_.SetUndoMark(Session.MarkVisibility.Visible, "Fine");
+            Session.UndoMarkId markId1 = session_.SetUndoMark(Session.MarkVisibility.Visible, "Fine");
 
-            var editWithRollbackManager1 = _WorkPart.Features.StartEditWithRollbackManager(mirroredFeature, markId1);
+            EditWithRollbackManager editWithRollbackManager1 =
+                _WorkPart.Features.StartEditWithRollbackManager(mirroredFeature, markId1);
 
             using (new Destroyer(editWithRollbackManager1))
             {
-                var edgeBlendBuilder1 = _WorkPart.Features.CreateEdgeBlendBuilder(mirroredFeature);
+                EdgeBlendBuilder edgeBlendBuilder1 = _WorkPart.Features.CreateEdgeBlendBuilder(mirroredFeature);
 
                 using (new Destroyer(edgeBlendBuilder1))
                 {
-                    for (var i = 0; i < edgeBlendBuilder1.GetNumberOfValidChainsets(); i++)
+                    for (int i = 0; i < edgeBlendBuilder1.GetNumberOfValidChainsets(); i++)
                     {
-                        edgeBlendBuilder1.GetChainsetAndStatus(i, out var scCollector1, out var _, out var _);
+                        edgeBlendBuilder1.GetChainsetAndStatus(i, out ScCollector scCollector1, out Expression _,
+                            out bool _);
 
-                        var newRules = chainSetDict[i].Item1;
+                        SelectionIntentRule[] newRules = chainSetDict[i].Item1;
 
                         scCollector1.ReplaceRules(newRules, false);
                     }

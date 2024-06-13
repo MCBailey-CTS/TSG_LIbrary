@@ -30,11 +30,11 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 
             if (!part.__HasAttribute("MATERIAL"))
             {
-                result_node.Nodes.Add($"Did not have attribute 'MATERIAL'");
+                result_node.Nodes.Add("Did not have attribute 'MATERIAL'");
                 return DCResult.fail;
             }
 
-            var attValue = part.__GetAttribute("MATERIAL");
+            string attValue = part.__GetAttribute("MATERIAL");
 
             if (Burnouts_Values_1.All(__v => __v.ToUpper() != attValue.ToUpper()))
             {

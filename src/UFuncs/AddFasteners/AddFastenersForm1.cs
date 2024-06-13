@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -56,16 +57,16 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if(__display_part_ is null)
+                if (__display_part_ is null)
                     return;
 
-                var hasSolidBodyOnLayer1 = __work_part_.Bodies
+                bool hasSolidBodyOnLayer1 = __work_part_.Bodies
                     .ToArray()
                     .Where(__b => __b.IsSolidBody)
                     .Where(__b => __b.Layer == 1)
                     .ToArray().Length == 1;
 
-                var hasDynamicBlock = __work_part_.__HasDynamicBlock() || hasSolidBodyOnLayer1;
+                bool hasDynamicBlock = __work_part_.__HasDynamicBlock() || hasSolidBodyOnLayer1;
                 menuItemUnits.Enabled = hasDynamicBlock;
                 chkCycleAdd.Enabled = hasDynamicBlock;
                 btnOrigin.Enabled = hasDynamicBlock;
@@ -82,7 +83,7 @@ namespace TSG_Library.UFuncs
             }
             finally
             {
-                if(!(__display_part_ is null))
+                if (!(__display_part_ is null))
                     __display_part_.Preferences.Workplane.ShowGrid = false;
 
                 mnuStrMainMenu.Enabled = true;
@@ -96,38 +97,38 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var uf = ufsession_;
+                UFSession uf = ufsession_;
 
-                foreach (var feat in __work_part_.Features.ToArray())
+                foreach (Feature feat in __work_part_.Features.ToArray())
                     try
                     {
-                        if(!(feat is ExtractFace link))
+                        if (!(feat is ExtractFace link))
                             continue;
 
-                        if(!link.__IsLinkedBody())
+                        if (!link.__IsLinkedBody())
                             continue;
 
-                        uf.Wave.IsLinkBroken(link.Tag, out var is_broken);
+                        uf.Wave.IsLinkBroken(link.Tag, out bool is_broken);
 
-                        if(is_broken)
+                        if (is_broken)
                             continue;
 
-                        uf.Wave.AskLinkXform(link.Tag, out var xform);
+                        uf.Wave.AskLinkXform(link.Tag, out Tag xform);
 
-                        uf.So.AskAssyCtxtPartOcc(xform, __work_part_.__RootComponent().Tag, out var from_part_occ);
+                        uf.So.AskAssyCtxtPartOcc(xform, __work_part_.__RootComponent().Tag, out Tag from_part_occ);
 
-                        if(from_part_occ == NXOpen.Tag.Null)
+                        if (from_part_occ == NXOpen.Tag.Null)
                             continue;
 
-                        var point = new double[3];
+                        double[] point = new double[3];
 
                         uf.So.AskPointOfXform(xform, point);
 
-                        var from_comp = (Component)session_.__GetTaggedObject(from_part_occ);
+                        Component from_comp = (Component)session_.__GetTaggedObject(from_part_occ);
 
-                        var origin = point.__ToPoint3d();
+                        Point3d origin = point.__ToPoint3d();
 
-                        if(!from_comp.__Origin().__IsEqualTo(origin))
+                        if (!from_comp.__Origin().__IsEqualTo(origin))
                             continue;
 
                         session_.__DeleteObjects(link);
@@ -149,7 +150,7 @@ namespace TSG_Library.UFuncs
 
         private void MenuUnits_Click(object sender, EventArgs e)
         {
-            if(_unit == BasePart.Units.Inches)
+            if (_unit == BasePart.Units.Inches)
             {
                 const string mm = "MM";
                 menuItemUnits.Text = mm;
@@ -162,13 +163,13 @@ namespace TSG_Library.UFuncs
                 _unit = BasePart.Units.Inches;
             }
 
-            if(rdoTypeScrew.Checked)
+            if (rdoTypeScrew.Checked)
                 LoadShcs();
 
-            if(rdoTypeDowel.Checked)
+            if (rdoTypeDowel.Checked)
                 LoadDowel();
 
-            if(rdoTypeJack.Checked)
+            if (rdoTypeJack.Checked)
                 LoadJack();
         }
 
@@ -194,7 +195,7 @@ namespace TSG_Library.UFuncs
                 double[] values = { 0.000d, 0.0625d, 0.125d, 0.250d, 0.500d, 0.750d, 1.000d, 4.000d, 6.000d, 10.000d };
                 string[] stringValues =
                     { "Off", "0.0625", "0.125", "0.250", "0.500", "0.750", "1.000", "4.000", "6.000", "10.000" };
-                var list = values.Select((t, i) => new GridSpacing(t, stringValues[i])).ToList();
+                List<GridSpacing> list = values.Select((t, i) => new GridSpacing(t, stringValues[i])).ToList();
                 cmbGridSpacing.DataSource = null;
                 cmbGridSpacing.DisplayMember = nameof(GridSpacing.StringValue);
                 cmbGridSpacing.ValueMember = nameof(GridSpacing.Value);
@@ -209,15 +210,15 @@ namespace TSG_Library.UFuncs
                 chkCycleAdd.Checked = Settings.Default.add_fasteners_cycle_add;
                 chkReverseCycleAdd.Checked = Settings.Default.add_fasteners_reverse_cycle_add;
 
-                var cmb_index = Settings.Default.add_fasteners_grid_index;
+                int cmb_index = Settings.Default.add_fasteners_grid_index;
 
-                if(cmb_index == -1)
+                if (cmb_index == -1)
                     cmb_index = 0;
 
                 cmbGridSpacing.SelectedIndex = cmb_index;
                 chkGrid.Checked = Settings.Default.add_fasteners_show_grid;
 
-                if(chkCycleAdd.Checked || chkReverseCycleAdd.Checked)
+                if (chkCycleAdd.Checked || chkReverseCycleAdd.Checked)
                     chkSubstitute.Checked = false;
             }
             catch (Exception ex)
@@ -236,7 +237,7 @@ namespace TSG_Library.UFuncs
                 Settings.Default.add_fasteners_form_window_location = Location;
                 Settings.Default.Save();
 
-                if(!(__display_part_ is null) && __work_part_.__HasDynamicBlock())
+                if (!(__display_part_ is null) && __work_part_.__HasDynamicBlock())
                     __work_part_.Bodies.ToArray()[0].__Translucency(0);
             }
             catch (Exception ex)
@@ -251,15 +252,15 @@ namespace TSG_Library.UFuncs
 
         private void BtnViewWcs_Click(object sender, EventArgs e)
         {
-            var coordSystem = __display_part_.WCS.CoordinateSystem.Orientation.Element;
+            Matrix3x3 coordSystem = __display_part_.WCS.CoordinateSystem.Orientation.Element;
             __display_part_.Views.WorkView.Orient(coordSystem);
         }
 
         private void CmbGridSpacing_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var _grid_spacing = (double)cmbGridSpacing.SelectedValue;
+            double _grid_spacing = (double)cmbGridSpacing.SelectedValue;
 
-            if(System.Math.Abs(_grid_spacing) < .001)
+            if (System.Math.Abs(_grid_spacing) < .001)
             {
                 __display_part_.Preferences.Workplane.ShowGrid = false;
                 __display_part_.Preferences.Workplane.SnapToGrid = false;
@@ -268,7 +269,7 @@ namespace TSG_Library.UFuncs
 
             __display_part_.Preferences.Workplane.SnapToGrid = true;
 
-            var grid = new WorkPlane.GridSize
+            WorkPlane.GridSize grid = new WorkPlane.GridSize
             {
                 MajorGridSpacing = _grid_spacing,
                 MinorLinesPerMajor = 1,
@@ -317,7 +318,7 @@ namespace TSG_Library.UFuncs
 
         private void LoadShcs()
         {
-            var unit_dir = IsFormMetric ? "Metric" : "English";
+            string unit_dir = IsFormMetric ? "Metric" : "English";
             listBoxSelection.SelectedIndexChanged -= ListBoxSelection_SelectedIndexChanged;
             listBoxSelection.DataSource = null;
             string suffix;
@@ -335,16 +336,17 @@ namespace TSG_Library.UFuncs
                     return;
             }
 
-            var shcss = Directory.GetDirectories($@"G:\0Library\Fasteners\{unit_dir}\SocketHeadCapScrews{suffix}")
+            FastenerListItem[] shcss = Directory
+                .GetDirectories($@"G:\0Library\Fasteners\{unit_dir}\SocketHeadCapScrews{suffix}")
                 .Select(__f => new FastenerListItem(Path.GetFileNameWithoutExtension(__f), __f))
                 .ToArray();
 
             const string preferred_diameters_path = @"U:\nxFiles\UfuncFiles\AddFastenersPreferredDiameters.txt";
             const string preferred_gm_diameters_path = @"U:\nxFiles\UfuncFiles\AddFastenersPreferredDiametersGm.txt";
 
-            if(cmbPreferred.SelectedIndex == 1)
+            if (cmbPreferred.SelectedIndex == 1)
             {
-                var shcs_preferred_dirs = File.ReadAllLines(preferred_diameters_path)
+                HashSet<string> shcs_preferred_dirs = File.ReadAllLines(preferred_diameters_path)
                     .Where(__s => !string.IsNullOrEmpty(__s))
                     .Where(__s => !string.IsNullOrWhiteSpace(__s))
                     .Select(Path.GetDirectoryName)
@@ -352,9 +354,9 @@ namespace TSG_Library.UFuncs
 
                 shcss = shcss.Where(item => shcs_preferred_dirs.Contains(item.Value)).ToArray();
             }
-            else if(cmbPreferred.SelectedIndex == 2)
+            else if (cmbPreferred.SelectedIndex == 2)
             {
-                var shcs_preferred_dirs = File.ReadAllLines(preferred_gm_diameters_path)
+                HashSet<string> shcs_preferred_dirs = File.ReadAllLines(preferred_gm_diameters_path)
                     .Where(__s => !string.IsNullOrEmpty(__s))
                     .Where(__s => !string.IsNullOrWhiteSpace(__s))
                     .Select(Path.GetDirectoryName)
@@ -372,14 +374,14 @@ namespace TSG_Library.UFuncs
 
         private void LoadDowel()
         {
-            var unit_dir = IsFormMetric ? "Metric" : "English";
+            string unit_dir = IsFormMetric ? "Metric" : "English";
             listBoxSelection.SelectedIndexChanged -= ListBoxSelection_SelectedIndexChanged;
             listBoxSelection.DataSource = null;
 
             chkCycleAdd.Checked = false;
             chkReverseCycleAdd.Checked = false;
 
-            var dowels = Directory.GetFiles($@"G:\0Library\Fasteners\{unit_dir}\Dowels", "*.prt",
+            FastenerListItem[] dowels = Directory.GetFiles($@"G:\0Library\Fasteners\{unit_dir}\Dowels", "*.prt",
                     SearchOption.TopDirectoryOnly)
                 .Select(__f => new FastenerListItem(Path.GetFileNameWithoutExtension(__f), __f))
                 .ToArray();
@@ -393,27 +395,29 @@ namespace TSG_Library.UFuncs
 
         private void LoadJack()
         {
-            var unit_dir = IsFormMetric ? "Metric" : "English";
+            string unit_dir = IsFormMetric ? "Metric" : "English";
             listBoxSelection.SelectedIndexChanged -= ListBoxSelection_SelectedIndexChanged;
             listBoxSelection.DataSource = null;
             chkCycleAdd.Checked = false;
             chkReverseCycleAdd.Checked = false;
 
-            var jackScrewsTsg = Directory.GetFiles($@"G:\0Library\Fasteners\{unit_dir}\JackScrews", "*-tsg.prt",
+            FastenerListItem[] jackScrewsTsg = Directory.GetFiles($@"G:\0Library\Fasteners\{unit_dir}\JackScrews",
+                    "*-tsg.prt",
                     SearchOption.TopDirectoryOnly)
                 .Select(__f => new FastenerListItem(Path.GetFileNameWithoutExtension(__f), __f))
                 .OrderBy(__s =>
                 {
-                    var match = Regex.Match(__s.Text, "^_?(?<diameter>\\d+)(mm)?-jck-screw-tsg$");
+                    Match match = Regex.Match(__s.Text, "^_?(?<diameter>\\d+)(mm)?-jck-screw-tsg$");
 
-                    if(!match.Success)
+                    if (!match.Success)
                         throw new Exception($"{__s.Text} didn't match regex");
 
                     return int.Parse(match.Groups["diameter"].Value);
                 })
                 .ToArray();
 
-            var jackScrews = Directory.GetFiles($@"G:\0Library\Fasteners\{unit_dir}\JackScrews", "*-screw.prt",
+            FastenerListItem[] jackScrews = Directory.GetFiles($@"G:\0Library\Fasteners\{unit_dir}\JackScrews",
+                    "*-screw.prt",
                     SearchOption.TopDirectoryOnly)
                 .Select(__f => new FastenerListItem(Path.GetFileNameWithoutExtension(__f), __f))
                 .ToArray();
@@ -436,19 +440,19 @@ namespace TSG_Library.UFuncs
                 listBoxSelection.SelectedIndex = -1;
                 __work_component_?.__Translucency(0);
 
-                if(__work_part_.__HasDynamicBlock())
+                if (__work_part_.__HasDynamicBlock())
                 {
                     __work_part_.__DynamicBlock().GetBodies()[0].__Translucency(0);
                     toolStripMenuItem1.Enabled = true;
                 }
-                else if(!__work_part_.__HasDynamicBlock())
+                else if (!__work_part_.__HasDynamicBlock())
                 {
-                    var bodies = __work_part_.Bodies.ToArray()
+                    Body[] bodies = __work_part_.Bodies.ToArray()
                         .Where(__b => __b.IsSolidBody)
                         .Where(__b => __b.Layer == 1)
                         .ToArray();
 
-                    if(bodies.Length == 1)
+                    if (bodies.Length == 1)
                         __work_part_.__SingleSolidBodyOnLayer1().__Translucency(0);
 
                     toolStripMenuItem1.Enabled = true;
@@ -461,7 +465,7 @@ namespace TSG_Library.UFuncs
                     btnChangeRefSet.Enabled = true;
                 }
 
-                if(__work_part_.Tag != __display_part_.Tag)
+                if (__work_part_.Tag != __display_part_.Tag)
                     ufsession_.Assem.SetWorkPart(NXOpen.Tag.Null);
             }
             catch (Exception ex)
@@ -483,7 +487,7 @@ namespace TSG_Library.UFuncs
                 {
                     session_.SetUndoMark(Session.MarkVisibility.Visible, "AddFasteners");
 
-                    if(__work_component_ is null)
+                    if (__work_component_ is null)
                     {
                         // Working at the displayed part
                         WaveIn();
@@ -492,7 +496,7 @@ namespace TSG_Library.UFuncs
                     }
 
                     // Working at the assembly level.
-                    var originalWorkComponent = __work_component_;
+                    Component originalWorkComponent = __work_component_;
 
                     using (new DisplayPartReset())
                     {
@@ -501,9 +505,9 @@ namespace TSG_Library.UFuncs
                         MakePlanView(__display_part_.WCS.Save());
                     }
 
-                    foreach (var child in originalWorkComponent.GetChildren())
+                    foreach (Component child in originalWorkComponent.GetChildren())
                     {
-                        var protoPartOcc = _GetProtoPartOcc(originalWorkComponent.__Prototype(), child);
+                        Component protoPartOcc = _GetProtoPartOcc(originalWorkComponent.__Prototype(), child);
 
                         switch (protoPartOcc.Layer)
                         {
@@ -535,7 +539,7 @@ namespace TSG_Library.UFuncs
             {
                 Body solid_body_layer_1;
 
-                if(!__work_part_.__HasDynamicBlock())
+                if (!__work_part_.__HasDynamicBlock())
                 {
                     solid_body_layer_1 = __work_part_.__SingleSolidBodyOnLayer1();
                 }
@@ -545,7 +549,7 @@ namespace TSG_Library.UFuncs
                     solid_body_layer_1 = __work_part_.__DynamicBlock().GetBodies()[0];
                 }
 
-                foreach (var __child in __work_part_.ComponentAssembly.RootComponent.GetChildren())
+                foreach (Component __child in __work_part_.ComponentAssembly.RootComponent.GetChildren())
                     try
                     {
                         WaveIn(__child, solid_body_layer_1);
@@ -563,16 +567,16 @@ namespace TSG_Library.UFuncs
 
         public static void WaveIn(Component __child, Body solid_body_layer_1)
         {
-            if(__child.IsSuppressed)
+            if (__child.IsSuppressed)
                 return;
 
-            if(__child.Layer != 99 && __child.Layer != 98 && __child.Layer != 97)
+            if (__child.Layer != 99 && __child.Layer != 98 && __child.Layer != 97)
                 return;
 
-            if(!__child.HasInstanceUserAttribute("subtract", NXObject.AttributeType.String, -1))
+            if (!__child.HasInstanceUserAttribute("subtract", NXObject.AttributeType.String, -1))
                 return;
 
-            var subtract_att = __child.GetUserAttributeAsString("subtract", NXObject.AttributeType.String, -1);
+            string subtract_att = __child.GetUserAttributeAsString("subtract", NXObject.AttributeType.String, -1);
             string subtract_ref_set;
 
             switch (subtract_att)
@@ -592,17 +596,17 @@ namespace TSG_Library.UFuncs
                     break;
             }
 
-            var current = __child.ReferenceSet;
+            string current = __child.ReferenceSet;
 
             __child.__ReferenceSet(subtract_ref_set);
 
-            var tool_bodies = __child.__Members()
+            Tag[] tool_bodies = __child.__Members()
                 .OfType<Body>()
                 .Where(__b => __b.IsSolidBody)
                 .Select(__b => __b.Tag)
                 .ToArray();
 
-            var results = new int[tool_bodies.Length];
+            int[] results = new int[tool_bodies.Length];
 
             // issue # 252
             ufsession_.Modl.CheckInterference(
@@ -611,13 +615,13 @@ namespace TSG_Library.UFuncs
                 tool_bodies,
                 results);
 
-            if(results.All(__res => __res != 1))
+            if (results.All(__res => __res != 1))
             {
                 __child.__ReferenceSet(current);
                 return;
             }
 
-            var linked_body = CreateLinkedBody(__work_part_, __child);
+            ExtractFace linked_body = CreateLinkedBody(__work_part_, __child);
             linked_body.OwningPart.Layers.MoveDisplayableObjects(96, linked_body.GetBodies());
             linked_body.SetName($"{__child.DisplayName}, {subtract_att}");
 
@@ -641,7 +645,7 @@ namespace TSG_Library.UFuncs
                     break;
             }
 
-            if(__child.Layer == 99 && subtract_att != "HANDLING" && subtract_att != "WIRE_TAP")
+            if (__child.Layer == 99 && subtract_att != "HANDLING" && subtract_att != "WIRE_TAP")
             {
                 __child.__ReferenceSet("BODY");
                 __work_part_.GetAllReferenceSets().Single(__r => __r.Name == "BODY")
@@ -656,20 +660,20 @@ namespace TSG_Library.UFuncs
 
         public static Component _GetProtoPartOcc(Part owningPart, Component partOcc)
         {
-            var instance = ufsession_.Assem.AskInstOfPartOcc(partOcc.Tag);
-            var prototypeChildPartOcc =
+            Tag instance = ufsession_.Assem.AskInstOfPartOcc(partOcc.Tag);
+            Tag prototypeChildPartOcc =
                 ufsession_.Assem.AskPartOccOfInst(owningPart.ComponentAssembly.RootComponent.Tag, instance);
             return (Component)session_.GetObjectManager().GetTaggedObject(prototypeChildPartOcc);
         }
 
         private static BooleanFeature SubtractLinkedBody(Part owningPart, Body subtractBody, ExtractFace linkedBody)
         {
-            var booleanBuilder = owningPart.Features.CreateBooleanBuilderUsingCollector(null);
+            BooleanBuilder booleanBuilder = owningPart.Features.CreateBooleanBuilderUsingCollector(null);
 
             using (new Destroyer(booleanBuilder))
             {
                 booleanBuilder.Target = subtractBody;
-                var collector = owningPart.ScCollectors.CreateCollector();
+                ScCollector collector = owningPart.ScCollectors.CreateCollector();
 
                 SelectionIntentRule[] rules =
                 {
@@ -685,12 +689,12 @@ namespace TSG_Library.UFuncs
 
         private static ExtractFace CreateLinkedBody(Part owningPart, Component child)
         {
-            var toolBodies = child.__Members()
+            Body[] toolBodies = child.__Members()
                 .OfType<Body>()
                 .Where(body => body.IsSolidBody)
                 .ToArray();
 
-            var linkedBodyBuilder = owningPart.Features.CreateExtractFaceBuilder(null);
+            ExtractFaceBuilder linkedBodyBuilder = owningPart.Features.CreateExtractFaceBuilder(null);
 
             using (new Destroyer(linkedBodyBuilder))
             {
@@ -712,38 +716,38 @@ namespace TSG_Library.UFuncs
 
         private void ChkSubstitute_Click(object sender, EventArgs e)
         {
-            var box = (CheckBox)sender;
+            CheckBox box = (CheckBox)sender;
 
-            if(box == chkSubstitute)
+            if (box == chkSubstitute)
             {
                 chkCycleAdd.Enabled = !chkSubstitute.Checked;
                 chkReverseCycleAdd.Enabled = !chkSubstitute.Checked;
 
-                if(!chkSubstitute.Checked)
+                if (!chkSubstitute.Checked)
                     return;
 
                 chkReverseCycleAdd.Checked = false;
                 chkCycleAdd.Checked = false;
             }
-            else if(box == chkCycleAdd)
+            else if (box == chkCycleAdd)
             {
                 chkReverseCycleAdd.Enabled = true;
                 chkSubstitute.Enabled = !chkCycleAdd.Checked;
 
-                if(!chkCycleAdd.Checked)
+                if (!chkCycleAdd.Checked)
                     return;
 
                 chkReverseCycleAdd.Checked = false;
                 chkSubstitute.Checked = false;
             }
-            else if(chkReverseCycleAdd.Checked)
+            else if (chkReverseCycleAdd.Checked)
             {
                 ChangEnabled(false, chkSubstitute);
                 chkSubstitute.Checked = false;
                 chkSubstitute.Enabled = false;
                 chkCycleAdd.Checked = false;
             }
-            else if(!chkCycleAdd.Checked)
+            else if (!chkCycleAdd.Checked)
             {
                 chkSubstitute.Enabled = true;
             }
@@ -751,7 +755,7 @@ namespace TSG_Library.UFuncs
 
         private void ChkCycleAdd_CheckedChanged(object sender, EventArgs e)
         {
-            if(chkCycleAdd.Checked || chkReverseCycleAdd.Checked)
+            if (chkCycleAdd.Checked || chkReverseCycleAdd.Checked)
             {
                 rdoTypeDowel.Enabled = false;
                 rdoTypeJack.Enabled = false;
@@ -778,30 +782,32 @@ namespace TSG_Library.UFuncs
         {
             session_.SetUndoMark(Session.MarkVisibility.Visible, "WIRE_TAP");
 
-            if(__display_part_.Tag == __work_part_.Tag)
+            if (__display_part_.Tag == __work_part_.Tag)
                 new[] { 99, 98, 97 }.ToList().ForEach(i => __display_part_.Layers.SetState(i, State.Selectable));
 
-            var wireTapScrew =
+            Part wireTapScrew =
                 session_.__FindOrOpen(@"G:\0Library\Fasteners\Metric\SocketHeadCapScrews\008\8mm-shcs-020.prt");
             __display_part_.WCS.Rotate(WCS.Axis.XAxis, 90.0);
-            var savedCsys = __display_part_.WCS.Save();
-            var rotateOrientation = savedCsys.Orientation.Element;
-            var x = __display_part_.PartUnits == BasePart.Units.Inches ? 1 : 25.4;
+            CartesianCoordinateSystem savedCsys = __display_part_.WCS.Save();
+            Matrix3x3 rotateOrientation = savedCsys.Orientation.Element;
+            double x = __display_part_.PartUnits == BasePart.Units.Inches ? 1 : 25.4;
             double[] offset1 = { 1.00 * x, .875 * x, 0.00 };
             double[] offset2 = { 3.00 * x, .875 * x, 0.00 };
-            var mappedOffset1 = new double[3];
+            double[] mappedOffset1 = new double[3];
             ufsession_.Csys.MapPoint(UF_CSYS_ROOT_WCS_COORDS, offset1, UF_CSYS_ROOT_COORDS, mappedOffset1);
-            var mappedOffset2 = new double[3];
+            double[] mappedOffset2 = new double[3];
             ufsession_.Csys.MapPoint(UF_CSYS_ROOT_WCS_COORDS, offset2, UF_CSYS_ROOT_COORDS, mappedOffset2);
-            var mappedToWork1 = new double[3];
+            double[] mappedToWork1 = new double[3];
             ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, mappedOffset1, UF_CSYS_WORK_COORDS, mappedToWork1);
-            var mappedToWork2 = new double[3];
+            double[] mappedToWork2 = new double[3];
             ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, mappedOffset2, UF_CSYS_WORK_COORDS, mappedToWork2);
-            var basePoint1 = new Point3d(mappedToWork1[0], mappedToWork1[1], mappedToWork1[2]);
-            var basePoint2 = new Point3d(mappedToWork2[0], mappedToWork2[1], mappedToWork2[2]);
-            var component1 = __work_part_.ComponentAssembly.AddComponent(wireTapScrew, "SHORT-TAP", "8mm-shcs-020",
+            Point3d basePoint1 = new Point3d(mappedToWork1[0], mappedToWork1[1], mappedToWork1[2]);
+            Point3d basePoint2 = new Point3d(mappedToWork2[0], mappedToWork2[1], mappedToWork2[2]);
+            Component component1 = __work_part_.ComponentAssembly.AddComponent(wireTapScrew, "SHORT-TAP",
+                "8mm-shcs-020",
                 basePoint1, rotateOrientation, 98, out _);
-            var component2 = __work_part_.ComponentAssembly.AddComponent(wireTapScrew, "SHORT-TAP", "8mm-shcs-020",
+            Component component2 = __work_part_.ComponentAssembly.AddComponent(wireTapScrew, "SHORT-TAP",
+                "8mm-shcs-020",
                 basePoint2, rotateOrientation, 98, out _);
             __display_part_.WCS.Rotate(WCS.Axis.XAxis, -90.0);
             const string subtract = "subtract";
@@ -829,36 +835,36 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if(listBoxSelection.SelectedIndex == -1)
+                if (listBoxSelection.SelectedIndex == -1)
                     return;
 
-                var selected_value = (string)listBoxSelection.SelectedValue;
+                string selected_value = (string)listBoxSelection.SelectedValue;
 
-                if(selected_value == nameof(LoadShcs))
+                if (selected_value == nameof(LoadShcs))
                 {
                     LoadShcs();
                     return;
                 }
 
-                if(selected_value.ToLower().EndsWith(".prt"))
+                if (selected_value.ToLower().EndsWith(".prt"))
                     try
                     {
                         cmbReferenceSet.Enabled = true;
-                        var fastener_part = session_.__FindOrOpen(selected_value);
+                        Part fastener_part = session_.__FindOrOpen(selected_value);
 
-                        if(chkSubstitute.Checked)
+                        if (chkSubstitute.Checked)
                         {
                             SubstituteFasteners(fastener_part);
                             return;
                         }
 
-                        if(chkCycleAdd.Checked || chkReverseCycleAdd.Checked)
+                        if (chkCycleAdd.Checked || chkReverseCycleAdd.Checked)
                         {
                             PlaceFastenersCycle(fastener_part);
                             return;
                         }
 
-                        if(fastener_part.__IsJckScrewTsg())
+                        if (fastener_part.__IsJckScrewTsg())
                         {
                             PlaceFastenersJigJacks(fastener_part);
                             listBoxSelection.Enabled = true;
@@ -876,7 +882,8 @@ namespace TSG_Library.UFuncs
                 listBoxSelection.SelectedIndexChanged -= ListBoxSelection_SelectedIndexChanged;
                 listBoxSelection.DataSource = null;
 
-                var shcss = Directory.GetFiles(selected_value, "*.prt", SearchOption.TopDirectoryOnly)
+                List<FastenerListItem> shcss = Directory
+                    .GetFiles(selected_value, "*.prt", SearchOption.TopDirectoryOnly)
                     .Select(__f => new FastenerListItem(Path.GetFileNameWithoutExtension(__f), __f))
                     .ToList();
 
@@ -884,18 +891,18 @@ namespace TSG_Library.UFuncs
                 const string preferred_gm_diameters_path =
                     @"U:\nxFiles\UfuncFiles\AddFastenersPreferredDiametersGm.txt";
 
-                if(cmbPreferred.SelectedIndex == 1)
+                if (cmbPreferred.SelectedIndex == 1)
                 {
-                    var shcs_preferred_dirs = File.ReadAllLines(preferred_diameters_path)
+                    HashSet<string> shcs_preferred_dirs = File.ReadAllLines(preferred_diameters_path)
                         .Where(__s => !string.IsNullOrEmpty(__s))
                         .Where(__s => !string.IsNullOrWhiteSpace(__s))
                         .ToHashSet();
 
                     shcss = shcss.Where(item => shcs_preferred_dirs.Contains(item.Value)).ToList();
                 }
-                else if(cmbPreferred.SelectedIndex == 2)
+                else if (cmbPreferred.SelectedIndex == 2)
                 {
-                    var shcs_preferred_dirs = File.ReadAllLines(preferred_gm_diameters_path)
+                    HashSet<string> shcs_preferred_dirs = File.ReadAllLines(preferred_gm_diameters_path)
                         .Where(__s => !string.IsNullOrEmpty(__s))
                         .Where(__s => !string.IsNullOrWhiteSpace(__s))
                         .ToHashSet();
@@ -938,7 +945,7 @@ namespace TSG_Library.UFuncs
                     .MajorGridSpacing;
                 chkGrid.Checked = __display_part_.Preferences.Workplane.ShowGrid;
 
-                if(__display_part_.Tag == __work_part_.Tag)
+                if (__display_part_.Tag == __work_part_.Tag)
                 {
                     __display_part_.Layers.SetState(1, State.WorkLayer);
 
@@ -948,15 +955,15 @@ namespace TSG_Library.UFuncs
                 }
 
                 cmbReferenceSet.Items.Clear();
-                var refsets = fastener_part.GetAllReferenceSets().Select(__r => __r.Name).ToHashSet();
+                HashSet<string> refsets = fastener_part.GetAllReferenceSets().Select(__r => __r.Name).ToHashSet();
                 refsets.Remove("BODY");
                 refsets.Remove("BODY_EDGE");
                 refsets.Remove("MODEL");
                 cmbReferenceSet.Items.AddRange(refsets.ToArray());
                 cmbReferenceSet.SelectedIndex = 0;
-                var csys = __display_part_.WCS.Save();
+                CartesianCoordinateSystem csys = __display_part_.WCS.Save();
 
-                var addedFastener = __work_part_.ComponentAssembly.AddComponent(
+                Component addedFastener = __work_part_.ComponentAssembly.AddComponent(
                     fastener_part,
                     "GRID",
                     fastener_part.Leaf,
@@ -967,45 +974,47 @@ namespace TSG_Library.UFuncs
 
                 session_.__DeleteObjects(csys);
 
-                if(MoveComponentWithMouse(addedFastener) != UF_UI_PICK_RESPONSE)
+                if (MoveComponentWithMouse(addedFastener) != UF_UI_PICK_RESPONSE)
                 {
                     session_.__DeleteObjects(addedFastener);
                     return;
                 }
 
-                var first_jigJack = addedFastener;
-                var proto_csys = __work_part_.CoordinateSystems.CreateCoordinateSystem(addedFastener.__Origin(),
+                Component first_jigJack = addedFastener;
+                CartesianCoordinateSystem proto_csys = __work_part_.CoordinateSystems.CreateCoordinateSystem(
+                    addedFastener.__Origin(),
                     addedFastener.__Orientation(), false);
 
-                if(__work_component_ is null)
+                if (__work_component_ is null)
                 {
-                    proto_csys.GetDirections(out var xDir, out var yDir);
+                    proto_csys.GetDirections(out Vector3d xDir, out Vector3d yDir);
                     __display_part_.WCS.SetOriginAndMatrix(proto_csys.Origin, xDir.__ToMatrix3x3(yDir));
                     session_.__DeleteObjects(proto_csys);
                 }
                 else
                 {
-                    var occ_csys = (CartesianCoordinateSystem)__work_component_.FindOccurrence(proto_csys);
-                    occ_csys.GetDirections(out var xDir, out var yDir);
+                    CartesianCoordinateSystem occ_csys =
+                        (CartesianCoordinateSystem)__work_component_.FindOccurrence(proto_csys);
+                    occ_csys.GetDirections(out Vector3d xDir, out Vector3d yDir);
                     __display_part_.WCS.SetOriginAndMatrix(occ_csys.Origin, xDir.__ToMatrix3x3(yDir));
                     session_.__DeleteObjects(proto_csys);
                 }
 
-                var reference_set = cmbReferenceSet.Text;
+                string reference_set = cmbReferenceSet.Text;
                 addedFastener.SetInstanceUserAttribute("subtract", -1, reference_set, NXOpen.Update.Option.Now);
                 cmbGridSpacing.SelectedValue = 1.000;
                 PlaceFasteners(addedFastener.__Prototype(), false);
                 cmbGridSpacing.SelectedValue = 0.125;
 
-                if(__work_component_ is null)
+                if (__work_component_ is null)
                 {
                     first_jigJack.__ReferenceSet("BODY_EDGE");
                 }
                 else
                 {
-                    var instance = ufsession_.Assem.AskInstOfPartOcc(first_jigJack.Tag);
-                    var other = ufsession_.Assem.AskPartOccOfInst(__work_component_.Tag, instance);
-                    var comp = (Component)session_.GetObjectManager().GetTaggedObject(other);
+                    Tag instance = ufsession_.Assem.AskInstOfPartOcc(first_jigJack.Tag);
+                    Tag other = ufsession_.Assem.AskPartOccOfInst(__work_component_.Tag, instance);
+                    Component comp = (Component)session_.GetObjectManager().GetTaggedObject(other);
                     comp.__ReferenceSet("BODY_EDGE");
                 }
             }
@@ -1036,9 +1045,9 @@ namespace TSG_Library.UFuncs
 
                 try
                 {
-                    var value = (double)cmbGridSpacing.SelectedValue;
+                    double value = (double)cmbGridSpacing.SelectedValue;
 
-                    if(value > 0.0)
+                    if (value > 0.0)
                         __display_part_.Preferences.Workplane.SetRectangularUniformGridSize(
                             new WorkPlane.GridSize
                                 { MajorGridSpacing = value, MinorLinesPerMajor = 1, SnapPointsPerMinor = 1 }
@@ -1052,7 +1061,7 @@ namespace TSG_Library.UFuncs
                 //cmbGridSpacing.SelectedValue = __display_part_.Preferences.Workplane.GetRectangularUniformGridSize().MajorGridSpacing;
                 chkGrid.Checked = __display_part_.Preferences.Workplane.ShowGrid;
 
-                if(__display_part_.Tag == __work_part_.Tag)
+                if (__display_part_.Tag == __work_part_.Tag)
                 {
                     __display_part_.Layers.SetState(1, State.WorkLayer);
 
@@ -1061,28 +1070,28 @@ namespace TSG_Library.UFuncs
                         .ForEach(i => __display_part_.Layers.SetState(i, State.Selectable));
                 }
 
-                if(reset_ref_sets)
+                if (reset_ref_sets)
                 {
                     cmbReferenceSet.Items.Clear();
-                    var refsets = fastener_part.GetAllReferenceSets().Select(__r => __r.Name).ToHashSet();
+                    HashSet<string> refsets = fastener_part.GetAllReferenceSets().Select(__r => __r.Name).ToHashSet();
                     refsets.Remove("BODY");
                     refsets.Remove("MODEL");
                     cmbReferenceSet.Items.AddRange(refsets.ToArray());
                     cmbReferenceSet.SelectedIndex = 0;
 
-                    if(fastener_part.__IsShcs())
+                    if (fastener_part.__IsShcs())
                         cmbReferenceSet.Items.Add("HANDLING");
                 }
 
-                var csys = __display_part_.WCS.Save();
+                CartesianCoordinateSystem csys = __display_part_.WCS.Save();
 
 
                 Component addedFastener = null;
 
                 while (true)
                 {
-                    __display_part_.WCS.CoordinateSystem.GetDirections(out var xDir, out var yDir);
-                    var ori = xDir.__ToMatrix3x3(yDir);
+                    __display_part_.WCS.CoordinateSystem.GetDirections(out Vector3d xDir, out Vector3d yDir);
+                    Matrix3x3 ori = xDir.__ToMatrix3x3(yDir);
 
                     //addedFastener = __work_part_.ComponentAssembly.AddComponent(
                     //    fastener_part,
@@ -1102,13 +1111,13 @@ namespace TSG_Library.UFuncs
                         99,
                         out _);
 
-                    if(MoveComponentWithMouse(addedFastener) != UF_UI_PICK_RESPONSE)
+                    if (MoveComponentWithMouse(addedFastener) != UF_UI_PICK_RESPONSE)
                     {
                         session_.__DeleteObjects(addedFastener);
                         break;
                     }
 
-                    var reference_set = cmbReferenceSet.Text;
+                    string reference_set = cmbReferenceSet.Text;
                     addedFastener.SetInstanceUserAttribute("subtract", -1, reference_set, NXOpen.Update.Option.Now);
 
                     switch (reference_set)
@@ -1151,38 +1160,38 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var dir = Path.GetDirectoryName(fastener_part.FullPath);
-                var leaf = fastener_part.Leaf;
-                var cycles = CycleAdd1.MetricCyclePair[dir];
-                var small_dwl = cycles[0];
-                var large_dwl = cycles[1];
-                var jack = cycles[2];
-                var match = Regex.Match(leaf, "-shcs-(?<length>\\d+)");
-                var actual_dwl = small_dwl;
+                string dir = Path.GetDirectoryName(fastener_part.FullPath);
+                string leaf = fastener_part.Leaf;
+                string[] cycles = CycleAdd1.MetricCyclePair[dir];
+                string small_dwl = cycles[0];
+                string large_dwl = cycles[1];
+                string jack = cycles[2];
+                Match match = Regex.Match(leaf, "-shcs-(?<length>\\d+)");
+                string actual_dwl = small_dwl;
 
-                if(match.Success)
+                if (match.Success)
                 {
-                    var length = int.Parse(match.Groups["length"].Value);
+                    int length = int.Parse(match.Groups["length"].Value);
 
-                    if(length >= CycleAdd1.MetricDelimeter)
+                    if (length >= CycleAdd1.MetricDelimeter)
                         actual_dwl = large_dwl;
                 }
 
-                var shcs = fastener_part.FullPath;
-                var dowel = actual_dwl;
-                var jigJack = jack;
-                var shcs_part = session_.__FindOrOpen(shcs);
-                var dowel_part = session_.__FindOrOpen(dowel);
-                var jigjack_part = session_.__FindOrOpen(jigJack);
+                string shcs = fastener_part.FullPath;
+                string dowel = actual_dwl;
+                string jigJack = jack;
+                Part shcs_part = session_.__FindOrOpen(shcs);
+                Part dowel_part = session_.__FindOrOpen(dowel);
+                Part jigjack_part = session_.__FindOrOpen(jigJack);
 
-                if(chkCycleAdd.Checked)
+                if (chkCycleAdd.Checked)
                     PlaceFasteners(shcs_part);
                 else
                     PlaceFastenersJigJacks(jigjack_part);
 
                 PlaceFasteners(dowel_part);
 
-                if(chkCycleAdd.Checked)
+                if (chkCycleAdd.Checked)
                     PlaceFastenersJigJacks(jigjack_part);
                 else
                     PlaceFasteners(shcs_part);
@@ -1197,34 +1206,34 @@ namespace TSG_Library.UFuncs
         {
             using (new LockUpdates())
             {
-                var fasteners_to_substitue = new Component[0];
+                Component[] fasteners_to_substitue = new Component[0];
 
-                if(nxPart.__IsShcs())
+                if (nxPart.__IsShcs())
                     fasteners_to_substitue = __work_part_.__RootComponent().GetChildren()
                         .Where(__c => __c._IsShcs_())
                         .ToArray();
-                else if(nxPart.__IsDwl())
+                else if (nxPart.__IsDwl())
                     fasteners_to_substitue = __work_part_.__RootComponent().GetChildren()
                         .Where(__c => __c._IsDwl_())
                         .ToArray();
-                else if(nxPart.__IsJckScrew())
+                else if (nxPart.__IsJckScrew())
                     fasteners_to_substitue = __work_part_.__RootComponent().GetChildren()
                         .Where(__c => __c._IsJckScrew_())
                         .ToArray();
-                else if(nxPart.__IsJckScrewTsg())
+                else if (nxPart.__IsJckScrewTsg())
                     fasteners_to_substitue = __work_part_.__RootComponent().GetChildren()
                         .Where(__c => __c._IsJckScrewTsg_())
                         .ToArray();
 
-                if(fasteners_to_substitue.Length == 0)
+                if (fasteners_to_substitue.Length == 0)
                 {
                     print_($"Couldn't find any fasteners to substitue with {nxPart.Leaf}");
                     return;
                 }
 
-                var original_display_name = fasteners_to_substitue[0].DisplayName;
+                string original_display_name = fasteners_to_substitue[0].DisplayName;
 
-                var replaceBuilder = __work_part_.AssemblyManager.CreateReplaceComponentBuilder();
+                ReplaceComponentBuilder replaceBuilder = __work_part_.AssemblyManager.CreateReplaceComponentBuilder();
 
                 using (new Destroyer(replaceBuilder))
                 {
@@ -1242,10 +1251,10 @@ namespace TSG_Library.UFuncs
 
         private static void MotionCallback(double[] positionArray, ref UFUi.MotionCbData mtnCbData, IntPtr clientData)
         {
-            var _handle = (GCHandle)clientData;
-            var component1 = (Component)_handle.Target;
-            var theSession = session_;
-            var workPart = theSession.Parts.Work;
+            GCHandle _handle = (GCHandle)clientData;
+            Component component1 = (Component)_handle.Target;
+            Session theSession = session_;
+            Part workPart = theSession.Parts.Work;
             ComponentPositioner componentPositioner1;
             componentPositioner1 = workPart.ComponentAssembly.Positioner;
             componentPositioner1.ClearNetwork();
@@ -1253,21 +1262,21 @@ namespace TSG_Library.UFuncs
             _ = theSession.Preferences.Assemblies.InterpartPositioning;
             Network network1;
             network1 = componentPositioner1.EstablishNetwork();
-            var componentNetwork1 = (ComponentNetwork)network1;
+            ComponentNetwork componentNetwork1 = (ComponentNetwork)network1;
             componentNetwork1.MoveObjectsState = true;
             Component nullNXOpen_Assemblies_Component = null;
             componentNetwork1.DisplayComponent = nullNXOpen_Assemblies_Component;
             componentNetwork1.NetworkArrangementsMode = ComponentNetwork.ArrangementsMode.Existing;
             componentNetwork1.RemoveAllConstraints();
-            var movableObjects1 = new NXObject[1];
+            NXObject[] movableObjects1 = new NXObject[1];
             movableObjects1[0] = component1;
             componentNetwork1.SetMovingGroup(movableObjects1);
             componentNetwork1.Solve();
             componentNetwork1.MoveObjectsState = true;
             componentNetwork1.NetworkArrangementsMode = ComponentNetwork.ArrangementsMode.Existing;
             componentNetwork1.BeginDrag();
-            component1.GetPosition(out var position, out _);
-            var translation1 = new Vector3d(positionArray[0] - position.X, positionArray[1] - position.Y,
+            component1.GetPosition(out Point3d position, out _);
+            Vector3d translation1 = new Vector3d(positionArray[0] - position.X, positionArray[1] - position.Y,
                 positionArray[2] - position.Z);
             componentNetwork1.DragByTranslation(translation1);
             componentNetwork1.EndDrag();
@@ -1283,14 +1292,14 @@ namespace TSG_Library.UFuncs
 
         public static int MoveComponentWithMouse(Component snapComponent)
         {
-            var __handle = GCHandle.Alloc(snapComponent);
+            GCHandle __handle = GCHandle.Alloc(snapComponent);
 
             using (session_.__UsingGCHandle(__handle))
             using (session_.__UsingLockUiFromCustom())
             {
-                var screenPos = new double[3];
+                double[] screenPos = new double[3];
                 ufsession_.Ui.SpecifyScreenPosition("Move Object", MotionCallback, (IntPtr)__handle, screenPos,
-                    out var _, out var response);
+                    out Tag _, out int response);
                 return response;
             }
         }
@@ -1314,19 +1323,19 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var fasteners = Selection.SelectManyComponents();
+                Component[] fasteners = Selection.SelectManyComponents();
 
-                if(fasteners.Length == 0)
+                if (fasteners.Length == 0)
                     return;
 
-                if(fasteners.Any(__fast => __fast.OwningComponent.Tag != fasteners[0].OwningComponent.Tag))
+                if (fasteners.Any(__fast => __fast.OwningComponent.Tag != fasteners[0].OwningComponent.Tag))
                 {
                     print_("All fasteners must be under the same component");
                     return;
                 }
 
                 // remove BODY, GRID, BODY_EDGE, MODEL
-                var reference_set_names = fasteners.Select(__fast => __fast.Prototype)
+                List<string> reference_set_names = fasteners.Select(__fast => __fast.Prototype)
                     .OfType<Part>()
                     .SelectMany(__part => __part.GetAllReferenceSets())
                     .Select(__ref => __ref.Name)
@@ -1339,39 +1348,39 @@ namespace TSG_Library.UFuncs
                 reference_set_names.Remove("MODEL");
 
                 // all shcs metric
-                if(fasteners.All(__fast => __fast.__IsShcs()) &&
-                   fasteners.All(__fast => __fast.Name.ToLower().Contains("mm")))
+                if (fasteners.All(__fast => __fast.__IsShcs()) &&
+                    fasteners.All(__fast => __fast.Name.ToLower().Contains("mm")))
                 {
                     reference_set_names.Add("HANDLING");
                 }
 
                 // all shcs english
-                else if(fasteners.All(__fast => __fast.__IsShcs()) &&
-                        fasteners.All(__fast => !__fast.Name.ToLower().Contains("mm")))
+                else if (fasteners.All(__fast => __fast.__IsShcs()) &&
+                         fasteners.All(__fast => !__fast.Name.ToLower().Contains("mm")))
                 {
                     reference_set_names.Add("HANDLING");
                 }
 
                 // all dwl metric
-                else if(fasteners.All(__fast => __fast.__IsDwl()) &&
-                        fasteners.All(__fast => __fast.Name.ToLower().Contains("mm")))
+                else if (fasteners.All(__fast => __fast.__IsDwl()) &&
+                         fasteners.All(__fast => __fast.Name.ToLower().Contains("mm")))
                 {
                     reference_set_names.Add("TOOLING");
                 }
 
                 // all dwl english
-                else if(fasteners.All(__fast => __fast.__IsDwl()) &&
-                        fasteners.All(__fast => !__fast.Name.ToLower().Contains("mm")))
+                else if (fasteners.All(__fast => __fast.__IsDwl()) &&
+                         fasteners.All(__fast => !__fast.Name.ToLower().Contains("mm")))
                 {
                     reference_set_names.Add("TOOLING");
                 }
 
                 // all jack screw 
-                else if(fasteners.All(__fast => __fast.__IsJckScrew()))
+                else if (fasteners.All(__fast => __fast.__IsJckScrew()))
                 {
                 }
                 // all jack screw tsg
-                else if(fasteners.All(__fast => __fast.__IsJckScrewTsg()))
+                else if (fasteners.All(__fast => __fast.__IsJckScrewTsg()))
                 {
                 }
                 else
@@ -1380,19 +1389,19 @@ namespace TSG_Library.UFuncs
                     return;
                 }
 
-                var selected_ref_set =
+                string selected_ref_set =
                     session_.__SelectMenuItem14gt("Select Reference Set", reference_set_names.ToArray());
 
-                foreach (var selected_fastener in fasteners)
+                foreach (Component selected_fastener in fasteners)
                     using (session_.__usingDisplayPartReset())
                     {
                         Component actual_fastener;
 
-                        if(!(__work_component_ is null) || selected_fastener.Parent.Tag !=
-                           __display_part_.ComponentAssembly.RootComponent.Tag)
+                        if (!(__work_component_ is null) || selected_fastener.Parent.Tag !=
+                            __display_part_.ComponentAssembly.RootComponent.Tag)
                         {
-                            var instance = ufsession_.Assem.AskInstOfPartOcc(selected_fastener.Tag);
-                            var actual_tag = ufsession_.Assem.AskPartOccOfInst(
+                            Tag instance = ufsession_.Assem.AskInstOfPartOcc(selected_fastener.Tag);
+                            Tag actual_tag = ufsession_.Assem.AskPartOccOfInst(
                                 __work_component_.__Prototype().ComponentAssembly.RootComponent.Tag, instance);
                             actual_fastener = (Component)session_.__GetTaggedObject(actual_tag);
                             __display_part_ = actual_fastener.Parent.__Prototype();
@@ -1410,26 +1419,27 @@ namespace TSG_Library.UFuncs
                             .ToList()
                             .ForEach(__k =>
                             {
-                                ufsession_.Wave.IsLinkBroken(__k.Tag, out var is_broken);
+                                ufsession_.Wave.IsLinkBroken(__k.Tag, out bool is_broken);
 
-                                if(is_broken)
+                                if (is_broken)
                                     return;
 
-                                ufsession_.Wave.AskLinkXform(__k.Tag, out var xform);
+                                ufsession_.Wave.AskLinkXform(__k.Tag, out Tag xform);
                                 ufsession_.So.AskAssyCtxtPartOcc(xform,
-                                    __display_part_.ComponentAssembly.RootComponent.Tag, out var from_part_occ);
+                                    __display_part_.ComponentAssembly.RootComponent.Tag, out Tag from_part_occ);
 
-                                if(from_part_occ == NXOpen.Tag.Null)
+                                if (from_part_occ == NXOpen.Tag.Null)
                                     return;
 
-                                var point = new double[3];
+                                double[] point = new double[3];
                                 ufsession_.So.AskPointOfXform(xform, point);
-                                var from_comp = (Component)session_.GetObjectManager().GetTaggedObject(from_part_occ);
+                                Component from_comp =
+                                    (Component)session_.GetObjectManager().GetTaggedObject(from_part_occ);
 
-                                if(!from_comp.__Origin().__IsEqualTo(point))
+                                if (!from_comp.__Origin().__IsEqualTo(point))
                                     return;
 
-                                if(from_part_occ != actual_fastener.Tag)
+                                if (from_part_occ != actual_fastener.Tag)
                                     return;
 
                                 session_.__DeleteObjects(__k);
@@ -1452,9 +1462,9 @@ namespace TSG_Library.UFuncs
         {
             const string createPlanView = "Create Plan View?";
             const string areYouSure = "Are you sure?";
-            var result = MessageBox.Show(createPlanView, areYouSure, MessageBoxButtons.YesNo);
+            DialogResult result = MessageBox.Show(createPlanView, areYouSure, MessageBoxButtons.YesNo);
 
-            if(result == DialogResult.Yes)
+            if (result == DialogResult.Yes)
                 MakePlanView(__display_part_.WCS.Save());
         }
 
@@ -1483,13 +1493,13 @@ namespace TSG_Library.UFuncs
             {
                 const string oLibraryFasteners = "G:\\0Library\\Fasteners";
 
-                if(__display_part_.FullPath.StartsWith(oLibraryFasteners))
+                if (__display_part_.FullPath.StartsWith(oLibraryFasteners))
                 {
                     print_("You cannot run this command with a fastener as your display part.");
                     return;
                 }
 
-                var partsToClose = session_.Parts
+                List<BasePart> partsToClose = session_.Parts
                     .ToArray()
                     .Where(part => part.FullPath.StartsWith(oLibraryFasteners))
                     .ToList();
@@ -1509,17 +1519,18 @@ namespace TSG_Library.UFuncs
             const string top = "Top";
             const string plan = "PLAN";
             __display_part_ = __work_part_;
-            var planView = session_.Parts.Work.ModelingViews.ToArray().SingleOrDefault(__v => __v.Name == "PLAN");
+            ModelingView planView =
+                session_.Parts.Work.ModelingViews.ToArray().SingleOrDefault(__v => __v.Name == "PLAN");
             ModelingView modelingView1, modelingView2;
             Layout layout;
 
-            if(planView != null)
+            if (planView != null)
             {
                 layout = __work_part_.Layouts.FindObject(l1);
                 modelingView1 = __work_part_.ModelingViews.WorkView;
                 modelingView2 = __work_part_.ModelingViews.FindObject(top);
                 layout.ReplaceView(modelingView1, modelingView2, true);
-                var tempView = __work_part_.ModelingViews.FindObject(plan);
+                ModelingView tempView = __work_part_.ModelingViews.FindObject(plan);
                 session_.__DeleteObjects(tempView);
             }
 
@@ -1535,18 +1546,18 @@ namespace TSG_Library.UFuncs
         {
             foreach (Feature feature in owningPart.Features)
             {
-                if(feature.FeatureType != "LINKED_BODY")
+                if (feature.FeatureType != "LINKED_BODY")
                     continue;
 
-                ufsession_.Wave.AskLinkXform(feature.Tag, out var xform);
+                ufsession_.Wave.AskLinkXform(feature.Tag, out Tag xform);
 
-                if(xform == NXOpen.Tag.Null)
+                if (xform == NXOpen.Tag.Null)
                     continue;
 
                 ufsession_.So.AskAssyCtxtPartOcc(xform, owningPart.ComponentAssembly.RootComponent.Tag,
-                    out var fromPartOcc);
+                    out Tag fromPartOcc);
 
-                if(fromPartOcc == child.Tag)
+                if (fromPartOcc == child.Tag)
                     return (ExtractFace)feature;
             }
 
@@ -1555,32 +1566,32 @@ namespace TSG_Library.UFuncs
 
         public static void WaveOut(Component child)
         {
-            var owningPart = (Part)child.OwningPart;
+            Part owningPart = (Part)child.OwningPart;
 
-            if(child.Parent.Tag != owningPart.ComponentAssembly.RootComponent.Tag)
+            if (child.Parent.Tag != owningPart.ComponentAssembly.RootComponent.Tag)
                 throw new ArgumentException("Can only wave out immediate children.");
 
-            var linkedBody = GetLinkedBody(owningPart, child);
+            ExtractFace linkedBody = GetLinkedBody(owningPart, child);
             session_.__DeleteObjects(linkedBody);
         }
 
         public static void WaveOut()
         {
-            if(__work_part_.Tag == __display_part_.Tag)
+            if (__work_part_.Tag == __display_part_.Tag)
             {
-                foreach (var __child in __work_part_.ComponentAssembly.RootComponent.GetChildren())
+                foreach (Component __child in __work_part_.ComponentAssembly.RootComponent.GetChildren())
                     try
                     {
-                        if(__child.Layer != 99 && __child.Layer != 98 && __child.Layer != 97)
+                        if (__child.Layer != 99 && __child.Layer != 98 && __child.Layer != 97)
                             continue;
 
-                        if(__child.IsSuppressed)
+                        if (__child.IsSuppressed)
                             continue;
 
-                        if(!__child.__IsFastener())
+                        if (!__child.__IsFastener())
                             continue;
 
-                        var link = GetLinkedBody(__work_part_, __child);
+                        ExtractFace link = GetLinkedBody(__work_part_, __child);
                         WaveOut(__child);
                         session_.__DeleteObjects(link);
                     }
@@ -1592,15 +1603,15 @@ namespace TSG_Library.UFuncs
                 return;
             }
 
-            foreach (var child in __work_component_.GetChildren())
+            foreach (Component child in __work_component_.GetChildren())
             {
-                if(child.IsSuppressed)
+                if (child.IsSuppressed)
                     continue;
 
-                if(!child.__IsFastener())
+                if (!child.__IsFastener())
                     continue;
 
-                var protoPartOcc = _GetProtoPartOcc(__work_part_, child);
+                Component protoPartOcc = _GetProtoPartOcc(__work_part_, child);
                 WaveOut(protoPartOcc);
             }
         }
@@ -1619,7 +1630,7 @@ namespace TSG_Library.UFuncs
 
         public static void SelectTarget()
         {
-            var response = UI.GetUI().SelectionManager.SelectTaggedObject(
+            NXOpen.Selection.Response response = UI.GetUI().SelectionManager.SelectTaggedObject(
                 "Select A Target Body",
                 "Select A Target Body",
                 NXOpen.Selection.SelectionScope.AnyInAssembly,
@@ -1627,7 +1638,7 @@ namespace TSG_Library.UFuncs
                 false,
                 false,
                 new[] { Selection.SolidBodyMask },
-                out var _object,
+                out TaggedObject _object,
                 out _);
 
             switch (response)
@@ -1636,10 +1647,10 @@ namespace TSG_Library.UFuncs
                 case NXOpen.Selection.Response.Cancel:
                     throw new NothingSelectedException();
                 case NXOpen.Selection.Response.Ok:
-                    if(!__work_part_.__HasDynamicBlock())
+                    if (!__work_part_.__HasDynamicBlock())
                     {
                         __display_part_.WCS.SetOriginAndMatrix(_Point3dOrigin, _Matrix3x3Identity);
-                        var solid_body = __work_part_.__SingleSolidBodyOnLayer1();
+                        Body solid_body = __work_part_.__SingleSolidBodyOnLayer1();
                         solid_body.__Translucency(75);
                         print_("Part does not have a dynamic block. You will need to move the csys manually.");
                         return;
@@ -1652,14 +1663,14 @@ namespace TSG_Library.UFuncs
                 case NXOpen.Selection.Response.ObjectSelectedByName:
                     throw new InvalidOperationException("Cannot select an object by name");
                 case NXOpen.Selection.Response.ObjectSelected:
-                    var selected = (Body)_object;
+                    Body selected = (Body)_object;
 
-                    if(selected.IsOccurrence)
+                    if (selected.IsOccurrence)
                     {
-                        var proto_selected = selected.__Prototype();
-                        var part = selected.OwningComponent.__Prototype();
+                        Body proto_selected = selected.__Prototype();
+                        Part part = selected.OwningComponent.__Prototype();
 
-                        if(!part.__HasDynamicBlock())
+                        if (!part.__HasDynamicBlock())
                         {
                             __work_component_ = selected.OwningComponent;
                             __work_component_.__Translucency(75);
@@ -1669,20 +1680,22 @@ namespace TSG_Library.UFuncs
                             return;
                         }
 
-                        var origin = part.__DynamicBlock().__Origin();
-                        var orientation = part.__DynamicBlock().__Orientation();
-                        var csys = part.CoordinateSystems.CreateCoordinateSystem(origin, orientation, false);
+                        Point3d origin = part.__DynamicBlock().__Origin();
+                        Matrix3x3 orientation = part.__DynamicBlock().__Orientation();
+                        CartesianCoordinateSystem csys =
+                            part.CoordinateSystems.CreateCoordinateSystem(origin, orientation, false);
                         selected.OwningComponent.__Prototype().__FindReferenceSet("BODY")
                             .AddObjectsToReferenceSet(new[] { csys });
-                        var occ_csys = (CartesianCoordinateSystem)selected.OwningComponent.FindOccurrence(csys);
+                        CartesianCoordinateSystem occ_csys =
+                            (CartesianCoordinateSystem)selected.OwningComponent.FindOccurrence(csys);
                         __display_part_.WCS.SetCoordinateSystemCartesianAtCsys(occ_csys);
                         __work_component_ = selected.OwningComponent;
                         __work_component_.__Translucency(75);
                         session_.__DeleteObjects(occ_csys, csys);
                     }
-                    else if(__work_part_.__HasDynamicBlock())
+                    else if (__work_part_.__HasDynamicBlock())
                     {
-                        if(__work_part_.__DynamicBlock().GetBodies()[0].Tag != selected.Tag)
+                        if (__work_part_.__DynamicBlock().GetBodies()[0].Tag != selected.Tag)
                             throw new InvalidOperationException("Selected body that wasn't the dynamic block");
 
                         __work_part_.__DynamicBlock().GetBodies()[0].__Translucency(75);
@@ -1691,12 +1704,12 @@ namespace TSG_Library.UFuncs
                     }
                     else
                     {
-                        var bodies = __work_part_.Bodies.ToArray()
+                        Body[] bodies = __work_part_.Bodies.ToArray()
                             .Where(__b => __b.IsSolidBody)
                             .Where(__b => __b.Layer == 1)
                             .ToArray();
 
-                        if(bodies.Length == 1)
+                        if (bodies.Length == 1)
                         {
                             __work_part_.__SingleSolidBodyOnLayer1().__Translucency(75);
                             __display_part_.WCS.SetOriginAndMatrix(_Point3dOrigin, _Matrix3x3Identity);
@@ -1710,28 +1723,28 @@ namespace TSG_Library.UFuncs
 
         public static void SetWcsToWorkPart()
         {
-            var dynamicBlock = __work_part_.__DynamicBlock();
-            var origin = dynamicBlock.__Origin();
-            var orientation = dynamicBlock.__Orientation();
+            Block dynamicBlock = __work_part_.__DynamicBlock();
+            Point3d origin = dynamicBlock.__Origin();
+            Matrix3x3 orientation = dynamicBlock.__Orientation();
 
-            if(__work_part_.Tag == __display_part_.Tag)
+            if (__work_part_.Tag == __display_part_.Tag)
             {
                 __display_part_.WCS.SetOriginAndMatrix(origin, orientation);
                 return;
             }
 
-            var absCsys =
+            CartesianCoordinateSystem absCsys =
                 __display_part_.CoordinateSystems.CreateCoordinateSystem(_Point3dOrigin, _Matrix3x3Identity, true);
 
-            var compCsys = __display_part_.CoordinateSystems.CreateCoordinateSystem(
+            CartesianCoordinateSystem compCsys = __display_part_.CoordinateSystems.CreateCoordinateSystem(
                 __work_component_.__Origin(),
                 __work_component_.__Orientation(),
                 true);
 
-            var newOrigin = origin.__MapCsysToCsys(compCsys, absCsys);
-            var newXVec = __work_component_.__Orientation().__AxisX().__MapCsysToCsys(compCsys, absCsys);
-            var newYVec = __work_component_.__Orientation().__AxisY().__MapCsysToCsys(compCsys, absCsys);
-            var newOrientation = newXVec.__ToMatrix3x3(newYVec);
+            Point3d newOrigin = origin.__MapCsysToCsys(compCsys, absCsys);
+            Vector3d newXVec = __work_component_.__Orientation().__AxisX().__MapCsysToCsys(compCsys, absCsys);
+            Vector3d newYVec = __work_component_.__Orientation().__AxisY().__MapCsysToCsys(compCsys, absCsys);
+            Matrix3x3 newOrientation = newXVec.__ToMatrix3x3(newYVec);
             __display_part_.WCS.SetOriginAndMatrix(newOrigin, newOrientation);
         }
 
@@ -1752,19 +1765,19 @@ namespace TSG_Library.UFuncs
                     break;
             }
 
-            if(rdoTypeScrew.Checked)
+            if (rdoTypeScrew.Checked)
                 LoadShcs();
         }
 
         private void RdoFastener_CheckedChanged(object sender, EventArgs e)
         {
-            if(rdoTypeScrew.Checked)
+            if (rdoTypeScrew.Checked)
                 LoadShcs();
 
-            if(rdoTypeDowel.Checked)
+            if (rdoTypeDowel.Checked)
                 LoadDowel();
 
-            if(rdoTypeJack.Checked)
+            if (rdoTypeJack.Checked)
                 LoadJack();
         }
 
@@ -1773,7 +1786,7 @@ namespace TSG_Library.UFuncs
             Settings.Default.add_fasteners_preferred_index = cmbPreferred.SelectedIndex;
             Settings.Default.Save();
 
-            if(rdoTypeScrew.Checked)
+            if (rdoTypeScrew.Checked)
                 LoadShcs();
         }
     }

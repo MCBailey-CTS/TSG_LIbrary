@@ -19,7 +19,7 @@ namespace TSG_Library.Extensions
 
         public static Body[] __Data(this BodyDumbRule rule)
         {
-            rule.GetData(out var bodies);
+            rule.GetData(out Body[] bodies);
             return bodies;
         }
 
@@ -42,7 +42,7 @@ namespace TSG_Library.Extensions
             bool hasSameConvexity = false,
             bool allowLaminarEdge = false)
         {
-            var tol = angleTolerance ?? AngleTolerance;
+            double tol = angleTolerance ?? AngleTolerance;
             return basePart.ScRuleFactory.CreateRuleEdgeTangent(startEdge, endEdge, isFromStart, tol, hasSameConvexity,
                 allowLaminarEdge);
         }

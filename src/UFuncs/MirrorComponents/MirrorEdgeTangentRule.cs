@@ -19,42 +19,42 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             Component originalComp,
             IDictionary<TaggedObject, TaggedObject> dict)
         {
-            var mirroredComp = (Component)dict[originalComp];
+            Component mirroredComp = (Component)dict[originalComp];
 
-            var mirroredPart = mirroredComp.__Prototype();
+            Part mirroredPart = mirroredComp.__Prototype();
 
             // ReSharper disable once UnusedVariable
             _ = (Feature)dict[originalFeature];
 
-            ((EdgeTangentRule)originalRule).GetData(out var originalStartEdge, out var originalEndEdge,
-                out var isFromStart, out var angleTolerance, out var hasSameConvexity);
+            ((EdgeTangentRule)originalRule).GetData(out Edge originalStartEdge, out Edge originalEndEdge,
+                out bool isFromStart, out double angleTolerance, out bool hasSameConvexity);
 
             Edge newStartEdge = null;
 
             Edge newEndEdge = null;
 
-            var finalStart = originalStartEdge.__StartPoint().__MirrorMap(plane, originalComp, mirroredComp);
+            Point3d finalStart = originalStartEdge.__StartPoint().__MirrorMap(plane, originalComp, mirroredComp);
 
-            var finalEnd = originalStartEdge.__EndPoint().__MirrorMap(plane, originalComp, mirroredComp);
+            Point3d finalEnd = originalStartEdge.__EndPoint().__MirrorMap(plane, originalComp, mirroredComp);
 
-            foreach (var body in mirroredPart.Bodies.ToArray())
-            foreach (var e in body.GetEdges())
-                if(e.__HasEndPoints(finalStart, finalEnd))
+            foreach (Body body in mirroredPart.Bodies.ToArray())
+            foreach (Edge e in body.GetEdges())
+                if (e.__HasEndPoints(finalStart, finalEnd))
                     newStartEdge = e;
 
-            if(!(originalEndEdge is null))
+            if (!(originalEndEdge is null))
             {
                 finalStart = originalEndEdge.__StartPoint().__MirrorMap(plane, originalComp, mirroredComp);
 
                 finalEnd = originalEndEdge.__EndPoint().__MirrorMap(plane, originalComp, mirroredComp);
 
-                foreach (var body in mirroredPart.Bodies.ToArray())
-                foreach (var e in body.GetEdges())
-                    if(e.__HasEndPoints(finalStart, finalEnd))
+                foreach (Body body in mirroredPart.Bodies.ToArray())
+                foreach (Edge e in body.GetEdges())
+                    if (e.__HasEndPoints(finalStart, finalEnd))
                         newEndEdge = e;
             }
 
-            if(newStartEdge is null)
+            if (newStartEdge is null)
                 throw new ArgumentException("Could not find start edge");
 
             return mirroredPart.ScRuleFactory.CreateRuleEdgeTangent(newStartEdge, newEndEdge, isFromStart,

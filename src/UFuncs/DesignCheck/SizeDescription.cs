@@ -190,19 +190,19 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 
         private static bool CheckDescriptionMatch(Match descriptionMatch, out string message)
         {
-            if(!descriptionMatch.Success)
+            if (!descriptionMatch.Success)
             {
                 message = "Description attribute did not match regular expression.";
                 return false;
             }
 
-            if(descriptionMatch.Groups.Count < 4)
+            if (descriptionMatch.Groups.Count < 4)
             {
                 message = "Description attribute matched less than the required group set.";
                 return false;
             }
 
-            if(descriptionMatch.Groups.Count > 4)
+            if (descriptionMatch.Groups.Count > 4)
             {
                 message = "Description attribute matched more than the required group set.";
                 return false;

@@ -41,9 +41,9 @@ namespace TSG_Library.Extensions
         /// <returns></returns>
         internal static Part __CreatePart(string pathName, Templates templateType, Units unitType)
         {
-            var nXOpenPart = __work_part_;
-            var nXOpenPart2 = __display_part_;
-            var fileNew = session_.Parts.FileNew();
+            Part nXOpenPart = __work_part_;
+            Part nXOpenPart2 = __display_part_;
+            FileNew fileNew = session_.Parts.FileNew();
             fileNew.ApplicationName = __GetAppName(fileNew, templateType);
             fileNew.TemplateFileName = __GetTemplateFileName(fileNew, templateType, unitType);
             fileNew.UseBlankTemplate = fileNew.TemplateFileName == "Blank";
@@ -55,7 +55,7 @@ namespace TSG_Library.Extensions
             fileNew.NewFileName = pathName;
             fileNew.MasterFileName = "";
             fileNew.MakeDisplayedPart = true;
-            var nXObject = fileNew.Commit();
+            NXObject nXObject = fileNew.Commit();
             fileNew.Destroy();
 
             if (nXOpenPart != null)
@@ -69,14 +69,14 @@ namespace TSG_Library.Extensions
 
         public static void __SetWorkPlane(this Session _, double gridSpace, bool snapToGrid, bool showGrid)
         {
-            var workPlane1 = __display_part_.Preferences.Workplane;
+            WorkPlane workPlane1 = __display_part_.Preferences.Workplane;
 
             if (workPlane1 is null)
                 return;
 
             workPlane1.GridType = WorkPlane.Grid.Rectangular;
             workPlane1.GridIsNonUniform = false;
-            var gridSize1 = new WorkPlane.GridSize(gridSpace, 1, 1);
+            WorkPlane.GridSize gridSize1 = new WorkPlane.GridSize(gridSpace, 1, 1);
             workPlane1.SetRectangularUniformGridSize(gridSize1);
             workPlane1.ShowGrid = showGrid;
             workPlane1.ShowLabels = false;
@@ -96,7 +96,7 @@ namespace TSG_Library.Extensions
         {
             IList<string[]> separated = new List<string[]>();
 
-            var list_items = items.ToList();
+            List<string> list_items = items.ToList();
 
             const string __next__ = "...NEXT...";
             const int max = 14;
@@ -104,7 +104,7 @@ namespace TSG_Library.Extensions
             if (items.Length == max)
                 using (session_.__UsingLockUiFromCustom())
                 {
-                    var picked_item = ufsession_.Ui.DisplayMenu(
+                    int picked_item = ufsession_.Ui.DisplayMenu(
                         title,
                         0,
                         items,
@@ -156,11 +156,11 @@ namespace TSG_Library.Extensions
 
             while (list_items.Count > 0)
             {
-                var set_of_items = new string[max];
+                string[] set_of_items = new string[max];
 
                 set_of_items[set_of_items.Length - 1] = __next__;
 
-                var end_index = set_of_items.Length - 1;
+                int end_index = set_of_items.Length - 1;
 
                 if (list_items.Count < max)
                 {
@@ -168,7 +168,7 @@ namespace TSG_Library.Extensions
                     end_index = list_items.Count;
                 }
 
-                for (var i = 0; i < end_index; i++)
+                for (int i = 0; i < end_index; i++)
                 {
                     set_of_items[i] = list_items[0];
                     list_items.RemoveAt(0);
@@ -178,12 +178,12 @@ namespace TSG_Library.Extensions
             }
 
 
-            var current_set_index = 0;
+            int current_set_index = 0;
 
             while (true)
                 using (session_.__UsingLockUiFromCustom())
                 {
-                    var picked_item = ufsession_.Ui.DisplayMenu(
+                    int picked_item = ufsession_.Ui.DisplayMenu(
                         title,
                         0,
                         separated[current_set_index],
@@ -396,7 +396,7 @@ namespace TSG_Library.Extensions
             out int response,
             out Tag _object)
         {
-            var cursor = new double[3];
+            double[] cursor = new double[3];
 
             session.__SelectSingleObject(
                 "Select Component Message",
@@ -422,7 +422,7 @@ namespace TSG_Library.Extensions
 
         public static IEnumerable<TaggedObject> __FindAllByName(this Session _, string __name)
         {
-            var __tag = Tag.Null;
+            Tag __tag = Tag.Null;
 
             do
             {
@@ -430,13 +430,14 @@ namespace TSG_Library.Extensions
 
                 if (__tag != Tag.Null)
                     yield return session_.__GetTaggedObject(__tag);
-            } while (__tag != Tag.Null);
+            }
+            while (__tag != Tag.Null);
         }
 
         public static void __DeleteObjects(this Session session_,
             params TaggedObject[] __objects_to_delete)
         {
-            var mark =
+            UndoMarkId mark =
                 session_.SetUndoMark(MarkVisibility.Visible, "Delete Operation");
 
             session_.UpdateManager.ClearDeleteList();

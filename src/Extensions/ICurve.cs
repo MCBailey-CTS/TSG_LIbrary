@@ -1,5 +1,6 @@
 ﻿using System;
 using NXOpen;
+using NXOpen.UF;
 
 namespace TSG_Library.Extensions
 {
@@ -14,7 +15,9 @@ namespace TSG_Library.Extensions
                 case Curve __curve__:
                     return __curve__.__Parameter(point);
                 case Edge __edge__:
+#pragma warning disable CS0612 // Type or member is obsolete
                     return __edge__.__Parameter(point);
+#pragma warning restore CS0612 // Type or member is obsolete
                 default:
                     throw new ArgumentException("Unknown curve type");
             }
@@ -52,16 +55,16 @@ namespace TSG_Library.Extensions
         //     The binormal is the cross product of the tangent and the normal: B = Cross(T,N).
         public static Vector3d __Binormal(this ICurve curve, double value)
         {
-            var eval = ufsession_.Eval;
-            eval.Initialize2(curve.__Tag(), out var evaluator);
-            var array = new double[3];
-            var point = array;
-            var array2 = new double[3];
-            var tangent = array2;
-            var array3 = new double[3];
-            var normal = array3;
-            var array4 = new double[3];
-            var array5 = array4;
+            UFEval eval = ufsession_.Eval;
+            eval.Initialize2(curve.__Tag(), out IntPtr evaluator);
+            double[] array = new double[3];
+            double[] point = array;
+            double[] array2 = new double[3];
+            double[] tangent = array2;
+            double[] array3 = new double[3];
+            double[] normal = array3;
+            double[] array4 = new double[3];
+            double[] array5 = array4;
             value /= Factor;
             eval.EvaluateUnitVectors(evaluator, value, point, tangent, normal, array5);
             eval.Free(evaluator);
@@ -70,7 +73,7 @@ namespace TSG_Library.Extensions
 
         public static Tag __Tag(this ICurve curve)
         {
-            if(curve is TaggedObject taggedObject)
+            if (curve is TaggedObject taggedObject)
                 return taggedObject.Tag;
 
             throw new ArgumentException("Curve was not a tagged object");
@@ -103,10 +106,10 @@ namespace TSG_Library.Extensions
 
         public static void __IsPlanar(this ICurve icurve)
         {
-            var data = new double[6];
-            ufsession_.Modl.AskObjDimensionality(icurve.__Tag(), out var dimensionality, data);
+            double[] data = new double[6];
+            ufsession_.Modl.AskObjDimensionality(icurve.__Tag(), out int dimensionality, data);
 
-            if(dimensionality == 3)
+            if (dimensionality == 3)
                 throw new ArgumentException("The input curve is not planar.");
         }
 

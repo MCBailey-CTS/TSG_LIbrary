@@ -47,20 +47,20 @@ namespace TSG_Library.Utilities
             try
             {
                 UFUi.SelInitFnT initialProcess = null;
-                if(SelectionPredicate != null) initialProcess = InitialProcess;
+                if (SelectionPredicate != null) initialProcess = InitialProcess;
                 ufsession_.Ui.LockUgAccess(UFConstants.UF_UI_FROM_CUSTOM);
                 T[] result;
-                if(multiple)
+                if (multiple)
                 {
                     ufsession_.Ui.SelectWithClassDialog(Prompt, Prompt, (int)Scope, initialProcess, IntPtr.Zero,
-                        out var _, out var _, out var selectedObj);
+                        out int _, out int _, out Tag[] selectedObj);
                     result = selectedObj.Select(x => (T)NXObjectManager.Get(x)).ToArray();
                 }
                 else
                 {
-                    var cursor = new double[3];
+                    double[] cursor = new double[3];
                     ufsession_.Ui.SelectWithSingleDialog(Prompt, Prompt, (int)Scope, initialProcess, IntPtr.Zero,
-                        out var _, out var selectedObj, cursor, out _);
+                        out int _, out Tag selectedObj, cursor, out _);
                     result = new[] { (T)NXObjectManager.Get(selectedObj) };
                 }
 
@@ -75,7 +75,7 @@ namespace TSG_Library.Utilities
 
         private int FilterProcess(Tag _object, int[] type, IntPtr userData, IntPtr select)
         {
-            if(!(NXObjectManager.Get(_object) is T obj))
+            if (!(NXObjectManager.Get(_object) is T obj))
                 return 0;
             try
             {
@@ -91,7 +91,7 @@ namespace TSG_Library.Utilities
 
         private int InitialProcess(IntPtr select, IntPtr userData)
         {
-            if(Masks != null && Masks.Any())
+            if (Masks != null && Masks.Any())
                 ufsession_.Ui.SetSelMask(select, UFUi.SelMaskAction.SelMaskClearAndEnableSpecific, 1, Masks);
             ufsession_.Ui.SetSelProcs(select, FilterProcess, null, userData);
             return UFConstants.UF_UI_SEL_SUCCESS;

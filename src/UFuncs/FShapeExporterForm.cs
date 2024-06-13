@@ -42,13 +42,13 @@ namespace TSG_Library.UFuncs
 
         private void TxtOpNum_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if(e.KeyChar == 13)
+            if (e.KeyChar == 13)
                 Result();
         }
 
         private void Result()
         {
-            if(txtOpNum.Text != string.Empty)
+            if (txtOpNum.Text != string.Empty)
             {
                 Answer = txtOpNum.Text;
                 Dispose();

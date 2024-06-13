@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Features;
+using NXOpen.UF;
 using NXOpen.Utilities;
 using static TSG_Library.Extensions.__Extensions_;
 
@@ -217,7 +218,7 @@ MATERIAL
             //            new Tuple<Dictionary<string, Dictionary<string, string>>, Match>(englishDepths, englishMatch);
             //}
 
-            var hashedLinkedBodies = new HashSet<ExtractFace>();
+            HashSet<ExtractFace> hashedLinkedBodies = new HashSet<ExtractFace>();
 
             //foreach (NXOpen.Assemblies.Component component in Model.AssemblyComponents)
             //{
@@ -260,27 +261,28 @@ MATERIAL
 #pragma warning disable CS0162 // Unreachable code detected
             string[] lines = null; // Model.Ucf[delimeter]; //     GetValuesFromFile(delimeter);
 #pragma warning restore CS0162 // Unreachable code detected
-            var dictionary = new Dictionary<string, Dictionary<string, string>>();
-            var firstLineSplit = lines[0].Split('\t');
+            Dictionary<string, Dictionary<string, string>> dictionary =
+                new Dictionary<string, Dictionary<string, string>>();
+            string[] firstLineSplit = lines[0].Split('\t');
             // We want to set the length - 1 because the first element in the first row is "NA".
-            var tempKeyHolder = new string[firstLineSplit.Length];
+            string[] tempKeyHolder = new string[firstLineSplit.Length];
             // We want to skip the [0]th index because it is "NA".
-            for (var i = 1; i < firstLineSplit.Length; i++)
+            for (int i = 1; i < firstLineSplit.Length; i++)
             {
                 tempKeyHolder[i] = firstLineSplit[i];
                 dictionary[firstLineSplit[i]] = new Dictionary<string, string>();
             }
 
             // We want to skip the [0]th row because we used that as the keys for the dictionary. 
-            for (var rowIndex = 1; rowIndex < lines.Length; rowIndex++)
+            for (int rowIndex = 1; rowIndex < lines.Length; rowIndex++)
             {
-                var split = lines[rowIndex].Split('\t');
-                for (var colindex = 1; colindex < dictionary.Count + 1; colindex++)
+                string[] split = lines[rowIndex].Split('\t');
+                for (int colindex = 1; colindex < dictionary.Count + 1; colindex++)
                 {
-                    var element = split[colindex];
-                    if(!double.TryParse(element, out var unused)) continue;
-                    var diameterKey = tempKeyHolder[colindex];
-                    var diameterDictionary = dictionary[diameterKey];
+                    string element = split[colindex];
+                    if (!double.TryParse(element, out double unused)) continue;
+                    string diameterKey = tempKeyHolder[colindex];
+                    Dictionary<string, string> diameterDictionary = dictionary[diameterKey];
                     diameterDictionary.Add(split[0], element);
                 }
             }
@@ -298,12 +300,12 @@ MATERIAL
             //List<ObjectNode> errorNodes = new List<ObjectNode>();
 #pragma warning disable CS0162 // Unreachable code detected
 #pragma warning disable CS0219 // Variable is assigned but its value is never used
-            var allFacesHavePassed = true;
+            bool allFacesHavePassed = true;
 #pragma warning restore CS0219 // Variable is assigned but its value is never used
 #pragma warning restore CS0162 // Unreachable code detected
 
             // Gets all the faces in the parts layer 1 body that is named "SHCS_CBORE_HOLECHART.
-            var validFaces = part.Bodies.OfType<Body>()
+            Face[] validFaces = part.Bodies.OfType<Body>()
                 .SelectMany(body => body.GetFaces())
                 .Where(face => face.Name == ShcsHoleChart)
                 .ToArray();
@@ -315,38 +317,38 @@ MATERIAL
             //    yield break;
             //}
 
-            var dictionary = new Dictionary<Face, string>();
+            Dictionary<Face, string> dictionary = new Dictionary<Face, string>();
 
-            foreach (var face in validFaces)
+            foreach (Face face in validFaces)
             {
-                ufsession_.Modl.AskFaceFeats(face.Tag, out var features);
+                ufsession_.Modl.AskFaceFeats(face.Tag, out Tag[] features);
 
-                var extractFaceFeatures = features.Select(NXObjectManager.Get)
+                ExtractFace[] extractFaceFeatures = features.Select(NXObjectManager.Get)
                     .OfType<ExtractFace>()
                     .ToArray();
 
-                if(extractFaceFeatures.Length != 1)
+                if (extractFaceFeatures.Length != 1)
                 {
                     //InfoWindow.WriteLine();
                     //errorNodes.Add(new ObjectNode("Found invalid face"));
                     //continue;
                 }
 
-                ufsession_.Wave.AskLinkedFeatureGeom(extractFaceFeatures[0].Tag, out var linkedGeom);
-                ufsession_.Wave.AskLinkedFeatureInfo(linkedGeom, out var linkedFeatureInfo);
+                ufsession_.Wave.AskLinkedFeatureGeom(extractFaceFeatures[0].Tag, out Tag linkedGeom);
+                ufsession_.Wave.AskLinkedFeatureInfo(linkedGeom, out UFWave.LinkedFeatureInfo linkedFeatureInfo);
 
-                if(linkedFeatureInfo.source_part_name == null ||
-                   !linkedFeatureInfo.source_part_name.__IsShcs()) continue;
+                if (linkedFeatureInfo.source_part_name == null ||
+                    !linkedFeatureInfo.source_part_name.__IsShcs()) continue;
                 dictionary.Add(face, linkedFeatureInfo.source_part_name);
             }
 
-            var partIsMetric = part.PartUnits == BasePart.Units.Millimeters;
+            bool partIsMetric = part.PartUnits == BasePart.Units.Millimeters;
 
             //double tolerance = double.Parse(partIsMetric
             //    ? Model.Ucf.SingleValue("Metric_Tolerance")
             //    : Model.Ucf.SingleValue("English_Tolerance"));
 
-            foreach (var pair in dictionary)
+            foreach (KeyValuePair<Face, string> pair in dictionary)
             {
                 //if (!_fastenerMatches.ContainsKey(pair.Value))
                 //{
@@ -355,21 +357,21 @@ MATERIAL
                 //    continue;
                 //}
 
-                var tuple = _fastenerMatches[pair.Value];
-                var diameter = tuple.Item2.Groups["Diameter"].Value;
-                var length = tuple.Item2.Groups["Length"].Value;
-                var expectedDepth = double.Parse(tuple.Item1[diameter][length]);
-                if(expectedDepth < 0)
+                Tuple<Dictionary<string, Dictionary<string, string>>, Match> tuple = _fastenerMatches[pair.Value];
+                string diameter = tuple.Item2.Groups["Diameter"].Value;
+                string length = tuple.Item2.Groups["Length"].Value;
+                double expectedDepth = double.Parse(tuple.Item1[diameter][length]);
+                if (expectedDepth < 0)
                     throw new InvalidOperationException("Depth was less than 0");
-                var shcsIsMetric = pair.Value.Contains("mm");
+                bool shcsIsMetric = pair.Value.Contains("mm");
 
-                if(!shcsIsMetric && partIsMetric)
+                if (!shcsIsMetric && partIsMetric)
                     expectedDepth = expectedDepth * 25.4;
 
-                if(shcsIsMetric && !partIsMetric)
+                if (shcsIsMetric && !partIsMetric)
                     expectedDepth = expectedDepth / 25.4;
 
-                if(pair.Key.GetEdges().Length != 2)
+                if (pair.Key.GetEdges().Length != 2)
                 {
                     //ObjectNode objNode = new ObjectNode(pair.Value);
                     //objNode.Add("HoleChart face had more or less than 2 edges.");
@@ -378,16 +380,16 @@ MATERIAL
                     //continue;
                 }
 
-                var binormal = pair.Key.GetEdges()[0].__Binormal(0);
+                Vector3d binormal = pair.Key.GetEdges()[0].__Binormal(0);
                 // Check that both edges only have 3 different faces associated with them.
                 // And that only one of them is cylindrical and the other two are planar.
-                var associatedFaces = pair.Key.GetEdges()
+                Face[] associatedFaces = pair.Key.GetEdges()
                     .SelectMany(edge => edge.GetFaces())
                     .Distinct()
                     .ToArray();
 
                 // We only want three faces.
-                if(associatedFaces.Length != 3)
+                if (associatedFaces.Length != 3)
                 {
                     //ObjectNode objNode = new ObjectNode(pair.Value);
                     //objNode.Add("HoleChart face had more or less than 3 faces.");
@@ -396,7 +398,7 @@ MATERIAL
                     //continue;
                 }
 
-                var planarFaces = associatedFaces
+                Face[] planarFaces = associatedFaces
                     .Where(face => face.SolidFaceType == Face.FaceType.Planar)
                     .ToArray();
 

@@ -5,6 +5,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using NXOpen;
+using NXOpen.Assemblies;
 using NXOpen.UF;
 using TSG_Library.Attributes;
 using TSG_Library.Properties;
@@ -51,33 +52,33 @@ namespace TSG_Library.UFuncs
 
         private void ComboBoxOperation_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(comboBoxOperation.Text == "Hot")
+            if (comboBoxOperation.Text == "Hot")
             {
                 comboBoxVersion.Enabled = true;
 
                 try
                 {
-                    var names = new List<int>();
+                    List<int> names = new List<int>();
 
-                    if(workPart.ComponentAssembly.RootComponent != null)
+                    if (workPart.ComponentAssembly.RootComponent != null)
                     {
-                        foreach (var comp in workPart.ComponentAssembly.RootComponent.GetChildren())
+                        foreach (Component comp in workPart.ComponentAssembly.RootComponent.GetChildren())
                         {
-                            var indexOf = comp.DisplayName.LastIndexOf("-V", StringComparison.Ordinal);
-                            if(indexOf == -1) continue;
-                            var fullCompName = comp.DisplayName.Substring(indexOf + 1);
-                            var versionNumber = fullCompName.Substring(1, 2);
-                            int.TryParse(versionNumber, out var testVersionNumber);
+                            int indexOf = comp.DisplayName.LastIndexOf("-V", StringComparison.Ordinal);
+                            if (indexOf == -1) continue;
+                            string fullCompName = comp.DisplayName.Substring(indexOf + 1);
+                            string versionNumber = fullCompName.Substring(1, 2);
+                            int.TryParse(versionNumber, out int testVersionNumber);
                             names.Add(testVersionNumber);
                         }
 
-                        if(names.Count != 0)
+                        if (names.Count != 0)
                         {
                             names.Sort();
-                            var lastVersionNumber = names[names.Count - 1];
-                            if((lastVersionNumber > 0) & (lastVersionNumber < 10))
+                            int lastVersionNumber = names[names.Count - 1];
+                            if ((lastVersionNumber > 0) & (lastVersionNumber < 10))
                                 comboBoxVersion.Text = "V0" + lastVersionNumber;
-                            if((lastVersionNumber > 9) & (lastVersionNumber < 100))
+                            if ((lastVersionNumber > 9) & (lastVersionNumber < 100))
                                 comboBoxVersion.Text = "V" + lastVersionNumber;
                         }
                         else
@@ -94,42 +95,42 @@ namespace TSG_Library.UFuncs
                 }
             }
 
-            if(comboBoxOperation.Text != "Cold")
+            if (comboBoxOperation.Text != "Cold")
                 return;
 
             comboBoxVersion.Enabled = true;
 
             try
             {
-                var names = new List<int>();
+                List<int> names = new List<int>();
 
-                if(workPart.ComponentAssembly.RootComponent is null)
+                if (workPart.ComponentAssembly.RootComponent is null)
                     return;
 
-                foreach (var comp in workPart.ComponentAssembly.RootComponent.GetChildren())
+                foreach (Component comp in workPart.ComponentAssembly.RootComponent.GetChildren())
                 {
-                    var indexOf = comp.DisplayName.LastIndexOf("-V", StringComparison.Ordinal);
-                    if(indexOf == -1) continue;
-                    var fullCompName = comp.DisplayName.Substring(indexOf + 1);
-                    var versionNumber = fullCompName.Substring(1, 2);
+                    int indexOf = comp.DisplayName.LastIndexOf("-V", StringComparison.Ordinal);
+                    if (indexOf == -1) continue;
+                    string fullCompName = comp.DisplayName.Substring(indexOf + 1);
+                    string versionNumber = fullCompName.Substring(1, 2);
 
-                    int.TryParse(versionNumber, out var testVersionNumber);
+                    int.TryParse(versionNumber, out int testVersionNumber);
                     names.Add(testVersionNumber);
                 }
 
-                if(names.Count == 0)
+                if (names.Count == 0)
                 {
                     comboBoxVersion.Text = "";
                     return;
                 }
 
                 names.Sort();
-                var lastVersionNumber = names[names.Count - 1] + 1;
+                int lastVersionNumber = names[names.Count - 1] + 1;
 
-                if((lastVersionNumber > 0) & (lastVersionNumber < 10))
+                if ((lastVersionNumber > 0) & (lastVersionNumber < 10))
                     comboBoxVersion.Text = $"V0{lastVersionNumber}";
 
-                if((lastVersionNumber > 9) & (lastVersionNumber < 100))
+                if ((lastVersionNumber > 9) & (lastVersionNumber < 100))
                     comboBoxVersion.Text = $"V{lastVersionNumber}";
             }
             catch (Exception ex)
@@ -147,74 +148,74 @@ namespace TSG_Library.UFuncs
 
             const string prompt = "Select objects to export";
             const string title = "Export data";
-            var clientData = IntPtr.Zero;
+            IntPtr clientData = IntPtr.Zero;
 
             TheUFSession.Ui.LockUgAccess(UF_UI_FROM_CUSTOM);
 
             TheUFSession.Ui.SelectWithClassDialog(prompt, title, UF_UI_SEL_SCOPE_ANY_IN_ASSEMBLY, null, clientData,
-                out _, out _, out var selObjects);
+                out _, out _, out Tag[] selObjects);
 
             TheUFSession.Ui.UnlockUgAccess(UF_UI_FROM_CUSTOM);
 
-            foreach (var objs in selObjects)
+            foreach (Tag objs in selObjects)
                 TheUFSession.Disp.SetHighlight(objs, 0);
 
             // build export/dxf/component name
 
             // Add Current Date
-            var currentDate = DateTime.Today.ToString("yyyy-MM-dd");
+            string currentDate = DateTime.Today.ToString("yyyy-MM-dd");
 
 
-            if(selObjects.Length <= 0) return;
+            if (selObjects.Length <= 0) return;
             try
             {
-                if(textBoxJobNumber.Text != string.Empty)
+                if (textBoxJobNumber.Text != string.Empty)
                     nameBuilder = textBoxJobNumber.Text;
-                if(comboBoxVersion.Text != string.Empty)
+                if (comboBoxVersion.Text != string.Empty)
                     nameBuilder += "-" + comboBoxVersion.Text;
-                if(comboBoxOperation.Text != string.Empty)
+                if (comboBoxOperation.Text != string.Empty)
                 {
                     // ReSharper disable once ConvertIfStatementToSwitchStatement
-                    if(comboBoxOperation.Text == "Hot")
+                    if (comboBoxOperation.Text == "Hot")
                         nameBuilder += "-Hot-Blank-" + currentDate;
-                    if(comboBoxOperation.Text == "Cold")
+                    if (comboBoxOperation.Text == "Cold")
                         nameBuilder += "-Cold-Blank-" + currentDate;
                 }
 
-                if(textBoxCustomText.Text != string.Empty)
+                if (textBoxCustomText.Text != string.Empty)
                     nameBuilder += "-" + textBoxCustomText.Text;
 
 
                 // export temp part for dxf file
 
-                var tempPart = tempDir + "\\" + nameBuilder;
+                string tempPart = tempDir + "\\" + nameBuilder;
 
 
-                var doesExist = false;
+                bool doesExist = false;
 
 
-                if(displayPart.ComponentAssembly.RootComponent != null)
-                    foreach (var simComp in displayPart.ComponentAssembly.RootComponent.GetChildren())
-                        if(simComp.Name == nameBuilder.ToUpper())
+                if (displayPart.ComponentAssembly.RootComponent != null)
+                    foreach (Component simComp in displayPart.ComponentAssembly.RootComponent.GetChildren())
+                        if (simComp.Name == nameBuilder.ToUpper())
                             doesExist = true;
 
-                if(doesExist)
+                if (doesExist)
                 {
-                    var dResult = MessageBox.Show($"Replace file {nameBuilder}?", "File Exist",
+                    DialogResult dResult = MessageBox.Show($"Replace file {nameBuilder}?", "File Exist",
                         MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 
 
-                    if(dResult != DialogResult.OK) return;
+                    if (dResult != DialogResult.OK) return;
                 }
 
-                if(!(displayPart.ComponentAssembly.RootComponent is null))
-                    foreach (var simComp in displayPart.ComponentAssembly.RootComponent.GetChildren())
+                if (!(displayPart.ComponentAssembly.RootComponent is null))
+                    foreach (Component simComp in displayPart.ComponentAssembly.RootComponent.GetChildren())
                     {
-                        if(simComp.Name != nameBuilder.ToUpper()) continue;
-                        var closeSimPart = (Part)simComp.Prototype;
+                        if (simComp.Name != nameBuilder.ToUpper()) continue;
+                        Part closeSimPart = (Part)simComp.Prototype;
                         closeSimPart.Close(BasePart.CloseWholeTree.False, BasePart.CloseModified.CloseModified, null);
 
-                        var markId1 = session_.SetUndoMark(Session.MarkVisibility.Invisible, "");
+                        Session.UndoMarkId markId1 = session_.SetUndoMark(Session.MarkVisibility.Invisible, "");
 
                         NXObject[] objects1 = { simComp };
 
@@ -247,7 +248,7 @@ namespace TSG_Library.UFuncs
 
         private void InitializeFormData()
         {
-            if(Session.GetSession().Parts.Display is null)
+            if (Session.GetSession().Parts.Display is null)
                 return;
 
             displayPart = session_.Parts.Display;
@@ -265,7 +266,7 @@ namespace TSG_Library.UFuncs
 
             textBoxRevisionLevel.Clear();
 
-            var match = Regex.Match(workPart.Leaf, Regex_Simulation);
+            Match match = Regex.Match(workPart.Leaf, Regex_Simulation);
 
             textBoxJobNumber.Text = match.Success ? match.Groups["customerNum"].Value : "JOB #";
 
@@ -304,21 +305,21 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var versionNumber = comboBoxVersion.Text;
+                string versionNumber = comboBoxVersion.Text;
 
-                if(string.IsNullOrEmpty(versionNumber))
+                if (string.IsNullOrEmpty(versionNumber))
                     throw new InvalidOperationException("Invalid version number.");
 
 
-                var folder = GFolder.create_or_null(displayPart)
-                             ??
-                             throw new InvalidOperationException(
-                                 "The current display part does not reside within in a GFolder.");
+                GFolder folder = GFolder.create_or_null(displayPart)
+                                 ??
+                                 throw new InvalidOperationException(
+                                     "The current display part does not reside within in a GFolder.");
 
-                if(File.Exists(partFile + ".prt"))
+                if (File.Exists(partFile + ".prt"))
                     File.Delete(partFile + ".prt");
 
-                var exportOptions = new UFPart.ExportOptions
+                UFPart.ExportOptions exportOptions = new UFPart.ExportOptions
                 {
                     new_part = true, expression_mode = UFPart.ExportExpMode.CopyExpDeeply,
                     params_mode = UFPart.ExportParamsMode.RemoveParams
@@ -328,32 +329,32 @@ namespace TSG_Library.UFuncs
 
                 // get path to blank location, check directory structure
 
-                var outputDirectory = $"{folder.dir_outgoing}\\{TodaysDate}-Blank-{versionNumber}";
+                string outputDirectory = $"{folder.dir_outgoing}\\{TodaysDate}-Blank-{versionNumber}";
 
-                if(!Directory.Exists(outputDirectory))
+                if (!Directory.Exists(outputDirectory))
                     Directory.CreateDirectory(outputDirectory);
 
-                var compBlanksPath = outputDirectory;
+                string compBlanksPath = outputDirectory;
 
                 // export part to Blanks directory
 
-                if(Directory.Exists(compBlanksPath) == false)
+                if (Directory.Exists(compBlanksPath) == false)
                     Directory.CreateDirectory(compBlanksPath);
 
                 compBlanksPath += "\\" + nameBuilder + ".prt";
 
-                if(File.Exists(compBlanksPath))
+                if (File.Exists(compBlanksPath))
                     File.Delete(compBlanksPath);
 
                 TheUFSession.Part.ExportWithOptions(compBlanksPath, tagObjects.Length, tagObjects, ref exportOptions);
 
                 // add  component to Blanks file
 
-                var basePart1 = session_.Parts.OpenBase(compBlanksPath, out var basePartLoadStatus);
+                BasePart basePart1 = session_.Parts.OpenBase(compBlanksPath, out PartLoadStatus basePartLoadStatus);
                 basePartLoadStatus.Dispose();
 
-                var sPartOrigin = new Point3d(0.0, 0.0, 0.0);
-                var sPartMatrix = _Matrix3x3Identity;
+                Point3d sPartOrigin = new Point3d(0.0, 0.0, 0.0);
+                Matrix3x3 sPartMatrix = _Matrix3x3Identity;
 
                 int layer;
 
@@ -370,28 +371,28 @@ namespace TSG_Library.UFuncs
                         break;
                 }
 
-                var surfacePart = (Part)basePart1;
+                Part surfacePart = (Part)basePart1;
                 displayPart.ComponentAssembly.AddComponent(surfacePart, Refset_EntirePart, nameBuilder, sPartOrigin,
-                    sPartMatrix, layer, out var sPartLoadStatus);
+                    sPartMatrix, layer, out PartLoadStatus sPartLoadStatus);
                 sPartLoadStatus.Dispose();
 
                 displayPart.Save(BasePart.SaveComponents.True, BasePart.CloseAfterSave.False);
 
                 // export blank dxf data
 
-                if(comboBoxOperation.Text != "Hot" && comboBoxOperation.Text != "Cold") return;
-                var blankDxf =
+                if (comboBoxOperation.Text != "Hot" && comboBoxOperation.Text != "Cold") return;
+                string blankDxf =
                     Path.ChangeExtension(compBlanksPath,
                         "dxf"); //   $"{folder.JobFolder}\\blankDevelopment\\Blanks\\{nameBuilder}.dxf";
-                var dxfBatch = partFile + ".bat";
+                string dxfBatch = partFile + ".bat";
                 dxfArguments = $"{dxfCmd}\"{partFile}.prt\" o=\"{blankDxf}\" d=\"{dxfSettings}\"";
 
-                using (var fs = File.Open(dxfBatch, FileMode.Create))
+                using (FileStream fs = File.Open(dxfBatch, FileMode.Create))
                 {
                     fs.Close();
                 }
 
-                using (var writer = new StreamWriter(dxfBatch))
+                using (StreamWriter writer = new StreamWriter(dxfBatch))
                 {
                     writer.WriteLine("c:");
                     writer.WriteLine("cd " + "\"" + "C:\\Program Files\\Siemens\\NX 11.0\\DXFDWG" + "\"");
@@ -411,35 +412,35 @@ namespace TSG_Library.UFuncs
         private void ButtonSetAttribute_Click(object sender, EventArgs e)
         {
             // Add Current Date
-            var currentDate = DateTime.Today.ToString("yyyy-MM-dd");
+            string currentDate = DateTime.Today.ToString("yyyy-MM-dd");
 
-            if(textBoxJobNumber.Text != string.Empty)
+            if (textBoxJobNumber.Text != string.Empty)
                 nameBuilder = textBoxJobNumber.Text;
-            if(comboBoxVersion.Text != string.Empty)
+            if (comboBoxVersion.Text != string.Empty)
                 nameBuilder += "-" + comboBoxVersion.Text;
-            if(comboBoxOperation.Text != string.Empty)
+            if (comboBoxOperation.Text != string.Empty)
             {
                 // ReSharper disable once ConvertIfStatementToSwitchStatement
-                if(comboBoxOperation.Text == "Hot")
+                if (comboBoxOperation.Text == "Hot")
                     nameBuilder += "-Hot-Blank-" + currentDate;
-                if(comboBoxOperation.Text == "Cold")
+                if (comboBoxOperation.Text == "Cold")
                     nameBuilder += "-Cold-Blank-" + currentDate;
             }
 
-            if(textBoxCustomText.Text != string.Empty)
+            if (textBoxCustomText.Text != string.Empty)
                 nameBuilder += "-" + textBoxCustomText.Text;
 
-            var attrInfo = displayPart.GetUserAttributes();
+            NXObject.AttributeInformation[] attrInfo = displayPart.GetUserAttributes();
 
-            foreach (var attr in attrInfo)
+            foreach (NXObject.AttributeInformation attr in attrInfo)
             {
-                if(attr.Title != "REVISION TEXT") continue;
-                var attrValue = displayPart.GetStringUserAttribute(attr.Title, -1);
+                if (attr.Title != "REVISION TEXT") continue;
+                string attrValue = displayPart.GetStringUserAttribute(attr.Title, -1);
 
-                if(attrValue != "")
+                if (attrValue != "")
                 {
                     displayPart.SetUserAttribute("REVISION TEXT", -1, nameBuilder, NXOpen.Update.Option.Now);
-                    var layout1 = workPart.Layouts.FindObject("L1");
+                    Layout layout1 = workPart.Layouts.FindObject("L1");
                     layout1.ReplaceView(workPart.ModelingViews.WorkView, workPart.ModelingViews.WorkView, true);
                 }
                 else
@@ -448,7 +449,7 @@ namespace TSG_Library.UFuncs
                 }
             }
 
-            var revisionLevelText = nameBuilder;
+            string revisionLevelText = nameBuilder;
 
             textBoxRevisionLevel.Text = revisionLevelText;
         }

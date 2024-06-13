@@ -19,7 +19,7 @@ namespace TSG_Library.Exceptions
         {
             get
             {
-                var solid_bodies = __work_part_
+                Body[] solid_bodies = __work_part_
                     .Bodies
                     .ToArray()
                     .Where(__body => __body.IsSolidBody)

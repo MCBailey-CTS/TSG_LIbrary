@@ -31,15 +31,15 @@ namespace TSG_Library.Extensions
             double height)
         {
             basePart.__AssertIsWorkPart();
-            var builder = basePart.Features.CreateConeBuilder(null);
+            ConeBuilder builder = basePart.Features.CreateConeBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(builder))
             {
                 builder.BooleanOption.Type = BooleanOperation.BooleanType.Create;
                 builder.Type = ConeBuilder.Types.DiametersAndHeight;
-                var direction2 = basePart.Directions.CreateDirection(axisPoint, direction,
+                Direction direction2 = basePart.Directions.CreateDirection(axisPoint, direction,
                     SmartObject.UpdateOption.WithinModeling);
-                var axis = builder.Axis;
+                Axis axis = builder.Axis;
                 axis.Direction = direction2;
                 axis.Point = basePart.Points.CreatePoint(axisPoint);
                 builder.BaseDiameter.RightHandSide = baseDiameter.ToString();
@@ -88,9 +88,9 @@ namespace TSG_Library.Extensions
             double zLength)
         {
             basePart.__AssertIsWorkPart();
-            var wcsOrientation = __display_part_.WCS.__Orientation();
+            Matrix3x3 wcsOrientation = __display_part_.WCS.__Orientation();
             __display_part_.WCS.__Orientation(matrix);
-            var builder = __work_part_.Features.CreateBlockFeatureBuilder(null);
+            BlockFeatureBuilder builder = __work_part_.Features.CreateBlockFeatureBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(builder))
             {
@@ -116,9 +116,9 @@ namespace TSG_Library.Extensions
         public static Arc __CreateCircle(this BasePart basePart, Point3d center,
             Vector3d axisZ, double radius)
         {
-            var orientation = axisZ.__ToMatrix3x3();
-            var axisX = orientation.__AxisX();
-            var axisY = orientation.__AxisY();
+            Matrix3x3 orientation = axisZ.__ToMatrix3x3();
+            Vector3d axisX = orientation.__AxisX();
+            Vector3d axisY = orientation.__AxisY();
             return basePart.__CreateArc(center, axisX, axisY, radius, 0.0, 360.0);
         }
 
@@ -132,20 +132,20 @@ namespace TSG_Library.Extensions
             Point3d p3)
         {
             basePart.__AssertIsWorkPart();
-            var vector = p2.__Subtract(p1);
-            var vector2 = p3.__Subtract(p1);
-            var num = vector.__Multiply(vector);
-            var num2 = vector.__Multiply(vector2);
-            var num3 = vector2.__Multiply(vector2);
-            var num4 = num * num3 - num2 * num2;
-            var num5 = (num * num3 - num2 * num3) / (2.0 * num4);
-            var num6 = (num * num3 - num * num2) / (2.0 * num4);
-            var vector3 = vector.__Multiply(num5).__Add(vector2.__Multiply(num6));
-            var center = vector3.__Add(p1);
-            var radius = vector3.__Norm();
-            var orientation = vector.__Cross(vector2).__ToMatrix3x3();
-            var axisX = orientation.__AxisX();
-            var axisY = orientation.__AxisY();
+            Vector3d vector = p2.__Subtract(p1);
+            Vector3d vector2 = p3.__Subtract(p1);
+            double num = vector.__Multiply(vector);
+            double num2 = vector.__Multiply(vector2);
+            double num3 = vector2.__Multiply(vector2);
+            double num4 = num * num3 - num2 * num2;
+            double num5 = (num * num3 - num2 * num3) / (2.0 * num4);
+            double num6 = (num * num3 - num * num2) / (2.0 * num4);
+            Vector3d vector3 = vector.__Multiply(num5).__Add(vector2.__Multiply(num6));
+            Point3d center = vector3.__Add(p1);
+            double radius = vector3.__Norm();
+            Matrix3x3 orientation = vector.__Cross(vector2).__ToMatrix3x3();
+            Vector3d axisX = orientation.__AxisX();
+            Vector3d axisY = orientation.__AxisY();
             return basePart.__CreateArc(center, axisX, axisY, radius, 0.0, 360.0);
         }
 
@@ -158,10 +158,10 @@ namespace TSG_Library.Extensions
             Point3d origin, NXMatrix matrix)
         {
             basePart.__AssertIsWorkPart();
-            var array = origin.__ToArray();
-            ufsession_.Csys.CreateCsys(array, matrix.Tag, out var csys_id);
-            var objectFromTag = (NXObject)session_.__GetTaggedObject(csys_id);
-            var coordinateSystem = (CoordinateSystem)objectFromTag;
+            double[] array = origin.__ToArray();
+            ufsession_.Csys.CreateCsys(array, matrix.Tag, out Tag csys_id);
+            NXObject objectFromTag = (NXObject)session_.__GetTaggedObject(csys_id);
+            CoordinateSystem coordinateSystem = (CoordinateSystem)objectFromTag;
             return coordinateSystem;
         }
 
@@ -183,12 +183,12 @@ namespace TSG_Library.Extensions
             Vector3d axisZ)
         {
             basePart.__AssertIsWorkPart();
-            var array = origin.__ToArray();
-            var matrix = __work_part_.NXMatrices.Create(axisX.__ToMatrix3x3(axisY, axisZ));
-            var nXOpenTag = matrix.Tag;
-            ufsession_.Csys.CreateCsys(array, nXOpenTag, out var csys_id);
-            var objectFromTag = (NXObject)session_.__GetTaggedObject(csys_id);
-            var coordinateSystem = (CoordinateSystem)objectFromTag;
+            double[] array = origin.__ToArray();
+            NXMatrix matrix = __work_part_.NXMatrices.Create(axisX.__ToMatrix3x3(axisY, axisZ));
+            Tag nXOpenTag = matrix.Tag;
+            ufsession_.Csys.CreateCsys(array, nXOpenTag, out Tag csys_id);
+            NXObject objectFromTag = (NXObject)session_.__GetTaggedObject(csys_id);
+            CoordinateSystem coordinateSystem = (CoordinateSystem)objectFromTag;
             return coordinateSystem;
         }
 
@@ -196,7 +196,7 @@ namespace TSG_Library.Extensions
             this Point3d point,
             Surface.Plane plane)
         {
-            var transform = Transform.CreateReflection(plane);
+            Transform transform = Transform.CreateReflection(plane);
             return point.__Copy(transform);
         }
 
@@ -226,13 +226,13 @@ namespace TSG_Library.Extensions
         //     To create a transformation, use the functions in the Snap.Geom.Transform class.
         public static Point3d __Copy(this Point3d point, Transform xform)
         {
-            var matrix = xform.Matrix;
-            var x = point.X;
-            var y = point.Y;
-            var z = point.Z;
-            var x2 = x * matrix[0] + y * matrix[1] + z * matrix[2] + matrix[3];
-            var y2 = x * matrix[4] + y * matrix[5] + z * matrix[6] + matrix[7];
-            var z2 = x * matrix[8] + y * matrix[9] + z * matrix[10] + matrix[11];
+            double[] matrix = xform.Matrix;
+            double x = point.X;
+            double y = point.Y;
+            double z = point.Z;
+            double x2 = x * matrix[0] + y * matrix[1] + z * matrix[2] + matrix[3];
+            double y2 = x * matrix[4] + y * matrix[5] + z * matrix[6] + matrix[7];
+            double z2 = x * matrix[8] + y * matrix[9] + z * matrix[10] + matrix[11];
             return new Point3d(x2, y2, z2);
         }
 
@@ -275,7 +275,7 @@ namespace TSG_Library.Extensions
         {
             __display_part_.WCS.SetOriginAndMatrix(fromComponent.__Origin(), fromComponent.__Orientation());
 
-            var newStart = __MapWcsToAcs(position);
+            Point3d newStart = __MapWcsToAcs(position);
 
             __display_part_.WCS.SetOriginAndMatrix(toComponent.__Origin(), toComponent.__Orientation());
 
@@ -284,7 +284,7 @@ namespace TSG_Library.Extensions
 
         public static int __ToHashCode(this Point3d p)
         {
-            var hash = 17;
+            int hash = 17;
 
             hash = hash * 23 + p.X.GetHashCode();
             hash = hash * 23 + p.Y.GetHashCode();
@@ -298,35 +298,35 @@ namespace TSG_Library.Extensions
             CoordinateSystem inputCsys,
             CoordinateSystem outputCsys)
         {
-            var origin = inputCsys.Origin;
-            var axisX = inputCsys.__Orientation().Element.__AxisX();
-            var axisY = inputCsys.__Orientation().Element.__AxisY();
-            var axisZ = inputCsys.__Orientation().Element.__AxisZ();
-            var _x = axisX.__Multiply(inputCoords.X);
-            var _y = axisY.__Multiply(inputCoords.Y);
-            var _z = axisZ.__Multiply(inputCoords.Z);
-            var position = origin.__Add(_x).__Add(_y).__Add(_z);
-            var vector = position.__Subtract(outputCsys.Origin);
-            var x = vector.__Multiply(outputCsys.__Orientation().Element.__AxisX());
-            var y = vector.__Multiply(outputCsys.__Orientation().Element.__AxisY());
-            var z = vector.__Multiply(outputCsys.__Orientation().Element.__AxisZ());
+            Point3d origin = inputCsys.Origin;
+            Vector3d axisX = inputCsys.__Orientation().Element.__AxisX();
+            Vector3d axisY = inputCsys.__Orientation().Element.__AxisY();
+            Vector3d axisZ = inputCsys.__Orientation().Element.__AxisZ();
+            Vector3d _x = axisX.__Multiply(inputCoords.X);
+            Vector3d _y = axisY.__Multiply(inputCoords.Y);
+            Vector3d _z = axisZ.__Multiply(inputCoords.Z);
+            Point3d position = origin.__Add(_x).__Add(_y).__Add(_z);
+            Vector3d vector = position.__Subtract(outputCsys.Origin);
+            double x = vector.__Multiply(outputCsys.__Orientation().Element.__AxisX());
+            double y = vector.__Multiply(outputCsys.__Orientation().Element.__AxisY());
+            double z = vector.__Multiply(outputCsys.__Orientation().Element.__AxisZ());
             return new Point3d(x, y, z);
         }
 
         public static Point3d __Add(this Point3d point, Vector3d vector)
         {
-            var x = point.X + vector.X;
-            var y = point.Y + vector.Y;
-            var z = point.Z + vector.Z;
+            double x = point.X + vector.X;
+            double y = point.Y + vector.Y;
+            double z = point.Z + vector.Z;
             return new Point3d(x, y, z);
         }
 
 
         public static Vector3d __Subtract(this Point3d start, Point3d end)
         {
-            var x = start.X - end.X;
-            var y = start.Y - end.Y;
-            var z = start.Z - end.Z;
+            double x = start.X - end.X;
+            double y = start.Y - end.Y;
+            double z = start.Z - end.Z;
             return new Vector3d(x, y, z);
         }
 
@@ -348,19 +348,19 @@ namespace TSG_Library.Extensions
             Point3d origin, Vector3d direction)
         {
             basePart.__AssertIsWorkPart();
-            var part = __work_part_;
-            var datumAxisBuilder = part.Features.CreateDatumAxisBuilder(null);
+            Part part = __work_part_;
+            DatumAxisBuilder datumAxisBuilder = part.Features.CreateDatumAxisBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(datumAxisBuilder))
             {
                 datumAxisBuilder.Type = DatumAxisBuilder.Types.PointAndDir;
-                var vector = part.Directions.CreateDirection(origin, direction,
+                Direction vector = part.Directions.CreateDirection(origin, direction,
                     SmartObject.UpdateOption.WithinModeling);
                 datumAxisBuilder.IsAssociative = true;
                 datumAxisBuilder.IsAxisReversed = false;
                 datumAxisBuilder.Vector = vector;
                 datumAxisBuilder.Point = part.Points.CreatePoint(origin);
-                var feature = datumAxisBuilder.CommitFeature();
+                Feature feature = datumAxisBuilder.CommitFeature();
                 return (DatumAxisFeature)feature;
             }
         }
@@ -373,8 +373,8 @@ namespace TSG_Library.Extensions
             Point3d startPoint, Point3d endPoint)
         {
             basePart.__AssertIsWorkPart();
-            var part = __work_part_;
-            var datumAxisBuilder = part.Features.CreateDatumAxisBuilder(null);
+            Part part = __work_part_;
+            DatumAxisBuilder datumAxisBuilder = part.Features.CreateDatumAxisBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(datumAxisBuilder))
             {
@@ -383,7 +383,7 @@ namespace TSG_Library.Extensions
                 datumAxisBuilder.IsAxisReversed = false;
                 datumAxisBuilder.Point1 = part.Points.CreatePoint(startPoint);
                 datumAxisBuilder.Point2 = part.Points.CreatePoint(endPoint);
-                var feature = datumAxisBuilder.CommitFeature();
+                Feature feature = datumAxisBuilder.CommitFeature();
                 return (DatumAxisFeature)feature;
             }
         }
@@ -415,14 +415,14 @@ namespace TSG_Library.Extensions
             Point3d origin, Matrix3x3 matrix)
         {
             basePart.__AssertIsWorkPart();
-            var part = __work_part_;
-            var builder = part.Features.CreateDatumCsysBuilder(null);
+            Part part = __work_part_;
+            DatumCsysBuilder builder = part.Features.CreateDatumCsysBuilder(null);
 
             using (session_.__UsingBuilderDestroyer(builder))
             {
-                var xform = part.Xforms.CreateXform(origin, matrix.__AxisX(), matrix.__AxisY(),
+                Xform xform = part.Xforms.CreateXform(origin, matrix.__AxisX(), matrix.__AxisY(),
                     SmartObject.UpdateOption.WithinModeling, 1.0);
-                var csys =
+                CartesianCoordinateSystem csys =
                     part.CoordinateSystems.CreateCoordinateSystem(xform,
                         SmartObject.UpdateOption.WithinModeling);
                 builder.Csys = csys;
@@ -463,11 +463,11 @@ namespace TSG_Library.Extensions
             Point3d position, Vector3d direction)
         {
             basePart.__AssertIsWorkPart();
-            var part = __work_part_;
-            var datumPlaneBuilder = part.Features.CreateDatumPlaneBuilder(null);
-            var plane = datumPlaneBuilder.GetPlane();
+            Part part = __work_part_;
+            DatumPlaneBuilder datumPlaneBuilder = part.Features.CreateDatumPlaneBuilder(null);
+            Plane plane = datumPlaneBuilder.GetPlane();
             plane.SetMethod(PlaneTypes.MethodType.PointDir);
-            var direction2 = __work_part_.Directions.CreateDirection(position, direction,
+            Direction direction2 = __work_part_.Directions.CreateDirection(position, direction,
                 SmartObject.UpdateOption.WithinModeling);
             plane.SetGeometry(new NXObject[2]
             {
@@ -475,7 +475,7 @@ namespace TSG_Library.Extensions
                 direction2
             });
             plane.Evaluate();
-            var datumPlaneFeature =
+            DatumPlaneFeature datumPlaneFeature =
                 (DatumPlaneFeature)datumPlaneBuilder.CommitFeature();
             datumPlaneBuilder.Destroy();
             return datumPlaneFeature;
@@ -506,12 +506,12 @@ namespace TSG_Library.Extensions
             double width, double height)
         {
             basePart.__AssertIsWorkPart();
-            var vector = new Vector3d(width / 2.0, 0.0, 0.0);
-            var vector2 = new Vector3d(0.0, height / 2.0, 0.0);
-            var position = center.__Add(vector).__Subtract(vector2); // center + vector - vector2;
-            var position2 = center.__Add(vector).__Add(vector2);
-            var position3 = center.__Subtract(vector).__Add(vector2);
-            var position4 = center.__Subtract(vector).__Subtract(vector2);
+            Vector3d vector = new Vector3d(width / 2.0, 0.0, 0.0);
+            Vector3d vector2 = new Vector3d(0.0, height / 2.0, 0.0);
+            Point3d position = center.__Add(vector).__Subtract(vector2); // center + vector - vector2;
+            Point3d position2 = center.__Add(vector).__Add(vector2);
+            Point3d position3 = center.__Subtract(vector).__Add(vector2);
+            Point3d position4 = center.__Subtract(vector).__Subtract(vector2);
             return __work_part_.__PolyLine(position, position2, position3, position4, position);
         }
 
@@ -540,10 +540,10 @@ namespace TSG_Library.Extensions
         /// </remarks>
         public static Line[] __PolyLine(this BasePart basePart, params Point3d[] points)
         {
-            var num = points.Length;
-            var array = new Line[num - 1];
+            int num = points.Length;
+            Line[] array = new Line[num - 1];
 
-            for (var i = 0; i < num - 1; i++)
+            for (int i = 0; i < num - 1; i++)
                 array[i] = __CreateLine(points[i], points[i + 1]);
 
             return array;
@@ -569,9 +569,9 @@ namespace TSG_Library.Extensions
         /// <returns></returns>
         public static Line[] __Polygon(params Point3d[] points)
         {
-            var num = points.Length;
-            var array = new Line[num];
-            for (var i = 0; i < num - 1; i++) array[i] = __CreateLine(points[i], points[i + 1]);
+            int num = points.Length;
+            Line[] array = new Line[num];
+            for (int i = 0; i < num - 1; i++) array[i] = __CreateLine(points[i], points[i + 1]);
 
             array[num - 1] = __CreateLine(points[num - 1], points[0]);
             return array;
@@ -726,9 +726,9 @@ namespace TSG_Library.Extensions
         /// </remarks>
         public static Point3d __MapWcsToAcs(this Point3d workCoords)
         {
-            var input_csys = 3;
-            var output_csys = 1;
-            var numArray = new double[3];
+            int input_csys = 3;
+            int output_csys = 1;
+            double[] numArray = new double[3];
             ufsession_.Csys.MapPoint(input_csys, workCoords.__ToArray(), output_csys, numArray);
             return numArray.__ToPoint3d();
         }
@@ -739,9 +739,9 @@ namespace TSG_Library.Extensions
         /// <returns>The coordinates of the given point wrt the Work Coordinate System (WCS)</returns>
         public static Point3d __MapAcsToWcs(this Point3d absCoords)
         {
-            var output_csys = 3;
-            var input_csys = 1;
-            var numArray = new double[3];
+            int output_csys = 3;
+            int input_csys = 1;
+            double[] numArray = new double[3];
             ufsession_.Csys.MapPoint(input_csys, absCoords.__ToArray(), output_csys, numArray);
             return numArray.__ToPoint3d();
         }
@@ -759,9 +759,9 @@ namespace TSG_Library.Extensions
 
         public static Point3d __MidPoint(this Point3d p, Point3d q)
         {
-            var x = (p.X + q.X) / 2;
-            var y = (p.Y + q.Y) / 2;
-            var z = (p.Z + q.Z) / 2;
+            double x = (p.X + q.X) / 2;
+            double y = (p.Y + q.Y) / 2;
+            double z = (p.Z + q.Z) / 2;
             return new Point3d(x, y, z);
         }
 
@@ -772,14 +772,13 @@ namespace TSG_Library.Extensions
 
         public static Point3d __AddY(this Point3d p, double y)
         {
-            return new Point3d(p.X , p.Y + y, p.Z);
+            return new Point3d(p.X, p.Y + y, p.Z);
         }
 
         public static Point3d __AddZ(this Point3d p, double z)
         {
-            return new Point3d(p.X, p.Y, p.Z+z);
+            return new Point3d(p.X, p.Y, p.Z + z);
         }
-
 
         #endregion
     }

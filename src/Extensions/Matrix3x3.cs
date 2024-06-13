@@ -23,8 +23,8 @@ namespace TSG_Library.Extensions
             CartesianCoordinateSystem outputCsys)
         {
 #pragma warning disable CS0612 // Type or member is obsolete
-            var mappedXVector = __MapCsysToCsys(orientation.__AxisX(), inputCsys, outputCsys);
-            var mappedYVector = __MapCsysToCsys(orientation.__AxisY(), inputCsys, outputCsys);
+            Vector3d mappedXVector = __MapCsysToCsys(orientation.__AxisX(), inputCsys, outputCsys);
+            Vector3d mappedYVector = __MapCsysToCsys(orientation.__AxisY(), inputCsys, outputCsys);
 #pragma warning restore CS0612 // Type or member is obsolete
             return mappedXVector.__ToMatrix3x3(mappedYVector);
         }
@@ -33,9 +33,9 @@ namespace TSG_Library.Extensions
         public static Matrix3x3 __MirrorMap(this Matrix3x3 orientation, Surface.Plane plane,
             Component fromComponent, Component toComponent)
         {
-            var newXVector = __MirrorMap(orientation.__AxisY(), plane, fromComponent, toComponent);
+            Vector3d newXVector = __MirrorMap(orientation.__AxisY(), plane, fromComponent, toComponent);
 
-            var newYVector = __MirrorMap(orientation.__AxisX(), plane, fromComponent, toComponent);
+            Vector3d newYVector = __MirrorMap(orientation.__AxisX(), plane, fromComponent, toComponent);
 
             return newXVector.__ToMatrix3x3(newYVector);
         }
@@ -52,9 +52,9 @@ namespace TSG_Library.Extensions
 
         public static Matrix3x3 __MapAcsToWcs(this Matrix3x3 __ori)
         {
-            var x_vec = __MapAcsToWcs(__ori.__AxisX()).__ToArray();
-            var y_vec = __MapAcsToWcs(__ori.__AxisY()).__ToArray();
-            var z_vec = __MapAcsToWcs(__ori.__AxisZ()).__ToArray();
+            double[] x_vec = __MapAcsToWcs(__ori.__AxisX()).__ToArray();
+            double[] y_vec = __MapAcsToWcs(__ori.__AxisY()).__ToArray();
+            double[] z_vec = __MapAcsToWcs(__ori.__AxisZ()).__ToArray();
             return x_vec.Concat(y_vec).Concat(z_vec).ToArray().__ToMatrix3x3();
         }
 
@@ -76,8 +76,8 @@ namespace TSG_Library.Extensions
 
         public static Matrix3x3 __Mirror(this Matrix3x3 matrix, Surface.Plane plane)
         {
-            var new_y = matrix.__AxisX().__Mirror(plane);
-            var new_x = matrix.__AxisY().__Mirror(plane);
+            Vector3d new_y = matrix.__AxisX().__Mirror(plane);
+            Vector3d new_x = matrix.__AxisY().__Mirror(plane);
             return new_x.__ToMatrix3x3(new_y);
         }
 
@@ -94,7 +94,7 @@ namespace TSG_Library.Extensions
 
         public static Matrix3x3 __Copy(this Matrix3x3 matrix)
         {
-            var mtx_dst = new double[9];
+            double[] mtx_dst = new double[9];
             ufsession_.Mtx3.Copy(matrix.__Array(), mtx_dst);
             return mtx_dst.__ToMatrix3x3();
         }
@@ -111,7 +111,7 @@ namespace TSG_Library.Extensions
 
         public static double __Determinant(this Matrix3x3 matrix)
         {
-            ufsession_.Mtx3.Determinant(matrix.__Array(), out var determinant);
+            ufsession_.Mtx3.Determinant(matrix.__Array(), out double determinant);
             return determinant;
         }
 

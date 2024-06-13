@@ -61,9 +61,9 @@ namespace TSG_Library.UFuncs
             Hide();
 
 
-            var originalInterruptUpdateOnError = session_.Preferences.Modeling.InterruptUpdateOnError;
+            bool originalInterruptUpdateOnError = session_.Preferences.Modeling.InterruptUpdateOnError;
 
-            var originalInterruptUpdateOnWarning = session_.Preferences.Modeling.InterruptUpdateOnWarning;
+            bool originalInterruptUpdateOnWarning = session_.Preferences.Modeling.InterruptUpdateOnWarning;
 
             try
             {
@@ -78,17 +78,17 @@ namespace TSG_Library.UFuncs
                     UpdateSessionParts();
                     UpdateOriginalParts();
 
-                    if(_selectedComponents != null)
-                        if(mirrorPlane != null)
+                    if (_selectedComponents != null)
+                        if (mirrorPlane != null)
                         {
-                            if(checkBoxMirrorCopies.Checked)
+                            if (checkBoxMirrorCopies.Checked)
                                 NewMethod(mirrorDict);
                             else
-                                foreach (var selBody in _selectedComponents)
-                                    if(selBody.OwningComponent != null)
+                                foreach (NXObject selBody in _selectedComponents)
+                                    if (selBody.OwningComponent != null)
                                         MirrorComponents.Add(selBody.OwningComponent);
 
-                            if(MirrorComponents.Count > 0)
+                            if (MirrorComponents.Count > 0)
                             {
                                 _UFSession.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
                                 NewMethod17();
@@ -118,9 +118,9 @@ namespace TSG_Library.UFuncs
                     ex.__PrintException();
                 }
 
-                var keys = mirrorDict.Keys.OfType<Component>().ToArray();
+                Component[] keys = mirrorDict.Keys.OfType<Component>().ToArray();
 
-                foreach (var t in keys)
+                foreach (Component t in keys)
                     Mirror208_3001(_mirrorPlane, t, mirrorDict);
             }
             finally
@@ -162,22 +162,22 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if(!(compName > 0) || !(compName < 991))
+                if (!(compName > 0) || !(compName < 991))
                     return false;
 
-                if((compName > 0) & (compName < 10))
+                if ((compName > 0) & (compName < 10))
                 {
                     _formatCompName = $"00{compName}";
                     return true;
                 }
 
-                if((compName > 9) & (compName < 100))
+                if ((compName > 9) & (compName < 100))
                 {
                     _formatCompName = $"0{compName}";
                     return true;
                 }
 
-                if(!(compName > 100))
+                if (!(compName > 100))
                     return false;
 
                 _formatCompName = compName.ToString();
@@ -196,14 +196,14 @@ namespace TSG_Library.UFuncs
         private static bool CopyComponentToMirror(Component copyComponent,
             IDictionary<TaggedObject, TaggedObject> mirrorDict)
         {
-            if(copyComponent is null)
+            if (copyComponent is null)
                 return false;
 
-            var part = (Part)copyComponent.Prototype;
+            Part part = (Part)copyComponent.Prototype;
 
-            var next = inputCompName;
-            var originalPath = part.FullPath;
-            var copyPath = $"{part.FullPath.Remove(part.FullPath.Length - 7)}{_formatCompName}.prt";
+            double next = inputCompName;
+            string originalPath = part.FullPath;
+            string copyPath = $"{part.FullPath.Remove(part.FullPath.Length - 7)}{_formatCompName}.prt";
 
             while (File.Exists(copyPath))
             {
@@ -213,11 +213,11 @@ namespace TSG_Library.UFuncs
                 inputCompName = next;
             }
 
-            var indexOf = _WorkPart.FullPath.LastIndexOf("\\", StringComparison.Ordinal);
-            var compare1 = _WorkPart.FullPath.Remove(indexOf + 1);
-            var compare2 = copyPath.Remove(indexOf + 1);
+            int indexOf = _WorkPart.FullPath.LastIndexOf("\\", StringComparison.Ordinal);
+            string compare1 = _WorkPart.FullPath.Remove(indexOf + 1);
+            string compare2 = copyPath.Remove(indexOf + 1);
 
-            if(compare1 != compare2)
+            if (compare1 != compare2)
             {
                 TheUi.NXMessageBox.Show("Error", NXMessageBox.DialogType.Error,
                     "The selected component is not from the work part directory. \n                   Save As before making a copy.");
@@ -225,7 +225,7 @@ namespace TSG_Library.UFuncs
                 return false;
             }
 
-            if(!File.Exists(originalPath))
+            if (!File.Exists(originalPath))
             {
                 TheUi.NXMessageBox.Show("Error", NXMessageBox.DialogType.Error,
                     "Save the original file to the assembly before making a copy");
@@ -235,42 +235,42 @@ namespace TSG_Library.UFuncs
 
             File.Copy(originalPath, copyPath);
 
-            var basePart1 = session_.Parts.OpenBase(copyPath, out var partLoadStatus1);
+            BasePart basePart1 = session_.Parts.OpenBase(copyPath, out PartLoadStatus partLoadStatus1);
             partLoadStatus1.Dispose();
 
-            var partToAdd = (Part)basePart1;
+            Part partToAdd = (Part)basePart1;
 
-            copyComponent.GetPosition(out var origin, out var orientation);
+            copyComponent.GetPosition(out Point3d origin, out Matrix3x3 orientation);
 
-            var layer = copyComponent.Layer;
+            int layer = copyComponent.Layer;
 
-            var compToAdd = _WorkPart.ComponentAssembly.AddComponent(partToAdd, "BODY", _formatCompName, origin,
+            Component compToAdd = _WorkPart.ComponentAssembly.AddComponent(partToAdd, "BODY", _formatCompName, origin,
                 orientation, layer,
-                out var partLoadStatus2);
+                out PartLoadStatus partLoadStatus2);
 
             partLoadStatus2.Dispose();
 
             mirrorDict.Add(copyComponent, compToAdd);
 
-            var oFeatures = copyComponent.__Prototype().Features.ToArray();
+            Feature[] oFeatures = copyComponent.__Prototype().Features.ToArray();
 
-            var nFeatures = compToAdd.__Prototype().Features.ToArray();
+            Feature[] nFeatures = compToAdd.__Prototype().Features.ToArray();
 
-            for (var i = 0; i < oFeatures.Length; i++)
+            for (int i = 0; i < oFeatures.Length; i++)
                 mirrorDict.Add(oFeatures[i], nFeatures[i]);
 
-            var cycleRefSet = NXOpen.Tag.Null;
+            Tag cycleRefSet = NXOpen.Tag.Null;
 
             do
             {
                 _UFSession.Obj.CycleObjsInPart(_WorkPart.Tag, UF_reference_set_type, ref cycleRefSet);
 
-                if(cycleRefSet == NXOpen.Tag.Null)
+                if (cycleRefSet == NXOpen.Tag.Null)
                     break;
 
-                _UFSession.Obj.AskName(cycleRefSet, out var name);
+                _UFSession.Obj.AskName(cycleRefSet, out string name);
 
-                if(name != "BODY")
+                if (name != "BODY")
                     continue;
 
                 Tag[] refSetMembers = { compToAdd.Tag };
@@ -278,7 +278,8 @@ namespace TSG_Library.UFuncs
                 _UFSession.Assem.AddRefSetMembers(cycleRefSet, refSetMembers.Length, refSetMembers);
 
                 _UFSession.Assem.ReplaceRefset(refSetMembers.Length, refSetMembers, "BODY");
-            } while (cycleRefSet != NXOpen.Tag.Null);
+            }
+            while (cycleRefSet != NXOpen.Tag.Null);
 
             MirrorComponents.Add(compToAdd);
 
@@ -321,7 +322,7 @@ namespace TSG_Library.UFuncs
 
             UpdateSessionParts();
 
-            if(!_WorkPart.__HasDynamicBlock())
+            if (!_WorkPart.__HasDynamicBlock())
             {
                 NewMethod28();
                 return;
@@ -332,20 +333,20 @@ namespace TSG_Library.UFuncs
             double[] planeOrigin = { mirrorPlane.Origin.X, mirrorPlane.Origin.Y, mirrorPlane.Origin.Z };
             double[] planeNormal = { mirrorPlane.Normal.X, mirrorPlane.Normal.Y, mirrorPlane.Normal.Z };
 
-            _UFSession.Modl.CreatePlane(planeOrigin, planeNormal, out var selectedPlane);
+            _UFSession.Modl.CreatePlane(planeOrigin, planeNormal, out Tag selectedPlane);
 
-            if(mirrorPlane != null)
+            if (mirrorPlane != null)
                 // ReSharper disable once RedundantAssignment
                 _ = NewMethod27(selectedPlane);
         }
 
         private void NewMethod17()
         {
-            foreach (var mirrorComp in MirrorComponents)
+            foreach (Component mirrorComp in MirrorComponents)
             {
-                var makeWork = (Part)mirrorComp.Prototype;
+                Part makeWork = (Part)mirrorComp.Prototype;
 
-                var wpUnits = makeWork.PartUnits;
+                BasePart.Units wpUnits = makeWork.PartUnits;
 
                 __display_part_ = _originalDisplayPart;
 
@@ -353,14 +354,14 @@ namespace TSG_Library.UFuncs
 
                 UpdateSessionParts();
 
-                if(__display_part_.PartUnits != wpUnits)
+                if (__display_part_.PartUnits != wpUnits)
                     continue;
 
                 _WorkPart = makeWork;
 
                 UpdateSessionParts();
 
-                if(!mirrorComp.__Origin().__IsEqualTo(_Point3dOrigin))
+                if (!mirrorComp.__Origin().__IsEqualTo(_Point3dOrigin))
                 {
                     NewMethod26(mirrorComp);
                     continue;
@@ -370,7 +371,7 @@ namespace TSG_Library.UFuncs
 
                 UpdateSessionParts();
 
-                var isBlockComp = _WorkPart.__HasDynamicBlock();
+                bool isBlockComp = _WorkPart.__HasDynamicBlock();
 
                 NewMethod25(mirrorComp, isBlockComp);
             }
@@ -381,22 +382,23 @@ namespace TSG_Library.UFuncs
             _UFSession.Modl.SetUpdateFailOption(UFModl.UpdateOption.UpdateAcceptAll);
             double[] planeOrigin = { mirrorPlane.Origin.X, mirrorPlane.Origin.Y, mirrorPlane.Origin.Z };
             double[] planeNormal = { mirrorPlane.Normal.X, mirrorPlane.Normal.Y, mirrorPlane.Normal.Z };
-            _UFSession.Modl.CreatePlane(planeOrigin, planeNormal, out var selectedPlane);
+            _UFSession.Modl.CreatePlane(planeOrigin, planeNormal, out Tag selectedPlane);
             // ReSharper disable once RedundantAssignment
             _ = NewMethod12(selectedPlane);
         }
 
         private Tag NewMethod27(Tag selectedPlane)
         {
-            var mirrorMatrix = new double[12];
+            double[] mirrorMatrix = new double[12];
 
             // ReSharper disable once UnusedVariable
             _UFSession.Trns.CreateReflectionMatrix(ref selectedPlane, mirrorMatrix, out _);
 
-            var csysToMirror = __display_part_.CoordinateSystems.CreateCoordinateSystem(__display_part_.WCS.Origin,
+            CartesianCoordinateSystem csysToMirror = __display_part_.CoordinateSystems.CreateCoordinateSystem(
+                __display_part_.WCS.Origin,
                 __display_part_.WCS.CoordinateSystem.Orientation.Element, true);
 
-            var mirrorMove = new List<Tag>
+            List<Tag> mirrorMove = new List<Tag>
             {
                 csysToMirror.Tag
             };
@@ -427,7 +429,8 @@ namespace TSG_Library.UFuncs
 
             mirrorMove.Clear();
 
-            NewMethod33(out var fasteners, out var fastenerOrigins, out var fastenerMatrix);
+            NewMethod33(out List<Component> fasteners, out List<Point3d> fastenerOrigins,
+                out List<Matrix3x3> fastenerMatrix);
 
             NewMethod10(mirrorMatrix, mirrorMove, fasteners, fastenerOrigins, fastenerMatrix);
 
@@ -436,7 +439,7 @@ namespace TSG_Library.UFuncs
 
         private void NewMethod26(Component mirrorComp)
         {
-            var waveMirrorFeature = WaveLinkDatumPlane(mirrorPlane);
+            Feature waveMirrorFeature = WaveLinkDatumPlane(mirrorPlane);
 
             _UFSession.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
 
@@ -446,9 +449,9 @@ namespace TSG_Library.UFuncs
 
             UpdateSessionParts();
 
-            var isBlockComp = _WorkPart.__HasDynamicBlock();
+            bool isBlockComp = _WorkPart.__HasDynamicBlock();
 
-            if(isBlockComp)
+            if (isBlockComp)
             {
                 SetWcsToWorkPart(mirrorComp);
 
@@ -462,11 +465,11 @@ namespace TSG_Library.UFuncs
 
         private void NewMethod25(Component mirrorComp, bool isBlockComp)
         {
-            var planeOrigin = mirrorPlane.Origin.__Array();
-            var planeNormal = mirrorPlane.Normal.__ToArray();
+            double[] planeOrigin = mirrorPlane.Origin.__Array();
+            double[] planeNormal = mirrorPlane.Normal.__ToArray();
             Tag selectedPlane;
 
-            if(isBlockComp)
+            if (isBlockComp)
             {
                 SetWcsToWorkPart(mirrorComp);
                 _UFSession.Modl.CreatePlane(planeOrigin, planeNormal, out selectedPlane);
@@ -477,21 +480,22 @@ namespace TSG_Library.UFuncs
             _UFSession.Modl.SetUpdateFailOption(UFModl.UpdateOption.UpdateAcceptAll);
             _UFSession.Modl.CreatePlane(planeOrigin, planeNormal, out selectedPlane);
 
-            if(mirrorPlane != null)
+            if (mirrorPlane != null)
                 NewMethod23(selectedPlane);
         }
 
         private Tag NewMethod23(Tag selectedPlane)
         {
-            var mirrorMatrix = new double[12];
-            _UFSession.Trns.CreateReflectionMatrix(ref selectedPlane, mirrorMatrix, out var _);
+            double[] mirrorMatrix = new double[12];
+            _UFSession.Trns.CreateReflectionMatrix(ref selectedPlane, mirrorMatrix, out int _);
             session_.__DeleteObjects(selectedPlane);
             _UFSession.Modl.Update();
-            var mirrorMove = NewMethod11();
+            List<Tag> mirrorMove = NewMethod11();
             TransformObjects(mirrorMove, mirrorMatrix);
             _UFSession.Modl.Update();
             mirrorMove.Clear();
-            NewMethod33(out var fasteners, out var fastenerOrigins, out var fastenerMatrix);
+            NewMethod33(out List<Component> fasteners, out List<Point3d> fastenerOrigins,
+                out List<Matrix3x3> fastenerMatrix);
             NewMethod10(mirrorMatrix, mirrorMove, fasteners, fastenerOrigins, fastenerMatrix);
             mirrorMove.Clear();
             return selectedPlane;
@@ -499,44 +503,46 @@ namespace TSG_Library.UFuncs
 
         private void NewMethod15(Feature waveMirrorFeature)
         {
-            if(waveMirrorFeature is null)
+            if (waveMirrorFeature is null)
                 return;
 
             _UFSession.Modl.SetUpdateFailOption(UFModl.UpdateOption.UpdateAcceptAll);
-            _UFSession.Modl.AskFeatObject(waveMirrorFeature.Tag, out _, out var featObjects);
-            var waveMirrorPlane = (DatumPlane)NXObjectManager.Get(featObjects[0]);
+            _UFSession.Modl.AskFeatObject(waveMirrorFeature.Tag, out _, out Tag[] featObjects);
+            DatumPlane waveMirrorPlane = (DatumPlane)NXObjectManager.Get(featObjects[0]);
             double[] planeOrigin = { waveMirrorPlane.Origin.X, waveMirrorPlane.Origin.Y, waveMirrorPlane.Origin.Z };
             double[] planeNormal = { waveMirrorPlane.Normal.X, waveMirrorPlane.Normal.Y, waveMirrorPlane.Normal.Z };
-            _UFSession.Modl.CreatePlane(planeOrigin, planeNormal, out var selectedPlane);
-            var mirrorMatrix = new double[12];
+            _UFSession.Modl.CreatePlane(planeOrigin, planeNormal, out Tag selectedPlane);
+            double[] mirrorMatrix = new double[12];
             _UFSession.Trns.CreateReflectionMatrix(ref selectedPlane, mirrorMatrix, out _);
             session_.__DeleteObjects(waveMirrorPlane.Tag, waveMirrorFeature.Tag, selectedPlane);
             _UFSession.Modl.Update();
-            var mirrorMove = new List<Tag>(GetCurves());
+            List<Tag> mirrorMove = new List<Tag>(GetCurves());
             NewMethod29(featObjects, mirrorMove);
             TransformObjects(mirrorMove, mirrorMatrix);
             _UFSession.Modl.Update();
             mirrorMove.Clear();
-            NewMethod33(out var fasteners, out var fastenerOrigins, out var fastenerMatrix);
+            NewMethod33(out List<Component> fasteners, out List<Point3d> fastenerOrigins,
+                out List<Matrix3x3> fastenerMatrix);
             NewMethod10(mirrorMatrix, mirrorMove, fasteners, fastenerOrigins, fastenerMatrix);
             mirrorMove.Clear();
         }
 
         private void NewMethod14(Feature waveMirrorFeature)
         {
-            if(waveMirrorFeature is null)
+            if (waveMirrorFeature is null)
                 return;
 
-            _UFSession.Modl.AskFeatObject(waveMirrorFeature.Tag, out var _, out var featObjects);
-            var waveMirrorPlane = (DatumPlane)NXObjectManager.Get(featObjects[0]);
+            _UFSession.Modl.AskFeatObject(waveMirrorFeature.Tag, out int _, out Tag[] featObjects);
+            DatumPlane waveMirrorPlane = (DatumPlane)NXObjectManager.Get(featObjects[0]);
             double[] planeOrigin = { waveMirrorPlane.Origin.X, waveMirrorPlane.Origin.Y, waveMirrorPlane.Origin.Z };
             double[] planeNormal = { waveMirrorPlane.Normal.X, waveMirrorPlane.Normal.Y, waveMirrorPlane.Normal.Z };
-            _UFSession.Modl.CreatePlane(planeOrigin, planeNormal, out var selectedPlane);
-            var mirrorMatrix = new double[12];
-            _UFSession.Trns.CreateReflectionMatrix(ref selectedPlane, mirrorMatrix, out var _);
-            var csysToMirror = __display_part_.CoordinateSystems.CreateCoordinateSystem(__display_part_.WCS.Origin,
+            _UFSession.Modl.CreatePlane(planeOrigin, planeNormal, out Tag selectedPlane);
+            double[] mirrorMatrix = new double[12];
+            _UFSession.Trns.CreateReflectionMatrix(ref selectedPlane, mirrorMatrix, out int _);
+            CartesianCoordinateSystem csysToMirror = __display_part_.CoordinateSystems.CreateCoordinateSystem(
+                __display_part_.WCS.Origin,
                 __display_part_.WCS.CoordinateSystem.Orientation.Element, true);
-            var mirrorMove = new List<Tag>
+            List<Tag> mirrorMove = new List<Tag>
             {
                 csysToMirror.Tag
             };
@@ -553,7 +559,8 @@ namespace TSG_Library.UFuncs
             NewMethod30(featObjects, mirrorMove);
             TransformObjects(mirrorMove, mirrorMatrix);
             mirrorMove.Clear();
-            NewMethod33(out var fasteners, out var fastenerOrigins, out var fastenerMatrix);
+            NewMethod33(out List<Component> fasteners, out List<Point3d> fastenerOrigins,
+                out List<Matrix3x3> fastenerMatrix);
             NewMethod10(mirrorMatrix, mirrorMove, fasteners, fastenerOrigins, fastenerMatrix);
         }
 
@@ -561,33 +568,34 @@ namespace TSG_Library.UFuncs
         {
             foreach (Feature mirrorFeat in _WorkPart.Features)
             {
-                if(mirrorFeat.FeatureType != "ABSOLUTE_DATUM_PLANE")
+                if (mirrorFeat.FeatureType != "ABSOLUTE_DATUM_PLANE")
                     continue;
 
-                _UFSession.Modl.AskFeatObject(mirrorFeat.Tag, out var _, out var _);
-                var taggedObject = NXObjectManager.Get(featObjects[0]);
-                var nxOb = (NXObject)taggedObject;
-                var mirrorDatum = (DatumPlane)NXObjectManager.Get(featObjects[0]);
-                if(mirrorDatum.Layer > 0 && mirrorDatum.Layer < 21)
+                _UFSession.Modl.AskFeatObject(mirrorFeat.Tag, out int _, out Tag[] _);
+                TaggedObject taggedObject = NXObjectManager.Get(featObjects[0]);
+                NXObject nxOb = (NXObject)taggedObject;
+                DatumPlane mirrorDatum = (DatumPlane)NXObjectManager.Get(featObjects[0]);
+                if (mirrorDatum.Layer > 0 && mirrorDatum.Layer < 21)
                     mirrorMove.Add(mirrorDatum.Tag);
             }
         }
 
         private Tag NewMethod12(Tag selectedPlane)
         {
-            if(mirrorPlane is null)
+            if (mirrorPlane is null)
                 return selectedPlane;
 
-            var mirrorMatrix = new double[12];
+            double[] mirrorMatrix = new double[12];
             _UFSession.Trns.CreateReflectionMatrix(ref selectedPlane, mirrorMatrix, out _);
             session_.__DeleteObjects(selectedPlane);
             _UFSession.Modl.Update();
-            var mirrorMove = new List<Tag>(GetCurves());
+            List<Tag> mirrorMove = new List<Tag>(GetCurves());
             NewMethod22(mirrorMove);
             TransformObjects(mirrorMove, mirrorMatrix);
             _UFSession.Modl.Update();
             mirrorMove.Clear();
-            NewMethod33(out var fasteners, out var fastenerOrigins, out var fastenerMatrix);
+            NewMethod33(out List<Component> fasteners, out List<Point3d> fastenerOrigins,
+                out List<Matrix3x3> fastenerMatrix);
             NewMethod10(mirrorMatrix, mirrorMove, fasteners, fastenerOrigins, fastenerMatrix);
             mirrorMove.Clear();
             return selectedPlane;
@@ -595,20 +603,21 @@ namespace TSG_Library.UFuncs
 
         private static List<Tag> NewMethod11()
         {
-            var mirrorMove = new List<Tag>(GetCurves());
+            List<Tag> mirrorMove = new List<Tag>(GetCurves());
             NewMethod22(mirrorMove);
             return mirrorMove;
         }
 
         private Tag NewMethod9(Tag selectedPlane)
         {
-            if(mirrorPlane is null)
+            if (mirrorPlane is null)
                 return selectedPlane;
-            var mirrorMatrix = new double[12];
+            double[] mirrorMatrix = new double[12];
             _UFSession.Trns.CreateReflectionMatrix(ref selectedPlane, mirrorMatrix, out _);
-            var csysToMirror = __display_part_.CoordinateSystems.CreateCoordinateSystem(__display_part_.WCS.Origin,
+            CartesianCoordinateSystem csysToMirror = __display_part_.CoordinateSystems.CreateCoordinateSystem(
+                __display_part_.WCS.Origin,
                 __display_part_.WCS.CoordinateSystem.Orientation.Element, true);
-            var mirrorMove = new List<Tag>
+            List<Tag> mirrorMove = new List<Tag>
             {
                 csysToMirror.Tag
             };
@@ -625,7 +634,8 @@ namespace TSG_Library.UFuncs
             NewMethod22(mirrorMove);
             TransformObjects(mirrorMove, mirrorMatrix);
             mirrorMove.Clear();
-            NewMethod33(out var fasteners, out var fastenerOrigins, out var fastenerMatrix);
+            NewMethod33(out List<Component> fasteners, out List<Point3d> fastenerOrigins,
+                out List<Matrix3x3> fastenerMatrix);
             NewMethod10(mirrorMatrix, mirrorMove, fasteners, fastenerOrigins, fastenerMatrix);
             return selectedPlane;
         }
@@ -637,7 +647,7 @@ namespace TSG_Library.UFuncs
             List<Point3d> fastenerOrigins,
             List<Matrix3x3> fastenerMatrix)
         {
-            for (var i = 0; i < fasteners.Count; i++)
+            for (int i = 0; i < fasteners.Count; i++)
             {
                 CartesianCoordinateSystem transformCsys;
                 transformCsys = __display_part_.CoordinateSystems.CreateCoordinateSystem(fastenerOrigins[i],
@@ -663,7 +673,7 @@ namespace TSG_Library.UFuncs
                 };
                 double[] moveOrigin =
                     { __display_part_.WCS.Origin.X, __display_part_.WCS.Origin.Y, __display_part_.WCS.Origin.Z };
-                var fastenerInstance = _UFSession.Assem.AskInstOfPartOcc(fasteners[i].Tag);
+                Tag fastenerInstance = _UFSession.Assem.AskInstOfPartOcc(fasteners[i].Tag);
                 _UFSession.Assem.RepositionInstance(fastenerInstance, moveOrigin, moveMatrix);
                 mirrorMove.Clear();
             }
@@ -673,13 +683,13 @@ namespace TSG_Library.UFuncs
         {
             foreach (Feature featDynamic in _WorkPart.Features)
             {
-                if(featDynamic.FeatureType != "BLOCK")
+                if (featDynamic.FeatureType != "BLOCK")
                     continue;
 
-                if(featDynamic.Name != "FEATURE BLOCK")
+                if (featDynamic.Name != "FEATURE BLOCK")
                     continue;
 
-                var builder = _WorkPart.Features.CreateBlockFeatureBuilder(featDynamic);
+                BlockFeatureBuilder builder = _WorkPart.Features.CreateBlockFeatureBuilder(featDynamic);
 
                 using (new Destroyer(builder))
                 {
@@ -695,13 +705,13 @@ namespace TSG_Library.UFuncs
         {
             foreach (Feature featDynamic in _WorkPart.Features)
             {
-                if(featDynamic.FeatureType != "BLOCK")
+                if (featDynamic.FeatureType != "BLOCK")
                     continue;
 
-                if(featDynamic.Name != "DYNAMIC BLOCK")
+                if (featDynamic.Name != "DYNAMIC BLOCK")
                     continue;
 
-                var builder = _WorkPart.Features.CreateBlockFeatureBuilder(featDynamic);
+                BlockFeatureBuilder builder = _WorkPart.Features.CreateBlockFeatureBuilder(featDynamic);
 
                 using (new Destroyer(builder))
                 {
@@ -720,13 +730,13 @@ namespace TSG_Library.UFuncs
         {
             foreach (Feature featDynamic in _WorkPart.Features)
             {
-                if(featDynamic.FeatureType != "BLOCK")
+                if (featDynamic.FeatureType != "BLOCK")
                     continue;
 
-                if(featDynamic.Name != "DYNAMIC BLOCK")
+                if (featDynamic.Name != "DYNAMIC BLOCK")
                     continue;
 
-                var builder = _WorkPart.Features.CreateBlockFeatureBuilder(featDynamic);
+                BlockFeatureBuilder builder = _WorkPart.Features.CreateBlockFeatureBuilder(featDynamic);
 
                 using (new Destroyer(builder))
                 {
@@ -743,15 +753,15 @@ namespace TSG_Library.UFuncs
         {
             foreach (Feature featDynamic in _WorkPart.Features)
             {
-                if(featDynamic.FeatureType != "BLOCK")
+                if (featDynamic.FeatureType != "BLOCK")
                     continue;
 
-                if(featDynamic.Name != "FEATURE BLOCK")
+                if (featDynamic.Name != "FEATURE BLOCK")
                     continue;
 
-                var featureBlock = (Block)featDynamic;
+                Block featureBlock = (Block)featDynamic;
 
-                var blockFeatureBuilder2 = _WorkPart.Features.CreateBlockFeatureBuilder(featureBlock);
+                BlockFeatureBuilder blockFeatureBuilder2 = _WorkPart.Features.CreateBlockFeatureBuilder(featureBlock);
 
                 using (new Destroyer(blockFeatureBuilder2))
                 {
@@ -769,35 +779,35 @@ namespace TSG_Library.UFuncs
             // ReSharper disable once RedundantAssignment
             _ = double.TryParse(textBoxDetNumber.Text, out inputCompName);
 
-            var isCompName = FormatDetailNumber(inputCompName);
+            bool isCompName = FormatDetailNumber(inputCompName);
 
-            if(!isCompName)
+            if (!isCompName)
                 return;
 
-            for (var i = 0; i < _selectedComponents.Length; i++)
+            for (int i = 0; i < _selectedComponents.Length; i++)
             {
                 prompt_($"Mirroring: ({i + 1} of {_selectedComponents.Length})");
 
-                var selBody = _selectedComponents[i];
+                NXObject selBody = _selectedComponents[i];
 
-                if(selBody.OwningComponent != null)
+                if (selBody.OwningComponent != null)
                     CopyComponentToMirror(selBody.OwningComponent, mirrorDict);
             }
         }
 
         private static void NewMethod1(BlockFeatureBuilder blockFeatureBuilder1)
         {
-            var length = blockFeatureBuilder1.Width.RightHandSide;
-            var width = blockFeatureBuilder1.Length.RightHandSide;
-            var height = blockFeatureBuilder1.Height.RightHandSide;
-            var blkOrigin = __display_part_.WCS.Origin;
-            var blkOrientation = __display_part_.WCS.CoordinateSystem.Orientation.Element;
-            var xAxis = blkOrientation.__AxisX();
-            var yAxis = blkOrientation.__AxisY();
-            var blkFeatBuilderPoint = _WorkPart.Points.CreatePoint(blkOrigin);
+            string length = blockFeatureBuilder1.Width.RightHandSide;
+            string width = blockFeatureBuilder1.Length.RightHandSide;
+            string height = blockFeatureBuilder1.Height.RightHandSide;
+            Point3d blkOrigin = __display_part_.WCS.Origin;
+            Matrix3x3 blkOrientation = __display_part_.WCS.CoordinateSystem.Orientation.Element;
+            Vector3d xAxis = blkOrientation.__AxisX();
+            Vector3d yAxis = blkOrientation.__AxisY();
+            Point blkFeatBuilderPoint = _WorkPart.Points.CreatePoint(blkOrigin);
             blkFeatBuilderPoint.SetCoordinates(blkOrigin);
             blockFeatureBuilder1.OriginPoint = blkFeatBuilderPoint;
-            var originPoint1 = blkOrigin;
+            Point3d originPoint1 = blkOrigin;
             blockFeatureBuilder1.SetOriginAndLengths(originPoint1, length, width, height);
             blockFeatureBuilder1.SetOrientation(xAxis, yAxis);
             blockFeatureBuilder1.CommitFeature();
@@ -805,34 +815,35 @@ namespace TSG_Library.UFuncs
 
         private void NewMethod8(double[] mirrorMatrix, List<Tag> mirrorMove, BlockFeatureBuilder blockFeatureBuilder2)
         {
-            blockFeatureBuilder2.GetOrientation(out var xAxis, out var yAxis);
-            var initOrigin = blockFeatureBuilder2.Origin.__Array();
-            var xVector = xAxis.__ToArray();
-            var yVector = yAxis.__ToArray();
-            var initMatrix = new double[9];
+            blockFeatureBuilder2.GetOrientation(out Vector3d xAxis, out Vector3d yAxis);
+            double[] initOrigin = blockFeatureBuilder2.Origin.__Array();
+            double[] xVector = xAxis.__ToArray();
+            double[] yVector = yAxis.__ToArray();
+            double[] initMatrix = new double[9];
             _UFSession.Mtx3.Initialize(xVector, yVector, initMatrix);
-            _UFSession.Csys.CreateMatrix(initMatrix, out var tempMatrix);
-            _UFSession.Csys.CreateTempCsys(initOrigin, tempMatrix, out var tempCsys);
-            var transformCsys1 = (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
+            _UFSession.Csys.CreateMatrix(initMatrix, out Tag tempMatrix);
+            _UFSession.Csys.CreateTempCsys(initOrigin, tempMatrix, out Tag tempCsys);
+            CartesianCoordinateSystem transformCsys1 = (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
             mirrorMove.Add(transformCsys1.Tag);
             TransformObjects(mirrorMove, mirrorMatrix);
             __display_part_.WCS.SetOriginAndMatrix(transformCsys1.Origin, transformCsys1.Orientation.Element);
             __display_part_.WCS.Rotate(WCS.Axis.YAxis, 180);
             __display_part_.WCS.Rotate(WCS.Axis.ZAxis, 90);
-            var origin = __display_part_.WCS.Origin;
-            var orientation = __display_part_.WCS.CoordinateSystem.Orientation.Element;
-            var mirrorCsys1 = __display_part_.CoordinateSystems.CreateCoordinateSystem(origin, orientation, true);
-            var length = blockFeatureBuilder2.Width.RightHandSide;
-            var width = blockFeatureBuilder2.Length.RightHandSide;
-            var height = blockFeatureBuilder2.Height.RightHandSide;
-            var blkOrigin = mirrorCsys1.Origin;
-            var blkOrientation = mirrorCsys1.Orientation.Element;
-            var xAxis1 = blkOrientation.__AxisX();
-            var yAxis1 = blkOrientation.__AxisY();
-            var blkFeatBuilderPoint = _WorkPart.Points.CreatePoint(blkOrigin);
+            Point3d origin = __display_part_.WCS.Origin;
+            Matrix3x3 orientation = __display_part_.WCS.CoordinateSystem.Orientation.Element;
+            CartesianCoordinateSystem mirrorCsys1 =
+                __display_part_.CoordinateSystems.CreateCoordinateSystem(origin, orientation, true);
+            string length = blockFeatureBuilder2.Width.RightHandSide;
+            string width = blockFeatureBuilder2.Length.RightHandSide;
+            string height = blockFeatureBuilder2.Height.RightHandSide;
+            Point3d blkOrigin = mirrorCsys1.Origin;
+            Matrix3x3 blkOrientation = mirrorCsys1.Orientation.Element;
+            Vector3d xAxis1 = blkOrientation.__AxisX();
+            Vector3d yAxis1 = blkOrientation.__AxisY();
+            Point blkFeatBuilderPoint = _WorkPart.Points.CreatePoint(blkOrigin);
             blkFeatBuilderPoint.SetCoordinates(blkOrigin);
             blockFeatureBuilder2.OriginPoint = blkFeatBuilderPoint;
-            var originPoint1 = blkOrigin;
+            Point3d originPoint1 = blkOrigin;
             blockFeatureBuilder2.SetOriginAndLengths(originPoint1, length, width, height);
             blockFeatureBuilder2.SetOrientation(xAxis1, yAxis1);
             blockFeatureBuilder2.CommitFeature();
@@ -840,7 +851,7 @@ namespace TSG_Library.UFuncs
 
         private static Feature WaveLinkDatumPlane(DatumPlane selectedDatum)
         {
-            var builder = _WorkPart.BaseFeatures.CreateWaveLinkBuilder(null);
+            WaveLinkBuilder builder = _WorkPart.BaseFeatures.CreateWaveLinkBuilder(null);
 
             using (new Destroyer(builder))
             {
@@ -858,13 +869,13 @@ namespace TSG_Library.UFuncs
         {
             foreach (Feature mirrorFeat in _WorkPart.Features)
             {
-                if(mirrorFeat.FeatureType != "ABSOLUTE_DATUM_PLANE")
+                if (mirrorFeat.FeatureType != "ABSOLUTE_DATUM_PLANE")
                     continue;
 
-                _UFSession.Modl.AskFeatObject(mirrorFeat.Tag, out var _, out var featObjects);
-                var mirrorDatum = (DatumPlane)NXObjectManager.Get(featObjects[0]);
+                _UFSession.Modl.AskFeatObject(mirrorFeat.Tag, out int _, out Tag[] featObjects);
+                DatumPlane mirrorDatum = (DatumPlane)NXObjectManager.Get(featObjects[0]);
 
-                if(mirrorDatum.Layer > 0 && mirrorDatum.Layer < 21)
+                if (mirrorDatum.Layer > 0 && mirrorDatum.Layer < 21)
                     mirrorMove.Add(mirrorDatum.Tag);
             }
         }
@@ -877,16 +888,16 @@ namespace TSG_Library.UFuncs
             fastenerMatrix = new List<Matrix3x3>();
 
             // Get all fasteners in the mirror component and their locations
-            if(_WorkPart.ComponentAssembly.RootComponent is null)
+            if (_WorkPart.ComponentAssembly.RootComponent is null)
                 return;
 
             // ReSharper disable once LoopCanBeConvertedToQuery
-            foreach (var getChild in _WorkPart.ComponentAssembly.RootComponent.GetChildren())
+            foreach (Component getChild in _WorkPart.ComponentAssembly.RootComponent.GetChildren())
                 fasteners.Add(getChild);
 
-            foreach (var child in fasteners)
+            foreach (Component child in fasteners)
             {
-                child.GetPosition(out var point, out var matrix);
+                child.GetPosition(out Point3d point, out Matrix3x3 matrix);
                 fastenerOrigins.Add(point);
                 fastenerMatrix.Add(matrix);
             }
@@ -895,7 +906,7 @@ namespace TSG_Library.UFuncs
         public static IEnumerable<Tag> GetCurves()
         {
             foreach (Curve curve in _WorkPart.Curves)
-                if(curve.Layer > 0 && curve.Layer < 21)
+                if (curve.Layer > 0 && curve.Layer < 21)
                     yield return curve.Tag;
         }
 
@@ -903,15 +914,15 @@ namespace TSG_Library.UFuncs
             TransformObjects(List<Tag> objs,
                 double[] reflectionMatrix) //, IDictionary<NXOpen.TaggedObject, NXOpen.TaggedObject> mirrorDict)
         {
-            var numOfMoveObj = objs.Count;
+            int numOfMoveObj = objs.Count;
 
-            var move = 1;
+            int move = 1;
 
-            var destinationLayerMove = 0;
+            int destinationLayerMove = 0;
 
-            var traceMove = 2;
+            int traceMove = 2;
 
-            var moved = new Tag[objs.Count];
+            Tag[] moved = new Tag[objs.Count];
 
             _UFSession.Trns.TransformObjects(
                 reflectionMatrix,
@@ -921,17 +932,17 @@ namespace TSG_Library.UFuncs
                 ref destinationLayerMove,
                 ref traceMove,
                 moved,
-                out var _,
-                out var _);
+                out Tag _,
+                out int _);
 
             _UFSession.Modl.Update();
         }
 
         public static void DeleteObjects(params NXObject[] deleteObjects)
         {
-            var markDeleteObjs = session_.SetUndoMark(Session.MarkVisibility.Invisible, "");
+            Session.UndoMarkId markDeleteObjs = session_.SetUndoMark(Session.MarkVisibility.Invisible, "");
 
-            foreach (var delObj in deleteObjects)
+            foreach (NXObject delObj in deleteObjects)
                 session_.UpdateManager.AddToDeleteList(delObj);
 
             session_.UpdateManager.DoUpdate(markDeleteObjs);
@@ -942,27 +953,27 @@ namespace TSG_Library.UFuncs
         {
             foreach (Feature featBlk in _WorkPart.Features)
             {
-                if(featBlk.FeatureType != "BLOCK")
+                if (featBlk.FeatureType != "BLOCK")
                     continue;
 
-                if(featBlk.Name != "DYNAMIC BLOCK")
+                if (featBlk.Name != "DYNAMIC BLOCK")
                     continue;
 
-                var block1 = (Block)featBlk;
-                var blockFeatureBuilderMatch = _WorkPart.Features.CreateBlockFeatureBuilder(block1);
+                Block block1 = (Block)featBlk;
+                BlockFeatureBuilder blockFeatureBuilderMatch = _WorkPart.Features.CreateBlockFeatureBuilder(block1);
 
                 using (new Destroyer(blockFeatureBuilderMatch))
                 {
-                    var bOrigin = blockFeatureBuilderMatch.Origin;
-                    blockFeatureBuilderMatch.GetOrientation(out var xAxis, out var yAxis);
+                    Point3d bOrigin = blockFeatureBuilderMatch.Origin;
+                    blockFeatureBuilderMatch.GetOrientation(out Vector3d xAxis, out Vector3d yAxis);
                     double[] initOrigin = { bOrigin.X, bOrigin.Y, bOrigin.Z };
                     double[] xVector = { xAxis.X, xAxis.Y, xAxis.Z };
                     double[] yVector = { yAxis.X, yAxis.Y, yAxis.Z };
-                    var initMatrix = new double[9];
+                    double[] initMatrix = new double[9];
                     _UFSession.Mtx3.Initialize(xVector, yVector, initMatrix);
-                    _UFSession.Csys.CreateMatrix(initMatrix, out var tempMatrix);
-                    _UFSession.Csys.CreateTempCsys(initOrigin, tempMatrix, out var tempCsys);
-                    var setTempCsys = (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
+                    _UFSession.Csys.CreateMatrix(initMatrix, out Tag tempMatrix);
+                    _UFSession.Csys.CreateTempCsys(initOrigin, tempMatrix, out Tag tempCsys);
+                    CartesianCoordinateSystem setTempCsys = (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
                     __display_part_.WCS.SetOriginAndMatrix(setTempCsys.Origin, setTempCsys.Orientation.Element);
                 }
             }
@@ -970,10 +981,10 @@ namespace TSG_Library.UFuncs
 
         public static DatumPlane SelectMirrorDatumPlane()
         {
-            var mask = new Selection.MaskTriple[1];
+            Selection.MaskTriple[] mask = new Selection.MaskTriple[1];
             mask[0] = new Selection.MaskTriple(UF_datum_plane_type, 0, 0);
 
-            var sel = uisession_.SelectionManager.SelectTaggedObject(
+            Selection.Response sel = uisession_.SelectionManager.SelectTaggedObject(
                 "Select Datum Plane",
                 "Select Datum Plane",
                 Selection.SelectionScope.AnyInAssembly,
@@ -981,10 +992,10 @@ namespace TSG_Library.UFuncs
                 false,
                 false,
                 mask,
-                out var selectedDatum,
-                out var _);
+                out TaggedObject selectedDatum,
+                out Point3d _);
 
-            if(sel == Selection.Response.ObjectSelected || sel == Selection.Response.ObjectSelectedByName)
+            if (sel == Selection.Response.ObjectSelected || sel == Selection.Response.ObjectSelectedByName)
                 return (DatumPlane)selectedDatum;
 
             return null;
@@ -992,10 +1003,10 @@ namespace TSG_Library.UFuncs
 
         public static TaggedObject[] SelectMultipleComponentBodies()
         {
-            var mask = new Selection.MaskTriple[1];
+            Selection.MaskTriple[] mask = new Selection.MaskTriple[1];
             mask[0] = new Selection.MaskTriple(UF_solid_type, UF_solid_body_subtype, 0);
 
-            var sel = uisession_.SelectionManager.SelectTaggedObjects(
+            Selection.Response sel = uisession_.SelectionManager.SelectTaggedObjects(
                 "Select Component",
                 "Select Component",
                 Selection.SelectionScope.AnyInAssembly,
@@ -1003,10 +1014,10 @@ namespace TSG_Library.UFuncs
                 false,
                 false,
                 mask,
-                out var selectedBody);
+                out TaggedObject[] selectedBody);
 
-            if(sel == Selection.Response.Ok || sel == Selection.Response.ObjectSelected ||
-               sel == Selection.Response.ObjectSelectedByName)
+            if (sel == Selection.Response.Ok || sel == Selection.Response.ObjectSelected ||
+                sel == Selection.Response.ObjectSelectedByName)
                 return selectedBody;
 
             return null;
@@ -1016,18 +1027,18 @@ namespace TSG_Library.UFuncs
         {
             foreach (Feature mirrorFeat in _WorkPart.Features)
             {
-                if(mirrorFeat.FeatureType != "ABSOLUTE_DATUM_PLANE")
+                if (mirrorFeat.FeatureType != "ABSOLUTE_DATUM_PLANE")
                     continue;
 
-                _UFSession.Modl.AskFeatObject(mirrorFeat.Tag, out var _, out var _);
+                _UFSession.Modl.AskFeatObject(mirrorFeat.Tag, out int _, out Tag[] _);
 
                 // ReSharper disable once UnusedVariable
                 _ = NXObjectManager.Get(featObjects[0]);
 
                 //Blows up below when datum plane is present in component
-                var mirrorDatum = (DatumPlane)NXObjectManager.Get(featObjects[0]);
+                DatumPlane mirrorDatum = (DatumPlane)NXObjectManager.Get(featObjects[0]);
 
-                if(mirrorDatum.Layer > 0 && mirrorDatum.Layer < 21)
+                if (mirrorDatum.Layer > 0 && mirrorDatum.Layer < 21)
                     mirrorMove.Add(mirrorDatum.Tag);
             }
         }
@@ -1037,7 +1048,7 @@ namespace TSG_Library.UFuncs
             Component originalComp,
             IDictionary<TaggedObject, TaggedObject> dict)
         {
-            var mirroredComp = (Component)dict[originalComp];
+            Component mirroredComp = (Component)dict[originalComp];
 
             try
             {
@@ -1057,28 +1068,28 @@ namespace TSG_Library.UFuncs
 
                 Debugger.Launch();
 
-                var originalPart = originalComp.__Prototype();
+                Part originalPart = originalComp.__Prototype();
 
-                var mirroredPart = mirroredComp.__Prototype();
+                Part mirroredPart = mirroredComp.__Prototype();
 
                 originalComp.__Prototype().Features.SuppressFeatures(originalComp.__Prototype().Features.GetFeatures());
 
                 mirroredComp.__Prototype().Features.SuppressFeatures(mirroredComp.__Prototype().Features.GetFeatures());
 
-                var originalBodies = originalPart.Bodies.ToArray();
+                Body[] originalBodies = originalPart.Bodies.ToArray();
 
-                var mirroredBodies = mirroredPart.Bodies.ToArray();
+                Body[] mirroredBodies = mirroredPart.Bodies.ToArray();
 
-                for (var i = 0; i < originalBodies.Length; i++)
+                for (int i = 0; i < originalBodies.Length; i++)
                     dict.Add(originalBodies[i], mirroredBodies[i]);
 
                 foreach (Feature originalFeature in originalPart.Features)
                     try
                     {
-                        var mirrorOp = featureMirrors.SingleOrDefault(mirror =>
+                        IMirrorFeature mirrorOp = featureMirrors.SingleOrDefault(mirror =>
                             mirror.FeatureType == originalFeature.FeatureType);
 
-                        if(!(mirrorOp is null))
+                        if (!(mirrorOp is null))
                         {
                             mirrorOp.Mirror(originalFeature, dict, plane, originalComp);
 
@@ -1111,17 +1122,17 @@ namespace TSG_Library.UFuncs
                 foreach (Part descendant in __display_part_.__DescendantParts())
                 foreach (Expression exp in descendant.Expressions)
                 {
-                    if(exp.Status != Expression.StatusOption.Broken)
+                    if (exp.Status != Expression.StatusOption.Broken)
                         continue;
 
-                    var otherExpressions = exp.__OwningPart().Expressions.ToArray();
+                    Expression[] otherExpressions = exp.__OwningPart().Expressions.ToArray();
 
-                    foreach (var t in otherExpressions)
+                    foreach (Expression t in otherExpressions)
                     {
-                        if(t.Tag == exp.Tag)
+                        if (t.Tag == exp.Tag)
                             continue;
 
-                        if(exp.Name == t.RightHandSide)
+                        if (exp.Name == t.RightHandSide)
                             descendant.Expressions.Delete(t);
                     }
 
@@ -1138,7 +1149,7 @@ namespace TSG_Library.UFuncs
             {
                 //UnSuppressDisplay();
 
-                var markId1 = session_.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
+                Session.UndoMarkId markId1 = session_.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
 
                 session_.UpdateManager.DoInterpartUpdate(markId1);
 

@@ -54,11 +54,11 @@ namespace TSG_Library.Utilities
         {
             get
             {
-                var dir_leaf = Path.GetFileNameWithoutExtension(dir_job);
+                string dir_leaf = Path.GetFileNameWithoutExtension(dir_job);
 
-                var match = Regex.Match(dir_leaf, "^\\d+ \\((?<company>[a-zA-Z]+)-\\d+\\)$");
+                Match match = Regex.Match(dir_leaf, "^\\d+ \\((?<company>[a-zA-Z]+)-\\d+\\)$");
 
-                if(!match.Success)
+                if (!match.Success)
                     throw new FormatException($"Could not find a company: {dir_job}");
 
                 return match.Groups["company"].Value;
@@ -69,11 +69,11 @@ namespace TSG_Library.Utilities
         {
             get
             {
-                var dir_leaf = Path.GetFileNameWithoutExtension(dir_job);
+                string dir_leaf = Path.GetFileNameWithoutExtension(dir_job);
 
-                var match = Regex.Match(dir_leaf, "^\\d+ \\([a-zA-Z]+-(?<cts>\\d+)\\)$");
+                Match match = Regex.Match(dir_leaf, "^\\d+ \\([a-zA-Z]+-(?<cts>\\d+)\\)$");
 
-                if(!match.Success)
+                if (!match.Success)
                     throw new FormatException($"Could not find a cts number: {dir_job}");
 
                 return match.Groups["cts"].Value;
@@ -84,7 +84,7 @@ namespace TSG_Library.Utilities
 
         public static GFolder create(string __job_folder)
         {
-            var split = __job_folder.Split('\\');
+            string[] split = __job_folder.Split('\\');
 
             string top_dir;
 
@@ -97,38 +97,38 @@ namespace TSG_Library.Utilities
                 throw new IndexOutOfRangeException(__job_folder);
             }
 
-            var leaf = split[2];
+            string leaf = split[2];
 
-            var dir = top_dir;
+            string dir = top_dir;
 
-            if(!dir.ToLower().Contains("\\cts\\"))
+            if (!dir.ToLower().Contains("\\cts\\"))
             {
-                var match0 = Regex.Match(leaf, @"^(?<num_0>\d{2,})");
+                Match match0 = Regex.Match(leaf, @"^(?<num_0>\d{2,})");
 
                 return new GFolder(dir, match0.Groups["num_0"].Value);
             }
 
-            if(int.TryParse(leaf, out _))
+            if (int.TryParse(leaf, out _))
                 return new GFolder(dir, leaf);
 
             {
-                var match = Regex.Match(leaf, @"^(?<cts_number>\d{2,}) \([A-Z]+-[xX]+\)");
+                Match match = Regex.Match(leaf, @"^(?<cts_number>\d{2,}) \([A-Z]+-[xX]+\)");
 
-                if(match.Success)
+                if (match.Success)
                     return new GFolder(dir, match.Groups["cts_number"].Value);
             }
 
             {
-                var match = Regex.Match(leaf, @"^(?<cts_number>\d{2,}) \([A-Za-z]+-(?<customer_number>\d+)\)");
+                Match match = Regex.Match(leaf, @"^(?<cts_number>\d{2,}) \([A-Za-z]+-(?<customer_number>\d+)\)");
 
-                if(match.Success)
+                if (match.Success)
                     return new GFolder(dir, match.Groups["customer_number"].Value);
             }
 
             {
-                var match = Regex.Match(leaf, @"^(?<customer_number>\d{2,})");
+                Match match = Regex.Match(leaf, @"^(?<customer_number>\d{2,})");
 
-                if(match.Success)
+                if (match.Success)
                     return new GFolder(dir, match.Groups["customer_number"].Value);
             }
 

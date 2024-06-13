@@ -13,15 +13,15 @@ namespace TSG_Library.Extensions
             this Line line,
             Surface.Plane plane)
         {
-            var start = line.StartPoint.__Mirror(plane);
-            var end = line.EndPoint.__Mirror(plane);
+            Point3d start = line.StartPoint.__Mirror(plane);
+            Point3d end = line.EndPoint.__Mirror(plane);
             return line.__OwningPart().Curves.CreateLine(start, end);
         }
 
 
         public static Line __Copy(this Line line)
         {
-            if(line.IsOccurrence)
+            if (line.IsOccurrence)
                 throw new ArgumentException($@"Cannot copy {nameof(line)} that is an occurrence.", nameof(line));
 
             return line.__OwningPart().Curves.CreateLine(line.__StartPoint(), line.__EndPoint());

@@ -1,23 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Assemblies;
-using NXOpen.Features;
-using NXOpen.GeometricUtilities;
 using NXOpen.Preferences;
-using NXOpen.UF;
-using NXOpen.UserDefinedObjects;
-using NXOpen.Utilities;
-using NXOpenUI;
 using TSG_Library.Properties;
-using TSG_Library.Utilities;
 using static TSG_Library.Extensions.__Extensions_;
-using static NXOpen.UF.UFConstants;
 using Part = NXOpen.Part;
-using NXOpen.CAE;
-using NXOpen.CAM;
 
 namespace TSG_Library.UFuncs
 {
@@ -50,7 +39,7 @@ namespace TSG_Library.UFuncs
             InitializeComponent();
         }
 
-      
+
         private void LoadGridSizes()
         {
             comboBoxGridBlock.Items.Clear();
@@ -81,7 +70,7 @@ namespace TSG_Library.UFuncs
             foreach (string gridSetting in comboBoxGridBlock.Items)
                 if (gridSetting == Settings.Default.EditBlockFormGridIncrement)
                 {
-                    var gridIndex = comboBoxGridBlock.Items.IndexOf(gridSetting);
+                    int gridIndex = comboBoxGridBlock.Items.IndexOf(gridSetting);
                     comboBoxGridBlock.SelectedIndex = gridIndex;
                     break;
                 }
@@ -102,7 +91,7 @@ namespace TSG_Library.UFuncs
 
                     workPlane1.GridIsNonUniform = false;
 
-                    var gridSize1 = new WorkPlane.GridSize(_gridSpace, 1, 1);
+                    WorkPlane.GridSize gridSize1 = new WorkPlane.GridSize(_gridSpace, 1, 1);
                     workPlane1.SetRectangularUniformGridSize(gridSize1);
 
                     workPlane1.ShowGrid = false;
@@ -150,7 +139,7 @@ namespace TSG_Library.UFuncs
 
                     workPlane1.GridIsNonUniform = false;
 
-                    var gridSize1 = new WorkPlane.GridSize(_gridSpace, 1, 1);
+                    WorkPlane.GridSize gridSize1 = new WorkPlane.GridSize(_gridSpace, 1, 1);
                     workPlane1.SetRectangularUniformGridSize(gridSize1);
 
                     workPlane1.ShowGrid = false;
@@ -186,7 +175,7 @@ namespace TSG_Library.UFuncs
         {
             if (_registered == 0)
             {
-                var editForm = this;
+                EditBlockForm editForm = this;
                 _idWorkPartChanged1 = session_.Parts.AddWorkPartChangedHandler(editForm.WorkPartChanged1);
                 _registered = 1;
             }
@@ -200,16 +189,6 @@ namespace TSG_Library.UFuncs
             LoadGridSizes();
             SetWorkPlaneOn();
         }
-
-
-
-
-
-
-
-
-
-
     }
 }
 // 4839

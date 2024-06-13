@@ -37,7 +37,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
             //{
             //    if 
 
-            if(!part.__HasAttribute("LibraryPath"))
+            if (!part.__HasAttribute("LibraryPath"))
                 return part.__TreeNode().__SetText("Didn't have library path attribute");
 
             throw new NotImplementedException("I still don't quite understand what this check is doing");

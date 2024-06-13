@@ -42,27 +42,27 @@ namespace TSG_Library.UFuncs
         public override void execute()
         {
             // Creates an instance of GFolderWithCtsNumber using the current Displayed Part as it's source.
-            var folder = GFolder.create(__work_part_.FullPath);
+            GFolder folder = GFolder.create(__work_part_.FullPath);
 
-            if(folder is null)
+            if (folder is null)
             {
                 print_("The current work part does not reside within a GFolder.");
                 return;
             }
 
-            var result = MessageBox.Show(@"Are you sure you want to run Clean Job Directory?", @"Alert",
+            DialogResult result = MessageBox.Show(@"Are you sure you want to run Clean Job Directory?", @"Alert",
                 MessageBoxButtons.YesNo);
 
-            if(result == DialogResult.No)
+            if (result == DialogResult.No)
                 return;
 
-            var match = Regex.Match(__display_part_.Leaf, Regex_Detail);
+            Match match = Regex.Match(__display_part_.Leaf, Regex_Detail);
 
-            if(!match.Success || match.Groups[3].Value != "000")
+            if (!match.Success || match.Groups[3].Value != "000")
                 throw new InvalidOperationException(
                     "Clean Job Directory must be ran from a -000 not located in a 900 folderWithCtsNumber.");
 
-            var displayedPartOp = match.Groups[2].Value;
+            string displayedPartOp = match.Groups[2].Value;
 
             switch (displayedPartOp)
             {
@@ -78,28 +78,28 @@ namespace TSG_Library.UFuncs
             // 1. It gets all the part paths that define the currently displayed assembly.
             // 2. It is also checking to make sure that the assembly is fully loaded.
             // Throws exception if assembly is not fully loaded.
-            var partPathsInAssembly = Find(__display_part_.__RootComponent())
+            IEnumerable<string> partPathsInAssembly = Find(__display_part_.__RootComponent())
                 .Select(component => component.Prototype)
                 .OfType<Part>()
                 .Select(part => part.FullPath);
 
             // Creates a hashset of the part paths in the currently displayed assembly.
-            var hashedAssemblyPartPaths = new HashSet<string>(partPathsInAssembly);
+            HashSet<string> hashedAssemblyPartPaths = new HashSet<string>(partPathsInAssembly);
 
             // Gets the directory the Displayed Part resides in.
-            var displayedPartDirectory = Path.GetDirectoryName(__display_part_.FullPath);
-            if(displayedPartDirectory == null) throw new DirectoryNotFoundException($"{__display_part_.FullPath}");
-            var partFilesInDirectory =
+            string displayedPartDirectory = Path.GetDirectoryName(__display_part_.FullPath);
+            if (displayedPartDirectory == null) throw new DirectoryNotFoundException($"{__display_part_.FullPath}");
+            string[] partFilesInDirectory =
                 Directory.GetFiles(displayedPartDirectory, "*.prt", SearchOption.TopDirectoryOnly);
 
             // Represents the part file paths in the displayed part directory that are not in the current assembly.
-            var fileCleanUpSet = new HashSet<string>();
-            foreach (var path in partFilesInDirectory)
+            HashSet<string> fileCleanUpSet = new HashSet<string>();
+            foreach (string path in partFilesInDirectory)
             {
-                var flag = hashedAssemblyPartPaths.Contains(path);
+                bool flag = hashedAssemblyPartPaths.Contains(path);
                 TheUFSession.UF.PrintSyslog(
                     $"Checking if {path} is in displayed assembly. Result: {flag}.{Environment.NewLine}", false);
-                if(flag) continue;
+                if (flag) continue;
                 flag = fileCleanUpSet.Add(path);
                 TheUFSession.UF
                     .PrintSyslog(
@@ -107,7 +107,7 @@ namespace TSG_Library.UFuncs
                         false);
             }
 
-            if(fileCleanUpSet.Count == 0)
+            if (fileCleanUpSet.Count == 0)
             {
                 TheUFSession.UF
                     .PrintSyslog(
@@ -122,13 +122,13 @@ namespace TSG_Library.UFuncs
             const string fileCleanUp = "FileCleanup";
 
 
-            var cleanupDirectory = folder.customer_number.Length == 6
+            string cleanupDirectory = folder.customer_number.Length == 6
                 ? $"{folder.dir_design_information}\\{fileCleanUp}"
                 : $"{folder.dir_job}\\{fileCleanUp}";
 
 
-            var directoryExists = Directory.Exists(cleanupDirectory);
-            if(!directoryExists)
+            bool directoryExists = Directory.Exists(cleanupDirectory);
+            if (!directoryExists)
             {
                 TheUFSession.UF.PrintSyslog($"Directory {cleanupDirectory} does not exist.{Environment.NewLine}",
                     false);
@@ -138,23 +138,23 @@ namespace TSG_Library.UFuncs
                     $"Directory {cleanupDirectory} was successfully created.{Environment.NewLine}", false);
             }
 
-            var startDirectory = $"{TodaysDate}-{displayedPartOp}";
+            string startDirectory = $"{TodaysDate}-{displayedPartOp}";
             string zipPath;
-            for (var i = 0;; i++)
+            for (int i = 0;; i++)
             {
-                var tempPath = $"{cleanupDirectory}\\{startDirectory}-{i}-Cleanup.7z";
-                if(File.Exists(tempPath)) continue;
+                string tempPath = $"{cleanupDirectory}\\{startDirectory}-{i}-Cleanup.7z";
+                if (File.Exists(tempPath)) continue;
                 zipPath = tempPath;
                 break;
             }
 
-            foreach (var path in fileCleanUpSet)
+            foreach (string path in fileCleanUpSet)
                 TheUFSession.UF.PrintSyslog($"File to be zipped: {path}.{Environment.NewLine}", false);
 
             TheUFSession.UF.PrintSyslog($"Creating zip file {zipPath}.{Environment.NewLine}", false);
             Export.SevenZip(zipPath, true, fileCleanUpSet.ToArray());
 
-            foreach (var path in fileCleanUpSet)
+            foreach (string path in fileCleanUpSet)
             {
                 TheUFSession.UF.PrintSyslog($"Deleting file: {path}.{Environment.NewLine}", false);
                 File.Delete(path);
@@ -163,23 +163,23 @@ namespace TSG_Library.UFuncs
 
         private static IEnumerable<Component> Find(Component snapComp)
         {
-            if(snapComp is null)
+            if (snapComp is null)
                 throw new ArgumentNullException(nameof(snapComp));
 
-            var nxComponent = snapComp;
+            Component nxComponent = snapComp;
 
-            if(!(nxComponent.Prototype is Part) && !nxComponent.IsSuppressed)
+            if (!(nxComponent.Prototype is Part) && !nxComponent.IsSuppressed)
                 throw new ArgumentException(
                     $@"Please fully load your assembly. {snapComp.DisplayName}{snapComp.OwningComponent.DisplayName} .",
                     nameof(snapComp));
 
-            if(nxComponent.IsSuppressed)
+            if (nxComponent.IsSuppressed)
                 yield break;
 
             yield return snapComp;
 
-            foreach (var child in snapComp.GetChildren())
-            foreach (var descendant in Find(child))
+            foreach (Component child in snapComp.GetChildren())
+            foreach (Component descendant in Find(child))
                 yield return descendant;
         }
     }

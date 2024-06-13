@@ -28,25 +28,25 @@ namespace TSG_Library.UFuncs
             Vector = vector;
             Polyline = polyline;
 
-            var validFaces = extrudeSp.GetFaces()
+            Face[] validFaces = extrudeSp.GetFaces()
                 .Where(face => face.__IsPlanar())
                 .Where(face =>
                     vector.__IsEqualTo(face.__NormalVector()) || vector.__IsEqualTo(face.__NormalVector().__Negate()))
                 .ToArray();
 
-            var coordSystem = __work_part_.__CreateCsys(vector);
-            var abs = __work_part_.__CreateCsys(__Vector3dZ());
+            CoordinateSystem coordSystem = __work_part_.__CreateCsys(vector);
+            CoordinateSystem abs = __work_part_.__CreateCsys(__Vector3dZ());
 
             TopFace = (Face)validFaces.MaxBy(face1 =>
                 face1.GetEdges().First().__StartPoint().__MapCsysToCsys(abs, coordSystem).Z);
             Face maxFace = null;
-            var maxZ = double.MinValue;
+            double maxZ = double.MinValue;
 
-            foreach (var face1 in validFaces)
+            foreach (Face face1 in validFaces)
             {
-                var other = face1.GetEdges().First().__StartPoint().__MapCsysToCsys(abs, coordSystem).Z;
+                double other = face1.GetEdges().First().__StartPoint().__MapCsysToCsys(abs, coordSystem).Z;
 
-                if(other > maxZ)
+                if (other > maxZ)
                     maxFace = face1;
             }
 

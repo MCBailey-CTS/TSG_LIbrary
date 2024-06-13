@@ -21,13 +21,13 @@ namespace TSG_Library.Ufuncs
         {
             try
             {
-                var displayFlag = displayEvent.UserDefinedObject.GetIntegers();
+                int[] displayFlag = displayEvent.UserDefinedObject.GetIntegers();
 
-                if(displayFlag[0] != 1)
+                if (displayFlag[0] != 1)
                     return 0;
 
-                var myUdoDoubles = displayEvent.UserDefinedObject.GetDoubles();
-                var udoLocation = new Point3d[1];
+                double[] myUdoDoubles = displayEvent.UserDefinedObject.GetDoubles();
+                Point3d[] udoLocation = new Point3d[1];
                 udoLocation[0].X = myUdoDoubles[0];
                 udoLocation[0].Y = myUdoDoubles[1];
                 udoLocation[0].Z = myUdoDoubles[2];
@@ -67,10 +67,10 @@ namespace TSG_Library.Ufuncs
         {
             try
             {
-                if(!(_myUDOClass is null))
+                if (!(_myUDOClass is null))
                     return 0;
 
-                if(alertUser)
+                if (alertUser)
                     UI.GetUI().NXMessageBox
                         .Show("UDO", NXMessageBox.DialogType.Information, "Registering C# UDO Class");
 

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using CTS_Library.Equality;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
@@ -14,12 +12,13 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
     {
         public override SelectionIntentRule.RuleType RuleType { get; } = SelectionIntentRule.RuleType.EdgeBody;
 
-        public override SelectionIntentRule Mirror(SelectionIntentRule originalRule, Feature originalFeature, Surface.Plane plane, Component originalComp, IDictionary<TaggedObject, TaggedObject> dict)
+        public override SelectionIntentRule Mirror(SelectionIntentRule originalRule, Feature originalFeature,
+            Surface.Plane plane, Component originalComp, IDictionary<TaggedObject, TaggedObject> dict)
         {
             Component component = (Component)dict[originalComp];
             Part part = component.__Prototype();
             Feature feature = (Feature)dict[originalFeature];
-            ((EdgeBodyRule)originalRule).GetData(out var body);
+            ((EdgeBodyRule)originalRule).GetData(out Body body);
             ISet<Point3d> set = new HashSet<Point3d>(new EqualityPos());
             Edge[] edges = body.GetEdges();
             foreach (Edge edge in edges)
@@ -49,27 +48,23 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
                 }
             }
 
-            if (body2 == null)
-            {
-                throw new ArgumentException("Could not find a matching body");
-            }
+            if (body2 == null) throw new ArgumentException("Could not find a matching body");
 
             return part.ScRuleFactory.CreateRuleEdgeBody(body2);
         }
     }
 
 
-
     public class EqualityPos : IEqualityComparer<Point3d>
     {
         private const double Tolerance = 0.001;
 
-      
+
         public bool Equals(Point3d x, Point3d y)
         {
-            return Math.Abs(x.X - y.X) < Tolerance 
-                && Math.Abs(x.Y - y.Y) < Tolerance 
-                && Math.Abs(x.Z - y.Z) < Tolerance;
+            return Math.Abs(x.X - y.X) < Tolerance
+                   && Math.Abs(x.Y - y.Y) < Tolerance
+                   && Math.Abs(x.Z - y.Z) < Tolerance;
         }
 
         public int GetHashCode(Point3d obj)
@@ -83,7 +78,5 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
                 return hash;
             }
         }
-
     }
-
 }

@@ -177,30 +177,30 @@ namespace TSG_Library.UFuncs
 
         public void Execute(IDesignCheck[] checkers, params Component[] components_to_check)
         {
-            var unloaded_components = components_to_check.Where(__c => !(__c.Prototype is Part)).ToArray();
+            Component[] unloaded_components = components_to_check.Where(__c => !(__c.Prototype is Part)).ToArray();
 
-            var loaded_parts = components_to_check.Select(__c => __c.Prototype)
+            Part[] loaded_parts = components_to_check.Select(__c => __c.Prototype)
                 .OfType<Part>()
                 .Distinct()
                 .ToArray();
 
-            foreach (var check in checkers)
+            foreach (IDesignCheck check in checkers)
                 try
                 {
-                    var check_node = new TreeNode(check.GetType().Name) { Tag = check };
-                    var passed_node = new TreeNode("Passed");
-                    var failed_node = new TreeNode("Failed");
-                    var ignored_node = new TreeNode("Ignored");
-                    var exceptions_node = new TreeNode("Exceptions");
+                    TreeNode check_node = new TreeNode(check.GetType().Name) { Tag = check };
+                    TreeNode passed_node = new TreeNode("Passed");
+                    TreeNode failed_node = new TreeNode("Failed");
+                    TreeNode ignored_node = new TreeNode("Ignored");
+                    TreeNode exceptions_node = new TreeNode("Exceptions");
                     check_node.Nodes.Add(failed_node);
                     check_node.Nodes.Add(ignored_node);
                     check_node.Nodes.Add(passed_node);
                     check_node.Nodes.Add(exceptions_node);
 
-                    foreach (var part in loaded_parts)
+                    foreach (Part part in loaded_parts)
                         try
                         {
-                            switch (check.PerformCheck(part, out var result_node))
+                            switch (check.PerformCheck(part, out TreeNode result_node))
                             {
                                 case DCResult.pass:
                                     passed_node.Nodes.Add(result_node);
@@ -240,7 +240,7 @@ namespace TSG_Library.UFuncs
         private void DesignCheckForm_Load(object sender, EventArgs e)
         {
             Location = Settings.Default.design_check_window_location;
-            var stopwatch = new Stopwatch();
+            Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             try
             {
@@ -253,7 +253,7 @@ namespace TSG_Library.UFuncs
                     //new CastingChildren(),
                     //new CastingHalfMoons(),
                     //new CBoreDepths(),
-                    new ComponentNames(),
+                    new ComponentNames()
                     //new DescriptionNXAttribute(),
                     //new Dimensions(),
                     //new FolderLocations(),
@@ -343,7 +343,7 @@ namespace TSG_Library.UFuncs
             {
                 print_("double clicked11");
 
-                if(!(e.Node.Tag is Part part))
+                if (!(e.Node.Tag is Part part))
                     return;
 
                 //__display_part_.Acti
@@ -366,9 +366,9 @@ namespace TSG_Library.UFuncs
         {
             public int Compare(object x, object y)
             {
-                var xNode = x as TreeNode;
-                var yNode = y as TreeNode;
-                if(ReferenceEquals(xNode, yNode)) return 0;
+                TreeNode xNode = x as TreeNode;
+                TreeNode yNode = y as TreeNode;
+                if (ReferenceEquals(xNode, yNode)) return 0;
                 return xNode is null
                     ? string.CompareOrdinal(null, yNode.Text)
                     : string.CompareOrdinal(xNode.Text, yNode?.Text);

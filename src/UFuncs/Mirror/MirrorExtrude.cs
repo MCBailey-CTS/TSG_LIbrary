@@ -13,7 +13,8 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
         public override string FeatureType { get; } = "EXTRUDE";
 
 
-        public override void Mirror(Feature originalFeature, IDictionary<TaggedObject, TaggedObject> dict, Surface.Plane plane, Component originalComp)
+        public override void Mirror(Feature originalFeature, IDictionary<TaggedObject, TaggedObject> dict,
+            Surface.Plane plane, Component originalComp)
         {
             Component component = (Component)dict[originalComp];
             Part part = component.__Prototype();
@@ -25,7 +26,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             Vector3d val2;
             using (new Destroyer(extrudeBuilder))
             {
-                val =  MirrorMap(extrudeBuilder.Direction.Origin, plane, originalComp, component);
+                val = MirrorMap(extrudeBuilder.Direction.Origin, plane, originalComp, component);
                 val2 = MirrorMap(extrudeBuilder.Direction.Vector, plane, originalComp, component);
             }
 
@@ -38,7 +39,4 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             }
         }
     }
-
-
-
 }

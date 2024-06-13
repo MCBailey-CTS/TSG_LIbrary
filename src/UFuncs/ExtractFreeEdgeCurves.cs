@@ -16,7 +16,7 @@ namespace TSG_Library.UFuncs
     {
         public override void execute()
         {
-            if(Session.GetSession().Parts.Display is null)
+            if (Session.GetSession().Parts.Display is null)
             {
                 print_("There is no displayed part loaded");
                 return;
@@ -25,19 +25,19 @@ namespace TSG_Library.UFuncs
             session_.SetUndoMark(Session.MarkVisibility.Visible, "ExtractFreeEdgeCurves");
 
             // Allows the user to select sheet bodies.
-            var selectedSheetBodies = Selection.SelectManySheetBodies();
+            Body[] selectedSheetBodies = Selection.SelectManySheetBodies();
 
             // Gets the edges from the selected sheet bodies.
-            var edges = selectedSheetBodies.SelectMany(body => body.GetEdges()).ToArray();
+            Edge[] edges = selectedSheetBodies.SelectMany(body => body.GetEdges()).ToArray();
 
             // Gets the free edges, (the edges that are attached to one face).
-            var freeEdges = edges.Where(edge => edge.GetFaces().Length == 1).ToArray();
+            Edge[] freeEdges = edges.Where(edge => edge.GetFaces().Length == 1).ToArray();
 
             // Gets the curve representation of the {freeEdges}.
-            var freeEdgeCurves = freeEdges.Select(edge => edge.__ToCurve()).ToArray();
+            Curve[] freeEdgeCurves = freeEdges.Select(edge => edge.__ToCurve()).ToArray();
 
             // Sets all the free edge curves to the current work layer.
-            foreach (var curve in freeEdgeCurves)
+            foreach (Curve curve in freeEdgeCurves)
                 curve.__Layer(WorkLayer);
 
             print_($"Created {freeEdgeCurves.Length} curves off of free edges.");

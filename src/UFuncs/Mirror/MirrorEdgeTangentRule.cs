@@ -13,13 +13,14 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
         public override SelectionIntentRule.RuleType RuleType { get; } = SelectionIntentRule.RuleType.EdgeTangent;
 
 
-        public override SelectionIntentRule Mirror(SelectionIntentRule originalRule, Feature originalFeature, Surface.Plane plane, Component originalComp, IDictionary<TaggedObject, TaggedObject> dict)
+        public override SelectionIntentRule Mirror(SelectionIntentRule originalRule, Feature originalFeature,
+            Surface.Plane plane, Component originalComp, IDictionary<TaggedObject, TaggedObject> dict)
         {
-           
             Component component = (Component)dict[originalComp];
             Part part = component.__Prototype();
             Feature feature = (Feature)dict[originalFeature];
-            ((EdgeTangentRule)originalRule).GetData(out var startEdge, out var endEdge, out var isFromStart, out var angleTolerance, out var hasSameConvexity);
+            ((EdgeTangentRule)originalRule).GetData(out Edge startEdge, out Edge endEdge, out bool isFromStart,
+                out double angleTolerance, out bool hasSameConvexity);
             Edge edge = null;
             Edge endEdge2 = null;
             Point3d pos = startEdge.__StartPoint()._MirrorMap(plane, originalComp, component);
@@ -29,12 +30,8 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             {
                 Edge[] edges = body.GetEdges();
                 foreach (Edge edge2 in edges)
-                {
                     if (edge2.__HasEndPoints(pos, pos2))
-                    {
                         edge = edge2;
-                    }
-                }
             }
 
             if (endEdge != null)
@@ -46,25 +43,15 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
                 {
                     Edge[] edges2 = body2.GetEdges();
                     foreach (Edge edge3 in edges2)
-                    {
                         if (edge3.__HasEndPoints(pos, pos2))
-                        {
                             endEdge2 = edge3;
-                        }
-                    }
                 }
             }
 
-            if (edge == null)
-            {
-                throw new ArgumentException("Could not find start edge");
-            }
+            if (edge == null) throw new ArgumentException("Could not find start edge");
 
-            return part.ScRuleFactory.CreateRuleEdgeTangent(edge, endEdge2, isFromStart, angleTolerance, hasSameConvexity);
+            return part.ScRuleFactory.CreateRuleEdgeTangent(edge, endEdge2, isFromStart, angleTolerance,
+                hasSameConvexity);
         }
     }
-
-
-
-
 }

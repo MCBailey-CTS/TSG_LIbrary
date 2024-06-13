@@ -180,10 +180,10 @@
         /// <returns>The index of the largest value in the array</returns>
         public static int MaxIndex(params double[] values)
         {
-            var num = 0;
+            int num = 0;
 
-            for (var i = 1; i < values.Length; i++)
-                if(values[i] > values[num])
+            for (int i = 1; i < values.Length; i++)
+                if (values[i] > values[num])
                     num = i;
 
             return num;
@@ -224,10 +224,10 @@
         //     So, MinIndex(-5, 1, 3) is 0, not 1.
         public static int MinIndex(params double[] values)
         {
-            var num = 0;
+            int num = 0;
 
-            for (var i = 1; i < values.Length; i++)
-                if(values[i] > values[num])
+            for (int i = 1; i < values.Length; i++)
+                if (values[i] > values[num])
                     num = i;
 
             return num;
@@ -279,9 +279,9 @@
         //     The sum of the values in the array
         public static double Sum(params double[] values)
         {
-            var num = 0.0;
+            double num = 0.0;
 
-            foreach (var num2 in values)
+            foreach (double num2 in values)
                 num += num2;
 
             return num;
@@ -289,17 +289,17 @@
 
         public static double RoundToEigth(double value, double tolerance = .001)
         {
-            var roundValue = System.Math.Round(value, 3);
-            var truncateValue = System.Math.Truncate(roundValue);
-            var fractionValue = roundValue - truncateValue;
+            double roundValue = System.Math.Round(value, 3);
+            double truncateValue = System.Math.Truncate(roundValue);
+            double fractionValue = roundValue - truncateValue;
 
-            if(System.Math.Abs(fractionValue) < tolerance)
+            if (System.Math.Abs(fractionValue) < tolerance)
                 return roundValue;
 
-            for (var ii = .125; ii <= 1; ii += .125)
-                if(fractionValue <= ii)
+            for (double ii = .125; ii <= 1; ii += .125)
+                if (fractionValue <= ii)
                 {
-                    var roundedFraction = ii;
+                    double roundedFraction = ii;
                     return truncateValue + roundedFraction;
                 }
 
@@ -366,38 +366,38 @@
         //     The i-th basis function B(i,k) is non-zero only for t[i] < tau < t[i+k]
         private static double[] EvaluateBasisFunction(double[] knots, int i, int k, double tau, int derivs)
         {
-            var num = knots.Length;
-            var array = new double[derivs + 1];
-            var num2 = 1E-07;
-            var num3 = 1E-11;
-            var array2 = new double[25, 25];
+            int num = knots.Length;
+            double[] array = new double[derivs + 1];
+            double num2 = 1E-07;
+            double num3 = 1E-11;
+            double[,] array2 = new double[25, 25];
 
-            if(derivs >= k)
+            if (derivs >= k)
             {
-                for (var j = k; j <= derivs; j++)
+                for (int j = k; j <= derivs; j++)
                     array[k] = 0.0;
 
                 derivs = k - 1;
             }
 
-            var num4 = !(System.Math.Abs(tau - knots[num - 1]) > num3) ? knots[num - 1] - num3 : tau;
+            double num4 = !(System.Math.Abs(tau - knots[num - 1]) > num3) ? knots[num - 1] - num3 : tau;
 
-            for (var l = i; l < i + k; l++)
+            for (int l = i; l < i + k; l++)
                 array2[0, l - i] = knots[l] <= num4 && knots[l + 1] > num4 ? 1.0 : 0.0;
 
-            for (var j = 1; j <= derivs; j++)
-            for (var l = 0; l < k; l++)
+            for (int j = 1; j <= derivs; j++)
+            for (int l = 0; l < k; l++)
                 array2[j, l] = array2[0, l];
 
-            for (var l = 2; l <= k; l++)
-            for (var j = 0; j <= derivs; j++)
+            for (int l = 2; l <= k; l++)
+            for (int j = 0; j <= derivs; j++)
             {
-                var num5 = knots[i + l - 1] - knots[i];
-                var num6 = !(System.Math.Abs(num5) <= num2) ? array2[j, 0] / num5 : 0.0;
-                for (var m = 0; m <= k - l; m++)
+                double num5 = knots[i + l - 1] - knots[i];
+                double num6 = !(System.Math.Abs(num5) <= num2) ? array2[j, 0] / num5 : 0.0;
+                for (int m = 0; m <= k - l; m++)
                 {
                     num5 = knots[i + m + l] - knots[i + m + 1];
-                    var num7 = !(System.Math.Abs(num5) <= num2) ? array2[j, m + 1] / num5 : 0.0;
+                    double num7 = !(System.Math.Abs(num5) <= num2) ? array2[j, m + 1] / num5 : 0.0;
 
                     array2[j, m] = l < k - j + 1
                         ? num6 * (tau - knots[i + m]) + num7 * (knots[i + m + l] - tau)
@@ -407,7 +407,7 @@
                 }
             }
 
-            for (var j = 0; j <= derivs; j++)
+            for (int j = 0; j <= derivs; j++)
                 array[j] = array2[j, 0];
 
             return array;

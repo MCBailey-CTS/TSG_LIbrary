@@ -26,23 +26,23 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
         {
             // Just make sure that at least {Corners} or {MidPoints} is set to true.
             // Throw exception if not.
-            if(!drainHoleSettings.Corners && !drainHoleSettings.MidPoints)
+            if (!drainHoleSettings.Corners && !drainHoleSettings.MidPoints)
                 throw new InvalidOperationException(
                     $"Neither {nameof(drainHoleSettings.Corners)} nor {nameof(drainHoleSettings.MidPoints)} are set to true.");
 
-            var selectedFace = (Face)result.Objects[0];
+            Face selectedFace = (Face)result.Objects[0];
 
             // Computes the intersection position between the {selectedFace} and the {cursorRay}.
-            var distanceResult = Compute.ClosestPoints(result.CursorRay, selectedFace);
+            Compute.DistanceResult distanceResult = Compute.ClosestPoints(result.CursorRay, selectedFace);
 
             // Gets the intersection position.
-            var selectedPosition = distanceResult.Point1;
+            Point3d selectedPosition = distanceResult.Point1;
 
             // Gets the edges from the {selectedFace}.
-            var selectedFaceEdges = selectedFace.GetEdges();
+            Edge[] selectedFaceEdges = selectedFace.GetEdges();
 
             // Linear edges.
-            var linearEdges = selectedFaceEdges.Where(edge => edge.SolidEdgeType == Edge.EdgeType.Linear).ToArray();
+            Edge[] linearEdges = selectedFaceEdges.Where(edge => edge.SolidEdgeType == Edge.EdgeType.Linear).ToArray();
 
             //NXOpen.Point3d minimumCornerPosition = MinBy(linearEdges
             //    .SelectMany(edge => new[] { edge._StartPoint(), edge._EndPoint() })
@@ -76,18 +76,18 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
         public Extrude CreateExtrusionCore(Result result, Curve[] curves, IDrainHoleSettings drainHoleSettings)
         {
             // For the drain creator, we are expecting there to only be one curve in {curves}.
-            if(curves.Length != 1)
+            if (curves.Length != 1)
                 throw new ArgumentOutOfRangeException(nameof(curves));
 
             // For the drain creator we are expecting the one curve to be a conic.
-            if(!(curves[0] is Conic conic))
+            if (!(curves[0] is Conic conic))
                 throw new ArgumentException(@"The given curve was not a conic.", nameof(curves));
 
             // Gets the single face that we are expecting from the {result}.
-            var faceFromResult = (Face)result.Objects[0];
+            Face faceFromResult = (Face)result.Objects[0];
 
             // Gets the owning part of the {faceFromResult}.
-            var owningPart = faceFromResult.__OwningPart();
+            Part owningPart = faceFromResult.__OwningPart();
 
             // Creates the extrusion.
             //return owningPart._CreateExtrusionFromClosedConic(conic, drainHoleSettings.ExtrusionStartLimit, drainHoleSettings.ExtrusionEndLimit);
@@ -98,10 +98,10 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
             IDrainHoleSettings drainHoleSettings)
         {
             // Gets the single face that we are expecting from the {result}.
-            var faceFromResult = (Face)result.Objects[0];
+            Face faceFromResult = (Face)result.Objects[0];
 
             // Gets the body that defines the {faceFromResult}.
-            var castingBody = faceFromResult.GetBody();
+            Body castingBody = faceFromResult.GetBody();
 
             // Gets the bodies that make up the {extrusionCore}.
             return castingBody.__Subtract(extrusionCore.GetBodies());
@@ -114,7 +114,7 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
             BooleanFeature subtraction,
             IDrainHoleSettings drainHoleSettings)
         {
-            foreach (var curve in curves)
+            foreach (Curve curve in curves)
             {
                 curve.SetName(drainHoleSettings.CurveName);
                 curve.Layer = drainHoleSettings.CurveLayer;
@@ -123,13 +123,13 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
 
             extrusionCore.SetName(drainHoleSettings.ExtrusionName);
 
-            foreach (var body in extrusionCore.GetBodies())
+            foreach (Body body in extrusionCore.GetBodies())
                 body.Layer = drainHoleSettings.ExtrusionLayer;
 
-            if(subtraction is null)
+            if (subtraction is null)
                 return;
 
-            foreach (var body in subtraction.GetBodies())
+            foreach (Body body in subtraction.GetBodies())
                 body.Layer = drainHoleSettings.SubtractionLayer;
 
             subtraction.SetName(drainHoleSettings.SubtractionName);
@@ -159,21 +159,21 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
         public static TSource MinBy<TSource, TKey>(IEnumerable<TSource> source,
             Func<TSource, TKey> selector, IComparer<TKey> comparer)
         {
-            if(source == null) throw new ArgumentNullException(nameof(source));
-            if(selector == null) throw new ArgumentNullException(nameof(selector));
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
             comparer = comparer ?? Comparer<TKey>.Default;
 
-            using (var sourceIterator = source.GetEnumerator())
+            using (IEnumerator<TSource> sourceIterator = source.GetEnumerator())
             {
-                if(!sourceIterator.MoveNext()) throw new InvalidOperationException("Sequence contains no elements");
+                if (!sourceIterator.MoveNext()) throw new InvalidOperationException("Sequence contains no elements");
 
-                var min = sourceIterator.Current;
-                var minKey = selector(min);
+                TSource min = sourceIterator.Current;
+                TKey minKey = selector(min);
                 while (sourceIterator.MoveNext())
                 {
-                    var candidate = sourceIterator.Current;
-                    var candidateProjected = selector(candidate);
-                    if(comparer.Compare(candidateProjected, minKey) >= 0) continue;
+                    TSource candidate = sourceIterator.Current;
+                    TKey candidateProjected = selector(candidate);
+                    if (comparer.Compare(candidateProjected, minKey) >= 0) continue;
                     min = candidate;
                     minKey = candidateProjected;
                 }
@@ -191,31 +191,31 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
             params Edge[] linearEdges)
         {
             // Gets the owning part of the {selectedFace}.
-            var owningPart = selectedFace.__OwningPart();
+            Part owningPart = selectedFace.__OwningPart();
 
             // Gets the edge whose mid point is equal to the {closestPosition}.
-            var midpointEdge = linearEdges.Single(edge =>
+            Edge midpointEdge = linearEdges.Single(edge =>
                 edge.__StartPoint().__MidPoint(edge.__EndPoint()).__IsEqualTo(closestPosition));
 
-            var vec_edge = midpointEdge.__NormalVector();
+            Vector3d vec_edge = midpointEdge.__NormalVector();
 
-            var matrix = vec_edge.__ToMatrix3x3(selectedPosition.__Subtract(closestPosition));
+            Matrix3x3 matrix = vec_edge.__ToMatrix3x3(selectedPosition.__Subtract(closestPosition));
 
             __display_part_.WCS.SetOriginAndMatrix(closestPosition, matrix);
 
             // Gets the mappedMidpoint.
-            var outputCoords = new double[3];
+            double[] outputCoords = new double[3];
 
             UFSession.GetUFSession().Csys.MapPoint(UF_CSYS_ROOT_COORDS, closestPosition.__ToArray(),
                 UF_CSYS_ROOT_WCS_COORDS, outputCoords);
 
             Point3d mappedCenterPoint;
 
-            if((Units)owningPart.PartUnits == units)
+            if ((Units)owningPart.PartUnits == units)
                 // The {DiameterUnits} for this creator matches the units of the {owningPart}.
                 mappedCenterPoint = outputCoords.__ToPoint3d().__Add(new Vector3d(0, diameter / 2, 0));
 
-            else if(owningPart.PartUnits == BasePart.Units.Inches)
+            else if (owningPart.PartUnits == BasePart.Units.Inches)
                 mappedCenterPoint = outputCoords.__ToPoint3d().__Add(new Vector3d(0, diameter / 25.4 / 2, 0));
             else
                 mappedCenterPoint = outputCoords.__ToPoint3d().__Add(new Vector3d(0, diameter * 25.4 / 2, 0));
@@ -227,7 +227,7 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
                 UF_CSYS_ROOT_COORDS, outputCoords);
 
             // Gets the normal of the {selectedFace}.
-            var normalVector = selectedFace.__NormalVector();
+            Vector3d normalVector = selectedFace.__NormalVector();
 
             return CreateCircle(owningPart, outputCoords.__ToPoint3d(), normalVector, units, diameter);
         }
@@ -326,7 +326,7 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
         private static Arc CreateCircle(Part owningPart, Point3d outputCoords, Vector3d normalVector, Units units,
             double diameter)
         {
-            if((Units)owningPart.PartUnits == units)
+            if ((Units)owningPart.PartUnits == units)
                 // The {DiameterUnits} for this creator matches the units of the {owningPart}.
                 return owningPart.__CreateCircle(outputCoords, normalVector, diameter / 2 - .001);
 
