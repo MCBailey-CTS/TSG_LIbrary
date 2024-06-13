@@ -21,232 +21,225 @@ namespace TSG_Library.UFuncs
         {
             if (_displayPart.FullPath.Contains("mirror"))
             {
-                TheUISession.NXMessageBox.Show("Caught exception", NXMessageBox.DialogType.Error,
+                TheUISession.NXMessageBox.Show(
+                    "Caught exception",
+                    NXMessageBox.DialogType.Error,
                     "Mirrored Component");
+
                 return isBlockComponent;
             }
 
-            foreach (Feature featBlk in _workPart.Features)
-                if (featBlk.FeatureType == "BLOCK")
-                    if (featBlk.Name == "DYNAMIC BLOCK")
-                        isBlockComponent = true;
-
-            if (isBlockComponent)
-            {
-                DisableForm();
-
-                if (_isNewSelection)
-                {
-                    CreateEditData(editComponent);
-
-                    _isNewSelection = false;
-                }
-
-                var pHandle = new List<Point>();
-                pHandle = SelectHandlePoint();
-
-                _isDynamic = true;
-
-                while (pHandle.Count == 1)
-                {
-                    HideDynamicHandles();
-
-                    _udoPointHandle = pHandle[0];
-
-                    var blockOrigin = new Point3d();
-                    var blockLength = 0.00;
-                    var blockWidth = 0.00;
-                    var blockHeight = 0.00;
-
-                    foreach (var eLine in _edgeRepLines)
-                    {
-                        if (eLine.Name == "XBASE1")
-                        {
-                            blockOrigin = eLine.StartPoint;
-                            blockLength = eLine.GetLength();
-                        }
-
-                        if (eLine.Name == "YBASE1") blockWidth = eLine.GetLength();
-
-                        if (eLine.Name == "ZBASE1") blockHeight = eLine.GetLength();
-                    }
-
-                    Point pointPrototype;
-
-                    if (_udoPointHandle.IsOccurrence)
-                        pointPrototype = (Point)_udoPointHandle.Prototype;
-                    else
-                        pointPrototype = _udoPointHandle;
-
-                    var doNotMovePts = new List<NXObject>();
-                    var movePtsHalf = new List<NXObject>();
-                    var movePtsFull = new List<NXObject>();
-
-                    if (pointPrototype.Name.Contains("POS"))
-                    {
-                        NewMethod5(pointPrototype, doNotMovePts, movePtsHalf, movePtsFull);
-                    }
-                    else
-                    {
-                        NewMethod8(pointPrototype, doNotMovePts, movePtsHalf, movePtsFull);
-                    }
-
-                    var posXObjs = new List<Line>();
-                    var negXObjs = new List<Line>();
-                    var posYObjs = new List<Line>();
-                    var negYObjs = new List<Line>();
-                    var posZObjs = new List<Line>();
-                    var negZObjs = new List<Line>();
-
-                    foreach (var eLine in _edgeRepLines)
-                    {
-                        if (eLine.Name == "YBASE1" || eLine.Name == "YCEILING1" || eLine.Name == "ZBASE1" ||
-                           eLine.Name == "ZBASE3") negXObjs.Add(eLine);
-
-                        if (eLine.Name == "YBASE2" || eLine.Name == "YCEILING2" || eLine.Name == "ZBASE2" ||
-                           eLine.Name == "ZBASE4") posXObjs.Add(eLine);
-
-                        if (eLine.Name == "XBASE1" || eLine.Name == "XCEILING1" || eLine.Name == "ZBASE1" ||
-                           eLine.Name == "ZBASE2") negYObjs.Add(eLine);
-
-                        if (eLine.Name == "XBASE2" || eLine.Name == "XCEILING2" || eLine.Name == "ZBASE3" ||
-                           eLine.Name == "ZBASE4") posYObjs.Add(eLine);
-
-                        if (eLine.Name == "XBASE1" || eLine.Name == "XBASE2" || eLine.Name == "YBASE1" ||
-                           eLine.Name == "YBASE2") negZObjs.Add(eLine);
-
-                        if (eLine.Name == "XCEILING1" || eLine.Name == "XCEILING2" ||
-                           eLine.Name == "YCEILING1" || eLine.Name == "YCEILING2") posZObjs.Add(eLine);
-                    }
-
-                    var allxAxisLines = new List<Line>();
-                    var allyAxisLines = new List<Line>();
-                    var allzAxisLines = new List<Line>();
-
-                    foreach (var eLine in _edgeRepLines)
-                    {
-                        if (eLine.Name.StartsWith("X")) allxAxisLines.Add(eLine);
-
-                        if (eLine.Name.StartsWith("Y")) allyAxisLines.Add(eLine);
-
-                        if (eLine.Name.StartsWith("Z")) allzAxisLines.Add(eLine);
-                    }
-
-                    EditSizeForm sizeForm = null;
-                    var convertLength = blockLength / 25.4;
-                    var convertWidth = blockWidth / 25.4;
-                    var convertHeight = blockHeight / 25.4;
-
-                    if (_displayPart.PartUnits == BasePart.Units.Inches)
-                    {
-                        if (pointPrototype.Name.Contains("X"))
-                        {
-                            sizeForm = new EditSizeForm(blockLength);
-                            sizeForm.ShowDialog();
-                        }
-
-                        if (pointPrototype.Name.Contains("Y"))
-                        {
-                            sizeForm = new EditSizeForm(blockWidth);
-                            sizeForm.ShowDialog();
-                        }
-
-                        if (pointPrototype.Name.Contains("Z"))
-                        {
-                            sizeForm = new EditSizeForm(blockHeight);
-                            sizeForm.ShowDialog();
-                        }
-                    }
-                    else
-                    {
-                        if (pointPrototype.Name.Contains("X"))
-                        {
-                            sizeForm = new EditSizeForm(convertLength);
-                            sizeForm.ShowDialog();
-                        }
-
-                        if (pointPrototype.Name.Contains("Y"))
-                        {
-                            sizeForm = new EditSizeForm(convertWidth);
-                            sizeForm.ShowDialog();
-                        }
-
-                        if (pointPrototype.Name.Contains("Z"))
-                        {
-                            sizeForm = new EditSizeForm(convertHeight);
-                            sizeForm.ShowDialog();
-                        }
-                    }
-
-                    if (sizeForm.DialogResult == System.Windows.Forms.DialogResult.OK)
-                    {
-                        var editSize = sizeForm.InputValue;
-                        double distance = 0;
-
-                        if (_displayPart.PartUnits == BasePart.Units.Millimeters) editSize *= 25.4;
-
-                        if (editSize > 0)
-                        {
-                            if (pointPrototype.Name == "POSX")
-                            {
-                                distance = EditSizeDisplayPosX(blockLength, movePtsHalf, movePtsFull, posXObjs, allxAxisLines, editSize);
-                            }
-
-                            if (pointPrototype.Name == "NEGX")
-                            {
-                                distance = EditSizeDisplayNegX(blockLength, movePtsHalf, movePtsFull, negXObjs, allxAxisLines, editSize);
-                            }
-
-                            if (pointPrototype.Name == "POSY")
-                            {
-                                distance = EditSizeDisplayPosY(blockWidth, movePtsHalf, movePtsFull, posYObjs, allyAxisLines, editSize);
-                            }
-
-                            if (pointPrototype.Name == "NEGY")
-                            {
-                                distance = EditSizeDisplayNegY(blockWidth, movePtsHalf, movePtsFull, negYObjs, allyAxisLines, editSize);
-                            }
-
-                            if (pointPrototype.Name == "POSZ")
-                            {
-                                distance = EditSizeDisplayPosZ(blockHeight, movePtsHalf, movePtsFull, posZObjs, allzAxisLines, editSize);
-                            }
-
-                            if (pointPrototype.Name == "NEGZ")
-                            {
-                                distance = EditSizeDisplayNegZ(blockHeight, movePtsHalf, movePtsFull, negZObjs, allzAxisLines, editSize);
-                            }
-                        }
-                    }
-
-                    UpdateDynamicBlock(editComponent);
-
-                    session_.Preferences.EmphasisVisualization.WorkPartEmphasis = false;
-
-                    sizeForm.Close();
-                    sizeForm.Dispose();
-
-                    ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
-
-                    __work_component_ = editComponent;
-                    UpdateSessionParts();
-
-                    ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
-                    ufsession_.Disp.RegenerateDisplay();
-
-                    CreateEditData(editComponent);
-
-                    pHandle = SelectHandlePoint();
-                }
-
-                EnableForm();
-            }
-            else
+            if (!_workPart.__HasDynamicBlock())
             {
                 ResetNonBlockError();
-                TheUISession.NXMessageBox.Show("Caught exception", NXMessageBox.DialogType.Error,
+
+                TheUISession.NXMessageBox.Show(
+                    "Caught exception",
+                    NXMessageBox.DialogType.Error,
                     "Not a block component");
+
+                return isBlockComponent;
             }
+
+            DisableForm();
+
+            if (_isNewSelection)
+            {
+                CreateEditData(editComponent);
+
+                _isNewSelection = false;
+            }
+
+            var pHandle = SelectHandlePoint();
+
+            _isDynamic = true;
+
+            while (pHandle.Count == 1)
+            {
+                HideDynamicHandles();
+
+                _udoPointHandle = pHandle[0];
+
+                var blockOrigin = new Point3d();
+                var blockLength = 0.00;
+                var blockWidth = 0.00;
+                var blockHeight = 0.00;
+
+                foreach (var eLine in _edgeRepLines)
+                {
+                    if (eLine.Name == "XBASE1")
+                    {
+                        blockOrigin = eLine.StartPoint;
+                        blockLength = eLine.GetLength();
+                    }
+
+                    if (eLine.Name == "YBASE1") blockWidth = eLine.GetLength();
+
+                    if (eLine.Name == "ZBASE1") blockHeight = eLine.GetLength();
+                }
+
+                Point pointPrototype;
+
+                if (_udoPointHandle.IsOccurrence)
+                    pointPrototype = (Point)_udoPointHandle.Prototype;
+                else
+                    pointPrototype = _udoPointHandle;
+
+                var doNotMovePts = new List<NXObject>();
+                var movePtsHalf = new List<NXObject>();
+                var movePtsFull = new List<NXObject>();
+
+                MotionCallbackDynamic1(pointPrototype, doNotMovePts, movePtsHalf, movePtsFull, pointPrototype.Name.Contains("POS"));
+
+                var posXObjs = new List<Line>();
+                var negXObjs = new List<Line>();
+                var posYObjs = new List<Line>();
+                var negYObjs = new List<Line>();
+                var posZObjs = new List<Line>();
+                var negZObjs = new List<Line>();
+
+                foreach (var eLine in _edgeRepLines)
+                {
+                    if (eLine.Name == "YBASE1" || eLine.Name == "YCEILING1" || eLine.Name == "ZBASE1" ||
+                       eLine.Name == "ZBASE3") negXObjs.Add(eLine);
+
+                    if (eLine.Name == "YBASE2" || eLine.Name == "YCEILING2" || eLine.Name == "ZBASE2" ||
+                       eLine.Name == "ZBASE4") posXObjs.Add(eLine);
+
+                    if (eLine.Name == "XBASE1" || eLine.Name == "XCEILING1" || eLine.Name == "ZBASE1" ||
+                       eLine.Name == "ZBASE2") negYObjs.Add(eLine);
+
+                    if (eLine.Name == "XBASE2" || eLine.Name == "XCEILING2" || eLine.Name == "ZBASE3" ||
+                       eLine.Name == "ZBASE4") posYObjs.Add(eLine);
+
+                    if (eLine.Name == "XBASE1" || eLine.Name == "XBASE2" || eLine.Name == "YBASE1" ||
+                       eLine.Name == "YBASE2") negZObjs.Add(eLine);
+
+                    if (eLine.Name == "XCEILING1" || eLine.Name == "XCEILING2" ||
+                       eLine.Name == "YCEILING1" || eLine.Name == "YCEILING2") posZObjs.Add(eLine);
+                }
+
+                var allxAxisLines = new List<Line>();
+                var allyAxisLines = new List<Line>();
+                var allzAxisLines = new List<Line>();
+
+                foreach (var eLine in _edgeRepLines)
+                {
+                    if (eLine.Name.StartsWith("X")) allxAxisLines.Add(eLine);
+
+                    if (eLine.Name.StartsWith("Y")) allyAxisLines.Add(eLine);
+
+                    if (eLine.Name.StartsWith("Z")) allzAxisLines.Add(eLine);
+                }
+
+                EditSizeForm sizeForm = null;
+                var convertLength = blockLength / 25.4;
+                var convertWidth = blockWidth / 25.4;
+                var convertHeight = blockHeight / 25.4;
+
+                if (_displayPart.PartUnits == BasePart.Units.Inches)
+                {
+                    if (pointPrototype.Name.Contains("X"))
+                    {
+                        sizeForm = new EditSizeForm(blockLength);
+                        sizeForm.ShowDialog();
+                    }
+
+                    if (pointPrototype.Name.Contains("Y"))
+                    {
+                        sizeForm = new EditSizeForm(blockWidth);
+                        sizeForm.ShowDialog();
+                    }
+
+                    if (pointPrototype.Name.Contains("Z"))
+                    {
+                        sizeForm = new EditSizeForm(blockHeight);
+                        sizeForm.ShowDialog();
+                    }
+                }
+                else
+                {
+                    if (pointPrototype.Name.Contains("X"))
+                    {
+                        sizeForm = new EditSizeForm(convertLength);
+                        sizeForm.ShowDialog();
+                    }
+
+                    if (pointPrototype.Name.Contains("Y"))
+                    {
+                        sizeForm = new EditSizeForm(convertWidth);
+                        sizeForm.ShowDialog();
+                    }
+
+                    if (pointPrototype.Name.Contains("Z"))
+                    {
+                        sizeForm = new EditSizeForm(convertHeight);
+                        sizeForm.ShowDialog();
+                    }
+                }
+
+                if (sizeForm.DialogResult == System.Windows.Forms.DialogResult.OK)
+                {
+                    var editSize = sizeForm.InputValue;
+                    double distance = 0;
+
+                    if (_displayPart.PartUnits == BasePart.Units.Millimeters) editSize *= 25.4;
+
+                    if (editSize > 0)
+                    {
+                        if (pointPrototype.Name == "POSX")
+                        {
+                            distance = EditSizeDisplayPosX(blockLength, movePtsHalf, movePtsFull, posXObjs, allxAxisLines, editSize);
+                        }
+
+                        if (pointPrototype.Name == "NEGX")
+                        {
+                            distance = EditSizeDisplayNegX(blockLength, movePtsHalf, movePtsFull, negXObjs, allxAxisLines, editSize);
+                        }
+
+                        if (pointPrototype.Name == "POSY")
+                        {
+                            distance = EditSizeDisplayPosY(blockWidth, movePtsHalf, movePtsFull, posYObjs, allyAxisLines, editSize);
+                        }
+
+                        if (pointPrototype.Name == "NEGY")
+                        {
+                            distance = EditSizeDisplayNegY(blockWidth, movePtsHalf, movePtsFull, negYObjs, allyAxisLines, editSize);
+                        }
+
+                        if (pointPrototype.Name == "POSZ")
+                        {
+                            distance = EditSizeDisplayPosZ(blockHeight, movePtsHalf, movePtsFull, posZObjs, allzAxisLines, editSize);
+                        }
+
+                        if (pointPrototype.Name == "NEGZ")
+                        {
+                            distance = EditSizeDisplayNegZ(blockHeight, movePtsHalf, movePtsFull, negZObjs, allzAxisLines, editSize);
+                        }
+                    }
+                }
+
+                UpdateDynamicBlock(editComponent);
+
+                session_.Preferences.EmphasisVisualization.WorkPartEmphasis = false;
+
+                sizeForm.Close();
+                sizeForm.Dispose();
+
+                ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
+
+                __work_component_ = editComponent;
+                UpdateSessionParts();
+
+                ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
+                ufsession_.Disp.RegenerateDisplay();
+
+                CreateEditData(editComponent);
+
+                pHandle = SelectHandlePoint();
+            }
+
+            EnableForm();
 
             return isBlockComponent;
         }
@@ -261,7 +254,7 @@ namespace TSG_Library.UFuncs
                 ZEndPoint(distance, zAxisLine);
             }
 
-            MoveObjectsZ(movePtsHalf, movePtsFull, distance);
+            MoveObjects(movePtsHalf, movePtsFull, distance, "Z", false);
             return distance;
         }
 
@@ -279,7 +272,7 @@ namespace TSG_Library.UFuncs
                 ZStartPoint(distance, zAxisLine);
             }
 
-            MoveObjectsZ(movePtsHalf, movePtsFull, distance);
+            MoveObjects(movePtsHalf, movePtsFull, distance, "Z", false);
             return distance;
         }
 
@@ -293,7 +286,7 @@ namespace TSG_Library.UFuncs
                 ZEndPoint(distance, zAxisLine);
             }
 
-            MoveObjectsZ(movePtsHalf, movePtsFull, distance);
+            MoveObjects(movePtsHalf, movePtsFull, distance, "Z", false);
             return distance;
         }
 
@@ -309,7 +302,7 @@ namespace TSG_Library.UFuncs
                 YStartPoint(distance, yAxisLine);
             }
 
-            MoveObjectsY(movePtsHalf, movePtsFull, distance);
+            MoveObjects(movePtsHalf, movePtsFull, distance, "Y", false);
             return distance;
         }
 
@@ -323,7 +316,7 @@ namespace TSG_Library.UFuncs
                 YEndPoint(distance, yAxisLine);
             }
 
-            MoveObjectsY(movePtsHalf, movePtsFull, distance);
+            MoveObjects(movePtsHalf, movePtsFull, distance, "Y", false);
             return distance;
         }
 
@@ -338,7 +331,7 @@ namespace TSG_Library.UFuncs
                 XStartPoint(distance, xAxisLine);
             }
 
-            MoveObjectsX(movePtsHalf, movePtsFull, distance);
+            MoveObjects(movePtsHalf, movePtsFull, distance, "X", false);
             return distance;
         }
 
@@ -352,7 +345,7 @@ namespace TSG_Library.UFuncs
                 XEndPoint(distance, xAxisLine);
             }
 
-            MoveObjectsX(movePtsHalf, movePtsFull, distance);
+            MoveObjects(movePtsHalf, movePtsFull, distance, "X", false);
             return distance;
         }
 
@@ -369,7 +362,7 @@ namespace TSG_Library.UFuncs
                 YStartPoint(distance, yAxisLine);
             }
 
-            MoveObjectsY(movePtsHalf, movePtsFull, distance);
+            MoveObjects(movePtsHalf, movePtsFull, distance, "Y", false);
             return distance;
         }
 
@@ -384,7 +377,7 @@ namespace TSG_Library.UFuncs
                 YEndPoint(distance, yAxisLine);
             }
 
-            MoveObjectsY(movePtsHalf, movePtsFull, distance);
+            MoveObjects(movePtsHalf, movePtsFull, distance, "Y", false);
             return distance;
         }
 
@@ -400,7 +393,7 @@ namespace TSG_Library.UFuncs
                 XEndPoint(distance, xAxisLine);
             }
 
-            MoveObjectsX(movePtsHalf, movePtsFull, distance);
+            MoveObjects(movePtsHalf, movePtsFull, distance, "X", false);
             return distance;
         }
 
@@ -414,7 +407,7 @@ namespace TSG_Library.UFuncs
                 XStartPoint(distance, xAxisLine);
             }
 
-            MoveObjectsX(movePtsHalf, movePtsFull, distance);
+            MoveObjects(movePtsHalf, movePtsFull, distance, "X", false);
             return distance;
         }
 
@@ -428,7 +421,7 @@ namespace TSG_Library.UFuncs
                 ZStartPoint(distance, zAxisLine);
             }
 
-            MoveObjectsZ(movePtsHalf, movePtsFull, distance);
+            MoveObjects(movePtsHalf, movePtsFull, distance, "Z", false);
             return distance;
         }
 

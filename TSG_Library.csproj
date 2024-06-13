@@ -313,9 +313,6 @@
     <Compile Include="src\UFuncs\CloneStripForm.Designer.cs">
       <DependentUpon>CloneStripForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\ComponentBuilder\AddMovePoints.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="src\UFuncs\ComponentBuilder\AlignEdgeDistance.cs">
       <SubType>Form</SubType>
     </Compile>

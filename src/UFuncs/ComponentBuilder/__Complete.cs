@@ -373,31 +373,13 @@ namespace TSG_Library.UFuncs
         }
 
 
-        private void MoveObjectsX(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, double xDistance, string dir_xyz, bool showTemporary = false)
+        private void MoveObjects(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, double xDistance, string dir_xyz, bool showTemporary)
         {
             if (!(dir_xyz == "X" || dir_xyz == "Y" || dir_xyz == "Z"))
                 throw new ArgumentException($"Invalid direction '{dir_xyz}'");
 
-            MoveObjects(movePtsFull.ToArray(), xDistance, "X");
-            MoveObjects(movePtsHalf.ToArray(), xDistance / 2, "X");
-
-            if (showTemporary)
-                ShowTemporarySizeText();
-        }
-
-        private void MoveObjectsZ(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, double zDistance, bool showTemporary = false)
-        {
-            MoveObjects(movePtsFull.ToArray(), zDistance, "Z");
-            MoveObjects(movePtsHalf.ToArray(), zDistance / 2, "Z");
-
-            if (showTemporary)
-                ShowTemporarySizeText();
-        }
-
-        private void MoveObjectsY(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, double yDistance, bool showTemporary = false)
-        {
-            MoveObjects(movePtsFull.ToArray(), yDistance, "Y");
-            MoveObjects(movePtsHalf.ToArray(), yDistance / 2, "Y");
+            MoveObjects(movePtsFull.ToArray(), xDistance, dir_xyz);
+            MoveObjects(movePtsHalf.ToArray(), xDistance / 2, dir_xyz);
 
             if (showTemporary)
                 ShowTemporarySizeText();
@@ -406,8 +388,43 @@ namespace TSG_Library.UFuncs
 
 
 
+  private static void MotionCallbackDynamic1(Point pointPrototype, List<NXObject> doNotMovePts, List<NXObject> movePtsHalf, List<NXObject> movePtsFull, bool isPos)
+  {
+      foreach (Point namedPt in _workPart.Points)
+          if (namedPt.Name != "")
+          {
+              if (namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
+              {
+                  doNotMovePts.Add(namedPt);
+                  continue;
+              }
 
+              if (namedPt.Name.Contains("Y") && pointPrototype.Name.Contains("Y"))
+              {
+                  doNotMovePts.Add(namedPt);
+                  continue;
+              }
 
+              if (namedPt.Name.Contains("Z") && pointPrototype.Name.Contains("Z"))
+              {
+                  doNotMovePts.Add(namedPt);
+                  continue;
+              }
+
+              if (namedPt.Name.Contains("BLKORIGIN"))
+              {
+                  if (isPos)
+                      doNotMovePts.Add(namedPt);
+                  else
+                      movePtsFull.Add(namedPt);
+                  continue;
+              }
+
+              movePtsHalf.Add(namedPt);
+          }
+
+      movePtsFull.Add(pointPrototype);
+  }
 
     }
 }

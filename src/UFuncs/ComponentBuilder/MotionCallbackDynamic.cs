@@ -47,7 +47,10 @@ namespace TSG_Library.UFuncs
                 if (_displayPart.PartUnits == BasePart.Units.Inches)
                 {
                     ufsession_.Ui.SetPrompt(
-                        $"X = {editBlkLength:0.000}  Y = {editBlkWidth:0.000}  Z = {$"{editBlkHeight:0.000}"}  Distance Moved =  {$"{_distanceMoved:0.000}"}");
+                        $"X = {editBlkLength:0.000}  " +
+                        $"Y = {editBlkWidth:0.000}  " +
+                        $"Z = {$"{editBlkHeight:0.000}"}  " +
+                        $"Distance Moved =  {$"{_distanceMoved:0.000}"}");
                     return;
                 }
 
@@ -57,7 +60,8 @@ namespace TSG_Library.UFuncs
 
                 var convertDistMoved = _distanceMoved / 25.4;
 
-                ufsession_.Ui.SetPrompt($"X = {editBlkLength:0.000}  " +
+                ufsession_.Ui.SetPrompt(
+                    $"X = {editBlkLength:0.000}  " +
                     $"Y = {editBlkWidth:0.000}  " +
                     $"Z = {editBlkHeight:0.000}  " +
                     $"Distance Moved =  {convertDistMoved:0.000}");
@@ -85,7 +89,7 @@ namespace TSG_Library.UFuncs
                 YStartPoint(yDistance, yAxisLine);
             }
 
-            MoveObjectsY(movePtsHalf, movePtsFull, yDistance, true);
+            MoveObjects(movePtsHalf, movePtsFull, yDistance, "Y", true);
         }
 
 
@@ -101,7 +105,7 @@ namespace TSG_Library.UFuncs
                 YEndPoint(yDistance, yAxisLine);
             }
 
-            MoveObjectsY(movePtsHalf, movePtsFull, yDistance, true);
+            MoveObjects(movePtsHalf, movePtsFull, yDistance, "Y", true);
         }
 
 
@@ -115,7 +119,7 @@ namespace TSG_Library.UFuncs
                 XStartPoint(xDistance, xAxisLine);
             }
 
-            MoveObjectsX(movePtsHalf, movePtsFull, xDistance, true);
+            MoveObjects(movePtsHalf, movePtsFull, xDistance, "X", true);
         }
 
 
@@ -129,7 +133,7 @@ namespace TSG_Library.UFuncs
                 ZEndPoint(zDistance, zAxisLine);
             }
 
-            MoveObjectsZ(movePtsHalf, movePtsFull, zDistance, true);
+            MoveObjects(movePtsHalf, movePtsFull, zDistance, "Z", true);
         }
 
 
@@ -145,7 +149,7 @@ namespace TSG_Library.UFuncs
                 XEndPoint(xDistance, xAxisLine);
             }
 
-            MoveObjectsX(movePtsHalf, movePtsFull, xDistance, true);
+            MoveObjects(movePtsHalf, movePtsFull, xDistance, "X", true);
         }
 
 
@@ -159,10 +163,7 @@ namespace TSG_Library.UFuncs
             var movePtsHalf = new List<NXObject>();
             var movePtsFull = new List<NXObject>();
 
-            if (pointPrototype.Name.Contains("POS"))
-                MotionCallbackDynamicPos(pointPrototype, doNotMovePts, movePtsHalf, movePtsFull);
-            else
-                MotionCallbackDynamicNeg(pointPrototype, doNotMovePts, movePtsHalf, movePtsFull);
+            MotionCallbackDynamic1(pointPrototype, doNotMovePts, movePtsHalf, movePtsFull, pointPrototype.Name.Contains("POS"));
 
             var posXObjs = new List<Line>();
             var negXObjs = new List<Line>();
@@ -246,7 +247,15 @@ namespace TSG_Library.UFuncs
 
 
 
-        private void MotionCallbackXDynamic(Point pointPrototype, List<NXObject> movePtsHalf, List<NXObject> movePtsFull, List<Line> posXObjs, List<Line> negXObjs, List<Line> allxAxisLines, double[] mappedPoint, double[] mappedCursor)
+        private void MotionCallbackXDynamic(
+            Point pointPrototype,
+            List<NXObject> movePtsHalf,
+            List<NXObject> movePtsFull,
+            List<Line> posXObjs,
+            List<Line> negXObjs,
+            List<Line> allxAxisLines,
+            double[] mappedPoint,
+            double[] mappedCursor)
         {
             if (mappedPoint[0] == mappedCursor[0])
                 return;
@@ -329,7 +338,7 @@ namespace TSG_Library.UFuncs
                 ZStartPoint(zDistance, zAxisLine);
             }
 
-            MoveObjectsZ(movePtsHalf, movePtsFull, zDistance, true);
+            MoveObjects(movePtsHalf, movePtsFull, zDistance, "Z", true);
         }
 
 
@@ -357,8 +366,7 @@ namespace TSG_Library.UFuncs
 
             // get the distance from the selected point to the cursor location
 
-            double[] pointStart =
-                { _udoPointHandle.Coordinates.X, _udoPointHandle.Coordinates.Y, _udoPointHandle.Coordinates.Z };
+            double[] pointStart = _udoPointHandle.Coordinates.__ToArray();
 
             var mappedPoint = new double[3];
             var mappedCursor = new double[3];
