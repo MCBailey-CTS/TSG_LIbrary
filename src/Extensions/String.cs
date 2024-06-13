@@ -34,16 +34,16 @@ namespace TSG_Library.Extensions
         }
 
         //[IgnoreExtensionAspect]
-        public static bool _IsBlhcs_(this string leaf_or_display_name)
+        public static bool _IsBlhcs_(this string leafOrDisplayName)
         {
-            return leaf_or_display_name.ToLower().Contains("0375-bhcs-062")
-                   || leaf_or_display_name.ToLower().Contains("10mm-bhcs-016");
+            return leafOrDisplayName.ToLower().Contains("0375-bhcs-062")
+                   || leafOrDisplayName.ToLower().Contains("10mm-bhcs-016");
         }
 
         //[IgnoreExtensionAspect]
-        public static bool _IsLayout_(this string leaf_or_display_name)
+        public static bool _IsLayout_(this string leafOrDisplayName)
         {
-            return leaf_or_display_name.ToLower().Contains("-layout");
+            return leafOrDisplayName.ToLower().Contains("-layout");
         }
 
         //[IgnoreExtensionAspect]
@@ -143,23 +143,23 @@ namespace TSG_Library.Extensions
         }
 
         //[IgnoreExtensionAspect]
-        public static bool _IsFastener_(this string leaf_or_display_name)
+        public static bool _IsFastener_(this string leafOrDisplayName)
         {
-            return leaf_or_display_name._IsShcs_()
-                   || leaf_or_display_name._IsDwl_()
-                   || leaf_or_display_name._IsJckScrew_()
-                   || leaf_or_display_name._IsJckScrewTsg_();
+            return leafOrDisplayName._IsShcs_()
+                   || leafOrDisplayName._IsDwl_()
+                   || leafOrDisplayName._IsJckScrew_()
+                   || leafOrDisplayName._IsJckScrewTsg_();
         }
 
         //[IgnoreExtensionAspect]
-        public static bool _IsFastenerExtended_(this string leaf_or_display_name)
+        public static bool _IsFastenerExtended_(this string leafOrDisplayName)
         {
-            return leaf_or_display_name.__IsFastener()
-                   || leaf_or_display_name._IsLhcs_()
-                   || leaf_or_display_name._IsSss_()
-                   || leaf_or_display_name._IsBhcs_()
-                   || leaf_or_display_name._IsFhcs_()
-                   || leaf_or_display_name._IsBlhcs_();
+            return leafOrDisplayName.__IsFastener()
+                   || leafOrDisplayName._IsLhcs_()
+                   || leafOrDisplayName._IsSss_()
+                   || leafOrDisplayName._IsBhcs_()
+                   || leafOrDisplayName._IsFhcs_()
+                   || leafOrDisplayName._IsBlhcs_();
         }
 
         public static string __AskDetailNumber(this string file)

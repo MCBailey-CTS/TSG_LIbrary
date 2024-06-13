@@ -362,13 +362,13 @@ namespace TSG_Library.Extensions
             return session.GetObjectManager().GetTaggedObject(tag);
         }
 
-        public static PartCollection.SdpsStatus __SetActiveDisplay(this Session session_,
+        public static PartCollection.SdpsStatus __SetActiveDisplay(this Session session_1,
             Part __part)
         {
-            if (session_.Parts.AllowMultipleDisplayedParts != PartCollection.MultipleDisplayedPartStatus.Enabled)
+            if (session_1.Parts.AllowMultipleDisplayedParts != PartCollection.MultipleDisplayedPartStatus.Enabled)
                 throw new Exception("Session does not allow multiple displayed parts");
 
-            return session_.Parts.SetActiveDisplay(
+            return session_1.Parts.SetActiveDisplay(
                 __part,
                 DisplayPartOption.AllowAdditional,
                 PartDisplayPartWorkPartOption.UseLast,
