@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CTS_Library.Extensions;
 using NXOpen;
 using NXOpen.Assemblies;
 using TSG_Library.Extensions;
@@ -96,23 +97,19 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             return new double[3] { point3D.X, point3D.Y, point3D.Z };
         }
 
-        [Obsolete]
         public static Point3d _Mirror(this Point3d original, Surface. Plane plane)
         {
-            throw new NotImplementedException();
-            //Transform val = Transform.CreateReflection(plane);
-            //return ((Point3d)(ref original)).Copy(val);
+            Transform val = Transform.CreateReflection(plane);
+            return original.__Copy(val);
         }
 
-        [Obsolete]
         public static Point3d _MirrorMap(this Point3d origin,Surface. Plane mirrorPlane, Component originalComp, Component newComp)
         {
-            throw new NotImplementedException();
-            //originalComp._SetWcsToComponent();
-            //Point3d original =  CoordinateSystem.MapWcsToAcs(origin);
-            //Point3d val = original._Mirror(mirrorPlane);
-            //newComp._SetWcsToComponent();
-            //return CoordinateSystem.MapAcsToWcs(val);
+            originalComp.__SetWcsToComponent();
+            Point3d original = origin.__MapWcsToAcs();
+            Point3d val = original._Mirror(mirrorPlane);
+            newComp._SetWcsToComponent();
+            return val.__MapAcsToWcs();
         }
 
         //public static Point3d _MirrorMap(this Point3d origin, Plane mirrorPlane, Component originalComp, Component newComp)

@@ -12,7 +12,7 @@ namespace TSG_Library.Extensions
         /// <summary>Map a vector from Absolute coordinates to Work coordinates</summary>
         /// <param name="absVector">The components of the given vector wrt the Absolute Coordinate System (ACS)</param>
         /// <returns>The components of the given vector wrt the Work Coordinate System (WCS)</returns>
-        public static Vector3d __MapAcsToWcs(Vector3d absVector)
+        public static Vector3d __MapAcsToWcs(this Vector3d absVector)
         {
             var axisX = __display_part_.WCS.__AxisX();
             var axisY = __display_part_.WCS.__AxisY();
@@ -352,7 +352,7 @@ namespace TSG_Library.Extensions
         ///         use this function to "map" them to the ACS before using them in SNAP functions.
         ///     </para>
         /// </remarks>
-        public static Vector3d __MapWcsToAcs(Vector3d workVector)
+        public static Vector3d __MapWcsToAcs(this Vector3d workVector)
         {
             var axisX = __display_part_.WCS.__AxisX();
             var axisY = __display_part_.WCS.__AxisY();

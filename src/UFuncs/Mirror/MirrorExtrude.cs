@@ -25,8 +25,8 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             Vector3d val2;
             using (new Destroyer(extrudeBuilder))
             {
-                val = Extensions_Position._MirrorMap(extrudeBuilder.Direction.Origin, plane, originalComp, component);
-                val2 = Extensions_Vector._MirrorMap(extrudeBuilder.Direction.Vector, plane, originalComp, component);
+                val =  MirrorMap(extrudeBuilder.Direction.Origin, plane, originalComp, component);
+                val2 = MirrorMap(extrudeBuilder.Direction.Vector, plane, originalComp, component);
             }
 
             extrudeBuilder = part.Features.CreateExtrudeBuilder(extrude);

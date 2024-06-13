@@ -56,56 +56,52 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             feature.Unsuppress();
         }
 
-        [Obsolete]
         public static bool TryMatchEdges(IEnumerable<Edge> originalEdges, IEnumerable<Edge> mirrorEdges, Surface.Plane plane, Component originalComp, Component mirrorComp, out Edge[] edgePairs)
         {
-            throw new NotImplementedException();
-            //IList<Edge> list = new List<Edge>();
-            //ISet<Edge> set = Extensions_Linq.ToHashSet(originalEdges);
-            //ISet<Edge> set2 = Extensions_Linq.ToHashSet(mirrorEdges);
-            //while (set.Count > 0)
-            //{
-            //    Edge edge = set.First();
-            //    set.Remove(edge);
-            //    if (!TryMatchEdge(edge, set2, plane, originalComp, mirrorComp, out var mirrorEdge))
-            //    {
-            //        edgePairs = null;
-            //        return false;
-            //    }
+            IList<Edge> list = new List<Edge>();
+            ISet<Edge> set = originalEdges.ToHashSet();
+            ISet<Edge> set2 = mirrorEdges.ToHashSet();
+            while (set.Count > 0)
+            {
+                Edge edge = set.First();
+                set.Remove(edge);
+                if (!TryMatchEdge(edge, set2, plane, originalComp, mirrorComp, out var mirrorEdge))
+                {
+                    edgePairs = null;
+                    return false;
+                }
 
-            //    set2.Remove(mirrorEdge);
-            //    list.Add(edge);
-            //    list.Add(mirrorEdge);
-            //}
+                set2.Remove(mirrorEdge);
+                list.Add(edge);
+                list.Add(mirrorEdge);
+            }
 
-            //edgePairs = list.ToArray();
-            //return true;
+            edgePairs = list.ToArray();
+            return true;
         }
 
-        [Obsolete]
         public static bool TryMatchFaces(IEnumerable<Face> originalFaces, IEnumerable<Face> mirrorFaces, Surface.Plane plane, Component originalComp, Component mirrorComp, out Face[] facePairs)
         {
-            throw new NotImplementedException();
-            //IList<Face> list = new List<Face>();
-            //ISet<Face> set = Extensions_Linq.ToHashSet(originalFaces);
-            //ISet<Face> set2 = Extensions_Linq.ToHashSet(mirrorFaces);
-            //while (set.Count > 0)
-            //{
-            //    Face face = set.First();
-            //    set.Remove(face);
-            //    if (!TryMatchFace(face, set2, plane, originalComp, mirrorComp, out var mirrorFace))
-            //    {
-            //        facePairs = null;
-            //        return false;
-            //    }
+            IList<Face> list = new List<Face>();
+            ISet<Face> set =originalFaces.ToHashSet();
+            ISet<Face> set2 = mirrorFaces.ToHashSet();
+            while (set.Count > 0)
+            {
+                Face face = set.First();
+                set.Remove(face);
+                if (!TryMatchFace(face, set2, plane, originalComp, mirrorComp, out var mirrorFace))
+                {
+                    facePairs = null;
+                    return false;
+                }
 
-            //    set2.Remove(mirrorFace);
-            //    list.Add(face);
-            //    list.Add(mirrorFace);
-            //}
+                set2.Remove(mirrorFace);
+                list.Add(face);
+                list.Add(mirrorFace);
+            }
 
-            //facePairs = list.ToArray();
-            //return true;
+            facePairs = list.ToArray();
+            return true;
         }
 
         public static bool TryMatchFace(Face originalFace, IEnumerable<Face> mirrorFaces, Surface.Plane plane, Component originalComp, Component mirrorComp, out Face mirrorFace)

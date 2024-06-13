@@ -67,23 +67,19 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             return axisZ.__ToMatrix3x3(yVector);
         }
 
-        [Obsolete]
         public static Vector3d _Mirror(this Vector original, Surface.Plane plane)
         {
-            //Transform val = Transform.CreateReflection(plane);
-            //return ((Vector)(ref original)).Copy(val);
-            throw new NotImplementedException();
+            Transform val = Transform.CreateReflection(plane);
+            return original.__Copy(val);
         }
 
-        [Obsolete]
         public static Vector _MirrorMap(this Vector vector, Surface.Plane mirrorPlane, Component originalComp, Component newComp)
         {
-            throw new NotImplementedException();
-            //originalComp._SetWcsToComponent();
-            //Vector original = CoordinateSystem.MapWcsToAcs(vector);
-            //Vector val = original._Mirror(mirrorPlane);
-            //newComp._SetWcsToComponent();
-            //return CoordinateSystem.MapAcsToWcs(val);
+            originalComp.__SetWcsToComponent();
+            Vector original = vector.__MapWcsToAcs();
+            Vector val = original._Mirror(mirrorPlane);
+            newComp.__SetWcsToComponent();
+            return val.__MapAcsToWcs();
         }
 
         [Obsolete]

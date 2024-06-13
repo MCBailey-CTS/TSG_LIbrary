@@ -71,7 +71,9 @@ public static class Program
 
             //print_("hello world");
 
-            new ComponentBuilder().Show();
+            new TSG_Library.UFuncs.MirrorComponents.Features.MainForm().Show();
+
+            //new ComponentBuilder().Show();
 
             return;
 

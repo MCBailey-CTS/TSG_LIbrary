@@ -6,42 +6,38 @@ using NXOpen.Assemblies;
 using NXOpen.Features;
 using TSG_Library.Extensions;
 using TSG_Library.Geom;
+using static TSG_Library.Extensions.__Extensions_;
 
 namespace TSG_Library.UFuncs.MirrorComponents.Features
 {
-    [Obsolete]
     public abstract class BaseMirrorFeature : IMirrorFeature
     {
         public abstract string FeatureType { get; }
 
-        [Obsolete]
-        public Point3d MirrorMap(Point3d position, Surface. Plane plane, Component fromComponent, Component toComponent)
+        public Point3d MirrorMap(Point3d position, Surface.Plane plane, Component fromComponent, Component toComponent)
         {
-            //Globals._DisplayPart.WCS.SetOriginAndMatrix(fromComponent.__Origin(), fromComponent.__Orientation());
-            //Point3d val = CoordinateSystem.MapWcsToAcs(position)._Mirror(plane);
-            //Globals._DisplayPart.WCS.SetOriginAndMatrix(toComponent.__Origin(), toComponent.__Orientation());
-            //return CoordinateSystem.MapAcsToWcs(val);
-            throw new NotImplementedException();
+            fromComponent.__SetWcsToComponent();
+            Point3d val = position.__MapWcsToAcs()._Mirror(plane);
+            toComponent.__SetWcsToComponent();
+            return val.__MapAcsToWcs();
         }
 
-        [Obsolete]
-        public Vector3d MirrorMap(Vector3d vector, Surface. Plane plane, Component fromComponent, Component toComponent)
+        public Vector3d MirrorMap(Vector3d vector, Surface.Plane plane, Component fromComponent, Component toComponent)
         {
-            throw new NotImplementedException();
-            //Globals._DisplayPart.WCS.SetOriginAndMatrix(Point3d.op_Implicit(fromComponent._Origin()), Matrix3x3.op_Implicit(fromComponent._Orientation()));
-            //Vector3d val = CoordinateSystem.MapWcsToAcs(vector)._Mirror(plane);
-            //Globals._DisplayPart.WCS.SetOriginAndMatrix(Point3d.op_Implicit(toComponent._Origin()), Matrix3x3.op_Implicit(toComponent._Orientation()));
-            //return CoordinateSystem.MapAcsToWcs(val);
+            fromComponent.__SetWcsToComponent();
+            Vector3d val = vector.__MapWcsToAcs()._Mirror(plane);
+            toComponent.__SetWcsToComponent();
+            return val.__MapAcsToWcs();
         }
 
-        public Matrix3x3 MirrorMap(Matrix3x3 orientation, Surface. Plane plane, Component fromComponent, Component toComponent)
+        public Matrix3x3 MirrorMap(Matrix3x3 orientation, Surface.Plane plane, Component fromComponent, Component toComponent)
         {
             Vector3d val = MirrorMap(orientation.__AxisY(), plane, fromComponent, toComponent);
             Vector3d val2 = MirrorMap(orientation.__AxisX(), plane, fromComponent, toComponent);
             return val.__ToMatrix3x3(val2);
         }
 
-        public abstract void Mirror(Feature originalFeature, IDictionary<TaggedObject, TaggedObject> dict, Surface. Plane plane, Component originalComp);
+        public abstract void Mirror(Feature originalFeature, IDictionary<TaggedObject, TaggedObject> dict, Surface.Plane plane, Component originalComp);
 
         public bool EdgePointsMatchFace(Face mirrorFace, IList<Tuple<Point3d, Point3d>> edgePoints)
         {

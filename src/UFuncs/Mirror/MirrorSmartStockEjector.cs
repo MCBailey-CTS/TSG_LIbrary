@@ -12,7 +12,6 @@ using TSG_Library.Disposable;
 
 namespace TSG_Library.UFuncs.MirrorComponents.Features
 {
-    [Obsolete]
     public class MirrorSmartStockEjector : ILibraryComponent
     {
         public bool IsLibraryComponent(Component component)

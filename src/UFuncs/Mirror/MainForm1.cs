@@ -74,6 +74,8 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
 
         private void ButtonOk_Click(object sender, EventArgs e)
         {
+            //System.Diagnostics.Debugger.Launch();
+
             Hide();
             bool interruptUpdateOnError = session_.Preferences.Modeling.InterruptUpdateOnError;
             bool interruptUpdateOnWarning = session_.Preferences.Modeling.InterruptUpdateOnWarning;

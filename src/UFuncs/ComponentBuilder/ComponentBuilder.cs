@@ -2519,7 +2519,6 @@ namespace TSG_Library.UFuncs
 
         private bool IsNameValid(Part partToCheck)
         {
-            bool isValid;
             var lastDirIndex = partToCheck.FullPath.LastIndexOf("\\");
             var subAssemName = partToCheck.FullPath.Substring(lastDirIndex + 1);
 

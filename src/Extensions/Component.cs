@@ -229,6 +229,11 @@ namespace TSG_Library.Extensions
             session_.__DeleteObjects(component);
         }
 
+        //public static void __SetWcsToComponent(this Component comp)
+        //{
+        //    __display_part_.WCS.SetOriginAndMatrix(comp.__Origin(), comp.__Orientation());
+        //}
+
 
         public static string __AssemblyPathString(this Component component)
         {
@@ -242,7 +247,7 @@ namespace TSG_Library.Extensions
 
         public static Part __Prototype(this Component comp)
         {
-            return comp.__Prototype();
+            return (Part)comp.Prototype;
         }
 
         public static ReferenceSet[] __ReferenceSets(this Part part)

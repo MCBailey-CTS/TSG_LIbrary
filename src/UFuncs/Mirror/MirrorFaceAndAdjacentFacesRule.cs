@@ -10,7 +10,6 @@ using TSG_Library.Geom;
 
 namespace TSG_Library.UFuncs.MirrorComponents.Features
 {
-    [Obsolete]
     public class MirrorFaceAndAdjacentFacesRule : BaseMirrorRule
     {
         public override SelectionIntentRule.RuleType RuleType { get; } = SelectionIntentRule.RuleType.FaceAndAdjacentFaces;
