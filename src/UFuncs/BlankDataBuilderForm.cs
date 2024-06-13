@@ -329,7 +329,7 @@ namespace TSG_Library.UFuncs
 
                 // get path to blank location, check directory structure
 
-                string outputDirectory = $"{folder.dir_outgoing}\\{TodaysDate}-Blank-{versionNumber}";
+                string outputDirectory = $"{folder.DirOutgoing}\\{TodaysDate}-Blank-{versionNumber}";
 
                 if (!Directory.Exists(outputDirectory))
                     Directory.CreateDirectory(outputDirectory);

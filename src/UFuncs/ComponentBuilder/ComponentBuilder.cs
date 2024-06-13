@@ -3231,8 +3231,7 @@ namespace TSG_Library.UFuncs
                     if (!(fractionValue <= ii))
                         continue;
 
-                    double roundedFraction = ii;
-                    double finalValue = truncateValue + roundedFraction;
+                    double finalValue = truncateValue + ii;
                     distances[i] = finalValue;
                     break;
                 }
@@ -3265,8 +3264,7 @@ namespace TSG_Library.UFuncs
                     if (!(fractionValue <= ii))
                         continue;
 
-                    double roundedFraction = ii;
-                    double finalValue = truncateValue + roundedFraction;
+                    double finalValue = truncateValue + ii;
 
                     if (isNegative)
                         minCorner[i] = finalValue * -1;

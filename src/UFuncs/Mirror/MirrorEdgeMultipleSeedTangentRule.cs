@@ -24,8 +24,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             ((EdgeMultipleSeedTangentRule)originalRule).GetData(out Edge[] seedEdges, out double angleTolerance,
                 out bool hasSameConvexity);
             IList<Edge> list = new List<Edge>();
-            Edge[] array = seedEdges;
-            foreach (Edge edge in array)
+            foreach (Edge edge in seedEdges)
             {
                 Body body = edge.GetBody();
                 Body body2;

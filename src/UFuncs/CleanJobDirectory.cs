@@ -42,7 +42,7 @@ namespace TSG_Library.UFuncs
         public override void execute()
         {
             // Creates an instance of GFolderWithCtsNumber using the current Displayed Part as it's source.
-            GFolder folder = GFolder.create(__work_part_.FullPath);
+            GFolder folder = GFolder.Create(__work_part_.FullPath);
 
             if (folder is null)
             {
@@ -66,10 +66,10 @@ namespace TSG_Library.UFuncs
 
             switch (displayedPartOp)
             {
-                case var op when op == "900":
+                case var _ when displayedPartOp == "900":
                     throw new InvalidOperationException(
                         "Clean Job Directory must be ran from a -000 not located in a 900 folderWithCtsNumber.");
-                case var op when op.Length > 3:
+                case var _ when displayedPartOp.Length > 3:
                     throw new InvalidOperationException(
                         "Clean Job Directory must be ran from a -000 not located in a 900 folderWithCtsNumber.");
             }
@@ -122,9 +122,9 @@ namespace TSG_Library.UFuncs
             const string fileCleanUp = "FileCleanup";
 
 
-            string cleanupDirectory = folder.customer_number.Length == 6
-                ? $"{folder.dir_design_information}\\{fileCleanUp}"
-                : $"{folder.dir_job}\\{fileCleanUp}";
+            string cleanupDirectory = folder.CustomerNumber.Length == 6
+                ? $"{folder.DirDesignInformation}\\{fileCleanUp}"
+                : $"{folder.DirJob}\\{fileCleanUp}";
 
 
             bool directoryExists = Directory.Exists(cleanupDirectory);
@@ -166,14 +166,12 @@ namespace TSG_Library.UFuncs
             if (snapComp is null)
                 throw new ArgumentNullException(nameof(snapComp));
 
-            Component nxComponent = snapComp;
-
-            if (!(nxComponent.Prototype is Part) && !nxComponent.IsSuppressed)
+            if (!(snapComp.Prototype is Part) && !snapComp.IsSuppressed)
                 throw new ArgumentException(
                     $@"Please fully load your assembly. {snapComp.DisplayName}{snapComp.OwningComponent.DisplayName} .",
                     nameof(snapComp));
 
-            if (nxComponent.IsSuppressed)
+            if (snapComp.IsSuppressed)
                 yield break;
 
             yield return snapComp;

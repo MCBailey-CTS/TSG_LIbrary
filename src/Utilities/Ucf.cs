@@ -19,7 +19,7 @@ namespace TSG_Library.Utilities
 
         public const string ConceptControlFile = @"U:\nxFiles\UfuncFiles\ConceptControlFile.ucf";
 
-        public readonly Dictionary<string, string[]> Dictionary;
+        private readonly Dictionary<string, string[]> _dictionary;
 
         public Ucf(string ucfFilePath)
         {
@@ -31,7 +31,7 @@ namespace TSG_Library.Utilities
                     .Where(line => !line.StartsWith(@"//"))
                     .ToArray();
 
-                Dictionary = new Dictionary<string, string[]>();
+                _dictionary = new Dictionary<string, string[]>();
 
                 for (int index = 0; index < lines.Length; index++)
                 {
@@ -52,15 +52,15 @@ namespace TSG_Library.Utilities
 
                     if (list.Count == 0)
                         throw new Exception("Start and End didn't contain any content.");
-                    Dictionary[startLine.Substring(1, startLine.Length - 2)] = list.ToArray();
+                    _dictionary[startLine.Substring(1, startLine.Length - 2)] = list.ToArray();
                 }
 
-                string[] keyArray = Dictionary.Keys.ToArray();
+                string[] keyArray = _dictionary.Keys.ToArray();
                 foreach (string key in keyArray)
                 {
-                    string[] valueArray = Dictionary[key];
+                    string[] valueArray = _dictionary[key];
                     for (int valueIndex = 0; valueIndex < valueArray.Length; valueIndex++)
-                        valueArray[valueIndex] = ConstructString(Dictionary, valueArray[valueIndex]);
+                        valueArray[valueIndex] = ConstructString(_dictionary, valueArray[valueIndex]);
                 }
             }
             catch (Exception ex)
@@ -107,40 +107,41 @@ namespace TSG_Library.Utilities
         }
 
         [DebuggerStepThrough]
+        // ReSharper disable once UnusedMember.Global
         public IEnumerable<TSource> MultipleValues<TSource>(string key)
         {
-            if (!Dictionary.ContainsKey(key))
+            if (!_dictionary.TryGetValue(key, out string[] value))
                 throw new KeyNotFoundException($"Dictionary doesn't contain key: {key}.");
 
-            return Dictionary[key].Cast<TSource>().ToArray();
+            return value.Cast<TSource>().ToArray();
         }
 
+        // ReSharper disable once MemberCanBePrivate.Global
         public IEnumerable<int> MultipleIntegers(string key)
         {
             return MultipleStrings(key).Select(int.Parse).ToArray();
         }
 
+        // ReSharper disable once UnusedMember.Global
         public int SingleInteger(string key)
         {
             return MultipleIntegers(key).Single();
         }
 
+        // ReSharper disable once MemberCanBePrivate.Global
+        // ReSharper disable once UnusedMember.Global
         public IEnumerable<double> MultipleDouble(string key)
         {
             return MultipleStrings(key).Select(double.Parse).ToArray();
         }
 
-        public double SingleDouble(string key)
-        {
-            return MultipleDouble(key).Single();
-        }
-
+        // ReSharper disable once MemberCanBePrivate.Global
         public string[] MultipleStrings(string key)
         {
-            if (!Dictionary.ContainsKey(key))
+            if (!_dictionary.TryGetValue(key, out string[] strings))
                 throw new ArgumentException($"Dictionary doesn't contain key: {key}.");
 
-            return Dictionary[key];
+            return strings;
         }
 
         public string SingleValue(string key)
@@ -173,12 +174,13 @@ namespace TSG_Library.Utilities
 
                 switch (startIndex)
                 {
-                    case var index when index < 0:
+                    case var _ when startIndex < 0:
                         yield return currentString;
                         break;
                     case 0:
                     {
                         IEnumerable<string> strings = ParseString(dictionary,
+                            // ReSharper disable once UselessBinaryOperation
                             currentString.Substring(startIndex + RecStart.Length),
                             false);
                         foreach (string str in strings)
@@ -205,7 +207,7 @@ namespace TSG_Library.Utilities
 
                 switch (endIndex)
                 {
-                    case var index when index < 0:
+                    case var _ when endIndex < 0:
                         // We want to throw here because <rec> was unable to be found in the string, and therefore should have never been put into this method.
                         throw new ArgumentOutOfRangeException(nameof(currentString),
                             $@"Could not find an instance of {RecEnd} within {currentString}.");

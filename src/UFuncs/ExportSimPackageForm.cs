@@ -78,7 +78,7 @@ namespace TSG_Library.UFuncs
                     throw new InvalidOperationException("The current work part does not reside within a GFolder.");
 
                 string directory =
-                    $"{folder.dir_simulation}\\{TodaysDate}-{customerNumber}-Simulation-Package-for-Design";
+                    $"{folder.DirSimulation}\\{TodaysDate}-{customerNumber}-Simulation-Package-for-Design";
 
                 if (Directory.Exists(directory))
                 {
@@ -189,7 +189,7 @@ namespace TSG_Library.UFuncs
 
                     if (chkCopy.Checked)
                     {
-                        string processDirectory = folder.dir_process_sim_data_design;
+                        string processDirectory = folder.DirProcessSimDataDesign;
 
                         if (!Directory.Exists(processDirectory))
                             Directory.CreateDirectory(processDirectory);
@@ -218,7 +218,7 @@ namespace TSG_Library.UFuncs
                 {
                     if (chkCopy.Checked)
                     {
-                        string processDirectory = folder.dir_process_sim_data_design;
+                        string processDirectory = folder.DirProcessSimDataDesign;
 
                         if (!Directory.Exists(processDirectory))
                             Directory.CreateDirectory(processDirectory);

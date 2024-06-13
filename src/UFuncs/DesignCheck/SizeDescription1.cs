@@ -54,9 +54,7 @@ namespace TSG_Library.Utilities
                     return false;
                 }
 
-                Part __part = part;
-
-                if (!__part.__HasDynamicBlock())
+                if (!part.__HasDynamicBlock())
                 {
                     message1 = "Part does not contain a Dynamic Block.";
                     return false;
@@ -201,8 +199,7 @@ namespace TSG_Library.Utilities
             for (double ii = .125; ii <= 1; ii += .125)
                 if (fractionValue <= ii)
                 {
-                    double roundedFraction = ii;
-                    double finalValue = truncateValue + roundedFraction;
+                    double finalValue = truncateValue + ii;
                     return finalValue;
                 }
 

@@ -47,7 +47,7 @@ namespace TSG_Library.UFuncs
 
                     __work_part_ = __prototype;
 
-                    GFolder __folder = GFolder.create(__work_part_.FullPath);
+                    GFolder __folder = GFolder.Create(__work_part_.FullPath);
 
                     AddFastenersForm1.SetWcsToWorkPart();
 

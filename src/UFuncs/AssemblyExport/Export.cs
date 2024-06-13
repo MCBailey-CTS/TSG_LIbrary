@@ -48,18 +48,17 @@ namespace TSG_Library.Utilities
             {
                 try
                 {
-                    Component[] components = __components;
                     TheUFSession.Ui.SetPrompt("Filtering components to export.");
-                    GFolder folder = GFolder.create(topLevelAssembly.FullPath);
+                    GFolder folder = GFolder.Create(topLevelAssembly.FullPath);
 
-                    if (!components.All(comp => comp.OwningPart.Tag == topLevelAssembly.Tag))
+                    if (!__components.All(comp => comp.OwningPart.Tag == topLevelAssembly.Tag))
                         throw new InvalidOperationException(
                             "All valid components must be under the top level display part.");
 
-                    bool isSixDigit = folder.customer_number.Length == 6;
+                    bool isSixDigit = folder.CustomerNumber.Length == 6;
                     HashSet<Part> hashedParts = new HashSet<Part>();
 
-                    foreach (Component comp in components)
+                    foreach (Component comp in __components)
                     {
                         if (!(comp.Prototype is Part part))
                             continue;
@@ -75,8 +74,8 @@ namespace TSG_Library.Utilities
                         throw new FileNotFoundException($"Could not find \"{sevenZip}\".");
 
                     string parentFolder = isSixDigit
-                        ? folder.dir_design_information
-                        : folder.dir_outgoing;
+                        ? folder.DirDesignInformation
+                        : folder.DirOutgoing;
 
                     string exportDirectory = string.IsNullOrEmpty(outgoingDirectoryName)
                         ? null
@@ -161,7 +160,7 @@ namespace TSG_Library.Utilities
                             stp999, exportDict["STP_999"],
                             stpSee3DData, exportDict["STP_SEE3D"],
                             paraCasting, exportDict["X_T_CASTING"],
-                            components);
+                            __components);
 
                         Dictionary<string, Process> dict = new Dictionary<string, Process>();
 
@@ -170,9 +169,7 @@ namespace TSG_Library.Utilities
                             string stpPath = CreatePath(folder, topLevelAssembly, "-Step-Assembly", ".stp");
                             ;
 
-                            string output = stpPath;
-
-                            string dir = Path.GetDirectoryName(output);
+                            string dir = Path.GetDirectoryName(stpPath);
 
                             if (!Directory.Exists(dir))
                                 Directory.CreateDirectory(dir);
@@ -462,7 +459,7 @@ namespace TSG_Library.Utilities
                 // Matches the 900 000's.
                 case "900":
                 {
-                    directoriesToDelete.Add($"{folder.dir_op("900")}\\{folder.customer_number}-900-Step-Assembly");
+                    directoriesToDelete.Add($"{folder.dir_op("900")}\\{folder.CustomerNumber}-900-Step-Assembly");
 
                     foreach (Component component in part.ComponentAssembly.RootComponent.GetChildren())
                     {
@@ -483,23 +480,23 @@ namespace TSG_Library.Utilities
                             string directory = folder.dir_op(temp_op);
 
                             directoriesToDelete.Add(
-                                $"{directory}\\{folder.customer_number}-{temp_op}-Parasolids-Castings");
-                            directoriesToDelete.Add($"{directory}\\{folder.customer_number}-{temp_op}-Pdf-4-Views");
-                            directoriesToDelete.Add($"{directory}\\{folder.customer_number}-{temp_op}-Step-Details");
-                            directoriesToDelete.Add($"{directory}\\{folder.customer_number}-{temp_op}-Step-Assembly");
-                            directoriesToDelete.Add($"{directory}\\{folder.customer_number}-{temp_op}-Dwg-Burnouts");
+                                $"{directory}\\{folder.CustomerNumber}-{temp_op}-Parasolids-Castings");
+                            directoriesToDelete.Add($"{directory}\\{folder.CustomerNumber}-{temp_op}-Pdf-4-Views");
+                            directoriesToDelete.Add($"{directory}\\{folder.CustomerNumber}-{temp_op}-Step-Details");
+                            directoriesToDelete.Add($"{directory}\\{folder.CustomerNumber}-{temp_op}-Step-Assembly");
+                            directoriesToDelete.Add($"{directory}\\{folder.CustomerNumber}-{temp_op}-Dwg-Burnouts");
                             directoriesToDelete.Add(
-                                $"{directory}\\{folder.customer_number}-{temp_op}-Step-See-3D-Data");
+                                $"{directory}\\{folder.CustomerNumber}-{temp_op}-Step-See-3D-Data");
                         }
                     }
                 }
                     break;
 
                 // This matches all the regular op 010, 020, 030 and so 000's.
-                case var assemblyOp000 when assemblyOp000.Length == 3:
+                case var _ when op.Length == 3:
                 {
                     // Gets the assembly folderWithCtsNumber correpsonding to the {assemblyOp000}.
-                    string assemblyFolder = folder.dir_op(assemblyOp000);
+                    string assemblyFolder = folder.dir_op(op);
 
                     // If the directory {assemblyFolder} doesn't exist, then we want to throw.
                     if (!Directory.Exists(assemblyFolder))
@@ -512,7 +509,7 @@ namespace TSG_Library.Utilities
                         if (dirName == null)
                             continue;
 
-                        if (!dirName.StartsWith($"{folder.customer_number}-{assemblyOp000}"))
+                        if (!dirName.StartsWith($"{folder.CustomerNumber}-{op}"))
                             continue;
 
                         // Adds the {directory} to the {directoriesToDelete}.
@@ -522,13 +519,13 @@ namespace TSG_Library.Utilities
                     break;
 
                 // Matches the assembly holder by ensuring that the op has an even amount of characters.
-                case var assemblyHolder when assemblyHolder.Length % 2 == 0:
+                case var _ when op.Length % 2 == 0:
                 {
                     // A list to hold the ops.
                     List<string> opList = new List<string>();
 
                     // Gets the character array of the {assemblyHolder}.
-                    char[] charArray = assemblyHolder.ToCharArray();
+                    char[] charArray = op.ToCharArray();
 
                     // Grab the op characters two at a time.
                     for (int i = 0; i < charArray.Length; i += 2)
@@ -550,7 +547,7 @@ namespace TSG_Library.Utilities
                             if (dirName == null)
                                 continue;
 
-                            if (!dirName.StartsWith($"{folder.customer_number}-{assemblyOp}"))
+                            if (!dirName.StartsWith($"{folder.CustomerNumber}-{assemblyOp}"))
                                 continue;
 
                             // Adds the {directory} to the {directoriesToDelete}.
@@ -623,7 +620,7 @@ namespace TSG_Library.Utilities
         public static string CreatePath(GFolder folder, Part part, string directoryTag, string extension)
         {
             string directory =
-                $"{folder.dir_job}\\{folder.customer_number}-{part.__AskDetailOp()}\\{folder.customer_number}-{part.__AskDetailOp()}{directoryTag}";
+                $"{folder.DirJob}\\{folder.CustomerNumber}-{part.__AskDetailOp()}\\{folder.CustomerNumber}-{part.__AskDetailOp()}{directoryTag}";
             string stpPath = $"{directory}\\{part.Leaf}{extension}";
             return stpPath;
         }
@@ -675,7 +672,7 @@ namespace TSG_Library.Utilities
                 string op = part.__AskDetailOp();
 
                 string castingDirectory =
-                    $"{folder.dir_job}\\{folder.customer_number}-{op}\\{folder.customer_number}-{op}-Parasolids-Castings";
+                    $"{folder.DirJob}\\{folder.CustomerNumber}-{op}\\{folder.CustomerNumber}-{op}-Parasolids-Castings";
 
                 if (!Directory.Exists(castingDirectory))
                     Directory.CreateDirectory(castingDirectory);
@@ -794,7 +791,7 @@ namespace TSG_Library.Utilities
                     }
 
                 string castingFile =
-                    $"{folder.dir_job}\\{folder.customer_number}-{op}\\{folder.customer_number}-{op}-Parasolids-Castings\\{part.Leaf}.x_t";
+                    $"{folder.DirJob}\\{folder.CustomerNumber}-{op}\\{folder.CustomerNumber}-{op}-Parasolids-Castings\\{part.Leaf}.x_t";
 
                 TheUFSession.Ps.ExportData(tagBodies.ToArray(), castingFile);
             }
@@ -928,19 +925,17 @@ namespace TSG_Library.Utilities
                 if (!Regex.IsMatch(childOfStrip.DisplayName, Regex_PressAssembly, RegexOptions.IgnoreCase))
                     continue;
 
-                Component pressComponent = childOfStrip;
-
-                if (pressComponent.GetChildren().Length == 0)
+                if (childOfStrip.GetChildren().Length == 0)
                     throw new InvalidOperationException(
-                        $"A press exists in your assembly without any children. {pressComponent.__AssemblyPathString()}");
+                        $"A press exists in your assembly without any children. {childOfStrip.__AssemblyPathString()}");
 
-                switch (pressComponent.GetChildren().Length)
+                switch (childOfStrip.GetChildren().Length)
                 {
                     case 1:
                         throw new InvalidOperationException(
-                            $"A press exists in your assembly with only one child. Expecting a ram and a bolster. {pressComponent.__AssemblyPathString()}");
+                            $"A press exists in your assembly with only one child. Expecting a ram and a bolster. {childOfStrip.__AssemblyPathString()}");
                     case 2:
-                        foreach (Component childOfPress in pressComponent.GetChildren())
+                        foreach (Component childOfPress in childOfStrip.GetChildren())
                         {
                             if (!childOfPress.__IsLoaded())
                                 throw new InvalidOperationException(
@@ -1156,8 +1151,8 @@ namespace TSG_Library.Utilities
                 if (!folder.is_cts_job())
                     return;
 
-                if (GetReports(folder.cts_number).Length != 0)
-                    foreach (string report in GetReports(folder.cts_number))
+                if (GetReports(folder.CtsNumber).Length != 0)
+                    foreach (string report in GetReports(folder.CtsNumber))
                     {
                         string reportName = Path.GetFileName(report);
 
@@ -1490,7 +1485,7 @@ namespace TSG_Library.Utilities
         {
             try
             {
-                string stocklist = (from file in Directory.GetFiles(folder.dir_stocklist)
+                string stocklist = (from file in Directory.GetFiles(folder.DirStocklist)
                     let name = Path.GetFileNameWithoutExtension(file)
                     where name != null
                     where name.EndsWith($"{topDisplayName}-stocklist")

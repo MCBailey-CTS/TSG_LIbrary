@@ -44,11 +44,11 @@ namespace TSG_Library.UFuncs
             {
                 saveFileDialog1.InitialDirectory = "G:\\CTS\\job-info\\pictures\\";
 
-                saveFileDialog1.FileName = folder.customer_number;
+                saveFileDialog1.FileName = folder.CustomerNumber;
             }
             else
             {
-                saveFileDialog1.InitialDirectory = folder.dir_job;
+                saveFileDialog1.InitialDirectory = folder.DirJob;
             }
 
             DialogResult result = saveFileDialog1.ShowDialog();

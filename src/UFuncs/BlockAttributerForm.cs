@@ -1046,8 +1046,7 @@ namespace TSG_Library.UFuncs
                                         {
                                             if (fractionValue <= ii)
                                             {
-                                                double roundedFraction = ii;
-                                                double finalValue = truncateValue + roundedFraction;
+                                                double finalValue = truncateValue + ii;
                                                 distances[i] = finalValue;
                                                 break;
                                             }
@@ -1208,8 +1207,7 @@ namespace TSG_Library.UFuncs
                                             {
                                                 if (fractionValue <= ii)
                                                 {
-                                                    double roundedFraction = ii;
-                                                    double finalValue = truncateValue + roundedFraction;
+                                                    double finalValue = truncateValue + ii;
                                                     distances[i] = finalValue;
                                                     break;
                                                 }
@@ -1495,8 +1493,7 @@ namespace TSG_Library.UFuncs
                                         {
                                             if (fractionValue <= ii)
                                             {
-                                                double roundedFraction = ii;
-                                                double finalValue = truncateValue + roundedFraction;
+                                                double finalValue = truncateValue + ii;
                                                 distances[i] = finalValue;
                                                 break;
                                             }
@@ -1655,8 +1652,7 @@ namespace TSG_Library.UFuncs
                                             {
                                                 if (fractionValue <= ii)
                                                 {
-                                                    double roundedFraction = ii;
-                                                    double finalValue = truncateValue + roundedFraction;
+                                                    double finalValue = truncateValue + ii;
                                                     distances[i] = finalValue;
                                                     break;
                                                 }
@@ -2316,8 +2312,7 @@ namespace TSG_Library.UFuncs
                                     {
                                         if (fractionValue <= ii)
                                         {
-                                            double roundedFraction = ii;
-                                            double finalValue = truncateValue + roundedFraction;
+                                            double finalValue = truncateValue + ii;
                                             distances[i] = finalValue;
                                             break;
                                         }
@@ -2467,8 +2462,7 @@ namespace TSG_Library.UFuncs
                                 {
                                     if (fractionValue <= ii)
                                     {
-                                        double roundedFraction = ii;
-                                        double finalValue = truncateValue + roundedFraction;
+                                        double finalValue = truncateValue + ii;
                                         distances[i] = finalValue;
                                         break;
                                     }
@@ -2679,8 +2673,7 @@ namespace TSG_Library.UFuncs
                                         {
                                             if (fractionValue <= ii)
                                             {
-                                                double roundedFraction = ii;
-                                                double finalValue = truncateValue + roundedFraction;
+                                                double finalValue = truncateValue + ii;
                                                 distances[i] = finalValue;
                                                 break;
                                             }
@@ -2853,8 +2846,7 @@ namespace TSG_Library.UFuncs
                                     {
                                         if (fractionValue <= ii)
                                         {
-                                            double roundedFraction = ii;
-                                            double finalValue = truncateValue + roundedFraction;
+                                            double finalValue = truncateValue + ii;
                                             distances[i] = finalValue;
                                             break;
                                         }
@@ -2929,8 +2921,7 @@ namespace TSG_Library.UFuncs
                 for (double ii = .125; ii <= 1; ii += .125)
                     if (fractionValue <= ii)
                     {
-                        double roundedFraction = ii;
-                        double finalValue = truncateValue + roundedFraction;
+                        double finalValue = truncateValue + ii;
                         return finalValue;
                     }
             }
@@ -3886,8 +3877,7 @@ namespace TSG_Library.UFuncs
                             {
                                 if (fractionValue <= ii)
                                 {
-                                    double roundedFraction = ii;
-                                    double finalValue = truncateValue + roundedFraction;
+                                    double finalValue = truncateValue + ii;
                                     distances[i] = finalValue;
                                     break;
                                 }

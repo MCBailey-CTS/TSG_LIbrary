@@ -80,7 +80,7 @@ namespace TSG_Library.UFuncs
                 string top_dir = match.Groups["top_dir"].Value.Trim();
 
 
-                GFolder __folder = GFolder.create(jobDir);
+                GFolder __folder = GFolder.Create(jobDir);
 
                 string leaf = Path.GetFileNameWithoutExtension(jobDir);
 
@@ -517,7 +517,7 @@ namespace TSG_Library.UFuncs
 
             if (selected_op == 10)
             {
-                File.Copy(XXXXXX_OP_XXX_Layout, selected_part_path);
+                File.Copy(XxxxxxOpXxxLayout, selected_part_path);
             }
             else
             {
@@ -540,7 +540,7 @@ namespace TSG_Library.UFuncs
 
                 if (ask_prog_station_10().Count > 0 && ask_tran_station_10().Count > 0 && selected_op == max_op)
                 {
-                    prog_transfer(GFolder.create(op_str), selected_part_path, __prefix);
+                    prog_transfer(GFolder.Create(op_str), selected_part_path, __prefix);
 
                     if (max_op > 0)
                     {
@@ -650,7 +650,7 @@ namespace TSG_Library.UFuncs
 
             if (prog_ops.Length > 0 && tran_ops.Length > 0 && __prefix == "P")
             {
-                GFolder folder = GFolder.create(__display_part_.FullPath);
+                GFolder folder = GFolder.Create(__display_part_.FullPath);
 
                 string[] paths = __display_part_.ComponentAssembly.RootComponent.GetChildren()
                     .Where(__c => __c.__IsLoaded())
@@ -691,16 +691,16 @@ namespace TSG_Library.UFuncs
         public static void create(GFolder __folder, int __transfer_layouts, int __tran_presses, int __prog_layouts,
             int __prog_presses, bool __start_at_005, bool __offline_die)
         {
-            if (!File.Exists(__folder.dir_job))
-                Directory.CreateDirectory(__folder.dir_job);
+            if (!File.Exists(__folder.DirJob))
+                Directory.CreateDirectory(__folder.DirJob);
 
-            if (!File.Exists(__folder.dir_layout))
-                Directory.CreateDirectory(__folder.dir_layout);
+            if (!File.Exists(__folder.DirLayout))
+                Directory.CreateDirectory(__folder.DirLayout);
 
-            if (!File.Exists(__folder.dir_simulation))
-                Directory.CreateDirectory(__folder.dir_simulation);
+            if (!File.Exists(__folder.DirSimulation))
+                Directory.CreateDirectory(__folder.DirSimulation);
 
-            if (!File.Exists(__folder.path_simulation))
+            if (!File.Exists(__folder.PathSimulation))
             {
                 print_("Couldn't find a simulation file");
                 return;
@@ -715,13 +715,13 @@ namespace TSG_Library.UFuncs
 
             if (File.Exists(__folder.file_strip("010")))
                 session_.__FindOrOpen(__folder.file_strip("010")).__AddComponent(
-                    __folder.path_simulation,
+                    __folder.PathSimulation,
                     componentName: "SIMULATION-STRIP",
                     layer: 8);
 
             if (File.Exists(__folder.file_strip("900")))
                 session_.__FindOrOpen(__folder.file_strip("900")).__AddComponent(
-                    __folder.path_simulation,
+                    __folder.PathSimulation,
                     componentName: "SIMULATION-STRIP",
                     layer: 8);
 
@@ -733,7 +733,7 @@ namespace TSG_Library.UFuncs
             __display_part_.__Save();
 
             foreach (Part __part in session_.Parts.ToArray())
-                if (__part.IsModified && __part.Leaf.StartsWith(__folder.customer_number))
+                if (__part.IsModified && __part.Leaf.StartsWith(__folder.CustomerNumber))
                     __part.__Save();
 
             if (File.Exists(__folder.file_strip("010")))
@@ -752,7 +752,7 @@ namespace TSG_Library.UFuncs
         public static void delete_prog_presses_from_display(GFolder __folder)
         {
             __display_part_.ComponentAssembly.RootComponent.GetChildren()
-                .Where(__child => __child.DisplayName.StartsWith($"{__folder.customer_number}-P"))
+                .Where(__child => __child.DisplayName.StartsWith($"{__folder.CustomerNumber}-P"))
                 .Where(__child => __child.DisplayName.EndsWith("-Press"))
                 .ToList()
                 .ForEach(__child => __child.__DeleteSelfAndConstraints());
@@ -783,7 +783,7 @@ namespace TSG_Library.UFuncs
                     string op_str = __Op10To010(__prog_layouts * 10);
                     string layout_path = __folder.file_layout_p(op_str);
                     if (!File.Exists(layout_path))
-                        File.Copy(XXXXXX_OP_XXX_Layout, layout_path);
+                        File.Copy(XxxxxxOpXxxLayout, layout_path);
                     //prog_work(op_str, layout_path, "P");
                     //prog_lifted(op_str, layout_path, "P");
                     prog_P_TRANSFER(__Op10To010(__prog_layouts * 10), layout_path, "P");
@@ -916,12 +916,12 @@ namespace TSG_Library.UFuncs
         public static void clone_offline_die(GFolder __folder, int __prog_layouts, int __transfer_layouts,
             int __prog_presses, int __tran_presses, string op)
         {
-            string strip_tran_path = __folder.file_strip_900;
+            string strip_tran_path = __folder.FileStrip900;
             string strip_prog_path = __folder.file_strip(op);
             ExecuteCloneStrip1(__folder, op, strip_prog_path);
             File.Copy(strip_prog_path, strip_tran_path);
             if (!File.Exists(strip_tran_path))
-                File.Copy(XXXXX_Strip, strip_tran_path);
+                File.Copy(XxxxxStrip, strip_tran_path);
 
             __display_part_ = session_.__FindOrOpen(strip_tran_path);
 
@@ -935,10 +935,10 @@ namespace TSG_Library.UFuncs
 
             try
             {
-                session_.__FindOrOpen(__folder.path_strip_flange);
+                session_.__FindOrOpen(__folder.PathStripFlange);
 
                 Component obj = __display_part_.ComponentAssembly.RootComponent.__FindComponent(
-                    $"COMPONENT {__folder.customer_number}-Strip Flange Carrier_Tracking Tab 1");
+                    $"COMPONENT {__folder.CustomerNumber}-Strip Flange Carrier_Tracking Tab 1");
 
                 session_.__DeleteObjects(obj);
             }
@@ -950,7 +950,7 @@ namespace TSG_Library.UFuncs
             __display_part_.__Save();
 
             if (!File.Exists(strip_prog_path))
-                File.Copy(XXXXX_Strip, strip_prog_path);
+                File.Copy(XxxxxStrip, strip_prog_path);
             __display_part_ = session_.__FindOrOpen(strip_prog_path);
 
             // add the prog layout-stations
@@ -966,7 +966,7 @@ namespace TSG_Library.UFuncs
         {
             string layout_path = __folder.file_layout_t(op_str);
             if (!File.Exists(layout_path))
-                File.Copy(XXXXXX_OP_XXX_Layout, layout_path);
+                File.Copy(XxxxxxOpXxxLayout, layout_path);
             tran_work(op_str, layout_path, __prefix);
             tran_lifted(op_str, layout_path, __prefix);
             tran_transfer(op_str, layout_path, __prefix);
@@ -976,7 +976,7 @@ namespace TSG_Library.UFuncs
         {
             string layout_path = __folder.file_layout_p(op_str);
             if (!File.Exists(layout_path))
-                File.Copy(XXXXXX_OP_XXX_Layout, layout_path);
+                File.Copy(XxxxxxOpXxxLayout, layout_path);
             prog_work(op_str, layout_path, __prefix);
             prog_lifted(op_str, layout_path, __prefix);
         }
@@ -985,8 +985,8 @@ namespace TSG_Library.UFuncs
         {
             string layout_path = __folder.file_layout(__prefix, __op_str);
             if (!File.Exists(layout_path))
-                File.Copy(XXXXXX_OP_XXX_Layout, layout_path);
-            prog_transfer(GFolder.create(__op_str), layout_path, __prefix);
+                File.Copy(XxxxxxOpXxxLayout, layout_path);
+            prog_transfer(GFolder.Create(__op_str), layout_path, __prefix);
         }
 
 
@@ -997,13 +997,13 @@ namespace TSG_Library.UFuncs
             clone.Initialise(UFClone.OperationClass.CloneOperation);
             clone.SetDefNaming(UFClone.NamingTechnique.UserName);
             clone.SetDryrun(false);
-            clone.AddPart(XXXXX_Strip);
-            clone.SetNaming(XXXXX_Strip, UFClone.NamingTechnique.UserName, strip_prog_path);
+            clone.AddPart(XxxxxStrip);
+            clone.SetNaming(XxxxxStrip, UFClone.NamingTechnique.UserName, strip_prog_path);
             if (op != "900")
             {
-                clone.AddPart(STRIP_FLANGE_CARRIER_TRACKING);
-                clone.SetNaming(STRIP_FLANGE_CARRIER_TRACKING, UFClone.NamingTechnique.UserName,
-                    __folder.path_strip_flange);
+                clone.AddPart(StripFlangeCarrierTracking);
+                clone.SetNaming(StripFlangeCarrierTracking, UFClone.NamingTechnique.UserName,
+                    __folder.PathStripFlange);
             }
 
             clone.InitNamingFailures(out UFClone.NamingFailures failures);
@@ -1019,14 +1019,14 @@ namespace TSG_Library.UFuncs
             clone.Initialise(UFClone.OperationClass.CloneOperation);
             clone.SetDefNaming(UFClone.NamingTechnique.UserName);
             clone.SetDryrun(false);
-            clone.AddPart(XXXXX_Strip);
-            clone.SetNaming(XXXXX_Strip, UFClone.NamingTechnique.UserName, strip_tran_path);
+            clone.AddPart(XxxxxStrip);
+            clone.SetNaming(XxxxxStrip, UFClone.NamingTechnique.UserName, strip_tran_path);
 
-            if (!File.Exists(__folder.path_strip_flange))
+            if (!File.Exists(__folder.PathStripFlange))
             {
-                clone.AddPart(STRIP_FLANGE_CARRIER_TRACKING);
-                clone.SetNaming(STRIP_FLANGE_CARRIER_TRACKING, UFClone.NamingTechnique.UserName,
-                    __folder.path_strip_flange);
+                clone.AddPart(StripFlangeCarrierTracking);
+                clone.SetNaming(StripFlangeCarrierTracking, UFClone.NamingTechnique.UserName,
+                    __folder.PathStripFlange);
             }
 
             clone.InitNamingFailures(out UFClone.NamingFailures failures);

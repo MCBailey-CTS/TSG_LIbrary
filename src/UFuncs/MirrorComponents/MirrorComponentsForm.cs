@@ -807,8 +807,7 @@ namespace TSG_Library.UFuncs
             Point blkFeatBuilderPoint = _WorkPart.Points.CreatePoint(blkOrigin);
             blkFeatBuilderPoint.SetCoordinates(blkOrigin);
             blockFeatureBuilder1.OriginPoint = blkFeatBuilderPoint;
-            Point3d originPoint1 = blkOrigin;
-            blockFeatureBuilder1.SetOriginAndLengths(originPoint1, length, width, height);
+            blockFeatureBuilder1.SetOriginAndLengths(blkOrigin, length, width, height);
             blockFeatureBuilder1.SetOrientation(xAxis, yAxis);
             blockFeatureBuilder1.CommitFeature();
         }
@@ -843,8 +842,7 @@ namespace TSG_Library.UFuncs
             Point blkFeatBuilderPoint = _WorkPart.Points.CreatePoint(blkOrigin);
             blkFeatBuilderPoint.SetCoordinates(blkOrigin);
             blockFeatureBuilder2.OriginPoint = blkFeatBuilderPoint;
-            Point3d originPoint1 = blkOrigin;
-            blockFeatureBuilder2.SetOriginAndLengths(originPoint1, length, width, height);
+            blockFeatureBuilder2.SetOriginAndLengths(blkOrigin, length, width, height);
             blockFeatureBuilder2.SetOrientation(xAxis1, yAxis1);
             blockFeatureBuilder2.CommitFeature();
         }

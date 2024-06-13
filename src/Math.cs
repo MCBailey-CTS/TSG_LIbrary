@@ -299,8 +299,7 @@
             for (double ii = .125; ii <= 1; ii += .125)
                 if (fractionValue <= ii)
                 {
-                    double roundedFraction = ii;
-                    return truncateValue + roundedFraction;
+                    return truncateValue + ii;
                 }
 
             return roundValue;

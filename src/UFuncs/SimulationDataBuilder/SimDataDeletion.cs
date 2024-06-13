@@ -35,12 +35,12 @@ namespace TSG_Library.Utilities
                     print_($"Deleting the {selectedDisplayName} is forbidden.");
 
 
-            GFolder folder = GFolder.create(__work_part_.FullPath);
+            GFolder folder = GFolder.Create(__work_part_.FullPath);
 
             string currentDisplayNameJob = __display_part_.Leaf.Replace("-simulation", "");
 
             // This gets all the files to delete that are located within the JobFolder on the GDrive.
-            foreach (string file in Directory.EnumerateFiles(folder.dir_job, "*", SearchOption.AllDirectories))
+            foreach (string file in Directory.EnumerateFiles(folder.DirJob, "*", SearchOption.AllDirectories))
             {
                 string fileName = Path.GetFileNameWithoutExtension(file);
 
@@ -50,12 +50,12 @@ namespace TSG_Library.Utilities
                 filesToDelete.Add(file);
             }
 
-            string simDir = $"{SimActive}\\{Path.GetFileNameWithoutExtension(folder.dir_job)}";
+            string simDir = $"{SimActive}\\{Path.GetFileNameWithoutExtension(folder.DirJob)}";
 
             Dictionary<string, string> dictionary = new Dictionary<string, string>();
 
             foreach (string displayName in selectedDisplayNames)
-                switch (folder.customer_number.Length)
+                switch (folder.CustomerNumber.Length)
                 {
                     case 6:
                         Match tsgMatch = Regex.Match(displayName, "-(?<tsgLevel>tsg\\d+)");

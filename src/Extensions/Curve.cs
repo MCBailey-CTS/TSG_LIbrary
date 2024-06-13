@@ -26,13 +26,11 @@ namespace TSG_Library.Extensions
             UFEval eval = ufsession_.Eval;
             eval.Initialize2(curve.Tag, out IntPtr evaluator);
             double[] array = new double[3];
-            double[] point = array;
             double[] array2 = new double[3];
-            double[] array3 = array2;
             value /= Factor;
-            eval.Evaluate(evaluator, 1, value, point, array3);
+            eval.Evaluate(evaluator, 1, value, array, array2);
             eval.Free(evaluator);
-            Vector3d vector = array3.__ToVector3d();
+            Vector3d vector = array2.__ToVector3d();
             return vector.__Divide(Factor);
         }
 
@@ -150,13 +148,11 @@ namespace TSG_Library.Extensions
             UFEval eval = ufsession_.Eval;
             eval.Initialize2(curve.Tag, out IntPtr evaluator);
             double[] array = new double[3];
-            double[] array2 = array;
             double[] array3 = new double[3];
-            double[] derivatives = array3;
             value /= Factor;
-            eval.Evaluate(evaluator, 0, value, array2, derivatives);
+            eval.Evaluate(evaluator, 0, value, array, array3);
             eval.Free(evaluator);
-            return array2.__ToPoint3d();
+            return array.__ToPoint3d();
         }
 
         //
@@ -771,17 +767,13 @@ namespace TSG_Library.Extensions
             UFEval eval = ufsession_.Eval;
             eval.Initialize2(curve.Tag, out IntPtr evaluator);
             double[] array = new double[3];
-            double[] point = array;
             double[] array2 = new double[3];
-            double[] array3 = array2;
             double[] array4 = new double[3];
-            double[] normal = array4;
             double[] array5 = new double[3];
-            double[] binormal = array5;
             value /= Factor;
-            eval.EvaluateUnitVectors(evaluator, value, point, array3, normal, binormal);
+            eval.EvaluateUnitVectors(evaluator, value, array, array2, array4, array5);
             eval.Free(evaluator);
-            return array3.__ToVector3d();
+            return array2.__ToVector3d();
         }
 
 

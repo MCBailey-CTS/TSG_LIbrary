@@ -198,7 +198,7 @@ namespace TSG_Library.UFuncs
                         return;
                 }
 
-                GFolder folder = GFolder.create(__work_part_.FullPath)
+                GFolder folder = GFolder.Create(__work_part_.FullPath)
                                  ??
                                  throw new InvalidOperationException(
                                      "The current work part does not reside in a job folder.");
@@ -435,8 +435,8 @@ namespace TSG_Library.UFuncs
             {
                 // Revision 1.2 2017/11/22
                 string expectedStocklistPath = _isCasting
-                    ? $"{folder.dir_stocklist}\\{__display_part_.Leaf}-casting-stocklist.xlsx"
-                    : $"{folder.dir_stocklist}\\{__display_part_.Leaf}-stocklist.xlsx";
+                    ? $"{folder.DirStocklist}\\{__display_part_.Leaf}-casting-stocklist.xlsx"
+                    : $"{folder.DirStocklist}\\{__display_part_.Leaf}-stocklist.xlsx";
 
                 if (File.Exists(expectedStocklistPath))
                     // ReSharper disable once SwitchStatementMissingSomeCases
@@ -481,7 +481,7 @@ namespace TSG_Library.UFuncs
                 foreach (int key in dict_parts.Keys)
                     try
                     {
-                        Part part = session_.__FindOrOpen($"{folder.customer_number}-{dict_parts[key].Data}");
+                        Part part = session_.__FindOrOpen($"{folder.CustomerNumber}-{dict_parts[key].Data}");
                         string description = dict_sizes[key].Data;
 
                         if (!chkMM.Checked)
@@ -592,7 +592,7 @@ namespace TSG_Library.UFuncs
                 }
 
                 // Constructs the path to the {previous}.
-                string previous = $"{folder.dir_stocklist}\\previous.txt";
+                string previous = $"{folder.DirStocklist}\\previous.txt";
                 List<string> flags = new List<string>();
                 if (File.Exists(previous))
                     flags.AddRange(File.ReadAllLines(previous));

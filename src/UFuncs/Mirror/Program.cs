@@ -71,8 +71,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
                     if (expression3.Status != Expression.StatusOption.Broken) continue;
 
                     Expression[] array3 = expression3.__OwningPart().Expressions.ToArray();
-                    Expression[] array4 = array3;
-                    foreach (Expression expression2 in array4)
+                    foreach (Expression expression2 in array3)
                         if (expression2.Tag != expression3.Tag && expression3.Name == expression2.RightHandSide)
                             item.Expressions.Delete(expression2);
 

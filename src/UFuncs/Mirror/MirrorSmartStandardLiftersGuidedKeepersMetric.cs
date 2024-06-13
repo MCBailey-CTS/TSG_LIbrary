@@ -57,7 +57,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
                     SelectionIntentRule selectionIntentRule =
                         __work_part_.ScRuleFactory.CreateRuleBodyDumb(source.ToArray());
                     extractFaceBuilder.ExtractBodyCollector.ReplaceRules(
-                        new SelectionIntentRule[1] { selectionIntentRule }, false);
+                        new SelectionIntentRule[] { selectionIntentRule }, false);
                     extractFaceBuilder.Associative = true;
                     extractFaceBuilder.CommitFeature();
                 }

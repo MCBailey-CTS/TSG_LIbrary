@@ -45,7 +45,7 @@ namespace TSG_Library.UFuncs
             if (folder is null)
                 return;
 
-            if (folder.customer_number.Length == 6)
+            if (folder.CustomerNumber.Length == 6)
             {
                 if (rdoRto.Checked || rdoChange.Checked)
                 {
@@ -182,7 +182,7 @@ namespace TSG_Library.UFuncs
                 if (folder is null)
                     return;
 
-                switch (folder.customer_number.Length)
+                switch (folder.CustomerNumber.Length)
                 {
                     case 6:
                         txtFolderName.Enabled = !rdoChange.Checked && !rdoRto.Checked;

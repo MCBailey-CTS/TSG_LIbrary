@@ -29,7 +29,7 @@ namespace TSG_Library.Geom
         /// <summary>Represents a non-persistent infinite line -- not stored in NX</summary>
         public class Ray : Curve
         {
-            private Vector3d axis;
+            private Vector3d _axis;
 
             /// <summary>Constructs a ray from a given position and vector</summary>
             /// <param name="origin">Point lying on ray</param>
@@ -57,8 +57,8 @@ namespace TSG_Library.Geom
             /// </remarks>
             public Vector3d Axis
             {
-                get => axis;
-                set => axis = value.__Unit();
+                get => _axis;
+                set => _axis = value.__Unit();
             }
 
             /// <summary> A position on the ray</summary>
@@ -87,9 +87,9 @@ namespace TSG_Library.Geom
         /// <summary>Represents a non-persistent circular arc -- not stored in NX</summary>
         public class Arc : Curve
         {
-            private Vector3d axisX;
+            private Vector3d _axisX;
 
-            private Vector3d axisY;
+            private Vector3d _axisY;
 
             /// <summary>Constructs an arc from center, axes, radius, angles in degrees</summary>
             /// <param name="center">Center point (in absolute coordinates)</param>
@@ -119,15 +119,15 @@ namespace TSG_Library.Geom
             /// <summary> A unit vector along the X-axis of the arc (where angle = 0)</summary>
             public Vector3d AxisX
             {
-                get => axisX;
-                set => axisX = value.__Unit();
+                get => _axisX;
+                set => _axisX = value.__Unit();
             }
 
             /// <summary> A unit vector along the Y-axis of the arc (where angle = 90)</summary>
             public Vector3d AxisY
             {
-                get => axisY;
-                set => axisY = value.__Unit();
+                get => _axisY;
+                set => _axisY = value.__Unit();
             }
 
             /// <summary> The radius of the arc</summary>
@@ -163,8 +163,7 @@ namespace TSG_Library.Geom
                 Vector3d vector5 = vector2.__Subtract(vector).__Unit();
                 double num3 = 90.0 - num;
                 double startAngle = 0.0 - num3;
-                double endAngle = num3;
-                return new Arc(center, vector4, vector5, radius, startAngle, endAngle);
+                return new Arc(center, vector4, vector5, radius, startAngle, num3);
             }
         }
 
@@ -317,6 +316,9 @@ namespace TSG_Library.Geom
             /// <param name="weights">Array of m+1 weights</param>
             /// <returns>A Snap.Geom.Curve.Spline object that is a rational Bezier curve of degree m</returns>
             [Obsolete(nameof(NotImplementedException))]
+            // ReSharper disable once UnusedParameter.Global
+            // ReSharper disable once UnusedMember.Global
+            // ReSharper disable once UnusedParameter.Global
             public static Spline CreateBezier(Point3d[] poles, double[] weights)
             {
                 //return new Spline(Math.SplineMath.BezierKnots(poles.Length - 1), poles, weights);

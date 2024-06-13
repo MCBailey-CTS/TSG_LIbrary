@@ -183,7 +183,7 @@ namespace TSG_Library.UFuncs
         {
             ClearMasters();
 
-            GFolder _folder = GFolder.create(__display_part_.FullPath);
+            GFolder _folder = GFolder.Create(__display_part_.FullPath);
 
             foreach (Component master in FindMasters(__display_part_, MathdataType1))
                 AddTag(master.Tag, master.Name);
@@ -435,11 +435,11 @@ namespace TSG_Library.UFuncs
                     return;
                 }
 
-                GFolder folder = GFolder.create(display.FullPath);
+                GFolder folder = GFolder.Create(display.FullPath);
 
-                if (!Directory.Exists(folder.dir_math_data))
+                if (!Directory.Exists(folder.DirMathData))
                 {
-                    print_($"GFolder: '{folder.dir_job}' doesn't have a Mathdata folder.");
+                    print_($"GFolder: '{folder.DirJob}' doesn't have a Mathdata folder.");
                     return;
                 }
 
@@ -580,7 +580,7 @@ namespace TSG_Library.UFuncs
         public static string GetProposalLevel(GFolder folder)
         {
             // Gets all the directories that are below the math data folder.
-            string[] directories = Directory.GetDirectories(folder.dir_math_data, "*", SearchOption.AllDirectories);
+            string[] directories = Directory.GetDirectories(folder.DirMathData, "*", SearchOption.AllDirectories);
 
             // Represents the highest proposal level found.
             // The default is 1.
@@ -745,8 +745,8 @@ namespace TSG_Library.UFuncs
 
             string revisedPartNumber = $"{dataLevel}{pLevel}-{partNumber}-{TodaysDate}";
 
-            if (Directory.Exists($"{folder.dir_math_data}\\Proposal"))
-                return $"{folder.dir_math_data}\\Proposal\\{TodaysDate}-{pLevel}\\{revisedPartNumber}.prt";
+            if (Directory.Exists($"{folder.DirMathData}\\Proposal"))
+                return $"{folder.DirMathData}\\Proposal\\{TodaysDate}-{pLevel}\\{revisedPartNumber}.prt";
 
             string masterDirectory =
                 Path.GetDirectoryName(prototype.FullPath); //  new FileInfo(prototype.FullPath).Directory.FullName;

@@ -131,8 +131,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
                 }
 
                 Component[] array = dictionary.Keys.OfType<Component>().ToArray();
-                Component[] array2 = array;
-                foreach (Component originalComp in array2)
+                foreach (Component originalComp in array)
                     Program.Mirror208_3001(_mirrorPlane, originalComp, dictionary);
             }
             finally
@@ -745,8 +744,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             NXOpen.Point point = __work_part_.Points.CreatePoint(origin);
             point.SetCoordinates(origin);
             blockFeatureBuilder1.OriginPoint = point;
-            Point3d originPoint = origin;
-            blockFeatureBuilder1.SetOriginAndLengths(originPoint, rightHandSide, rightHandSide2, rightHandSide3);
+            blockFeatureBuilder1.SetOriginAndLengths(origin, rightHandSide, rightHandSide2, rightHandSide3);
             blockFeatureBuilder1.SetOrientation(axisX, axisY);
             blockFeatureBuilder1.CommitFeature();
         }
@@ -789,8 +787,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             NXOpen.Point point = __work_part_.Points.CreatePoint(origin2);
             point.SetCoordinates(origin2);
             blockFeatureBuilder2.OriginPoint = point;
-            Point3d originPoint = origin2;
-            blockFeatureBuilder2.SetOriginAndLengths(originPoint, rightHandSide, rightHandSide2, rightHandSide3);
+            blockFeatureBuilder2.SetOriginAndLengths(origin2, rightHandSide, rightHandSide2, rightHandSide3);
             blockFeatureBuilder2.SetOrientation(axisX, axisY);
             blockFeatureBuilder2.CommitFeature();
         }

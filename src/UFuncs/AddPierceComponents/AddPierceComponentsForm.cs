@@ -635,7 +635,7 @@ namespace TSG_Library.UFuncs
                             System.Math.Round(face.GetRealUserAttribute("PIERCED_W", -1), 4));
                         foreach (double keyW in dictionaryW.Keys)
                         {
-                            string partOfThePath = $"{folder.dir_op(op)}\\{folder.customer_number}-{op}-";
+                            string partOfThePath = $"{folder.dir_op(op)}\\{folder.CustomerNumber}-{op}-";
                             int currentLowerDetailNumber =
                                 GetCurrentDetailNumberOfChildren(uspLspPart.__RootComponent());
                             if (currentLowerDetailNumber == -1)
@@ -729,8 +729,8 @@ namespace TSG_Library.UFuncs
             string op = nameMatch.Groups["opNum"].Value;
             string uspLspNumberAsString = nameMatch.Groups["extraOpNum"].Value;
             int uspLspNumberAsInteger = int.Parse(uspLspNumberAsString);
-            string lspName = $"{folder.customer_number}-{op}-lsp{uspLspNumberAsString}";
-            string uspName = $"{folder.customer_number}-{op}-usp{uspLspNumberAsString}";
+            string lspName = $"{folder.CustomerNumber}-{op}-lsp{uspLspNumberAsString}";
+            string uspName = $"{folder.CustomerNumber}-{op}-usp{uspLspNumberAsString}";
             BasePart lspPart = session_.Parts.ToArray().SingleOrDefault(part => part.FullPath.Contains(lspName));
             BasePart uspPart = session_.Parts.ToArray().SingleOrDefault(part => part.FullPath.Contains(uspName));
 
@@ -766,7 +766,7 @@ namespace TSG_Library.UFuncs
                             System.Math.Round(face.GetRealUserAttribute("PIERCED_W", -1), 4));
                         foreach (double keyW in dictionaryW.Keys)
                         {
-                            string partOfThePath = $"{folder.dir_op(op)}\\{folder.customer_number}-{op}-";
+                            string partOfThePath = $"{folder.dir_op(op)}\\{folder.CustomerNumber}-{op}-";
                             string newPunchPath = null, newRetainerPath = null, newButtonPath = null;
                             if (lspPart != null)
                             {
@@ -1261,8 +1261,7 @@ namespace TSG_Library.UFuncs
                 positioner.BeginAssemblyConstraints();
                 ComponentConstraint constraint = (ComponentConstraint)positioner.CreateConstraint(true);
                 constraint.ConstraintType = (Constraint.Type)3;
-                Component component1 = component;
-                constraint.CreateConstraintReference(component1, component1, false, false, false);
+                constraint.CreateConstraintReference(component, component, false, false, false);
                 positioner.EndAssemblyConstraints();
                 return constraint.GetDisplayedConstraint();
             }

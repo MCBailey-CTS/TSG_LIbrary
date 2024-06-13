@@ -29,16 +29,16 @@ namespace TSG_Library.Geom
         }
 
         /// <summary>Constructs a Box3D from given corner positions</summary>
-        /// <param name="minXYZ">The "lower" corner position (MinX, MinY, MinZ)</param>
-        /// <param name="maxXYZ">The "upper" corner position (MaxX, MaxY, MaxZ)</param>
-        public Box3d(Point3d minXYZ, Point3d maxXYZ)
+        /// <param name="minXyz">The "lower" corner position (MinX, MinY, MinZ)</param>
+        /// <param name="maxXyz">The "upper" corner position (MaxX, MaxY, MaxZ)</param>
+        public Box3d(Point3d minXyz, Point3d maxXyz)
         {
-            MinX = minXYZ.X;
-            MinY = minXYZ.Y;
-            MinZ = minXYZ.Z;
-            MaxX = maxXYZ.X;
-            MaxY = maxXYZ.Y;
-            MaxZ = maxXYZ.Z;
+            MinX = minXyz.X;
+            MinY = minXyz.Y;
+            MinZ = minXyz.Z;
+            MaxX = maxXyz.X;
+            MaxY = maxXyz.Y;
+            MaxZ = maxXyz.Z;
         }
 
         /// <summary>The lower x-value</summary>
@@ -60,7 +60,7 @@ namespace TSG_Library.Geom
         public double MaxZ { get; set; }
 
         /// <summary>The lower corner of the box (min X, Y, Z values)</summary>
-        public Point3d MinXYZ
+        public Point3d MinXyz
         {
             get => new Point3d(MinX, MinY, MinZ);
             set
@@ -72,7 +72,7 @@ namespace TSG_Library.Geom
         }
 
         /// <summary>The upper corner of the box (min X, Y, Z values)</summary>
-        public Point3d MaxXYZ
+        public Point3d MaxXyz
         {
             get => new Point3d(MaxX, MaxY, MaxZ);
             set

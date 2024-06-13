@@ -468,8 +468,7 @@ namespace TSG_Library.UFuncs
             Session.UndoMarkId markId1 = session_.SetUndoMark(Session.MarkVisibility.Invisible, "Delete Saved WCS");
 
             NXObject[] objects1 = new NXObject[1];
-            CartesianCoordinateSystem cartesianCoordinateSystem1 = savedCsys;
-            objects1[0] = cartesianCoordinateSystem1;
+            objects1[0] = savedCsys;
             session_.UpdateManager.AddObjectsToDeleteList(objects1);
 
             session_.UpdateManager.DoUpdate(markId1);
@@ -555,9 +554,7 @@ namespace TSG_Library.UFuncs
                         Scalar.DimensionalityType.Angle,
                         SmartObject.UpdateOption.WithinModeling);
 
-                    CartesianCoordinateSystem cartesianCoordinateSystem1 = savedCsys;
-
-                    Xform xform1 = workPart.Xforms.CreateXform(cartesianCoordinateSystem1, null, offset1, scalar4,
+                    Xform xform1 = workPart.Xforms.CreateXform(savedCsys, null, offset1, scalar4,
                         scalar5, scalar6, 0,
                         SmartObject.UpdateOption.WithinModeling, 1.0);
 

@@ -654,11 +654,11 @@ namespace TSG_Library.UFuncs
             else
             {
                 __child.__ReferenceSet("Empty");
-                __work_part_.__FindReferenceSet("BODY").RemoveObjectsFromReferenceSet(new[] { __child });
+                __work_part_.__FindReferenceSet("BODY").RemoveObjectsFromReferenceSet(new NXObject[] { __child });
             }
         }
 
-        public static Component _GetProtoPartOcc(Part owningPart, Component partOcc)
+        private static Component _GetProtoPartOcc(Part owningPart, Component partOcc)
         {
             Tag instance = ufsession_.Assem.AskInstOfPartOcc(partOcc.Tag);
             Tag prototypeChildPartOcc =
@@ -980,7 +980,6 @@ namespace TSG_Library.UFuncs
                     return;
                 }
 
-                Component first_jigJack = addedFastener;
                 CartesianCoordinateSystem proto_csys = __work_part_.CoordinateSystems.CreateCoordinateSystem(
                     addedFastener.__Origin(),
                     addedFastener.__Orientation(), false);
@@ -1008,11 +1007,11 @@ namespace TSG_Library.UFuncs
 
                 if (__work_component_ is null)
                 {
-                    first_jigJack.__ReferenceSet("BODY_EDGE");
+                    addedFastener.__ReferenceSet("BODY_EDGE");
                 }
                 else
                 {
-                    Tag instance = ufsession_.Assem.AskInstOfPartOcc(first_jigJack.Tag);
+                    Tag instance = ufsession_.Assem.AskInstOfPartOcc(addedFastener.Tag);
                     Tag other = ufsession_.Assem.AskPartOccOfInst(__work_component_.Tag, instance);
                     Component comp = (Component)session_.GetObjectManager().GetTaggedObject(other);
                     comp.__ReferenceSet("BODY_EDGE");
@@ -1179,10 +1178,9 @@ namespace TSG_Library.UFuncs
 
                 string shcs = fastener_part.FullPath;
                 string dowel = actual_dwl;
-                string jigJack = jack;
                 Part shcs_part = session_.__FindOrOpen(shcs);
                 Part dowel_part = session_.__FindOrOpen(dowel);
-                Part jigjack_part = session_.__FindOrOpen(jigJack);
+                Part jigjack_part = session_.__FindOrOpen(jack);
 
                 if (chkCycleAdd.Checked)
                     PlaceFasteners(shcs_part);
@@ -1616,7 +1614,7 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        public static void BlockOrigin()
+        private static void BlockOrigin()
         {
             try
             {

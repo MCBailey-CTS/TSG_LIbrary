@@ -160,9 +160,8 @@ namespace TSG_Library.UFuncs
                 "BODY", "BODY_NO_SLUG", "INCOMING_BODY", "PAD-PROFILE", "UPR-PROFILE", "LWR-PROFILE", "PAD-3D",
                 "UPR-3D", "LWR-3D"
             };
-            string[] array11 = array10;
 
-            foreach (string refset_name in array11)
+            foreach (string refset_name in array10)
             {
                 ReferenceSet referenceSet10 = __display_part_.__FindReferenceSetOrNull(refset_name);
 

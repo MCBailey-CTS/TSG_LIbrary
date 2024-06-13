@@ -41,7 +41,7 @@ namespace TSG_Library.UFuncs
             {
                 try
                 {
-                    GFolder __folder = create(txtJobFolder_.Text);
+                    GFolder __folder = Create(txtJobFolder_.Text);
 
                     string[] ops = txtOps.Text.Replace(Environment.NewLine, " ")
                         .Replace("  ", " ")
@@ -56,7 +56,7 @@ namespace TSG_Library.UFuncs
                     session_.Parts.LoadOptions.PartLoadOption = LoadOptions.LoadOption.FullyLoad;
                     session_.Parts.LoadOptions.SetInterpartData(true, LoadOptions.Parent.Partial);
 
-                    GFolder folder = create(txtJobFolder_.Text);
+                    GFolder folder = Create(txtJobFolder_.Text);
 
                     if (rdoTransfer.Checked)
                     {
@@ -179,7 +179,7 @@ namespace TSG_Library.UFuncs
 
                 __display_part_ = session_.__FindOrOpen(__folder.file_detail_000(op));
 
-                replace_strip_layout_in_display(__folder.file_strip_010, "STRIP", true);
+                replace_strip_layout_in_display(__folder.FileStrip010, "STRIP", true);
 
                 using (new DisplayPartReset())
                 {
@@ -194,9 +194,9 @@ namespace TSG_Library.UFuncs
                     {
                         session_.__FindOrOpen(__folder.path_op_detail(op, "upr")).__SetAsDisplayPart();
                         __display_part_.ComponentAssembly.RootComponent
-                            .__FindComponent($"COMPONENT {__folder.customer_number}-{op}-usp3 1").Suppress();
+                            .__FindComponent($"COMPONENT {__folder.CustomerNumber}-{op}-usp3 1").Suppress();
                         __display_part_.ComponentAssembly.RootComponent
-                            .__FindComponent($"COMPONENT {__folder.customer_number}-{op}-usp4 1").Suppress();
+                            .__FindComponent($"COMPONENT {__folder.CustomerNumber}-{op}-usp4 1").Suppress();
                     }
                     catch (Exception ex)
                     {
@@ -210,9 +210,9 @@ namespace TSG_Library.UFuncs
                     {
                         session_.__FindOrOpen(__folder.path_op_detail(op, "lwr")).__SetAsDisplayPart();
                         __display_part_.ComponentAssembly.RootComponent
-                            .__FindComponent($"COMPONENT {__folder.customer_number}-{op}-lsp3 1").Suppress();
+                            .__FindComponent($"COMPONENT {__folder.CustomerNumber}-{op}-lsp3 1").Suppress();
                         __display_part_.ComponentAssembly.RootComponent
-                            .__FindComponent($"COMPONENT {__folder.customer_number}-{op}-lsp4 1").Suppress();
+                            .__FindComponent($"COMPONENT {__folder.CustomerNumber}-{op}-lsp4 1").Suppress();
                     }
                     catch (Exception ex)
                     {
@@ -225,7 +225,7 @@ namespace TSG_Library.UFuncs
                     __display_part_.Layers.MoveDisplayableObjects(256, __display_part_.DisplayedConstraints.ToArray());
                 }
 
-                string dieset_control = $"{__folder.customer_number}-{op}-dieset-control.prt";
+                string dieset_control = $"{__folder.CustomerNumber}-{op}-dieset-control.prt";
 
                 using (session_.__usingDisplayPartReset())
                 {
@@ -260,7 +260,7 @@ namespace TSG_Library.UFuncs
 
                             __display_part_ = session_.__FindOrOpen(dieset_control);
                             __display_part_.Expressions.ChangeInterpartReferences("XXXXX-Press-XX-Assembly.prt",
-                                $"{__folder.customer_number}-P{press_op}-Press.prt", true, true);
+                                $"{__folder.CustomerNumber}-P{press_op}-Press.prt", true, true);
                         }
                     }
                     catch (Exception ex)
@@ -333,7 +333,7 @@ namespace TSG_Library.UFuncs
 
                 try
                 {
-                    replace_strip_layout_in_display(__folder.file_strip_900, "STRIP", true);
+                    replace_strip_layout_in_display(__folder.FileStrip900, "STRIP", true);
                 }
                 catch (Exception ex)
                 {
@@ -455,7 +455,7 @@ namespace TSG_Library.UFuncs
                 {
                     foreach (string op in ops)
                     {
-                        string dieset_control = $"{__folder.customer_number}-{op}-dieset-control.prt";
+                        string dieset_control = $"{__folder.CustomerNumber}-{op}-dieset-control.prt";
 
                         __display_part_ = session_.__FindOrOpen(__folder.file_detail0(op, "002"));
                         __display_part_.Expressions.ChangeInterpartReferences("seed-prog-dieset-control.prt",
@@ -480,14 +480,14 @@ namespace TSG_Library.UFuncs
                     foreach (string op in ops)
                         try
                         {
-                            string dieset_control = $"{__folder.customer_number}-{op}-dieset-control.prt";
+                            string dieset_control = $"{__folder.CustomerNumber}-{op}-dieset-control.prt";
                             __display_part_ = session_.__FindOrOpen(dieset_control);
                             __display_part_.Expressions.ChangeInterpartReferences("XXXXX-Press-XX-Assembly.prt",
-                                $"{__folder.customer_number}-T{op}-Press.prt", true, true);
+                                $"{__folder.CustomerNumber}-T{op}-Press.prt", true, true);
                         }
                         catch (Exception ex)
                         {
-                            ex.__PrintException($"{__folder.customer_number}-T{op}-Press.prt");
+                            ex.__PrintException($"{__folder.CustomerNumber}-T{op}-Press.prt");
                         }
                 }
             }
@@ -528,8 +528,6 @@ namespace TSG_Library.UFuncs
                     all_ops_and_shoes.Add(op);
             }
 
-            bool start_with_strip = chkStartWithBlank;
-
             foreach (string op in all_ops_and_shoes)
             {
                 if (op.StartsWith("3"))
@@ -557,10 +555,10 @@ namespace TSG_Library.UFuncs
 
                 try
                 {
-                    if (!start_with_strip)
+                    if (!chkStartWithBlank)
                         replace_strip_layout_in_display(__folder.file_layout_t(op), "LAYOUT", true);
                     else if (op == "010")
-                        replace_strip_layout_in_display(__folder.file_strip_900, "STRIP", true);
+                        replace_strip_layout_in_display(__folder.FileStrip900, "STRIP", true);
                     else
                         replace_strip_layout_in_display(__folder.file_layout_t(__Op020To010(op)), "LAYOUT", true);
                 }
@@ -624,15 +622,15 @@ namespace TSG_Library.UFuncs
 
                 Component upr_assembly =
                     __display_part_.ComponentAssembly.RootComponent.__FindComponent(
-                        $"COMPONENT {__folder.customer_number}-{assembly_op}-upr 1");
+                        $"COMPONENT {__folder.CustomerNumber}-{assembly_op}-upr 1");
 
                 Component lwr_assembly =
                     __display_part_.ComponentAssembly.RootComponent.__FindComponent(
-                        $"COMPONENT {__folder.customer_number}-{assembly_op}-lwr 1");
+                        $"COMPONENT {__folder.CustomerNumber}-{assembly_op}-lwr 1");
 
                 int feed_direction =
                     int.Parse(
-                        $"{session_.__FindOrOpen(__folder.file_strip_900).__FindExpression("FeedDirection").Value}");
+                        $"{session_.__FindOrOpen(__folder.FileStrip900).__FindExpression("FeedDirection").Value}");
 
                 Point3d origin = feed_direction > 0
                     ? new Point3d(10, 0, 0)
@@ -656,8 +654,8 @@ namespace TSG_Library.UFuncs
 
                 __display_part_ = session_.__FindOrOpen(tmep);
 
-                if (File.Exists(__folder.file_strip_900))
-                    replace_strip_layout_in_display(__folder.file_strip_900, "STRIP", true);
+                if (File.Exists(__folder.FileStrip900))
+                    replace_strip_layout_in_display(__folder.FileStrip900, "STRIP", true);
             }
 
             ExecuteCloneTran900(__folder);
@@ -701,7 +699,7 @@ namespace TSG_Library.UFuncs
                 }
             }
 
-            replace_strip_layout_in_display(__folder.file_strip_900, "STRIP", false);
+            replace_strip_layout_in_display(__folder.FileStrip900, "STRIP", false);
 
             foreach (string key in __dict.Keys)
             {
@@ -712,8 +710,8 @@ namespace TSG_Library.UFuncs
             }
 
 
-            foreach (string __file in Directory.GetFiles(__folder.dir_layout,
-                         $"{__folder.customer_number}-T*-Press.prt"))
+            foreach (string __file in Directory.GetFiles(__folder.DirLayout,
+                         $"{__folder.CustomerNumber}-T*-Press.prt"))
             {
                 string leaf = Path.GetFileName(__file);
 
@@ -734,7 +732,7 @@ namespace TSG_Library.UFuncs
 
             foreach (Component __child in __display_part_.ComponentAssembly.RootComponent.GetChildren())
             {
-                __child.SetName(__child.DisplayName.Replace(__folder.customer_number + "-", ""));
+                __child.SetName(__child.DisplayName.Replace(__folder.CustomerNumber + "-", ""));
 
                 if (__child.DisplayName.EndsWith("lwr") || __child.DisplayName.EndsWith("upr"))
                 {
@@ -761,13 +759,12 @@ namespace TSG_Library.UFuncs
                         continue;
 
                     bool is_lower = leaf.EndsWith("lwr");
-                    string path_upr_lwr_assembly_holder = __file;
-                    __display_part_ = session_.__FindOrOpen(path_upr_lwr_assembly_holder);
+                    __display_part_ = session_.__FindOrOpen(__file);
 
                     if (is_lower)
-                        ConstrainLSH(__folder, start_with_strip);
+                        ConstrainLSH(__folder, chkStartWithBlank);
                     else
-                        ConstrainUSH(__folder, start_with_strip);
+                        ConstrainUSH(__folder, chkStartWithBlank);
                 }
             }
 
@@ -1124,7 +1121,7 @@ namespace TSG_Library.UFuncs
                     if (!op.StartsWith("3"))
                         continue;
 
-                    string dieset_control = $"{__folder.customer_number}-{op}-dieset-control.prt";
+                    string dieset_control = $"{__folder.CustomerNumber}-{op}-dieset-control.prt";
 
                     __display_part_ = session_.__FindOrOpen(__folder.file_detail0(op, "002"));
                     __display_part_.Expressions.ChangeInterpartReferences("seed-prog-dieset-control.prt",
@@ -1162,7 +1159,7 @@ namespace TSG_Library.UFuncs
             {
                 List<Part> __press_parts = new List<Part>();
 
-                foreach (string __file in Directory.EnumerateFiles(__folder.dir_layout))
+                foreach (string __file in Directory.EnumerateFiles(__folder.DirLayout))
                 {
                     if (!__file.ToLower().Contains("press"))
                         continue;
@@ -1197,7 +1194,7 @@ namespace TSG_Library.UFuncs
         private static void ConstrainOpsToLwrUpr(GFolder __folder, string[] ops, string lwrupr, int layer)
         {
             int feed_direction =
-                int.Parse($"{session_.__FindOrOpen(__folder.file_strip_900).__FindExpression("FeedDirection").Value}");
+                int.Parse($"{session_.__FindOrOpen(__folder.FileStrip900).__FindExpression("FeedDirection").Value}");
 
             Point3d origin = feed_direction > 0
                 ? new Point3d(10, 0, 0)
@@ -1220,7 +1217,7 @@ namespace TSG_Library.UFuncs
                 string new_interpart_exp_y = $"T{op}Y";
                 string new_interpart_exp_z = $"T{op}Z";
                 InterpartExpressionsBuilder builder = __display_part_.Expressions.CreateInterpartExpressionsBuilder();
-                Part strip = session_.__FindOrOpen(__folder.file_strip_900);
+                Part strip = session_.__FindOrOpen(__folder.FileStrip900);
                 try
                 {
                     ConstrainStripInterpartExpressions(new_interpart_exp_x, new_interpart_exp_y, new_interpart_exp_z,
@@ -1303,10 +1300,10 @@ namespace TSG_Library.UFuncs
                 {
                     Part[] __parallels =
                     {
-                        session_.__FindOrOpen($"{__folder.customer_number}-{op}-002"),
-                        session_.__FindOrOpen($"{__folder.customer_number}-{op}-012"),
-                        session_.__FindOrOpen($"{__folder.customer_number}-{op}-502"),
-                        session_.__FindOrOpen($"{__folder.customer_number}-{op}-512")
+                        session_.__FindOrOpen($"{__folder.CustomerNumber}-{op}-002"),
+                        session_.__FindOrOpen($"{__folder.CustomerNumber}-{op}-012"),
+                        session_.__FindOrOpen($"{__folder.CustomerNumber}-{op}-502"),
+                        session_.__FindOrOpen($"{__folder.CustomerNumber}-{op}-512")
                     };
 
                     foreach (Part __par in __parallels)
@@ -1361,7 +1358,7 @@ namespace TSG_Library.UFuncs
 
                 using (session_.__usingDisplayPartReset())
                 {
-                    session_.__FindOrOpen($"{__folder.customer_number}-{op}-lwrplate").__SetAsDisplayPart();
+                    session_.__FindOrOpen($"{__folder.CustomerNumber}-{op}-lwrplate").__SetAsDisplayPart();
 
                     Session theSession = Session.GetSession();
 
@@ -1619,7 +1616,7 @@ namespace TSG_Library.UFuncs
 
                 using (session_.__usingDisplayPartReset())
                 {
-                    session_.__FindOrOpen($"{__folder.customer_number}-{op}-uprplate").__SetAsDisplayPart();
+                    session_.__FindOrOpen($"{__folder.CustomerNumber}-{op}-uprplate").__SetAsDisplayPart();
 
                     Session theSession = Session.GetSession();
 
@@ -2041,7 +2038,7 @@ namespace TSG_Library.UFuncs
                     continue;
 
                 string actual_op = __child.DisplayName
-                    .Replace($"{__folder.customer_number}-", "")
+                    .Replace($"{__folder.CustomerNumber}-", "")
                     .Replace("-lsp", "");
 
                 DatumCsys datum_csys = __child.__Prototype().__AbsoluteDatumCsys();
@@ -2072,7 +2069,7 @@ namespace TSG_Library.UFuncs
 
                 // clone transfer
 
-                Part strip = session_.__FindOrOpen(__folder.file_strip_900);
+                Part strip = session_.__FindOrOpen(__folder.FileStrip900);
 
                 try
                 {
@@ -2108,7 +2105,7 @@ namespace TSG_Library.UFuncs
                     continue;
 
                 string actual_op = __child.DisplayName
-                    .Replace($"{__folder.customer_number}-", "")
+                    .Replace($"{__folder.CustomerNumber}-", "")
                     .Replace("-usp", "");
 
                 DatumCsys datum_csys = __child.__Prototype().__AbsoluteDatumCsys();
@@ -2138,7 +2135,7 @@ namespace TSG_Library.UFuncs
 
                 InterpartExpressionsBuilder builder = __display_part_.Expressions.CreateInterpartExpressionsBuilder();
 
-                Part strip = session_.__FindOrOpen(__folder.file_strip_900);
+                Part strip = session_.__FindOrOpen(__folder.FileStrip900);
                 try
                 {
                     ConstrainStripInterpartExpressions(new_interpart_exp_x, new_interpart_exp_y, new_interpart_exp_z,
@@ -2299,11 +2296,9 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                string suffix = op_str;
-
-                Expression expression_x = __display_part_.__FindExpression($"{prefix}{suffix}{exp_x}");
-                Expression expression_y = __display_part_.__FindExpression($"{prefix}{suffix}{exp_y}");
-                Expression expression_z = __display_part_.__FindExpression($"{prefix}{suffix}{exp_z}");
+                Expression expression_x = __display_part_.__FindExpression($"{prefix}{op_str}{exp_x}");
+                Expression expression_y = __display_part_.__FindExpression($"{prefix}{op_str}{exp_y}");
+                Expression expression_z = __display_part_.__FindExpression($"{prefix}{op_str}{exp_z}");
 
                 Component layout_comp = __display_part_.__AddComponent(
                     layout_path,
@@ -2449,7 +2444,7 @@ namespace TSG_Library.UFuncs
                     if (File.Exists(press_path))
                         continue;
 
-                    File.Copy(XXXXX_Press_XX_Assembly, press_path);
+                    File.Copy(XxxxxPressXxAssembly, press_path);
 
                     Component press_comp = __display_part_.ComponentAssembly.AddComponent(
                         press_path,
@@ -2632,7 +2627,7 @@ namespace TSG_Library.UFuncs
             UFClone.NameRuleDef rule = new UFClone.NameRuleDef
             {
                 base_string = "seed-line-900-",
-                new_string = $"{__folder.customer_number}-900-",
+                new_string = $"{__folder.CustomerNumber}-900-",
                 type = UFClone.NameRuleType.ReplaceString
             };
 
@@ -2685,7 +2680,7 @@ namespace TSG_Library.UFuncs
             UFClone.NameRuleDef rule = new UFClone.NameRuleDef
             {
                 base_string = "seed-line-op-",
-                new_string = $"{__folder.customer_number}-{op}-",
+                new_string = $"{__folder.CustomerNumber}-{op}-",
                 type = UFClone.NameRuleType.ReplaceString
             };
 
@@ -2835,7 +2830,7 @@ namespace TSG_Library.UFuncs
             UFClone.NameRuleDef rule = new UFClone.NameRuleDef
             {
                 base_string = "seed-tran-op-",
-                new_string = $"{__folder.customer_number}-{op}-",
+                new_string = $"{__folder.CustomerNumber}-{op}-",
                 type = UFClone.NameRuleType.ReplaceString
             };
 

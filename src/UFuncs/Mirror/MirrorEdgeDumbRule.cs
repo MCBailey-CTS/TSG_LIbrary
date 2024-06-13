@@ -27,8 +27,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             feature.Suppress();
             originalFeature.Suppress();
             IList<Edge> list = new List<Edge>();
-            Edge[] array = edges;
-            foreach (Edge edge in array)
+            foreach (Edge edge in edges)
             {
                 Point3d val = edge.__StartPoint().__MirrorMap(plane, originalComp, component);
                 Point3d val2 = edge.__EndPoint().__MirrorMap(plane, originalComp, component);

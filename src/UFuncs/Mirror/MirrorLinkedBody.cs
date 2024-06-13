@@ -50,8 +50,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
                     new MirrorSmartStockEjector(),
                     new MirrorSmartStandardLiftersGuidedKeepersMetric()
                 };
-                ILibraryComponent[] array4 = array3;
-                foreach (ILibraryComponent libraryComponent in array4)
+                foreach (ILibraryComponent libraryComponent in array3)
                     if (libraryComponent.IsLibraryComponent(component2))
                     {
                         libraryComponent.Mirror(plane, component, extractFace2, component2, dict);

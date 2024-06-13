@@ -68,14 +68,13 @@ namespace TSG_Library.UFuncs
                 section1.SetAllowedEntityTypes(Section.AllowTypes.OnlyCurves);
                 builder.CurvelengthData.ExtensionSide = ExtensionSide.StartEnd;
                 Curve[] curves1 = new Curve[1];
-                Line line1 = editLine;
-                curves1[0] = line1;
+                curves1[0] = editLine;
                 CurveDumbRule curveDumbRule1 = __work_part_.ScRuleFactory.CreateRuleCurveDumb(curves1);
                 section1.AllowSelfIntersection(true);
                 SelectionIntentRule[] rules1 = new SelectionIntentRule[1];
                 rules1[0] = curveDumbRule1;
                 Point3d helpPoint1 = new Point3d(cursor[0], cursor[1], cursor[2]);
-                section1.AddToSection(rules1, line1, null, null, helpPoint1, Section.Mode.Create, false);
+                section1.AddToSection(rules1, editLine, null, null, helpPoint1, Section.Mode.Create, false);
                 builder.CurvelengthData.SetStartDistance("0");
                 builder.CurvelengthData.SetEndDistance("0");
                 builder.CurvelengthData.SetStartDistance("0");

@@ -9,97 +9,102 @@ namespace TSG_Library.Utilities
     public class GFolder
     {
         private const string __0library_seedfiles_nx1919 = "G:\\0Library\\SeedFiles\\NX1919";
-        public const string XXXXX_Press_XX_Assembly = __0library_seedfiles_nx1919 + "\\XXXXX-Press-XX-Assembly.prt";
-        public const string XXXXX_XXX_000 = __0library_seedfiles_nx1919 + "\\XXXXXX-XXX-000.prt";
-        public const string XXXXX_Strip = __0library_seedfiles_nx1919 + "\\XXXXXX-Strip.prt";
-        public const string X000_simulation = "G:\\0Library\\SeedFiles\\NX1919\\0000-simulation.prt";
-        public const string XXXXXX_OP_XXX_Layout = __0library_seedfiles_nx1919 + "\\XXXXXX-OP-XXX-Layout.prt";
+        public const string XxxxxPressXxAssembly = __0library_seedfiles_nx1919 + "\\XXXXX-Press-XX-Assembly.prt";
+        // ReSharper disable once UnusedMember.Global
+        public const string XxxxxXxx000 = __0library_seedfiles_nx1919 + "\\XXXXXX-XXX-000.prt";
+        public const string XxxxxStrip = __0library_seedfiles_nx1919 + "\\XXXXXX-Strip.prt";
+        // ReSharper disable once UnusedMember.Global
+        public const string X000Simulation = "G:\\0Library\\SeedFiles\\NX1919\\0000-simulation.prt";
+        public const string XxxxxxOpXxxLayout = __0library_seedfiles_nx1919 + "\\XXXXXX-OP-XXX-Layout.prt";
 
-        public const string STRIP_FLANGE_CARRIER_TRACKING =
+        public const string StripFlangeCarrierTracking =
             __0library_seedfiles_nx1919 + "\\Strip Flange Carrier_Tracking Tab.prt";
 
-        public GFolder(string __dir, string __customer_number)
+        // ReSharper disable once MemberCanBePrivate.Global
+        public GFolder(string dir, string customerNumber)
         {
-            dir_job = __dir;
-            customer_number = __customer_number;
+            DirJob = dir;
+            CustomerNumber = customerNumber;
         }
 
-        public string dir_process_sim_data_design => $"{dir_job}\\Process and Sim Data for Design";
+        public string DirProcessSimDataDesign => $"{DirJob}\\Process and Sim Data for Design";
 
-        public string customer_number { get; }
+        public string CustomerNumber { get; }
 
-        public string dir_layout => $"{dir_job}\\Layout";
+        public string DirLayout => $"{DirJob}\\Layout";
 
-        public string dir_job { get; }
+        public string DirJob { get; }
 
-        public string dir_simulation => $"{dir_job}\\Simulation";
+        public string DirSimulation => $"{DirJob}\\Simulation";
 
-        public string leaf_path_sim => $"{customer_number}-simulation";
+        // ReSharper disable once MemberCanBePrivate.Global
+        public string LeafPathSim => $"{CustomerNumber}-simulation";
 
-        public string path_simulation => $"{dir_simulation}\\{leaf_path_sim}.prt";
+        public string PathSimulation => $"{DirSimulation}\\{LeafPathSim}.prt";
 
-        public string file_strip_900 => file_strip("900");
+        public string FileStrip900 => file_strip("900");
 
-        public string file_strip_010 => file_strip("010");
+        public string FileStrip010 => file_strip("010");
 
-        public string dir_outgoing => $"{dir_job}\\Outgoing";
+        public string DirOutgoing => $"{DirJob}\\Outgoing";
 
-        public string path_strip_flange => $"{dir_layout}\\{customer_number}-Strip Flange Carrier_Tracking Tab.prt";
+        public string PathStripFlange => $"{DirLayout}\\{CustomerNumber}-Strip Flange Carrier_Tracking Tab.prt";
 
-        public string dir_math_data => $"{dir_job}\\Math Data";
+        public string DirMathData => $"{DirJob}\\Math Data";
 
-        public string dir_stocklist => $"{dir_design_information}\\NX Stocklist";
+        public string DirStocklist => $"{DirDesignInformation}\\NX Stocklist";
 
-        public string company
+        // ReSharper disable once UnusedMember.Global
+        public string Company
         {
             get
             {
-                string dir_leaf = Path.GetFileNameWithoutExtension(dir_job);
+                string dirLeaf = Path.GetFileNameWithoutExtension(DirJob);
 
-                Match match = Regex.Match(dir_leaf, "^\\d+ \\((?<company>[a-zA-Z]+)-\\d+\\)$");
+                Match match = Regex.Match(dirLeaf, "^\\d+ \\((?<company>[a-zA-Z]+)-\\d+\\)$");
 
                 if (!match.Success)
-                    throw new FormatException($"Could not find a company: {dir_job}");
+                    throw new FormatException($"Could not find a company: {DirJob}");
 
                 return match.Groups["company"].Value;
             }
         }
 
-        public string cts_number
+        public string CtsNumber
         {
             get
             {
-                string dir_leaf = Path.GetFileNameWithoutExtension(dir_job);
+                string dirLeaf = Path.GetFileNameWithoutExtension(DirJob);
 
-                Match match = Regex.Match(dir_leaf, "^\\d+ \\([a-zA-Z]+-(?<cts>\\d+)\\)$");
+                Match match = Regex.Match(dirLeaf, "^\\d+ \\([a-zA-Z]+-(?<cts>\\d+)\\)$");
 
                 if (!match.Success)
-                    throw new FormatException($"Could not find a cts number: {dir_job}");
+                    throw new FormatException($"Could not find a cts number: {DirJob}");
 
                 return match.Groups["cts"].Value;
             }
         }
 
-        public string dir_design_information => $"{dir_job}\\Design Information";
+        public string DirDesignInformation => $"{DirJob}\\Design Information";
 
-        public static GFolder create(string __job_folder)
+        public static GFolder Create(string jobFolder)
         {
-            string[] split = __job_folder.Split('\\');
+            string[] split = jobFolder.Split('\\');
 
-            string top_dir;
+            string topDir;
 
             try
             {
-                top_dir = $"{split[0]}\\{split[1]}\\{split[2]}";
+                topDir = $"{split[0]}\\{split[1]}\\{split[2]}";
             }
             catch (IndexOutOfRangeException)
             {
-                throw new IndexOutOfRangeException(__job_folder);
+                throw new IndexOutOfRangeException(jobFolder);
             }
 
             string leaf = split[2];
 
-            string dir = top_dir;
+            string dir = topDir;
 
             if (!dir.ToLower().Contains("\\cts\\"))
             {
@@ -132,14 +137,14 @@ namespace TSG_Library.Utilities
                     return new GFolder(dir, match.Groups["customer_number"].Value);
             }
 
-            throw new ArgumentException($"Could not make GFolder from '{__job_folder}'");
+            throw new ArgumentException($"Could not make GFolder from '{jobFolder}'");
         }
 
         public static GFolder create_or_null(Part workPart)
         {
             try
             {
-                return create(workPart.FullPath);
+                return Create(workPart.FullPath);
             }
             catch (Exception ex)
             {
@@ -148,29 +153,30 @@ namespace TSG_Library.Utilities
             }
         }
 
-        public string path_op_op_detail(string dir_op, string detail_op, string detail)
+        // ReSharper disable once MemberCanBePrivate.Global
+        public string path_op_op_detail(string dirOp, string detailOp, string detail)
         {
-            return this.dir_op(dir_op) + $"\\{customer_number}-{detail_op}-{detail}.prt";
+            return dir_op(dirOp) + $"\\{CustomerNumber}-{detailOp}-{detail}.prt";
         }
 
-        public string path_op_detail(string detail_op, string detail)
+        public string path_op_detail(string detailOp, string detail)
         {
-            return path_op_op_detail(detail_op, detail_op, detail);
+            return path_op_op_detail(detailOp, detailOp, detail);
         }
 
         public bool is_cts_job()
         {
-            return dir_job.ToLower().Contains("\\cts\\");
+            return DirJob.ToLower().Contains("\\cts\\");
         }
 
         public override string ToString()
         {
-            return $"{dir_job} -> {customer_number}";
+            return $"{DirJob} -> {CustomerNumber}";
         }
 
-        public string file_detail0(string __op, string __detail)
+        public string file_detail0(string op, string detail)
         {
-            return $"{dir_op(__op)}\\{customer_number}-{__op}-{__detail}.prt";
+            return $"{dir_op(op)}\\{CustomerNumber}-{op}-{detail}.prt";
         }
 
         public string file_detail_000(string op)
@@ -178,51 +184,53 @@ namespace TSG_Library.Utilities
             return file_detail0(op, "000");
         }
 
-        public string file_layout_t(string __op)
+        public string file_layout_t(string op)
         {
-            return file_layout("T", __op);
+            return file_layout("T", op);
         }
 
-        public string file_layout_p(string __op)
+        public string file_layout_p(string op)
         {
-            return file_layout("P", __op);
+            return file_layout("P", op);
         }
 
-        public string file_layout(string __prefix, string __op)
+        public string file_layout(string prefix, string op)
         {
-            return $"{dir_layout}\\{leaf_path_layout(__prefix, __op)}.prt";
+            return $"{DirLayout}\\{leaf_path_layout(prefix, op)}.prt";
         }
 
-        public string file_strip(string __op)
+        public string file_strip(string op)
         {
-            return $"{dir_layout}\\{customer_number}-{__op}-Strip.prt";
+            return $"{DirLayout}\\{CustomerNumber}-{op}-Strip.prt";
         }
 
-        public string dir_op(string __op)
+        public string dir_op(string op)
         {
-            return $"{dir_job}\\{customer_number}-{__op}";
+            return $"{DirJob}\\{CustomerNumber}-{op}";
         }
 
-        public string leaf_path_layout(string __prefix, string __op)
+        // ReSharper disable once MemberCanBePrivate.Global
+        public string leaf_path_layout(string prefix, string op)
         {
-            return $"{customer_number}-{__prefix}{__op}-Layout";
+            return $"{CustomerNumber}-{prefix}{op}-Layout";
         }
 
-        public string path_detail1(string __dir_op, string __op, string __detail)
+        public string path_detail1(string dirOp, string op, string detail)
         {
-            return $"{dir_op(__dir_op)}\\{customer_number}-{__op}-{__detail}.prt";
+            return $"{dir_op(dirOp)}\\{CustomerNumber}-{op}-{detail}.prt";
         }
 
         public string file_checker_stock_list()
         {
-            return $"{dir_stocklist}\\{customer_number.ToUpper()}-checker-stocklist.xlsx";
+            return $"{DirStocklist}\\{CustomerNumber.ToUpper()}-checker-stocklist.xlsx";
         }
 
         public string dir_surfaces()
         {
-            return $"{dir_simulation}\\surfaces";
+            return $"{DirSimulation}\\surfaces";
         }
 
+        // ReSharper disable once UnusedMember.Global
         public string file_dieset_control(string op)
         {
             return path_op_detail(op, "dieset-control");
@@ -230,12 +238,12 @@ namespace TSG_Library.Utilities
 
         public string file_press_t(string op)
         {
-            return $"{dir_layout}\\{customer_number}-T{op}-Press.prt";
+            return $"{DirLayout}\\{CustomerNumber}-T{op}-Press.prt";
         }
 
-        public string file_dir_op_op_detail(string dir_op, string detail_op, string detail)
+        public string file_dir_op_op_detail(string dirOp, string detailOp, string detail)
         {
-            return path_detail1(dir_op, detail_op, detail);
+            return path_detail1(dirOp, detailOp, detail);
         }
     }
 }

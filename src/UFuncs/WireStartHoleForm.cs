@@ -205,8 +205,7 @@ namespace TSG_Library.UFuncs
                 Matrix3x3 element1 = __work_part_.WCS.CoordinateSystem.Orientation.Element;
                 NXMatrix nXMatrix1 = __work_part_.NXMatrices.Create(element1);
                 partImporter1.DestinationCoordinateSystem = nXMatrix1;
-                Point3d destinationPoint1 = location;
-                partImporter1.DestinationPoint = destinationPoint1;
+                partImporter1.DestinationPoint = location;
                 partImporter1.Commit();
             }
         }

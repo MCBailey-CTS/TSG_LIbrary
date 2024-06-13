@@ -50,14 +50,13 @@ namespace TSG_Library.Extensions
 
         internal static void __AddICurve(this Section section, params ICurve[] icurves)
         {
-            Section nXOpenSection = section;
-            nXOpenSection.AllowSelfIntersection(false);
+            section.AllowSelfIntersection(false);
 
             for (int i = 0; i < icurves.Length; i++)
             {
                 SelectionIntentRule[] rules = section.__OwningPart().__CreateSelectionIntentRule(icurves[i]);
 
-                nXOpenSection.AddToSection(
+                section.AddToSection(
                     rules,
                     (NXObject)icurves[i],
                     null,
@@ -82,11 +81,10 @@ namespace TSG_Library.Extensions
 
         internal static void __AddPoints(this Section section, params Point[] points)
         {
-            Section nXOpenSection = section;
-            nXOpenSection.AllowSelfIntersection(false);
+            section.AllowSelfIntersection(false);
             SelectionIntentRule[] rules = __CreateSelectionIntentRule(points);
 
-            nXOpenSection.AddToSection(
+            section.AddToSection(
                 rules,
                 points[0],
                 null,

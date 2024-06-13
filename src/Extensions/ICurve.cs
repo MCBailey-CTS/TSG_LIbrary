@@ -58,17 +58,13 @@ namespace TSG_Library.Extensions
             UFEval eval = ufsession_.Eval;
             eval.Initialize2(curve.__Tag(), out IntPtr evaluator);
             double[] array = new double[3];
-            double[] point = array;
             double[] array2 = new double[3];
-            double[] tangent = array2;
             double[] array3 = new double[3];
-            double[] normal = array3;
             double[] array4 = new double[3];
-            double[] array5 = array4;
             value /= Factor;
-            eval.EvaluateUnitVectors(evaluator, value, point, tangent, normal, array5);
+            eval.EvaluateUnitVectors(evaluator, value, array, array2, array3, array4);
             eval.Free(evaluator);
-            return array5.__ToVector3d();
+            return array4.__ToVector3d();
         }
 
         public static Tag __Tag(this ICurve curve)

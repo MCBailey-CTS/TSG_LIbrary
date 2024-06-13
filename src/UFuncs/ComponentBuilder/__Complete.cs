@@ -180,8 +180,7 @@ namespace TSG_Library.UFuncs
                 for (double ii = spacing; ii <= 1; ii += spacing)
                     if (fractionValue <= ii)
                     {
-                        double roundedFraction = ii;
-                        double finalValue = truncateValue + roundedFraction;
+                        double finalValue = truncateValue + ii;
                         round = finalValue;
                         break;
                     }
@@ -201,8 +200,7 @@ namespace TSG_Library.UFuncs
                 for (double ii = spacing / 25.4; ii <= 1; ii += spacing / 25.4)
                     if (fractionValue <= ii)
                     {
-                        double roundedFraction = ii;
-                        double finalValue = truncateValue + roundedFraction;
+                        double finalValue = truncateValue + ii;
                         round = finalValue;
                         break;
                     }

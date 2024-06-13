@@ -313,7 +313,7 @@ namespace TSG_Library.UFuncs
 
             //System.Diagnostics.Debugger.Launch();
 
-            string simDir = $"{Path.GetFileNameWithoutExtension(folder.dir_job)}-{cmbData.Text}";
+            string simDir = $"{Path.GetFileNameWithoutExtension(folder.DirJob)}-{cmbData.Text}";
 
             string simPathSimDir = $"{__SimActive}\\{simDir}";
 
@@ -617,9 +617,7 @@ namespace TSG_Library.UFuncs
                         break;
                 }
 
-            Part surfacePart = basePart1;
-
-            __display_part_.ComponentAssembly.AddComponent(surfacePart, "Entire Part", nameBuilder, _Point3dOrigin,
+            __display_part_.ComponentAssembly.AddComponent(basePart1, "Entire Part", nameBuilder, _Point3dOrigin,
                 _Matrix3x3Identity, layer, out PartLoadStatus sPartLoadStatus);
 
             print_($"Added Component: {nameBuilder}");
@@ -672,7 +670,7 @@ namespace TSG_Library.UFuncs
 
             string eng = string.IsNullOrEmpty(engineering) ? "" : " " + engineering;
 
-            string simFolder = $"{simPath}\\{Path.GetFileNameWithoutExtension(folder.dir_job)}-{tsgNum}";
+            string simFolder = $"{simPath}\\{Path.GetFileNameWithoutExtension(folder.DirJob)}-{tsgNum}";
 
             //if (folder.is_cts_job())
             //    simFolder = $"{simPath}\\{folder.cts_number} ({folder.company}-{folder.CustomerNumber})-{tsgNum}";

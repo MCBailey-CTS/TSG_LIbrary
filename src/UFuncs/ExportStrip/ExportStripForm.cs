@@ -326,7 +326,7 @@ namespace TSG_Library.UFuncs
         private static void Export(bool chkSTP, int numUpDownCopies, bool chkPart, bool chkPDF, string txtInput,
             bool chkCopy)
         {
-            GFolder folder = GFolder.create(__display_part_.FullPath);
+            GFolder folder = GFolder.Create(__display_part_.FullPath);
 
             __display_part_.SetUserAttribute("DATE", -1, TodaysDate, NXOpen.Update.Option.Now);
 
@@ -376,9 +376,9 @@ namespace TSG_Library.UFuncs
             //if (chkSTP)
 
 
-            string outgoingFolderName = folder.customer_number.Length == 6
-                ? $"{folder.dir_layout}\\{txtInput}"
-                : $"{folder.dir_outgoing}\\{txtInput}";
+            string outgoingFolderName = folder.CustomerNumber.Length == 6
+                ? $"{folder.DirLayout}\\{txtInput}"
+                : $"{folder.DirOutgoing}\\{txtInput}";
 
             if (Directory.Exists(outgoingFolderName))
             {
@@ -406,7 +406,7 @@ namespace TSG_Library.UFuncs
             const string regex = "^\\d+-(?<op>\\d+)-.+$";
 
             string op = Regex.Match(session_.Parts.Work.Leaf, regex, RegexOptions.IgnoreCase).Groups["op"].Value;
-            string commonString = $"{folder.customer_number}-{op}-strip {TodaysDate}";
+            string commonString = $"{folder.CustomerNumber}-{op}-strip {TodaysDate}";
 
             uf_.Ui.SetPrompt(chkPart
                 ? "Exporting \".prt\" file."
@@ -477,7 +477,7 @@ namespace TSG_Library.UFuncs
 
             string[] filesToZip = Directory.GetFiles($"{outgoingFolderName}");
 
-            string zipFileName = $"{folder.customer_number}-{txtInput}.7z";
+            string zipFileName = $"{folder.CustomerNumber}-{txtInput}.7z";
 
 
             string zipFile = $"{outgoingFolderName}\\{zipFileName}";
@@ -493,10 +493,10 @@ namespace TSG_Library.UFuncs
 
             if (chkCopy)
             {
-                if (!Directory.Exists(folder.dir_process_sim_data_design))
-                    Directory.CreateDirectory(folder.dir_process_sim_data_design);
+                if (!Directory.Exists(folder.DirProcessSimDataDesign))
+                    Directory.CreateDirectory(folder.DirProcessSimDataDesign);
 
-                string[] zipFiles = Directory.GetFiles(folder.dir_process_sim_data_design, "*.7z",
+                string[] zipFiles = Directory.GetFiles(folder.DirProcessSimDataDesign, "*.7z",
                     SearchOption.TopDirectoryOnly);
 
                 foreach (string zipFile1 in zipFiles)
@@ -512,7 +512,7 @@ namespace TSG_Library.UFuncs
                             throw new ArgumentException();
                     }
 
-                File.Copy(zipFile, $"{folder.dir_process_sim_data_design}\\{zipFileName}", true);
+                File.Copy(zipFile, $"{folder.DirProcessSimDataDesign}\\{zipFileName}", true);
             }
 
             session_.ApplicationSwitchImmediate("UG_APP_MODELING");

@@ -28,8 +28,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             using (new Destroyer(chamferBuilder))
             {
                 chamferBuilder.SmartCollector.GetRules(out SelectionIntentRule[] rules);
-                SelectionIntentRule[] array = rules;
-                foreach (SelectionIntentRule originalRule in array)
+                foreach (SelectionIntentRule originalRule in rules)
                     list.Add(BaseMirrorRule.MirrorRule(originalRule, originalFeature, plane, originalComp, dict));
             }
 

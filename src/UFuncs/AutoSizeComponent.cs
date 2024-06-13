@@ -262,8 +262,7 @@ namespace TSG_Library.Attributes
                                         for (double ii = .125; ii <= 1; ii += .125)
                                         {
                                             if (!(fractionValue <= ii)) continue;
-                                            double roundedFraction = ii;
-                                            double finalValue = truncateValue + roundedFraction;
+                                            double finalValue = truncateValue + ii;
                                             distances[i] = finalValue;
                                             break;
                                         }
@@ -410,8 +409,7 @@ namespace TSG_Library.Attributes
                                     for (double ii = .125; ii <= 1; ii += .125)
                                     {
                                         if (!(fractionValue <= ii)) continue;
-                                        double roundedFraction = ii;
-                                        double finalValue = truncateValue + roundedFraction;
+                                        double finalValue = truncateValue + ii;
                                         distances[i] = finalValue;
                                         break;
                                     }

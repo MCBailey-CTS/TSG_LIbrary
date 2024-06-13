@@ -142,7 +142,6 @@ namespace TSG_Library.UFuncs
 
             //        string rootDir = Environment
             //.GetEnvironmentVariable("UGII_ROOT_DIR");
-            string colorPalette = cdfFile;
             string colorName = "";
             string red = "";
             string green = "";
@@ -153,7 +152,7 @@ namespace TSG_Library.UFuncs
             int lineCounter = 0;
 
             //VB FileSystem.FileOpen(1, colorPalette, OpenMode.Input, -1, -1, -1);
-            StreamReader file = new StreamReader(colorPalette);
+            StreamReader file = new StreamReader(cdfFile);
             //VB while (!(FileSystem.EOF(1)))
             while ((textLine = file.ReadLine()) != null)
             {
