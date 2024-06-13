@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CTS_Library.Equality;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;

@@ -21,7 +21,9 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             Part part = mirroredComp.__Prototype();
             Feature feature = (Feature)dict[originalFeature];
             feature.Suppress();
+#pragma warning disable CS0618 // Type or member is obsolete
             ((FaceTangentRule)originalRule).GetData(out var startFace, out var endFace, out var _, out var _, out var _);
+#pragma warning restore CS0618 // Type or member is obsolete
             IList<Tuple<Point3d, Point3d>> edgePoints = (from edge in startFace.GetEdges()
                                                          let mirrorStart = edge.__StartPoint()._MirrorMap(plane, originalComp, mirroredComp)
                                                          let mirrorEnd = edge.__EndPoint()._MirrorMap(plane, originalComp, mirroredComp)

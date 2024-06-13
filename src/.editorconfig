@@ -14,3 +14,46 @@ resharper_csharp_accessor_declaration_braces=next_line
 resharper_csharp_other_braces=next_line
 # Before colon in 'case' statement
 resharper_csharp_space_before_colon_in_case=false
+
+
+csharp_new_line_before_catch=true
+csharp_new_line_before_finally=true
+
+csharp_new_line_before_while=true
+csharp_space_after_cast=false
+
+
+# 'var' usage in declarations
+
+# For built-in types
+csharp_for_built_in_types=use_explicit_type
+# For simple types
+csharp_for_simple_types=use_explicit_type
+# Elsewhere
+csharp_for_other_types=use_explicit_type
+
+# Use 'var' keyword for discards
+csharp_prefer_explicit_discard_declaration=false
+# Use 'this.' qualifier for
+csharp_instance_members_qualify_members=none
+
+# Remove redundant braces
+csharp_braces_redundant=true
+
+# Code body
+
+# Methods and operators
+csharp_method_or_operator_body=block_body
+# Local functions
+csharp_local_function_body=block_body
+# Constructors and Destructors
+csharp_constructor_or_destructor_body=block_body
+
+# Place 'System.*' and 'Windows.*' namespaces first when sorting 'using' directives
+csharp_sort_usings_with_system_first=true
+
+csharp_extra_spaces=remove_all
+
+
+
+
