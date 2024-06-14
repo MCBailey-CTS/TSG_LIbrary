@@ -11,16 +11,6 @@ namespace TSG_Library.UFuncs
     {
         private bool EditSizeDisplay(bool isBlockComponent, Component editComponent)
         {
-            if (_displayPart.FullPath.Contains("mirror"))
-            {
-                TheUISession.NXMessageBox.Show(
-                    "Caught exception",
-                    NXMessageBox.DialogType.Error,
-                    "Mirrored Component");
-
-                return isBlockComponent;
-            }
-
             if (!_workPart.__HasDynamicBlock())
             {
                 ResetNonBlockError();
@@ -174,211 +164,290 @@ namespace TSG_Library.UFuncs
                 if (sizeForm.DialogResult == DialogResult.OK)
                 {
                     double editSize = sizeForm.InputValue;
-                    double distance = 0;
 
-                    if (_displayPart.PartUnits == BasePart.Units.Millimeters) editSize *= 25.4;
+                    if (_displayPart.PartUnits == BasePart.Units.Millimeters)
+                        editSize *= 25.4;
 
                     if (editSize > 0)
                     {
                         if (pointPrototype.Name == "POSX")
-                            distance = EditSizeDisplayPosX(blockLength, movePtsHalf, movePtsFull, posXObjs,
-                                allxAxisLines, editSize);
+                        {
+                            movePtsFull.AddRange(posXObjs);
+
+                            EditSizeDisplayPosX(
+                               editSize - blockLength,
+                               movePtsHalf,
+                               movePtsFull,
+                               allxAxisLines,
+                               "X",
+                               true);
+                        }
 
                         if (pointPrototype.Name == "NEGX")
-                            distance = EditSizeDisplayNegX(blockLength, movePtsHalf, movePtsFull, negXObjs,
-                                allxAxisLines, editSize);
+                        {
+                            movePtsFull.AddRange(negXObjs);
+
+                            EditSizeDisplayNegX(
+                               blockLength - editSize,
+                               movePtsHalf,
+                               movePtsFull,
+                               allxAxisLines,
+                               "X",
+                               false);
+                        }
 
                         if (pointPrototype.Name == "POSY")
-                            distance = EditSizeDisplayPosY(blockWidth, movePtsHalf, movePtsFull, posYObjs,
-                                allyAxisLines, editSize);
+                        {
+                            movePtsFull.AddRange(posYObjs);
+
+                            EditSizeDisplayPosY(
+                               editSize - blockWidth,
+                               movePtsHalf,
+                               movePtsFull,
+                               allyAxisLines,
+                               "Y",
+                               true);
+                        }
 
                         if (pointPrototype.Name == "NEGY")
-                            distance = EditSizeDisplayNegY(blockWidth, movePtsHalf, movePtsFull, negYObjs,
-                                allyAxisLines, editSize);
+                        {
+                            movePtsFull.AddRange(negYObjs);
+
+                            EditSizeDisplayNegY(
+                               blockWidth - editSize,
+                               movePtsHalf,
+                               movePtsFull,
+                               allyAxisLines,
+                               "Y",
+                               false);
+                        }
 
                         if (pointPrototype.Name == "POSZ")
-                            distance = EditSizeDisplayPosZ(blockHeight, movePtsHalf, movePtsFull, posZObjs,
-                                allzAxisLines, editSize);
+                        {
+                            movePtsFull.AddRange(posZObjs);
+
+                            EditSizeDisplayPosZ(
+                               editSize - blockHeight,
+                               movePtsHalf,
+                               movePtsFull,
+                               allzAxisLines,
+                               "Z",
+                               true);
+                        }
 
                         if (pointPrototype.Name == "NEGZ")
-                            distance = EditSizeDisplayNegZ(blockHeight, movePtsHalf, movePtsFull, negZObjs,
-                                allzAxisLines, editSize);
+                        {
+                            movePtsFull.AddRange(negZObjs);
+
+                            EditSizeDisplayNegZ(
+                               blockHeight - editSize,
+                               movePtsHalf,
+                               movePtsFull,
+                               allzAxisLines,
+                               "Z",
+                               false);
+                        }
                     }
                 }
 
                 UpdateDynamicBlock(editComponent);
-
-                session_.Preferences.EmphasisVisualization.WorkPartEmphasis = false;
-
                 sizeForm.Close();
                 sizeForm.Dispose();
-
                 ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
-
                 __work_component_ = editComponent;
                 UpdateSessionParts();
-
                 ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
                 ufsession_.Disp.RegenerateDisplay();
-
                 CreateEditData(editComponent);
-
                 pHandle = SelectHandlePoint();
             }
 
             EnableForm();
-
             return isBlockComponent;
         }
 
-        private double EditSizeDisplayPosZ(double blockHeight, List<NXObject> movePtsHalf, List<NXObject> movePtsFull,
-            List<Line> posZObjs, List<Line> allzAxisLines, double editSize)
+        private double EditSizeDisplayPosZ(
+            double distance,
+            List<NXObject> movePtsHalf,
+            List<NXObject> movePtsFull,
+            List<Line> allzAxisLines,
+            string dir_xyz,
+            bool isPosEnd)
         {
-            double distance = editSize - blockHeight;
-            foreach (Line addLine in posZObjs) movePtsFull.Add(addLine);
+            foreach (Line zAxisLine in allzAxisLines)
+                ZEndPoint(distance, zAxisLine);
 
-            foreach (Line zAxisLine in allzAxisLines) ZEndPoint(distance, zAxisLine);
-
-            MoveObjects(movePtsHalf, movePtsFull, distance, "Z", false);
+            MoveObjects(movePtsHalf, movePtsFull, distance, dir_xyz, false);
             return distance;
         }
 
 
-        private double EditSizeNegZ(double blockHeight, List<NXObject> movePtsHalf, List<NXObject> movePtsFull,
-            List<Line> negZObjs, List<Line> allzAxisLines, double editSize)
+        private double EditSizeNegZ(
+            double distance,
+            List<NXObject> movePtsHalf,
+            List<NXObject> movePtsFull,
+            List<Line> allzAxisLines,
+            string dir_xyz,
+            bool isPosEnd)
         {
-            double distance = blockHeight - editSize;
-            foreach (Line addLine in negZObjs) movePtsFull.Add(addLine);
+            foreach (Line zAxisLine in allzAxisLines)
+                ZStartPoint(distance, zAxisLine);
 
-            foreach (Line zAxisLine in allzAxisLines) ZStartPoint(distance, zAxisLine);
-
-            MoveObjects(movePtsHalf, movePtsFull, distance, "Z", false);
+            MoveObjects(movePtsHalf, movePtsFull, distance, dir_xyz, false);
             return distance;
         }
 
-        private double EditSizePosZ(double blockHeight, List<NXObject> movePtsHalf, List<NXObject> movePtsFull,
-            List<Line> posZObjs, List<Line> allzAxisLines, double editSize)
+        private double EditSizePosZ(
+            double distance,
+            List<NXObject> movePtsHalf,
+            List<NXObject> movePtsFull,
+            List<Line> allzAxisLines,
+            string dir_xyz,
+            bool isPosEnd)
         {
-            double distance = editSize - blockHeight;
-            foreach (Line addLine in posZObjs) movePtsFull.Add(addLine);
+            foreach (Line zAxisLine in allzAxisLines)
+                ZEndPoint(distance, zAxisLine);
 
-            foreach (Line zAxisLine in allzAxisLines) ZEndPoint(distance, zAxisLine);
-
-            MoveObjects(movePtsHalf, movePtsFull, distance, "Z", false);
+            MoveObjects(movePtsHalf, movePtsFull, distance, dir_xyz, false);
             return distance;
         }
 
 
-        private double EditSizeNegY(double blockWidth, List<NXObject> movePtsHalf, List<NXObject> movePtsFull,
-            List<Line> negYObjs, List<Line> allyAxisLines, double editSize)
+        private double EditSizeNegY(
+            double distance,
+            List<NXObject> movePtsHalf,
+            List<NXObject> movePtsFull,
+            List<Line> allyAxisLines,
+            string dir_xyz,
+            bool isPosEnd)
         {
-            double distance = blockWidth - editSize;
-            foreach (Line addLine in negYObjs) movePtsFull.Add(addLine);
 
             foreach (Line yAxisLine in allyAxisLines) YStartPoint(distance, yAxisLine);
 
-            MoveObjects(movePtsHalf, movePtsFull, distance, "Y", false);
+            MoveObjects(movePtsHalf, movePtsFull, distance, dir_xyz, false);
             return distance;
         }
 
-        private double EditSizePosY(double blockWidth, List<NXObject> movePtsHalf, List<NXObject> movePtsFull,
-            List<Line> posYObjs, List<Line> allyAxisLines, double editSize)
+        private double EditSizePosY(
+            double distance,
+            List<NXObject> movePtsHalf,
+            List<NXObject> movePtsFull,
+            List<Line> allyAxisLines,
+            string dir_xyz,
+            bool isPosEnd)
         {
-            double distance = editSize - blockWidth;
-            foreach (Line addLine in posYObjs) movePtsFull.Add(addLine);
+            foreach (Line yAxisLine in allyAxisLines)
+                YEndPoint(distance, yAxisLine);
 
-            foreach (Line yAxisLine in allyAxisLines) YEndPoint(distance, yAxisLine);
-
-            MoveObjects(movePtsHalf, movePtsFull, distance, "Y", false);
-            return distance;
-        }
-
-
-        private double EditSizeNegX(double blockLength, List<NXObject> movePtsHalf, List<NXObject> movePtsFull,
-            List<Line> negXObjs, List<Line> allxAxisLines, double editSize)
-        {
-            double distance = blockLength - editSize;
-            foreach (Line addLine in negXObjs) movePtsFull.Add(addLine);
-
-            foreach (Line xAxisLine in allxAxisLines) XStartPoint(distance, xAxisLine);
-
-            MoveObjects(movePtsHalf, movePtsFull, distance, "X", false);
-            return distance;
-        }
-
-        private double EditSizePosX(double blockLength, List<NXObject> movePtsHalf, List<NXObject> movePtsFull,
-            List<Line> posXObjs, List<Line> allxAxisLines, double editSize)
-        {
-            double distance = editSize - blockLength;
-            foreach (Line posXLine in posXObjs) movePtsFull.Add(posXLine);
-
-            foreach (Line xAxisLine in allxAxisLines) XEndPoint(distance, xAxisLine);
-
-            MoveObjects(movePtsHalf, movePtsFull, distance, "X", false);
+            MoveObjects(movePtsHalf, movePtsFull, distance, dir_xyz, false);
             return distance;
         }
 
 
-        private double EditSizeDisplayNegY(double blockWidth, List<NXObject> movePtsHalf, List<NXObject> movePtsFull,
-            List<Line> negYObjs, List<Line> allyAxisLines, double editSize)
+        private double EditSizeNegX(
+            double distance,
+            List<NXObject> movePtsHalf,
+            List<NXObject> movePtsFull,
+            List<Line> allxAxisLines,
+            string dir_xyz,
+            bool isPosEnd)
         {
-            double distance = blockWidth - editSize;
-            foreach (Line addLine in negYObjs) movePtsFull.Add(addLine);
+            foreach (Line xAxisLine in allxAxisLines)
+                XStartPoint(distance, xAxisLine);
 
-            foreach (Line yAxisLine in allyAxisLines) YStartPoint(distance, yAxisLine);
+            MoveObjects(movePtsHalf, movePtsFull, distance, dir_xyz, false);
+            return distance;
+        }
 
-            MoveObjects(movePtsHalf, movePtsFull, distance, "Y", false);
+        private double EditSizePosX(
+            double distance,
+            List<NXObject> movePtsHalf,
+            List<NXObject> movePtsFull,
+            List<Line> allxAxisLines,
+            string dir_xyz,
+            bool isPosEnd)
+        {
+            foreach (Line xAxisLine in allxAxisLines)
+                if (isPosEnd)
+                    XEndPoint(distance, xAxisLine);
+                else
+                    XStartPoint(distance, xAxisLine);
+
+            MoveObjects(movePtsHalf, movePtsFull, distance, dir_xyz, false);
             return distance;
         }
 
 
-        private double EditSizeDisplayPosY(double blockWidth, List<NXObject> movePtsHalf, List<NXObject> movePtsFull,
-            List<Line> posYObjs, List<Line> allyAxisLines, double editSize)
+        private void EditSizeDisplayNegY(
+            double distance,
+            List<NXObject> movePtsHalf,
+            List<NXObject> movePtsFull,
+            List<Line> allyAxisLines,
+            string dir_xyz,
+            bool isPosEnd)
         {
-            double distance = editSize - blockWidth;
-            foreach (Line addLine in posYObjs) movePtsFull.Add(addLine);
+            foreach (Line yAxisLine in allyAxisLines)
+                YStartPoint(distance, yAxisLine);
 
-            foreach (Line yAxisLine in allyAxisLines) YEndPoint(distance, yAxisLine);
-
-            MoveObjects(movePtsHalf, movePtsFull, distance, "Y", false);
-            return distance;
+            MoveObjects(movePtsHalf, movePtsFull, distance, dir_xyz, false);
         }
 
 
-        private double EditSizeDisplayPosX(double blockLength, List<NXObject> movePtsHalf, List<NXObject> movePtsFull,
-            List<Line> posXObjs, List<Line> allxAxisLines, double editSize)
+        private void EditSizeDisplayPosY(
+            double distance,
+            List<NXObject> movePtsHalf,
+            List<NXObject> movePtsFull,
+            List<Line> allyAxisLines,
+            string dir_xyz,
+            bool isPosEnd)
         {
-            double distance = editSize - blockLength;
-            foreach (Line posXLine in posXObjs) movePtsFull.Add(posXLine);
+            foreach (Line yAxisLine in allyAxisLines)
+                YEndPoint(distance, yAxisLine);
 
-            foreach (Line xAxisLine in allxAxisLines) XEndPoint(distance, xAxisLine);
-
-            MoveObjects(movePtsHalf, movePtsFull, distance, "X", false);
-            return distance;
+            MoveObjects(movePtsHalf, movePtsFull, distance, dir_xyz, false);
         }
 
-        private double EditSizeDisplayNegX(double blockLength, List<NXObject> movePtsHalf, List<NXObject> movePtsFull,
-            List<Line> negXObjs, List<Line> allxAxisLines, double editSize)
+
+        private void EditSizeDisplayPosX(
+            double distance,
+            List<NXObject> movePtsHalf,
+            List<NXObject> movePtsFull,
+            List<Line> allxAxisLines,
+            string dir_xyz,
+            bool isPosEnd)
         {
-            double distance = blockLength - editSize;
-            foreach (Line addLine in negXObjs) movePtsFull.Add(addLine);
+            foreach (Line xAxisLine in allxAxisLines)
+                XEndPoint(distance, xAxisLine);
 
-            foreach (Line xAxisLine in allxAxisLines) XStartPoint(distance, xAxisLine);
-
-            MoveObjects(movePtsHalf, movePtsFull, distance, "X", false);
-            return distance;
+            MoveObjects(movePtsHalf, movePtsFull, distance, dir_xyz, false);
         }
 
-        private double EditSizeDisplayNegZ(double blockHeight, List<NXObject> movePtsHalf, List<NXObject> movePtsFull,
-            List<Line> negZObjs, List<Line> allzAxisLines, double editSize)
+        private void EditSizeDisplayNegX(
+            double distance,
+            List<NXObject> movePtsHalf,
+            List<NXObject> movePtsFull,
+            List<Line> allxAxisLines,
+            string dir_xyz,
+            bool isPosEnd)
         {
-            double distance = blockHeight - editSize;
-            foreach (Line addLine in negZObjs) movePtsFull.Add(addLine);
+            foreach (Line xAxisLine in allxAxisLines)
+                XStartPoint(distance, xAxisLine);
 
-            foreach (Line zAxisLine in allzAxisLines) ZStartPoint(distance, zAxisLine);
+            MoveObjects(movePtsHalf, movePtsFull, distance, dir_xyz, false);
+        }
 
-            MoveObjects(movePtsHalf, movePtsFull, distance, "Z", false);
-            return distance;
+        private void EditSizeDisplayNegZ(
+            double distance,
+            List<NXObject> movePtsHalf,
+            List<NXObject> movePtsFull,
+            List<Line> allzAxisLines,
+            string dir_xyz,
+            bool isPosEnd)
+        {
+            foreach (Line zAxisLine in allzAxisLines)
+                ZStartPoint(distance, zAxisLine);
+
+            MoveObjects(movePtsHalf, movePtsFull, distance, dir_xyz, false);
         }
     }
 }
