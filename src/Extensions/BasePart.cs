@@ -985,19 +985,20 @@ namespace TSG_Library.Extensions
             return basePart.__CreatePoint(x, y, 0.0);
         }
 
-[Obsolete]
-        public static void __Close(this BasePart part, bool closeWholeTree = false,
+        public static void __Close(
+            this BasePart part,
+            bool closeWholeTree = false,
             bool closeModified = false)
         {
-            // BasePart.CloseWholeTree closeWholeTree = closeWholeTree
-            //     ? BasePart.CloseWholeTree.True
-            //     : BasePart.CloseWholeTree.False;
-            //
-            // BasePart.CloseModified closeModified = closeModified
-            //     ? BasePart.CloseModified.CloseModified
-            //     : BasePart.CloseModified.DontCloseModified;
-            //
-            // part.Close(closeWholeTree, closeModified, null);
+            BasePart.CloseWholeTree closeWholeTree_ = closeWholeTree
+                ? BasePart.CloseWholeTree.True
+                : BasePart.CloseWholeTree.False;
+
+            BasePart.CloseModified closeModified_ = closeModified
+                ? BasePart.CloseModified.CloseModified
+                : BasePart.CloseModified.DontCloseModified;
+
+            part.Close(closeWholeTree_, closeModified_, null);
         }
 
 
@@ -2261,7 +2262,6 @@ namespace TSG_Library.Extensions
                 out _);
         }
 
-        [Obsolete]
         public static Component __AddComponent(
             this BasePart part,
             string path,
@@ -2271,14 +2271,15 @@ namespace TSG_Library.Extensions
             Matrix3x3? orientation = null,
             int layer = 1)
         {
-            //Point3d origin = origin ?? _Point3dOrigin;
-            //Matrix3x3 orientation = orientation ?? _Matrix3x3Identity;
-            //return part.__AddComponent(session_.__FindOrOpen(path), referenceSet, componentName, origin,
-            //    orientation, layer);
-            throw new NotImplementedException();
+            return part.__AddComponent(
+                session_.__FindOrOpen(path),
+                referenceSet,
+                componentName,
+                origin ?? _Point3dOrigin,
+                orientation ?? _Matrix3x3Identity,
+                layer);
         }
 
-[Obsolete]
         public static Component __AddComponent(
             this BasePart part,
             BasePart prototype,
@@ -2288,11 +2289,14 @@ namespace TSG_Library.Extensions
             Matrix3x3? orientation = null,
             int layer = 1)
         {
-            throw new NotImplementedException();
-            //Point3d origin = origin ?? _Point3dOrigin;
-            //Matrix3x3 orientation = orientation ?? _Matrix3x3Identity;
-            //return part.ComponentAssembly.AddComponent(prototype, referenceSet, componentName, origin, orientation,
-            //    layer, out _);
+            return part.ComponentAssembly.AddComponent(
+                prototype,
+                referenceSet,
+                componentName,
+                origin ?? _Point3dOrigin,
+                orientation ?? _Matrix3x3Identity,
+                layer,
+                out _);
         }
 
 

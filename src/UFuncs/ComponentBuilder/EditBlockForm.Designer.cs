@@ -757,27 +757,27 @@ namespace TSG_Library.UFuncs
                             {
                                 case "POSX":
                                     movePtsFull.AddRange(posXObjs);
-                                    distance = EditSizePosX(editSize - blockLength, movePtsHalf, movePtsFull, allxAxisLines, "X", true);
+                                    distance = EditSize(editSize - blockLength, movePtsHalf, movePtsFull, allxAxisLines, "X", true);
                                     break;
                                 case "NEGX":
                                     movePtsFull.AddRange(negXObjs);
-                                    distance = EditSizeNegX(blockLength - editSize, movePtsHalf, movePtsFull, allxAxisLines,  "X", false);
+                                    distance = EditSize(blockLength - editSize, movePtsHalf, movePtsFull, allxAxisLines,  "X", false);
                                     break;
                                 case "POSY":
                                     movePtsFull.AddRange(posYObjs);
-                                    distance = EditSizePosY(editSize - blockWidth, movePtsHalf, movePtsFull, allyAxisLines, "Y", true);
+                                    distance = EditSize(editSize - blockWidth, movePtsHalf, movePtsFull, allyAxisLines, "Y", true);
                                     break;
                                 case "NEGY":
                                     movePtsFull.AddRange(negYObjs);
-                                    distance = EditSizeNegY(blockWidth - editSize, movePtsHalf, movePtsFull, allyAxisLines, "Y", false);
+                                    distance = EditSize(blockWidth - editSize, movePtsHalf, movePtsFull, allyAxisLines, "Y", false);
                                     break;
                                 case "POSZ":
                                     movePtsFull.AddRange(posZObjs);
-                                    distance = EditSizePosZ(editSize - blockHeight, movePtsHalf, movePtsFull, allzAxisLines,"Z", true);
+                                    distance = EditSize(editSize - blockHeight, movePtsHalf, movePtsFull, allzAxisLines,"Z", true);
                                     break;
                                 case "NEGZ":
                                     movePtsFull.AddRange(negZObjs);
-                                    distance = EditSizeNegZ(blockHeight - editSize, movePtsHalf, movePtsFull, allzAxisLines, "Z", false);
+                                    distance = EditSize(blockHeight - editSize, movePtsHalf, movePtsFull, allzAxisLines, "Z", false);
                                     break;
                                 default:
                                     throw new InvalidOperationException(pointPrototype.Name);

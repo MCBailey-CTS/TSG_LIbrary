@@ -186,7 +186,7 @@ namespace TSG_Library.UFuncs
                 Component editComponent = _editBody.OwningComponent;
 
                 isBlockComponent = editComponent is null
-                    ? EditSizeDisplay(isBlockComponent, editComponent)
+                    ? EditSize(isBlockComponent, editComponent)
                     : EditSizeWork(isBlockComponent, editComponent);
             }
             catch (Exception ex)
