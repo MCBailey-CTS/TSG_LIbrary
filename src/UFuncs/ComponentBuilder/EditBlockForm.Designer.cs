@@ -526,14 +526,12 @@ namespace TSG_Library.UFuncs
                                 __work_component_ = editComponent;
                                 UpdateSessionParts();
 
-                                foreach (Feature featBlk in _workPart.Features)
-                                    if (featBlk.FeatureType == "BLOCK")
-                                        if (featBlk.Name == "DYNAMIC BLOCK")
-                                        {
-                                            isBlockComponent = true;
-                                            CreateEditData(editComponent);
-                                            _isNewSelection = false;
-                                        }
+                                if (_workPart.__HasDynamicBlock())
+                                {
+                                    isBlockComponent = true;
+                                    CreateEditData(editComponent);
+                                    _isNewSelection = false;
+                                }
                             }
                             else
                             {
@@ -649,32 +647,41 @@ namespace TSG_Library.UFuncs
 
                                             if (pointPrototype.Name == "POSX")
                                             {
-                                                distance = AlignEdgeDistancePosX(movePtsHalf, movePtsFull, posXObjs, allxAxisLines, inputDist, mappedBase, mappedPoint);
+                                                foreach (Line posXLine in posXObjs) movePtsFull.Add(posXLine);
+
+                                                distance = AlignEdgeDistancePosX(movePtsHalf, movePtsFull, allxAxisLines, inputDist, mappedBase, mappedPoint);
                                             }
 
                                             if (pointPrototype.Name == "NEGX")
                                             {
-                                                distance = AlignEdgeDistanceNegX(movePtsHalf, movePtsFull, negXObjs, allxAxisLines, inputDist, mappedBase, mappedPoint);
+                                                foreach (Line addLine in negXObjs) movePtsFull.Add(addLine);
+
+                                                distance = AlignEdgeDistanceNegX(movePtsHalf, movePtsFull, allxAxisLines, inputDist, mappedBase, mappedPoint);
                                             }
 
                                             if (pointPrototype.Name == "POSY")
                                             {
-                                                distance = AlignEdgeDistancePosY(movePtsHalf, movePtsFull, posYObjs, allyAxisLines, inputDist, mappedBase, mappedPoint);
+                                                foreach (Line addLine in posYObjs) movePtsFull.Add(addLine);
+
+                                                distance = AlignEdgeDistancePosY(movePtsHalf, movePtsFull, allyAxisLines, inputDist, mappedBase, mappedPoint, 1, true);
                                             }
 
                                             if (pointPrototype.Name == "NEGY")
                                             {
-                                                distance = AlignEdgeDistanceNegY(movePtsHalf, movePtsFull, negYObjs, allyAxisLines, inputDist, mappedBase, mappedPoint);
+                                                foreach (Line addLine in negYObjs) movePtsFull.Add(addLine);
+                                                distance = AlignEdgeDistanceNegY(movePtsHalf, movePtsFull, allyAxisLines, inputDist, mappedBase, mappedPoint);
                                             }
 
                                             if (pointPrototype.Name == "POSZ")
                                             {
+                                                foreach (Line addLine in posZObjs) movePtsFull.Add(addLine);
                                                 distance = AlignEdgeDistancePosZ(movePtsHalf, movePtsFull, posZObjs, allzAxisLines, inputDist, mappedBase, mappedPoint);
                                             }
 
                                             if (pointPrototype.Name == "NEGZ")
                                             {
-                                                distance = AlignEdgeDistanceNegZ(movePtsHalf, movePtsFull, negZObjs, allzAxisLines, inputDist, mappedBase, mappedPoint);
+                                                foreach (Line addLine in negZObjs) movePtsFull.Add(addLine);
+                                                distance = AlignEdgeDistanceNegZ(movePtsHalf, movePtsFull, allzAxisLines, inputDist, mappedBase, mappedPoint);
                                             }
                                         }
                                         else
