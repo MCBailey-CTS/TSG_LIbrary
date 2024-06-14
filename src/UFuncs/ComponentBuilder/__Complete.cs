@@ -7,6 +7,8 @@ using NXOpen.UF;
 using NXOpen.UserDefinedObjects;
 using static TSG_Library.Extensions.Extensions;
 using static NXOpen.UF.UFConstants;
+using NXOpenUI;
+using System.Globalization;
 
 namespace TSG_Library.UFuncs
 {
@@ -378,8 +380,12 @@ namespace TSG_Library.UFuncs
         }
 
 
-        private static void MotionCallbackDynamic1(Point pointPrototype, List<NXObject> doNotMovePts,
-            List<NXObject> movePtsHalf, List<NXObject> movePtsFull, bool isPos)
+        private static void MotionCallbackDynamic1(
+            Point pointPrototype,
+            List<NXObject> doNotMovePts,
+            List<NXObject> movePtsHalf,
+            List<NXObject> movePtsFull,
+            bool isPos)
         {
             foreach (Point namedPt in _workPart.Points)
                 if (namedPt.Name != "")
@@ -415,6 +421,270 @@ namespace TSG_Library.UFuncs
                 }
 
             movePtsFull.Add(pointPrototype);
+        }
+
+
+        private double AlignEdgeDistance(
+           List<NXObject> movePtsHalf,
+           List<NXObject> movePtsFull,
+           List<Line> lines,
+           double inputDist,
+           double[] mappedBase,
+           double[] mappedPoint,
+           int index,
+           string dir_xyz,
+           bool isPosEnd)
+        {
+            double distance = MapAndConvert(inputDist, mappedBase, mappedPoint, index);
+
+            foreach (Line zAxisLine in lines)
+                switch (dir_xyz)
+                {
+                    case "X":
+                        if (isPosEnd)
+                            XEndPoint(distance, zAxisLine);
+                        else
+                            XStartPoint(distance, zAxisLine);
+                        continue;
+                    case "Y":
+                        if (isPosEnd)
+                            YEndPoint(distance, zAxisLine);
+                        else
+                            YStartPoint(distance, zAxisLine);
+                        continue;
+                    case "Z":
+                        if (isPosEnd)
+                            ZEndPoint(distance, zAxisLine);
+                        else
+                            ZStartPoint(distance, zAxisLine);
+                        continue;
+                    default:
+                        throw new System.ArgumentOutOfRangeException();
+                }
+
+            MoveObjects(movePtsHalf, movePtsFull, distance, dir_xyz, false);
+            return distance;
+        }
+
+        private void AlignEdgeDistance(bool isBlockComponent)
+        {
+            using (session_.__UsingFormShowHide(this))
+            {
+                if (_editBody is null)
+                    return;
+
+                var editComponent = _editBody.OwningComponent;
+
+                if (editComponent is null)
+                {
+                    TheUISession.NXMessageBox.Show(
+                        "Error",
+                        NXMessageBox.DialogType.Information,
+                        "This function is not allowed in this context");
+
+                    return;
+                }
+
+                var checkPartName = (Part)editComponent.Prototype;
+
+
+                _updateComponent = editComponent;
+
+                var assmUnits = _displayPart.PartUnits;
+                var compBase = (BasePart)editComponent.Prototype;
+                var compUnits = compBase.PartUnits;
+
+                if (compUnits != assmUnits)
+                    return;
+
+                if (_isNewSelection)
+                {
+                    ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
+                    __work_component_ = editComponent;
+                    UpdateSessionParts();
+
+                    if (_workPart.__HasDynamicBlock())
+                    {
+                        isBlockComponent = true;
+                        CreateEditData(editComponent);
+                        _isNewSelection = false;
+                    }
+                }
+                else
+                    isBlockComponent = true;
+
+                if (!isBlockComponent)
+                {
+                    ResetNonBlockError();
+
+                    TheUISession.NXMessageBox.Show(
+                        "Caught exception",
+                        NXMessageBox.DialogType.Error,
+                        "Not a block component");
+
+                    return;
+                }
+
+                var pHandle = SelectHandlePoint();
+
+                _isDynamic = true;
+
+                while (pHandle.Count == 1)
+                {
+                    HideDynamicHandles();
+                    _udoPointHandle = pHandle[0];
+                    Point pointPrototype;
+
+                    if (_udoPointHandle.IsOccurrence)
+                        pointPrototype = (Point)_udoPointHandle.Prototype;
+                    else
+                        pointPrototype = _udoPointHandle;
+
+                    var doNotMovePts = new List<NXObject>();
+                    var movePtsHalf = new List<NXObject>();
+                    var movePtsFull = new List<NXObject>();
+                    MotionCallbackDynamic1(pointPrototype, doNotMovePts, movePtsHalf, movePtsFull, pointPrototype.Name.Contains("POS"));
+                    var posXObjs = new List<Line>();
+                    var negXObjs = new List<Line>();
+                    var posYObjs = new List<Line>();
+                    var negYObjs = new List<Line>();
+                    var posZObjs = new List<Line>();
+                    var negZObjs = new List<Line>();
+
+                    foreach (var eLine in _edgeRepLines)
+                    {
+                        if (eLine.Name == "YBASE1" || eLine.Name == "YCEILING1" ||
+                           eLine.Name == "ZBASE1" || eLine.Name == "ZBASE3") negXObjs.Add(eLine);
+
+                        if (eLine.Name == "YBASE2" || eLine.Name == "YCEILING2" ||
+                           eLine.Name == "ZBASE2" || eLine.Name == "ZBASE4") posXObjs.Add(eLine);
+
+                        if (eLine.Name == "XBASE1" || eLine.Name == "XCEILING1" ||
+                           eLine.Name == "ZBASE1" || eLine.Name == "ZBASE2") negYObjs.Add(eLine);
+
+                        if (eLine.Name == "XBASE2" || eLine.Name == "XCEILING2" ||
+                           eLine.Name == "ZBASE3" || eLine.Name == "ZBASE4") posYObjs.Add(eLine);
+
+                        if (eLine.Name == "XBASE1" || eLine.Name == "XBASE2" ||
+                           eLine.Name == "YBASE1" || eLine.Name == "YBASE2") negZObjs.Add(eLine);
+
+                        if (eLine.Name == "XCEILING1" || eLine.Name == "XCEILING2" ||
+                           eLine.Name == "YCEILING1" ||
+                           eLine.Name == "YCEILING2") posZObjs.Add(eLine);
+                    }
+
+                    var allxAxisLines = new List<Line>();
+                    var allyAxisLines = new List<Line>();
+                    var allzAxisLines = new List<Line>();
+
+                    foreach (var eLine in _edgeRepLines)
+                    {
+                        if (eLine.Name.StartsWith("X"))
+                            allxAxisLines.Add(eLine);
+
+                        if (eLine.Name.StartsWith("Y"))
+                            allyAxisLines.Add(eLine);
+
+                        if (eLine.Name.StartsWith("Z"))
+                            allzAxisLines.Add(eLine);
+                    }
+
+                    var message = "Select Reference Point";
+                    var pbMethod = UFUi.PointBaseMethod.PointInferred;
+                    var selection = NXOpen.Tag.Null;
+                    var basePoint = new double[3];
+
+                    ufsession_.Ui.LockUgAccess(UF_UI_FROM_CUSTOM);
+
+                    ufsession_.Ui.PointConstruct(message, ref pbMethod, out selection, basePoint,
+                        out var response);
+
+                    ufsession_.Ui.UnlockUgAccess(UF_UI_FROM_CUSTOM);
+
+                    if (response == UF_UI_OK)
+                    {
+                        bool isDistance;
+
+                        isDistance = NXInputBox.ParseInputNumber(
+                            "Enter offset value",
+                            "Enter offset value",
+                            .004,
+                            NumberStyles.AllowDecimalPoint,
+                            CultureInfo.InvariantCulture.NumberFormat,
+                            out var inputDist);
+
+                        if (isDistance)
+                        {
+                            var mappedBase = new double[3];
+                            ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, basePoint,
+                                UF_CSYS_ROOT_WCS_COORDS, mappedBase);
+
+                            double[] pPrototype =
+                            {
+                                            pointPrototype.Coordinates.X, pointPrototype.Coordinates.Y,
+                                            pointPrototype.Coordinates.Z
+                                        };
+                            var mappedPoint = new double[3];
+                            ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, pPrototype,
+                                UF_CSYS_ROOT_WCS_COORDS, mappedPoint);
+
+                            double distance;
+
+                            if (pointPrototype.Name == "POSX")
+                            {
+                                foreach (Line posXLine in posXObjs) movePtsFull.Add(posXLine);
+
+                                distance = AlignEdgeDistance(movePtsHalf, movePtsFull, allxAxisLines, inputDist, mappedBase, mappedPoint, 0, "X", true);
+                            }
+
+                            if (pointPrototype.Name == "NEGX")
+                            {
+                                foreach (Line addLine in negXObjs) movePtsFull.Add(addLine);
+
+                                distance = AlignEdgeDistance(movePtsHalf, movePtsFull, allxAxisLines, inputDist, mappedBase, mappedPoint, 0, "X", false);
+                            }
+
+                            if (pointPrototype.Name == "POSY")
+                            {
+                                foreach (Line addLine in posYObjs) movePtsFull.Add(addLine);
+
+                                distance = AlignEdgeDistance(movePtsHalf, movePtsFull, allyAxisLines, inputDist, mappedBase, mappedPoint, 1, "Y", true);
+                            }
+
+                            if (pointPrototype.Name == "NEGY")
+                            {
+                                foreach (Line addLine in negYObjs) movePtsFull.Add(addLine);
+                                distance = AlignEdgeDistance(movePtsHalf, movePtsFull, allyAxisLines, inputDist, mappedBase, mappedPoint, 1, "Y", false);
+                            }
+
+                            if (pointPrototype.Name == "POSZ")
+                            {
+                                foreach (Line addLine in posZObjs) movePtsFull.Add(addLine);
+                                distance = AlignEdgeDistance(movePtsHalf, movePtsFull, allzAxisLines, inputDist, mappedBase, mappedPoint, 2, "Z", true);
+                            }
+
+                            if (pointPrototype.Name == "NEGZ")
+                            {
+                                foreach (Line addLine in negZObjs) movePtsFull.Add(addLine);
+                                distance = AlignEdgeDistance(movePtsHalf, movePtsFull, allzAxisLines, inputDist, mappedBase, mappedPoint, 2, "Z", false);
+                            }
+                        }
+                        else
+                        {
+                            //Show();
+                            TheUISession.NXMessageBox.Show("Caught exception",
+                                NXMessageBox.DialogType.Error, "Invalid input");
+                        }
+                    }
+
+                    UpdateDynamicBlock(editComponent);
+                    ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
+                    __work_component_ = editComponent;
+                    UpdateSessionParts();
+                    CreateEditData(editComponent);
+                    pHandle = SelectHandlePoint();
+                }
+            }
         }
     }
 }

@@ -49,6 +49,7 @@ namespace TSG_Library.UFuncs
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+
             if (_displayPart != null)
                 WorkPartChanged1(_displayPart);
 
