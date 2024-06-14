@@ -334,9 +334,6 @@
     <Compile Include="src\UFuncs\ComponentBuilder\EditSizeForm.Designer.cs">
       <DependentUpon>EditSizeForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\ComponentBuilder\EventActions.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="src\UFuncs\ComponentBuilder\MotionCallbackDynamic.cs">
       <SubType>Form</SubType>
     </Compile>

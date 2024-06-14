@@ -257,16 +257,6 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        private void MotionCallbackNegZDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull,
-            List<Line> negZObjs, List<Line> allzAxisLines, double zDistance)
-        {
-            foreach (Line addLine in negZObjs) movePtsFull.Add(addLine);
-
-            foreach (Line zAxisLine in allzAxisLines) ZStartPoint(zDistance, zAxisLine);
-
-            MoveObjects(movePtsHalf, movePtsFull, zDistance, "Z", true);
-        }
-
 
         //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
