@@ -4,6 +4,7 @@ using NXOpen;
 using NXOpen.UF;
 using static TSG_Library.Extensions.Extensions;
 using static NXOpen.UF.UFConstants;
+using static NXOpen.Features.ExtensionBuilder;
 
 namespace TSG_Library.UFuncs
 {
@@ -63,59 +64,6 @@ namespace TSG_Library.UFuncs
         }
 
 
-        private void MotionCallbackNegYDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull,
-            List<Line> negYObjs, List<Line> allyAxisLines, double yDistance)
-        {
-            foreach (Line addLine in negYObjs) movePtsFull.Add(addLine);
-
-            foreach (Line yAxisLine in allyAxisLines) YStartPoint(yDistance, yAxisLine);
-
-            MoveObjects(movePtsHalf, movePtsFull, yDistance, "Y", true);
-        }
-
-
-        private void MotionCallbackPosYDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull,
-            List<Line> posYObjs, List<Line> allyAxisLines, double yDistance)
-        {
-            foreach (Line addLine in posYObjs) movePtsFull.Add(addLine);
-
-            foreach (Line yAxisLine in allyAxisLines) YEndPoint(yDistance, yAxisLine);
-
-            MoveObjects(movePtsHalf, movePtsFull, yDistance, "Y", true);
-        }
-
-
-        private void MotionCallbackNegXDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull,
-            List<Line> negXObjs, List<Line> allxAxisLines, double xDistance)
-        {
-            foreach (Line addLine in negXObjs) movePtsFull.Add(addLine);
-
-            foreach (Line xAxisLine in allxAxisLines) XStartPoint(xDistance, xAxisLine);
-
-            MoveObjects(movePtsHalf, movePtsFull, xDistance, "X", true);
-        }
-
-
-        private void MotionCallbackPosZDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull,
-            List<Line> posZObjs, List<Line> allzAxisLines, double zDistance)
-        {
-            foreach (Line addLine in posZObjs) movePtsFull.Add(addLine);
-
-            foreach (Line zAxisLine in allzAxisLines) ZEndPoint(zDistance, zAxisLine);
-
-            MoveObjects(movePtsHalf, movePtsFull, zDistance, "Z", true);
-        }
-
-
-        private void MotionCallbackPosXDyanmic(List<NXObject> movePtsHalf, List<NXObject> movePtsFull,
-            List<Line> posXObjs, List<Line> allxAxisLines, double xDistance)
-        {
-            foreach (Line posXLine in posXObjs) movePtsFull.Add(posXLine);
-
-            foreach (Line xAxisLine in allxAxisLines) XEndPoint(xDistance, xAxisLine);
-
-            MoveObjects(movePtsHalf, movePtsFull, xDistance, "X", true);
-        }
 
 
         private void MotionCallbackDyanmic(double[] position)
@@ -237,9 +185,15 @@ namespace TSG_Library.UFuncs
             _distanceMoved += xDistance;
 
             if (pointPrototype.Name == "POSX")
-                MotionCallbackPosXDyanmic(movePtsHalf, movePtsFull, posXObjs, allxAxisLines, xDistance);
+            {
+                movePtsFull.AddRange(posXObjs);
+                EditAlign(movePtsHalf, movePtsFull, allxAxisLines, xDistance, "X", true);
+            }
             else
-                MotionCallbackNegXDyanmic(movePtsHalf, movePtsFull, negXObjs, allxAxisLines, xDistance);
+            {
+                movePtsFull.AddRange(negXObjs);
+                EditAlign(movePtsHalf, movePtsFull, allxAxisLines, xDistance, "X", false);
+            }
         }
 
         private void MotionCallbackZDynamic(Point pointPrototype, List<NXObject> movePtsHalf,
@@ -258,9 +212,15 @@ namespace TSG_Library.UFuncs
                     _distanceMoved += zDistance;
 
                     if (pointPrototype.Name == "POSZ")
-                        MotionCallbackPosZDyanmic(movePtsHalf, movePtsFull, posZObjs, allzAxisLines, zDistance);
+                    {
+                        movePtsFull.AddRange(posZObjs);
+                        EditAlign(movePtsHalf, movePtsFull, allzAxisLines, zDistance, "Z", true);
+                    }
                     else
-                        MotionCallbackNegZDyanmic(movePtsHalf, movePtsFull, negZObjs, allzAxisLines, zDistance);
+                    {
+                        movePtsFull.AddRange(negZObjs);
+                        EditAlign(movePtsHalf, movePtsFull, allzAxisLines, zDistance, "Z", false);
+                    }
 
                     ModelingView mView1 = (ModelingView)_displayPart.Views.WorkView;
                     _displayPart.Views.WorkView.Orient(mView1.Matrix);
@@ -284,9 +244,15 @@ namespace TSG_Library.UFuncs
                     _distanceMoved += yDistance;
 
                     if (pointPrototype.Name == "POSY")
-                        MotionCallbackPosYDyanmic(movePtsHalf, movePtsFull, posYObjs, allyAxisLines, yDistance);
+                    {
+                        movePtsFull.AddRange(posYObjs);
+                        EditAlign(movePtsHalf, movePtsFull, allyAxisLines, yDistance, "Y", true);
+                    }
                     else
-                        MotionCallbackNegYDyanmic(movePtsHalf, movePtsFull, negYObjs, allyAxisLines, yDistance);
+                    {
+                        movePtsFull.AddRange(negYObjs);
+                        EditAlign(movePtsHalf, movePtsFull, allyAxisLines, yDistance, "Y", false );
+                    }
                 }
             }
         }
@@ -390,6 +356,7 @@ namespace TSG_Library.UFuncs
 
             _distanceMoved += zDistance;
             MoveObjects(moveAll.ToArray(), zDistance, "Z");
+
             ModelingView mView1 = (ModelingView)_displayPart.Views.WorkView;
             _displayPart.Views.WorkView.Orient(mView1.Matrix);
             _displayPart.WCS.SetOriginAndMatrix(mView1.Origin, mView1.Matrix);

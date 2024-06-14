@@ -322,17 +322,11 @@
     <Compile Include="src\UFuncs\ComponentBuilder\CtsComponentColor.cs" />
     <Compile Include="src\UFuncs\ComponentBuilder\CtsComponentType.cs" />
     <Compile Include="src\UFuncs\ComponentBuilder\CtsSubtoolColor.cs" />
-    <Compile Include="src\UFuncs\ComponentBuilder\EditAlign.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="src\UFuncs\ComponentBuilder\EditBlockForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\UFuncs\ComponentBuilder\EditBlockForm.Designer.cs">
       <DependentUpon>EditBlockForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\ComponentBuilder\EditSize.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\UFuncs\ComponentBuilder\EditSizeForm.cs">
       <SubType>Form</SubType>

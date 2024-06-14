@@ -16,6 +16,7 @@ using TSG_Library.Utilities;
 using static TSG_Library.Extensions.Extensions;
 using static NXOpen.UF.UFConstants;
 using Part = NXOpen.Part;
+using System.Reflection;
 
 namespace TSG_Library.UFuncs
 {
@@ -761,7 +762,7 @@ namespace TSG_Library.UFuncs
                                     break;
                                 case "NEGX":
                                     movePtsFull.AddRange(negXObjs);
-                                    distance = EditSize(blockLength - editSize, movePtsHalf, movePtsFull, allxAxisLines,  "X", false);
+                                    distance = EditSize(blockLength - editSize, movePtsHalf, movePtsFull, allxAxisLines, "X", false);
                                     break;
                                 case "POSY":
                                     movePtsFull.AddRange(posYObjs);
@@ -773,7 +774,7 @@ namespace TSG_Library.UFuncs
                                     break;
                                 case "POSZ":
                                     movePtsFull.AddRange(posZObjs);
-                                    distance = EditSize(editSize - blockHeight, movePtsHalf, movePtsFull, allzAxisLines,"Z", true);
+                                    distance = EditSize(editSize - blockHeight, movePtsHalf, movePtsFull, allzAxisLines, "Z", true);
                                     break;
                                 case "NEGZ":
                                     movePtsFull.AddRange(negZObjs);
@@ -813,205 +814,7 @@ namespace TSG_Library.UFuncs
             return isBlockComponent;
         }
 
-        private void EdgeAlign(bool isBlockComponent)
-        {
-            if (_editBody is null)
-                return;
-
-            var editComponent = _editBody.OwningComponent;
-
-            if (editComponent is null)
-            {
-                Show();
-
-                TheUISession.NXMessageBox.Show(
-                    "Error",
-                    NXMessageBox.DialogType.Information,
-                    "This function is not allowed in this context");
-
-                return;
-            }
-
-            var checkPartName = (Part)editComponent.Prototype;
-
-
-            _updateComponent = editComponent;
-
-            var assmUnits = _displayPart.PartUnits;
-            var compBase = (BasePart)editComponent.Prototype;
-            var compUnits = compBase.PartUnits;
-
-            if (compUnits != assmUnits)
-                return;
-
-            if (_isNewSelection)
-            {
-                ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
-
-                __work_component_ = editComponent;
-                UpdateSessionParts();
-
-                if (_workPart.__HasDynamicBlock())
-                {
-                    isBlockComponent = true;
-                    CreateEditData(editComponent);
-                    _isNewSelection = false;
-                }
-            }
-            else
-            {
-                isBlockComponent = true;
-            }
-
-            if (isBlockComponent)
-            {
-                UpdateDynamicBlock(editComponent);
-                CreateEditData(editComponent);
-
-                var pHandle = new List<Point>();
-                pHandle = SelectHandlePoint();
-
-                _isDynamic = true;
-
-                while (pHandle.Count == 1)
-                {
-                    HideDynamicHandles();
-
-                    _udoPointHandle = pHandle[0];
-
-                    Hide();
-
-                    Point pointPrototype;
-
-                    if (_udoPointHandle.IsOccurrence)
-                        pointPrototype = (Point)_udoPointHandle.Prototype;
-                    else
-                        pointPrototype = _udoPointHandle;
-
-                    var doNotMovePts = new List<NXObject>();
-                    var movePtsHalf = new List<NXObject>();
-                    var movePtsFull = new List<NXObject>();
-
-                    MotionCallbackDynamic1(pointPrototype, doNotMovePts, movePtsHalf, movePtsFull, pointPrototype.Name.Contains("POS"));
-
-                    var posXObjs = new List<Line>();
-                    var negXObjs = new List<Line>();
-                    var posYObjs = new List<Line>();
-                    var negYObjs = new List<Line>();
-                    var posZObjs = new List<Line>();
-                    var negZObjs = new List<Line>();
-
-                    foreach (var eLine in _edgeRepLines)
-                    {
-                        if (eLine.Name == "YBASE1" || eLine.Name == "YCEILING1" ||
-                           eLine.Name == "ZBASE1" || eLine.Name == "ZBASE3") negXObjs.Add(eLine);
-
-                        if (eLine.Name == "YBASE2" || eLine.Name == "YCEILING2" ||
-                           eLine.Name == "ZBASE2" || eLine.Name == "ZBASE4") posXObjs.Add(eLine);
-
-                        if (eLine.Name == "XBASE1" || eLine.Name == "XCEILING1" ||
-                           eLine.Name == "ZBASE1" || eLine.Name == "ZBASE2") negYObjs.Add(eLine);
-
-                        if (eLine.Name == "XBASE2" || eLine.Name == "XCEILING2" ||
-                           eLine.Name == "ZBASE3" || eLine.Name == "ZBASE4") posYObjs.Add(eLine);
-
-                        if (eLine.Name == "XBASE1" || eLine.Name == "XBASE2" ||
-                           eLine.Name == "YBASE1" || eLine.Name == "YBASE2") negZObjs.Add(eLine);
-
-                        if (eLine.Name == "XCEILING1" || eLine.Name == "XCEILING2" ||
-                           eLine.Name == "YCEILING1" ||
-                           eLine.Name == "YCEILING2") posZObjs.Add(eLine);
-                    }
-
-                    var allxAxisLines = new List<Line>();
-                    var allyAxisLines = new List<Line>();
-                    var allzAxisLines = new List<Line>();
-
-                    foreach (var eLine in _edgeRepLines)
-                    {
-                        if (eLine.Name.StartsWith("X")) allxAxisLines.Add(eLine);
-
-                        if (eLine.Name.StartsWith("Y")) allyAxisLines.Add(eLine);
-
-                        if (eLine.Name.StartsWith("Z")) allzAxisLines.Add(eLine);
-                    }
-
-                    var message = "Select Reference Point";
-                    var pbMethod = UFUi.PointBaseMethod.PointInferred;
-                    var selection = NXOpen.Tag.Null;
-                    var basePoint = new double[3];
-
-                    ufsession_.Ui.LockUgAccess(UF_UI_FROM_CUSTOM);
-
-                    ufsession_.Ui.PointConstruct(message, ref pbMethod, out selection, basePoint,
-                        out var response);
-
-                    ufsession_.Ui.UnlockUgAccess(UF_UI_FROM_CUSTOM);
-
-                    if (response == UF_UI_OK)
-                    {
-                        var mappedBase = new double[3];
-                        ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, basePoint,
-                            UF_CSYS_ROOT_WCS_COORDS, mappedBase);
-
-                        double[] pPrototype =
-                        {
-                                         pointPrototype.Coordinates.X, pointPrototype.Coordinates.Y,
-                                         pointPrototype.Coordinates.Z
-                                     };
-                        var mappedPoint = new double[3];
-                        ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, pPrototype,
-                            UF_CSYS_ROOT_WCS_COORDS, mappedPoint);
-
-                        double distance;
-
-
-                        switch (pointPrototype.Name)
-                        {
-                            case "POSX":
-                                movePtsFull.AddRange(posXObjs);
-                                distance = EditAlignPosX(movePtsHalf, movePtsFull, allxAxisLines, mappedBase, mappedPoint, 0, "X");
-                                break;
-                            case "NEGX":
-                                movePtsFull.AddRange(negXObjs);
-                                distance = EditAlignNegX(movePtsHalf, movePtsFull, allxAxisLines, mappedBase, mappedPoint, 0, "X");
-                                break;
-                            case "POSY":
-                                movePtsFull.AddRange(posYObjs);
-                                distance = EditAlignPosY(movePtsHalf, movePtsFull, allyAxisLines, mappedBase, mappedPoint, 1, "Y");
-                                break;
-                            case "NEGY":
-                                movePtsFull.AddRange(negYObjs);
-                                distance = EditAlignNegY(movePtsHalf, movePtsFull, allyAxisLines, mappedBase, mappedPoint, 1, "Y");
-                                break;
-                            case "POSZ":
-                                movePtsFull.AddRange(posZObjs);
-                                distance = EditAlignPosZ(movePtsHalf, movePtsFull, allzAxisLines, mappedBase, mappedPoint, 2, "Z");
-                                break;
-                            case "NEGZ":
-                                movePtsFull.AddRange(negZObjs);
-                                distance = EditAlignNegZ(movePtsHalf, movePtsFull, allzAxisLines, mappedBase, mappedPoint, 2, "Z");
-                                break;
-                        }
-                    }
-
-                    UpdateDynamicBlock(editComponent);
-                    ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
-                    __work_component_ = editComponent;
-                    UpdateSessionParts();
-                    CreateEditData(editComponent);
-                    pHandle = SelectHandlePoint();
-                }
-
-                Show();
-            }
-            else
-            {
-                ResetNonBlockError();
-                TheUISession.NXMessageBox.Show("Caught exception", NXMessageBox.DialogType.Error,
-                    "Not a block component");
-            }
-        }
+     
 
 
         private bool EditDynamicWorkPart(bool isBlockComponent, Component editComponent)
