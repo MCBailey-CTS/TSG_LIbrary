@@ -43,7 +43,7 @@ namespace TSG_Library.UFuncs
         {
             if (_isNewSelection)
                 if (_updateComponent == null)
-                    NewMethod23();
+                    SelectWithFilter_("Select Component to Move");
         }
 
         private void CreateDynamicHandleUdo(Body editBody)
