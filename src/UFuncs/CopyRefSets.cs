@@ -23,7 +23,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                using (session_.__usingDisplayPartReset())
+                using (session_.__UsingDisplayPartReset())
                 {
                     Part originalWorkPart = __work_part_;
                     List<string> refSetName = new List<string>();

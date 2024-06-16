@@ -44,7 +44,7 @@ namespace TSG_Library.Utilities
             bool print4Views = false,
             bool isChange = false)
         {
-            using (session_.__usingDisplayPartReset())
+            using (session_.__UsingDisplayPartReset())
             {
                 try
                 {
@@ -142,7 +142,7 @@ namespace TSG_Library.Utilities
                         {
                             // Sets up the strip.
                             if (isRto || stpDetails || zipAssembly)
-                                using (session_.__usingDisplayPartReset())
+                                using (session_.__UsingDisplayPartReset())
                                 {
                                     SetUpStrip(folder);
                                 }
@@ -179,7 +179,7 @@ namespace TSG_Library.Utilities
 
                         // Prints the parts with 4-Views.
                         if (print4Views)
-                            using (session_.__usingDisplayPartReset())
+                            using (session_.__UsingDisplayPartReset())
                             {
                                 PrintPdfs(exportDict["PDF_4-VIEW"]);
                             }
@@ -665,7 +665,7 @@ namespace TSG_Library.Utilities
 
         public static void CreateCasting(Part part, GFolder folder)
         {
-            using (session_.__usingDisplayPartReset())
+            using (session_.__UsingDisplayPartReset())
             {
                 __display_part_ = part;
 
@@ -808,7 +808,7 @@ namespace TSG_Library.Utilities
             if (!Regex.IsMatch(snapStrip010.Leaf, RegexStrip, RegexOptions.IgnoreCase))
                 throw new ArgumentException(@"Must be an op 010 strip.", nameof(snapStrip010));
 
-            using (session_.__usingDisplayPartReset())
+            using (session_.__UsingDisplayPartReset())
             {
                 Regex blankNameRegex = new Regex("^BLANK-([0-9]{1,})$");
 
@@ -1082,7 +1082,7 @@ namespace TSG_Library.Utilities
             bool paraCasting, IEnumerable<Part> castingParts,
             Component[] selected_components)
         {
-            using (session_.__usingDisplayPartReset())
+            using (session_.__UsingDisplayPartReset())
             {
                 ISet<Part> selected_parts =
                     new HashSet<Part>(selected_components.Select(__c => __c.Prototype).OfType<Part>());

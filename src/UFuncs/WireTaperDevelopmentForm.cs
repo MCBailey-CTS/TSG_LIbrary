@@ -44,7 +44,7 @@ namespace TSG_Library.UFuncs
 
                     if (selComponents.Count != 0)
                     {
-                        using (session_.__usingDisplayPartReset())
+                        using (session_.__UsingDisplayPartReset())
                         {
                             foreach (Component comp in selComponents.Select(__c => __c))
                             {

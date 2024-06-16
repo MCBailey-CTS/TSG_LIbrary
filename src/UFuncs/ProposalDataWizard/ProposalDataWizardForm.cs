@@ -278,7 +278,7 @@ namespace TSG_Library.UFuncs
                     Reset();
                 else if (sender == btnCreate)
                     foreach (Tuple<Component, Body> master in _selectedMasters)
-                        using (session_.__usingDisplayPartReset())
+                        using (session_.__UsingDisplayPartReset())
                         {
                             CreateData(master.Item1, master.Item2, txtDataLevel.Text, txtPLevel.Text,
                                 chkMakeStp.Checked);

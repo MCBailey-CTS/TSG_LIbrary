@@ -1391,7 +1391,7 @@ namespace TSG_Library.UFuncs
                     session_.__SelectMenuItem14gt("Select Reference Set", reference_set_names.ToArray());
 
                 foreach (Component selected_fastener in fasteners)
-                    using (session_.__usingDisplayPartReset())
+                    using (session_.__UsingDisplayPartReset())
                     {
                         Component actual_fastener;
 

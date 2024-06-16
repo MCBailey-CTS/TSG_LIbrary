@@ -66,7 +66,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
                 return;
 
             foreach (Body target in targets)
-                using (session_.__usingDisplayPartReset())
+                using (session_.__UsingDisplayPartReset())
                 {
                     try
                     {
@@ -436,7 +436,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
 
         public static void WaveLinkFasteners(bool blank_tools, string shcs_ref_set, string dwl_ref_set)
         {
-            using (session_.__usingDisplayPartReset())
+            using (session_.__UsingDisplayPartReset())
             {
                 try
                 {
@@ -554,7 +554,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
         public static void WaveLinkBoolean(bool blank_tools, Feature.BooleanType booleanType)
         {
             session_.SetUndoMark(Session.MarkVisibility.Visible, "Assembly Wavelink");
-            using (session_.__usingDisplayPartReset())
+            using (session_.__UsingDisplayPartReset())
             using (session_.__UsingRegenerateDisplay())
             {
                 try

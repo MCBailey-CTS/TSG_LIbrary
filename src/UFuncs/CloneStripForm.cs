@@ -80,7 +80,7 @@ namespace TSG_Library.UFuncs
                 string top_dir = match.Groups["top_dir"].Value.Trim();
 
 
-                GFolder __folder = GFolder.Create(jobDir);
+                GFolder __folder = Create(jobDir);
 
                 string leaf = Path.GetFileNameWithoutExtension(jobDir);
 
@@ -540,7 +540,7 @@ namespace TSG_Library.UFuncs
 
                 if (ask_prog_station_10().Count > 0 && ask_tran_station_10().Count > 0 && selected_op == max_op)
                 {
-                    prog_transfer(GFolder.Create(op_str), selected_part_path, __prefix);
+                    prog_transfer(Create(op_str), selected_part_path, __prefix);
 
                     if (max_op > 0)
                     {
@@ -650,7 +650,7 @@ namespace TSG_Library.UFuncs
 
             if (prog_ops.Length > 0 && tran_ops.Length > 0 && __prefix == "P")
             {
-                GFolder folder = GFolder.Create(__display_part_.FullPath);
+                GFolder folder = Create(__display_part_.FullPath);
 
                 string[] paths = __display_part_.ComponentAssembly.RootComponent.GetChildren()
                     .Where(__c => __c.__IsLoaded())
@@ -986,7 +986,7 @@ namespace TSG_Library.UFuncs
             string layout_path = __folder.file_layout(__prefix, __op_str);
             if (!File.Exists(layout_path))
                 File.Copy(XxxxxxOpXxxLayout, layout_path);
-            prog_transfer(GFolder.Create(__op_str), layout_path, __prefix);
+            prog_transfer(Create(__op_str), layout_path, __prefix);
         }
 
 

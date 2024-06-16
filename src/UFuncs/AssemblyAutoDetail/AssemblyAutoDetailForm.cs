@@ -295,7 +295,7 @@ namespace TSG_Library.UFuncs
 
         private void DetailComponents(IEnumerable<Component> selectedComponents)
         {
-            using (session_.__usingDisplayPartReset())
+            using (session_.__UsingDisplayPartReset())
             {
                 Component[] componentArray = selectedComponents.ToArray();
 

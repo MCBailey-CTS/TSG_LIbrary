@@ -445,7 +445,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
         {
             double[] array = new double[12];
             ufsession_.Trns.CreateReflectionMatrix(ref selectedPlane, array, out int _);
-            session_.__DeleteObjects(selectedPlane);
+            selectedPlane.__Delete();
             ufsession_.Modl.Update();
             List<Tag> list = NewMethod11();
             TransformObjects(list, array);
@@ -751,12 +751,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
 
         private void NewMethod8(double[] mirrorMatrix, List<Tag> mirrorMove, BlockFeatureBuilder blockFeatureBuilder2)
         {
-            //IL_0170: Unknown result type (might be due to invalid IL or missing references)
-            //IL_0175: Unknown result type (might be due to invalid IL or missing references)
-            //IL_0179: Unknown result type (might be due to invalid IL or missing references)
-            //IL_017e: Unknown result type (might be due to invalid IL or missing references)
-            //IL_01ba: Unknown result type (might be due to invalid IL or missing references)
-            //IL_01c1: Unknown result type (might be due to invalid IL or missing references)
+           
             blockFeatureBuilder2.GetOrientation(out Vector3d xAxis, out Vector3d yAxis);
             double[] csys_origin = blockFeatureBuilder2.Origin._Array();
             double[] x_vec = xAxis._Array();

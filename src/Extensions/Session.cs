@@ -323,7 +323,7 @@ namespace TSG_Library.Extensions
             return new Destroyer(__builder);
         }
 
-        public static DisplayPartReset __usingDisplayPartReset(this Session _)
+        public static DisplayPartReset __UsingDisplayPartReset(this Session _)
         {
             return new DisplayPartReset();
         }
@@ -362,6 +362,7 @@ namespace TSG_Library.Extensions
                 out _);
         }
 
+        public static void __Delete(this ReferenceSet refst)=>refst.OwningPart.DeleteReferenceSet(refst);
 
         public static void __SelectSingleObject(
             this Session _,

@@ -25,7 +25,7 @@ namespace TSG_Library.UFuncs
         {
             Component[] compList = Selection.SelectManyComponents();
 
-            using (session_.__usingDisplayPartReset())
+            using (session_.__UsingDisplayPartReset())
             {
                 foreach (Component comp in compList)
                 {

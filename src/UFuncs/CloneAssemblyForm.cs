@@ -227,7 +227,7 @@ namespace TSG_Library.UFuncs
 
                 string dieset_control = $"{__folder.CustomerNumber}-{op}-dieset-control.prt";
 
-                using (session_.__usingDisplayPartReset())
+                using (session_.__UsingDisplayPartReset())
                 {
                     __display_part_ = session_.__FindOrOpen(__folder.file_detail0("010", "002"));
                     __display_part_.Expressions.ChangeInterpartReferences("seed-prog-dieset-control.prt",
@@ -246,7 +246,7 @@ namespace TSG_Library.UFuncs
                         dieset_control, true, true);
                 }
 
-                using (session_.__usingDisplayPartReset())
+                using (session_.__UsingDisplayPartReset())
                 {
                     try
                     {
@@ -451,7 +451,7 @@ namespace TSG_Library.UFuncs
                 //ops
 
 
-                using (session_.__usingDisplayPartReset())
+                using (session_.__UsingDisplayPartReset())
                 {
                     foreach (string op in ops)
                     {
@@ -475,7 +475,7 @@ namespace TSG_Library.UFuncs
                     }
                 }
 
-                using (session_.__usingDisplayPartReset())
+                using (session_.__UsingDisplayPartReset())
                 {
                     foreach (string op in ops)
                         try
@@ -1114,7 +1114,7 @@ namespace TSG_Library.UFuncs
             }
 
 
-            using (session_.__usingDisplayPartReset())
+            using (session_.__UsingDisplayPartReset())
             {
                 foreach (string op in all_ops_and_shoes)
                 {
@@ -1296,7 +1296,7 @@ namespace TSG_Library.UFuncs
             {
                 Part __current = __display_part_;
 
-                using (session_.__usingDisplayPartReset())
+                using (session_.__UsingDisplayPartReset())
                 {
                     Part[] __parallels =
                     {
@@ -1356,7 +1356,7 @@ namespace TSG_Library.UFuncs
                     }
                 }
 
-                using (session_.__usingDisplayPartReset())
+                using (session_.__UsingDisplayPartReset())
                 {
                     session_.__FindOrOpen($"{__folder.CustomerNumber}-{op}-lwrplate").__SetAsDisplayPart();
 
@@ -1614,7 +1614,7 @@ namespace TSG_Library.UFuncs
                     }
                 }
 
-                using (session_.__usingDisplayPartReset())
+                using (session_.__UsingDisplayPartReset())
                 {
                     session_.__FindOrOpen($"{__folder.CustomerNumber}-{op}-uprplate").__SetAsDisplayPart();
 
@@ -1875,7 +1875,7 @@ namespace TSG_Library.UFuncs
                     }
                 }
 
-                using (session_.__usingDisplayPartReset())
+                using (session_.__UsingDisplayPartReset())
                 {
                     session_.__FindOrOpen(__folder.file_detail0(op, "lsh")).__SetActiveDisplay();
 
@@ -2403,7 +2403,7 @@ namespace TSG_Library.UFuncs
                 .Select(exp => exp)
                 .ToArray();
 
-            using (Session.GetSession().__usingDisplayPartReset())
+            using (Session.GetSession().__UsingDisplayPartReset())
             {
                 __display_part_ = layout_comp.__Prototype();
                 InterpartExpressionsBuilder builder = __display_part_.Expressions.CreateInterpartExpressionsBuilder();

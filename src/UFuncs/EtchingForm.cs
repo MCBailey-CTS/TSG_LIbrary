@@ -72,7 +72,7 @@ namespace TSG_Library.UFuncs
                         if (!__edge_positions.All(__pos => System.Math.Abs(expected_z - __pos.Z) < .001))
                             continue;
 
-                        using (session_.__usingDisplayPartReset())
+                        using (session_.__UsingDisplayPartReset())
                         {
                             __display_part_ = (Part)__c.Prototype;
 

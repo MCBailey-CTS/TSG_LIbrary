@@ -61,7 +61,7 @@ namespace TSG_Library.UFuncs
                 ButtonDetail = txtButton.Text;
                 PunchDetail = txtPunch.Text;
                 RetainerDetail = txtRetainer.Text;
-                using (session_.__usingDisplayPartReset())
+                using (session_.__UsingDisplayPartReset())
                 {
                     if (chkAssembly.Checked)
                         SameAssembly(rdoMetric.Checked, chkButton.Checked, chkPunch.Checked, chkRetainer.Checked);
