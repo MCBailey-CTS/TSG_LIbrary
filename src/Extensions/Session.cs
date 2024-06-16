@@ -257,12 +257,6 @@ namespace TSG_Library.Extensions
             return new DoUpdate(undo_text);
         }
 
-        //public static NXOpen.CartesianCoordinateSystem CreateCoordinateSystem(NXOpen.Point3d origin, NXOpen.NXMatrix matrix)
-        //{
-        //    ufsession_.Csys.CreateCsys(origin._ToArray(), matrix.Tag, out NXOpen.Tag csys_id);
-        //    return (NXOpen.CartesianCoordinateSystem)session_._GetTaggedObject(csys_id);
-        //}
-
         public static IDisposable __UsingFormShowHide(this Session _, Form __form,
             bool hide_form = true)
         {
@@ -271,9 +265,6 @@ namespace TSG_Library.Extensions
 
             return new FormHideShow(__form);
         }
-
-        //public static IDisposable using_form_show_hide(this NXOpen.Session _, System.Windows.Forms.Form __form)
-        //    => new FormHideShow(__form);
 
         public static Part __FindOrOpen(this Session session, string __path_or_leaf)
         {
@@ -352,11 +343,7 @@ namespace TSG_Library.Extensions
             return new RegenerateDisplay();
         }
 
-        public static void __DeleteObjects(this Session session_, params Tag[] __objects_to_delete)
-        {
-            __DeleteObjects(session_, __objects_to_delete.Select(session_.__GetTaggedObject).ToArray());
-        }
-
+    
         public static TaggedObject __GetTaggedObject(this Session session, Tag tag)
         {
             return session.GetObjectManager().GetTaggedObject(tag);
@@ -388,8 +375,16 @@ namespace TSG_Library.Extensions
             double[] cursor,
             out Tag view)
         {
-            ufsession_.Ui.SelectWithSingleDialog(message, title, scope, init_proc, user_data, out response, out _object,
-                cursor, out view);
+            ufsession_.Ui.SelectWithSingleDialog(
+                message, 
+                title, 
+                scope, 
+                init_proc, 
+                user_data, 
+                out response,
+                out _object,
+                cursor, 
+                out view);
         }
 
         public static void __SelectSingleObject(
@@ -413,15 +408,9 @@ namespace TSG_Library.Extensions
                 out _);
         }
 
-        public static Initialize2EvaluatorFree __UsingEvaluator(this Session _, Tag tag)
-        {
-            return new Initialize2EvaluatorFree(tag);
-        }
+        public static Initialize2EvaluatorFree __UsingEvaluator(this Session _, Tag tag) => new Initialize2EvaluatorFree(tag);
 
-        public static TaggedObject __FindByName(this Session session, string __name)
-        {
-            return session.__FindAllByName(__name).First();
-        }
+        public static TaggedObject __FindByName(this Session session, string __name) => session.__FindAllByName(__name).First();
 
         public static IEnumerable<TaggedObject> __FindAllByName(this Session _, string __name)
         {
@@ -437,47 +426,17 @@ namespace TSG_Library.Extensions
             while (__tag != Tag.Null);
         }
 
-        public static void __DeleteObjects(this Session session_,
-            params TaggedObject[] __objects_to_delete)
+        public static void __DeleteObjects(this Session session_, params TaggedObject[] __objects_to_delete)
         {
-            UndoMarkId mark =
-                session_.SetUndoMark(MarkVisibility.Visible, "Delete Operation");
-
-            session_.UpdateManager.ClearDeleteList();
-
-            session_.UpdateManager.ClearErrorList();
-
-            session_.UpdateManager.AddObjectsToDeleteList(__objects_to_delete);
-
-            session_.UpdateManager.DoUpdate(mark);
-
-            session_.DeleteUndoMark(mark, "");
+            using (GetSession().__UsingDoUpdate())
+                session_.UpdateManager.AddObjectsToDeleteList(__objects_to_delete);
         }
 
-        //public static void print_(object __object) => print_($"{__object}");
+        public static void __Delete(this Tag tag) => session_.__DeleteObjects(tag.__ToTaggedObject());
 
-        //public static void prompt_(string message) => ufsession_.Ui.SetPrompt(message);
+        public static void __Delete(this TaggedObject taggedObject) => session_.__DeleteObjects(taggedObject);
 
-        //public static void print_(bool __bool) => print_($"{__bool}");
-
-        //public static void print_(int __int) => print_($"{__int}");
-
-        //public static void print_(string message)
-        //{
-        //    NXOpen.ListingWindow lw = session_.ListingWindow;
-
-        //    if (!lw.IsOpen)
-        //        lw.Open();
-
-        //    lw.WriteLine(message);
-        //}
-
-        //private static readonly NXOpen.UF.UFSession uf = NXOpen.UF.ufsession_.GetUFSession();
-
-        public static IDisposable __UsingGCHandle(this Session _, GCHandle __handle)
-        {
-            return new GCHandleFree(__handle);
-        }
+        public static IDisposable __UsingGCHandle(this Session _, GCHandle __handle) => new GCHandleFree(__handle);
 
         #endregion
     }

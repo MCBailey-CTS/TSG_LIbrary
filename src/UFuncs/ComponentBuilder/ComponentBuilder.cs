@@ -115,44 +115,46 @@ namespace TSG_Library.UFuncs
             Settings.Default.Save();
         }
 
-
+        [Obsolete("created a text file, need to read from them to get values")]
         private void LoadGridSizes()
         {
-            comboBoxGrid.Items.Clear();
+            // comboBoxGrid.Items.Clear();
 
-            if (_displayPart.PartUnits == BasePart.Units.Inches)
-                comboBoxGrid.Items.AddRange(new object[]
-                {
-                    "0.002",
-                    "0.03125",
-                    "0.0625",
-                    "0.125",
-                    "0.250",
-                    "0.500",
-                    "1.000"
-                });
-            else
-                comboBoxGrid.Items.AddRange(new object[]
-                {
-                    "0.0508",
-                    "0.79375",
-                    "1.00",
-                    "1.5875",
-                    "3.175",
-                    "5.00",
-                    "6.35",
-                    "12.7",
-                    "25.4"
-                });
+            // if (_displayPart.PartUnits == BasePart.Units.Inches)
+            //     comboBoxGrid.Items.AddRange(new object[]
+            //     {
+            //         "0.002",
+            //         "0.03125",
+            //         "0.0625",
+            //         "0.125",
+            //         "0.250",
+            //         "0.500",
+            //         "1.000"
+            //     });
+            // else
+            //     comboBoxGrid.Items.AddRange(new object[]
+            //     {
+            //         "0.0508",
+            //         "0.79375",
+            //         "1.00",
+            //         "1.5875",
+            //         "3.175",
+            //         "5.00",
+            //         "6.35",
+            //         "12.7",
+            //         "25.4"
+            //     });
 
-            foreach (string gridSetting in comboBoxGrid.Items)
-            {
-                if (gridSetting != Settings.Default.udoComponentBuilderGridIncrement)
-                    continue;
+            // foreach (string gridSetting in comboBoxGrid.Items)
+            // {
+            //     if (gridSetting != Settings.Default.udoComponentBuilderGridIncrement)
+            //         continue;
 
-                int gridIndex = comboBoxGrid.Items.IndexOf(gridSetting);
-                comboBoxGrid.SelectedIndex = gridIndex;
-            }
+            //     int gridIndex = comboBoxGrid.Items.IndexOf(gridSetting);
+            //     comboBoxGrid.SelectedIndex = gridIndex;
+            // }
+
+            throw new NotImplementedException();
         }
 
         private void SetWorkPlane(bool snapToGrid)
@@ -628,6 +630,8 @@ namespace TSG_Library.UFuncs
 
                 using (session_.__UsingDoUpdate("Delete Reference Set"))
                 {
+                    __work_component_.__ReferenceSet("BODY");
+                    _workPart.__ReferenceSets("BODY").__Delete();
                     _displayPart.ComponentAssembly.ReplaceReferenceSetInOwners("BODY", new[] { __work_component_ });
                     ReferenceSet[] allRefSets = _workPart.GetAllReferenceSets();
 
