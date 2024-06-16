@@ -537,33 +537,12 @@ namespace TSG_Library.UFuncs
                     else
                         pointPrototype = _udoPointHandle;
 
-                    List<NXObject> doNotMovePts = new List<NXObject>();
-                    List<NXObject> movePtsHalf = new List<NXObject>();
-                    List<NXObject> movePtsFull = new List<NXObject>();
-                    MotionCallbackDynamic1(pointPrototype, doNotMovePts, movePtsHalf, movePtsFull, pointPrototype.Name.Contains("POS"));
-                    List<Line> posXObjs = new List<Line>();
-                    List<Line> negXObjs = new List<Line>();
-                    List<Line> posYObjs = new List<Line>();
-                    List<Line> negYObjs = new List<Line>();
-                    List<Line> posZObjs = new List<Line>();
-                    List<Line> negZObjs = new List<Line>();
-                    NewMethod19(posXObjs, negXObjs, posYObjs, negYObjs, posZObjs, negZObjs);
 
-                    List<Line> allxAxisLines = new List<Line>();
-                    List<Line> allyAxisLines = new List<Line>();
-                    List<Line> allzAxisLines = new List<Line>();
+                    MotionCallbackDynamic1(pointPrototype, out var doNotMovePts, out var movePtsHalf, out var movePtsFull, pointPrototype.Name.Contains("POS"));
+                    GetLines(out var posXObjs, out var negXObjs, out var posYObjs, out var negYObjs, out var posZObjs, out var negZObjs);
 
-                    foreach (Line eLine in _edgeRepLines)
-                    {
-                        if (eLine.Name.StartsWith("X"))
-                            allxAxisLines.Add(eLine);
-
-                        if (eLine.Name.StartsWith("Y"))
-                            allyAxisLines.Add(eLine);
-
-                        if (eLine.Name.StartsWith("Z"))
-                            allzAxisLines.Add(eLine);
-                    }
+                    List<Line> allxAxisLines, allyAxisLines, allzAxisLines;
+                    NewMethod38(out allxAxisLines, out allyAxisLines, out allzAxisLines);
 
                     string message = "Select Reference Point";
                     UFUi.PointBaseMethod pbMethod = UFUi.PointBaseMethod.PointInferred;
@@ -641,6 +620,24 @@ namespace TSG_Library.UFuncs
             }
         }
 
+        private static void NewMethod38(out List<Line> allxAxisLines, out List<Line> allyAxisLines, out List<Line> allzAxisLines)
+        {
+            allxAxisLines = new List<Line>();
+            allyAxisLines = new List<Line>();
+            allzAxisLines = new List<Line>();
+            foreach (Line eLine in _edgeRepLines)
+            {
+                if (eLine.Name.StartsWith("X"))
+                    allxAxisLines.Add(eLine);
+
+                if (eLine.Name.StartsWith("Y"))
+                    allyAxisLines.Add(eLine);
+
+                if (eLine.Name.StartsWith("Z"))
+                    allzAxisLines.Add(eLine);
+            }
+        }
+
         private bool EditSize(bool isBlockComponent, Component editComponent)
         {
             if (!__work_part_.__HasDynamicBlock())
@@ -691,37 +688,16 @@ namespace TSG_Library.UFuncs
                     ? (Point)_udoPointHandle.Prototype
                     : _udoPointHandle;
 
-                List<NXObject> doNotMovePts = new List<NXObject>();
-                List<NXObject> movePtsHalf = new List<NXObject>();
-                List<NXObject> movePtsFull = new List<NXObject>();
 
-                MotionCallbackDynamic1(pointPrototype, doNotMovePts, movePtsHalf, movePtsFull,
+
+                MotionCallbackDynamic1(pointPrototype, out var doNotMovePts, out var movePtsHalf, out var movePtsFull,
                     pointPrototype.Name.Contains("POS"));
 
-                List<Line> posXObjs = new List<Line>();
-                List<Line> negXObjs = new List<Line>();
-                List<Line> posYObjs = new List<Line>();
-                List<Line> negYObjs = new List<Line>();
-                List<Line> posZObjs = new List<Line>();
-                List<Line> negZObjs = new List<Line>();
 
-                NewMethod19(posXObjs, negXObjs, posYObjs, negYObjs, posZObjs, negZObjs);
 
-                List<Line> allxAxisLines = new List<Line>();
-                List<Line> allyAxisLines = new List<Line>();
-                List<Line> allzAxisLines = new List<Line>();
-
-                foreach (Line eLine in _edgeRepLines)
-                {
-                    if (eLine.Name.StartsWith("X"))
-                        allxAxisLines.Add(eLine);
-
-                    if (eLine.Name.StartsWith("Y"))
-                        allyAxisLines.Add(eLine);
-
-                    if (eLine.Name.StartsWith("Z"))
-                        allzAxisLines.Add(eLine);
-                }
+                GetLines(out var posXObjs, out var negXObjs, out var posYObjs, out var negYObjs, out var posZObjs, out var negZObjs);
+                List<Line> allxAxisLines, allyAxisLines, allzAxisLines;
+                NewMethod39(out allxAxisLines, out allyAxisLines, out allzAxisLines);
 
                 EditSizeForm sizeForm = null;
                 double convertLength = blockLength / 25.4;
@@ -820,6 +796,24 @@ namespace TSG_Library.UFuncs
 
             EnableForm();
             return isBlockComponent;
+        }
+
+        private static void NewMethod39(out List<Line> allxAxisLines, out List<Line> allyAxisLines, out List<Line> allzAxisLines)
+        {
+            allxAxisLines = new List<Line>();
+            allyAxisLines = new List<Line>();
+            allzAxisLines = new List<Line>();
+            foreach (Line eLine in _edgeRepLines)
+            {
+                if (eLine.Name.StartsWith("X"))
+                    allxAxisLines.Add(eLine);
+
+                if (eLine.Name.StartsWith("Y"))
+                    allyAxisLines.Add(eLine);
+
+                if (eLine.Name.StartsWith("Z"))
+                    allzAxisLines.Add(eLine);
+            }
         }
 
         private void EditSize(
@@ -939,32 +933,10 @@ namespace TSG_Library.UFuncs
                     ? (Point)_udoPointHandle.Prototype
                     : _udoPointHandle;
 
-                List<NXObject> doNotMovePts = new List<NXObject>();
-                List<NXObject> movePtsHalf = new List<NXObject>();
-                List<NXObject> movePtsFull = new List<NXObject>();
-                MotionCallbackDynamic1(pointPrototype, doNotMovePts, movePtsHalf, movePtsFull, pointPrototype.Name.Contains("POS"));
-                List<Line> posXObjs = new List<Line>();
-                List<Line> negXObjs = new List<Line>();
-                List<Line> posYObjs = new List<Line>();
-                List<Line> negYObjs = new List<Line>();
-                List<Line> posZObjs = new List<Line>();
-                List<Line> negZObjs = new List<Line>();
-                NewMethod19(posXObjs, negXObjs, posYObjs, negYObjs, posZObjs, negZObjs);
-                List<Line> allxAxisLines = new List<Line>();
-                List<Line> allyAxisLines = new List<Line>();
-                List<Line> allzAxisLines = new List<Line>();
-
-                foreach (Line eLine in _edgeRepLines)
-                {
-                    if (eLine.Name.StartsWith("X"))
-                        allxAxisLines.Add(eLine);
-
-                    if (eLine.Name.StartsWith("Y"))
-                        allyAxisLines.Add(eLine);
-
-                    if (eLine.Name.StartsWith("Z"))
-                        allzAxisLines.Add(eLine);
-                }
+                MotionCallbackDynamic1(pointPrototype, out var doNotMovePts, out var movePtsHalf, out var movePtsFull, pointPrototype.Name.Contains("POS"));
+                GetLines(out var posXObjs, out var negXObjs, out var posYObjs, out var negYObjs, out var posZObjs, out var negZObjs);
+                List<Line> allxAxisLines, allyAxisLines, allzAxisLines;
+                NewMethod19(out allxAxisLines, out allyAxisLines, out allzAxisLines);
 
                 string message = "Select Reference Point";
                 UFUi.PointBaseMethod pbMethod = UFUi.PointBaseMethod.PointInferred;
@@ -1045,6 +1017,24 @@ namespace TSG_Library.UFuncs
             }
 
             Show();
+        }
+
+        private static void NewMethod19(out List<Line> allxAxisLines, out List<Line> allyAxisLines, out List<Line> allzAxisLines)
+        {
+            allxAxisLines = new List<Line>();
+            allyAxisLines = new List<Line>();
+            allzAxisLines = new List<Line>();
+            foreach (Line eLine in _edgeRepLines)
+            {
+                if (eLine.Name.StartsWith("X"))
+                    allxAxisLines.Add(eLine);
+
+                if (eLine.Name.StartsWith("Y"))
+                    allyAxisLines.Add(eLine);
+
+                if (eLine.Name.StartsWith("Z"))
+                    allzAxisLines.Add(eLine);
+            }
         }
 
         private void AlignComponent(bool isBlockComponent)
@@ -1376,32 +1366,10 @@ namespace TSG_Library.UFuncs
                         ? (Point)_udoPointHandle.Prototype
                         : _udoPointHandle;
 
-                    List<NXObject> doNotMovePts = new List<NXObject>();
-                    List<NXObject> movePtsHalf = new List<NXObject>();
-                    List<NXObject> movePtsFull = new List<NXObject>();
-                    MotionCallbackDynamic1(pointPrototype, doNotMovePts, movePtsHalf, movePtsFull, pointPrototype.Name.Contains("POS"));
-                    List<Line> posXObjs = new List<Line>();
-                    List<Line> negXObjs = new List<Line>();
-                    List<Line> posYObjs = new List<Line>();
-                    List<Line> negYObjs = new List<Line>();
-                    List<Line> posZObjs = new List<Line>();
-                    List<Line> negZObjs = new List<Line>();
-                    GetLines(posXObjs, negXObjs, posYObjs, negYObjs, posZObjs, negZObjs);
-                    List<Line> allxAxisLines = new List<Line>();
-                    List<Line> allyAxisLines = new List<Line>();
-                    List<Line> allzAxisLines = new List<Line>();
-
-                    foreach (Line eLine in _edgeRepLines)
-                    {
-                        if (eLine.Name.StartsWith("X"))
-                            allxAxisLines.Add(eLine);
-
-                        if (eLine.Name.StartsWith("Y"))
-                            allyAxisLines.Add(eLine);
-
-                        if (eLine.Name.StartsWith("Z"))
-                            allzAxisLines.Add(eLine);
-                    }
+                    MotionCallbackDynamic1(pointPrototype, out var doNotMovePts, out var movePtsHalf, out var movePtsFull, pointPrototype.Name.Contains("POS"));
+                    GetLines(out var posXObjs, out var negXObjs, out var posYObjs, out var negYObjs, out var posZObjs, out var negZObjs);
+                    List<Line> allxAxisLines, allyAxisLines, allzAxisLines;
+                    NewMethod40(out allxAxisLines, out allyAxisLines, out allzAxisLines);
 
                     EditSizeForm sizeForm = null;
                     double convertLength = blockLength / 25.4;
@@ -1466,6 +1434,24 @@ namespace TSG_Library.UFuncs
             }
 
             return isBlockComponent;
+        }
+
+        private static void NewMethod40(out List<Line> allxAxisLines, out List<Line> allyAxisLines, out List<Line> allzAxisLines)
+        {
+            allxAxisLines = new List<Line>();
+            allyAxisLines = new List<Line>();
+            allzAxisLines = new List<Line>();
+            foreach (Line eLine in _edgeRepLines)
+            {
+                if (eLine.Name.StartsWith("X"))
+                    allxAxisLines.Add(eLine);
+
+                if (eLine.Name.StartsWith("Y"))
+                    allyAxisLines.Add(eLine);
+
+                if (eLine.Name.StartsWith("Z"))
+                    allzAxisLines.Add(eLine);
+            }
         }
 
         private void UpdateDynamicHandles()
@@ -2020,11 +2006,15 @@ namespace TSG_Library.UFuncs
 
         private static void MotionCallbackDynamic1(
             Point pointPrototype,
-            List<NXObject> doNotMovePts,
-            List<NXObject> movePtsHalf,
-            List<NXObject> movePtsFull,
+            out List<NXObject> doNotMovePts,
+            out List<NXObject> movePtsHalf,
+            out List<NXObject> movePtsFull,
             bool isPos)
         {
+            doNotMovePts = new List<NXObject>();
+            movePtsFull = new List<NXObject>();
+            movePtsHalf = new List<NXObject>();
+
             foreach (Point namedPt in __work_part_.Points)
                 if (namedPt.Name != "")
                 {
@@ -2062,32 +2052,6 @@ namespace TSG_Library.UFuncs
         }
 
 
-
-
-        private static void NewMethod19(List<Line> posXObjs, List<Line> negXObjs, List<Line> posYObjs, List<Line> negYObjs, List<Line> posZObjs, List<Line> negZObjs)
-        {
-            foreach (Line eLine in _edgeRepLines)
-            {
-                if (eLine.Name == "YBASE1" || eLine.Name == "YCEILING1" ||
-                   eLine.Name == "ZBASE1" || eLine.Name == "ZBASE3") negXObjs.Add(eLine);
-
-                if (eLine.Name == "YBASE2" || eLine.Name == "YCEILING2" ||
-                   eLine.Name == "ZBASE2" || eLine.Name == "ZBASE4") posXObjs.Add(eLine);
-
-                if (eLine.Name == "XBASE1" || eLine.Name == "XCEILING1" ||
-                   eLine.Name == "ZBASE1" || eLine.Name == "ZBASE2") negYObjs.Add(eLine);
-
-                if (eLine.Name == "XBASE2" || eLine.Name == "XCEILING2" ||
-                   eLine.Name == "ZBASE3" || eLine.Name == "ZBASE4") posYObjs.Add(eLine);
-
-                if (eLine.Name == "XBASE1" || eLine.Name == "XBASE2" ||
-                   eLine.Name == "YBASE1" || eLine.Name == "YBASE2") negZObjs.Add(eLine);
-
-                if (eLine.Name == "XCEILING1" || eLine.Name == "XCEILING2" ||
-                   eLine.Name == "YCEILING1" ||
-                   eLine.Name == "YCEILING2") posZObjs.Add(eLine);
-            }
-        }
 
 
 
@@ -2229,26 +2193,58 @@ namespace TSG_Library.UFuncs
                 ? (Point)_udoPointHandle.Prototype
                 : _udoPointHandle;
 
-            List<NXObject> doNotMovePts = new List<NXObject>();
-            List<NXObject> movePtsHalf = new List<NXObject>();
-            List<NXObject> movePtsFull = new List<NXObject>();
 
-            MotionCallbackDynamic1(pointPrototype, doNotMovePts, movePtsHalf, movePtsFull,
+
+            MotionCallbackDynamic1(pointPrototype, out var doNotMovePts, out var movePtsHalf, out var movePtsFull,
                 pointPrototype.Name.Contains("POS"));
 
-            List<Line> posXObjs = new List<Line>();
-            List<Line> negXObjs = new List<Line>();
-            List<Line> posYObjs = new List<Line>();
-            List<Line> negYObjs = new List<Line>();
-            List<Line> posZObjs = new List<Line>();
-            List<Line> negZObjs = new List<Line>();
+            GetLines(out var posXObjs, out var negXObjs, out var posYObjs, out var negYObjs, out var posZObjs, out var negZObjs);
 
-            NewMethod19(posXObjs, negXObjs, posYObjs, negYObjs, posZObjs, negZObjs);
+            NewMethod41(out var allxAxisLines, out var allyAxisLines, out var allzAxisLines);
 
-            List<Line> allxAxisLines = new List<Line>();
-            List<Line> allyAxisLines = new List<Line>();
-            List<Line> allzAxisLines = new List<Line>();
+            // get the distance from the selected point to the cursor location
 
+            double[] pointStart = _udoPointHandle.Coordinates.__ToArray();
+            double[] mappedPoint = new double[3];
+            double[] mappedCursor = new double[3];
+            __display_part_.WCS.SetOriginAndMatrix(_workCompOrigin, _workCompOrientation);
+            ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, pointStart, UF_CSYS_ROOT_WCS_COORDS, mappedPoint);
+            ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, position, UF_CSYS_ROOT_WCS_COORDS, mappedCursor);
+
+            switch (pointPrototype.Name)
+            {
+                case "POSX":
+                    movePtsFull.AddRange(posXObjs);
+                    MotionCallbackXDynamic(pointPrototype, movePtsHalf, movePtsFull, allxAxisLines, mappedPoint, mappedCursor);
+                    break;
+                case "NEGX":
+                    movePtsFull.AddRange(negXObjs);
+                    MotionCallbackXDynamic(pointPrototype, movePtsHalf, movePtsFull, allxAxisLines, mappedPoint, mappedCursor);
+                    break;
+                case "POSY":
+                    movePtsFull.AddRange(posYObjs);
+                    MotionCallbackYDynamic(pointPrototype, movePtsHalf, movePtsFull, allyAxisLines, mappedPoint, mappedCursor);
+                    break;
+                case "NEGY":
+                    movePtsFull.AddRange(negYObjs);
+                    MotionCallbackYDynamic(pointPrototype, movePtsHalf, movePtsFull, allyAxisLines, mappedPoint, mappedCursor);
+                    break;
+                case "POSZ":
+                    movePtsFull.AddRange(posZObjs);
+                    MotionCallbackZDynamic(pointPrototype, movePtsHalf, movePtsFull, allzAxisLines, mappedPoint, mappedCursor);
+                    break;
+                case "NEGZ":
+                    movePtsFull.AddRange(negZObjs);
+                    MotionCallbackZDynamic(pointPrototype, movePtsHalf, movePtsFull, allzAxisLines, mappedPoint, mappedCursor);
+                    break;
+            }
+        }
+
+        private static void NewMethod41(out List<Line> allxAxisLines, out List<Line> allyAxisLines, out List<Line> allzAxisLines)
+        {
+            allxAxisLines = new List<Line>();
+            allyAxisLines = new List<Line>();
+            allzAxisLines = new List<Line>();
             foreach (Line eLine in _edgeRepLines)
             {
                 if (eLine.Name.StartsWith("X"))
@@ -2260,37 +2256,12 @@ namespace TSG_Library.UFuncs
                 if (eLine.Name.StartsWith("Z"))
                     allzAxisLines.Add(eLine);
             }
-
-            // get the distance from the selected point to the cursor location
-
-            double[] pointStart = _udoPointHandle.Coordinates.__ToArray();
-            double[] mappedPoint = new double[3];
-            double[] mappedCursor = new double[3];
-            __display_part_.WCS.SetOriginAndMatrix(_workCompOrigin, _workCompOrientation);
-            ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, pointStart, UF_CSYS_ROOT_WCS_COORDS, mappedPoint);
-            ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, position, UF_CSYS_ROOT_WCS_COORDS, mappedCursor);
-
-            if (pointPrototype.Name == "POSX" || pointPrototype.Name == "NEGX")
-                MotionCallbackXDynamic(pointPrototype, movePtsHalf, movePtsFull, posXObjs, negXObjs, allxAxisLines,
-                    mappedPoint, mappedCursor);
-
-            if (pointPrototype.Name == "POSY" || pointPrototype.Name == "NEGY")
-                MotionCallbackYDynamic(pointPrototype, movePtsHalf, movePtsFull, posYObjs, negYObjs, allyAxisLines,
-                    mappedPoint, mappedCursor);
-
-            if (pointPrototype.Name == "POSZ" || pointPrototype.Name == "NEGZ")
-                MotionCallbackZDynamic(pointPrototype, movePtsHalf, movePtsFull, posZObjs, negZObjs, allzAxisLines,
-                    mappedPoint, mappedCursor);
         }
-
-
 
         private void MotionCallbackXDynamic(
             Point pointPrototype,
             List<NXObject> movePtsHalf,
             List<NXObject> movePtsFull,
-            List<Line> posXObjs,
-            List<Line> negXObjs,
             List<Line> allxAxisLines,
             double[] mappedPoint,
             double[] mappedCursor)
@@ -2308,20 +2279,11 @@ namespace TSG_Library.UFuncs
 
             _distanceMoved += xDistance;
 
-            if (pointPrototype.Name == "POSX")
-            {
-                movePtsFull.AddRange(posXObjs);
-                EditAlign(movePtsHalf, movePtsFull, allxAxisLines, xDistance, "X", true);
-            }
-            else
-            {
-                movePtsFull.AddRange(negXObjs);
-                EditAlign(movePtsHalf, movePtsFull, allxAxisLines, xDistance, "X", false);
-            }
+            EditAlign(movePtsHalf, movePtsFull, allxAxisLines, xDistance, "X", pointPrototype.Name == "POSX");
         }
 
         private void MotionCallbackZDynamic(Point pointPrototype, List<NXObject> movePtsHalf,
-            List<NXObject> movePtsFull, List<Line> posZObjs, List<Line> negZObjs, List<Line> allzAxisLines,
+            List<NXObject> movePtsFull, List<Line> allzAxisLines,
             double[] mappedPoint, double[] mappedCursor)
         {
             if (mappedPoint[2] != mappedCursor[2])
@@ -2335,16 +2297,7 @@ namespace TSG_Library.UFuncs
 
                     _distanceMoved += zDistance;
 
-                    if (pointPrototype.Name == "POSZ")
-                    {
-                        movePtsFull.AddRange(posZObjs);
-                        EditAlign(movePtsHalf, movePtsFull, allzAxisLines, zDistance, "Z", true);
-                    }
-                    else
-                    {
-                        movePtsFull.AddRange(negZObjs);
-                        EditAlign(movePtsHalf, movePtsFull, allzAxisLines, zDistance, "Z", false);
-                    }
+                    EditAlign(movePtsHalf, movePtsFull, allzAxisLines, zDistance, "Z", pointPrototype.Name == "POSZ");
 
                     ModelingView mView1 = (ModelingView)__display_part_.Views.WorkView;
                     __display_part_.Views.WorkView.Orient(mView1.Matrix);
@@ -2354,7 +2307,7 @@ namespace TSG_Library.UFuncs
         }
 
         private void MotionCallbackYDynamic(Point pointPrototype, List<NXObject> movePtsHalf,
-            List<NXObject> movePtsFull, List<Line> posYObjs, List<Line> negYObjs, List<Line> allyAxisLines,
+            List<NXObject> movePtsFull, List<Line> allyAxisLines,
             double[] mappedPoint, double[] mappedCursor)
         {
             if (mappedPoint[1] != mappedCursor[1])
@@ -2367,16 +2320,7 @@ namespace TSG_Library.UFuncs
 
                     _distanceMoved += yDistance;
 
-                    if (pointPrototype.Name == "POSY")
-                    {
-                        movePtsFull.AddRange(posYObjs);
-                        EditAlign(movePtsHalf, movePtsFull, allyAxisLines, yDistance, "Y", true);
-                    }
-                    else
-                    {
-                        movePtsFull.AddRange(negYObjs);
-                        EditAlign(movePtsHalf, movePtsFull, allyAxisLines, yDistance, "Y", false);
-                    }
+                    EditAlign(movePtsHalf, movePtsFull, allyAxisLines, yDistance, "Y", pointPrototype.Name == "POSY");
                 }
             }
         }
@@ -2716,9 +2660,9 @@ namespace TSG_Library.UFuncs
 
                 Point3d originPoint1 = __display_part_.WCS.Origin;
 
-                blockFeatureBuilderEdit.SetOriginAndLengths(originPoint1, mLength.ToString(),mWidth.ToString(), mHeight.ToString());
+                blockFeatureBuilderEdit.SetOriginAndLengths(originPoint1, mLength.ToString(), mWidth.ToString(), mHeight.ToString());
 
-                blockFeatureBuilderEdit.SetBooleanOperationAndTarget(Feature.BooleanType.Create,nullBody);
+                blockFeatureBuilderEdit.SetBooleanOperationAndTarget(Feature.BooleanType.Create, nullBody);
 
                 Feature feature1;
                 feature1 = blockFeatureBuilderEdit.CommitFeature();
@@ -2799,8 +2743,18 @@ namespace TSG_Library.UFuncs
             return sizeForm;
         }
 
-        private static void GetLines(List<Line> posXObjs, List<Line> negXObjs, List<Line> posYObjs, List<Line> negYObjs, List<Line> posZObjs, List<Line> negZObjs)
+        private static void GetLines(
+            out List<Line> posXObjs, out List<Line> negXObjs,
+            out List<Line> posYObjs, out List<Line> negYObjs,
+            out List<Line> posZObjs, out List<Line> negZObjs)
         {
+            posXObjs = new List<Line>();
+            negXObjs = new List<Line>();
+            posYObjs = new List<Line>();
+            negYObjs = new List<Line>();
+            posZObjs = new List<Line>();
+            negZObjs = new List<Line>();
+
             foreach (Line eLine in _edgeRepLines)
             {
                 if (eLine.Name == "YBASE1" || eLine.Name == "YCEILING1" ||
@@ -2893,7 +2847,7 @@ namespace TSG_Library.UFuncs
             return;
         }
 
-     
+
 
         private List<Point> NewMethod7(List<Point> pHandle)
         {
@@ -2947,7 +2901,7 @@ namespace TSG_Library.UFuncs
             EnableForm();
         }
 
-        
+
 
         private List<Point> NewMethod6(List<Point> pHandle)
         {
