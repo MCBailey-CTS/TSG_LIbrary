@@ -19,6 +19,12 @@ namespace TSG_Library.Extensions
             return obj.Color;
         }
 
+        // public static void __AskExtreme(this DisplayableObject obj)
+        // {
+        //     ufsession_.Modl.AskExtreme(obj.Tag, dirVectorX, dirVectorY, dirVectorZ, out _,
+        //                     extremePoint);
+        // }
+
         public static void __Color(this DisplayableObject obj, int color, bool redisplayObj = true)
         {
             obj.Color = color;

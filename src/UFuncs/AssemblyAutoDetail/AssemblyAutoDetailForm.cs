@@ -228,8 +228,8 @@ namespace TSG_Library.UFuncs
 
                                     if (value != "")
                                         passedComponents.AddRange(from matAttr in materials
-                                            where matAttr.AttrValue == value
-                                            select comp);
+                                                                  where matAttr.AttrValue == value
+                                                                  select comp);
                                     else
                                         print_($"\n{comp.DisplayName} : MATERIAL attribute equals nothing");
                                 }
@@ -519,18 +519,18 @@ namespace TSG_Library.UFuncs
                                     double multiplier = __display_part_.PartUnits == BasePart.Units.Inches ? 1.0 : 25.4;
 
                                     foreach (string key in _holeChart.Keys)
-                                    foreach (string value in _holeChart[key])
-                                    {
-                                        double holeDiameter = Convert.ToDouble(value);
-                                        double faceDiameter = Convert.ToDouble(radius * 2);
-                                        double difference = holeDiameter * .000000001;
-                                        if (System.Math.Abs(holeDiameter * multiplier - faceDiameter) <=
-                                            difference * multiplier)
+                                        foreach (string value in _holeChart[key])
                                         {
-                                            cfNote[0] = key;
-                                            break;
+                                            double holeDiameter = Convert.ToDouble(value);
+                                            double faceDiameter = Convert.ToDouble(radius * 2);
+                                            double difference = holeDiameter * .000000001;
+                                            if (System.Math.Abs(holeDiameter * multiplier - faceDiameter) <=
+                                                difference * multiplier)
+                                            {
+                                                cfNote[0] = key;
+                                                break;
+                                            }
                                         }
-                                    }
 
                                     CreateHoleChartNote(cfOrigin, cfNote, workView.Tag);
                                 }
@@ -547,24 +547,10 @@ namespace TSG_Library.UFuncs
                     if (chkDetailSheet.Checked)
                         try
                         {
-                            NXObject[] objects = __display_part_.Layers.GetAllObjectsOnLayer(1);
 
-                            List<DisplayableObject> objectsToMove = new List<DisplayableObject>();
-
-                            foreach (NXObject obj in objects)
-                            {
-                                if (obj is Body)
-                                    continue;
-
-                                if (obj is Face)
-                                    continue;
-
-                                if (obj is Edge)
-                                    continue;
-
-                                if (obj is DisplayableObject disp)
-                                    objectsToMove.Add(disp);
-                            }
+                            List<DisplayableObject> objectsToMove = __display_part_.Layers.GetAllObjectsOnLayer(1)
+                                .OfType<DisplayableObject>()
+                                .ToList();
 
                             __display_part_.Layers.MoveDisplayableObjects(169, objectsToMove.ToArray());
                             SetHoleChartLayers();
@@ -732,16 +718,22 @@ namespace TSG_Library.UFuncs
                 double[] drfLocation = new double[2];
                 double[] extremePoint = new double[3];
 
-                switch (dispObj.GetType().ToString())
+                switch (dispObj)
                 {
-                    case "NXOpen.Edge":
-                        double[] dirVectorX = { viewMatrix.Xx, viewMatrix.Xy, viewMatrix.Xz };
-                        double[] dirVectorY = { viewMatrix.Yx, viewMatrix.Yy, viewMatrix.Yz };
-                        double[] dirVectorZ = { viewMatrix.Zx, viewMatrix.Zy, viewMatrix.Zz };
-                        ufsession_.Modl.AskExtreme(dispObj.Tag, dirVectorX, dirVectorY, dirVectorZ, out _,
+                    case Edge _:
+                        double[] dirVectorX = viewMatrix.__AxisX().__ToArray();
+                        double[] dirVectorY = viewMatrix.__AxisY().__ToArray();
+                        double[] dirVectorZ = viewMatrix.__AxisZ().__ToArray();
+
+                        ufsession_.Modl.AskExtreme(
+                            dispObj.Tag,
+                            dirVectorX,
+                            dirVectorY,
+                            dirVectorZ,
+                            out _,
                             extremePoint);
                         break;
-                    case "NXOpen.Line":
+                    case Line _:
                         Line line = (Line)dispObj;
                         extremePoint = line.StartPoint.__ToArray();
                         break;
@@ -792,98 +784,112 @@ namespace TSG_Library.UFuncs
             switch (drfView.Name)
             {
                 case "4-VIEW-BOTTOM":
-                {
-                    // get minX greatest Y vertex
-                    FindEndPoints(ref minX, out Point3d vertex1, out Point3d vertex2);
-                    double[] drfVertex1 = new double[2];
-                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex1.__ToArray(), drfVertex1);
-                    double[] drfVertex2 = new double[2];
-                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex2.__ToArray(), drfVertex2);
-                    minX.DimXvalue = drfVertex1[0] <= drfVertex2[0] ? drfVertex1[0] : drfVertex2[0];
-                    minX.ExtPointId = drfVertex1[0] <= drfVertex2[0] ? (int)FirstEndPoint : (int)LastEndPoint;
-                    minX.DimYvalue = drfVertex1[1] >= drfVertex2[1] ? drfVertex1[1] : drfVertex2[1];
-                    // get maxX greatest Y vertex
-                    FindEndPoints(ref maxX, out Point3d vertex3, out Point3d vertex4);
-                    double[] drfVertex3 = new double[2];
-                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex3.__ToArray(), drfVertex3);
-                    double[] drfVertex4 = new double[2];
-                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex4.__ToArray(), drfVertex4);
-                    maxX.DimXvalue = drfVertex3[0] >= drfVertex4[0] ? drfVertex3[0] : drfVertex4[0];
-                    maxX.ExtPointId = drfVertex3[0] >= drfVertex4[0] ? (int)FirstEndPoint : (int)LastEndPoint;
-                    maxX.DimYvalue = drfVertex3[1] >= drfVertex4[1] ? drfVertex3[1] : drfVertex4[1];
-                    // get minY greatest X vertex
-                    FindEndPoints(ref minY, out Point3d vertex5, out Point3d vertex6);
-                    double[] drfVertex5 = new double[2];
-                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex5.__ToArray(), drfVertex5);
-                    double[] drfVertex6 = new double[2];
-                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex6.__ToArray(), drfVertex6);
-                    minY.DimXvalue = drfVertex5[0] >= drfVertex6[0] ? drfVertex5[0] : drfVertex6[0];
-                    minY.DimYvalue = drfVertex5[1] <= drfVertex6[1] ? drfVertex5[1] : drfVertex6[1];
-                    minY.ExtPointId = drfVertex5[0] >= drfVertex6[0]
-                        ? drfVertex5[1] <= drfVertex6[1] ? (int)FirstEndPoint : (int)LastEndPoint
-                        : drfVertex5[1] <= drfVertex6[1]
-                            ? (int)FirstEndPoint
-                            : (int)LastEndPoint;
-                    // get maxY greatest X vertex
-                    FindEndPoints(ref maxY, out Point3d vertex7, out Point3d vertex8);
-                    double[] drfVertex7 = new double[2];
-                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex7.__ToArray(), drfVertex7);
-                    double[] drfVertex8 = new double[2];
-                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex8.__ToArray(), drfVertex8);
-                    maxY.DimXvalue = drfVertex7[0] >= drfVertex8[0] ? drfVertex7[0] : drfVertex8[0];
-                    maxY.DimYvalue = drfVertex7[0] >= drfVertex8[0]
-                        ? drfVertex7[1] >= drfVertex8[1] ? drfVertex7[1] : drfVertex8[1]
-                        : drfVertex7[1] >= drfVertex8[1]
-                            ? drfVertex7[1]
-                            : drfVertex8[1];
-                    maxY.ExtPointId = drfVertex7[0] >= drfVertex8[0]
-                        ? drfVertex7[1] >= drfVertex8[1] ? (int)FirstEndPoint : (int)LastEndPoint
-                        : drfVertex7[1] >= drfVertex8[1]
-                            ? (int)FirstEndPoint
-                            : (int)LastEndPoint;
-                    break;
-                }
+                    {
+                        // get minX greatest Y vertex
+                        FindEndPoints(ref minX, out Point3d vertex1, out Point3d vertex2);
+
+                        double[] drfVertex1 = new double[2];
+                        ufsession_.View.MapModelToDrawing(drfView.Tag, vertex1.__ToArray(), drfVertex1);
+
+                        double[] drfVertex2 = new double[2];
+                        ufsession_.View.MapModelToDrawing(drfView.Tag, vertex2.__ToArray(), drfVertex2);
+
+                        minX.DimXvalue = drfVertex1[0] <= drfVertex2[0] ? drfVertex1[0] : drfVertex2[0];
+                        minX.ExtPointId = drfVertex1[0] <= drfVertex2[0] ? (int)FirstEndPoint : (int)LastEndPoint;
+                        minX.DimYvalue = drfVertex1[1] >= drfVertex2[1] ? drfVertex1[1] : drfVertex2[1];
+                        
+                        // get maxX greatest Y vertex
+                        FindEndPoints(ref maxX, out Point3d vertex3, out Point3d vertex4);
+
+                        double[] drfVertex3 = new double[2];
+                        ufsession_.View.MapModelToDrawing(drfView.Tag, vertex3.__ToArray(), drfVertex3);
+
+                        double[] drfVertex4 = new double[2];
+                        ufsession_.View.MapModelToDrawing(drfView.Tag, vertex4.__ToArray(), drfVertex4);
+
+                        maxX.DimXvalue = drfVertex3[0] >= drfVertex4[0] ? drfVertex3[0] : drfVertex4[0];
+                        maxX.ExtPointId = drfVertex3[0] >= drfVertex4[0] ? (int)FirstEndPoint : (int)LastEndPoint;
+                        maxX.DimYvalue = drfVertex3[1] >= drfVertex4[1] ? drfVertex3[1] : drfVertex4[1];
+
+                        // get minY greatest X vertex
+                        FindEndPoints(ref minY, out Point3d vertex5, out Point3d vertex6);
+
+                        double[] drfVertex5 = new double[2];
+                        ufsession_.View.MapModelToDrawing(drfView.Tag, vertex5.__ToArray(), drfVertex5);
+
+                        double[] drfVertex6 = new double[2];
+                        ufsession_.View.MapModelToDrawing(drfView.Tag, vertex6.__ToArray(), drfVertex6);
+                        minY.DimXvalue = drfVertex5[0] >= drfVertex6[0] ? drfVertex5[0] : drfVertex6[0];
+                        minY.DimYvalue = drfVertex5[1] <= drfVertex6[1] ? drfVertex5[1] : drfVertex6[1];
+                        minY.ExtPointId = drfVertex5[0] >= drfVertex6[0]
+                            ? drfVertex5[1] <= drfVertex6[1] ? (int)FirstEndPoint : (int)LastEndPoint
+                            : drfVertex5[1] <= drfVertex6[1]
+                                ? (int)FirstEndPoint
+                                : (int)LastEndPoint;
+
+                        // get maxY greatest X vertex
+                        FindEndPoints(ref maxY, out Point3d vertex7, out Point3d vertex8);
+
+                        double[] drfVertex7 = new double[2];
+                        ufsession_.View.MapModelToDrawing(drfView.Tag, vertex7.__ToArray(), drfVertex7);
+
+                        double[] drfVertex8 = new double[2];
+                        ufsession_.View.MapModelToDrawing(drfView.Tag, vertex8.__ToArray(), drfVertex8);
+
+                        maxY.DimXvalue = drfVertex7[0] >= drfVertex8[0] ? drfVertex7[0] : drfVertex8[0];
+                        maxY.DimYvalue = drfVertex7[0] >= drfVertex8[0]
+                            ? drfVertex7[1] >= drfVertex8[1] ? drfVertex7[1] : drfVertex8[1]
+                            : drfVertex7[1] >= drfVertex8[1]
+                                ? drfVertex7[1]
+                                : drfVertex8[1];
+                        maxY.ExtPointId = drfVertex7[0] >= drfVertex8[0]
+                            ? drfVertex7[1] >= drfVertex8[1] ? (int)FirstEndPoint : (int)LastEndPoint
+                            : drfVertex7[1] >= drfVertex8[1]
+                                ? (int)FirstEndPoint
+                                : (int)LastEndPoint;
+                        break;
+                    }
                 case "4-VIEW-RIGHT":
-                {
-                    // get minY least X vertex
-                    FindEndPoints(ref minY, out Point3d vertex1, out Point3d vertex2);
-                    double[] drfVertex1 = new double[2];
-                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex1.__ToArray(), drfVertex1);
-                    double[] drfVertex2 = new double[2];
-                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex2.__ToArray(), drfVertex2);
-                    minY.DimXvalue = drfVertex1[0] <= drfVertex2[0] ? drfVertex1[0] : drfVertex2[0];
-                    minY.DimYvalue = drfVertex1[0] <= drfVertex2[0]
-                        ? drfVertex1[1] <= drfVertex2[1] ? drfVertex1[1] : drfVertex2[1]
-                        : drfVertex1[1] <= drfVertex2[1]
-                            ? drfVertex1[1]
-                            : drfVertex2[1];
-                    minY.ExtPointId = drfVertex1[0] <= drfVertex2[0]
-                        ? drfVertex1[1] <= drfVertex2[1] ? (int)FirstEndPoint : (int)LastEndPoint
-                        : drfVertex1[1] <= drfVertex2[1]
-                            ? (int)FirstEndPoint
-                            : (int)LastEndPoint;
-                    // get maxY least X vertex
-                    FindEndPoints(ref maxY, out Point3d vertex3, out Point3d vertex4);
-                    double[] drfVertex3 = new double[2];
-                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex3.__ToArray(), drfVertex3);
-                    double[] drfVertex4 = new double[2];
-                    ufsession_.View.MapModelToDrawing(drfView.Tag, vertex4.__ToArray(), drfVertex4);
-                    if (drfVertex3[0] <= drfVertex4[0])
-                        maxY.DimXvalue = drfVertex3[0];
-                    else
-                        minY.DimXvalue = drfVertex4[0];
-                    maxY.DimYvalue = drfVertex3[0] <= drfVertex4[0]
-                        ? drfVertex3[1] >= drfVertex4[1] ? drfVertex3[1] : drfVertex4[1]
-                        : drfVertex3[1] >= drfVertex4[1]
-                            ? drfVertex3[1]
-                            : drfVertex4[1];
-                    maxY.ExtPointId = drfVertex3[0] <= drfVertex4[0]
-                        ? drfVertex3[1] >= drfVertex4[1] ? (int)FirstEndPoint : (int)LastEndPoint
-                        : drfVertex3[1] >= drfVertex4[1]
-                            ? (int)FirstEndPoint
-                            : (int)LastEndPoint;
-                    break;
-                }
+                    {
+                        // get minY least X vertex
+                        FindEndPoints(ref minY, out Point3d vertex1, out Point3d vertex2);
+                        double[] drfVertex1 = new double[2];
+                        ufsession_.View.MapModelToDrawing(drfView.Tag, vertex1.__ToArray(), drfVertex1);
+                        double[] drfVertex2 = new double[2];
+                        ufsession_.View.MapModelToDrawing(drfView.Tag, vertex2.__ToArray(), drfVertex2);
+                        minY.DimXvalue = drfVertex1[0] <= drfVertex2[0] ? drfVertex1[0] : drfVertex2[0];
+                        minY.DimYvalue = drfVertex1[0] <= drfVertex2[0]
+                            ? drfVertex1[1] <= drfVertex2[1] ? drfVertex1[1] : drfVertex2[1]
+                            : drfVertex1[1] <= drfVertex2[1]
+                                ? drfVertex1[1]
+                                : drfVertex2[1];
+                        minY.ExtPointId = drfVertex1[0] <= drfVertex2[0]
+                            ? drfVertex1[1] <= drfVertex2[1] ? (int)FirstEndPoint : (int)LastEndPoint
+                            : drfVertex1[1] <= drfVertex2[1]
+                                ? (int)FirstEndPoint
+                                : (int)LastEndPoint;
+                        // get maxY least X vertex
+                        FindEndPoints(ref maxY, out Point3d vertex3, out Point3d vertex4);
+                        double[] drfVertex3 = new double[2];
+                        ufsession_.View.MapModelToDrawing(drfView.Tag, vertex3.__ToArray(), drfVertex3);
+                        double[] drfVertex4 = new double[2];
+                        ufsession_.View.MapModelToDrawing(drfView.Tag, vertex4.__ToArray(), drfVertex4);
+                        if (drfVertex3[0] <= drfVertex4[0])
+                            maxY.DimXvalue = drfVertex3[0];
+                        else
+                            minY.DimXvalue = drfVertex4[0];
+                        maxY.DimYvalue = drfVertex3[0] <= drfVertex4[0]
+                            ? drfVertex3[1] >= drfVertex4[1] ? drfVertex3[1] : drfVertex4[1]
+                            : drfVertex3[1] >= drfVertex4[1]
+                                ? drfVertex3[1]
+                                : drfVertex4[1];
+                        maxY.ExtPointId = drfVertex3[0] <= drfVertex4[0]
+                            ? drfVertex3[1] >= drfVertex4[1] ? (int)FirstEndPoint : (int)LastEndPoint
+                            : drfVertex3[1] >= drfVertex4[1]
+                                ? (int)FirstEndPoint
+                                : (int)LastEndPoint;
+                        break;
+                    }
             }
 
             double dimSpace = partUnits == BasePart.Units.Inches ? .75 : 20;
@@ -955,90 +961,6 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        //private static CtsDimensionData NewMethod4(CtsDimensionData minY, out Point3d vertex1, out Point3d vertex2)
-        //{
-        //    if (NXOpen.Utilities.NXObjectManager.Get(minY.DimEntity).GetType().ToString() == "NXOpen.Line")
-        //    {
-        //        NXOpen.Line line1 = (NXOpen.Line)NXOpen.Utilities.NXObjectManager.Get(minY.DimEntity);
-        //        vertex1 = line1.StartPoint;
-        //        vertex2 = line1.EndPoint;
-        //    }
-        //    else
-        //    {
-        //        NXOpen.Edge edge = (NXOpen.Edge)NXOpen.Utilities.NXObjectManager.Get(minY.DimEntity);
-        //        edge.GetVertices(out vertex1, out vertex2);
-        //    }
-
-        //    return minY;
-        //}
-
-        //private static CtsDimensionData NewMethod3(CtsDimensionData maxY, out Point3d vertex7, out Point3d vertex8)
-        //{
-        //    if (NXOpen.Utilities.NXObjectManager.Get(maxY.DimEntity).GetType().ToString() == "NXOpen.Line")
-        //    {
-        //        NXOpen.Line line1 = (NXOpen.Line)NXOpen.Utilities.NXObjectManager.Get(maxY.DimEntity);
-        //        vertex7 = line1.StartPoint;
-        //        vertex8 = line1.EndPoint;
-        //    }
-        //    else
-        //    {
-        //        NXOpen.Edge edge = (NXOpen.Edge)NXOpen.Utilities.NXObjectManager.Get(maxY.DimEntity);
-        //        edge.GetVertices(out vertex7, out vertex8);
-        //    }
-
-        //    return maxY;
-        //}
-
-        //private static CtsDimensionData NewMethod2(CtsDimensionData minY, out Point3d vertex5, out Point3d vertex6)
-        //{
-        //    if (NXOpen.Utilities.NXObjectManager.Get(minY.DimEntity).GetType().ToString() == "NXOpen.Line")
-        //    {
-        //        NXOpen.Line line1 = (NXOpen.Line)NXOpen.Utilities.NXObjectManager.Get(minY.DimEntity);
-        //        vertex5 = line1.StartPoint;
-        //        vertex6 = line1.EndPoint;
-        //    }
-        //    else
-        //    {
-        //        NXOpen.Edge edge = (NXOpen.Edge)NXOpen.Utilities.NXObjectManager.Get(minY.DimEntity);
-        //        edge.GetVertices(out vertex5, out vertex6);
-        //    }
-
-        //    return minY;
-        //}
-
-        //private static CtsDimensionData NewMethod1(CtsDimensionData maxX, out Point3d vertex3, out Point3d vertex4)
-        //{
-        //    if (NXOpen.Utilities.NXObjectManager.Get(maxX.DimEntity).GetType().ToString() == "NXOpen.Line")
-        //    {
-        //        NXOpen.Line line1 = (NXOpen.Line)NXOpen.Utilities.NXObjectManager.Get(maxX.DimEntity);
-        //        vertex3 = line1.StartPoint;
-        //        vertex4 = line1.EndPoint;
-        //    }
-        //    else
-        //    {
-        //        NXOpen.Edge edge = (NXOpen.Edge)NXOpen.Utilities.NXObjectManager.Get(maxX.DimEntity);
-        //        edge.GetVertices(out vertex3, out vertex4);
-        //    }
-
-        //    return maxX;
-        //}
-
-        //private static CtsDimensionData NewMethod(CtsDimensionData minX, out Point3d vertex1, out Point3d vertex2)
-        //{
-        //    if (NXOpen.Utilities.NXObjectManager.Get(minX.DimEntity).GetType().ToString() == "NXOpen.Line")
-        //    {
-        //        NXOpen.Line line1 = (NXOpen.Line)NXOpen.Utilities.NXObjectManager.Get(minX.DimEntity);
-        //        vertex1 = line1.StartPoint;
-        //        vertex2 = line1.EndPoint;
-        //    }
-        //    else
-        //    {
-        //        NXOpen.Edge edge = (NXOpen.Edge)NXOpen.Utilities.NXObjectManager.Get(minX.DimEntity);
-        //        edge.GetVertices(out vertex1, out vertex2);
-        //    }
-
-        //    return minX;
-        //}
 
         private static void CreateHoleChartNote(Point3d noteOrigin, string[] holeDia, Tag view)
         {
@@ -1069,26 +991,19 @@ namespace TSG_Library.UFuncs
         private static void SetLayerVisibility(Tag viewToSet)
         {
             View viewObj = (View)NXObjectManager.Get(viewToSet);
-
             StateInfo[] layerVisibleInView = new StateInfo[256];
 
             for (int i = 0; i < layerVisibleInView.Length - 1; i++)
             {
                 layerVisibleInView[i].Layer = i + 1;
-
                 layerVisibleInView[i].State = State.Hidden;
             }
 
             layerVisibleInView[0].Layer = 1;
-
             layerVisibleInView[0].State = State.Visible;
-
             layerVisibleInView[95].Layer = 96;
-
             layerVisibleInView[95].State = State.Visible;
-
             layerVisibleInView[111].State = State.Visible;
-
             __display_part_.Layers.SetObjectsVisibilityOnLayer(viewObj, layerVisibleInView, true);
         }
 
@@ -1348,8 +1263,8 @@ namespace TSG_Library.UFuncs
                 string textData = endSplit[0];
                 string[] splitData = Regex.Split(textData, "\r\n");
                 List<CtsAttributes> compData = (from sData in splitData
-                    where sData != string.Empty
-                    select new CtsAttributes { AttrValue = sData }).ToList();
+                                                where sData != string.Empty
+                                                select new CtsAttributes { AttrValue = sData }).ToList();
                 return compData.Count > 0 ? compData : null;
             }
             catch (Exception ex)

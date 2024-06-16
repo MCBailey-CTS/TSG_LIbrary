@@ -12,13 +12,13 @@ namespace TSG_Library.UFuncUtilities.AssemblyAutoDetailUtilities
     [Obsolete]
     public static class DrillChart
     {
-        private const string holeChartText = @"U:\nxFiles\UfuncFiles\HoleChart.txt";
+        private const string HoleChartText = @"U:\nxFiles\UfuncFiles\HoleChart.txt";
 
         private static Part __display_part_ => Session.GetSession().Parts.Display;
 
         public static string[] Main()
         {
-            string[] lines = File.ReadAllLines(holeChartText)
+            string[] lines = File.ReadAllLines(HoleChartText)
                 .Where(s => !string.IsNullOrEmpty(s))
                 .Where(s => !string.IsNullOrWhiteSpace(s))
                 .Where(s => !s.StartsWith("//"))
@@ -181,8 +181,7 @@ namespace TSG_Library.UFuncUtilities.AssemblyAutoDetailUtilities
                 note.Add("");
 
 
-                string s = "";
-                foreach (string k in t) s += k;
+                string s = t.Aggregate("", (current, k) => current + k);
 
                 note.Add(s);
             }

@@ -6,11 +6,14 @@ using NXOpen.Assemblies;
 using NXOpen.UserDefinedObjects;
 using static TSG_Library.Extensions.Extensions;
 using Part = NXOpen.Part;
-
+using static NXOpen.UF.UFConstants;
+using TSG_Library.Properties;
 namespace TSG_Library.UFuncs
 {
     public partial class EditBlockForm : Form
     {
+
+        #region variables
         private static Part _workPart = session_.Parts.Work;
         private static Part _displayPart = session_.Parts.Display;
         private static Part _originalWorkPart = _workPart;
@@ -32,121 +35,362 @@ namespace TSG_Library.UFuncs
         private static bool _isLwrParallel;
         private static string _parallelHeightExp = string.Empty;
         private static string _parallelWidthExp = string.Empty;
+        #endregion
 
-        public EditBlockForm()
+        #region form events
+
+        public EditBlockForm() => InitializeComponent();
+
+        private void ButtonEditMove_Click(object sender, EventArgs e) => EditMove();
+
+        private void ButtonEditConstruction_Click(object sender, EventArgs e) => EditConstruction();
+
+        private void ButtonEndEditConstruction_Click(object sender, EventArgs e) => EndEditConstruction();
+
+        private void EditBlockForm_Load(object sender, EventArgs e) => EditBlock();
+
+        private void ComboBoxGridBlock_SelectedIndexChanged(object sender, EventArgs e) => SelectGrid();
+
+        private void ButtonExit_Click(object sender, EventArgs e) => Exit();
+
+        private void ButtonApply_Click(object sender, EventArgs e) => Apply();
+
+        private void ComboBoxGrid_KeyDown(object sender, KeyEventArgs e)
         {
-            InitializeComponent();
+            if (!e.KeyCode.Equals(Keys.Return))
+                return;
+
+            if (comboBoxGridBlock.Text == "0.000")
+            {
+                double.TryParse(comboBoxGridBlock.Text, out _gridSpace);
+                SetWorkPlaneOff();
+            }
+            else
+            {
+                SetWorkPlaneOff();
+                double.TryParse(comboBoxGridBlock.Text, out _gridSpace);
+                SetWorkPlaneOn();
+            }
         }
 
+        private void ButtonReset_Click(object sender, EventArgs e) => Reset();
 
-        private static void NewMethod2()
-        {
-            if (_isNewSelection)
-                if (_updateComponent == null)
-                    SelectWithFilter_("Select Component to Move");
-        }
+        private void ButtonEditAlign_Click(object sender, EventArgs e) => EditAlign();
 
-        private void CreateDynamicHandleUdo(Body editBody)
+        private void ButtonViewWcs_Click(object sender, EventArgs e) => ViewWcs();
+
+        private void ButtonEditMatch_Click(object sender, EventArgs e) => EditMatch();
+
+        private void ButtonAlignComponent_Click(object sender, EventArgs e) => AlignComponent();
+
+        private void ButtonEditDynamic_Click(object sender, EventArgs e) => EditDynamic();
+
+        private void ButtonEditSize_Click(object sender, EventArgs e) => EditSize();
+
+        private void ButtonAlignEdgeDistance_Click(object sender, EventArgs e) => AlignEdgeDistance();
+
+        #endregion
+
+
+
+        #region form methods
+
+        private void EditMove()
         {
             try
             {
-                UserDefinedClass myUdOclass =
-                    session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoDynamicHandle");
+                bool isBlockComponent = NewMethod11();
+                NewMethod2();
 
-                if (myUdOclass is null)
+                if (_editBody is null)
                     return;
 
-                UserDefinedObject[] currentUdo;
-                currentUdo = _workPart.UserDefinedObjectManager.GetUdosOfClass(myUdOclass);
+                Component editComponent = _editBody.OwningComponent;
 
-                if (currentUdo.Length != 0)
-                    return;
-
-                BasePart myBasePart = _workPart;
-                UserDefinedObjectManager myUdOmanager = myBasePart.UserDefinedObjectManager;
-
-                foreach (Face blkFace in editBody.GetFaces())
-                {
-                    UserDefinedObject myUdo = myUdOmanager.CreateUserDefinedObject(myUdOclass);
-                    UserDefinedObject.LinkDefinition[] myLinks = new UserDefinedObject.LinkDefinition[1];
-
-                    double[] pointOnFace = new double[3];
-                    double[] dir = new double[3];
-                    double[] box = new double[6];
-                    Matrix3x3 matrix1 = _displayPart.WCS.CoordinateSystem.Orientation.Element;
-
-                    ufsession_.Modl.AskFaceData(blkFace.Tag, out int type, pointOnFace, dir, box,
-                        out double radius, out double radData, out int normDir);
-
-                    dir[0] = Math.Round(dir[0], 10);
-                    dir[1] = Math.Round(dir[1], 10);
-                    dir[2] = Math.Round(dir[2], 10);
-
-                    double[] wcsVectorX =
-                        { Math.Round(matrix1.Xx, 10), Math.Round(matrix1.Xy, 10), Math.Round(matrix1.Xz, 10) };
-                    double[] wcsVectorY =
-                        { Math.Round(matrix1.Yx, 10), Math.Round(matrix1.Yy, 10), Math.Round(matrix1.Yz, 10) };
-                    double[] wcsVectorZ =
-                        { Math.Round(matrix1.Zx, 10), Math.Round(matrix1.Zy, 10), Math.Round(matrix1.Zz, 10) };
-
-                    double[] wcsVectorNegX = new double[3];
-                    double[] wcsVectorNegY = new double[3];
-                    double[] wcsVectorNegZ = new double[3];
-
-                    ufsession_.Vec3.Negate(wcsVectorX, wcsVectorNegX);
-                    ufsession_.Vec3.Negate(wcsVectorY, wcsVectorNegY);
-                    ufsession_.Vec3.Negate(wcsVectorZ, wcsVectorNegZ);
-
-                    // create udo handle points
-
-                    ufsession_.Vec3.IsEqual(dir, wcsVectorX, 0.00, out int isEqualX);
-
-                    if (isEqualX == 1)
-                        CreateUdo(myUdo, myLinks, pointOnFace, "POSX");
-
-                    ufsession_.Vec3.IsEqual(dir, wcsVectorY, 0.00, out int isEqualY);
-
-                    if (isEqualY == 1)
-                        CreateUdo(myUdo, myLinks, pointOnFace, "POSY");
-
-                    ufsession_.Vec3.IsEqual(dir, wcsVectorZ, 0.00, out int isEqualZ);
-
-                    if (isEqualZ == 1)
-                        CreateUdo(myUdo, myLinks, pointOnFace, "POSZ");
-
-                    ufsession_.Vec3.IsEqual(dir, wcsVectorNegX, 0.00, out int isEqualNegX);
-
-                    if (isEqualNegX == 1)
-                        CreateUdo(myUdo, myLinks, pointOnFace, "NEGX");
-
-                    ufsession_.Vec3.IsEqual(dir, wcsVectorNegY, 0.00, out int isEqualNegY);
-
-                    if (isEqualNegY == 1)
-                        CreateUdo(myUdo, myLinks, pointOnFace, "NEGY");
-
-                    ufsession_.Vec3.IsEqual(dir, wcsVectorNegZ, 0.00, out int isEqualNegZ);
-
-                    if (isEqualNegZ == 1)
-                        CreateUdo(myUdo, myLinks, pointOnFace, "NEGZ");
-                }
-
-                // create origin point
-
-                CreatePointBlkOrigin();
+                isBlockComponent = editComponent is null
+                    ? EditMoveDisplay(isBlockComponent, editComponent)
+                    : EditMoveWork(isBlockComponent, editComponent);
             }
             catch (Exception ex)
             {
                 ex.__PrintException();
             }
+            finally
+            {
+                ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
+                ufsession_.Disp.RegenerateDisplay();
+            }
         }
 
-
-        private static void CreateUdo(UserDefinedObject myUdo, UserDefinedObject.LinkDefinition[] myLinks,
-            double[] pointOnFace, string name)
+        public void EditConstruction()
         {
-            Point point1 = CreatePoint(pointOnFace, name);
-            CreateUdo(myUdo, myLinks, pointOnFace, point1, name);
+            buttonExit.Enabled = false;
+            UpdateSessionParts();
+            UpdateOriginalParts();
+
+            var editComponent = SelectOneComponent("Select Component to edit construction");
+
+            if (editComponent is null)
+                return;
+
+            var assmUnits = _displayPart.PartUnits;
+            var compBase = (BasePart)editComponent.Prototype;
+            var compUnits = compBase.PartUnits;
+
+            if (compUnits != assmUnits)
+            {
+                MessageBox.Show("Component units do not match the display part units");
+                return;
+            }
+
+            using (session_.__UsingSuppressDisplay())
+            {
+                var addRefSetPart = (Part)editComponent.Prototype;
+                __display_part_ = addRefSetPart;
+                UpdateSessionParts();
+
+                using (session_.__UsingDoUpdate("Delete Reference Set"))
+                {
+                    var allRefSets = _displayPart.GetAllReferenceSets();
+
+                    foreach (var namedRefSet in allRefSets)
+                        if (namedRefSet.Name == "EDIT")
+                            _workPart.DeleteReferenceSet(namedRefSet);
+                }
+
+                // create edit reference set
+                using (session_.__UsingDoUpdate("Create New Reference Set"))
+                {
+                    var editRefSet = _workPart.CreateReferenceSet();
+                    var removeComps = editRefSet.AskAllDirectMembers();
+                    editRefSet.RemoveObjectsFromReferenceSet(removeComps);
+                    editRefSet.SetAddComponentsAutomatically(false, false);
+                    editRefSet.SetName("EDIT");
+
+                    // get all construction objects to add to reference set
+                    var constructionObjects = new List<NXObject>();
+
+                    for (var i = 1; i < 11; i++)
+                    {
+                        var layerObjects = _displayPart.Layers.GetAllObjectsOnLayer(i);
+                        foreach (var addObj in layerObjects) constructionObjects.Add(addObj);
+                    }
+
+                    editRefSet.AddObjectsToReferenceSet(constructionObjects.ToArray());
+                }
+
+                __display_part_ = _originalDisplayPart;
+                UpdateSessionParts();
+            }
+            __work_component_ = editComponent;
+            UpdateSessionParts();
+            SetWcsToWorkPart(editComponent);
+            __work_component_.__Translucency(75);
+            Component[] setRefComp = { editComponent };
+            _displayPart.ComponentAssembly.ReplaceReferenceSetInOwners("EDIT", setRefComp);
+            _displayPart.Layers.WorkLayer = 3;
+            UpdateSessionParts();
+            buttonEditConstruction.Enabled = false;
+            buttonEndEditConstruction.Enabled = true;
         }
+
+
+
+
+
+
+        private void EndEditConstruction()
+        {
+            try
+            {
+                __work_component_.__Translucency(0);
+                _displayPart.Layers.WorkLayer = 1;
+                Session.UndoMarkId markId1;
+                markId1 = session_.SetUndoMark(Session.MarkVisibility.Invisible, "Delete Reference Set");
+                Component[] setRefComp = { session_.Parts.WorkComponent };
+                _displayPart.ComponentAssembly.ReplaceReferenceSetInOwners("BODY", setRefComp);
+                var allRefSets = _workPart.GetAllReferenceSets();
+
+                foreach (var namedRefSet in allRefSets)
+                    if (namedRefSet.Name == "EDIT")
+                        _workPart.DeleteReferenceSet(namedRefSet);
+
+                int nErrs1;
+                nErrs1 = session_.UpdateManager.DoUpdate(markId1);
+                session_.DeleteUndoMark(markId1, "Delete Reference Set");
+                __display_part_ = _originalDisplayPart;
+                __work_part_ = _originalWorkPart;
+                buttonEditConstruction.Enabled = true;
+                buttonEndEditConstruction.Enabled = false;
+                buttonExit.Enabled = true;
+                UpdateSessionParts();
+                UpdateOriginalParts();
+            }
+            catch (Exception ex)
+            {
+                buttonEditConstruction.Enabled = true;
+                buttonEndEditConstruction.Enabled = false;
+                ex.__PrintException();
+            }
+        }
+
+
+
+
+        private void EditBlock()
+        {
+            if (Settings.Default.udoComponentBuilderWindowLocation != null)
+                Location = Settings.Default.udoComponentBuilderWindowLocation;
+
+            buttonApply.Enabled = false;
+
+            LoadGridSizes();
+
+            if (string.IsNullOrEmpty(comboBoxGridBlock.Text))
+                if (!(Session.GetSession().Parts.Work is null))
+                    comboBoxGridBlock.SelectedItem = Session.GetSession().Parts.Work.PartUnits == BasePart.Units.Inches
+                        ? "0.250"
+                        : "6.35";
+
+            _nonValidNames.Add("strip");
+            _nonValidNames.Add("layout");
+            _nonValidNames.Add("blank");
+            _registered = Startup();
+        }
+
+        private void Exit()
+        {
+            session_.Parts.RemoveWorkPartChangedHandler(_idWorkPartChanged1);
+            Close();
+            Settings.Default.udoComponentBuilderWindowLocation = Location;
+            Settings.Default.Save();
+
+            using (this)
+                new ComponentBuilder().Show();
+        }
+
+
+
+        private void SelectGrid()
+        {
+            if (comboBoxGridBlock.Text == "0.000")
+            {
+                bool isConverted;
+                isConverted = double.TryParse(comboBoxGridBlock.Text, out _gridSpace);
+                SetWorkPlaneOff();
+            }
+            else
+            {
+                SetWorkPlaneOff();
+                bool isConverted;
+                isConverted = double.TryParse(comboBoxGridBlock.Text, out _gridSpace);
+                SetWorkPlaneOn();
+            }
+
+            Settings.Default.EditBlockFormGridIncrement = comboBoxGridBlock.Text;
+            Settings.Default.Save();
+        }
+
+
+        private void AlignComponent()
+        {
+            try
+            {
+                bool isBlockComponent = NewMethod9();
+
+                if (_isNewSelection && _updateComponent is null)
+                    SelectWithFilter_("Select Component to Align");
+
+                AlignComponent(isBlockComponent);
+            }
+            catch (Exception ex)
+            {
+                ex.__PrintException();
+            }
+
+            Show();
+            ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
+            ufsession_.Disp.RegenerateDisplay();
+        }
+
+
+        private void EditDynamic()
+        {
+            try
+            {
+                bool isBlockComponent = NewMethod8();
+
+                if (_isNewSelection && _updateComponent is null)
+                    SelectWithFilter_("Select Component for Dynamic Edit");
+
+                if (_editBody is null)
+                    return;
+
+                Component editComponent = _editBody.OwningComponent;
+
+                if (editComponent is null)
+                    EditDynamicDisplayPart(isBlockComponent, editComponent);
+                else
+                    EditDynamicWorkPart(isBlockComponent, editComponent);
+            }
+            catch (Exception ex)
+            {
+                EnableForm();
+                ex.__PrintException();
+                ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
+                ufsession_.Disp.RegenerateDisplay();
+            }
+            finally
+            {
+                ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
+                ufsession_.Disp.RegenerateDisplay();
+            }
+        }
+
+
+
+        private void EditMatch()
+        {
+            try
+            {
+                bool isBlockComponent = NewMethod5();
+
+                if (_isNewSelection)
+                {
+                    if (_updateComponent is null)
+                    {
+                        SelectWithFilter_("Select Component - Match From");
+                    }
+                    else
+                    {
+                        UpdateDynamicBlock(_updateComponent);
+                        _displayPart.WCS.SetOriginAndMatrix(_workCompOrigin, _workCompOrientation);
+                        _displayPart.WCS.Visibility = true;
+                        _isNewSelection = true;
+                    }
+                }
+                else
+                {
+                    UpdateDynamicBlock(_updateComponent);
+                    _displayPart.WCS.SetOriginAndMatrix(_workCompOrigin, _workCompOrientation);
+                    _displayPart.WCS.Visibility = true;
+                    _isNewSelection = true;
+                }
+
+                EditMatch(isBlockComponent);
+            }
+            catch (Exception ex)
+            {
+                ex.__PrintException();
+            }
+
+            EnableForm();
+            ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
+            ufsession_.Disp.RegenerateDisplay();
+        }
+
+        #endregion
+
     }
 }
 // 4839

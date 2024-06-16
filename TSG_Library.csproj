@@ -334,9 +334,6 @@
     <Compile Include="src\UFuncs\ComponentBuilder\EditSizeForm.Designer.cs">
       <DependentUpon>EditSizeForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\ComponentBuilder\SetWcs.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="src\UFuncs\ComponentBuilder\__Complete.cs">
       <SubType>Form</SubType>
     </Compile>

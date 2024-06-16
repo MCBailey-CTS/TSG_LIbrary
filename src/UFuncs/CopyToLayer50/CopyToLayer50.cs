@@ -82,7 +82,7 @@ namespace TSG_Library.UFuncs
                     try
                     {
                         comp.__Prototype().__ReferenceSets("BODY")
-                            .RemoveObjectsFromReferenceSet(new_layer_50_bodies.ToArray());
+                            .RemoveObjectsFromReferenceSet(new_layer_50_bodies.ToArray<NXObject>());
                     }
                     catch (Exception ex)
                     {
