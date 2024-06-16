@@ -48,11 +48,9 @@ namespace TSG_Library.UFuncs
 
         public EditBlockForm() => InitializeComponent();
 
-        private void ButtonEditMove_Click(object sender, EventArgs e) => EditMove();
 
-        private void ButtonEditConstruction_Click(object sender, EventArgs e) => EditConstruction();
 
-        private void ButtonEndEditConstruction_Click(object sender, EventArgs e) => EndEditConstruction();
+
 
         private void EditBlockForm_Load(object sender, EventArgs e) => EditBlock();
 
@@ -80,9 +78,8 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        private void ButtonReset_Click(object sender, EventArgs e) => Reset();
 
-        private void ButtonEditAlign_Click(object sender, EventArgs e) => EditAlign();
+
 
         private void ButtonViewWcs_Click(object sender, EventArgs e) => ViewWcs();
 
@@ -94,7 +91,7 @@ namespace TSG_Library.UFuncs
 
         private void ButtonEditSize_Click(object sender, EventArgs e) => EditSize();
 
-        private void ButtonAlignEdgeDistance_Click(object sender, EventArgs e) => AlignEdgeDistance();
+
 
         #endregion
 
@@ -102,112 +99,9 @@ namespace TSG_Library.UFuncs
 
         #region form methods
 
-        private void EditMove()
-        {
-            try
-            {
-                bool isBlockComponent = NewMethod11();
-                NewMethod2();
 
-                if (_editBody is null)
-                    return;
 
-                Component editComponent = _editBody.OwningComponent;
 
-                isBlockComponent = editComponent is null
-                    ? EditMoveDisplay(isBlockComponent, editComponent)
-                    : EditMoveWork(isBlockComponent, editComponent);
-            }
-            catch (Exception ex)
-            {
-                ex.__PrintException();
-            }
-        }
-
-        public void EditConstruction()
-        {
-            buttonExit.Enabled = false;
-            Component editComponent = SelectOneComponent("Select Component to edit construction");
-
-            if (editComponent is null)
-                return;
-
-            if (editComponent.__Prototype().PartUnits != __display_part_.PartUnits)
-            {
-                MessageBox.Show("Component units do not match the display part units");
-                return;
-            }
-
-            using (session_.__UsingSuppressDisplay())
-            {
-                Part addRefSetPart = (Part)editComponent.Prototype;
-
-                using (session_.__UsingDisplayPartReset())
-                {
-                    __display_part_ = addRefSetPart;
-
-                    using (session_.__UsingDoUpdate("Delete Reference Set"))
-                        __display_part_.__ReferenceSets("EDIT").__Delete();
-
-                    // create edit reference set
-                    using (session_.__UsingDoUpdate("Create New Reference Set"))
-                    {
-                        ReferenceSet editRefSet = __work_part_.CreateReferenceSet();
-                        NXObject[] removeComps = editRefSet.AskAllDirectMembers();
-                        editRefSet.RemoveObjectsFromReferenceSet(removeComps);
-                        editRefSet.SetAddComponentsAutomatically(false, false);
-                        editRefSet.SetName("EDIT");
-
-                        // get all construction objects to add to reference set
-                        List<NXObject> constructionObjects = new List<NXObject>();
-
-                        for (int i = 1; i < 11; i++)
-                        {
-                            NXObject[] layerObjects = __display_part_.Layers.GetAllObjectsOnLayer(i);
-
-                            foreach (NXObject addObj in layerObjects)
-                                constructionObjects.Add(addObj);
-                        }
-
-                        editRefSet.AddObjectsToReferenceSet(constructionObjects.ToArray());
-                    }
-
-                }
-            }
-            __work_component_ = editComponent;
-            SetWcsToWorkPart(editComponent);
-            __work_component_.__Translucency(75);
-            editComponent.__ReferenceSet("EDIT");
-            __display_part_.Layers.WorkLayer = 3;
-            buttonEditConstruction.Enabled = false;
-            buttonEndEditConstruction.Enabled = true;
-        }
-
-        private void EndEditConstruction()
-        {
-            try
-            {
-                __work_component_.__Translucency(0);
-                __display_part_.Layers.WorkLayer = 1;
-
-                using (session_.__UsingDoUpdate("Delete Reference Set"))
-                {
-                    __work_component_.__ReferenceSet("BODY");
-                    __work_part_.__ReferenceSets("EDIT").__Delete();
-                }
-
-                buttonExit.Enabled = true;
-            }
-            catch (Exception ex)
-            {
-                ex.__PrintException();
-            }
-            finally
-            {
-                buttonEditConstruction.Enabled = true;
-                buttonEndEditConstruction.Enabled = false;
-            }
-        }
 
         private void EditBlock()
         {
@@ -230,16 +124,7 @@ namespace TSG_Library.UFuncs
             _registered = Startup();
         }
 
-        private void Exit()
-        {
-            session_.Parts.RemoveWorkPartChangedHandler(_idWorkPartChanged1);
-            Close();
-            Settings.Default.udoComponentBuilderWindowLocation = Location;
-            Settings.Default.Save();
 
-            using (this)
-                new ComponentBuilder().Show();
-        }
 
         private void SelectGrid()
         {
@@ -259,58 +144,15 @@ namespace TSG_Library.UFuncs
             Settings.Default.Save();
         }
 
-        private void AlignComponent()
-        {
-            try
-            {
-                bool isBlockComponent = NewMethod9();
 
-                if (_isNewSelection && _updateComponent is null)
-                    SelectWithFilter_("Select Component to Align");
 
-                AlignComponent(isBlockComponent);
-            }
-            catch (Exception ex)
-            {
-                ex.__PrintException();
-            }
-            finally
-            {
-                Show();
-            }
-        }
 
-        private void EditDynamic()
-        {
-            try
-            {
-                bool isBlockComponent = NewMethod8();
-
-                if (_isNewSelection && _updateComponent is null)
-                    SelectWithFilter_("Select Component for Dynamic Edit");
-
-                if (_editBody is null)
-                    return;
-
-                Component editComponent = _editBody.OwningComponent;
-
-                if (editComponent is null)
-                    EditDynamicDisplayPart(isBlockComponent, editComponent);
-                else
-                    EditDynamicWorkPart(isBlockComponent, editComponent);
-            }
-            catch (Exception ex)
-            {
-                EnableForm();
-                ex.__PrintException();
-            }
-        }
 
         private void EditMatch()
         {
             try
             {
-                bool isBlockComponent = NewMethod5();
+                bool isBlockComponent = SetDispUnits();
 
                 if (_isNewSelection)
                 {
@@ -342,72 +184,8 @@ namespace TSG_Library.UFuncs
             EnableForm();
         }
 
-        private void EditSize()
-        {
-            try
-            {
-                bool isBlockComponent = NewMethod3();
-
-                if (_isNewSelection && _updateComponent is null)
-                    SelectWithFilter_("Select Component to Edit Size");
-
-                if (_editBody is null)
-                    return;
-
-                Component editComponent = _editBody.OwningComponent;
-
-                isBlockComponent = editComponent is null
-                    ? EditSize(isBlockComponent, editComponent)
-                    : EditSizeWork(isBlockComponent, editComponent);
-            }
-            catch (Exception ex)
-            {
-                ex.__PrintException();
-            }
-        }
-
-        private void EditAlign()
-        {
-            try
-            {
-                bool isBlockComponent = NewMethod1();
 
 
-                if (_isNewSelection && _updateComponent is null)
-                    SelectWithFilter_("Select Component to Align");
-
-                EdgeAlign(isBlockComponent);
-            }
-            catch (Exception ex)
-            {
-                ex.__PrintException();
-            }
-            finally
-            {
-                Show();
-            }
-        }
-
-        private void AlignEdgeDistance()
-        {
-            try
-            {
-                bool isBlockComponent = NewMethod13();
-
-                if (_isNewSelection && _updateComponent is null)
-                    SelectWithFilter_("Select Component to Align Edge");
-
-                AlignEdgeDistance(isBlockComponent);
-            }
-            catch (Exception ex)
-            {
-                ex.__PrintException();
-            }
-            finally
-            {
-                Show();
-            }
-        }
 
         private void Apply()
         {
@@ -437,188 +215,7 @@ namespace TSG_Library.UFuncs
             __work_part_ = __display_part_;
         }
 
-        private double AlignEdgeDistance(
-         List<NXObject> movePtsHalf,
-         List<NXObject> movePtsFull,
-         List<Line> lines,
-         double inputDist,
-         double[] mappedBase,
-         double[] mappedPoint,
-         int index,
-         string dir_xyz,
-         bool isPosEnd)
-        {
-            double distance = MapAndConvert(inputDist, mappedBase, mappedPoint, index);
 
-            foreach (Line zAxisLine in lines)
-                switch (dir_xyz)
-                {
-                    case "X":
-                        if (isPosEnd)
-                            XEndPoint(distance, zAxisLine);
-                        else
-                            XStartPoint(distance, zAxisLine);
-                        continue;
-                    case "Y":
-                        if (isPosEnd)
-                            YEndPoint(distance, zAxisLine);
-                        else
-                            YStartPoint(distance, zAxisLine);
-                        continue;
-                    case "Z":
-                        if (isPosEnd)
-                            ZEndPoint(distance, zAxisLine);
-                        else
-                            ZStartPoint(distance, zAxisLine);
-                        continue;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-            MoveObjects(movePtsHalf, movePtsFull, distance, dir_xyz, false);
-            return distance;
-        }
-
-        private void AlignEdgeDistance(bool isBlockComponent)
-        {
-            using (session_.__UsingFormShowHide(this))
-            {
-                if (_editBody is null)
-                    return;
-
-                Component editComponent = _editBody.OwningComponent;
-
-                if (editComponent is null)
-                {
-                    NewMethod22();
-                    return;
-                }
-
-                Part checkPartName = (Part)editComponent.Prototype;
-                _updateComponent = editComponent;
-
-                if (editComponent.__Prototype().PartUnits != __display_part_.PartUnits)
-                    return;
-
-                if (_isNewSelection)
-                {
-                    ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
-                    __work_component_ = editComponent;
-
-                    if (__work_part_.__HasDynamicBlock())
-                    {
-                        isBlockComponent = true;
-                        CreateEditData(editComponent);
-                        _isNewSelection = false;
-                    }
-                }
-                else
-                    isBlockComponent = true;
-
-                if (!isBlockComponent)
-                {
-                    ResetNonBlockError();
-                    NewMethod23();
-                    return;
-                }
-
-                List<Point> pHandle = SelectHandlePoint();
-
-                _isDynamic = true;
-
-                while (pHandle.Count == 1)
-                {
-                    HideDynamicHandles();
-                    _udoPointHandle = pHandle[0];
-                    Point pointPrototype;
-
-                    if (_udoPointHandle.IsOccurrence)
-                        pointPrototype = (Point)_udoPointHandle.Prototype;
-                    else
-                        pointPrototype = _udoPointHandle;
-
-
-                    MotionCallbackDynamic1(pointPrototype, out var doNotMovePts, out var movePtsHalf, out var movePtsFull, pointPrototype.Name.Contains("POS"));
-                    GetLines(out var posXObjs, out var negXObjs, out var posYObjs, out var negYObjs, out var posZObjs, out var negZObjs);
-
-                    List<Line> allxAxisLines, allyAxisLines, allzAxisLines;
-                    NewMethod38(out allxAxisLines, out allyAxisLines, out allzAxisLines);
-
-                    string message = "Select Reference Point";
-                    UFUi.PointBaseMethod pbMethod = UFUi.PointBaseMethod.PointInferred;
-                    Tag selection = NXOpen.Tag.Null;
-                    double[] basePoint = new double[3];
-                    int response;
-
-                    using (session_.__UsingLockUiFromCustom())
-                        ufsession_.Ui.PointConstruct(message, ref pbMethod, out selection, basePoint, out response);
-
-                    if (response == UF_UI_OK)
-                    {
-                        bool isDistance;
-
-                        isDistance = NXInputBox.ParseInputNumber(
-                            "Enter offset value",
-                            "Enter offset value",
-                            .004,
-                            NumberStyles.AllowDecimalPoint,
-                            CultureInfo.InvariantCulture.NumberFormat,
-                            out double inputDist);
-
-                        if (isDistance)
-                        {
-                            double[] mappedBase = new double[3];
-                            ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, basePoint, UF_CSYS_ROOT_WCS_COORDS, mappedBase);
-
-                            double[] pPrototype = pointPrototype.Coordinates.__ToArray();
-                            double[] mappedPoint = new double[3];
-                            ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, pPrototype, UF_CSYS_ROOT_WCS_COORDS, mappedPoint);
-
-                            double distance;
-
-                            switch (pointPrototype.Name)
-                            {
-                                case "POSX":
-                                    movePtsFull.AddRange(posXObjs);
-                                    distance = AlignEdgeDistance(movePtsHalf, movePtsFull, allxAxisLines, inputDist, mappedBase, mappedPoint, 0, "X", true);
-                                    break;
-                                case "NEGX":
-                                    movePtsFull.AddRange(negXObjs);
-                                    distance = AlignEdgeDistance(movePtsHalf, movePtsFull, allxAxisLines, inputDist, mappedBase, mappedPoint, 0, "X", false);
-                                    break;
-                                case "POSY":
-                                    movePtsFull.AddRange(posYObjs);
-                                    distance = AlignEdgeDistance(movePtsHalf, movePtsFull, allyAxisLines, inputDist, mappedBase, mappedPoint, 1, "Y", true);
-                                    break;
-                                case "NEGY":
-                                    movePtsFull.AddRange(negYObjs);
-                                    distance = AlignEdgeDistance(movePtsHalf, movePtsFull, allyAxisLines, inputDist, mappedBase, mappedPoint, 1, "Y", false);
-                                    break;
-                                case "POSZ":
-                                    movePtsFull.AddRange(posZObjs);
-                                    distance = AlignEdgeDistance(movePtsHalf, movePtsFull, allzAxisLines, inputDist, mappedBase, mappedPoint, 2, "Z", true);
-                                    break;
-                                case "NEGZ":
-                                    movePtsFull.AddRange(negZObjs);
-                                    distance = AlignEdgeDistance(movePtsHalf, movePtsFull, allzAxisLines, inputDist, mappedBase, mappedPoint, 2, "Z", false);
-                                    break;
-                            }
-                        }
-                        else
-                        {
-                            //Show();
-                            NewMethod24();
-                        }
-                    }
-
-                    UpdateDynamicBlock(editComponent);
-                    ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
-                    __work_component_ = editComponent;
-                    CreateEditData(editComponent);
-                    pHandle = SelectHandlePoint();
-                }
-            }
-        }
 
         private static void NewMethod38(out List<Line> allxAxisLines, out List<Line> allyAxisLines, out List<Line> allzAxisLines)
         {
@@ -719,7 +316,7 @@ namespace TSG_Library.UFuncs
                             case "POSX":
                                 movePtsFull.AddRange(posXObjs);
 
-                                EditSize(
+                                EditSizeOrAlign(
                                    editSize - blockLength,
                                    movePtsHalf,
                                    movePtsFull,
@@ -730,7 +327,7 @@ namespace TSG_Library.UFuncs
                             case "NEGX":
                                 movePtsFull.AddRange(negXObjs);
 
-                                EditSize(
+                                EditSizeOrAlign(
                                    blockLength - editSize,
                                    movePtsHalf,
                                    movePtsFull,
@@ -741,7 +338,7 @@ namespace TSG_Library.UFuncs
                             case "POSY":
                                 movePtsFull.AddRange(posYObjs);
 
-                                EditSize(
+                                EditSizeOrAlign(
                                    editSize - blockWidth,
                                    movePtsHalf,
                                    movePtsFull,
@@ -752,7 +349,7 @@ namespace TSG_Library.UFuncs
                             case "NEGY":
                                 movePtsFull.AddRange(negYObjs);
 
-                                EditSize(
+                                EditSizeOrAlign(
                                    blockWidth - editSize,
                                    movePtsHalf,
                                    movePtsFull,
@@ -763,7 +360,7 @@ namespace TSG_Library.UFuncs
                             case "POSZ":
                                 movePtsFull.AddRange(posZObjs);
 
-                                EditSize(
+                                EditSizeOrAlign(
                                    editSize - blockHeight,
                                    movePtsHalf,
                                    movePtsFull,
@@ -774,7 +371,7 @@ namespace TSG_Library.UFuncs
                             case "NEGZ":
                                 movePtsFull.AddRange(negZObjs);
 
-                                EditSize(
+                                EditSizeOrAlign(
                                    blockHeight - editSize,
                                    movePtsHalf,
                                    movePtsFull,
@@ -816,7 +413,7 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        private void EditSize(
+        private void EditSizeOrAlign(
               double distance,
               List<NXObject> movePtsHalf,
               List<NXObject> movePtsFull,
@@ -825,68 +422,12 @@ namespace TSG_Library.UFuncs
               bool isPosEnd)
         {
             foreach (Line zAxisLine in allzAxisLines)
-                switch (dir_xyz)
-                {
-                    case "X":
-                        if (isPosEnd)
-                            XEndPoint(distance, zAxisLine);
-                        else
-                            XStartPoint(distance, zAxisLine);
-                        continue;
-                    case "Y":
-                        if (isPosEnd)
-                            YEndPoint(distance, zAxisLine);
-                        else
-                            YStartPoint(distance, zAxisLine);
-                        continue;
-                    case "Z":
-                        if (isPosEnd)
-                            ZEndPoint(distance, zAxisLine);
-                        else
-                            ZStartPoint(distance, zAxisLine);
-                        continue;
-                    default:
-                        throw new System.ArgumentOutOfRangeException();
-                }
+                SetLineEndPoints(distance, zAxisLine, !isPosEnd, dir_xyz);
 
             MoveObjects(movePtsHalf, movePtsFull, distance, dir_xyz, false);
         }
 
-        private void EditAlign(
-          List<NXObject> movePtsHalf,
-          List<NXObject> movePtsFull,
-          List<Line> allzAxisLines,
-          double distance,
-          string dir_xyz,
-          bool isPosEnd)
-        {
-            foreach (Line zAxisLine in allzAxisLines)
-                switch (dir_xyz)
-                {
-                    case "X":
-                        if (isPosEnd)
-                            XEndPoint(distance, zAxisLine);
-                        else
-                            XStartPoint(distance, zAxisLine);
-                        continue;
-                    case "Y":
-                        if (isPosEnd)
-                            YEndPoint(distance, zAxisLine);
-                        else
-                            YStartPoint(distance, zAxisLine);
-                        continue;
-                    case "Z":
-                        if (isPosEnd)
-                            ZEndPoint(distance, zAxisLine);
-                        else
-                            ZStartPoint(distance, zAxisLine);
-                        continue;
-                    default:
-                        throw new ArgumentException();
-                }
 
-            MoveObjects(movePtsHalf, movePtsFull, distance, dir_xyz, false);
-        }
 
         [Obsolete]
         private void EdgeAlign(bool isBlockComponent)
@@ -985,38 +526,45 @@ namespace TSG_Library.UFuncs
                     {
                         case "POSX":
                             movePtsFull.AddRange(posXObjs);
-                            EditAlign(movePtsHalf, movePtsFull, allxAxisLines, distance, "X", true);
+                            EditSizeOrAlign(distance, movePtsHalf, movePtsFull, allxAxisLines, "X", true);
                             break;
                         case "NEGX":
                             movePtsFull.AddRange(negXObjs);
-                            EditAlign(movePtsHalf, movePtsFull, allxAxisLines, distance, "X", false);
+                            EditSizeOrAlign(distance, movePtsHalf, movePtsFull, allxAxisLines, "X", false);
                             break;
                         case "POSY":
                             movePtsFull.AddRange(posYObjs);
-                            EditAlign(movePtsHalf, movePtsFull, allyAxisLines, distance, "Y", true);
+                            EditSizeOrAlign(distance, movePtsHalf, movePtsFull, allyAxisLines, "Y", true);
                             break;
                         case "NEGY":
                             movePtsFull.AddRange(negYObjs);
-                            EditAlign(movePtsHalf, movePtsFull, allyAxisLines, distance, "Y", false);
+                            EditSizeOrAlign(distance, movePtsHalf, movePtsFull, allyAxisLines, "Y", false);
                             break;
                         case "POSZ":
                             movePtsFull.AddRange(posZObjs);
-                            EditAlign(movePtsHalf, movePtsFull, allzAxisLines, distance, "Z", true);
+                            EditSizeOrAlign(distance, movePtsHalf, movePtsFull, allzAxisLines, "Z", true);
                             break;
                         case "NEGZ":
                             movePtsFull.AddRange(negZObjs);
-                            EditAlign(movePtsHalf, movePtsFull, allzAxisLines, distance, "Z", false);
+                            EditSizeOrAlign(distance, movePtsHalf, movePtsFull, allzAxisLines, "Z", false);
                             break;
                     }
                 }
 
-                UpdateDynamicBlock(editComponent);
-                __work_component_ = editComponent;
-                CreateEditData(editComponent);
-                pHandle = SelectHandlePoint();
+                pHandle = NewMethod11(editComponent);
             }
 
             Show();
+        }
+
+        private List<Point> NewMethod11(Component editComponent)
+        {
+            List<Point> pHandle;
+            UpdateDynamicBlock(editComponent);
+            __work_component_ = editComponent;
+            CreateEditData(editComponent);
+            pHandle = SelectHandlePoint();
+            return pHandle;
         }
 
         private static void NewMethod19(out List<Line> allxAxisLines, out List<Line> allyAxisLines, out List<Line> allzAxisLines)
@@ -1177,13 +725,20 @@ namespace TSG_Library.UFuncs
                     }
                 }
 
-                UpdateDynamicBlock(editComponent);
-                __work_component_ = editComponent;
-                CreateEditData(editComponent);
-                pHandle = SelectHandlePoint();
+                pHandle = NewMethod3(editComponent);
             }
 
             Show();
+        }
+
+        private List<Point> NewMethod3(Component editComponent)
+        {
+            List<Point> pHandle;
+            UpdateDynamicBlock(editComponent);
+            __work_component_ = editComponent;
+            CreateEditData(editComponent);
+            pHandle = SelectHandlePoint();
+            return pHandle;
         }
 
 
@@ -1308,13 +863,10 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        private bool EditSizeWork(bool isBlockComponent, Component editComponent)
+
+
+        private bool NewMethod51(bool isBlockComponent, Component editComponent)
         {
-            _updateComponent = editComponent;
-
-            if (editComponent.__Prototype().PartUnits != __display_part_.PartUnits)
-                return isBlockComponent;
-
             if (_isNewSelection)
             {
                 __work_component_ = editComponent;
@@ -1328,111 +880,6 @@ namespace TSG_Library.UFuncs
             }
             else
                 isBlockComponent = true;
-
-            if (isBlockComponent)
-            {
-                UpdateDynamicBlock(editComponent);
-                CreateEditData(editComponent);
-                DisableForm();
-                List<Point> pHandle = new List<Point>();
-                pHandle = SelectHandlePoint();
-                _isDynamic = true;
-
-                while (pHandle.Count == 1)
-                {
-                    HideDynamicHandles();
-                    _udoPointHandle = pHandle[0];
-                    Point3d blockOrigin = new Point3d();
-                    double blockLength = 0.00;
-                    double blockWidth = 0.00;
-                    double blockHeight = 0.00;
-
-                    foreach (Line eLine in _edgeRepLines)
-                    {
-                        if (eLine.Name == "XBASE1")
-                        {
-                            blockOrigin = eLine.StartPoint;
-                            blockLength = eLine.GetLength();
-                        }
-
-                        if (eLine.Name == "YBASE1")
-                            blockWidth = eLine.GetLength();
-
-                        if (eLine.Name == "ZBASE1")
-                            blockHeight = eLine.GetLength();
-                    }
-
-                    Point pointPrototype = _udoPointHandle.IsOccurrence
-                        ? (Point)_udoPointHandle.Prototype
-                        : _udoPointHandle;
-
-                    MotionCallbackDynamic1(pointPrototype, out var doNotMovePts, out var movePtsHalf, out var movePtsFull, pointPrototype.Name.Contains("POS"));
-                    GetLines(out var posXObjs, out var negXObjs, out var posYObjs, out var negYObjs, out var posZObjs, out var negZObjs);
-                    List<Line> allxAxisLines, allyAxisLines, allzAxisLines;
-                    NewMethod40(out allxAxisLines, out allyAxisLines, out allzAxisLines);
-
-                    EditSizeForm sizeForm = null;
-                    double convertLength = blockLength / 25.4;
-                    double convertWidth = blockWidth / 25.4;
-                    double convertHeight = blockHeight / 25.4;
-                    sizeForm = NewMethod17(blockLength, blockWidth, blockHeight, pointPrototype, sizeForm, convertLength, convertWidth, convertHeight);
-
-                    if (sizeForm.DialogResult == DialogResult.OK)
-                    {
-                        double editSize = sizeForm.InputValue;
-
-                        if (__display_part_.PartUnits == BasePart.Units.Millimeters)
-                            editSize *= 25.4;
-
-                        if (editSize > 0)
-                            switch (pointPrototype.Name)
-                            {
-                                case "POSX":
-                                    movePtsFull.AddRange(posXObjs);
-                                    EditSize(editSize - blockLength, movePtsHalf, movePtsFull, allxAxisLines, "X", true);
-                                    break;
-                                case "NEGX":
-                                    movePtsFull.AddRange(negXObjs);
-                                    EditSize(blockLength - editSize, movePtsHalf, movePtsFull, allxAxisLines, "X", false);
-                                    break;
-                                case "POSY":
-                                    movePtsFull.AddRange(posYObjs);
-                                    EditSize(editSize - blockWidth, movePtsHalf, movePtsFull, allyAxisLines, "Y", true);
-                                    break;
-                                case "NEGY":
-                                    movePtsFull.AddRange(negYObjs);
-                                    EditSize(blockWidth - editSize, movePtsHalf, movePtsFull, allyAxisLines, "Y", false);
-                                    break;
-                                case "POSZ":
-                                    movePtsFull.AddRange(posZObjs);
-                                    EditSize(editSize - blockHeight, movePtsHalf, movePtsFull, allzAxisLines, "Z", true);
-                                    break;
-                                case "NEGZ":
-                                    movePtsFull.AddRange(negZObjs);
-                                    EditSize(blockHeight - editSize, movePtsHalf, movePtsFull, allzAxisLines, "Z", false);
-                                    break;
-                                default:
-                                    throw new InvalidOperationException(pointPrototype.Name);
-                            }
-                    }
-
-                    UpdateDynamicBlock(editComponent);
-                    sizeForm.Close();
-                    sizeForm.Dispose();
-                    __work_component_ = editComponent;
-                    CreateEditData(editComponent);
-                    pHandle = SelectHandlePoint();
-                }
-
-                EnableForm();
-            }
-            else
-            {
-                ResetNonBlockError();
-                NewMethod28();
-                return isBlockComponent;
-            }
-
             return isBlockComponent;
         }
 
@@ -1530,6 +977,7 @@ namespace TSG_Library.UFuncs
             }
             else
                 isBlockComponent = true;
+
             return isBlockComponent;
         }
 
@@ -1547,74 +995,11 @@ namespace TSG_Library.UFuncs
 
 
 
-        private bool NewMethod11()
-        {
-            buttonApply.Enabled = true;
-            bool isBlockComponent = false;
-            Part.Units dispUnits = (Part.Units)__display_part_.PartUnits;
-            SetDispUnits(dispUnits);
-            return isBlockComponent;
-        }
-
-
-
-        private bool NewMethod9()
-        {
-            buttonApply.Enabled = true;
-            bool isBlockComponent = false;
-            ufsession_.Ui.AskInfoUnits(out int infoUnits);
-            Part.Units dispUnits = (Part.Units)__display_part_.PartUnits;
-            SetDispUnits(dispUnits);
-            return isBlockComponent;
-        }
-
-
-
-        private bool NewMethod8()
-        {
-            buttonApply.Enabled = true;
-            bool isBlockComponent = false;
-            ufsession_.Ui.AskInfoUnits(out int infoUnits);
-            Part.Units dispUnits = (Part.Units)__display_part_.PartUnits;
-            SetDispUnits(dispUnits);
-            return isBlockComponent;
-        }
 
 
 
 
 
-        private bool NewMethod5()
-        {
-            buttonApply.Enabled = true;
-            bool isBlockComponent = false;
-            ufsession_.Ui.AskInfoUnits(out int infoUnits);
-            Part.Units dispUnits = (Part.Units)__display_part_.PartUnits;
-            SetDispUnits(dispUnits);
-            return isBlockComponent;
-        }
-
-        private bool NewMethod3()
-        {
-            buttonApply.Enabled = true;
-            bool isBlockComponent = false;
-            ufsession_.Ui.AskInfoUnits(out int infoUnits);
-            Part.Units dispUnits = (Part.Units)__display_part_.PartUnits;
-            SetDispUnits(dispUnits);
-            return isBlockComponent;
-        }
-
-
-
-        private bool NewMethod1()
-        {
-            buttonApply.Enabled = true;
-            bool isBlockComponent = false;
-            ufsession_.Ui.AskInfoUnits(out int infoUnits);
-            Part.Units dispUnits = (Part.Units)__display_part_.PartUnits;
-            SetDispUnits(dispUnits);
-            return isBlockComponent;
-        }
 
 
 
@@ -1625,16 +1010,6 @@ namespace TSG_Library.UFuncs
             SelectWithFilter.GetSelectedWithFilter(message);
             _editBody = SelectWithFilter.SelectedCompBody;
             _isNewSelection = true;
-        }
-
-        private bool NewMethod13()
-        {
-            buttonApply.Enabled = true;
-            bool isBlockComponent = false;
-            ufsession_.Ui.AskInfoUnits(out int infoUnits);
-            Part.Units dispUnits = (Part.Units)__display_part_.PartUnits;
-            SetDispUnits(dispUnits);
-            return isBlockComponent;
         }
 
 
@@ -1711,30 +1086,6 @@ namespace TSG_Library.UFuncs
         }
 
 
-        private void DeleteHandles()
-        {
-            using (session_.__UsingDoUpdate())
-            {
-                UserDefinedClass myUdOclass =
-                    session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoDynamicHandle");
-
-                if (myUdOclass != null)
-                {
-                    UserDefinedObject[] currentUdo = __work_part_.UserDefinedObjectManager.GetUdosOfClass(myUdOclass);
-                    session_.UpdateManager.AddObjectsToDeleteList(currentUdo);
-                }
-
-                foreach (Point namedPt in __work_part_.Points)
-                    if (namedPt.Name != "")
-                        session_.UpdateManager.AddToDeleteList(namedPt);
-
-                foreach (Line dLine in _edgeRepLines)
-                    session_.UpdateManager.AddToDeleteList(dLine);
-            }
-
-            _edgeRepLines.Clear();
-        }
-
         private void MoveObjects(NXObject[] objsToMove, double distance, string deltaXyz)
         {
             try
@@ -1786,134 +1137,6 @@ namespace TSG_Library.UFuncs
         }
 
 
-        private double RoundDistanceToGrid(double spacing, double cursor)
-        {
-            if (spacing == 0)
-                return cursor;
-
-            return __display_part_.PartUnits == BasePart.Units.Inches
-                ? RoundEnglish(spacing, cursor)
-                : RoundMetric(spacing, cursor);
-        }
-
-        private static double RoundEnglish(double spacing, double cursor)
-        {
-            double round = Math.Abs(cursor);
-            double roundValue = Math.Round(round, 3);
-            double truncateValue = Math.Truncate(roundValue);
-            double fractionValue = roundValue - truncateValue;
-            if (fractionValue != 0)
-                for (double ii = spacing; ii <= 1; ii += spacing)
-                    if (fractionValue <= ii)
-                    {
-                        double finalValue = truncateValue + ii;
-                        round = finalValue;
-                        break;
-                    }
-
-            if (cursor < 0) round *= -1;
-
-            return round;
-        }
-
-        private static double RoundMetric(double spacing, double cursor)
-        {
-            double round = Math.Abs(cursor / 25.4);
-            double roundValue = Math.Round(round, 3);
-            double truncateValue = Math.Truncate(roundValue);
-            double fractionValue = roundValue - truncateValue;
-            if (fractionValue != 0)
-                for (double ii = spacing / 25.4; ii <= 1; ii += spacing / 25.4)
-                    if (fractionValue <= ii)
-                    {
-                        double finalValue = truncateValue + ii;
-                        round = finalValue;
-                        break;
-                    }
-
-            if (cursor < 0) round *= -1;
-
-            return round * 25.4;
-        }
-
-        private static void CreateUdo(UserDefinedObject myUdo, UserDefinedObject.LinkDefinition[] myLinks,
-            double[] pointOnFace, Point point1, string name)
-        {
-            myUdo.SetName(name);
-            myUdo.SetDoubles(pointOnFace);
-            int[] displayFlag = { 0 };
-            myUdo.SetIntegers(displayFlag);
-
-            myLinks[0].AssociatedObject = point1;
-            myLinks[0].Status = UserDefinedObject.LinkStatus.UpToDate;
-            myUdo.SetLinks(UserDefinedObject.LinkType.Type1, myLinks);
-        }
-
-
-        private void CreateBlockLines(Point3d wcsOrigin, double lineLength, double lineWidth, double lineHeight)
-        {
-            int lineColor = 7;
-
-            Point3d mappedStartPoint1 = MapAbsoluteToWcs(wcsOrigin);
-            Point3d endPointX1 = mappedStartPoint1.__AddX(lineLength);
-            Point3d mappedEndPointX1 = MapWcsToAbsolute(endPointX1);
-            CreateBlockLine(lineColor, wcsOrigin, mappedEndPointX1, "XBASE1");
-
-            Point3d endPointY1 = mappedStartPoint1.__AddY(lineWidth);
-            Point3d mappedEndPointY1 = MapWcsToAbsolute(endPointY1);
-            CreateBlockLine(lineColor, wcsOrigin, mappedEndPointY1, "YBASE1");
-
-            Point3d endPointZ1 = mappedStartPoint1.__AddZ(lineHeight);
-            Point3d mappedEndPointZ1 = MapWcsToAbsolute(endPointZ1);
-            CreateBlockLine(lineColor, wcsOrigin, mappedEndPointZ1, "ZBASE1");
-
-            //==================================================================================================================
-
-            Point3d mappedStartPoint2 = MapAbsoluteToWcs(mappedEndPointY1);
-
-            Point3d endPointX2 = mappedStartPoint2.__AddX(lineLength);
-            Point3d mappedEndPointX2 = MapWcsToAbsolute(endPointX2);
-            CreateBlockLine(lineColor, mappedEndPointY1, mappedEndPointX2, "XBASE2");
-            CreateBlockLine(lineColor, mappedEndPointX1, mappedEndPointX2, "YBASE2");
-
-            //==================================================================================================================
-
-            Point3d mappedStartPoint3 = MapAbsoluteToWcs(mappedEndPointZ1);
-            Point3d endPointX1Ceiling = mappedStartPoint3.__AddX(lineLength);
-            Point3d mappedEndPointX1Ceiling = MapWcsToAbsolute(endPointX1Ceiling);
-            CreateBlockLine(lineColor, mappedEndPointZ1, mappedEndPointX1Ceiling, "XCEILING1");
-
-            Point3d endPointY1Ceiling = mappedStartPoint3.__AddY(lineWidth);
-            Point3d mappedEndPointY1Ceiling = MapWcsToAbsolute(endPointY1Ceiling);
-            CreateBlockLine(lineColor, mappedEndPointZ1, mappedEndPointY1Ceiling, "YCEILING1");
-
-            //==================================================================================================================
-
-            Point3d mappedStartPoint4 = MapAbsoluteToWcs(mappedEndPointY1Ceiling);
-            Point3d endPointX2Ceiling = mappedStartPoint4.__AddX(lineLength);
-            Point3d mappedEndPointX2Ceiling = MapWcsToAbsolute(endPointX2Ceiling);
-
-            CreateBlockLine(lineColor, mappedEndPointY1Ceiling, mappedEndPointX2Ceiling, "XCEILING2");
-            CreateBlockLine(lineColor, mappedEndPointX1Ceiling, mappedEndPointX2Ceiling, "YCEILING2");
-
-            //==================================================================================================================
-
-            CreateBlockLine(lineColor, mappedEndPointX1, mappedEndPointX1Ceiling, "ZBASE2");
-            CreateBlockLine(lineColor, mappedEndPointY1, mappedEndPointY1Ceiling, "ZBASE3");
-            CreateBlockLine(lineColor, mappedEndPointX2, mappedEndPointX2Ceiling, "ZBASE4");
-
-            //==================================================================================================================
-        }
-
-        private static void CreateBlockLine(int lineColor, Point3d start, Point3d end, string name)
-        {
-            Line yBase2 = __work_part_.Curves.CreateLine(start, end);
-            yBase2.SetName(name);
-            yBase2.Color = lineColor;
-            yBase2.RedisplayObject();
-            _edgeRepLines.Add(yBase2);
-        }
-
         private static double MapAndConvert(double inputDist, double[] mappedBase, double[] mappedPoint, int index)
         {
             double distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
@@ -1932,62 +1155,6 @@ namespace TSG_Library.UFuncs
         }
 
 
-        private void ZEndPoint(double distance, Line zAxisLine)
-        {
-            Point3d mappedEndPoint = MapAbsoluteToWcs(zAxisLine.EndPoint);
-            Point3d addZ = new Point3d(mappedEndPoint.X, mappedEndPoint.Y,
-                mappedEndPoint.Z + distance);
-            Point3d mappedAddZ = MapWcsToAbsolute(addZ);
-            zAxisLine.SetEndPoint(mappedAddZ);
-        }
-
-
-        private void XStartPoint(double distance, Line xAxisLine)
-        {
-            Point3d mappedStartPoint = MapAbsoluteToWcs(xAxisLine.StartPoint);
-            Point3d addX = new Point3d(mappedStartPoint.X + distance,
-                mappedStartPoint.Y, mappedStartPoint.Z);
-            Point3d mappedAddX = MapWcsToAbsolute(addX);
-            xAxisLine.SetStartPoint(mappedAddX);
-        }
-
-        private void YStartPoint(double distance, Line yAxisLine)
-        {
-            Point3d mappedStartPoint = MapAbsoluteToWcs(yAxisLine.StartPoint);
-            Point3d addY = new Point3d(mappedStartPoint.X,
-                mappedStartPoint.Y + distance, mappedStartPoint.Z);
-            Point3d mappedAddY = MapWcsToAbsolute(addY);
-            yAxisLine.SetStartPoint(mappedAddY);
-        }
-
-
-        private void ZStartPoint(double distance, Line zAxisLine)
-        {
-            Point3d mappedStartPoint = MapAbsoluteToWcs(zAxisLine.StartPoint);
-            Point3d addZ = new Point3d(mappedStartPoint.X, mappedStartPoint.Y,
-                mappedStartPoint.Z + distance);
-            Point3d mappedAddZ = MapWcsToAbsolute(addZ);
-            zAxisLine.SetStartPoint(mappedAddZ);
-        }
-
-
-        private void YEndPoint(double distance, Line yAxisLine)
-        {
-            Point3d mappedEndPoint = MapAbsoluteToWcs(yAxisLine.EndPoint);
-            Point3d addY = new Point3d(mappedEndPoint.X, mappedEndPoint.Y + distance,
-                mappedEndPoint.Z);
-            Point3d mappedAddY = MapWcsToAbsolute(addY);
-            yAxisLine.SetEndPoint(mappedAddY);
-        }
-
-        private void XEndPoint(double distance, Line xAxisLine)
-        {
-            Point3d mappedEndPoint = MapAbsoluteToWcs(xAxisLine.EndPoint);
-            Point3d addX = new Point3d(mappedEndPoint.X + distance, mappedEndPoint.Y,
-                mappedEndPoint.Z);
-            Point3d mappedAddX = MapWcsToAbsolute(addX);
-            xAxisLine.SetEndPoint(mappedAddX);
-        }
 
 
         private void MoveObjects(List<NXObject> movePtsHalf, List<NXObject> movePtsFull, double xDistance,
@@ -2004,52 +1171,6 @@ namespace TSG_Library.UFuncs
         }
 
 
-        private static void MotionCallbackDynamic1(
-            Point pointPrototype,
-            out List<NXObject> doNotMovePts,
-            out List<NXObject> movePtsHalf,
-            out List<NXObject> movePtsFull,
-            bool isPos)
-        {
-            doNotMovePts = new List<NXObject>();
-            movePtsFull = new List<NXObject>();
-            movePtsHalf = new List<NXObject>();
-
-            foreach (Point namedPt in __work_part_.Points)
-                if (namedPt.Name != "")
-                {
-                    if (namedPt.Name.Contains("X") && pointPrototype.Name.Contains("X"))
-                    {
-                        doNotMovePts.Add(namedPt);
-                        continue;
-                    }
-
-                    if (namedPt.Name.Contains("Y") && pointPrototype.Name.Contains("Y"))
-                    {
-                        doNotMovePts.Add(namedPt);
-                        continue;
-                    }
-
-                    if (namedPt.Name.Contains("Z") && pointPrototype.Name.Contains("Z"))
-                    {
-                        doNotMovePts.Add(namedPt);
-                        continue;
-                    }
-
-                    if (namedPt.Name.Contains("BLKORIGIN"))
-                    {
-                        if (isPos)
-                            doNotMovePts.Add(namedPt);
-                        else
-                            movePtsFull.Add(namedPt);
-                        continue;
-                    }
-
-                    movePtsHalf.Add(namedPt);
-                }
-
-            movePtsFull.Add(pointPrototype);
-        }
 
 
 
@@ -2102,143 +1223,14 @@ namespace TSG_Library.UFuncs
         }
 
 
-        private void MotionCallbackNotDynamic(List<NXObject> moveAll, double[] mappedPoint, double[] mappedCursor, int index, string dir_xyz)
+
+        private static void NewMethod54()
         {
-            if (mappedPoint[index] == mappedCursor[index])
-                return;
-
-            double xDistance = Math.Sqrt(Math.Pow(mappedPoint[index] - mappedCursor[index], 2));
-
-            if (xDistance < _gridSpace)
-                return;
-
-            if (mappedCursor[index] < mappedPoint[index])
-                xDistance *= -1;
-
-            _distanceMoved += xDistance;
-
-            MoveObjects(moveAll.ToArray(), xDistance, dir_xyz);
-
-            if (dir_xyz != "Z")
-                return;
-
             ModelingView mView1 = (ModelingView)__display_part_.Views.WorkView;
             __display_part_.Views.WorkView.Orient(mView1.Matrix);
             __display_part_.WCS.SetOriginAndMatrix(mView1.Origin, mView1.Matrix);
         }
 
-
-
-
-
-        private void MotionCallback(double[] position, ref UFUi.MotionCbData mtnCbData, IntPtr clientData)
-        {
-            try
-            {
-                if (_isDynamic)
-                    MotionCallbackDyanmic(position);
-                else
-                    MotionCalbackNotDynamic(position);
-
-                double editBlkLength = 0;
-                double editBlkWidth = 0;
-                double editBlkHeight = 0;
-
-                foreach (Line eLine in _edgeRepLines)
-                {
-                    if (eLine.Name == "XBASE1")
-                        editBlkLength = eLine.GetLength();
-
-                    if (eLine.Name == "YBASE1")
-                        editBlkWidth = eLine.GetLength();
-
-                    if (eLine.Name == "ZBASE1")
-                        editBlkHeight = eLine.GetLength();
-                }
-
-                if (__display_part_.PartUnits == BasePart.Units.Inches)
-                {
-                    ufsession_.Ui.SetPrompt(
-                        $"X = {editBlkLength:0.000}  " +
-                        $"Y = {editBlkWidth:0.000}  " +
-                        $"Z = {$"{editBlkHeight:0.000}"}  " +
-                        $"Distance Moved =  {$"{_distanceMoved:0.000}"}");
-                    return;
-                }
-
-                editBlkLength /= 25.4;
-                editBlkWidth /= 25.4;
-                editBlkHeight /= 25.4;
-
-                double convertDistMoved = _distanceMoved / 25.4;
-
-                ufsession_.Ui.SetPrompt(
-                    $"X = {editBlkLength:0.000}  " +
-                    $"Y = {editBlkWidth:0.000}  " +
-                    $"Z = {editBlkHeight:0.000}  " +
-                    $"Distance Moved =  {convertDistMoved:0.000}");
-            }
-            catch (Exception ex)
-            {
-                ex.__PrintException();
-            }
-        }
-
-
-
-
-        private void MotionCallbackDyanmic(double[] position)
-        {
-            Point pointPrototype = _udoPointHandle.IsOccurrence
-                ? (Point)_udoPointHandle.Prototype
-                : _udoPointHandle;
-
-
-
-            MotionCallbackDynamic1(pointPrototype, out var doNotMovePts, out var movePtsHalf, out var movePtsFull,
-                pointPrototype.Name.Contains("POS"));
-
-            GetLines(out var posXObjs, out var negXObjs, out var posYObjs, out var negYObjs, out var posZObjs, out var negZObjs);
-
-            NewMethod41(out var allxAxisLines, out var allyAxisLines, out var allzAxisLines);
-
-            // get the distance from the selected point to the cursor location
-
-            double[] pointStart = _udoPointHandle.Coordinates.__ToArray();
-            double[] mappedPoint = new double[3];
-            double[] mappedCursor = new double[3];
-            __display_part_.WCS.SetOriginAndMatrix(_workCompOrigin, _workCompOrientation);
-            ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, pointStart, UF_CSYS_ROOT_WCS_COORDS, mappedPoint);
-            ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, position, UF_CSYS_ROOT_WCS_COORDS, mappedCursor);
-
-            switch (pointPrototype.Name)
-            {
-                case "POSX":
-                    movePtsFull.AddRange(posXObjs);
-                    MotionCallbackXDynamic(pointPrototype, movePtsHalf, movePtsFull, allxAxisLines, mappedPoint, mappedCursor);
-                    break;
-                case "NEGX":
-                    movePtsFull.AddRange(negXObjs);
-                    MotionCallbackXDynamic(pointPrototype, movePtsHalf, movePtsFull, allxAxisLines, mappedPoint, mappedCursor);
-                    break;
-                case "POSY":
-                    movePtsFull.AddRange(posYObjs);
-                    MotionCallbackYDynamic(pointPrototype, movePtsHalf, movePtsFull, allyAxisLines, mappedPoint, mappedCursor);
-                    break;
-                case "NEGY":
-                    movePtsFull.AddRange(negYObjs);
-                    MotionCallbackYDynamic(pointPrototype, movePtsHalf, movePtsFull, allyAxisLines, mappedPoint, mappedCursor);
-                    break;
-                case "POSZ":
-                    movePtsFull.AddRange(posZObjs);
-                    MotionCallbackZDynamic(pointPrototype, movePtsHalf, movePtsFull, allzAxisLines, mappedPoint, mappedCursor);
-                    break;
-                case "NEGZ":
-                    movePtsFull.AddRange(negZObjs);
-                    MotionCallbackZDynamic(pointPrototype, movePtsHalf, movePtsFull, allzAxisLines, mappedPoint, mappedCursor);
-                    break;
-            }
-        }
 
         private static void NewMethod41(out List<Line> allxAxisLines, out List<Line> allyAxisLines, out List<Line> allzAxisLines)
         {
@@ -2256,107 +1248,6 @@ namespace TSG_Library.UFuncs
                 if (eLine.Name.StartsWith("Z"))
                     allzAxisLines.Add(eLine);
             }
-        }
-
-        private void MotionCallbackXDynamic(
-            Point pointPrototype,
-            List<NXObject> movePtsHalf,
-            List<NXObject> movePtsFull,
-            List<Line> allxAxisLines,
-            double[] mappedPoint,
-            double[] mappedCursor)
-        {
-            if (mappedPoint[0] == mappedCursor[0])
-                return;
-
-            double xDistance = Math.Sqrt(Math.Pow(mappedPoint[0] - mappedCursor[0], 2));
-
-            if (xDistance < _gridSpace)
-                return;
-
-            if (mappedCursor[0] < mappedPoint[0])
-                xDistance *= -1;
-
-            _distanceMoved += xDistance;
-
-            EditAlign(movePtsHalf, movePtsFull, allxAxisLines, xDistance, "X", pointPrototype.Name == "POSX");
-        }
-
-        private void MotionCallbackZDynamic(Point pointPrototype, List<NXObject> movePtsHalf,
-            List<NXObject> movePtsFull, List<Line> allzAxisLines,
-            double[] mappedPoint, double[] mappedCursor)
-        {
-            if (mappedPoint[2] != mappedCursor[2])
-            {
-                double zDistance = Math.Sqrt(Math.Pow(mappedPoint[2] - mappedCursor[2], 2));
-                zDistance = RoundDistanceToGrid(_gridSpace, zDistance);
-
-                if (zDistance >= _gridSpace)
-                {
-                    if (mappedCursor[2] < mappedPoint[2]) zDistance *= -1;
-
-                    _distanceMoved += zDistance;
-
-                    EditAlign(movePtsHalf, movePtsFull, allzAxisLines, zDistance, "Z", pointPrototype.Name == "POSZ");
-
-                    ModelingView mView1 = (ModelingView)__display_part_.Views.WorkView;
-                    __display_part_.Views.WorkView.Orient(mView1.Matrix);
-                    __display_part_.WCS.SetOriginAndMatrix(mView1.Origin, mView1.Matrix);
-                }
-            }
-        }
-
-        private void MotionCallbackYDynamic(Point pointPrototype, List<NXObject> movePtsHalf,
-            List<NXObject> movePtsFull, List<Line> allyAxisLines,
-            double[] mappedPoint, double[] mappedCursor)
-        {
-            if (mappedPoint[1] != mappedCursor[1])
-            {
-                double yDistance = Math.Sqrt(Math.Pow(mappedPoint[1] - mappedCursor[1], 2));
-
-                if (yDistance >= _gridSpace)
-                {
-                    if (mappedCursor[1] < mappedPoint[1]) yDistance *= -1;
-
-                    _distanceMoved += yDistance;
-
-                    EditAlign(movePtsHalf, movePtsFull, allyAxisLines, yDistance, "Y", pointPrototype.Name == "POSY");
-                }
-            }
-        }
-
-        private void MotionCalbackNotDynamic(double[] position)
-        {
-            Point pointPrototype;
-
-            if (_udoPointHandle.IsOccurrence)
-                pointPrototype = (Point)_udoPointHandle.Prototype;
-            else
-                pointPrototype = _udoPointHandle;
-
-            List<NXObject> moveAll = new List<NXObject>();
-
-            foreach (Point namedPts in __work_part_.Points)
-                if (namedPts.Name != "")
-                    moveAll.Add(namedPts);
-
-            moveAll.AddRange(_edgeRepLines);
-            // get the distance from the selected point to the cursor location
-            double[] pointStart = _udoPointHandle.Coordinates.__ToArray();
-            double[] mappedPoint = new double[3];
-            double[] mappedCursor = new double[3];
-            __display_part_.WCS.SetOriginAndMatrix(_workCompOrigin, _workCompOrientation);
-            ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, pointStart, UF_CSYS_ROOT_WCS_COORDS, mappedPoint);
-            ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, position, UF_CSYS_ROOT_WCS_COORDS, mappedCursor);
-
-            if (pointPrototype.Name == "POSX" || pointPrototype.Name == "NEGX")
-                MotionCallbackNotDynamic(moveAll, mappedPoint, mappedCursor, 0, "X");
-
-            if (pointPrototype.Name == "POSY" || pointPrototype.Name == "NEGY")
-                MotionCallbackNotDynamic(moveAll, mappedPoint, mappedCursor, 1, "Y");
-
-            if (pointPrototype.Name == "POSZ" || pointPrototype.Name == "NEGZ")
-                MotionCallbackNotDynamic(moveAll, mappedPoint, mappedCursor, 2, "Z");
         }
 
 
@@ -2392,6 +1283,44 @@ namespace TSG_Library.UFuncs
             _isLwrParallel = false;
             _parallelHeightExp = string.Empty;
 
+            NewMethod44();
+
+            if (__work_part_.__HasDynamicBlock())
+            {
+                Block block1 = (Block)__work_part_.__DynamicBlock();
+
+                BlockFeatureBuilder blockFeatureBuilderMatch;
+                blockFeatureBuilderMatch = __work_part_.Features.CreateBlockFeatureBuilder(block1);
+                Point3d bOrigin = blockFeatureBuilderMatch.Origin;
+                //string blength = blockFeatureBuilderMatch.Length.RightHandSide;
+                //string bwidth = blockFeatureBuilderMatch.Width.RightHandSide;
+                //string bheight = blockFeatureBuilderMatch.Height.RightHandSide;
+                //double mLength = blockFeatureBuilderMatch.Length.Value;
+                //double mWidth = blockFeatureBuilderMatch.Width.Value;
+                //double mHeight = blockFeatureBuilderMatch.Height.Value;
+                NewMethod43();
+
+                blockFeatureBuilderMatch.GetOrientation(out Vector3d xAxis, out Vector3d yAxis);
+
+                double[] initOrigin = { bOrigin.X, bOrigin.Y, bOrigin.Z };
+                double[] xVector = { xAxis.X, xAxis.Y, xAxis.Z };
+                double[] yVector = { yAxis.X, yAxis.Y, yAxis.Z };
+                double[] initMatrix = new double[9];
+                ufsession_.Mtx3.Initialize(xVector, yVector, initMatrix);
+                ufsession_.Csys.CreateMatrix(initMatrix, out Tag tempMatrix);
+                ufsession_.Csys.CreateTempCsys(initOrigin, tempMatrix, out Tag tempCsys);
+                CartesianCoordinateSystem setTempCsys =
+                    (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
+
+                __display_part_.WCS.SetOriginAndMatrix(setTempCsys.Origin,
+                    setTempCsys.Orientation.Element);
+                _workCompOrigin = setTempCsys.Origin;
+                _workCompOrientation = setTempCsys.Orientation.Element;
+            }
+        }
+
+        private static void NewMethod44()
+        {
             foreach (Expression exp in __work_part_.Expressions)
             {
                 if (exp.Name == "uprParallel")
@@ -2410,52 +1339,21 @@ namespace TSG_Library.UFuncs
                         _isLwrParallel = false;
                 }
             }
+        }
 
-            foreach (Feature featBlk in __work_part_.Features)
-                if (featBlk.FeatureType == "BLOCK")
-                    if (featBlk.Name == "DYNAMIC BLOCK")
-                    {
-                        Block block1 = (Block)featBlk;
+        private static void NewMethod43()
+        {
+            if (_isUprParallel)
+            {
+                _parallelHeightExp = "uprParallelHeight";
+                _parallelWidthExp = "uprParallelWidth";
+            }
 
-                        BlockFeatureBuilder blockFeatureBuilderMatch;
-                        blockFeatureBuilderMatch = __work_part_.Features.CreateBlockFeatureBuilder(block1);
-                        Point3d bOrigin = blockFeatureBuilderMatch.Origin;
-                        string blength = blockFeatureBuilderMatch.Length.RightHandSide;
-                        string bwidth = blockFeatureBuilderMatch.Width.RightHandSide;
-                        string bheight = blockFeatureBuilderMatch.Height.RightHandSide;
-                        double mLength = blockFeatureBuilderMatch.Length.Value;
-                        double mWidth = blockFeatureBuilderMatch.Width.Value;
-                        double mHeight = blockFeatureBuilderMatch.Height.Value;
-
-                        if (_isUprParallel)
-                        {
-                            _parallelHeightExp = "uprParallelHeight";
-                            _parallelWidthExp = "uprParallelWidth";
-                        }
-
-                        if (_isLwrParallel)
-                        {
-                            _parallelHeightExp = "lwrParallelHeight";
-                            _parallelWidthExp = "lwrParallelWidth";
-                        }
-
-                        blockFeatureBuilderMatch.GetOrientation(out Vector3d xAxis, out Vector3d yAxis);
-
-                        double[] initOrigin = { bOrigin.X, bOrigin.Y, bOrigin.Z };
-                        double[] xVector = { xAxis.X, xAxis.Y, xAxis.Z };
-                        double[] yVector = { yAxis.X, yAxis.Y, yAxis.Z };
-                        double[] initMatrix = new double[9];
-                        ufsession_.Mtx3.Initialize(xVector, yVector, initMatrix);
-                        ufsession_.Csys.CreateMatrix(initMatrix, out Tag tempMatrix);
-                        ufsession_.Csys.CreateTempCsys(initOrigin, tempMatrix, out Tag tempCsys);
-                        CartesianCoordinateSystem setTempCsys =
-                            (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
-
-                        __display_part_.WCS.SetOriginAndMatrix(setTempCsys.Origin,
-                            setTempCsys.Orientation.Element);
-                        _workCompOrigin = setTempCsys.Origin;
-                        _workCompOrientation = setTempCsys.Orientation.Element;
-                    }
+            if (_isLwrParallel)
+            {
+                _parallelHeightExp = "lwrParallelHeight";
+                _parallelWidthExp = "lwrParallelWidth";
+            }
         }
 
         private void SetWcsWorkComponent(Component compRefCsys)
@@ -2474,24 +1372,7 @@ namespace TSG_Library.UFuncs
                 _parallelHeightExp = string.Empty;
                 _parallelWidthExp = string.Empty;
 
-                foreach (Expression exp in __work_part_.Expressions)
-                {
-                    if (exp.Name == "uprParallel")
-                    {
-                        if (exp.RightHandSide.Contains("yes"))
-                            _isUprParallel = true;
-                        else
-                            _isUprParallel = false;
-                    }
-
-                    if (exp.Name == "lwrParallel")
-                    {
-                        if (exp.RightHandSide.Contains("yes"))
-                            _isLwrParallel = true;
-                        else
-                            _isLwrParallel = false;
-                    }
-                }
+                NewMethod45();
 
                 if (__work_part_.__HasDynamicBlock())
                 {
@@ -2501,17 +1382,7 @@ namespace TSG_Library.UFuncs
                     blockFeatureBuilderMatch = __work_part_.Features.CreateBlockFeatureBuilder(block1);
                     Point3d bOrigin = blockFeatureBuilderMatch.Origin;
 
-                    if (_isUprParallel)
-                    {
-                        _parallelHeightExp = "uprParallelHeight";
-                        _parallelWidthExp = "uprParallelWidth";
-                    }
-
-                    if (_isLwrParallel)
-                    {
-                        _parallelHeightExp = "lwrParallelHeight";
-                        _parallelWidthExp = "lwrParallelWidth";
-                    }
+                    NewMethod42();
 
                     blockFeatureBuilderMatch.GetOrientation(out Vector3d xAxis, out Vector3d yAxis);
 
@@ -2556,6 +1427,43 @@ namespace TSG_Library.UFuncs
 
                         wpCsys.__Delete();
                     }
+            }
+        }
+
+        private static void NewMethod45()
+        {
+            foreach (Expression exp in __work_part_.Expressions)
+            {
+                if (exp.Name == "uprParallel")
+                {
+                    if (exp.RightHandSide.Contains("yes"))
+                        _isUprParallel = true;
+                    else
+                        _isUprParallel = false;
+                }
+
+                if (exp.Name == "lwrParallel")
+                {
+                    if (exp.RightHandSide.Contains("yes"))
+                        _isLwrParallel = true;
+                    else
+                        _isLwrParallel = false;
+                }
+            }
+        }
+
+        private static void NewMethod42()
+        {
+            if (_isUprParallel)
+            {
+                _parallelHeightExp = "uprParallelHeight";
+                _parallelWidthExp = "uprParallelWidth";
+            }
+
+            if (_isLwrParallel)
+            {
+                _parallelHeightExp = "lwrParallelHeight";
+                _parallelWidthExp = "lwrParallelWidth";
             }
         }
 
@@ -2743,58 +1651,10 @@ namespace TSG_Library.UFuncs
             return sizeForm;
         }
 
-        private static void GetLines(
-            out List<Line> posXObjs, out List<Line> negXObjs,
-            out List<Line> posYObjs, out List<Line> negYObjs,
-            out List<Line> posZObjs, out List<Line> negZObjs)
-        {
-            posXObjs = new List<Line>();
-            negXObjs = new List<Line>();
-            posYObjs = new List<Line>();
-            negYObjs = new List<Line>();
-            posZObjs = new List<Line>();
-            negZObjs = new List<Line>();
-
-            foreach (Line eLine in _edgeRepLines)
-            {
-                if (eLine.Name == "YBASE1" || eLine.Name == "YCEILING1" ||
-                   eLine.Name == "ZBASE1" || eLine.Name == "ZBASE3") negXObjs.Add(eLine);
-
-                if (eLine.Name == "YBASE2" || eLine.Name == "YCEILING2" ||
-                   eLine.Name == "ZBASE2" || eLine.Name == "ZBASE4") posXObjs.Add(eLine);
-
-                if (eLine.Name == "XBASE1" || eLine.Name == "XCEILING1" ||
-                   eLine.Name == "ZBASE1" || eLine.Name == "ZBASE2") negYObjs.Add(eLine);
-
-                if (eLine.Name == "XBASE2" || eLine.Name == "XCEILING2" ||
-                   eLine.Name == "ZBASE3" || eLine.Name == "ZBASE4") posYObjs.Add(eLine);
-
-                if (eLine.Name == "XBASE1" || eLine.Name == "XBASE2" ||
-                   eLine.Name == "YBASE1" || eLine.Name == "YBASE2") negZObjs.Add(eLine);
-
-                if (eLine.Name == "XCEILING1" || eLine.Name == "XCEILING2" ||
-                   eLine.Name == "YCEILING1" || eLine.Name == "YCEILING2") posZObjs.Add(eLine);
-            }
-        }
 
 
 
-        private void EditDynamicWorkPart(bool isBlockComponent, Component editComponent)
-        {
-            Part checkPartName = (Part)editComponent.Prototype;
 
-            if (checkPartName.FullPath.Contains("mirror"))
-                throw new InvalidOperationException("Mirror COmponent");
-
-            _updateComponent = editComponent;
-
-            if (editComponent.__Prototype().PartUnits != __display_part_.PartUnits)
-                return;
-
-            isBlockComponent = NewMethod12(isBlockComponent, editComponent);
-            EditDynamic(isBlockComponent);
-            return;
-        }
 
         private bool NewMethod12(bool isBlockComponent, Component editComponent)
         {
@@ -2815,37 +1675,7 @@ namespace TSG_Library.UFuncs
             return isBlockComponent;
         }
 
-        private void EditDynamicDisplayPart(bool isBlockComponent, Component editComponent)
-        {
-            if (__display_part_.FullPath.Contains("mirror"))
-            {
-                NewMethod15();
-                return;
-            }
 
-            isBlockComponent = __work_part_.__HasDynamicBlock();
-
-            if (!isBlockComponent)
-            {
-                ResetNonBlockError();
-                NewMethod16();
-                return;
-            }
-
-            DisableForm();
-
-            if (_isNewSelection)
-            {
-                CreateEditData(editComponent);
-                _isNewSelection = false;
-            }
-
-            List<Point> pHandle = SelectHandlePoint();
-            _isDynamic = true;
-            pHandle = NewMethod7(pHandle);
-            EnableForm();
-            return;
-        }
 
 
 
@@ -2916,25 +1746,37 @@ namespace TSG_Library.UFuncs
                 IntPtr motionCbData = IntPtr.Zero;
                 IntPtr clientData = IntPtr.Zero;
                 __display_part_.WCS.Visibility = false;
-                ModelingView mView = (ModelingView)__display_part_.Views.WorkView;
-                __display_part_.Views.WorkView.Orient(mView.Matrix);
-                __display_part_.WCS.SetOriginAndMatrix(mView.Origin, mView.Matrix);
-                ufsession_.Ui.LockUgAccess(UF_UI_FROM_CUSTOM);
-
-                ufsession_.Ui.SpecifyScreenPosition(message, MotionCallback, motionCbData,
-                    screenPos, out viewTag, out int response);
-
-                if (response == UF_UI_PICK_RESPONSE)
-                {
-                    UpdateDynamicHandles();
-                    ShowDynamicHandles();
-                    pHandle = SelectHandlePoint();
-                }
-
-                ufsession_.Ui.UnlockUgAccess(UF_UI_FROM_CUSTOM);
+                NewMethod46();
+                viewTag = NewMethod47(ref pHandle, message, screenPos, motionCbData);
             }
 
             return pHandle;
+        }
+
+        private Tag NewMethod47(ref List<Point> pHandle, string message, double[] screenPos, IntPtr motionCbData)
+        {
+            Tag viewTag;
+            ufsession_.Ui.LockUgAccess(UF_UI_FROM_CUSTOM);
+
+            ufsession_.Ui.SpecifyScreenPosition(message, MotionCallback, motionCbData,
+                screenPos, out viewTag, out int response);
+
+            if (response == UF_UI_PICK_RESPONSE)
+            {
+                UpdateDynamicHandles();
+                ShowDynamicHandles();
+                pHandle = SelectHandlePoint();
+            }
+
+            ufsession_.Ui.UnlockUgAccess(UF_UI_FROM_CUSTOM);
+            return viewTag;
+        }
+
+        private static void NewMethod46()
+        {
+            ModelingView mView = (ModelingView)__display_part_.Views.WorkView;
+            __display_part_.Views.WorkView.Orient(mView.Matrix);
+            __display_part_.WCS.SetOriginAndMatrix(mView.Origin, mView.Matrix);
         }
 
         private bool EditMoveWork(bool isBlockComponent, Component editComponent)
@@ -3004,65 +1846,40 @@ namespace TSG_Library.UFuncs
                 Tag viewTag = NXOpen.Tag.Null;
                 IntPtr motionCbData = IntPtr.Zero;
                 IntPtr clientData = IntPtr.Zero;
-                ufsession_.Ui.LockUgAccess(UF_UI_FROM_CUSTOM);
-                ModelingView mView = (ModelingView)__display_part_.Views.WorkView;
-                __display_part_.Views.WorkView.Orient(mView.Matrix);
-                __display_part_.WCS.SetOriginAndMatrix(mView.Origin, mView.Matrix);
-                ufsession_.Ui.SpecifyScreenPosition(message, MotionCallback, motionCbData,
-                    screenPos, out viewTag, out int response);
-
-                if (response == UF_UI_PICK_RESPONSE)
-                {
-                    UpdateDynamicHandles();
-                    ShowDynamicHandles();
-                    ShowTemporarySizeText();
-                    pHandle = SelectHandlePoint();
-                }
-
-                ufsession_.Ui.UnlockUgAccess(UF_UI_FROM_CUSTOM);
+                viewTag = NewMethod49(ref pHandle, message, screenPos, motionCbData);
             }
 
             return pHandle;
         }
 
-        private bool EditMoveDisplay(bool isBlockComponent, Component editComponent)
+        private Tag NewMethod49(ref List<Point> pHandle, string message, double[] screenPos, IntPtr motionCbData)
         {
-            if (__display_part_.FullPath.Contains("mirror"))
+            Tag viewTag;
+            ufsession_.Ui.LockUgAccess(UF_UI_FROM_CUSTOM);
+            NewMethod48();
+            ufsession_.Ui.SpecifyScreenPosition(message, MotionCallback, motionCbData,
+                screenPos, out viewTag, out int response);
+
+            if (response == UF_UI_PICK_RESPONSE)
             {
-                NewMethod35();
-                return isBlockComponent;
+                UpdateDynamicHandles();
+                ShowDynamicHandles();
+                ShowTemporarySizeText();
+                pHandle = SelectHandlePoint();
             }
 
-            isBlockComponent = __work_part_.__HasDynamicBlock();
-
-            if (isBlockComponent)
-            {
-                DisableForm();
-
-                if (_isNewSelection)
-                {
-                    CreateEditData(editComponent);
-                    _isNewSelection = false;
-                }
-            }
-
-            if (!isBlockComponent)
-            {
-                ResetNonBlockError();
-                NewMethod34();
-                return isBlockComponent;
-            }
-
-            List<Point> pHandle = new List<Point>();
-            pHandle = SelectHandlePoint();
-            _isDynamic = false;
-
-            pHandle = NewMethod(pHandle);
-
-            EnableForm();
-
-            return isBlockComponent;
+            ufsession_.Ui.UnlockUgAccess(UF_UI_FROM_CUSTOM);
+            return viewTag;
         }
+
+        private static void NewMethod48()
+        {
+            ModelingView mView = (ModelingView)__display_part_.Views.WorkView;
+            __display_part_.Views.WorkView.Orient(mView.Matrix);
+            __display_part_.WCS.SetOriginAndMatrix(mView.Origin, mView.Matrix);
+        }
+
+
 
 
 
@@ -3079,25 +1896,32 @@ namespace TSG_Library.UFuncs
                 Tag viewTag = NXOpen.Tag.Null;
                 IntPtr motionCbData = IntPtr.Zero;
                 IntPtr clientData = IntPtr.Zero;
-                ufsession_.Ui.LockUgAccess(UF_UI_FROM_CUSTOM);
-                ModelingView mView = (ModelingView)__display_part_.Views.WorkView;
-                __display_part_.Views.WorkView.Orient(mView.Matrix);
-                __display_part_.WCS.SetOriginAndMatrix(mView.Origin, mView.Matrix);
-                ufsession_.Ui.SpecifyScreenPosition(message, MotionCallback, motionCbData, screenPos,
-                    out viewTag, out int response);
-
-                if (response == UF_UI_PICK_RESPONSE)
-                {
-                    UpdateDynamicHandles();
-                    ShowDynamicHandles();
-                    ShowTemporarySizeText();
-                    pHandle = SelectHandlePoint();
-                }
-
-                ufsession_.Ui.UnlockUgAccess(UF_UI_FROM_CUSTOM);
+                viewTag = NewMethod53(ref pHandle, message, screenPos, motionCbData);
             }
 
             return pHandle;
+        }
+
+        private Tag NewMethod53(ref List<Point> pHandle, string message, double[] screenPos, IntPtr motionCbData)
+        {
+            Tag viewTag;
+            ufsession_.Ui.LockUgAccess(UF_UI_FROM_CUSTOM);
+            ModelingView mView = (ModelingView)__display_part_.Views.WorkView;
+            __display_part_.Views.WorkView.Orient(mView.Matrix);
+            __display_part_.WCS.SetOriginAndMatrix(mView.Origin, mView.Matrix);
+            ufsession_.Ui.SpecifyScreenPosition(message, MotionCallback, motionCbData, screenPos,
+                out viewTag, out int response);
+
+            if (response == UF_UI_PICK_RESPONSE)
+            {
+                UpdateDynamicHandles();
+                ShowDynamicHandles();
+                ShowTemporarySizeText();
+                pHandle = SelectHandlePoint();
+            }
+
+            ufsession_.Ui.UnlockUgAccess(UF_UI_FROM_CUSTOM);
+            return viewTag;
         }
 
         private void EditMatch(bool isBlockComponent)
@@ -3269,202 +2093,6 @@ namespace TSG_Library.UFuncs
 
 
 
-        private void LoadGridSizes()
-        {
-            comboBoxGridBlock.Items.Clear();
-
-            if (__display_part_.PartUnits == BasePart.Units.Inches)
-            {
-                comboBoxGridBlock.Items.Add("0.002");
-                comboBoxGridBlock.Items.Add("0.03125");
-                comboBoxGridBlock.Items.Add("0.0625");
-                comboBoxGridBlock.Items.Add("0.125");
-                comboBoxGridBlock.Items.Add("0.250");
-                comboBoxGridBlock.Items.Add("0.500");
-                comboBoxGridBlock.Items.Add("1.000");
-            }
-            else
-            {
-                comboBoxGridBlock.Items.Add("0.0508");
-                comboBoxGridBlock.Items.Add("0.79375");
-                comboBoxGridBlock.Items.Add("1.00");
-                comboBoxGridBlock.Items.Add("1.5875");
-                comboBoxGridBlock.Items.Add("3.175");
-                comboBoxGridBlock.Items.Add("5.00");
-                comboBoxGridBlock.Items.Add("6.35");
-                comboBoxGridBlock.Items.Add("12.7");
-                comboBoxGridBlock.Items.Add("25.4");
-            }
-
-            foreach (string gridSetting in comboBoxGridBlock.Items)
-                if (gridSetting == Settings.Default.EditBlockFormGridIncrement)
-                {
-                    int gridIndex = comboBoxGridBlock.Items.IndexOf(gridSetting);
-                    comboBoxGridBlock.SelectedIndex = gridIndex;
-                    break;
-                }
-        }
-
-        private void SetWorkPlaneOn()
-        {
-            try
-            {
-                WorkPlane workPlane1;
-                workPlane1 = __display_part_.Preferences.Workplane;
-
-                if (workPlane1 != null)
-                {
-                    workPlane1.GridType = WorkPlane.Grid.Rectangular;
-
-                    workPlane1.GridIsNonUniform = false;
-
-                    WorkPlane.GridSize gridSize1 = new WorkPlane.GridSize(_gridSpace, 1, 1);
-                    workPlane1.SetRectangularUniformGridSize(gridSize1);
-
-                    workPlane1.ShowGrid = false;
-
-                    workPlane1.ShowLabels = false;
-
-                    workPlane1.SnapToGrid = true;
-
-                    workPlane1.GridOnTop = false;
-
-                    workPlane1.RectangularShowMajorLines = false;
-
-                    workPlane1.PolarShowMajorLines = false;
-
-                    workPlane1.GridColor = 7;
-
-#pragma warning disable CS0618
-                    session_.Preferences.WorkPlane.ObjectOffWorkPlane = SessionWorkPlane.ObjectDisplay.Normal;
-#pragma warning restore CS0618
-                }
-                else
-                {
-                    NewMethod33();
-                }
-            }
-            catch (Exception ex)
-            {
-                ex.__PrintException();
-            }
-        }
-
-
-
-        private void SetWorkPlaneOff()
-        {
-            try
-            {
-
-                WorkPlane workPlane1;
-                workPlane1 = __display_part_.Preferences.Workplane;
-
-                if (workPlane1 != null)
-                {
-                    workPlane1.GridType = WorkPlane.Grid.Rectangular;
-
-                    workPlane1.GridIsNonUniform = false;
-
-                    WorkPlane.GridSize gridSize1 = new WorkPlane.GridSize(_gridSpace, 1, 1);
-                    workPlane1.SetRectangularUniformGridSize(gridSize1);
-
-                    workPlane1.ShowGrid = false;
-
-                    workPlane1.ShowLabels = false;
-
-                    workPlane1.SnapToGrid = false;
-
-                    workPlane1.GridOnTop = false;
-
-                    workPlane1.RectangularShowMajorLines = false;
-
-                    workPlane1.PolarShowMajorLines = false;
-
-                    workPlane1.GridColor = 7;
-#pragma warning disable CS0618
-                    session_.Preferences.WorkPlane.ObjectOffWorkPlane = SessionWorkPlane.ObjectDisplay.Normal;
-#pragma warning restore CS0618
-                }
-                else
-                {
-                    NewMethod32();
-                }
-            }
-            catch (Exception ex)
-            {
-                ex.__PrintException();
-            }
-        }
-
-
-        public int Startup()
-        {
-            if (_registered == 0)
-            {
-                EditBlockForm editForm = this;
-                _idWorkPartChanged1 = session_.Parts.AddWorkPartChangedHandler(editForm.WorkPartChanged1);
-                _registered = 1;
-            }
-
-            return 0;
-        }
-
-        public void WorkPartChanged1(BasePart p)
-        {
-            SetWorkPlaneOff();
-            LoadGridSizes();
-            SetWorkPlaneOn();
-        }
-
-
-
-
-
-
-
-        private List<Point> SelectHandlePoint()
-        {
-            Selection.MaskTriple[] mask = new Selection.MaskTriple[1];
-            mask[0] = new Selection.MaskTriple(UF_point_type, UF_point_subtype, 0);
-            Selection.Response sel;
-            List<Point> pointSelection = new List<Point>();
-
-            sel = TheUISession.SelectionManager.SelectTaggedObject("Select Point", "Select Point",
-                Selection.SelectionScope.WorkPart,
-                Selection.SelectionAction.ClearAndEnableSpecific,
-                false, false, mask, out TaggedObject selectedPoint, out Point3d cursor);
-
-            if ((sel == Selection.Response.ObjectSelected) | (sel == Selection.Response.ObjectSelectedByName))
-                pointSelection.Add((Point)selectedPoint);
-
-            return pointSelection;
-        }
-
-        private Component SelectOneComponent(string prompt)
-        {
-            Selection.MaskTriple[] mask = new Selection.MaskTriple[1];
-            mask[0] = new Selection.MaskTriple(UF_component_type, 0, 0);
-            Selection.Response sel;
-            Component compSelection = null;
-
-            sel = TheUISession.SelectionManager.SelectTaggedObject(prompt, prompt,
-                Selection.SelectionScope.AnyInAssembly,
-                Selection.SelectionAction.ClearAndEnableSpecific,
-                false, false, mask, out TaggedObject selectedComp, out Point3d cursor);
-
-            if ((sel == Selection.Response.ObjectSelected) | (sel == Selection.Response.ObjectSelectedByName))
-            {
-                compSelection = (Component)selectedComp;
-                return compSelection;
-            }
-
-            return null;
-        }
-
-
-
-
 
         private void MoveComponent(Component compToMove)
         {
@@ -3503,43 +2131,40 @@ namespace TSG_Library.UFuncs
                 IntPtr motionCbData = IntPtr.Zero;
                 IntPtr clientData = IntPtr.Zero;
 
-                using (session_.__UsingLockUiFromCustom())
+                viewTag = NewMethod52(ref pHandle, message, screenPos, motionCbData);
+            }
+
+            return pHandle;
+        }
+
+        private Tag NewMethod52(ref List<Point> pHandle, string message, double[] screenPos, IntPtr motionCbData)
+        {
+            Tag viewTag;
+            using (session_.__UsingLockUiFromCustom())
+            {
+                NewMethod50();
+                ufsession_.Ui.SpecifyScreenPosition(message, MotionCallback, motionCbData, screenPos,
+                    out viewTag, out int response);
+
+                if (response == UF_UI_PICK_RESPONSE)
                 {
-                    ModelingView mView = (ModelingView)__display_part_.Views.WorkView;
-                    __display_part_.Views.WorkView.Orient(mView.Matrix);
-                    __display_part_.WCS.SetOriginAndMatrix(mView.Origin, mView.Matrix);
-                    ufsession_.Ui.SpecifyScreenPosition(message, MotionCallback, motionCbData, screenPos,
-                        out viewTag, out int response);
-
-                    if (response != UF_UI_PICK_RESPONSE)
-                        continue;
-
                     UpdateDynamicHandles();
                     ShowDynamicHandles();
                     pHandle = SelectHandlePoint();
                 }
             }
 
-            return pHandle;
+            return viewTag;
         }
 
-
-
-        private Point3d MapWcsToAbsolute(Point3d pointToMap)
+        private static void NewMethod50()
         {
-            double[] input = { pointToMap.X, pointToMap.Y, pointToMap.Z };
-            double[] output = new double[3];
-            ufsession_.Csys.MapPoint(UF_CSYS_ROOT_WCS_COORDS, input, UF_CSYS_ROOT_COORDS, output);
-            return output.__ToPoint3d();
+            ModelingView mView = (ModelingView)__display_part_.Views.WorkView;
+            __display_part_.Views.WorkView.Orient(mView.Matrix);
+            __display_part_.WCS.SetOriginAndMatrix(mView.Origin, mView.Matrix);
         }
 
-        private Point3d MapAbsoluteToWcs(Point3d pointToMap)
-        {
-            double[] input = { pointToMap.X, pointToMap.Y, pointToMap.Z };
-            double[] output = new double[3];
-            ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, input, UF_CSYS_ROOT_WCS_COORDS, output);
-            return output.__ToPoint3d();
-        }
+
 
 
 
@@ -3644,143 +2269,6 @@ namespace TSG_Library.UFuncs
 
 
 
-
-
-        private static void NewMethod35()
-        {
-            TheUISession.NXMessageBox.Show("Caught exception", NXMessageBox.DialogType.Error,
-                "Mirrored Component");
-        }
-
-        private static void NewMethod34()
-        {
-            TheUISession.NXMessageBox.Show("Caught exception", NXMessageBox.DialogType.Error,
-                                "Not a block component");
-        }
-
-        private static void NewMethod33()
-        {
-            TheUISession.NXMessageBox.Show("Caught exception", NXMessageBox.DialogType.Error,
-                                    "WorkPlane is null.  Reset Modeling State");
-        }
-
-        private static void NewMethod32()
-        {
-            TheUISession.NXMessageBox.Show("Caught exception", NXMessageBox.DialogType.Error,
-                "WorkPlane is null.  Reset Modeling State");
-        }
-
-        private static void NewMethod24()
-        {
-            TheUISession.NXMessageBox.Show("Caught exception",
-                NXMessageBox.DialogType.Error, "Invalid input");
-        }
-
-        private static void NewMethod23()
-        {
-            TheUISession.NXMessageBox.Show(
-                                    "Caught exception",
-                                    NXMessageBox.DialogType.Error,
-                                    "Not a block component");
-        }
-
-        private static void NewMethod22()
-        {
-            TheUISession.NXMessageBox.Show(
-                                    "Error",
-                                    NXMessageBox.DialogType.Information,
-                                    "This function is not allowed in this context");
-        }
-
-        private static void NewMethod25()
-        {
-            TheUISession.NXMessageBox.Show(
-                                "Caught exception",
-                                NXMessageBox.DialogType.Error,
-                                "Not a block component");
-        }
-
-        private static void NewMethod27()
-        {
-            TheUISession.NXMessageBox.Show(
-                                "Caught exception",
-                                NXMessageBox.DialogType.Error,
-                                "Not a block component");
-        }
-
-        private static void NewMethod26()
-        {
-            TheUISession.NXMessageBox.Show(
-                                "Error",
-                                NXMessageBox.DialogType.Information,
-                                "This function is not allowed in this context");
-        }
-
-
-        private static void NewMethod28()
-        {
-            TheUISession.NXMessageBox.Show(
-                "Caught exception",
-                NXMessageBox.DialogType.Error,
-                "Not a block component");
-        }
-
-
-
-        private static void NewMethod31()
-        {
-            TheUISession.NXMessageBox.Show("Caught exception : Match Block",
-                NXMessageBox.DialogType.Error,
-                "Can not match to the selected component");
-        }
-
-        private static void NewMethod30()
-        {
-            TheUISession.NXMessageBox.Show("Caught exception : Match Block",
-                                NXMessageBox.DialogType.Error, "Mirrored Component");
-        }
-
-        private static void NewMethod29()
-        {
-            TheUISession.NXMessageBox.Show("Caught exception", NXMessageBox.DialogType.Error,
-                                "Not a block component");
-        }
-
-        private static void NewMethod20()
-        {
-            TheUISession.NXMessageBox.Show("Caught exception : Match Block",
-                NXMessageBox.DialogType.Information, "This function is not allowed in this context");
-        }
-        private static void NewMethod16()
-        {
-            TheUISession.NXMessageBox.Show("Caught exception", NXMessageBox.DialogType.Error,
-                                "Not a block component");
-        }
-
-        private static void NewMethod15()
-        {
-            TheUISession.NXMessageBox.Show("Caught exception", NXMessageBox.DialogType.Error,
-                "Mirrored Component");
-        }
-
-        private static void NewMethod18()
-        {
-            TheUISession.NXMessageBox.Show("Caught exception", NXMessageBox.DialogType.Error,
-                                "Not a block component");
-        }
-
-
-        private static void NewMethod37()
-        {
-            TheUISession.NXMessageBox.Show("Caught exception", NXMessageBox.DialogType.Error,
-                "Not a block component");
-        }
-
-        private static void NewMethod36()
-        {
-            TheUISession.NXMessageBox.Show("Caught exception", NXMessageBox.DialogType.Error,
-                "Mirrored Component");
-        }
     }
 }
 // 4839

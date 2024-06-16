@@ -334,6 +334,51 @@
     <Compile Include="src\UFuncs\ComponentBuilder\EditSizeForm.Designer.cs">
       <DependentUpon>EditSizeForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\UFuncs\ComponentBuilder\EditSize.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\UFuncs\ComponentBuilder\AlignEdgeDistance.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\UFuncs\ComponentBuilder\EditAlign.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\UFuncs\ComponentBuilder\EditMove.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\UFuncs\ComponentBuilder\EditDynamic.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\UFuncs\ComponentBuilder\Reset.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\UFuncs\ComponentBuilder\Exit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\UFuncs\ComponentBuilder\Apply.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\UFuncs\ComponentBuilder\Construction.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\UFuncs\ComponentBuilder\ShowNXMessage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\UFuncs\ComponentBuilder\Methods.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\UFuncs\ComponentBuilder\MotionCallback.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\UFuncs\ComponentBuilder\XYZStartEnd.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\UFuncs\ComponentBuilder\Udo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\UFuncs\ComponentBuilder\AlignComponent.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="src\UFuncs\ComponentBuilder\__Complete.cs">
       <SubType>Form</SubType>
     </Compile>
