@@ -6,8 +6,9 @@ using NXOpen.Assemblies;
 using NXOpen.Features;
 using TSG_Library.Extensions;
 using TSG_Library.Geom;
+using TSG_Library.UFuncs.MirrorComponents.Features;
 
-namespace TSG_Library.UFuncs.MirrorComponents.Features
+namespace TSG_Library.UFuncs.Mirror.Rules
 {
     public class MirrorEdgeMultipleSeedTangentRule : BaseMirrorRule
     {
@@ -56,4 +57,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
                 hasSameConvexity);
         }
     }
+
+
+
 }

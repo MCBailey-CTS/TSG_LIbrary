@@ -462,47 +462,39 @@
     </Compile>
     <Compile Include="src\UFuncs\LayoutRefSets.cs" />
     <Compile Include="src\UFuncs\LoadColorPalette.cs" />
-    <Compile Include="src\UFuncs\Mirror\BaseMirrorFeature.cs" />
-    <Compile Include="src\UFuncs\Mirror\BaseMirrorRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\Rules\BaseMirrorRule.cs" />
     <Compile Include="src\UFuncs\Mirror\Extensions_Position.cs" />
     <Compile Include="src\UFuncs\Mirror\Extensions_Vector.cs" />
+    <Compile Include="src\UFuncs\Mirror\Features\BaseMirrorFeature.cs" />
+    <Compile Include="src\UFuncs\Mirror\Features\IMirrorFeature.cs" />
+    <Compile Include="src\UFuncs\Mirror\Features\MirrorBlock.cs" />
+    <Compile Include="src\UFuncs\Mirror\Features\MirrorEdgeBlend.cs" />
+    <Compile Include="src\UFuncs\Mirror\Features\MirrorIntersect.cs" />
+    <Compile Include="src\UFuncs\Mirror\Features\MirrorLinkedBody.cs" />
+    <Compile Include="src\UFuncs\Mirror\Features\MirrorSubtract.cs" />
+    <Compile Include="src\UFuncs\Mirror\Features\MirrorUnite.cs" />
     <Compile Include="src\UFuncs\Mirror\ILibraryComponent.cs" />
-    <Compile Include="src\UFuncs\Mirror\IMirrorFeature.cs" />
-    <Compile Include="src\UFuncs\Mirror\IMirrorRule.cs" />
-    <Compile Include="src\UFuncs\Mirror\MainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\Mirror\MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="src\UFuncs\Mirror\MainForm1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\UFuncs\Mirror\MirrorBlock.cs" />
-    <Compile Include="src\UFuncs\Mirror\MirrorChamfer.cs" />
-    <Compile Include="src\UFuncs\Mirror\MirrorEdgeBlend.cs" />
-    <Compile Include="src\UFuncs\Mirror\MirrorEdgeBodyRule.cs" />
-    <Compile Include="src\UFuncs\Mirror\MirrorEdgeBoundaryRule.cs" />
-    <Compile Include="src\UFuncs\Mirror\MirrorEdgeChainRule.cs" />
-    <Compile Include="src\UFuncs\Mirror\MirrorEdgeDumbRule.cs" />
-    <Compile Include="src\UFuncs\Mirror\MirrorEdgeMultipleSeedTangentRule.cs" />
-    <Compile Include="src\UFuncs\Mirror\MirrorEdgeTangentRule.cs" />
-    <Compile Include="src\UFuncs\Mirror\MirrorEdgeVertexRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\Features\MirrorChamfer.cs" />
     <Compile Include="src\UFuncs\Mirror\MirrorException.cs" />
-    <Compile Include="src\UFuncs\Mirror\MirrorExtractedBody.cs" />
-    <Compile Include="src\UFuncs\Mirror\MirrorExtrude.cs" />
-    <Compile Include="src\UFuncs\Mirror\MirrorFaceAndAdjacentFacesRule.cs" />
-    <Compile Include="src\UFuncs\Mirror\MirrorFaceDumbRule.cs" />
-    <Compile Include="src\UFuncs\Mirror\MirrorFaceTangentRule.cs" />
-    <Compile Include="src\UFuncs\Mirror\MirrorIntersect.cs" />
-    <Compile Include="src\UFuncs\Mirror\MirrorLinkedBody.cs" />
     <Compile Include="src\UFuncs\Mirror\MirrorSmartButton.cs" />
     <Compile Include="src\UFuncs\Mirror\MirrorSmartKey.cs" />
     <Compile Include="src\UFuncs\Mirror\MirrorSmartStandardLiftersGuidedKeepersMetric.cs" />
     <Compile Include="src\UFuncs\Mirror\MirrorSmartStockEjector.cs" />
-    <Compile Include="src\UFuncs\Mirror\MirrorSubtract.cs" />
-    <Compile Include="src\UFuncs\Mirror\MirrorUnite.cs" />
     <Compile Include="src\UFuncs\Mirror\Program.cs" />
+    <Compile Include="src\UFuncs\Mirror\Rules\IMirrorRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\Rules\MirrorEdgeBodyRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\Rules\MirrorEdgeBoundaryRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\Rules\MirrorEdgeChainRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\Rules\MirrorEdgeDumbRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\Rules\MirrorEdgeMultipleSeedTangentRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\Rules\MirrorEdgeTangentRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\Rules\MirrorEdgeVertexRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\Rules\MirrorFaceAndAdjacentFacesRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\Rules\MirrorFaceDumbRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\Rules\MirrorFaceTangentRule.cs" />
     <Compile Include="src\UFuncs\NitroTravels.cs" />
     <Compile Include="src\UFuncs\Nx7zip\Nx7ZipCompression.cs" />
     <Compile Include="src\UFuncs\Nx7zip\Nx7zipForm.cs">
@@ -595,6 +587,7 @@
     <Compile Include="src\UI\SpecialSelectionAssWavelink.cs" />
     <Compile Include="src\Utilities\ComparerPoint3d.cs" />
     <Compile Include="src\Utilities\CtsAttributes.cs" />
+    <Compile Include="src\Utilities\EqualityPos.cs" />
     <Compile Include="src\Utilities\GFolder.cs" />
     <Compile Include="src\Utilities\Ucf.cs" />
   </ItemGroup>

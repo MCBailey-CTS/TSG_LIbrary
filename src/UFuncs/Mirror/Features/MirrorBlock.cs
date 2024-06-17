@@ -5,9 +5,10 @@ using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
 using TSG_Library.Geom;
+using TSG_Library.UFuncs.MirrorComponents.Features;
 using static TSG_Library.Extensions.Extensions;
 
-namespace TSG_Library.UFuncs.MirrorComponents.Features
+namespace TSG_Library.UFuncs.Mirror.Features
 {
     public class MirrorBlock : BaseMirrorFeature
     {
@@ -140,4 +141,5 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             return false;
         }
     }
+    //}
 }

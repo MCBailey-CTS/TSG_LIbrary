@@ -4,7 +4,7 @@ using NXOpen.Assemblies;
 using NXOpen.Features;
 using TSG_Library.Geom;
 
-namespace TSG_Library.UFuncs.MirrorComponents.Features
+namespace TSG_Library.UFuncs.Mirror.Features
 {
     public interface IMirrorFeature
     {
@@ -19,4 +19,5 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
 
         Matrix3x3 MirrorMap(Matrix3x3 orientation, Surface.Plane plane, Component fromComponent, Component toComponent);
     }
+    //}
 }

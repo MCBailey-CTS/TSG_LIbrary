@@ -6,7 +6,7 @@ using NXOpen.Features;
 using TSG_Library.Extensions;
 using TSG_Library.Geom;
 
-namespace TSG_Library.UFuncs.MirrorComponents.Features
+namespace TSG_Library.UFuncs.Mirror.Rules
 {
     public class MirrorEdgeDumbRule : BaseMirrorRule
     {
@@ -47,4 +47,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             return part.ScRuleFactory.CreateRuleEdgeDumb(list.ToArray());
         }
     }
+
+
+
 }

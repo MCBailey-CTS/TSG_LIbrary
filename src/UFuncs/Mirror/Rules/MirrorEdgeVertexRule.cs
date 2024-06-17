@@ -6,8 +6,9 @@ using NXOpen.Assemblies;
 using NXOpen.Features;
 using TSG_Library.Extensions;
 using TSG_Library.Geom;
+using TSG_Library.UFuncs.MirrorComponents.Features;
 
-namespace TSG_Library.UFuncs.MirrorComponents.Features
+namespace TSG_Library.UFuncs.Mirror.Rules
 {
     public class MirrorEdgeVertexRule : BaseMirrorRule
     {
@@ -47,4 +48,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             return part.ScRuleFactory.CreateRuleEdgeVertex(edge2, isFromStart);
         }
     }
+
+
+
 }

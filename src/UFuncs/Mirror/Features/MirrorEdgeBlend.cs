@@ -6,9 +6,11 @@ using NXOpen.Assemblies;
 using NXOpen.Features;
 using TSG_Library.Disposable;
 using TSG_Library.Geom;
+using TSG_Library.UFuncs.Mirror.Rules;
+using TSG_Library.UFuncs.MirrorComponents.Features;
 using static TSG_Library.Extensions.Extensions;
 
-namespace TSG_Library.UFuncs.MirrorComponents.Features
+namespace TSG_Library.UFuncs.Mirror.Features
 {
     public class MirrorEdgeBlend : BaseMirrorFeature
     {
@@ -62,4 +64,5 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             edgeBlend.Unsuppress();
         }
     }
+    //}
 }

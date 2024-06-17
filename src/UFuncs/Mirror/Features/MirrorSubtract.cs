@@ -4,16 +4,20 @@ using NXOpen.Assemblies;
 using NXOpen.Features;
 using TSG_Library.Geom;
 
-namespace TSG_Library.UFuncs.MirrorComponents.Features
+namespace TSG_Library.UFuncs.Mirror.Features
 {
-    public class MirrorExtractedBody : BaseMirrorFeature
+    public class MirrorSubtract : BaseMirrorFeature
     {
-        public override string FeatureType { get; } = "EXTRACT_BODY";
+        public override string FeatureType { get; } = "SUBTRACT";
 
 
         public override void Mirror(Feature originalFeature, IDictionary<TaggedObject, TaggedObject> dict,
             Surface.Plane plane, Component originalComp)
         {
+            Feature feature = (Feature)dict[originalFeature];
+            originalFeature.Unsuppress();
+            feature.Unsuppress();
         }
     }
+    //}
 }

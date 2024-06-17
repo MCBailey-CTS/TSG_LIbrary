@@ -6,8 +6,9 @@ using NXOpen.Assemblies;
 using NXOpen.Features;
 using TSG_Library.Extensions;
 using TSG_Library.Geom;
+using TSG_Library.UFuncs.MirrorComponents.Features;
 
-namespace TSG_Library.UFuncs.MirrorComponents.Features
+namespace TSG_Library.UFuncs.Mirror.Rules
 {
     public class MirrorFaceTangentRule : BaseMirrorRule
     {
@@ -26,13 +27,13 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
                 out bool _);
 #pragma warning restore CS0618 // Type or member is obsolete
             IList<Tuple<Point3d, Point3d>> edgePoints = (from edge in startFace.GetEdges()
-                let mirrorStart = edge.__StartPoint()._MirrorMap(plane, originalComp, mirroredComp)
-                let mirrorEnd = edge.__EndPoint()._MirrorMap(plane, originalComp, mirroredComp)
-                select Tuple.Create(mirrorStart, mirrorEnd)).ToList();
+                                                         let mirrorStart = edge.__StartPoint()._MirrorMap(plane, originalComp, mirroredComp)
+                                                         let mirrorEnd = edge.__EndPoint()._MirrorMap(plane, originalComp, mirroredComp)
+                                                         select Tuple.Create(mirrorStart, mirrorEnd)).ToList();
             IList<Tuple<Point3d, Point3d>> edgePoints2 = (from edge in endFace.GetEdges()
-                let mirrorStart = edge.__StartPoint()._MirrorMap(plane, originalComp, mirroredComp)
-                let mirrorEnd = edge.__EndPoint()._MirrorMap(plane, originalComp, mirroredComp)
-                select Tuple.Create(mirrorStart, mirrorEnd)).ToList();
+                                                          let mirrorStart = edge.__StartPoint()._MirrorMap(plane, originalComp, mirroredComp)
+                                                          let mirrorEnd = edge.__EndPoint()._MirrorMap(plane, originalComp, mirroredComp)
+                                                          select Tuple.Create(mirrorStart, mirrorEnd)).ToList();
             Face face = null;
             Face face2 = null;
             Feature parentFeatureOfFace = startFace.__OwningPart().Features.GetParentFeatureOfFace(startFace);
@@ -56,4 +57,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             return part.ScRuleFactory.CreateRuleFaceTangent(face, new Face[1] { face2 });
         }
     }
+
+
+
 }

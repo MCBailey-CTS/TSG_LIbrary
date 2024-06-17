@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NXOpen;
 using NXOpen.Assemblies;
@@ -6,9 +7,10 @@ using NXOpen.Features;
 using NXOpen.UF;
 using TSG_Library.Disposable;
 using TSG_Library.Geom;
+using TSG_Library.UFuncs.MirrorComponents.Features;
 using static TSG_Library.Extensions.Extensions;
 
-namespace TSG_Library.UFuncs.MirrorComponents.Features
+namespace TSG_Library.UFuncs.Mirror.Features
 {
     public class MirrorLinkedBody : BaseMirrorFeature
     {
@@ -104,5 +106,8 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
                 }
             }
         }
+
+
     }
+    //}
 }

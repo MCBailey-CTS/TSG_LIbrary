@@ -4,7 +4,7 @@ using NXOpen.Assemblies;
 using NXOpen.Features;
 using TSG_Library.Geom;
 
-namespace TSG_Library.UFuncs.MirrorComponents.Features
+namespace TSG_Library.UFuncs.Mirror.Rules
 {
     public interface IMirrorRule
     {
@@ -13,4 +13,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
         SelectionIntentRule Mirror(SelectionIntentRule originalRule, Feature originalFeature, Surface.Plane plane,
             Component originalComp, IDictionary<TaggedObject, TaggedObject> dict);
     }
+
+
+
 }

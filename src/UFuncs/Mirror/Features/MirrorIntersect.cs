@@ -4,7 +4,7 @@ using NXOpen.Assemblies;
 using NXOpen.Features;
 using TSG_Library.Geom;
 
-namespace TSG_Library.UFuncs.MirrorComponents.Features
+namespace TSG_Library.UFuncs.Mirror.Features
 {
     public class MirrorIntersect : BaseMirrorFeature
     {
@@ -16,4 +16,5 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
         {
         }
     }
+    //}
 }

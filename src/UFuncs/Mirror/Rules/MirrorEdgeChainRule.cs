@@ -5,12 +5,13 @@ using NXOpen.Assemblies;
 using NXOpen.Features;
 using TSG_Library.Extensions;
 using TSG_Library.Geom;
+using TSG_Library.UFuncs.MirrorComponents.Features;
 
-namespace TSG_Library.UFuncs.MirrorComponents.Features
+namespace TSG_Library.UFuncs.Mirror.Rules
 {
-    public class MirrorEdgeTangentRule : BaseMirrorRule
+    public class MirrorEdgeChainRule : BaseMirrorRule
     {
-        public override SelectionIntentRule.RuleType RuleType { get; } = SelectionIntentRule.RuleType.EdgeTangent;
+        public override SelectionIntentRule.RuleType RuleType { get; } = SelectionIntentRule.RuleType.EdgeChain;
 
 
         public override SelectionIntentRule Mirror(SelectionIntentRule originalRule, Feature originalFeature,
@@ -19,8 +20,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
             Component component = (Component)dict[originalComp];
             Part part = component.__Prototype();
             Feature feature = (Feature)dict[originalFeature];
-            ((EdgeTangentRule)originalRule).GetData(out Edge startEdge, out Edge endEdge, out bool isFromStart,
-                out double angleTolerance, out bool hasSameConvexity);
+            ((EdgeChainRule)originalRule).GetData(out Edge startEdge, out Edge endEdge, out bool isFromStart);
             Edge edge = null;
             Edge endEdge2 = null;
             Point3d pos = startEdge.__StartPoint()._MirrorMap(plane, originalComp, component);
@@ -50,8 +50,10 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
 
             if (edge == null) throw new ArgumentException("Could not find start edge");
 
-            return part.ScRuleFactory.CreateRuleEdgeTangent(edge, endEdge2, isFromStart, angleTolerance,
-                hasSameConvexity);
+            return part.ScRuleFactory.CreateRuleEdgeChain(edge, endEdge2, isFromStart);
         }
     }
+
+
+
 }
