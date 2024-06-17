@@ -689,6 +689,9 @@
     <EmbeddedResource Include="src\UFuncs\IdentifyAndDeleteForm.resx">
       <DependentUpon>IdentifyAndDeleteForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="src\UFuncs\Mirror\MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="src\UFuncs\Nx7zip\Nx7zipForm.resx">
       <DependentUpon>Nx7zipForm.cs</DependentUpon>
     </EmbeddedResource>

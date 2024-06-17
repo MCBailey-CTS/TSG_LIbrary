@@ -343,7 +343,7 @@ namespace TSG_Library.Extensions
             return new RegenerateDisplay();
         }
 
-    
+
         public static TaggedObject __GetTaggedObject(this Session session, Tag tag)
         {
             return session.GetObjectManager().GetTaggedObject(tag);
@@ -362,7 +362,7 @@ namespace TSG_Library.Extensions
                 out _);
         }
 
-        public static void __Delete(this ReferenceSet refst)=>refst.OwningPart.DeleteReferenceSet(refst);
+        public static void __Delete(this ReferenceSet refst) => refst.OwningPart.DeleteReferenceSet(refst);
 
         public static void __SelectSingleObject(
             this Session _,
@@ -377,14 +377,14 @@ namespace TSG_Library.Extensions
             out Tag view)
         {
             ufsession_.Ui.SelectWithSingleDialog(
-                message, 
-                title, 
-                scope, 
-                init_proc, 
-                user_data, 
+                message,
+                title,
+                scope,
+                init_proc,
+                user_data,
                 out response,
                 out _object,
-                cursor, 
+                cursor,
                 out view);
         }
 
@@ -438,6 +438,29 @@ namespace TSG_Library.Extensions
         public static void __Delete(this TaggedObject taggedObject) => session_.__DeleteObjects(taggedObject);
 
         public static IDisposable __UsingGCHandle(this Session _, GCHandle __handle) => new GCHandleFree(__handle);
+
+        public static BasePart __New(this Session session, string file_path, BasePart.Units units)
+        {
+            using (session.__UsingDisplayPartReset())
+            {
+                int units_;
+
+                switch (units)
+                {
+                    case BasePart.Units.Inches:
+                        units_ = 2;
+                        break;
+                    case BasePart.Units.Millimeters:
+                        units_ = 1;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                ufsession_.Part.New(file_path, units_, out Tag part);
+                return part.__To<BasePart>();
+            }
+        }
 
         #endregion
     }

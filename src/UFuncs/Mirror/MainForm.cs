@@ -943,89 +943,120 @@ namespace TSG_Library.UFuncs.Mirror
 
         private void InitializeComponent()
         {
-            buttonSelectComponents = new Button();
-            textBoxDetNumber = new TextBox();
-            checkBoxMirrorCopies = new CheckBox();
-            groupBox1 = new GroupBox();
-            label1 = new Label();
-            buttonExit = new Button();
-            buttonOk = new Button();
-            groupBox1.SuspendLayout();
-            SuspendLayout();
-            buttonSelectComponents.FlatStyle = FlatStyle.System;
-            buttonSelectComponents.Location = new Point(18, 12);
-            buttonSelectComponents.Name = "buttonSelectComponents";
-            buttonSelectComponents.Size = new Size(178, 23);
-            buttonSelectComponents.TabIndex = 0;
-            buttonSelectComponents.Text = "Select Components";
-            buttonSelectComponents.UseVisualStyleBackColor = true;
-            buttonSelectComponents.Click += ButtonSelectComponents_Click;
-            textBoxDetNumber.Enabled = false;
-            textBoxDetNumber.Location = new Point(59, 49);
-            textBoxDetNumber.Name = "textBoxDetNumber";
-            textBoxDetNumber.Size = new Size(72, 20);
-            textBoxDetNumber.TabIndex = 1;
-            checkBoxMirrorCopies.Appearance = Appearance.Button;
-            checkBoxMirrorCopies.FlatStyle = FlatStyle.System;
-            checkBoxMirrorCopies.Location = new Point(6, 19);
-            checkBoxMirrorCopies.Name = "checkBoxMirrorCopies";
-            checkBoxMirrorCopies.Size = new Size(178, 24);
-            checkBoxMirrorCopies.TabIndex = 2;
-            checkBoxMirrorCopies.Text = "Mirror Copies";
-            checkBoxMirrorCopies.TextAlign = ContentAlignment.MiddleCenter;
-            checkBoxMirrorCopies.UseVisualStyleBackColor = true;
-            checkBoxMirrorCopies.CheckedChanged += CheckBoxMirrorCopies_CheckedChanged;
-            groupBox1.Controls.Add(label1);
-            groupBox1.Controls.Add(checkBoxMirrorCopies);
-            groupBox1.Controls.Add(textBoxDetNumber);
-            groupBox1.Location = new Point(12, 41);
-            groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(190, 80);
-            groupBox1.TabIndex = 3;
-            groupBox1.TabStop = false;
-            groupBox1.Text = "Settings";
-            label1.AutoSize = true;
-            label1.Location = new Point(6, 52);
-            label1.Name = "label1";
-            label1.Size = new Size(44, 13);
-            label1.TabIndex = 3;
-            label1.Text = "Detail #";
-            buttonExit.FlatStyle = FlatStyle.System;
-            buttonExit.Location = new Point(18, 127);
-            buttonExit.Name = "buttonExit";
-            buttonExit.Size = new Size(86, 23);
-            buttonExit.TabIndex = 4;
-            buttonExit.Text = "Exit";
-            buttonExit.UseVisualStyleBackColor = true;
-            buttonExit.Click += ButtonExit_Click;
-            buttonOk.Enabled = false;
-            buttonOk.FlatStyle = FlatStyle.System;
-            buttonOk.Location = new Point(110, 127);
-            buttonOk.Name = "buttonOk";
-            buttonOk.Size = new Size(86, 23);
-            buttonOk.TabIndex = 5;
-            buttonOk.Text = "Ok";
-            buttonOk.UseVisualStyleBackColor = true;
-            buttonOk.Click += ButtonOk_Click;
-            AutoScaleDimensions = new SizeF(6f, 13f);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(214, 159);
-            Controls.Add(buttonOk);
-            Controls.Add(buttonExit);
-            Controls.Add(groupBox1);
-            Controls.Add(buttonSelectComponents);
-            FormBorderStyle = FormBorderStyle.FixedDialog;
-            Location = new Point(30, 130);
-            MaximizeBox = false;
-            Name = "MainForm";
-            StartPosition = FormStartPosition.Manual;
-            Text = "Mirror Components";
-            TopMost = true;
-            FormClosing += MainForm_FormClosing;
-            Load += MainForm_Load;
-            groupBox1.ResumeLayout(false);
-            groupBox1.PerformLayout();
-            ResumeLayout(false);
+            this.buttonSelectComponents = new System.Windows.Forms.Button();
+            this.textBoxDetNumber = new System.Windows.Forms.TextBox();
+            this.checkBoxMirrorCopies = new System.Windows.Forms.CheckBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.buttonExit = new System.Windows.Forms.Button();
+            this.buttonOk = new System.Windows.Forms.Button();
+            this.groupBox1.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // buttonSelectComponents
+            // 
+            this.buttonSelectComponents.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.buttonSelectComponents.Location = new System.Drawing.Point(18, 12);
+            this.buttonSelectComponents.Name = "buttonSelectComponents";
+            this.buttonSelectComponents.Size = new System.Drawing.Size(178, 23);
+            this.buttonSelectComponents.TabIndex = 0;
+            this.buttonSelectComponents.Text = "Select Components";
+            this.buttonSelectComponents.UseVisualStyleBackColor = true;
+            this.buttonSelectComponents.Click += new System.EventHandler(this.buttonSelectComponents_Click_1);
+            // 
+            // textBoxDetNumber
+            // 
+            this.textBoxDetNumber.Enabled = false;
+            this.textBoxDetNumber.Location = new System.Drawing.Point(59, 49);
+            this.textBoxDetNumber.Name = "textBoxDetNumber";
+            this.textBoxDetNumber.Size = new System.Drawing.Size(72, 20);
+            this.textBoxDetNumber.TabIndex = 1;
+            // 
+            // checkBoxMirrorCopies
+            // 
+            this.checkBoxMirrorCopies.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBoxMirrorCopies.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.checkBoxMirrorCopies.Location = new System.Drawing.Point(6, 19);
+            this.checkBoxMirrorCopies.Name = "checkBoxMirrorCopies";
+            this.checkBoxMirrorCopies.Size = new System.Drawing.Size(178, 24);
+            this.checkBoxMirrorCopies.TabIndex = 2;
+            this.checkBoxMirrorCopies.Text = "Mirror Copies";
+            this.checkBoxMirrorCopies.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBoxMirrorCopies.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.checkBoxMirrorCopies);
+            this.groupBox1.Controls.Add(this.textBoxDetNumber);
+            this.groupBox1.Location = new System.Drawing.Point(12, 41);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(190, 80);
+            this.groupBox1.TabIndex = 3;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Settings";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 52);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(44, 13);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "Detail #";
+            // 
+            // buttonExit
+            // 
+            this.buttonExit.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.buttonExit.Location = new System.Drawing.Point(18, 127);
+            this.buttonExit.Name = "buttonExit";
+            this.buttonExit.Size = new System.Drawing.Size(86, 23);
+            this.buttonExit.TabIndex = 4;
+            this.buttonExit.Text = "Exit";
+            this.buttonExit.UseVisualStyleBackColor = true;
+            // 
+            // buttonOk
+            // 
+            this.buttonOk.Enabled = false;
+            this.buttonOk.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.buttonOk.Location = new System.Drawing.Point(110, 127);
+            this.buttonOk.Name = "buttonOk";
+            this.buttonOk.Size = new System.Drawing.Size(86, 23);
+            this.buttonOk.TabIndex = 5;
+            this.buttonOk.Text = "Ok";
+            this.buttonOk.UseVisualStyleBackColor = true;
+            // 
+            // MainForm
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(214, 159);
+            this.Controls.Add(this.buttonOk);
+            this.Controls.Add(this.buttonExit);
+            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.buttonSelectComponents);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Location = new System.Drawing.Point(30, 130);
+            this.MaximizeBox = false;
+            this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+            this.Text = "Mirror Components";
+            this.TopMost = true;
+            this.Load += new System.EventHandler(this.MainForm_Load_1);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.ResumeLayout(false);
+
+        }
+
+        private void MainForm_Load_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonSelectComponents_Click_1(object sender, EventArgs e)
+        {
+
         }
     }
 }

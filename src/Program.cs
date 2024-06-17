@@ -13,7 +13,8 @@ public static class Program
     {
         try
         {
-            new TSG_Library.UFuncs.Mirror.MainForm().Show();
+            TSG_Library.UFuncs.Mirror.Program.MirrorStatic();
+            //new TSG_Library.UFuncs.Mirror.MainForm().Show();
             return;
 
 #pragma warning disable CS0162 // Unreachable code detected
