@@ -219,5 +219,89 @@ namespace TSG_Library.Extensions
         }
 
         #endregion
+
+        public static EdgeBodyRule __ToEdgeBodyRule(this SelectionIntentRule rule)
+        {
+            return (EdgeBodyRule)rule;
+        }
+
+        public static EdgeBoundaryRule __ToEdgeBoundaryRule(this SelectionIntentRule rule)
+        {
+            return (EdgeBoundaryRule)rule;
+        }
+
+        public static EdgeChainRule __ToEdgeChainRule(this SelectionIntentRule rule)
+        {
+            return (EdgeChainRule)rule;
+        }
+
+        public static void __Data(this EdgeChainRule rule, out Edge startEdge, out Edge endEdge, out bool isFromStart)
+        {
+            rule.GetData(out startEdge, out endEdge, out isFromStart);
+        }
+
+        public static EdgeDumbRule __ToEdgeDumbRule(this SelectionIntentRule rule)
+        {
+            return (EdgeDumbRule)rule;
+        }
+
+        public static Edge[] __Data(this EdgeDumbRule rule)
+        {
+            rule.GetData(out var edges);
+            return edges;
+        }
+
+        public static EdgeMultipleSeedTangentRule __ToEdgeMultipleSeedTangentRule(this SelectionIntentRule rule)
+        {
+            return (EdgeMultipleSeedTangentRule)rule;
+        }
+
+        public static void __Data(this EdgeMultipleSeedTangentRule rule, out Edge[] seedEdges, out double angleTolerance, out bool hasSameConvexity)
+        {
+            rule.GetData(out seedEdges, out angleTolerance, out hasSameConvexity);
+        }
+
+        public static Edge[] __Data(this EdgeMultipleSeedTangentRule rule)
+        {
+            rule.__Data(out var edges, out _, out _);
+            return edges;
+        }
+
+        public static EdgeTangentRule __ToEdgeTangentRule(this SelectionIntentRule rule)
+        {
+            return (EdgeTangentRule)rule;
+        }
+
+        public static EdgeVertexRule __ToEdgeVertexRule(this SelectionIntentRule rule)
+        {
+            return (EdgeVertexRule)rule;
+        }
+
+        public static FaceAndAdjacentFacesRule __ToFaceAndAdjacentFacesRule(this SelectionIntentRule rule)
+        {
+            return (FaceAndAdjacentFacesRule)rule;
+        }
+
+        public static FaceDumbRule __ToFaceDumbRule(this SelectionIntentRule rule)
+        {
+            return (FaceDumbRule)rule;
+        }
+
+        public static FaceTangentRule __ToFaceTangentRule(this SelectionIntentRule rule)
+        {
+            return (FaceTangentRule)rule;
+        }
+
+        public static Body __Data(this EdgeBodyRule rule)
+        {
+            rule.GetData(out Body body);
+            return body;
+        }
+
+        public static Face[] __Data(this FaceDumbRule rule)
+        {
+            rule.GetData(out var faces);
+            return faces;
+        }
     }
 }

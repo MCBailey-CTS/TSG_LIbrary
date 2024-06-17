@@ -14,13 +14,17 @@ namespace TSG_Library.UFuncs.Mirror.Rules
     {
         public override SelectionIntentRule.RuleType RuleType { get; } = SelectionIntentRule.RuleType.EdgeBody;
 
-        public override SelectionIntentRule Mirror(SelectionIntentRule originalRule, Feature originalFeature,
-            Surface.Plane plane, Component originalComp, IDictionary<TaggedObject, TaggedObject> dict)
+        public override SelectionIntentRule Mirror(
+            SelectionIntentRule originalRule,
+            Feature originalFeature,
+            Surface.Plane plane,
+            Component originalComp,
+            IDictionary<TaggedObject, TaggedObject> dict)
         {
             Component component = (Component)dict[originalComp];
             Part part = component.__Prototype();
             Feature feature = (Feature)dict[originalFeature];
-            ((EdgeBodyRule)originalRule).GetData(out Body body);
+            Body body = originalRule.__ToEdgeBodyRule().__Data();
             ISet<Point3d> set = new HashSet<Point3d>(new EqualityPos());
             Edge[] edges = body.GetEdges();
             foreach (Edge edge in edges)

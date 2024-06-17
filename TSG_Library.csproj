@@ -462,6 +462,10 @@
     </Compile>
     <Compile Include="src\UFuncs\LayoutRefSets.cs" />
     <Compile Include="src\UFuncs\LoadColorPalette.cs" />
+    <Compile Include="src\UFuncs\Mirror\LibraryComponents\MirrorSmartButton.cs" />
+    <Compile Include="src\UFuncs\Mirror\LibraryComponents\MirrorSmartKey.cs" />
+    <Compile Include="src\UFuncs\Mirror\LibraryComponents\MirrorSmartStandardLiftersGuidedKeepersMetric.cs" />
+    <Compile Include="src\UFuncs\Mirror\LibraryComponents\MirrorSmartStockEjector.cs" />
     <Compile Include="src\UFuncs\Mirror\Rules\BaseMirrorRule.cs" />
     <Compile Include="src\UFuncs\Mirror\Extensions_Position.cs" />
     <Compile Include="src\UFuncs\Mirror\Extensions_Vector.cs" />
@@ -473,16 +477,12 @@
     <Compile Include="src\UFuncs\Mirror\Features\MirrorLinkedBody.cs" />
     <Compile Include="src\UFuncs\Mirror\Features\MirrorSubtract.cs" />
     <Compile Include="src\UFuncs\Mirror\Features\MirrorUnite.cs" />
-    <Compile Include="src\UFuncs\Mirror\ILibraryComponent.cs" />
-    <Compile Include="src\UFuncs\Mirror\MainForm1.cs">
+    <Compile Include="src\UFuncs\Mirror\LibraryComponents\ILibraryComponent.cs" />
+    <Compile Include="src\UFuncs\Mirror\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\UFuncs\Mirror\Features\MirrorChamfer.cs" />
     <Compile Include="src\UFuncs\Mirror\MirrorException.cs" />
-    <Compile Include="src\UFuncs\Mirror\MirrorSmartButton.cs" />
-    <Compile Include="src\UFuncs\Mirror\MirrorSmartKey.cs" />
-    <Compile Include="src\UFuncs\Mirror\MirrorSmartStandardLiftersGuidedKeepersMetric.cs" />
-    <Compile Include="src\UFuncs\Mirror\MirrorSmartStockEjector.cs" />
     <Compile Include="src\UFuncs\Mirror\Program.cs" />
     <Compile Include="src\UFuncs\Mirror\Rules\IMirrorRule.cs" />
     <Compile Include="src\UFuncs\Mirror\Rules\MirrorEdgeBodyRule.cs" />

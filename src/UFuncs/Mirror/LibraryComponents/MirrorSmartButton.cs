@@ -5,26 +5,27 @@ using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
 using TSG_Library.Disposable;
+using TSG_Library.Extensions;
 using TSG_Library.Geom;
 using static TSG_Library.Extensions.Extensions;
 
-namespace TSG_Library.UFuncs.MirrorComponents.Features
+namespace TSG_Library.UFuncs.Mirror.LibraryComponents
 {
-    public class MirrorSmartKey : ILibraryComponent
+    public class MirrorSmartButton : ILibraryComponent
     {
         public bool IsLibraryComponent(Component component)
         {
             if (!component.HasUserAttribute("LIBRARY", NXObject.AttributeType.String, -1)) return false;
 
             return component.GetUserAttributeAsString("LIBRARY", NXObject.AttributeType.String, -1).ToUpper() ==
-                   "SMART KEY METRIC";
+                   "SMART BUTTON METRIC";
         }
 
         public void Mirror(Surface.Plane plane, Component mirroredComp, ExtractFace originalLinkedBody,
             Component fromComp, IDictionary<TaggedObject, TaggedObject> dict)
         {
             ExtractFace extractFace = (ExtractFace)dict[originalLinkedBody];
-            Point3d val = fromComp.__Origin()._Mirror(plane);
+            Point3d val = fromComp.__Origin().__Mirror(plane);
             Matrix3x3 val2 = fromComp.__Orientation().__Mirror(plane);
             Vector3d axisY = val2.__AxisY();
             Vector3d val3 = val2.__AxisX().__Negate();

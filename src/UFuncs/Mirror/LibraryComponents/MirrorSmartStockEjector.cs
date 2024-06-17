@@ -5,20 +5,20 @@ using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
 using TSG_Library.Disposable;
+using TSG_Library.Extensions;
 using TSG_Library.Geom;
 using static TSG_Library.Extensions.Extensions;
 
-namespace TSG_Library.UFuncs.MirrorComponents.Features
+namespace TSG_Library.UFuncs.Mirror.LibraryComponents
 {
-    public class MirrorSmartStandardLiftersGuidedKeepersMetric : ILibraryComponent
+    public class MirrorSmartStockEjector : ILibraryComponent
     {
         public bool IsLibraryComponent(Component component)
         {
-            if (!component.HasUserAttribute("LIBRARY", NXObject.AttributeType.String, -1))
-                return false;
+            if (!component.HasUserAttribute("LIBRARY", NXObject.AttributeType.String, -1)) return false;
 
             return component.GetUserAttributeAsString("LIBRARY", NXObject.AttributeType.String, -1).ToUpper() ==
-                   "SMART STANDARD LIFTERS GUIDED KEEPERS METRIC";
+                   "SMART STOCK EJECTORS";
         }
 
         public void Mirror(Surface.Plane plane, Component mirroredComp, ExtractFace originalLinkedBody,
@@ -57,7 +57,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
                     SelectionIntentRule selectionIntentRule =
                         __work_part_.ScRuleFactory.CreateRuleBodyDumb(source.ToArray());
                     extractFaceBuilder.ExtractBodyCollector.ReplaceRules(
-                        new SelectionIntentRule[] { selectionIntentRule }, false);
+                        new SelectionIntentRule[1] { selectionIntentRule }, false);
                     extractFaceBuilder.Associative = true;
                     extractFaceBuilder.CommitFeature();
                 }

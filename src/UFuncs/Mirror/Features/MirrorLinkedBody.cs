@@ -7,6 +7,7 @@ using NXOpen.Features;
 using NXOpen.UF;
 using TSG_Library.Disposable;
 using TSG_Library.Geom;
+using TSG_Library.UFuncs.Mirror.LibraryComponents;
 using TSG_Library.UFuncs.MirrorComponents.Features;
 using static TSG_Library.Extensions.Extensions;
 
