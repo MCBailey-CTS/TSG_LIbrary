@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NXOpen;
 using NXOpen.Assemblies;
+using NXOpen.CAE.Xyplot;
 using NXOpen.Features;
 using TSG_Library.Geom;
 using TSG_Library.UFuncs.Mirror.Features;
@@ -68,19 +69,19 @@ namespace TSG_Library.UFuncs.Mirror
 
                 __work_part_ = __display_part_;
                 foreach (Part item in __display_part_.__DescendantParts())
-                foreach (Expression expression3 in item.Expressions)
-                {
-                    if (expression3.Status != Expression.StatusOption.Broken) continue;
+                    foreach (Expression expression3 in item.Expressions)
+                    {
+                        if (expression3.Status != Expression.StatusOption.Broken) continue;
 
-                    Expression[] array3 = expression3.__OwningPart().Expressions.ToArray();
-                    foreach (Expression expression2 in array3)
-                        if (expression2.Tag != expression3.Tag && expression3.Name == expression2.RightHandSide)
-                            item.Expressions.Delete(expression2);
+                        Expression[] array3 = expression3.__OwningPart().Expressions.ToArray();
+                        foreach (Expression expression2 in array3)
+                            if (expression2.Tag != expression3.Tag && expression3.Name == expression2.RightHandSide)
+                                item.Expressions.Delete(expression2);
 
-                    item.Expressions.Delete(expression3);
-                    print_("Deleted broken expression \"" + expression3.Name + "\" in part \"" +
-                           expression3.__OwningPart().Leaf + "\"");
-                }
+                        item.Expressions.Delete(expression3);
+                        print_("Deleted broken expression \"" + expression3.Name + "\" in part \"" +
+                               expression3.__OwningPart().Leaf + "\"");
+                    }
             }
             catch (Exception ex2)
             {
@@ -108,13 +109,104 @@ namespace TSG_Library.UFuncs.Mirror
             var toOrientation = frComp.__Orientation().__Mirror(plane);
             string toFilePath = "H:\\CTS\\001449 (mirror)\\001449-010\\001449-010-900.prt";
             var toPart = session_.__New(toFilePath, frComp.__Prototype().PartUnits);
-            var toComp = __display_part_.__AddComponent(toPart, origin:toOrigin, orientation:toOrientation);
+            var toComp = __display_part_.__AddComponent(toPart, origin: toOrigin, orientation: toOrientation);
 
+
+            IDictionary<TaggedObject, TaggedObject> mirrorDict = new Dictionary<TaggedObject, TaggedObject>();
+
+
+            // Mirrors Csys
+            {
+                NXOpen.Session theSession = NXOpen.Session.GetSession();
+                NXOpen.Part workPart = theSession.Parts.Work;
+                NXOpen.Part displayPart = theSession.Parts.Display;
+                NXOpen.Session.UndoMarkId markId1;
+                markId1 = theSession.SetUndoMark(NXOpen.Session.MarkVisibility.Visible, "Make Work Part");
+
+                NXOpen.Assemblies.Component component1 = ((NXOpen.Assemblies.Component)displayPart.ComponentAssembly.RootComponent.FindObject("COMPONENT 001449-010-109 1"));
+                NXOpen.PartLoadStatus partLoadStatus1;
+                theSession.Parts.SetWorkComponent(component1, NXOpen.PartCollection.RefsetOption.Current, NXOpen.PartCollection.WorkComponentOption.Visible, out partLoadStatus1);
+
+                workPart = theSession.Parts.Work; // 001449-010-109
+                partLoadStatus1.Dispose();
+                // ----------------------------------------------
+                //   Menu: Edit->Copy
+                // ----------------------------------------------
+                workPart.PmiManager.RestoreUnpastedObjects();
+
+                NXOpen.Session.UndoMarkId markId2;
+                markId2 = theSession.SetUndoMark(NXOpen.Session.MarkVisibility.Visible, "Copy");
+
+                NXOpen.Gateway.CopyCutBuilder copyCutBuilder1;
+                copyCutBuilder1 = workPart.ClipboardOperationsManager.CreateCopyCutBuilder();
+
+                copyCutBuilder1.CanCopyAsSketch = true;
+
+                copyCutBuilder1.IsCut = false;
+
+                copyCutBuilder1.ToClipboard = true;
+
+                copyCutBuilder1.DestinationFilename = null;
+
+                NXOpen.NXObject[] objects1 = new NXOpen.NXObject[1];
+                NXOpen.CartesianCoordinateSystem frCsys = ((NXOpen.CartesianCoordinateSystem)component1.FindObject("PROTO#HANDLE R-19764"));
+                objects1[0] = frCsys;
+                copyCutBuilder1.SetObjects(objects1);
+
+                NXOpen.NXObject nXObject1;
+                nXObject1 = copyCutBuilder1.Commit();
+
+                copyCutBuilder1.Destroy();
+
+                theSession.DeleteUndoMark(markId2, null);
+
+                NXOpen.Session.UndoMarkId markId3;
+                markId3 = theSession.SetUndoMark(NXOpen.Session.MarkVisibility.Visible, "Make Work Part");
+
+                NXOpen.Assemblies.Component component2 = ((NXOpen.Assemblies.Component)displayPart.ComponentAssembly.RootComponent.FindObject("COMPONENT 001449-010-900 1"));
+                NXOpen.PartLoadStatus partLoadStatus2;
+                theSession.Parts.SetWorkComponent(component2, NXOpen.PartCollection.RefsetOption.Current, NXOpen.PartCollection.WorkComponentOption.Visible, out partLoadStatus2);
+
+                workPart = theSession.Parts.Work; // 001449-010-900
+                partLoadStatus2.Dispose();
+                // ----------------------------------------------
+                //   Menu: Edit->Paste
+                // ----------------------------------------------
+                NXOpen.Session.UndoMarkId markId4;
+                markId4 = theSession.SetUndoMark(NXOpen.Session.MarkVisibility.Visible, "Paste");
+
+                NXOpen.Gateway.PasteBuilder pasteBuilder1;
+                pasteBuilder1 = workPart.ClipboardOperationsManager.CreatePasteBuilder();
+
+                NXOpen.NXObject nXObject2;
+                nXObject2 = pasteBuilder1.Commit();
+
+
+                var toCsys = (CoordinateSystem)pasteBuilder1.GetCommittedObjects()[0];
+
+                pasteBuilder1.Destroy();
+
+                // ----------------------------------------------
+                //   Menu: Tools->Journal->Stop Recording
+                // ----------------------------------------------
+
+
+                var toOrigin_ = frCsys.__Origin().__MirrorMap(plane, frComp, toComp);
+
+                toCsys.Origin = toOrigin_;
+                toCsys.RedisplayObject();
+                ufsession_.Modl.Update();
+
+            }
+
+
+
+            __work_part_ = __display_part_;
 
             // mirrors block
             {
                 NXOpen.Session theSession = NXOpen.Session.GetSession();
-                NXOpen.Part workPart = theSession.Parts.Work;
+                NXOpen.Part workPart = __work_part_;
                 NXOpen.Part displayPart = theSession.Parts.Display;
                 NXOpen.Session.UndoMarkId markId1;
                 markId1 = theSession.SetUndoMark(NXOpen.Session.MarkVisibility.Visible, "Make Work Part");
@@ -345,6 +437,7 @@ namespace TSG_Library.UFuncs.Mirror
 
 
 
+            __work_part_ = __display_part_;
 
 
 
