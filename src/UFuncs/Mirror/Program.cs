@@ -251,10 +251,7 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder1;
                 featureReferencesBuilder1 = copyPasteBuilder1.GetFeatureReferences();
 
-                Point3d origin1 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal1 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane1;
-                plane1 = workPart.Planes.CreatePlane(origin1, normal1, SmartObject.UpdateOption.WithinModeling);
+               
 
                 Unit unit1 = (Unit)workPart.UnitCollection.FindObject("Inch");
                 Expression expression1;
@@ -270,15 +267,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData1;
                 matchedReferenceData1 = featureReferencesBuilder1.GetMatchedReferences();
 
-                Point3d origin2 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal2 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane2;
-                plane2 = workPart.Planes.CreatePlane(origin2, normal2, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin3 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal3 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane3;
-                plane3 = workPart.Planes.CreatePlane(origin3, normal3, SmartObject.UpdateOption.WithinModeling);
+             
 
                 copyPasteBuilder1.ExpressionOption = CopyPasteBuilder.ExpressionTransferOption.CreateNew;
 
@@ -332,7 +321,6 @@ namespace TSG_Library.UFuncs.Mirror
                 //    ex.AssertErrorCode(1050029);
                 //}
 
-                plane1.DestroyPlane();
 
                 workPart.Expressions.Delete(expression3);
 
@@ -486,10 +474,7 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder1;
                 featureReferencesBuilder1 = copyPasteBuilder1.GetFeatureReferences();
 
-                Point3d origin1 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal1 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane1;
-                plane1 = workPart.Planes.CreatePlane(origin1, normal1, SmartObject.UpdateOption.WithinModeling);
+              
 
                 Unit unit1 = (Unit)workPart.UnitCollection.FindObject("Inch");
                 Expression expression1;
@@ -505,15 +490,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData1;
                 matchedReferenceData1 = featureReferencesBuilder1.GetMatchedReferences();
 
-                Point3d origin2 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal2 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane2;
-                plane2 = workPart.Planes.CreatePlane(origin2, normal2, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin3 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal3 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane3;
-                plane3 = workPart.Planes.CreatePlane(origin3, normal3, SmartObject.UpdateOption.WithinModeling);
+              
 
                 copyPasteBuilder1.ExpressionOption = CopyPasteBuilder.ExpressionTransferOption.CreateNew;
 
@@ -579,7 +556,6 @@ namespace TSG_Library.UFuncs.Mirror
                     ex.AssertErrorCode(1050029);
                 }
 
-                plane1.DestroyPlane();
 
                 Session.UndoMarkId markId6;
                 markId6 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
@@ -619,10 +595,7 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder2;
                 featureReferencesBuilder2 = copyPasteBuilder2.GetFeatureReferences();
 
-                Point3d origin4 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal4 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane4;
-                plane4 = workPart.Planes.CreatePlane(origin4, normal4, SmartObject.UpdateOption.WithinModeling);
+                
 
                 Expression expression3;
                 expression3 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
@@ -637,15 +610,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData2;
                 matchedReferenceData2 = featureReferencesBuilder2.GetMatchedReferences();
 
-                Point3d origin5 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal5 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane5;
-                plane5 = workPart.Planes.CreatePlane(origin5, normal5, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin6 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal6 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane6;
-                plane6 = workPart.Planes.CreatePlane(origin6, normal6, SmartObject.UpdateOption.WithinModeling);
+               
 
                 copyPasteBuilder2.ExpressionOption = CopyPasteBuilder.ExpressionTransferOption.CreateNew;
 
@@ -720,7 +685,6 @@ namespace TSG_Library.UFuncs.Mirror
                     ex.AssertErrorCode(1050029);
                 }
 
-                plane4.DestroyPlane();
 
                 // ----------------------------------------------
                 //   Menu: Tools->Journal->Stop Recording
@@ -790,10 +754,7 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder1;
                 featureReferencesBuilder1 = copyPasteBuilder1.GetFeatureReferences();
 
-                Point3d origin1 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal1 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane1;
-                plane1 = workPart.Planes.CreatePlane(origin1, normal1, SmartObject.UpdateOption.WithinModeling);
+              
 
                 Unit unit1 = (Unit)workPart.UnitCollection.FindObject("Inch");
                 Expression expression1;
@@ -809,15 +770,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData1;
                 matchedReferenceData1 = featureReferencesBuilder1.GetMatchedReferences();
 
-                Point3d origin2 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal2 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane2;
-                plane2 = workPart.Planes.CreatePlane(origin2, normal2, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin3 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal3 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane3;
-                plane3 = workPart.Planes.CreatePlane(origin3, normal3, SmartObject.UpdateOption.WithinModeling);
+             
 
                 copyPasteBuilder1.ExpressionOption = CopyPasteBuilder.ExpressionTransferOption.CreateNew;
 
@@ -891,7 +844,6 @@ namespace TSG_Library.UFuncs.Mirror
                     ex.AssertErrorCode(1050029);
                 }
 
-                plane1.DestroyPlane();
 
                 // ----------------------------------------------
                 //   Menu: Tools->Journal->Stop Recording
@@ -966,10 +918,7 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder1;
                 featureReferencesBuilder1 = copyPasteBuilder1.GetFeatureReferences();
 
-                Point3d origin1 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal1 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane1;
-                plane1 = workPart.Planes.CreatePlane(origin1, normal1, SmartObject.UpdateOption.WithinModeling);
+               
 
                 Unit unit1 = (Unit)workPart.UnitCollection.FindObject("Inch");
                 Expression expression1;
@@ -985,15 +934,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData1;
                 matchedReferenceData1 = featureReferencesBuilder1.GetMatchedReferences();
 
-                Point3d origin2 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal2 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane2;
-                plane2 = workPart.Planes.CreatePlane(origin2, normal2, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin3 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal3 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane3;
-                plane3 = workPart.Planes.CreatePlane(origin3, normal3, SmartObject.UpdateOption.WithinModeling);
+               
 
                 copyPasteBuilder1.ExpressionOption = CopyPasteBuilder.ExpressionTransferOption.CreateNew;
 
@@ -1072,7 +1013,6 @@ namespace TSG_Library.UFuncs.Mirror
                     ex.AssertErrorCode(1050029);
                 }
 
-                plane1.DestroyPlane();
 
                 // ----------------------------------------------
                 //   Menu: Tools->Journal->Stop Recording
@@ -1147,10 +1087,7 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder1;
                 featureReferencesBuilder1 = copyPasteBuilder1.GetFeatureReferences();
 
-                Point3d origin1 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal1 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane1;
-                plane1 = workPart.Planes.CreatePlane(origin1, normal1, SmartObject.UpdateOption.WithinModeling);
+               
 
                 Unit unit1 = (Unit)workPart.UnitCollection.FindObject("Inch");
                 Expression expression1;
@@ -1166,15 +1103,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData1;
                 matchedReferenceData1 = featureReferencesBuilder1.GetMatchedReferences();
 
-                Point3d origin2 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal2 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane2;
-                plane2 = workPart.Planes.CreatePlane(origin2, normal2, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin3 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal3 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane3;
-                plane3 = workPart.Planes.CreatePlane(origin3, normal3, SmartObject.UpdateOption.WithinModeling);
+              
 
                 copyPasteBuilder1.ExpressionOption = CopyPasteBuilder.ExpressionTransferOption.CreateNew;
 
@@ -1244,7 +1173,6 @@ namespace TSG_Library.UFuncs.Mirror
                     ex.AssertErrorCode(1050029);
                 }
 
-                plane1.DestroyPlane();
 
                 Session.UndoMarkId markId8;
                 markId8 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
@@ -1288,10 +1216,7 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder2;
                 featureReferencesBuilder2 = copyPasteBuilder2.GetFeatureReferences();
 
-                Point3d origin4 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal4 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane4;
-                plane4 = workPart.Planes.CreatePlane(origin4, normal4, SmartObject.UpdateOption.WithinModeling);
+            
 
                 Expression expression3;
                 expression3 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
@@ -1306,20 +1231,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData2;
                 matchedReferenceData2 = featureReferencesBuilder2.GetMatchedReferences();
 
-                Point3d origin5 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal5 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane5;
-                plane5 = workPart.Planes.CreatePlane(origin5, normal5, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin6 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal6 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane6;
-                plane6 = workPart.Planes.CreatePlane(origin6, normal6, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin7 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal7 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane7;
-                plane7 = workPart.Planes.CreatePlane(origin7, normal7, SmartObject.UpdateOption.WithinModeling);
+              
 
                 copyPasteBuilder2.ExpressionOption = CopyPasteBuilder.ExpressionTransferOption.CreateNew;
 
@@ -1422,7 +1334,6 @@ namespace TSG_Library.UFuncs.Mirror
                     ex.AssertErrorCode(1050029);
                 }
 
-                plane4.DestroyPlane();
 
                 Session.UndoMarkId markId13;
                 markId13 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
@@ -2502,10 +2413,7 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder1;
                 featureReferencesBuilder1 = copyPasteBuilder1.GetFeatureReferences();
 
-                Point3d origin1 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal1 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane1;
-                plane1 = workPart.Planes.CreatePlane(origin1, normal1, SmartObject.UpdateOption.WithinModeling);
+               
 
                 Unit unit1 = (Unit)workPart.UnitCollection.FindObject("Inch");
                 Expression expression1;
@@ -2525,15 +2433,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData1;
                 matchedReferenceData1 = featureReferencesBuilder1.GetMatchedReferences();
 
-                Point3d origin2 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal2 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane2;
-                plane2 = workPart.Planes.CreatePlane(origin2, normal2, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin3 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal3 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane3;
-                plane3 = workPart.Planes.CreatePlane(origin3, normal3, SmartObject.UpdateOption.WithinModeling);
+              
 
                 copyPasteBuilder1.ExpressionOption = CopyPasteBuilder.ExpressionTransferOption.CreateNew;
 
@@ -2583,15 +2483,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData2;
                 matchedReferenceData2 = featureReferencesBuilder1.GetMatchedReferences();
 
-                Point3d origin4 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal4 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane4;
-                plane4 = workPart.Planes.CreatePlane(origin4, normal4, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin5 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal5 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane5;
-                plane5 = workPart.Planes.CreatePlane(origin5, normal5, SmartObject.UpdateOption.WithinModeling);
+              
 
                 featureReferencesBuilder1.AutomaticMatch(false);
 
@@ -2642,27 +2534,8 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder1.Destroy();
 
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression2);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
+               
 
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression1);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
-
-                plane1.DestroyPlane();
 
                 Session.UndoMarkId markId8;
                 markId8 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
@@ -2702,10 +2575,7 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder2;
                 featureReferencesBuilder2 = copyPasteBuilder2.GetFeatureReferences();
 
-                Point3d origin6 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal6 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane6;
-                plane6 = workPart.Planes.CreatePlane(origin6, normal6, SmartObject.UpdateOption.WithinModeling);
+              
 
                 Expression expression3;
                 expression3 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
@@ -2722,20 +2592,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData3;
                 matchedReferenceData3 = featureReferencesBuilder2.GetMatchedReferences();
 
-                Point3d origin7 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal7 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane7;
-                plane7 = workPart.Planes.CreatePlane(origin7, normal7, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin8 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal8 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane8;
-                plane8 = workPart.Planes.CreatePlane(origin8, normal8, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin9 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal9 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane9;
-                plane9 = workPart.Planes.CreatePlane(origin9, normal9, SmartObject.UpdateOption.WithinModeling);
+             
 
                 Section section3;
                 section3 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
@@ -2757,20 +2614,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData4;
                 matchedReferenceData4 = featureReferencesBuilder2.GetMatchedReferences();
 
-                Point3d origin10 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal10 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane10;
-                plane10 = workPart.Planes.CreatePlane(origin10, normal10, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin11 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal11 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane11;
-                plane11 = workPart.Planes.CreatePlane(origin11, normal11, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin12 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal12 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane12;
-                plane12 = workPart.Planes.CreatePlane(origin12, normal12, SmartObject.UpdateOption.WithinModeling);
+             
 
                 featureReferencesBuilder2.AutomaticMatch(false);
 
@@ -2860,7 +2704,6 @@ namespace TSG_Library.UFuncs.Mirror
                     ex.AssertErrorCode(1050029);
                 }
 
-                plane6.DestroyPlane();
 
                 Component[] components2 = new Component[1];
                 components2[0] = component2;
@@ -4429,10 +4272,7 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder1;
                 featureReferencesBuilder1 = copyPasteBuilder1.GetFeatureReferences();
 
-                Point3d origin1 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal1 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane1;
-                plane1 = workPart.Planes.CreatePlane(origin1, normal1, SmartObject.UpdateOption.WithinModeling);
+              
 
                 Unit unit1 = (Unit)workPart.UnitCollection.FindObject("Inch");
                 Expression expression1;
@@ -4450,15 +4290,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData1;
                 matchedReferenceData1 = featureReferencesBuilder1.GetMatchedReferences();
 
-                Point3d origin2 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal2 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane2;
-                plane2 = workPart.Planes.CreatePlane(origin2, normal2, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin3 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal3 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane3;
-                plane3 = workPart.Planes.CreatePlane(origin3, normal3, SmartObject.UpdateOption.WithinModeling);
+                
 
                 Section section1;
                 section1 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
@@ -4475,15 +4307,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData2;
                 matchedReferenceData2 = featureReferencesBuilder1.GetMatchedReferences();
 
-                Point3d origin4 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal4 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane4;
-                plane4 = workPart.Planes.CreatePlane(origin4, normal4, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin5 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal5 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane5;
-                plane5 = workPart.Planes.CreatePlane(origin5, normal5, SmartObject.UpdateOption.WithinModeling);
+              
 
                 featureReferencesBuilder1.AutomaticMatch(false);
 
@@ -4535,27 +4359,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder1.Destroy();
 
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression2);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
-
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression1);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
-
-                plane1.DestroyPlane();
+               
 
                 Session.UndoMarkId markId9;
                 markId9 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Redefine Feature");
@@ -4733,10 +4537,7 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder2;
                 featureReferencesBuilder2 = copyPasteBuilder2.GetFeatureReferences();
 
-                Point3d origin6 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal6 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane6;
-                plane6 = workPart.Planes.CreatePlane(origin6, normal6, SmartObject.UpdateOption.WithinModeling);
+             
 
                 Expression expression3;
                 expression3 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
@@ -4753,20 +4554,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData3;
                 matchedReferenceData3 = featureReferencesBuilder2.GetMatchedReferences();
 
-                Point3d origin7 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal7 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane7;
-                plane7 = workPart.Planes.CreatePlane(origin7, normal7, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin8 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal8 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane8;
-                plane8 = workPart.Planes.CreatePlane(origin8, normal8, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin9 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal9 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane9;
-                plane9 = workPart.Planes.CreatePlane(origin9, normal9, SmartObject.UpdateOption.WithinModeling);
+              
 
                 Section section3;
                 section3 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
@@ -4788,20 +4576,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData4;
                 matchedReferenceData4 = featureReferencesBuilder2.GetMatchedReferences();
 
-                Point3d origin10 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal10 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane10;
-                plane10 = workPart.Planes.CreatePlane(origin10, normal10, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin11 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal11 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane11;
-                plane11 = workPart.Planes.CreatePlane(origin11, normal11, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin12 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal12 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane12;
-                plane12 = workPart.Planes.CreatePlane(origin12, normal12, SmartObject.UpdateOption.WithinModeling);
+             
 
                 featureReferencesBuilder2.AutomaticMatch(false);
 
@@ -4892,7 +4667,6 @@ namespace TSG_Library.UFuncs.Mirror
                     ex.AssertErrorCode(1050029);
                 }
 
-                plane6.DestroyPlane();
 
                 Session.UndoMarkId markId22;
                 markId22 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
@@ -5118,10 +4892,7 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder1;
                 featureReferencesBuilder1 = copyPasteBuilder1.GetFeatureReferences();
 
-                Point3d origin1 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal1 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane1;
-                plane1 = workPart.Planes.CreatePlane(origin1, normal1, SmartObject.UpdateOption.WithinModeling);
+               
 
                 Unit unit1 = (Unit)workPart.UnitCollection.FindObject("Inch");
                 Expression expression1;
@@ -5139,20 +4910,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData1;
                 matchedReferenceData1 = featureReferencesBuilder1.GetMatchedReferences();
 
-                Point3d origin2 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal2 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane2;
-                plane2 = workPart.Planes.CreatePlane(origin2, normal2, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin3 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal3 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane3;
-                plane3 = workPart.Planes.CreatePlane(origin3, normal3, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin4 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal4 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane4;
-                plane4 = workPart.Planes.CreatePlane(origin4, normal4, SmartObject.UpdateOption.WithinModeling);
+            
 
                 Section section1;
                 section1 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
@@ -5176,21 +4934,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData2;
                 matchedReferenceData2 = featureReferencesBuilder1.GetMatchedReferences();
 
-                Point3d origin5 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal5 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane5;
-                plane5 = workPart.Planes.CreatePlane(origin5, normal5, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin6 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal6 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane6;
-                plane6 = workPart.Planes.CreatePlane(origin6, normal6, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin7 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal7 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane7;
-                plane7 = workPart.Planes.CreatePlane(origin7, normal7, SmartObject.UpdateOption.WithinModeling);
-
+             
                 featureReferencesBuilder1.AutomaticMatch(false);
 
                 Section section4;
@@ -5418,27 +5162,6 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder1.Destroy();
 
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression2);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
-
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression1);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
-
-                plane1.DestroyPlane();
 
                 // ----------------------------------------------
                 //   Menu: Tools->Journal->Stop Recording
@@ -5661,10 +5384,7 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder1;
                 featureReferencesBuilder1 = copyPasteBuilder1.GetFeatureReferences();
 
-                Point3d origin1 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal1 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane1;
-                plane1 = workPart.Planes.CreatePlane(origin1, normal1, SmartObject.UpdateOption.WithinModeling);
+                
 
                 Unit unit3 = (Unit)workPart.UnitCollection.FindObject("Inch");
                 Expression expression14;
@@ -5682,15 +5402,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData1;
                 matchedReferenceData1 = featureReferencesBuilder1.GetMatchedReferences();
 
-                Point3d origin2 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal2 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane2;
-                plane2 = workPart.Planes.CreatePlane(origin2, normal2, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin3 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal3 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane3;
-                plane3 = workPart.Planes.CreatePlane(origin3, normal3, SmartObject.UpdateOption.WithinModeling);
+              
 
                 Section section1;
                 section1 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
@@ -5707,15 +5419,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData2;
                 matchedReferenceData2 = featureReferencesBuilder1.GetMatchedReferences();
 
-                Point3d origin4 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal4 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane4;
-                plane4 = workPart.Planes.CreatePlane(origin4, normal4, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin5 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal5 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane5;
-                plane5 = workPart.Planes.CreatePlane(origin5, normal5, SmartObject.UpdateOption.WithinModeling);
+             
 
                 featureReferencesBuilder1.AutomaticMatch(false);
 
@@ -5767,27 +5471,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder1.Destroy();
 
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression15);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
-
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression14);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
-
-                plane1.DestroyPlane();
+              
 
                 Session.UndoMarkId markId13;
                 markId13 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Replace Reference Set");
@@ -5987,10 +5671,7 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder2;
                 featureReferencesBuilder2 = copyPasteBuilder2.GetFeatureReferences();
 
-                Point3d origin6 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal6 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane6;
-                plane6 = workPart.Planes.CreatePlane(origin6, normal6, SmartObject.UpdateOption.WithinModeling);
+              
 
                 Expression expression16;
                 expression16 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit3);
@@ -6007,20 +5688,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData3;
                 matchedReferenceData3 = featureReferencesBuilder2.GetMatchedReferences();
 
-                Point3d origin7 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal7 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane7;
-                plane7 = workPart.Planes.CreatePlane(origin7, normal7, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin8 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal8 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane8;
-                plane8 = workPart.Planes.CreatePlane(origin8, normal8, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin9 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal9 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane9;
-                plane9 = workPart.Planes.CreatePlane(origin9, normal9, SmartObject.UpdateOption.WithinModeling);
+              
 
                 Section section3;
                 section3 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
@@ -6042,20 +5710,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData4;
                 matchedReferenceData4 = featureReferencesBuilder2.GetMatchedReferences();
 
-                Point3d origin10 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal10 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane10;
-                plane10 = workPart.Planes.CreatePlane(origin10, normal10, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin11 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal11 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane11;
-                plane11 = workPart.Planes.CreatePlane(origin11, normal11, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin12 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal12 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane12;
-                plane12 = workPart.Planes.CreatePlane(origin12, normal12, SmartObject.UpdateOption.WithinModeling);
+             
 
                 featureReferencesBuilder2.AutomaticMatch(false);
 
@@ -6126,27 +5781,8 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder2.Destroy();
 
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression17);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
+           
 
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression16);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
-
-                plane6.DestroyPlane();
 
                 Session.UndoMarkId markId30;
                 markId30 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
@@ -6158,11 +5794,11 @@ namespace TSG_Library.UFuncs.Mirror
                 partLoadStatus5.Dispose();
                 theSession.SetUndoMarkName(markId30, "Make Work Part");
 
-                Session.UndoMarkId markId31;
-                markId31 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Replace Reference Set");
+                //Session.UndoMarkId markId31;
+                //markId31 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Replace Reference Set");
 
-                Session.UndoMarkId markId32;
-                markId32 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Replace Reference Set");
+                //Session.UndoMarkId markId32;
+                //markId32 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Replace Reference Set");
 
                 Component[] components4 = new Component[1];
                 components4[0] = component1;
@@ -6170,7 +5806,6 @@ namespace TSG_Library.UFuncs.Mirror
                 errorList4 = workPart.ComponentAssembly.ReplaceReferenceSetInOwners("BODY", components4);
 
                 errorList4.Dispose();
-                theSession.DeleteUndoMark(markId31, null);
 
                 // ----------------------------------------------
                 //   Menu: Tools->Journal->Stop Recording
@@ -6240,10 +5875,7 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder1;
                 featureReferencesBuilder1 = copyPasteBuilder1.GetFeatureReferences();
 
-                Point3d origin1 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal1 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane1;
-                plane1 = workPart.Planes.CreatePlane(origin1, normal1, SmartObject.UpdateOption.WithinModeling);
+              
 
                 Unit unit1 = (Unit)workPart.UnitCollection.FindObject("Inch");
                 Expression expression1;
@@ -6261,15 +5893,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData1;
                 matchedReferenceData1 = featureReferencesBuilder1.GetMatchedReferences();
 
-                Point3d origin2 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal2 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane2;
-                plane2 = workPart.Planes.CreatePlane(origin2, normal2, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin3 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal3 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane3;
-                plane3 = workPart.Planes.CreatePlane(origin3, normal3, SmartObject.UpdateOption.WithinModeling);
+              
 
                 Section section1;
                 section1 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
@@ -6286,15 +5910,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData2;
                 matchedReferenceData2 = featureReferencesBuilder1.GetMatchedReferences();
 
-                Point3d origin4 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal4 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane4;
-                plane4 = workPart.Planes.CreatePlane(origin4, normal4, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin5 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal5 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane5;
-                plane5 = workPart.Planes.CreatePlane(origin5, normal5, SmartObject.UpdateOption.WithinModeling);
+              
 
                 featureReferencesBuilder1.AutomaticMatch(false);
 
@@ -6319,15 +5935,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData3;
                 matchedReferenceData3 = featureReferencesBuilder1.GetMatchedReferences();
 
-                Point3d origin6 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal6 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane6;
-                plane6 = workPart.Planes.CreatePlane(origin6, normal6, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin7 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal7 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane7;
-                plane7 = workPart.Planes.CreatePlane(origin7, normal7, SmartObject.UpdateOption.WithinModeling);
+              
 
                 featureReferencesBuilder1.AutomaticMatch(false);
 
@@ -6399,7 +6007,6 @@ namespace TSG_Library.UFuncs.Mirror
                     ex.AssertErrorCode(1050029);
                 }
 
-                plane1.DestroyPlane();
 
                 Session.UndoMarkId markId8;
                 markId8 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Redefine Feature");
@@ -6407,57 +6014,66 @@ namespace TSG_Library.UFuncs.Mirror
                 EditWithRollbackManager editWithRollbackManager1;
                 editWithRollbackManager1 = workPart.Features.StartEditWithRollbackManager(extractFace2, markId8);
 
-                Session.UndoMarkId markId9;
-                markId9 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Start");
-
-                ExtractFaceBuilder extractFaceBuilder1;
-                extractFaceBuilder1 = workPart.Features.CreateExtractFaceBuilder(extractFace2);
-
-                DisplayableObject[] replacementobjects1 = new DisplayableObject[1];
-                Component component4 = (Component)displayPart.ComponentAssembly.RootComponent.FindObject("COMPONENT 001449-010-147 2");
-                Body body2 = (Body)component4.FindObject("PROTO#.Bodies|EXTRUDE(13)");
-                replacementobjects1[0] = body2;
-                extractFaceBuilder1.ReplacementAssistant.SetNewParents(replacementobjects1);
-
-                theSession.SetUndoMarkName(markId9, "WAVE Geometry Linker Dialog");
-
-                // ----------------------------------------------
-                //   Dialog Begin WAVE Geometry Linker
-                // ----------------------------------------------
-                extractFaceBuilder1.Associative = false;
-
-                Session.UndoMarkId markId10;
-                markId10 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "WAVE Geometry Linker");
-
-                theSession.DeleteUndoMark(markId10, null);
-
-                Session.UndoMarkId markId11;
-                markId11 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "WAVE Geometry Linker");
-
-                TaggedObject nullNXOpen_TaggedObject = null;
-                extractFaceBuilder1.SourcePartOccurrence = nullNXOpen_TaggedObject;
-
-                NXOpen.Assemblies.ProductInterface.InterfaceObject[] selectedobjects1 = new NXOpen.Assemblies.ProductInterface.InterfaceObject[0];
-                extractFaceBuilder1.SetProductInterfaceObjects(selectedobjects1);
-
                 NXObject nXObject2;
-                nXObject2 = extractFaceBuilder1.Commit();
+                try
+                {
 
-                theSession.DeleteUndoMark(markId11, null);
+                    Session.UndoMarkId markId9;
+                    markId9 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Start");
 
-                theSession.SetUndoMarkName(markId9, "WAVE Geometry Linker");
 
-                extractFaceBuilder1.Destroy();
 
-                theSession.DeleteUndoMark(markId9, null);
+                    ExtractFaceBuilder extractFaceBuilder1;
+                    extractFaceBuilder1 = workPart.Features.CreateExtractFaceBuilder(extractFace2);
 
-                editWithRollbackManager1.UpdateFeature(false);
+                    using (session_.__UsingBuilderDestroyer(extractFaceBuilder1))
+                    {
 
-                editWithRollbackManager1.Stop();
+                        DisplayableObject[] replacementobjects1 = new DisplayableObject[1];
+                        Component component4 = (Component)displayPart.ComponentAssembly.RootComponent.FindObject("COMPONENT 001449-010-147 2");
+                        Body body2 = (Body)component4.FindObject("PROTO#.Bodies|EXTRUDE(13)");
+                        replacementobjects1[0] = body2;
+                        extractFaceBuilder1.ReplacementAssistant.SetNewParents(replacementobjects1);
 
-                theSession.Preferences.Modeling.UpdatePending = false;
+                        theSession.SetUndoMarkName(markId9, "WAVE Geometry Linker Dialog");
 
-                editWithRollbackManager1.Destroy();
+                        // ----------------------------------------------
+                        //   Dialog Begin WAVE Geometry Linker
+                        // ----------------------------------------------
+                        extractFaceBuilder1.Associative = false;
+
+                        //Session.UndoMarkId markId10;
+                        //markId10 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "WAVE Geometry Linker");
+
+                        //theSession.DeleteUndoMark(markId10, null);
+
+                        //Session.UndoMarkId markId11;
+                        //markId11 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "WAVE Geometry Linker");
+
+                        TaggedObject nullNXOpen_TaggedObject = null;
+                        extractFaceBuilder1.SourcePartOccurrence = nullNXOpen_TaggedObject;
+
+                        NXOpen.Assemblies.ProductInterface.InterfaceObject[] selectedobjects1 = new NXOpen.Assemblies.ProductInterface.InterfaceObject[0];
+                        extractFaceBuilder1.SetProductInterfaceObjects(selectedobjects1);
+
+                        nXObject2 = extractFaceBuilder1.Commit();
+
+
+                    }
+
+                    theSession.DeleteUndoMark(markId9, null);
+                }
+                finally
+                {
+
+                    editWithRollbackManager1.UpdateFeature(false);
+
+                    editWithRollbackManager1.Stop();
+
+                    theSession.Preferences.Modeling.UpdatePending = false;
+
+                    editWithRollbackManager1.Destroy();
+                }
 
                 Session.UndoMarkId markId12;
                 markId12 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Redefine Feature");
@@ -6466,102 +6082,99 @@ namespace TSG_Library.UFuncs.Mirror
                 EditWithRollbackManager editWithRollbackManager2;
                 editWithRollbackManager2 = workPart.Features.StartEditWithRollbackManager(extractFace3, markId12);
 
-                Session.UndoMarkId markId13;
-                markId13 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Start");
-
-                ExtractFaceBuilder extractFaceBuilder2;
-                extractFaceBuilder2 = workPart.Features.CreateExtractFaceBuilder(extractFace3);
-
-                DisplayableObject[] replacementobjects2 = new DisplayableObject[0];
-                extractFaceBuilder2.ReplacementAssistant.SetNewParents(replacementobjects2);
-
-                theSession.SetUndoMarkName(markId13, "WAVE Geometry Linker Dialog");
-
-                // ----------------------------------------------
-                //   Dialog Begin WAVE Geometry Linker
-                // ----------------------------------------------
-                Body[] bodies2 = new Body[1];
-                bodies2[0] = body1;
-                BodyDumbRule bodyDumbRule2;
-                bodyDumbRule2 = workPart.ScRuleFactory.CreateRuleBodyDumb(bodies2, true);
-
-                SelectionIntentRule[] rules2 = new SelectionIntentRule[1];
-                rules2[0] = bodyDumbRule2;
-                extractFaceBuilder2.ExtractBodyCollector.ReplaceRules(rules2, false);
-
-                DisplayableObject[] replacementobjects3 = new DisplayableObject[0];
-                extractFaceBuilder2.ReplacementAssistant.SetNewParents(replacementobjects3);
-
-                DisplayableObject[] replacementobjects4 = new DisplayableObject[1];
-                replacementobjects4[0] = body1;
-                extractFaceBuilder2.ReplacementAssistant.SetNewParents(replacementobjects4);
-
-                Part part2 = (Part)theSession.Parts.FindObject("001449-010-147");
-                EdgeBlend edgeBlend1 = (EdgeBlend)part2.Features.FindObject("BLEND(16)");
-                extractFaceBuilder2.FrecAtTimeStamp = edgeBlend1;
-
-                extractFaceBuilder2.Associative = true;
-
-                extractFaceBuilder2.InheritDisplayProperties = true;
-
-                Session.UndoMarkId markId14;
-                markId14 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "WAVE Geometry Linker");
-
-                theSession.DeleteUndoMark(markId14, null);
-
-                Session.UndoMarkId markId15;
-                markId15 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "WAVE Geometry Linker");
-
-                extractFaceBuilder2.SourcePartOccurrence = nullNXOpen_TaggedObject;
-
-                NXOpen.Assemblies.ProductInterface.InterfaceObject[] selectedobjects2 = new NXOpen.Assemblies.ProductInterface.InterfaceObject[0];
-                extractFaceBuilder2.SetProductInterfaceObjects(selectedobjects2);
-
                 NXObject nXObject3;
-                nXObject3 = extractFaceBuilder2.Commit();
 
-                theSession.DeleteUndoMark(markId15, null);
+                try
+                {
 
-                theSession.SetUndoMarkName(markId13, "WAVE Geometry Linker");
+                    //Session.UndoMarkId markId13;
+                    //markId13 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Start");
 
-                extractFaceBuilder2.Destroy();
+                    ExtractFaceBuilder extractFaceBuilder2;
+                    extractFaceBuilder2 = workPart.Features.CreateExtractFaceBuilder(extractFace3);
 
-                theSession.DeleteUndoMark(markId13, null);
+                    using (session_.__UsingBuilderDestroyer(extractFaceBuilder2))
+                    {
 
-                editWithRollbackManager2.UpdateFeature(false);
+                        DisplayableObject[] replacementobjects2 = new DisplayableObject[0];
+                        extractFaceBuilder2.ReplacementAssistant.SetNewParents(replacementobjects2);
 
-                editWithRollbackManager2.Stop();
+                        //theSession.SetUndoMarkName(markId13, "WAVE Geometry Linker Dialog");
 
-                theSession.Preferences.Modeling.UpdatePending = false;
+                        // ----------------------------------------------
+                        //   Dialog Begin WAVE Geometry Linker
+                        // ----------------------------------------------
+                        Body[] bodies2 = new Body[1];
+                        bodies2[0] = body1;
+                        BodyDumbRule bodyDumbRule2;
+                        bodyDumbRule2 = workPart.ScRuleFactory.CreateRuleBodyDumb(bodies2, true);
 
-                editWithRollbackManager2.Destroy();
+                        SelectionIntentRule[] rules2 = new SelectionIntentRule[1];
+                        rules2[0] = bodyDumbRule2;
+                        extractFaceBuilder2.ExtractBodyCollector.ReplaceRules(rules2, false);
+
+                        DisplayableObject[] replacementobjects3 = new DisplayableObject[0];
+                        extractFaceBuilder2.ReplacementAssistant.SetNewParents(replacementobjects3);
+
+                        DisplayableObject[] replacementobjects4 = new DisplayableObject[1];
+                        replacementobjects4[0] = body1;
+                        extractFaceBuilder2.ReplacementAssistant.SetNewParents(replacementobjects4);
+
+                        Part part2 = (Part)theSession.Parts.FindObject("001449-010-147");
+                        EdgeBlend edgeBlend1 = (EdgeBlend)part2.Features.FindObject("BLEND(16)");
+                        extractFaceBuilder2.FrecAtTimeStamp = edgeBlend1;
+
+                        extractFaceBuilder2.Associative = true;
+
+                        extractFaceBuilder2.InheritDisplayProperties = true;
+
+                        //Session.UndoMarkId markId14;
+                        //markId14 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "WAVE Geometry Linker");
+
+                        //theSession.DeleteUndoMark(markId14, null);
+
+                        //Session.UndoMarkId markId15;
+                        //markId15 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "WAVE Geometry Linker");
+
+                        extractFaceBuilder2.SourcePartOccurrence = null;
+
+                        NXOpen.Assemblies.ProductInterface.InterfaceObject[] selectedobjects2 = new NXOpen.Assemblies.ProductInterface.InterfaceObject[0];
+                        extractFaceBuilder2.SetProductInterfaceObjects(selectedobjects2);
+
+                        nXObject3 = extractFaceBuilder2.Commit();
+
+                        //theSession.DeleteUndoMark(markId15, null);
+
+                        //theSession.SetUndoMarkName(markId13, "WAVE Geometry Linker");
+
+                    }
+
+                    //theSession.DeleteUndoMark(markId13, null);
+                }
+                finally
+                {
+                    editWithRollbackManager2.UpdateFeature(false);
+
+                    editWithRollbackManager2.Stop();
+
+                    theSession.Preferences.Modeling.UpdatePending = false;
+
+                    editWithRollbackManager2.Destroy();
+                }
 
                 Session.UndoMarkId markId16;
                 markId16 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
 
-                PartLoadStatus partLoadStatus3;
-                theSession.Parts.SetWorkComponent(component2, PartCollection.RefsetOption.Current, PartCollection.WorkComponentOption.Visible, out partLoadStatus3);
-
+                __work_component_ = component2;
                 workPart = theSession.Parts.Work; // 001449-010-109
-                partLoadStatus3.Dispose();
-                // ----------------------------------------------
-                //   Menu: Edit->Copy
-                // ----------------------------------------------
-                workPart.PmiManager.RestoreUnpastedObjects();
 
                 Session.UndoMarkId markId17;
                 markId17 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
 
-                PartLoadStatus partLoadStatus4;
-                theSession.Parts.SetWorkComponent(component3, PartCollection.RefsetOption.Current, PartCollection.WorkComponentOption.Visible, out partLoadStatus4);
+
+                __work_component_ = component3;
 
                 workPart = theSession.Parts.Work; // 001449-010-900
-                partLoadStatus4.Dispose();
-                // ----------------------------------------------
-                //   Menu: Edit->Paste
-                // ----------------------------------------------
-                Session.UndoMarkId markId18;
-                markId18 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Start");
 
                 NXObject[] features2 = new NXObject[1];
                 BooleanFeature booleanFeature1 = (BooleanFeature)part1.Features.FindObject("SUBTRACT(86)");
@@ -6574,11 +6187,7 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder2;
                 featureReferencesBuilder2 = copyPasteBuilder2.GetFeatureReferences();
 
-                Point3d origin8 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal8 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane8;
-                plane8 = workPart.Planes.CreatePlane(origin8, normal8, SmartObject.UpdateOption.WithinModeling);
-
+              
                 Expression expression3;
                 expression3 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
 
@@ -6587,25 +6196,11 @@ namespace TSG_Library.UFuncs.Mirror
 
                 featureReferencesBuilder2.AutomaticMatch(true);
 
-                theSession.SetUndoMarkName(markId18, "Paste Feature Dialog");
 
                 MatchedReferenceBuilder[] matchedReferenceData4;
                 matchedReferenceData4 = featureReferencesBuilder2.GetMatchedReferences();
 
-                Point3d origin9 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal9 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane9;
-                plane9 = workPart.Planes.CreatePlane(origin9, normal9, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin10 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal10 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane10;
-                plane10 = workPart.Planes.CreatePlane(origin10, normal10, SmartObject.UpdateOption.WithinModeling);
-
-                Point3d origin11 = new Point3d(0.0, 0.0, 0.0);
-                Vector3d normal11 = new Vector3d(0.0, 0.0, 1.0);
-                Plane plane11;
-                plane11 = workPart.Planes.CreatePlane(origin11, normal11, SmartObject.UpdateOption.WithinModeling);
+              
 
                 copyPasteBuilder2.ExpressionOption = CopyPasteBuilder.ExpressionTransferOption.CreateNew;
 
@@ -6666,7 +6261,6 @@ namespace TSG_Library.UFuncs.Mirror
 
                 theSession.DeleteUndoMark(markId20, null);
 
-                theSession.SetUndoMarkName(markId18, "Paste Feature");
 
                 BooleanFeature booleanFeature2 = (BooleanFeature)nXObject4;
                 Expression[] expressions2;
@@ -6674,27 +6268,8 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder2.Destroy();
 
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression4);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
 
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression3);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
 
-                plane8.DestroyPlane();
 
                 Session.UndoMarkId markId21;
                 markId21 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
@@ -6783,17 +6358,7 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder1;
                 featureReferencesBuilder1 = copyPasteBuilder1.GetFeatureReferences();
 
-                //Point3d origin1 = new Point3d(0.0, 0.0, 0.0);
-                //Vector3d normal1 = new Vector3d(0.0, 0.0, 1.0);
-                //Plane plane1;
-                //plane1 = workPart.Planes.CreatePlane(origin1, normal1, SmartObject.UpdateOption.WithinModeling);
-
-                //Unit unit1 = (Unit)workPart.UnitCollection.FindObject("Inch");
-                //Expression expression1;
-                //expression1 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                //Expression expression2;
-                //expression2 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
+               
 
                 featureReferencesBuilder1.AutomaticMatch(true);
 
@@ -6802,15 +6367,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData1;
                 matchedReferenceData1 = featureReferencesBuilder1.GetMatchedReferences();
 
-                //Point3d origin2 = new Point3d(0.0, 0.0, 0.0);
-                //Vector3d normal2 = new Vector3d(0.0, 0.0, 1.0);
-                //Plane plane2;
-                //plane2 = workPart.Planes.CreatePlane(origin2, normal2, SmartObject.UpdateOption.WithinModeling);
-
-                //Point3d origin3 = new Point3d(0.0, 0.0, 0.0);
-                //Vector3d normal3 = new Vector3d(0.0, 0.0, 1.0);
-                //Plane plane3;
-                //plane3 = workPart.Planes.CreatePlane(origin3, normal3, SmartObject.UpdateOption.WithinModeling);
+               
 
                 copyPasteBuilder1.ExpressionOption = CopyPasteBuilder.ExpressionTransferOption.CreateNew;
 
@@ -7011,24 +6568,15 @@ namespace TSG_Library.UFuncs.Mirror
                 //Session.UndoMarkId markId16;
                 //markId16 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
 
-                PartLoadStatus partLoadStatus3;
-                theSession.Parts.SetWorkComponent(component2, PartCollection.RefsetOption.Current, PartCollection.WorkComponentOption.Visible, out partLoadStatus3);
+                __work_component_ = component2;
+
 
                 workPart = theSession.Parts.Work; // 001449-010-109
-                partLoadStatus3.Dispose();
-                // ----------------------------------------------
-                //   Menu: Edit->Copy
-                // ----------------------------------------------
-                workPart.PmiManager.RestoreUnpastedObjects();
 
-                Session.UndoMarkId markId17;
-                markId17 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
+                __work_component_ = component3;
 
-                PartLoadStatus partLoadStatus4;
-                theSession.Parts.SetWorkComponent(component3, PartCollection.RefsetOption.Current, PartCollection.WorkComponentOption.Visible, out partLoadStatus4);
 
                 workPart = theSession.Parts.Work; // 001449-010-900
-                partLoadStatus4.Dispose();
                 // ----------------------------------------------
                 //   Menu: Edit->Paste
                 // ----------------------------------------------
@@ -7046,16 +6594,7 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder2;
                 featureReferencesBuilder2 = copyPasteBuilder2.GetFeatureReferences();
 
-                //Point3d origin4 = new Point3d(0.0, 0.0, 0.0);
-                //Vector3d normal4 = new Vector3d(0.0, 0.0, 1.0);
-                //Plane plane4;
-                //plane4 = workPart.Planes.CreatePlane(origin4, normal4, SmartObject.UpdateOption.WithinModeling);
-
-                //Expression expression3;
-                //expression3 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                //Expression expression4;
-                //expression4 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
+               
 
                 featureReferencesBuilder2.AutomaticMatch(true);
 
@@ -7064,20 +6603,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData2;
                 matchedReferenceData2 = featureReferencesBuilder2.GetMatchedReferences();
 
-                //Point3d origin5 = new Point3d(0.0, 0.0, 0.0);
-                //Vector3d normal5 = new Vector3d(0.0, 0.0, 1.0);
-                //Plane plane5;
-                //plane5 = workPart.Planes.CreatePlane(origin5, normal5, SmartObject.UpdateOption.WithinModeling);
-
-                //Point3d origin6 = new Point3d(0.0, 0.0, 0.0);
-                //Vector3d normal6 = new Vector3d(0.0, 0.0, 1.0);
-                //Plane plane6;
-                //plane6 = workPart.Planes.CreatePlane(origin6, normal6, SmartObject.UpdateOption.WithinModeling);
-
-                //Point3d origin7 = new Point3d(0.0, 0.0, 0.0);
-                //Vector3d normal7 = new Vector3d(0.0, 0.0, 1.0);
-                //Plane plane7;
-                //plane7 = workPart.Planes.CreatePlane(origin7, normal7, SmartObject.UpdateOption.WithinModeling);
+               
 
                 copyPasteBuilder2.ExpressionOption = CopyPasteBuilder.ExpressionTransferOption.CreateNew;
 
