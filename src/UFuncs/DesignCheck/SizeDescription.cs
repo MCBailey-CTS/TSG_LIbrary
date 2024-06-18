@@ -3,22 +3,23 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using NXOpen;
+using TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 {
     [Obsolete]
     public class SizeDescription : IDesignCheck
     {
-        public bool IsPartValidForCheck(Part part, out string message)
-        {
-            message = "";
-            return true;
-        }
+        //public bool IsPartValidForCheck(Part part, out string message)
+        //{
+        //    message = "";
+        //    return true;
+        //}
 
-        public bool PerformCheck(Part part, out TreeNode result_node)
+        public DCResult PerformCheck(Part part, out TreeNode result_node)
         {
             result_node = part.__TreeNode();
-            return false;
+            return DCResult.fail;
         }
 
         /*
@@ -189,19 +190,19 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 
         private static bool CheckDescriptionMatch(Match descriptionMatch, out string message)
         {
-            if(!descriptionMatch.Success)
+            if (!descriptionMatch.Success)
             {
                 message = "Description attribute did not match regular expression.";
                 return false;
             }
 
-            if(descriptionMatch.Groups.Count < 4)
+            if (descriptionMatch.Groups.Count < 4)
             {
                 message = "Description attribute matched less than the required group set.";
                 return false;
             }
 
-            if(descriptionMatch.Groups.Count > 4)
+            if (descriptionMatch.Groups.Count > 4)
             {
                 message = "Description attribute matched more than the required group set.";
                 return false;

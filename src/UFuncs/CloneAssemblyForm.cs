@@ -17,7 +17,7 @@ using TSG_Library.Properties;
 using TSG_Library.Utilities;
 using static TSG_Library.Utilities.GFolder;
 using static TSG_Library.UFuncs._UFunc;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.Extensions;
 
 namespace TSG_Library.UFuncs
 {
@@ -33,7 +33,7 @@ namespace TSG_Library.UFuncs
 
         private void btnTestExecute_Click(object sender, EventArgs e)
         {
-            var stopwatch = Stopwatch.StartNew();
+            Stopwatch stopwatch = Stopwatch.StartNew();
 
             //System.Diagnostics.Debugger.Launch();
 
@@ -41,9 +41,9 @@ namespace TSG_Library.UFuncs
             {
                 try
                 {
-                    var __folder = create(txtJobFolder_.Text);
+                    GFolder __folder = Create(txtJobFolder_.Text);
 
-                    var ops = txtOps.Text.Replace(Environment.NewLine, " ")
+                    string[] ops = txtOps.Text.Replace(Environment.NewLine, " ")
                         .Replace("  ", " ")
                         .Replace("  ", " ")
                         .Replace("  ", " ")
@@ -56,9 +56,9 @@ namespace TSG_Library.UFuncs
                     session_.Parts.LoadOptions.PartLoadOption = LoadOptions.LoadOption.FullyLoad;
                     session_.Parts.LoadOptions.SetInterpartData(true, LoadOptions.Parent.Partial);
 
-                    var folder = create(txtJobFolder_.Text);
+                    GFolder folder = Create(txtJobFolder_.Text);
 
-                    if(rdoTransfer.Checked)
+                    if (rdoTransfer.Checked)
                     {
                         clone_transfer(__folder, txtOps.Text.Replace(Environment.NewLine, " ")
                             .Replace("  ", " ")
@@ -68,29 +68,29 @@ namespace TSG_Library.UFuncs
                         return;
                     }
 
-                    if(rdoLine.Checked)
+                    if (rdoLine.Checked)
                     {
                         clone_line(folder, ops, rdoMetric_.Checked);
                         return;
                     }
 
-                    if(rdoProressive.Checked)
+                    if (rdoProressive.Checked)
                     {
-                        var op = txtOps.Text.Replace("\\n", " ").Trim();
+                        string op = txtOps.Text.Replace("\\n", " ").Trim();
 
-                        if(!File.Exists(folder.file_strip(op)))
+                        if (!File.Exists(folder.file_strip(op)))
                         {
                             print_($"Can't clone prog die without {op}-Strip.");
                             return;
                         }
 
-                        if(!int.TryParse(op, out _))
+                        if (!int.TryParse(op, out _))
                         {
                             print_("Invalid op");
                             return;
                         }
 
-                        var press_op = Convert.ToInt32(numudPressDiesetOp.Value);
+                        int press_op = Convert.ToInt32(numudPressDiesetOp.Value);
 
                         clone_prog(folder, op, rdoMetric_.Checked, press_op);
                     }
@@ -111,16 +111,16 @@ namespace TSG_Library.UFuncs
         {
             chkStartWithBlank.Enabled = rdoTransfer.Checked;
 
-            if(!chkStartWithBlank.Enabled)
+            if (!chkStartWithBlank.Enabled)
                 chkStartWithBlank.Checked = false;
 
-            if(rdoProressive.Checked)
+            if (rdoProressive.Checked)
                 txtOps.Text = "010";
 
-            if(rdoLine.Checked)
+            if (rdoLine.Checked)
                 txtOps.Text = "010 020 030 040";
 
-            if(rdoTransfer.Checked)
+            if (rdoTransfer.Checked)
                 txtOps.Text = $"301 010 020{Environment.NewLine}302 030 040";
         }
 
@@ -130,14 +130,14 @@ namespace TSG_Library.UFuncs
 
         private void txtJobFolder__DoubleClick(object sender, EventArgs e)
         {
-            var dialog = new FolderBrowserDialog
+            FolderBrowserDialog dialog = new FolderBrowserDialog
             {
                 SelectedPath = "G:\\"
             };
 
             dialog.ShowDialog();
 
-            var k = dialog.SelectedPath;
+            string k = dialog.SelectedPath;
 
             txtJobFolder_.Text = k;
         }
@@ -150,7 +150,7 @@ namespace TSG_Library.UFuncs
 
             rdoTransfer.Checked = true;
 
-            if(Environment.UserName == "mcbailey")
+            if (Environment.UserName == "mcbailey")
             {
                 txtJobFolder_.Text = @"C:\CTS\003506 (lydall)";
 
@@ -172,14 +172,14 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if(!Directory.Exists(__folder.dir_op(op)))
+                if (!Directory.Exists(__folder.dir_op(op)))
                     Directory.CreateDirectory(__folder.dir_op(op));
 
                 ExecuteCloneProg(__folder, op);
 
                 __display_part_ = session_.__FindOrOpen(__folder.file_detail_000(op));
 
-                replace_strip_layout_in_display(__folder.file_strip_010, "STRIP", true);
+                replace_strip_layout_in_display(__folder.FileStrip010, "STRIP", true);
 
                 using (new DisplayPartReset())
                 {
@@ -194,9 +194,9 @@ namespace TSG_Library.UFuncs
                     {
                         session_.__FindOrOpen(__folder.path_op_detail(op, "upr")).__SetAsDisplayPart();
                         __display_part_.ComponentAssembly.RootComponent
-                            .__FindComponent($"COMPONENT {__folder.customer_number}-{op}-usp3 1").Suppress();
+                            .__FindComponent($"COMPONENT {__folder.CustomerNumber}-{op}-usp3 1").Suppress();
                         __display_part_.ComponentAssembly.RootComponent
-                            .__FindComponent($"COMPONENT {__folder.customer_number}-{op}-usp4 1").Suppress();
+                            .__FindComponent($"COMPONENT {__folder.CustomerNumber}-{op}-usp4 1").Suppress();
                     }
                     catch (Exception ex)
                     {
@@ -210,9 +210,9 @@ namespace TSG_Library.UFuncs
                     {
                         session_.__FindOrOpen(__folder.path_op_detail(op, "lwr")).__SetAsDisplayPart();
                         __display_part_.ComponentAssembly.RootComponent
-                            .__FindComponent($"COMPONENT {__folder.customer_number}-{op}-lsp3 1").Suppress();
+                            .__FindComponent($"COMPONENT {__folder.CustomerNumber}-{op}-lsp3 1").Suppress();
                         __display_part_.ComponentAssembly.RootComponent
-                            .__FindComponent($"COMPONENT {__folder.customer_number}-{op}-lsp4 1").Suppress();
+                            .__FindComponent($"COMPONENT {__folder.CustomerNumber}-{op}-lsp4 1").Suppress();
                     }
                     catch (Exception ex)
                     {
@@ -225,9 +225,9 @@ namespace TSG_Library.UFuncs
                     __display_part_.Layers.MoveDisplayableObjects(256, __display_part_.DisplayedConstraints.ToArray());
                 }
 
-                var dieset_control = $"{__folder.customer_number}-{op}-dieset-control.prt";
+                string dieset_control = $"{__folder.CustomerNumber}-{op}-dieset-control.prt";
 
-                using (session_.__usingDisplayPartReset())
+                using (session_.__UsingDisplayPartReset())
                 {
                     __display_part_ = session_.__FindOrOpen(__folder.file_detail0("010", "002"));
                     __display_part_.Expressions.ChangeInterpartReferences("seed-prog-dieset-control.prt",
@@ -246,21 +246,21 @@ namespace TSG_Library.UFuncs
                         dieset_control, true, true);
                 }
 
-                using (session_.__usingDisplayPartReset())
+                using (session_.__UsingDisplayPartReset())
                 {
                     try
                     {
-                        if(press_op_dieset == 0)
+                        if (press_op_dieset == 0)
                         {
                             print_("Did not hook up dieset control to a press.");
                         }
                         else
                         {
-                            var press_op = __Op10To010(press_op_dieset * 10);
+                            string press_op = __Op10To010(press_op_dieset * 10);
 
                             __display_part_ = session_.__FindOrOpen(dieset_control);
                             __display_part_.Expressions.ChangeInterpartReferences("XXXXX-Press-XX-Assembly.prt",
-                                $"{__folder.customer_number}-P{press_op}-Press.prt", true, true);
+                                $"{__folder.CustomerNumber}-P{press_op}-Press.prt", true, true);
                         }
                     }
                     catch (Exception ex)
@@ -281,9 +281,9 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                foreach (var op in ops)
+                foreach (string op in ops)
                 {
-                    if(!Directory.Exists(__folder.dir_op(op)))
+                    if (!Directory.Exists(__folder.dir_op(op)))
                         Directory.CreateDirectory(__folder.dir_op(op));
 
                     ExecuteCloneLineOp(__folder, op);
@@ -321,10 +321,10 @@ namespace TSG_Library.UFuncs
 
                 Session.GetSession().Parts.SetAllowMultipleDisplayedParts(true);
 
-                foreach (var op in ops)
+                foreach (string op in ops)
                     session_.__FindOrOpen(__folder.file_detail0(op, "000")).__SetActiveDisplay();
 
-                if(!Directory.Exists(__folder.dir_op("900")))
+                if (!Directory.Exists(__folder.dir_op("900")))
                     Directory.CreateDirectory(__folder.dir_op("900"));
 
                 ExecuteCloneLine900(__folder);
@@ -333,7 +333,7 @@ namespace TSG_Library.UFuncs
 
                 try
                 {
-                    replace_strip_layout_in_display(__folder.file_strip_900, "STRIP", true);
+                    replace_strip_layout_in_display(__folder.FileStrip900, "STRIP", true);
                 }
                 catch (Exception ex)
                 {
@@ -386,20 +386,20 @@ namespace TSG_Library.UFuncs
 
                 using (new DisplayPartReset())
                 {
-                    foreach (var op in ops)
+                    foreach (string op in ops)
                     {
-                        var part = session_.__FindOrOpen(__folder.file_detail_000(op));
+                        Part part = session_.__FindOrOpen(__folder.file_detail_000(op));
 
                         __display_part_ = part;
 
                         const string center_line_of_coil = "CenterLineofCoil";
 
-                        var orig_exp = session_.__FindOrOpen(__folder.file_strip("900"))
+                        Expression orig_exp = session_.__FindOrOpen(__folder.file_strip("900"))
                             .__FindExpression(center_line_of_coil);
 
                         __display_part_.__CreateInterpartExpression(orig_exp, center_line_of_coil);
 
-                        var exp = __display_part_.__FindExpression("p2");
+                        Expression exp = __display_part_.__FindExpression("p2");
 
                         exp.SetFormula(center_line_of_coil);
 
@@ -428,17 +428,17 @@ namespace TSG_Library.UFuncs
 
                 using (new DisplayPartReset())
                 {
-                    foreach (var op in ops)
+                    foreach (string op in ops)
                         session_.__FindOrOpen(__folder.file_detail_000(op)).__Save();
 
-                    foreach (var part_file in Directory.GetFiles(__folder.dir_op("900"), "*-000.prt",
+                    foreach (string part_file in Directory.GetFiles(__folder.dir_op("900"), "*-000.prt",
                                  SearchOption.TopDirectoryOnly))
                         session_.__FindOrOpen(part_file).__Save();
                 }
 
                 using (new DisplayPartReset())
                 {
-                    var exp = __display_part_.__FindExpression("p2");
+                    Expression exp = __display_part_.__FindExpression("p2");
                     __display_part_.Expressions.Rename(exp, $"{exp.GetFormula()}_");
                     __display_part_.Expressions.EditWithUnits(
                         exp,
@@ -451,11 +451,11 @@ namespace TSG_Library.UFuncs
                 //ops
 
 
-                using (session_.__usingDisplayPartReset())
+                using (session_.__UsingDisplayPartReset())
                 {
-                    foreach (var op in ops)
+                    foreach (string op in ops)
                     {
-                        var dieset_control = $"{__folder.customer_number}-{op}-dieset-control.prt";
+                        string dieset_control = $"{__folder.CustomerNumber}-{op}-dieset-control.prt";
 
                         __display_part_ = session_.__FindOrOpen(__folder.file_detail0(op, "002"));
                         __display_part_.Expressions.ChangeInterpartReferences("seed-prog-dieset-control.prt",
@@ -475,19 +475,19 @@ namespace TSG_Library.UFuncs
                     }
                 }
 
-                using (session_.__usingDisplayPartReset())
+                using (session_.__UsingDisplayPartReset())
                 {
-                    foreach (var op in ops)
+                    foreach (string op in ops)
                         try
                         {
-                            var dieset_control = $"{__folder.customer_number}-{op}-dieset-control.prt";
+                            string dieset_control = $"{__folder.CustomerNumber}-{op}-dieset-control.prt";
                             __display_part_ = session_.__FindOrOpen(dieset_control);
                             __display_part_.Expressions.ChangeInterpartReferences("XXXXX-Press-XX-Assembly.prt",
-                                $"{__folder.customer_number}-T{op}-Press.prt", true, true);
+                                $"{__folder.CustomerNumber}-T{op}-Press.prt", true, true);
                         }
                         catch (Exception ex)
                         {
-                            ex.__PrintException($"{__folder.customer_number}-T{op}-Press.prt");
+                            ex.__PrintException($"{__folder.CustomerNumber}-T{op}-Press.prt");
                         }
                 }
             }
@@ -501,40 +501,38 @@ namespace TSG_Library.UFuncs
         {
             //NXOpen.Session.GetSession().Parts.SetAllowMultipleDisplayedParts(true);
 
-            var regex = Regex.Split(ops, "(?<split>3\\d\\d)") ?? throw new Exception("Could not parse ops");
-            var op_list = new List<string>(regex)
+            string[] regex = Regex.Split(ops, "(?<split>3\\d\\d)") ?? throw new Exception("Could not parse ops");
+            List<string> op_list = new List<string>(regex)
                 .Where(__s => !string.IsNullOrEmpty(__s))
                 .Where(__s => !string.IsNullOrWhiteSpace(__s))
                 .ToList();
 
             IDictionary<string, string[]> __dict = new Dictionary<string, string[]>();
 
-            for (var i = 0; i < op_list.Count; i += 2)
+            for (int i = 0; i < op_list.Count; i += 2)
             {
-                var shoe_key = op_list[i].Trim().Replace("  ", " ");
+                string shoe_key = op_list[i].Trim().Replace("  ", " ");
 
-                var ops1 = op_list[i + 1].Trim().Replace("  ", " ").Split();
+                string[] ops1 = op_list[i + 1].Trim().Replace("  ", " ").Split();
 
                 __dict[shoe_key] = ops1;
             }
 
-            var all_ops_and_shoes = new List<string>();
+            List<string> all_ops_and_shoes = new List<string>();
 
-            foreach (var key in __dict.Keys)
+            foreach (string key in __dict.Keys)
             {
                 all_ops_and_shoes.Add(key);
 
-                foreach (var op in __dict[key])
+                foreach (string op in __dict[key])
                     all_ops_and_shoes.Add(op);
             }
 
-            var start_with_strip = chkStartWithBlank;
-
-            foreach (var op in all_ops_and_shoes)
+            foreach (string op in all_ops_and_shoes)
             {
-                if(op.StartsWith("3"))
+                if (op.StartsWith("3"))
                 {
-                    if(!Directory.Exists(__folder.dir_op(op)))
+                    if (!Directory.Exists(__folder.dir_op(op)))
                         Directory.CreateDirectory(__folder.dir_op(op));
 
                     ExecuteCloneTranShoe(__folder, op);
@@ -548,7 +546,7 @@ namespace TSG_Library.UFuncs
                     continue;
                 }
 
-                if(!Directory.Exists(__folder.dir_op(op)))
+                if (!Directory.Exists(__folder.dir_op(op)))
                     Directory.CreateDirectory(__folder.dir_op(op));
 
                 ExecuteCloneTranOp(__folder, op);
@@ -557,10 +555,10 @@ namespace TSG_Library.UFuncs
 
                 try
                 {
-                    if(!start_with_strip)
+                    if (!chkStartWithBlank)
                         replace_strip_layout_in_display(__folder.file_layout_t(op), "LAYOUT", true);
-                    else if(op == "010")
-                        replace_strip_layout_in_display(__folder.file_strip_900, "STRIP", true);
+                    else if (op == "010")
+                        replace_strip_layout_in_display(__folder.FileStrip900, "STRIP", true);
                     else
                         replace_strip_layout_in_display(__folder.file_layout_t(__Op020To010(op)), "LAYOUT", true);
                 }
@@ -570,9 +568,10 @@ namespace TSG_Library.UFuncs
                 }
 
                 const string center_line_of_coil = "CenterLineofCoil";
-                var orig_exp = session_.__FindOrOpen(__folder.file_strip("900")).__FindExpression(center_line_of_coil);
+                Expression orig_exp = session_.__FindOrOpen(__folder.file_strip("900"))
+                    .__FindExpression(center_line_of_coil);
                 __display_part_.__CreateInterpartExpression(orig_exp, center_line_of_coil);
-                var exp = __display_part_.__FindExpression("datum_plane_12_offset");
+                Expression exp = __display_part_.__FindExpression("datum_plane_12_offset");
                 exp.OwningPart.Expressions.EditExpression(exp, center_line_of_coil);
                 add_press(__folder, op);
             }
@@ -582,29 +581,29 @@ namespace TSG_Library.UFuncs
 
             //NXOpen.Session.GetSession().Parts.SetAllowMultipleDisplayedParts(true);
 
-            foreach (var op in all_ops_and_shoes)
+            foreach (string op in all_ops_and_shoes)
             {
-                var p = session_.__FindOrOpen(__folder.file_detail0(op, "000"));
+                Part p = session_.__FindOrOpen(__folder.file_detail0(op, "000"));
 
                 __display_part_ = p;
 
                 //NXOpen.Session.GetSession().set_active_display(p);
             }
 
-            if(!Directory.Exists(__folder.dir_op("900")))
+            if (!Directory.Exists(__folder.dir_op("900")))
                 Directory.CreateDirectory(__folder.dir_op("900"));
 
-            foreach (var op in all_ops_and_shoes)
-                if(!op.StartsWith("3"))
+            foreach (string op in all_ops_and_shoes)
+                if (!op.StartsWith("3"))
                     add_press(__folder, op);
 
-            foreach (var key in __dict.Keys)
+            foreach (string key in __dict.Keys)
             {
-                var tran_ops = __dict[key];
+                string[] tran_ops = __dict[key];
 
-                var assembly_op = "";
+                string assembly_op = "";
 
-                foreach (var tran_op in tran_ops)
+                foreach (string tran_op in tran_ops)
                     assembly_op += $"{tran_op.ToCharArray()[1]}{tran_op.ToCharArray()[2]}";
 
                 IDictionary<string, string> tran_assembly_op = new Dictionary<string, string>();
@@ -621,42 +620,42 @@ namespace TSG_Library.UFuncs
                 //NXOpen.Session.GetSession().set_active_display(session_.find_or_open(__folder.path_detail1("900", assembly_op, "000")));
                 __display_part_ = session_.__FindOrOpen(__folder.path_detail1("900", assembly_op, "000"));
 
-                var upr_assembly =
+                Component upr_assembly =
                     __display_part_.ComponentAssembly.RootComponent.__FindComponent(
-                        $"COMPONENT {__folder.customer_number}-{assembly_op}-upr 1");
+                        $"COMPONENT {__folder.CustomerNumber}-{assembly_op}-upr 1");
 
-                var lwr_assembly =
+                Component lwr_assembly =
                     __display_part_.ComponentAssembly.RootComponent.__FindComponent(
-                        $"COMPONENT {__folder.customer_number}-{assembly_op}-lwr 1");
+                        $"COMPONENT {__folder.CustomerNumber}-{assembly_op}-lwr 1");
 
-                var feed_direction =
+                int feed_direction =
                     int.Parse(
-                        $"{session_.__FindOrOpen(__folder.file_strip_900).__FindExpression("FeedDirection").Value}");
+                        $"{session_.__FindOrOpen(__folder.FileStrip900).__FindExpression("FeedDirection").Value}");
 
-                var origin = feed_direction > 0
+                Point3d origin = feed_direction > 0
                     ? new Point3d(10, 0, 0)
                     : new Point3d(-10, 0, 0);
 
                 __display_part_ = upr_assembly.__Prototype();
 
-                foreach (var tran_op in tran_ops)
+                foreach (string tran_op in tran_ops)
                     __display_part_.__AddComponent(__folder.path_detail1("900", tran_op, "usp"), origin: origin);
 
                 __display_part_ = lwr_assembly.__Prototype();
 
-                foreach (var tran_op in tran_ops)
+                foreach (string tran_op in tran_ops)
                     __display_part_.__AddComponent(__folder.path_detail1("900", tran_op, "lsp"), origin: origin);
 
                 lwr_assembly.__Prototype().__AddComponent(__folder.path_detail1("900", key, "lsh"));
 
                 upr_assembly.__Prototype().__AddComponent(__folder.path_detail1("900", key, "ush"));
 
-                var tmep = __folder.path_detail1("900", assembly_op, "000");
+                string tmep = __folder.path_detail1("900", assembly_op, "000");
 
                 __display_part_ = session_.__FindOrOpen(tmep);
 
-                if(File.Exists(__folder.file_strip_900))
-                    replace_strip_layout_in_display(__folder.file_strip_900, "STRIP", true);
+                if (File.Exists(__folder.FileStrip900))
+                    replace_strip_layout_in_display(__folder.FileStrip900, "STRIP", true);
             }
 
             ExecuteCloneTran900(__folder);
@@ -687,58 +686,59 @@ namespace TSG_Library.UFuncs
 
             using (new DisplayPartReset())
             {
-                foreach (var __file in Directory.GetFiles(__folder.dir_op("900"), "*.prt",
+                foreach (string __file in Directory.GetFiles(__folder.dir_op("900"), "*.prt",
                              SearchOption.TopDirectoryOnly))
                 {
-                    var leaf = Path.GetFileNameWithoutExtension(__file);
+                    string leaf = Path.GetFileNameWithoutExtension(__file);
 
-                    if(leaf is null)
+                    if (leaf is null)
                         continue;
 
-                    if(leaf.EndsWith("lwr") || leaf.EndsWith("upr"))
+                    if (leaf.EndsWith("lwr") || leaf.EndsWith("upr"))
                         __display_part_.__AddComponent(__file);
                 }
             }
 
-            replace_strip_layout_in_display(__folder.file_strip_900, "STRIP", false);
+            replace_strip_layout_in_display(__folder.FileStrip900, "STRIP", false);
 
-            foreach (var key in __dict.Keys)
+            foreach (string key in __dict.Keys)
             {
                 session_.__FindOrOpen(__folder.file_detail0(key, "000")).__Save();
 
-                foreach (var op in __dict[key])
+                foreach (string op in __dict[key])
                     session_.__FindOrOpen(__folder.file_detail0(op, "000")).__Save();
             }
 
 
-            foreach (var __file in Directory.GetFiles(__folder.dir_layout, $"{__folder.customer_number}-T*-Press.prt"))
+            foreach (string __file in Directory.GetFiles(__folder.DirLayout,
+                         $"{__folder.CustomerNumber}-T*-Press.prt"))
             {
-                var leaf = Path.GetFileName(__file);
+                string leaf = Path.GetFileName(__file);
 
-                if(__file is null)
+                if (__file is null)
                     continue;
 
-                var match = Regex.Match(leaf, "^\\d+-T(?<op>\\d+)-Press", RegexOptions.IgnoreCase);
+                Match match = Regex.Match(leaf, "^\\d+-T(?<op>\\d+)-Press", RegexOptions.IgnoreCase);
 
-                if(!match.Success)
+                if (!match.Success)
                     continue;
 
                 add_press(__folder, match.Groups["op"].Value);
             }
 
-            foreach (var __file in Directory.GetFiles(__folder.dir_op("900"), "*-000.prt",
+            foreach (string __file in Directory.GetFiles(__folder.dir_op("900"), "*-000.prt",
                          SearchOption.TopDirectoryOnly))
                 session_.__FindOrOpen(__file).__Save();
 
-            foreach (var __child in __display_part_.ComponentAssembly.RootComponent.GetChildren())
+            foreach (Component __child in __display_part_.ComponentAssembly.RootComponent.GetChildren())
             {
-                __child.SetName(__child.DisplayName.Replace(__folder.customer_number + "-", ""));
+                __child.SetName(__child.DisplayName.Replace(__folder.CustomerNumber + "-", ""));
 
-                if(__child.DisplayName.EndsWith("lwr") || __child.DisplayName.EndsWith("upr"))
+                if (__child.DisplayName.EndsWith("lwr") || __child.DisplayName.EndsWith("upr"))
                 {
                     __child.__ReferenceSet("BODY");
 
-                    if(__child.DisplayName.EndsWith("upr"))
+                    if (__child.DisplayName.EndsWith("upr"))
                         __child.__Layer(101);
                     else
                         __child.__Layer(1);
@@ -747,32 +747,31 @@ namespace TSG_Library.UFuncs
 
             using (new DisplayPartReset())
             {
-                foreach (var __file in Directory.GetFiles(__folder.dir_op("900"), "*.prt",
+                foreach (string __file in Directory.GetFiles(__folder.dir_op("900"), "*.prt",
                              SearchOption.TopDirectoryOnly))
                 {
-                    var leaf = Path.GetFileNameWithoutExtension(__file);
+                    string leaf = Path.GetFileNameWithoutExtension(__file);
 
-                    if(leaf is null)
+                    if (leaf is null)
                         continue;
 
-                    if(!leaf.EndsWith("lwr") && !leaf.EndsWith("upr"))
+                    if (!leaf.EndsWith("lwr") && !leaf.EndsWith("upr"))
                         continue;
 
-                    var is_lower = leaf.EndsWith("lwr");
-                    var path_upr_lwr_assembly_holder = __file;
-                    __display_part_ = session_.__FindOrOpen(path_upr_lwr_assembly_holder);
+                    bool is_lower = leaf.EndsWith("lwr");
+                    __display_part_ = session_.__FindOrOpen(__file);
 
-                    if(is_lower)
-                        ConstrainLSH(__folder, start_with_strip);
+                    if (is_lower)
+                        ConstrainLSH(__folder, chkStartWithBlank);
                     else
-                        ConstrainUSH(__folder, start_with_strip);
+                        ConstrainUSH(__folder, chkStartWithBlank);
                 }
             }
 
             using (new DisplayPartReset())
             {
-                foreach (var __c in __display_part_.ComponentAssembly.RootComponent.GetChildren())
-                    if(__c.DisplayName.ToLower().EndsWith("-lwr") || __c.DisplayName.ToLower().EndsWith("-upr"))
+                foreach (Component __c in __display_part_.ComponentAssembly.RootComponent.GetChildren())
+                    if (__c.DisplayName.ToLower().EndsWith("-lwr") || __c.DisplayName.ToLower().EndsWith("-upr"))
                     {
                         __c.__ReferenceSet("MATE");
                         constrain_xy(__c, $"{__c.DisplayName}-XY");
@@ -784,22 +783,22 @@ namespace TSG_Library.UFuncs
 
             using (new DisplayPartReset())
             {
-                foreach (var __file in Directory.GetFiles(__folder.dir_op("900"), "*.prt",
+                foreach (string __file in Directory.GetFiles(__folder.dir_op("900"), "*.prt",
                              SearchOption.TopDirectoryOnly))
                 {
-                    var leaf = Path.GetFileNameWithoutExtension(__file);
+                    string leaf = Path.GetFileNameWithoutExtension(__file);
 
-                    if(leaf is null)
+                    if (leaf is null)
                         continue;
 
-                    if(!leaf.EndsWith("lwr") && !leaf.EndsWith("upr"))
+                    if (!leaf.EndsWith("lwr") && !leaf.EndsWith("upr"))
                         continue;
 
                     __display_part_ = session_.__FindOrOpen(__file);
 
-                    foreach (var __c in __display_part_.ComponentAssembly.RootComponent.GetChildren())
+                    foreach (Component __c in __display_part_.ComponentAssembly.RootComponent.GetChildren())
                     {
-                        if(__c.DisplayName.ToLower().Contains("strip"))
+                        if (__c.DisplayName.ToLower().Contains("strip"))
                             continue;
 
                         __c.__ReferenceSet("BODY");
@@ -813,24 +812,24 @@ namespace TSG_Library.UFuncs
 
             using (new DisplayPartReset())
             {
-                foreach (var __file in Directory.GetFiles(__folder.dir_op("900"), "*.prt",
+                foreach (string __file in Directory.GetFiles(__folder.dir_op("900"), "*.prt",
                              SearchOption.TopDirectoryOnly))
                 {
-                    var leaf = Path.GetFileNameWithoutExtension(__file);
+                    string leaf = Path.GetFileNameWithoutExtension(__file);
 
-                    if(leaf is null)
+                    if (leaf is null)
                         continue;
 
-                    if(!leaf.EndsWith("lwr") && !leaf.EndsWith("upr"))
+                    if (!leaf.EndsWith("lwr") && !leaf.EndsWith("upr"))
                         continue;
 
                     __display_part_ = session_.__FindOrOpen(__file);
 
-                    foreach (var exp in session_.__FindOrOpen(__file).Expressions.ToArray())
+                    foreach (Expression exp in session_.__FindOrOpen(__file).Expressions.ToArray())
                     {
-                        var match = Regex.Match(exp.GetFormula(), "^(?<name>T\\d{3}[XYZ])$");
+                        Match match = Regex.Match(exp.GetFormula(), "^(?<name>T\\d{3}[XYZ])$");
 
-                        if(!match.Success)
+                        if (!match.Success)
                             continue;
 
                         exp.OwningPart.Expressions.Rename(exp, $"{match.Groups["name"].Value}_");
@@ -842,10 +841,10 @@ namespace TSG_Library.UFuncs
                             exp.GetFormula());
                     }
 
-                    if(__display_part_.Leaf.ToLower().Contains("upr"))
-                        foreach (var __child in __display_part_.ComponentAssembly.RootComponent.GetChildren())
+                    if (__display_part_.Leaf.ToLower().Contains("upr"))
+                        foreach (Component __child in __display_part_.ComponentAssembly.RootComponent.GetChildren())
                         {
-                            if(__child.Name.ToLower().Contains("strip"))
+                            if (__child.Name.ToLower().Contains("strip"))
                                 continue;
 
                             __child.__Layer(101);
@@ -858,9 +857,10 @@ namespace TSG_Library.UFuncs
             using (new DisplayPartReset())
             {
                 const string center_line_of_coil = "CenterLineofCoil";
-                var orig_exp = session_.__FindOrOpen(__folder.file_strip("900")).__FindExpression(center_line_of_coil);
+                Expression orig_exp = session_.__FindOrOpen(__folder.file_strip("900"))
+                    .__FindExpression(center_line_of_coil);
                 __display_part_.__CreateInterpartExpression(orig_exp, center_line_of_coil);
-                var exp = __display_part_.__FindExpression("datum_plane_12_offset");
+                Expression exp = __display_part_.__FindExpression("datum_plane_12_offset");
                 exp.SetFormula(center_line_of_coil);
                 __display_part_.Expressions.Rename(exp, $"{exp.GetFormula()}_");
                 __display_part_.Expressions.EditWithUnits(
@@ -876,10 +876,10 @@ namespace TSG_Library.UFuncs
 
             using (new DisplayPartReset())
             {
-                foreach (var op in all_ops_and_shoes)
+                foreach (string op in all_ops_and_shoes)
                     session_.__FindOrOpen(__folder.file_detail_000(op)).__Save();
 
-                foreach (var part_file in Directory.GetFiles(__folder.dir_op("900"), "*-000.prt",
+                foreach (string part_file in Directory.GetFiles(__folder.dir_op("900"), "*-000.prt",
                              SearchOption.TopDirectoryOnly))
                     session_.__FindOrOpen(part_file).__Save();
             }
@@ -891,21 +891,21 @@ namespace TSG_Library.UFuncs
             // this is where you constrain the ops
             using (new DisplayPartReset())
             {
-                if(chkStartWithBlank)
-                    foreach (var __file in Directory.GetFiles(__folder.dir_op("900"), "*.prt",
+                if (chkStartWithBlank)
+                    foreach (string __file in Directory.GetFiles(__folder.dir_op("900"), "*.prt",
                                  SearchOption.TopDirectoryOnly))
                     {
-                        var leaf = Path.GetFileNameWithoutExtension(__file);
+                        string leaf = Path.GetFileNameWithoutExtension(__file);
 
-                        if(leaf is null)
+                        if (leaf is null)
                             continue;
 
-                        if(!leaf.EndsWith("lwr") && !leaf.EndsWith("upr"))
+                        if (!leaf.EndsWith("lwr") && !leaf.EndsWith("upr"))
                             continue;
 
                         __display_part_ = session_.__FindOrOpen(__file);
 
-                        var lsp_usp_comps = __display_part_.ComponentAssembly.RootComponent.GetChildren()
+                        Component[] lsp_usp_comps = __display_part_.ComponentAssembly.RootComponent.GetChildren()
                             .Where(__c =>
                                 __c.DisplayName.ToLower().EndsWith("-lsp") ||
                                 __c.DisplayName.ToLower().EndsWith("-usp"))
@@ -913,31 +913,34 @@ namespace TSG_Library.UFuncs
 
                         __display_part_.ComponentAssembly.ReplaceReferenceSetInOwners("MATE", lsp_usp_comps);
 
-                        var p010x_exp = session_.__FindOrOpen(__folder.file_strip("900")).__FindExpression("P010X");
+                        Expression p010x_exp =
+                            session_.__FindOrOpen(__folder.file_strip("900")).__FindExpression("P010X");
                         __display_part_.__CreateInterpartExpression(p010x_exp, "P010X");
-                        var p010y_exp = session_.__FindOrOpen(__folder.file_strip("900")).__FindExpression("P010Y");
+                        Expression p010y_exp =
+                            session_.__FindOrOpen(__folder.file_strip("900")).__FindExpression("P010Y");
                         __display_part_.__CreateInterpartExpression(p010y_exp, "P010Y");
-                        var p010z_exp = session_.__FindOrOpen(__folder.file_strip("900")).__FindExpression("P010Z");
+                        Expression p010z_exp =
+                            session_.__FindOrOpen(__folder.file_strip("900")).__FindExpression("P010Z");
                         __display_part_.__CreateInterpartExpression(p010z_exp, "P010Z");
 
-                        foreach (var child in lsp_usp_comps)
+                        foreach (Component child in lsp_usp_comps)
                         {
-                            var match = Regex.Match(child.DisplayName, "^\\d+-(?<op>\\d+)-(usp|lsp)$",
+                            Match match = Regex.Match(child.DisplayName, "^\\d+-(?<op>\\d+)-(usp|lsp)$",
                                 RegexOptions.IgnoreCase);
 
-                            if(!match.Success)
+                            if (!match.Success)
                             {
                                 print_("Wasn't a success");
                                 continue;
                             }
 
-                            var op = match.Groups["op"].Value;
+                            string op = match.Groups["op"].Value;
 
 #pragma warning disable CS0168 // Variable is declared but never used
                             Expression exp;
 #pragma warning restore CS0168 // Variable is declared but never used
 
-                            if(op == "010")
+                            if (op == "010")
                             {
                                 __display_part_.__ConstrainOccProtoDistance(
                                     child.__AbsOccDatumPlaneYZ(),
@@ -957,7 +960,7 @@ namespace TSG_Library.UFuncs
                                 continue;
                             }
 
-                            var prev = __Op020To010(op);
+                            string prev = __Op020To010(op);
 
                             try
                             {
@@ -996,14 +999,14 @@ namespace TSG_Library.UFuncs
                             }
                         }
 
-                        foreach (var exp in __display_part_.Expressions.ToArray())
+                        foreach (Expression exp in __display_part_.Expressions.ToArray())
                         {
-                            if(exp.IsInterpartExpression)
+                            if (exp.IsInterpartExpression)
                                 continue;
 
-                            var match = Regex.Match(exp.GetFormula(), "^(?<pt>P|T)(?<op>\\d+)(?<xyz>X|Y|Z)$");
+                            Match match = Regex.Match(exp.GetFormula(), "^(?<pt>P|T)(?<op>\\d+)(?<xyz>X|Y|Z)$");
 
-                            if(!match.Success)
+                            if (!match.Success)
                                 continue;
 
                             exp.OwningPart.Expressions.Rename(exp, $"{exp.GetFormula()}_");
@@ -1016,20 +1019,20 @@ namespace TSG_Library.UFuncs
                         //__display_part_.ComponentAssembly.ReplaceReferenceSetInOwners("BODY", lsp_usp_comps);
                     }
                 else
-                    foreach (var __file in Directory.GetFiles(__folder.dir_op("900"), "*.prt",
+                    foreach (string __file in Directory.GetFiles(__folder.dir_op("900"), "*.prt",
                                  SearchOption.TopDirectoryOnly))
                     {
-                        var leaf = Path.GetFileNameWithoutExtension(__file);
+                        string leaf = Path.GetFileNameWithoutExtension(__file);
 
-                        if(leaf is null)
+                        if (leaf is null)
                             continue;
 
-                        if(!leaf.EndsWith("lwr") && !leaf.EndsWith("upr"))
+                        if (!leaf.EndsWith("lwr") && !leaf.EndsWith("upr"))
                             continue;
 
                         __display_part_ = session_.__FindOrOpen(__file);
 
-                        var lsp_usp_comps = __display_part_.ComponentAssembly.RootComponent.GetChildren()
+                        Component[] lsp_usp_comps = __display_part_.ComponentAssembly.RootComponent.GetChildren()
                             .Where(__c =>
                                 __c.DisplayName.ToLower().EndsWith("-lsp") ||
                                 __c.DisplayName.ToLower().EndsWith("-usp"))
@@ -1037,20 +1040,20 @@ namespace TSG_Library.UFuncs
 
                         __display_part_.ComponentAssembly.ReplaceReferenceSetInOwners("MATE", lsp_usp_comps);
 
-                        foreach (var child in lsp_usp_comps)
+                        foreach (Component child in lsp_usp_comps)
                         {
-                            var match = Regex.Match(child.DisplayName, "^\\d+-(?<op>\\d+)-(usp|lsp)$",
+                            Match match = Regex.Match(child.DisplayName, "^\\d+-(?<op>\\d+)-(usp|lsp)$",
                                 RegexOptions.IgnoreCase);
 
-                            if(!match.Success)
+                            if (!match.Success)
                             {
                                 print_("Wasn't a success");
                                 continue;
                             }
 
-                            var op = match.Groups["op"].Value;
+                            string op = match.Groups["op"].Value;
 
-                            var prev = __Op020To010(op);
+                            string prev = __Op020To010(op);
 
                             try
                             {
@@ -1089,14 +1092,14 @@ namespace TSG_Library.UFuncs
                             }
                         }
 
-                        foreach (var exp in __display_part_.Expressions.ToArray())
+                        foreach (Expression exp in __display_part_.Expressions.ToArray())
                         {
-                            if(exp.IsInterpartExpression)
+                            if (exp.IsInterpartExpression)
                                 continue;
 
-                            var match = Regex.Match(exp.GetFormula(), "^(?<pt>P|T)(?<op>\\d+)(?<xyz>X|Y|Z)$");
+                            Match match = Regex.Match(exp.GetFormula(), "^(?<pt>P|T)(?<op>\\d+)(?<xyz>X|Y|Z)$");
 
-                            if(!match.Success)
+                            if (!match.Success)
                                 continue;
 
                             exp.OwningPart.Expressions.Rename(exp, $"{exp.GetFormula()}_");
@@ -1111,14 +1114,14 @@ namespace TSG_Library.UFuncs
             }
 
 
-            using (session_.__usingDisplayPartReset())
+            using (session_.__UsingDisplayPartReset())
             {
-                foreach (var op in all_ops_and_shoes)
+                foreach (string op in all_ops_and_shoes)
                 {
-                    if(!op.StartsWith("3"))
+                    if (!op.StartsWith("3"))
                         continue;
 
-                    var dieset_control = $"{__folder.customer_number}-{op}-dieset-control.prt";
+                    string dieset_control = $"{__folder.CustomerNumber}-{op}-dieset-control.prt";
 
                     __display_part_ = session_.__FindOrOpen(__folder.file_detail0(op, "002"));
                     __display_part_.Expressions.ChangeInterpartReferences("seed-prog-dieset-control.prt",
@@ -1142,8 +1145,9 @@ namespace TSG_Library.UFuncs
 
             //var exps = session_.find_or_open(__folder.file_strip_900).Expressions.ToArray();
 
-            foreach (var op in all_ops_and_shoes.Append("900"))
-            foreach (var part000 in Directory.GetFiles(__folder.dir_op(op), "*-000.prt", SearchOption.TopDirectoryOnly))
+            foreach (string op in all_ops_and_shoes.Append("900"))
+            foreach (string part000 in Directory.GetFiles(__folder.dir_op(op), "*-000.prt",
+                         SearchOption.TopDirectoryOnly))
                 session_.__FindOrOpen(part000).__Save(true);
 
             print_("Designer will have to link up presses to proper dieset control manualy.");
@@ -1153,11 +1157,11 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var __press_parts = new List<Part>();
+                List<Part> __press_parts = new List<Part>();
 
-                foreach (var __file in Directory.EnumerateFiles(__folder.dir_layout))
+                foreach (string __file in Directory.EnumerateFiles(__folder.DirLayout))
                 {
-                    if(!__file.ToLower().Contains("press"))
+                    if (!__file.ToLower().Contains("press"))
                         continue;
                     __press_parts.Add(session_.__FindOrOpen(__file));
                 }
@@ -1170,9 +1174,9 @@ namespace TSG_Library.UFuncs
                     "Entire Part",
                     1,
                     false,
-                    out var __press_comps);
+                    out Component[] __press_comps);
 
-                foreach (var __press in __press_comps)
+                foreach (Component __press in __press_comps)
                 {
                     constrain_xz_to_datum_plane(__press);
                     constrain_xy(__press, "PRESS-XY");
@@ -1189,10 +1193,10 @@ namespace TSG_Library.UFuncs
 
         private static void ConstrainOpsToLwrUpr(GFolder __folder, string[] ops, string lwrupr, int layer)
         {
-            var feed_direction =
-                int.Parse($"{session_.__FindOrOpen(__folder.file_strip_900).__FindExpression("FeedDirection").Value}");
+            int feed_direction =
+                int.Parse($"{session_.__FindOrOpen(__folder.FileStrip900).__FindExpression("FeedDirection").Value}");
 
-            var origin = feed_direction > 0
+            Point3d origin = feed_direction > 0
                 ? new Point3d(10, 0, 0)
                 : new Point3d(-10, 0, 0);
 
@@ -1201,19 +1205,19 @@ namespace TSG_Library.UFuncs
                 .Single(__c => __c.Name == "STRIP")
                 .__ReferenceSet("BODY");
 
-            foreach (var op in ops)
+            foreach (string op in ops)
             {
-                var comp_lwr = __display_part_.__AddComponent(
+                Component comp_lwr = __display_part_.__AddComponent(
                     __folder.file_detail0(op, lwrupr),
                     "MATE",
                     layer: layer,
                     origin: origin);
 
-                var new_interpart_exp_x = $"T{op}X";
-                var new_interpart_exp_y = $"T{op}Y";
-                var new_interpart_exp_z = $"T{op}Z";
-                var builder = __display_part_.Expressions.CreateInterpartExpressionsBuilder();
-                var strip = session_.__FindOrOpen(__folder.file_strip_900);
+                string new_interpart_exp_x = $"T{op}X";
+                string new_interpart_exp_y = $"T{op}Y";
+                string new_interpart_exp_z = $"T{op}Z";
+                InterpartExpressionsBuilder builder = __display_part_.Expressions.CreateInterpartExpressionsBuilder();
+                Part strip = session_.__FindOrOpen(__folder.FileStrip900);
                 try
                 {
                     ConstrainStripInterpartExpressions(new_interpart_exp_x, new_interpart_exp_y, new_interpart_exp_z,
@@ -1233,25 +1237,25 @@ namespace TSG_Library.UFuncs
 
         private static void NewMethod21(Component comp_lwr, string new_interpart_exp_x, string suffix)
         {
-            var datum_plane1 = comp_lwr.__AbsOccDatumPlaneYZ();
+            DatumPlane datum_plane1 = comp_lwr.__AbsOccDatumPlaneYZ();
 
-            var datum_plane2 = __display_part_.__AbsoluteDatumCsys().__DatumPlaneYZ();
+            DatumPlane datum_plane2 = __display_part_.__AbsoluteDatumCsys().__DatumPlaneYZ();
 
             ConstrainUnits(comp_lwr, new_interpart_exp_x, datum_plane1, datum_plane2, suffix);
         }
 
         private static void constraint_xz_1(Component comp_lwr, string new_interpart_exp_y, string suffix)
         {
-            var datum_plane1 = comp_lwr.__AbsOccDatumPlaneXZ();
-            var datum_plane2 = __display_part_.__AbsoluteDatumCsys().__DatumPlaneXZ();
+            DatumPlane datum_plane1 = comp_lwr.__AbsOccDatumPlaneXZ();
+            DatumPlane datum_plane2 = __display_part_.__AbsoluteDatumCsys().__DatumPlaneXZ();
             ConstrainUnits(comp_lwr, new_interpart_exp_y, datum_plane1, datum_plane2, suffix);
         }
 
         private static void constrain_xy1(Component comp_lwr, string new_interpart_exp_z, string suffix)
         {
-            var datum_plane1 = comp_lwr.__AbsOccDatumPlaneXY();
+            DatumPlane datum_plane1 = comp_lwr.__AbsOccDatumPlaneXY();
 
-            var datum_plane2 = __display_part_.__AbsoluteDatumCsys().__DatumPlaneXY();
+            DatumPlane datum_plane2 = __display_part_.__AbsoluteDatumCsys().__DatumPlaneXY();
 
             ConstrainUnits(comp_lwr, new_interpart_exp_z, datum_plane1, datum_plane2, suffix);
         }
@@ -1263,13 +1267,13 @@ namespace TSG_Library.UFuncs
             DatumPlane datum_plane2,
             string suffix)
         {
-            var comp_dist_const_yz = __display_part_.__ConstrainOccProtoDistance(
+            ComponentConstraint comp_dist_const_yz = __display_part_.__ConstrainOccProtoDistance(
                 datum_plane1,
                 datum_plane2,
                 new_interpart_exp_x);
             comp_dist_const_yz.GetDisplayedConstraint().__Layer(256);
             comp_dist_const_yz.SetName($"{comp_upr.Name}-{suffix}");
-            var exp = __display_part_.Expressions
+            Expression exp = __display_part_.Expressions
                 .ToArray()
                 .Single(__e => __e.GetFormula() == new_interpart_exp_x);
             exp.OwningPart.Expressions.EditWithUnits(
@@ -1290,19 +1294,19 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var __current = __display_part_;
+                Part __current = __display_part_;
 
-                using (session_.__usingDisplayPartReset())
+                using (session_.__UsingDisplayPartReset())
                 {
                     Part[] __parallels =
                     {
-                        session_.__FindOrOpen($"{__folder.customer_number}-{op}-002"),
-                        session_.__FindOrOpen($"{__folder.customer_number}-{op}-012"),
-                        session_.__FindOrOpen($"{__folder.customer_number}-{op}-502"),
-                        session_.__FindOrOpen($"{__folder.customer_number}-{op}-512")
+                        session_.__FindOrOpen($"{__folder.CustomerNumber}-{op}-002"),
+                        session_.__FindOrOpen($"{__folder.CustomerNumber}-{op}-012"),
+                        session_.__FindOrOpen($"{__folder.CustomerNumber}-{op}-502"),
+                        session_.__FindOrOpen($"{__folder.CustomerNumber}-{op}-512")
                     };
 
-                    foreach (var __par in __parallels)
+                    foreach (Part __par in __parallels)
                     {
                         __display_part_ = __par;
 
@@ -1311,10 +1315,10 @@ namespace TSG_Library.UFuncs
                         {
                             session_.UpdateManager.ClearErrorList();
 
-                            var _id = session_.SetUndoMark(Session.MarkVisibility.Visible, "parallels");
+                            Session.UndoMarkId _id = session_.SetUndoMark(Session.MarkVisibility.Visible, "parallels");
 
 
-                            if(!units_mm)
+                            if (!units_mm)
                                 session_.UpdateManager.AddObjectsToDeleteList(__display_part_.DisplayedConstraints
                                     .ToArray().Where(__c => __c.Layer == 255).ToArray());
                             else
@@ -1328,18 +1332,18 @@ namespace TSG_Library.UFuncs
                         {
                             session_.UpdateManager.ClearErrorList();
 
-                            var _id = session_.SetUndoMark(Session.MarkVisibility.Visible, "parallels");
+                            Session.UndoMarkId _id = session_.SetUndoMark(Session.MarkVisibility.Visible, "parallels");
 
-                            foreach (var __child in __par.ComponentAssembly.RootComponent.GetChildren())
+                            foreach (Component __child in __par.ComponentAssembly.RootComponent.GetChildren())
                             {
-                                if(__child.Name.ToUpper().Contains("MM") && !units_mm)
+                                if (__child.Name.ToUpper().Contains("MM") && !units_mm)
                                 {
                                     session_.UpdateManager.AddObjectsToDeleteList(__child.GetConstraints()
                                         .Select(__c => __c.GetDisplayedConstraint()).ToArray());
                                     session_.UpdateManager.AddObjectsToDeleteList(new[] { __child });
                                 }
 
-                                if(!__child.Name.ToUpper().Contains("MM") && units_mm)
+                                if (!__child.Name.ToUpper().Contains("MM") && units_mm)
                                 {
                                     session_.UpdateManager.AddObjectsToDeleteList(__child.GetConstraints()
                                         .Select(__c => __c.GetDisplayedConstraint()).ToArray());
@@ -1352,55 +1356,71 @@ namespace TSG_Library.UFuncs
                     }
                 }
 
-                using (session_.__usingDisplayPartReset())
+                using (session_.__UsingDisplayPartReset())
                 {
-                    session_.__FindOrOpen($"{__folder.customer_number}-{op}-lwrplate").__SetAsDisplayPart();
+                    session_.__FindOrOpen($"{__folder.CustomerNumber}-{op}-lwrplate").__SetAsDisplayPart();
 
-                    var theSession = Session.GetSession();
+                    Session theSession = Session.GetSession();
 
                     Session.UndoMarkId markId2;
                     markId2 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Delete");
 
 
-                    if(units_mm)
+                    if (units_mm)
                     {
-                        var workPart = __work_part_;
+                        Part workPart = __work_part_;
                         {
-                            var objects1 = new TaggedObject[16];
+                            TaggedObject[] objects1 = new TaggedObject[16];
 
                             Session.UndoMarkId id1;
                             id1 = theSession.NewestVisibleUndoMark;
-                            var displayedConstraint1 = (DisplayedConstraint)workPart.FindObject("HANDLE R-21229");
+                            DisplayedConstraint displayedConstraint1 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-21229");
                             objects1[0] = displayedConstraint1;
-                            var displayedConstraint2 = (DisplayedConstraint)workPart.FindObject("HANDLE R-21244");
+                            DisplayedConstraint displayedConstraint2 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-21244");
                             objects1[1] = displayedConstraint2;
-                            var displayedConstraint3 = (DisplayedConstraint)workPart.FindObject("HANDLE R-21259");
+                            DisplayedConstraint displayedConstraint3 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-21259");
                             objects1[2] = displayedConstraint3;
-                            var displayedConstraint4 = (DisplayedConstraint)workPart.FindObject("HANDLE R-21274");
+                            DisplayedConstraint displayedConstraint4 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-21274");
                             objects1[3] = displayedConstraint4;
-                            var displayedConstraint5 = (DisplayedConstraint)workPart.FindObject("HANDLE R-21287");
+                            DisplayedConstraint displayedConstraint5 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-21287");
                             objects1[4] = displayedConstraint5;
-                            var displayedConstraint6 = (DisplayedConstraint)workPart.FindObject("HANDLE R-21302");
+                            DisplayedConstraint displayedConstraint6 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-21302");
                             objects1[5] = displayedConstraint6;
-                            var displayedConstraint7 = (DisplayedConstraint)workPart.FindObject("HANDLE R-21316");
+                            DisplayedConstraint displayedConstraint7 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-21316");
                             objects1[6] = displayedConstraint7;
-                            var displayedConstraint8 = (DisplayedConstraint)workPart.FindObject("HANDLE R-21330");
+                            DisplayedConstraint displayedConstraint8 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-21330");
                             objects1[7] = displayedConstraint8;
-                            var displayedConstraint9 = (DisplayedConstraint)workPart.FindObject("HANDLE R-21348");
+                            DisplayedConstraint displayedConstraint9 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-21348");
                             objects1[8] = displayedConstraint9;
-                            var displayedConstraint10 = (DisplayedConstraint)workPart.FindObject("HANDLE R-21357");
+                            DisplayedConstraint displayedConstraint10 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-21357");
                             objects1[9] = displayedConstraint10;
-                            var displayedConstraint11 = (DisplayedConstraint)workPart.FindObject("HANDLE R-21377");
+                            DisplayedConstraint displayedConstraint11 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-21377");
                             objects1[10] = displayedConstraint11;
-                            var displayedConstraint12 = (DisplayedConstraint)workPart.FindObject("HANDLE R-21388");
+                            DisplayedConstraint displayedConstraint12 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-21388");
                             objects1[11] = displayedConstraint12;
-                            var displayedConstraint13 = (DisplayedConstraint)workPart.FindObject("HANDLE R-21407");
+                            DisplayedConstraint displayedConstraint13 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-21407");
                             objects1[12] = displayedConstraint13;
-                            var displayedConstraint14 = (DisplayedConstraint)workPart.FindObject("HANDLE R-21416");
+                            DisplayedConstraint displayedConstraint14 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-21416");
                             objects1[13] = displayedConstraint14;
-                            var displayedConstraint15 = (DisplayedConstraint)workPart.FindObject("HANDLE R-21425");
+                            DisplayedConstraint displayedConstraint15 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-21425");
                             objects1[14] = displayedConstraint15;
-                            var displayedConstraint16 = (DisplayedConstraint)workPart.FindObject("HANDLE R-21451");
+                            DisplayedConstraint displayedConstraint16 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-21451");
                             objects1[15] = displayedConstraint16;
                             int nErrs1;
                             nErrs1 = session_.UpdateManager.AddObjectsToDeleteList(objects1);
@@ -1411,36 +1431,36 @@ namespace TSG_Library.UFuncs
 
                         {
                             markId2 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Delete");
-                            var objects1 = new TaggedObject[8];
-                            var component1 =
+                            TaggedObject[] objects1 = new TaggedObject[8];
+                            Component component1 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 1500-shcs-500 7");
                             objects1[0] = component1;
-                            var component2 =
+                            Component component2 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 1500-shcs-500 3");
                             objects1[1] = component2;
-                            var component3 =
+                            Component component3 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 1500-shcs-500 1");
                             objects1[2] = component3;
-                            var component4 =
+                            Component component4 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 1500-shcs-500 8");
                             objects1[3] = component4;
-                            var component5 =
+                            Component component5 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 1500-shcs-500 5");
                             objects1[4] = component5;
-                            var component6 =
+                            Component component6 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 1500-shcs-500 2");
                             objects1[5] = component6;
-                            var component7 =
+                            Component component7 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 1500-shcs-500 6");
                             objects1[6] = component7;
-                            var component8 =
+                            Component component8 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 1500-shcs-500 4");
                             objects1[7] = component8;
@@ -1458,8 +1478,8 @@ namespace TSG_Library.UFuncs
                     {
                         {
                             //NXOpen.Session theSession = NXOpen.Session.GetSession();
-                            var workPart = theSession.Parts.Work;
-                            var displayPart = theSession.Parts.Display;
+                            Part workPart = theSession.Parts.Work;
+                            Part displayPart = theSession.Parts.Display;
                             // ----------------------------------------------
                             //   Menu: Edit->Delete...
                             // ----------------------------------------------
@@ -1471,38 +1491,54 @@ namespace TSG_Library.UFuncs
                             //NXOpen.Session.UndoMarkId markId2;
                             markId2 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Delete");
 
-                            var objects1 = new TaggedObject[16];
-                            var displayedConstraint1 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2213");
+                            TaggedObject[] objects1 = new TaggedObject[16];
+                            DisplayedConstraint displayedConstraint1 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2213");
                             objects1[0] = displayedConstraint1;
-                            var displayedConstraint2 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2254");
+                            DisplayedConstraint displayedConstraint2 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2254");
                             objects1[1] = displayedConstraint2;
-                            var displayedConstraint3 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2312");
+                            DisplayedConstraint displayedConstraint3 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2312");
                             objects1[2] = displayedConstraint3;
-                            var displayedConstraint4 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2354");
+                            DisplayedConstraint displayedConstraint4 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2354");
                             objects1[3] = displayedConstraint4;
-                            var displayedConstraint5 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2649");
+                            DisplayedConstraint displayedConstraint5 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2649");
                             objects1[4] = displayedConstraint5;
-                            var displayedConstraint6 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2703");
+                            DisplayedConstraint displayedConstraint6 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2703");
                             objects1[5] = displayedConstraint6;
-                            var displayedConstraint7 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2762");
+                            DisplayedConstraint displayedConstraint7 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2762");
                             objects1[6] = displayedConstraint7;
-                            var displayedConstraint8 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2819");
+                            DisplayedConstraint displayedConstraint8 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2819");
                             objects1[7] = displayedConstraint8;
-                            var displayedConstraint9 = (DisplayedConstraint)workPart.FindObject("HANDLE R-3102");
+                            DisplayedConstraint displayedConstraint9 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-3102");
                             objects1[8] = displayedConstraint9;
-                            var displayedConstraint10 = (DisplayedConstraint)workPart.FindObject("HANDLE R-3160");
+                            DisplayedConstraint displayedConstraint10 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-3160");
                             objects1[9] = displayedConstraint10;
-                            var displayedConstraint11 = (DisplayedConstraint)workPart.FindObject("HANDLE R-3232");
+                            DisplayedConstraint displayedConstraint11 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-3232");
                             objects1[10] = displayedConstraint11;
-                            var displayedConstraint12 = (DisplayedConstraint)workPart.FindObject("HANDLE R-3291");
+                            DisplayedConstraint displayedConstraint12 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-3291");
                             objects1[11] = displayedConstraint12;
-                            var displayedConstraint13 = (DisplayedConstraint)workPart.FindObject("HANDLE R-3572");
+                            DisplayedConstraint displayedConstraint13 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-3572");
                             objects1[12] = displayedConstraint13;
-                            var displayedConstraint14 = (DisplayedConstraint)workPart.FindObject("HANDLE R-3628");
+                            DisplayedConstraint displayedConstraint14 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-3628");
                             objects1[13] = displayedConstraint14;
-                            var displayedConstraint15 = (DisplayedConstraint)workPart.FindObject("HANDLE R-3686");
+                            DisplayedConstraint displayedConstraint15 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-3686");
                             objects1[14] = displayedConstraint15;
-                            var displayedConstraint16 = (DisplayedConstraint)workPart.FindObject("HANDLE R-3743");
+                            DisplayedConstraint displayedConstraint16 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-3743");
                             objects1[15] = displayedConstraint16;
                             int nErrs1;
                             nErrs1 = theSession.UpdateManager.AddObjectsToDeleteList(objects1);
@@ -1518,8 +1554,8 @@ namespace TSG_Library.UFuncs
 
                         {
                             //NXOpen.Session theSession = NXOpen.Session.GetSession();
-                            var workPart = theSession.Parts.Work;
-                            var displayPart = theSession.Parts.Display;
+                            Part workPart = theSession.Parts.Work;
+                            Part displayPart = theSession.Parts.Display;
                             // ----------------------------------------------
                             //   Menu: Edit->Delete...
                             // ----------------------------------------------
@@ -1531,36 +1567,36 @@ namespace TSG_Library.UFuncs
                             //NXOpen.Session.UndoMarkId markId2;
                             markId2 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Delete");
 
-                            var objects1 = new TaggedObject[8];
-                            var component1 =
+                            TaggedObject[] objects1 = new TaggedObject[8];
+                            Component component1 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 36mm-shcs-100 7");
                             objects1[0] = component1;
-                            var component2 =
+                            Component component2 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 36mm-shcs-100 1");
                             objects1[1] = component2;
-                            var component3 =
+                            Component component3 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 36mm-shcs-100 6");
                             objects1[2] = component3;
-                            var component4 =
+                            Component component4 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 36mm-shcs-100 3");
                             objects1[3] = component4;
-                            var component5 =
+                            Component component5 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 36mm-shcs-100 4");
                             objects1[4] = component5;
-                            var component6 =
+                            Component component6 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 36mm-shcs-100 8");
                             objects1[5] = component6;
-                            var component7 =
+                            Component component7 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 36mm-shcs-100 5");
                             objects1[6] = component7;
-                            var component8 =
+                            Component component8 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 36mm-shcs-100 2");
                             objects1[7] = component8;
@@ -1578,57 +1614,74 @@ namespace TSG_Library.UFuncs
                     }
                 }
 
-                using (session_.__usingDisplayPartReset())
+                using (session_.__UsingDisplayPartReset())
                 {
-                    session_.__FindOrOpen($"{__folder.customer_number}-{op}-uprplate").__SetAsDisplayPart();
+                    session_.__FindOrOpen($"{__folder.CustomerNumber}-{op}-uprplate").__SetAsDisplayPart();
 
-                    var theSession = Session.GetSession();
+                    Session theSession = Session.GetSession();
 
                     Session.UndoMarkId markId2;
                     markId2 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Delete");
 
 
-                    if(units_mm)
+                    if (units_mm)
                     {
-                        var workPart = __work_part_;
+                        Part workPart = __work_part_;
                         {
-                            var objects1 = new TaggedObject[17];
+                            TaggedObject[] objects1 = new TaggedObject[17];
 
                             Session.UndoMarkId id1;
                             id1 = theSession.NewestVisibleUndoMark;
-                            var displayedConstraint1 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2145");
+                            DisplayedConstraint displayedConstraint1 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2145");
                             objects1[0] = displayedConstraint1;
-                            var displayedConstraint2 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2163");
+                            DisplayedConstraint displayedConstraint2 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2163");
                             objects1[1] = displayedConstraint2;
-                            var displayedConstraint3 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2185");
+                            DisplayedConstraint displayedConstraint3 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2185");
                             objects1[2] = displayedConstraint3;
-                            var displayedConstraint4 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2201");
+                            DisplayedConstraint displayedConstraint4 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2201");
                             objects1[3] = displayedConstraint4;
-                            var displayedConstraint5 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2220");
+                            DisplayedConstraint displayedConstraint5 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2220");
                             objects1[4] = displayedConstraint5;
-                            var displayedConstraint6 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2242");
+                            DisplayedConstraint displayedConstraint6 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2242");
                             objects1[5] = displayedConstraint6;
-                            var displayedConstraint7 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2264");
+                            DisplayedConstraint displayedConstraint7 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2264");
                             objects1[6] = displayedConstraint7;
-                            var displayedConstraint8 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2288");
+                            DisplayedConstraint displayedConstraint8 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2288");
                             objects1[7] = displayedConstraint8;
-                            var displayedConstraint9 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2308");
+                            DisplayedConstraint displayedConstraint9 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2308");
                             objects1[8] = displayedConstraint9;
-                            var displayedConstraint10 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2332");
+                            DisplayedConstraint displayedConstraint10 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2332");
                             objects1[9] = displayedConstraint10;
-                            var displayedConstraint11 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2352");
+                            DisplayedConstraint displayedConstraint11 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2352");
                             objects1[10] = displayedConstraint11;
-                            var displayedConstraint12 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2370");
+                            DisplayedConstraint displayedConstraint12 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2370");
                             objects1[11] = displayedConstraint12;
-                            var displayedConstraint13 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2390");
+                            DisplayedConstraint displayedConstraint13 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2390");
                             objects1[12] = displayedConstraint13;
-                            var displayedConstraint14 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2408");
+                            DisplayedConstraint displayedConstraint14 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2408");
                             objects1[13] = displayedConstraint14;
-                            var displayedConstraint15 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2426");
+                            DisplayedConstraint displayedConstraint15 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2426");
                             objects1[14] = displayedConstraint15;
-                            var displayedConstraint16 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2448");
+                            DisplayedConstraint displayedConstraint16 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2448");
                             objects1[15] = displayedConstraint16;
-                            var displayedConstraint17 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2471");
+                            DisplayedConstraint displayedConstraint17 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2471");
                             objects1[16] = displayedConstraint17;
 
                             int nErrs1;
@@ -1640,36 +1693,36 @@ namespace TSG_Library.UFuncs
 
                         {
                             markId2 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Delete");
-                            var objects1 = new TaggedObject[8];
-                            var component1 =
+                            TaggedObject[] objects1 = new TaggedObject[8];
+                            Component component1 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 1500-shcs-500 5");
                             objects1[0] = component1;
-                            var component2 =
+                            Component component2 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 1500-shcs-500 7");
                             objects1[1] = component2;
-                            var component3 =
+                            Component component3 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 1500-shcs-500 3");
                             objects1[2] = component3;
-                            var component4 =
+                            Component component4 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 1500-shcs-500 2");
                             objects1[3] = component4;
-                            var component5 =
+                            Component component5 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 1500-shcs-500 4");
                             objects1[4] = component5;
-                            var component6 =
+                            Component component6 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 1500-shcs-500 8");
                             objects1[5] = component6;
-                            var component7 =
+                            Component component7 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 1500-shcs-500 6");
                             objects1[6] = component7;
-                            var component8 =
+                            Component component8 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 1500-shcs-500 1");
                             objects1[7] = component8;
@@ -1687,8 +1740,8 @@ namespace TSG_Library.UFuncs
                     else
                     {
                         {
-                            var workPart = theSession.Parts.Work;
-                            var displayPart = theSession.Parts.Display;
+                            Part workPart = theSession.Parts.Work;
+                            Part displayPart = theSession.Parts.Display;
                             // ----------------------------------------------
                             //   Menu: Edit->Delete...
                             // ----------------------------------------------
@@ -1699,38 +1752,54 @@ namespace TSG_Library.UFuncs
 
                             markId2 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Delete");
 
-                            var objects1 = new TaggedObject[16];
-                            var displayedConstraint1 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2893");
+                            TaggedObject[] objects1 = new TaggedObject[16];
+                            DisplayedConstraint displayedConstraint1 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2893");
                             objects1[0] = displayedConstraint1;
-                            var displayedConstraint2 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2911");
+                            DisplayedConstraint displayedConstraint2 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2911");
                             objects1[1] = displayedConstraint2;
-                            var displayedConstraint3 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2498");
+                            DisplayedConstraint displayedConstraint3 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2498");
                             objects1[2] = displayedConstraint3;
-                            var displayedConstraint4 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2519");
+                            DisplayedConstraint displayedConstraint4 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2519");
                             objects1[3] = displayedConstraint4;
-                            var displayedConstraint5 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2542");
+                            DisplayedConstraint displayedConstraint5 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2542");
                             objects1[4] = displayedConstraint5;
-                            var displayedConstraint6 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2560");
+                            DisplayedConstraint displayedConstraint6 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2560");
                             objects1[5] = displayedConstraint6;
-                            var displayedConstraint7 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2582");
+                            DisplayedConstraint displayedConstraint7 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2582");
                             objects1[6] = displayedConstraint7;
-                            var displayedConstraint8 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2608");
+                            DisplayedConstraint displayedConstraint8 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2608");
                             objects1[7] = displayedConstraint8;
-                            var displayedConstraint9 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2637");
+                            DisplayedConstraint displayedConstraint9 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2637");
                             objects1[8] = displayedConstraint9;
-                            var displayedConstraint10 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2660");
+                            DisplayedConstraint displayedConstraint10 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2660");
                             objects1[9] = displayedConstraint10;
-                            var displayedConstraint11 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2708");
+                            DisplayedConstraint displayedConstraint11 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2708");
                             objects1[10] = displayedConstraint11;
-                            var displayedConstraint12 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2728");
+                            DisplayedConstraint displayedConstraint12 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2728");
                             objects1[11] = displayedConstraint12;
-                            var displayedConstraint13 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2760");
+                            DisplayedConstraint displayedConstraint13 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2760");
                             objects1[12] = displayedConstraint13;
-                            var displayedConstraint14 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2796");
+                            DisplayedConstraint displayedConstraint14 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2796");
                             objects1[13] = displayedConstraint14;
-                            var displayedConstraint15 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2817");
+                            DisplayedConstraint displayedConstraint15 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2817");
                             objects1[14] = displayedConstraint15;
-                            var displayedConstraint16 = (DisplayedConstraint)workPart.FindObject("HANDLE R-2832");
+                            DisplayedConstraint displayedConstraint16 =
+                                (DisplayedConstraint)workPart.FindObject("HANDLE R-2832");
                             objects1[15] = displayedConstraint16;
                             int nErrs1;
                             nErrs1 = theSession.UpdateManager.AddObjectsToDeleteList(objects1);
@@ -1746,8 +1815,8 @@ namespace TSG_Library.UFuncs
 
                         {
                             //NXOpen.Session theSession = NXOpen.Session.GetSession();
-                            var workPart = theSession.Parts.Work;
-                            var displayPart = theSession.Parts.Display;
+                            Part workPart = theSession.Parts.Work;
+                            Part displayPart = theSession.Parts.Display;
                             // ----------------------------------------------
                             //   Menu: Edit->Delete...
                             // ----------------------------------------------
@@ -1759,36 +1828,36 @@ namespace TSG_Library.UFuncs
                             //NXOpen.Session.UndoMarkId markId2;
                             markId2 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Delete");
 
-                            var objects1 = new TaggedObject[8];
-                            var component1 =
+                            TaggedObject[] objects1 = new TaggedObject[8];
+                            Component component1 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 36mm-shcs-100 8");
                             objects1[0] = component1;
-                            var component2 =
+                            Component component2 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 36mm-shcs-100 5");
                             objects1[1] = component2;
-                            var component3 =
+                            Component component3 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 36mm-shcs-100 4");
                             objects1[2] = component3;
-                            var component4 =
+                            Component component4 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 36mm-shcs-100 1");
                             objects1[3] = component4;
-                            var component5 =
+                            Component component5 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 36mm-shcs-100 3");
                             objects1[4] = component5;
-                            var component6 =
+                            Component component6 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 36mm-shcs-100 7");
                             objects1[5] = component6;
-                            var component7 =
+                            Component component7 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 36mm-shcs-100 6");
                             objects1[6] = component7;
-                            var component8 =
+                            Component component8 =
                                 (Component)workPart.ComponentAssembly.RootComponent.FindObject(
                                     "COMPONENT 36mm-shcs-100 2");
                             objects1[7] = component8;
@@ -1806,11 +1875,11 @@ namespace TSG_Library.UFuncs
                     }
                 }
 
-                using (session_.__usingDisplayPartReset())
+                using (session_.__UsingDisplayPartReset())
                 {
                     session_.__FindOrOpen(__folder.file_detail0(op, "lsh")).__SetActiveDisplay();
 
-                    if(units_mm)
+                    if (units_mm)
                     {
                         __display_part_.ComponentAssembly.RootComponent
                             .__FindComponent("COMPONENT Smart Demountable Guide Pin English 4")
@@ -1904,9 +1973,9 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var press_path = __folder.file_press_t(op);
+                string press_path = __folder.file_press_t(op);
 
-                if(!File.Exists(press_path))
+                if (!File.Exists(press_path))
                 {
                     print_("////////////////////////////");
                     print_($"Did not add press to {__display_part_.Leaf}");
@@ -1915,16 +1984,16 @@ namespace TSG_Library.UFuncs
                     return;
                 }
 
-                var __press_part = session_.__FindOrOpen(press_path);
+                Part __press_part = session_.__FindOrOpen(press_path);
 
-                var __press = __display_part_.ComponentAssembly.AddComponent(
+                Component __press = __display_part_.ComponentAssembly.AddComponent(
                     __press_part,
                     "Entire Part",
                     $"PRESS-T{op}",
                     _Point3dOrigin,
                     _Matrix3x3Identity,
                     245,
-                    out var __press_comps);
+                    out PartLoadStatus __press_comps);
 
                 try
                 {
@@ -1949,7 +2018,7 @@ namespace TSG_Library.UFuncs
 
         private static void ConstrainLSH(GFolder __folder, bool start_with_strip)
         {
-            var comp_lsh = __display_part_.ComponentAssembly.RootComponent.GetChildren()
+            Component comp_lsh = __display_part_.ComponentAssembly.RootComponent.GetChildren()
                 .Single(__c => __c.DisplayName.ToLower().EndsWith("-lsh"));
 
             try
@@ -1963,27 +2032,27 @@ namespace TSG_Library.UFuncs
                 ex.__PrintException();
             }
 
-            foreach (var __child in __display_part_.ComponentAssembly.RootComponent.GetChildren())
+            foreach (Component __child in __display_part_.ComponentAssembly.RootComponent.GetChildren())
             {
-                if(!__child.DisplayName.EndsWith("-lsp"))
+                if (!__child.DisplayName.EndsWith("-lsp"))
                     continue;
 
-                var actual_op = __child.DisplayName
-                    .Replace($"{__folder.customer_number}-", "")
+                string actual_op = __child.DisplayName
+                    .Replace($"{__folder.CustomerNumber}-", "")
                     .Replace("-lsp", "");
 
-                var datum_csys = __child.__Prototype().__AbsoluteDatumCsys();
+                DatumCsys datum_csys = __child.__Prototype().__AbsoluteDatumCsys();
 
                 string new_interpart_exp_x;
                 string new_interpart_exp_y;
                 string new_interpart_exp_z;
 
-                var exp_op = actual_op;
+                string exp_op = actual_op;
 
-                if(start_with_strip)
+                if (start_with_strip)
                     exp_op = __Op020To010(actual_op);
 
-                if(actual_op == "010" && start_with_strip)
+                if (actual_op == "010" && start_with_strip)
                 {
                     new_interpart_exp_x = "P010X";
                     new_interpart_exp_y = "P010Y";
@@ -1996,11 +2065,11 @@ namespace TSG_Library.UFuncs
                     new_interpart_exp_z = $"T{exp_op}Z";
                 }
 
-                var builder = __display_part_.Expressions.CreateInterpartExpressionsBuilder();
+                InterpartExpressionsBuilder builder = __display_part_.Expressions.CreateInterpartExpressionsBuilder();
 
                 // clone transfer
 
-                var strip = session_.__FindOrOpen(__folder.file_strip_900);
+                Part strip = session_.__FindOrOpen(__folder.FileStrip900);
 
                 try
                 {
@@ -2016,7 +2085,7 @@ namespace TSG_Library.UFuncs
 
         private static void ConstrainUSH(GFolder __folder, bool start_with_strip)
         {
-            var comp_ush = __display_part_.ComponentAssembly.RootComponent.GetChildren()
+            Component comp_ush = __display_part_.ComponentAssembly.RootComponent.GetChildren()
                 .Single(__c => __c.DisplayName.ToLower().EndsWith("-ush"));
 
             try
@@ -2030,28 +2099,28 @@ namespace TSG_Library.UFuncs
                 ex.__PrintException();
             }
 
-            foreach (var __child in __display_part_.ComponentAssembly.RootComponent.GetChildren())
+            foreach (Component __child in __display_part_.ComponentAssembly.RootComponent.GetChildren())
             {
-                if(!__child.DisplayName.EndsWith("-usp"))
+                if (!__child.DisplayName.EndsWith("-usp"))
                     continue;
 
-                var actual_op = __child.DisplayName
-                    .Replace($"{__folder.customer_number}-", "")
+                string actual_op = __child.DisplayName
+                    .Replace($"{__folder.CustomerNumber}-", "")
                     .Replace("-usp", "");
 
-                var datum_csys = __child.__Prototype().__AbsoluteDatumCsys();
+                DatumCsys datum_csys = __child.__Prototype().__AbsoluteDatumCsys();
 
 
                 string new_interpart_exp_x;
                 string new_interpart_exp_y;
                 string new_interpart_exp_z;
 
-                var exp_op = actual_op;
+                string exp_op = actual_op;
 
-                if(start_with_strip)
+                if (start_with_strip)
                     exp_op = __Op020To010(actual_op);
 
-                if(actual_op == "010" && start_with_strip)
+                if (actual_op == "010" && start_with_strip)
                 {
                     new_interpart_exp_x = "P010X";
                     new_interpart_exp_y = "P010Y";
@@ -2064,9 +2133,9 @@ namespace TSG_Library.UFuncs
                     new_interpart_exp_z = $"T{exp_op}Z";
                 }
 
-                var builder = __display_part_.Expressions.CreateInterpartExpressionsBuilder();
+                InterpartExpressionsBuilder builder = __display_part_.Expressions.CreateInterpartExpressionsBuilder();
 
-                var strip = session_.__FindOrOpen(__folder.file_strip_900);
+                Part strip = session_.__FindOrOpen(__folder.FileStrip900);
                 try
                 {
                     ConstrainStripInterpartExpressions(new_interpart_exp_x, new_interpart_exp_y, new_interpart_exp_z,
@@ -2084,14 +2153,15 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var datum_plane1 = (DatumPlane)__press.FindObject("PROTO#HANDLE R-807");
-                var datum_plane2 = (DatumPlane)__display_part_.Datums.FindObject("DATUM_PLANE(12)");
-                var constraint = __display_part_.__ConstrainOccProtoDistance(datum_plane1, datum_plane2, "0");
+                DatumPlane datum_plane1 = (DatumPlane)__press.FindObject("PROTO#HANDLE R-807");
+                DatumPlane datum_plane2 = (DatumPlane)__display_part_.Datums.FindObject("DATUM_PLANE(12)");
+                ComponentConstraint constraint =
+                    __display_part_.__ConstrainOccProtoDistance(datum_plane1, datum_plane2, "0");
                 constraint.GetDisplayedConstraint().SetName("PRESS-XZ");
             }
             catch (NXException __ex)
             {
-                if(__ex.ErrorCode != 3520016)
+                if (__ex.ErrorCode != 3520016)
                     throw;
 
                 throw NXException.Create(__ex.ErrorCode, $"Could not find object {__display_part_.Leaf}");
@@ -2106,9 +2176,10 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var datum_plane1 = __press.__AbsOccDatumPlaneXY();
-                var datum_plane2 = __work_part_.__AbsoluteDatumCsys().__DatumPlaneXY();
-                var constraint = __display_part_.__ConstrainOccProtoDistance(datum_plane1, datum_plane2, "0");
+                DatumPlane datum_plane1 = __press.__AbsOccDatumPlaneXY();
+                DatumPlane datum_plane2 = __work_part_.__AbsoluteDatumCsys().__DatumPlaneXY();
+                ComponentConstraint constraint =
+                    __display_part_.__ConstrainOccProtoDistance(datum_plane1, datum_plane2, "0");
                 constraint.SetName(constraint_name);
             }
             catch (Exception ex)
@@ -2121,9 +2192,10 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var datum_plane1 = __press.__AbsOccDatumPlaneXZ();
-                var datum_plane2 = __work_part_.__AbsoluteDatumCsys().__DatumPlaneXZ();
-                var constraint = __display_part_.__ConstrainOccProtoDistance(datum_plane1, datum_plane2, "0");
+                DatumPlane datum_plane1 = __press.__AbsOccDatumPlaneXZ();
+                DatumPlane datum_plane2 = __work_part_.__AbsoluteDatumCsys().__DatumPlaneXZ();
+                ComponentConstraint constraint =
+                    __display_part_.__ConstrainOccProtoDistance(datum_plane1, datum_plane2, "0");
                 constraint.SetName(constraint_name);
             }
             catch (Exception ex)
@@ -2136,9 +2208,10 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var datum_plane1 = __press.__AbsOccDatumPlaneYZ();
-                var datum_plane2 = __work_part_.__AbsoluteDatumCsys().__DatumPlaneYZ();
-                var constraint = __display_part_.__ConstrainOccProtoDistance(datum_plane1, datum_plane2, "0");
+                DatumPlane datum_plane1 = __press.__AbsOccDatumPlaneYZ();
+                DatumPlane datum_plane2 = __work_part_.__AbsoluteDatumCsys().__DatumPlaneYZ();
+                ComponentConstraint constraint =
+                    __display_part_.__ConstrainOccProtoDistance(datum_plane1, datum_plane2, "0");
                 constraint.SetName(constraint_name);
             }
             catch (Exception ex)
@@ -2154,7 +2227,7 @@ namespace TSG_Library.UFuncs
             NewMethod25(prefix, op_str, press_comp, proto_press_csys, strip_csys0);
 
             // constrains the yz planes
-            var constraint_yz = __display_part_.__ConstrainOccProtoDistance(
+            ComponentConstraint constraint_yz = __display_part_.__ConstrainOccProtoDistance(
                 press_comp.__AbsOccDatumPlaneYZ(),
                 strip_csys0.__DatumPlaneYZ(),
                 "0.0");
@@ -2171,12 +2244,12 @@ namespace TSG_Library.UFuncs
             Component press_comp,
             DatumCsys proto_press_csys)
         {
-            var __entity = __display_part_.Features
+            NXObject __entity = __display_part_.Features
                 .ToArray()
                 .OfType<DatumPlaneFeature>()
                 .ElementAt(1)
                 .GetEntities()[0];
-            var constraint_xz = __display_part_.__ConstrainOccProtoDistance(
+            ComponentConstraint constraint_xz = __display_part_.__ConstrainOccProtoDistance(
                 (DatumPlane)press_comp.__FindOccurrence(proto_press_csys.__DatumPlaneYZ()),
                 (DatumPlane)__entity,
                 "0.0");
@@ -2192,7 +2265,7 @@ namespace TSG_Library.UFuncs
             DatumCsys proto_press_csys,
             DatumPlane plane)
         {
-            var constraint_yz = __display_part_.__ConstrainOccProtoDistance(
+            ComponentConstraint constraint_yz = __display_part_.__ConstrainOccProtoDistance(
                 press_comp.__AbsOccDatumPlaneYZ(),
                 plane,
                 "0.0");
@@ -2203,7 +2276,7 @@ namespace TSG_Library.UFuncs
         private static void NewMethod25(string prefix, string op_str, Component press_comp, DatumCsys proto_press_csys,
             DatumCsys strip_csys0)
         {
-            var constraint_xy = __display_part_.__ConstrainOccProtoDistance(
+            ComponentConstraint constraint_xy = __display_part_.__ConstrainOccProtoDistance(
                 press_comp.__AbsOccDatumPlaneXY(),
                 strip_csys0.__DatumPlaneXY(),
                 "0.0");
@@ -2223,13 +2296,11 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                var suffix = op_str;
+                Expression expression_x = __display_part_.__FindExpression($"{prefix}{op_str}{exp_x}");
+                Expression expression_y = __display_part_.__FindExpression($"{prefix}{op_str}{exp_y}");
+                Expression expression_z = __display_part_.__FindExpression($"{prefix}{op_str}{exp_z}");
 
-                var expression_x = __display_part_.__FindExpression($"{prefix}{suffix}{exp_x}");
-                var expression_y = __display_part_.__FindExpression($"{prefix}{suffix}{exp_y}");
-                var expression_z = __display_part_.__FindExpression($"{prefix}{suffix}{exp_z}");
-
-                var layout_comp = __display_part_.__AddComponent(
+                Component layout_comp = __display_part_.__AddComponent(
                     layout_path,
                     orientation: _Matrix3x3Identity,
                     referenceSet: "Entire Part",
@@ -2241,17 +2312,17 @@ namespace TSG_Library.UFuncs
                     ), componentName: comp_name);
 
                 // gets the first feature in the layout_comp.prototype and casts it to a DatumCsysFeature_
-                var proto_layout_csys = layout_comp.__Prototype()
+                DatumCsys proto_layout_csys = layout_comp.__Prototype()
                     .Features
                     .OfType<DatumCsys>()
                     .First();
 
                 // gets the first feature in the layout_comp.prototype and casts it to a DatumCsysFeature_
-                var strip_csys = __display_part_.Features.OfType<DatumCsys>().First();
+                DatumCsys strip_csys = __display_part_.Features.OfType<DatumCsys>().First();
 
-                var datum_plane_xy1 = proto_layout_csys.__DatumPlaneXY();
-                var __plane_occ = (DatumPlane)layout_comp.__FindOccurrence(datum_plane_xy1);
-                var datum_plane_xy = strip_csys.__DatumPlaneXY();
+                DatumPlane datum_plane_xy1 = proto_layout_csys.__DatumPlaneXY();
+                DatumPlane __plane_occ = (DatumPlane)layout_comp.__FindOccurrence(datum_plane_xy1);
+                DatumPlane datum_plane_xy = strip_csys.__DatumPlaneXY();
                 NewMethod24(comp_name, expression_z, __plane_occ, datum_plane_xy);
 
                 NewMethod8(comp_name, expression_x, layout_comp, proto_layout_csys, strip_csys);
@@ -2273,13 +2344,13 @@ namespace TSG_Library.UFuncs
             DatumPlane __plane_occ,
             DatumPlane datum_plane_xy)
         {
-            var comp_dist_const_xy = __display_part_.__ConstrainOccProtoDistance(
+            ComponentConstraint comp_dist_const_xy = __display_part_.__ConstrainOccProtoDistance(
                 __plane_occ,
                 datum_plane_xy,
                 expression_z.Name);
             comp_dist_const_xy.GetDisplayedConstraint().Layer = 256;
             comp_dist_const_xy.SetName($"{comp_name}-XY");
-            var new_name = $"{comp_name.Replace("-", "_")}_{expression_z.Name}_";
+            string new_name = $"{comp_name.Replace("-", "_")}_{expression_z.Name}_";
             comp_dist_const_xy.SetName($"{comp_name}-XY");
             comp_dist_const_xy.SetName(new_name);
         }
@@ -2291,7 +2362,7 @@ namespace TSG_Library.UFuncs
             DatumCsys proto_layout_csys,
             DatumCsys strip_csys)
         {
-            var comp_dist_const_yz = __display_part_.__ConstrainOccProtoDistance(
+            ComponentConstraint comp_dist_const_yz = __display_part_.__ConstrainOccProtoDistance(
                 layout_comp.__AbsOccDatumPlaneYZ(),
                 strip_csys.__DatumPlaneYZ(),
                 expression_x.Name);
@@ -2308,8 +2379,8 @@ namespace TSG_Library.UFuncs
             DatumCsys proto_layout_csys,
             DatumCsys strip_csys)
         {
-            var layout_occ_plane = layout_comp.__AbsOccDatumPlaneXZ();
-            var constraint_xz = __display_part_.__ConstrainOccProtoDistance(
+            DatumPlane layout_occ_plane = layout_comp.__AbsOccDatumPlaneXZ();
+            ComponentConstraint constraint_xz = __display_part_.__ConstrainOccProtoDistance(
                 layout_occ_plane,
                 strip_csys.__DatumPlaneXZ(),
                 expression_y.Name);
@@ -2320,22 +2391,22 @@ namespace TSG_Library.UFuncs
 
         public static void replace_interpart_expressions(Component layout_comp, string prefix)
         {
-            var inter_expression = new List<string>(new[] { "b", "e", "em", "m", "p" });
+            List<string> inter_expression = new List<string>(new[] { "b", "e", "em", "m", "p" });
 
-            if(prefix == "T")
+            if (prefix == "T")
                 inter_expression.Add("TP");
 
-            if(prefix == "P")
+            if (prefix == "P")
                 inter_expression.Add("pp");
 
-            var source = inter_expression.Select(__display_part_.__FindExpression)
+            Expression[] source = inter_expression.Select(__display_part_.__FindExpression)
                 .Select(exp => exp)
                 .ToArray();
 
-            using (Session.GetSession().__usingDisplayPartReset())
+            using (Session.GetSession().__UsingDisplayPartReset())
             {
                 __display_part_ = layout_comp.__Prototype();
-                var builder = __display_part_.Expressions.CreateInterpartExpressionsBuilder();
+                InterpartExpressionsBuilder builder = __display_part_.Expressions.CreateInterpartExpressionsBuilder();
 
                 using (session_.__UsingBuilderDestroyer(builder))
                 {
@@ -2349,33 +2420,33 @@ namespace TSG_Library.UFuncs
 
         public static void add_press(string prefix)
         {
-            var __match = Regex.Match(__display_part_.Leaf, "^(?<cus_num>\\d{6})-.*$");
+            Match __match = Regex.Match(__display_part_.Leaf, "^(?<cus_num>\\d{6})-.*$");
 
-            if(!__match.Success)
+            if (!__match.Success)
             {
                 print_("Could not find customer number");
                 return;
             }
 
-            var cust_num = __match.Groups["cus_num"].Value;
-            var directory = Path.GetDirectoryName(__display_part_.FullPath);
-            var job_folder = Path.GetDirectoryName(directory);
-            var layout_folder = $"{job_folder}\\Layout";
-            var op_int = 10;
+            string cust_num = __match.Groups["cus_num"].Value;
+            string directory = Path.GetDirectoryName(__display_part_.FullPath);
+            string job_folder = Path.GetDirectoryName(directory);
+            string layout_folder = $"{job_folder}\\Layout";
+            int op_int = 10;
 
             while (true)
             {
-                var op_str = __Op10To010(op_int);
-                var press_path = $"{layout_folder}\\{cust_num}-{prefix}{op_str}-Press.prt";
+                string op_str = __Op10To010(op_int);
+                string press_path = $"{layout_folder}\\{cust_num}-{prefix}{op_str}-Press.prt";
 
                 try
                 {
-                    if(File.Exists(press_path))
+                    if (File.Exists(press_path))
                         continue;
 
-                    File.Copy(XXXXX_Press_XX_Assembly, press_path);
+                    File.Copy(XxxxxPressXxAssembly, press_path);
 
-                    var press_comp = __display_part_.ComponentAssembly.AddComponent(
+                    Component press_comp = __display_part_.ComponentAssembly.AddComponent(
                         press_path,
                         "Entire Part",
                         $"PRESS-{prefix}{op_str}",
@@ -2385,8 +2456,8 @@ namespace TSG_Library.UFuncs
                         out _);
 
                     __display_part_.Layers.SetState(256, State.WorkLayer);
-                    var proto_press_csys = press_comp.__Prototype().__AbsoluteDatumCsys();
-                    var strip_csys0 = __display_part_.__AbsoluteDatumCsys();
+                    DatumCsys proto_press_csys = press_comp.__Prototype().__AbsoluteDatumCsys();
+                    DatumCsys strip_csys0 = __display_part_.__AbsoluteDatumCsys();
                     NewMethod43(prefix, op_str, press_comp, proto_press_csys, strip_csys0);
                     press_comp.__ReferenceSet("BODY");
                     break;
@@ -2400,7 +2471,7 @@ namespace TSG_Library.UFuncs
 
         public static void ExecuteCloneProg(GFolder __folder, string op)
         {
-            var clone = UFSession.GetUFSession().Clone;
+            UFClone clone = UFSession.GetUFSession().Clone;
             clone.Terminate();
             clone.Initialise(UFClone.OperationClass.CloneOperation);
             clone.SetDefNaming(UFClone.NamingTechnique.UserName);
@@ -2531,7 +2602,7 @@ namespace TSG_Library.UFuncs
 
             clone.SetDefDirectory(__folder.dir_op(op));
 
-            clone.InitNamingFailures(out var failures);
+            clone.InitNamingFailures(out UFClone.NamingFailures failures);
 
             clone.PerformClone(ref failures);
 
@@ -2542,7 +2613,7 @@ namespace TSG_Library.UFuncs
 
         public static void ExecuteCloneLine900(GFolder __folder)
         {
-            var clone = UFSession.GetUFSession().Clone;
+            UFClone clone = UFSession.GetUFSession().Clone;
             clone.Terminate();
             clone.Initialise(UFClone.OperationClass.CloneOperation);
             clone.SetDefNaming(UFClone.NamingTechnique.NamingRule);
@@ -2553,14 +2624,14 @@ namespace TSG_Library.UFuncs
 
             clone.SetDefDirectory(__folder.dir_op("900"));
 
-            var rule = new UFClone.NameRuleDef
+            UFClone.NameRuleDef rule = new UFClone.NameRuleDef
             {
                 base_string = "seed-line-900-",
-                new_string = $"{__folder.customer_number}-900-",
+                new_string = $"{__folder.CustomerNumber}-900-",
                 type = UFClone.NameRuleType.ReplaceString
             };
 
-            clone.InitNamingFailures(out var failures);
+            clone.InitNamingFailures(out UFClone.NamingFailures failures);
             clone.SetNameRule(ref rule, ref failures);
 
             clone.PerformClone(ref failures);
@@ -2570,7 +2641,7 @@ namespace TSG_Library.UFuncs
 
         public static void ExecuteCloneLineOp(GFolder __folder, string op)
         {
-            var clone = UFSession.GetUFSession().Clone;
+            UFClone clone = UFSession.GetUFSession().Clone;
             clone.Terminate();
             clone.Initialise(UFClone.OperationClass.CloneOperation);
             clone.SetDefNaming(UFClone.NamingTechnique.NamingRule);
@@ -2606,14 +2677,14 @@ namespace TSG_Library.UFuncs
 
             clone.SetDefDirectory(__folder.dir_op(op));
 
-            var rule = new UFClone.NameRuleDef
+            UFClone.NameRuleDef rule = new UFClone.NameRuleDef
             {
                 base_string = "seed-line-op-",
-                new_string = $"{__folder.customer_number}-{op}-",
+                new_string = $"{__folder.CustomerNumber}-{op}-",
                 type = UFClone.NameRuleType.ReplaceString
             };
 
-            clone.InitNamingFailures(out var failures);
+            clone.InitNamingFailures(out UFClone.NamingFailures failures);
             clone.SetNameRule(ref rule, ref failures);
 
             clone.PerformClone(ref failures);
@@ -2623,12 +2694,12 @@ namespace TSG_Library.UFuncs
 
         public static void ExecuteCloneTranAssemblyOp(string def_directory, IDictionary<string, string> clone_dict)
         {
-            var clone = UFSession.GetUFSession().Clone;
+            UFClone clone = UFSession.GetUFSession().Clone;
             clone.Terminate();
             clone.Initialise(UFClone.OperationClass.CloneOperation);
             clone.SetDefNaming(UFClone.NamingTechnique.UserName);
 
-            foreach (var key in clone_dict.Keys)
+            foreach (string key in clone_dict.Keys)
             {
                 clone.AddPart(key);
                 clone.SetNaming(key, UFClone.NamingTechnique.UserName, clone_dict[key]);
@@ -2636,7 +2707,7 @@ namespace TSG_Library.UFuncs
 
             clone.SetDefDirectory(def_directory);
 
-            clone.InitNamingFailures(out var failures);
+            clone.InitNamingFailures(out UFClone.NamingFailures failures);
 
             clone.PerformClone(ref failures);
 
@@ -2645,7 +2716,7 @@ namespace TSG_Library.UFuncs
 
         public static void ExecuteCloneTranShoe(GFolder __folder, string op)
         {
-            var clone = UFSession.GetUFSession().Clone;
+            UFClone clone = UFSession.GetUFSession().Clone;
             clone.Terminate();
             clone.Initialise(UFClone.OperationClass.CloneOperation);
             clone.SetDefNaming(UFClone.NamingTechnique.UserName);
@@ -2736,7 +2807,7 @@ namespace TSG_Library.UFuncs
 
             clone.SetDefDirectory(__folder.dir_op(op));
 
-            clone.InitNamingFailures(out var failures);
+            clone.InitNamingFailures(out UFClone.NamingFailures failures);
 
             clone.PerformClone(ref failures);
 
@@ -2745,7 +2816,7 @@ namespace TSG_Library.UFuncs
 
         public static void ExecuteCloneTranOp(GFolder __folder, string op)
         {
-            var clone = UFSession.GetUFSession().Clone;
+            UFClone clone = UFSession.GetUFSession().Clone;
             clone.Terminate();
             clone.Initialise(UFClone.OperationClass.CloneOperation);
             clone.SetDefNaming(UFClone.NamingTechnique.NamingRule);
@@ -2756,14 +2827,14 @@ namespace TSG_Library.UFuncs
 
             clone.SetDefDirectory(__folder.dir_op(op));
 
-            var rule = new UFClone.NameRuleDef
+            UFClone.NameRuleDef rule = new UFClone.NameRuleDef
             {
                 base_string = "seed-tran-op-",
-                new_string = $"{__folder.customer_number}-{op}-",
+                new_string = $"{__folder.CustomerNumber}-{op}-",
                 type = UFClone.NameRuleType.ReplaceString
             };
 
-            clone.InitNamingFailures(out var failures);
+            clone.InitNamingFailures(out UFClone.NamingFailures failures);
             clone.SetNameRule(ref rule, ref failures);
 
             clone.PerformClone(ref failures);
@@ -2773,7 +2844,7 @@ namespace TSG_Library.UFuncs
 
         public static void ExecuteCloneTran900(GFolder __folder)
         {
-            var clone = UFSession.GetUFSession().Clone;
+            UFClone clone = UFSession.GetUFSession().Clone;
             clone.Terminate();
             clone.Initialise(UFClone.OperationClass.CloneOperation);
             clone.SetDefNaming(UFClone.NamingTechnique.UserName);
@@ -2784,7 +2855,7 @@ namespace TSG_Library.UFuncs
 
             clone.SetDefDirectory(__folder.dir_op("900"));
 
-            clone.InitNamingFailures(out var failures);
+            clone.InitNamingFailures(out UFClone.NamingFailures failures);
 
             clone.PerformClone(ref failures);
 

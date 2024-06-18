@@ -1,6 +1,8 @@
 ﻿using System;
 using NXOpen;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.Extensions;
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedParameter.Local
 
 namespace TSG_Library.Geom
 {
@@ -72,8 +74,8 @@ namespace TSG_Library.Geom
                 Poles = poles;
                 KnotsU = knotsU;
                 KnotsV = knotsV;
-                var length = poles.GetLength(0);
-                var length2 = poles.GetLength(1);
+                int length = poles.GetLength(0);
+                int length2 = poles.GetLength(1);
                 Weights = UnitWeights(length, length2);
             }
 
@@ -275,10 +277,10 @@ namespace TSG_Library.Geom
             /// <returns>Array of weights all equal to 1</returns>
             private static double[,] UnitWeights(int m, int n)
             {
-                var array = new double[m, n];
-                for (var i = 0; i < m; i++)
+                double[,] array = new double[m, n];
+                for (int i = 0; i < m; i++)
                 {
-                    var num = 0;
+                    int num = 0;
                     while (i < n)
                     {
                         array[i, num] = 1.0;
@@ -307,7 +309,7 @@ namespace TSG_Library.Geom
         /// <summary>Represents a non-persistent conical surface -- not stored in NX</summary>
         public class Cone : Surface
         {
-            private Vector3d axisVector;
+            private Vector3d _axisVector;
 
             /// <summary>Constructs a conical surface</summary>
             /// <param name="axisPoint">The cone base position of base arc</param>
@@ -328,8 +330,8 @@ namespace TSG_Library.Geom
             /// <summary>Axis vector of the conical surface</summary>
             public Vector3d AxisVector
             {
-                get => axisVector;
-                set => axisVector = value.__Unit();
+                get => _axisVector;
+                set => _axisVector = value.__Unit();
             }
 
             /// <summary>Axis point of the conical surface</summary>
@@ -345,7 +347,7 @@ namespace TSG_Library.Geom
         /// <summary>Represents a non-persistent cylindrical surface -- not stored in NX</summary>
         public class Cylinder : Surface
         {
-            private Vector3d axisVector;
+            private Vector3d _axisVector;
 
             /// <summary>Constructs a cylindrical surface</summary>
             /// <param name="axisPoint">The point at base of cylinder</param>
@@ -361,8 +363,8 @@ namespace TSG_Library.Geom
             /// <summary>Axis vector of the cylindrical surface</summary>
             public Vector3d AxisVector
             {
-                get => axisVector;
-                set => axisVector = value.__Unit();
+                get => _axisVector;
+                set => _axisVector = value.__Unit();
             }
 
             /// <summary>Axis point of the cylindrical surface</summary>
@@ -375,7 +377,7 @@ namespace TSG_Library.Geom
         /// <summary>Represents a non-persistent extruded surface -- not stored in NX</summary>
         public class Extrude : Surface
         {
-            private Vector3d direction;
+            private Vector3d _direction;
 
             /// <summary>Constructs an extruded surface through given vector</summary>
             /// <param name="direction">Extruded direction</param>
@@ -387,8 +389,8 @@ namespace TSG_Library.Geom
             /// <summary>Axis vector of the extruded surface</summary>
             public Vector3d Direction
             {
-                get => direction;
-                set => direction = value.__Unit();
+                get => _direction;
+                set => _direction = value.__Unit();
             }
         }
 
@@ -417,7 +419,7 @@ namespace TSG_Library.Geom
         /// </remarks>
         public class Plane : Surface
         {
-            private Vector3d normal;
+            private Vector3d _normal;
 
             /// <summary>Constructs a plane through a given point and normal</summary>
             /// <param name="point">Point lying on plane</param>
@@ -441,8 +443,8 @@ namespace TSG_Library.Geom
             /// <remarks>The plane has equation  ax + by + cz = d</remarks>
             public Plane(double a, double b, double c, double d)
             {
-                var vector = new Vector3d(a, b, c);
-                var num = vector.__Norm();
+                Vector3d vector = new Vector3d(a, b, c);
+                double num = vector.__Norm();
                 Normal = vector.__Divide(num);
                 D = d / num;
             }
@@ -492,8 +494,8 @@ namespace TSG_Library.Geom
             /// </remarks>
             public Vector3d Normal
             {
-                get => normal;
-                set => normal = value.__Unit();
+                get => _normal;
+                set => _normal = value.__Unit();
             }
 
             /// <summary> Signed distance from origin to plane, measured along the plane normal</summary>
@@ -511,7 +513,7 @@ namespace TSG_Library.Geom
         /// <summary>Represents a non-persistent revolved surface -- not stored in NX</summary>
         public class Revolve : Surface
         {
-            private Vector3d axisVector;
+            private Vector3d _axisVector;
 
             /// <summary>Constructs a revolved surface</summary>
             /// <param name="axisPoint">Point on the axis of revolution</param>
@@ -525,8 +527,8 @@ namespace TSG_Library.Geom
             /// <summary>Axis vector of the revolved surface </summary>
             public Vector3d AxisVector
             {
-                get => axisVector;
-                set => axisVector = value.__Unit();
+                get => _axisVector;
+                set => _axisVector = value.__Unit();
             }
 
             /// <summary>Axis point of the revolved surface</summary>
@@ -555,7 +557,7 @@ namespace TSG_Library.Geom
         /// <summary>Represents a non-persistent toroidal surface -- not stored in NX</summary>
         public class Torus : Surface
         {
-            private Vector3d axisVector;
+            private Vector3d _axisVector;
 
             /// <summary>Constructs a toroidal surface through a vector, a point , major radius and minor radius</summary>
             /// <param name="axisPoint">Axis point</param>
@@ -573,8 +575,8 @@ namespace TSG_Library.Geom
             /// <summary>Axis Vector of the toroidal surface</summary>
             public Vector3d AxisVector
             {
-                get => axisVector;
-                set => axisVector = value.__Unit();
+                get => _axisVector;
+                set => _axisVector = value.__Unit();
             }
 
             /// <summary>Axis point of the toroidal surface</summary>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using NXOpen;
+using TSG_Library.Extensions;
 using TSG_Library.Utilities;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
@@ -34,39 +35,41 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
         //    return part_node;
         //}
 
-        public bool IsPartValidForCheck(Part part, out string message)
-        {
-            message = "";
-            try
-            {
-                return !(GFolder.create_or_null(part) is null);
-            }
-            catch (Exception ex)
-            {
-                ex.__PrintException();
-                return false;
-                ;
-            }
-        }
+        //public bool IsPartValidForCheck(Part part, out string message)
+        //{
+        //    message = "";
+        //    try
+        //    {
+        //        return !(GFolder.create_or_null(part) is null);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ex.__PrintException();
+        //        return false;
+        //        ;
+        //    }
+        //}
 
-        public bool PerformCheck(Part part, out TreeNode result_node)
+        public DCResult PerformCheck(Part part, out TreeNode result_node)
         {
-            var folder = GFolder.create(part.FullPath);
+            GFolder folder = GFolder.Create(part.FullPath);
             result_node = new TreeNode(part.Leaf) { Tag = part };
-            var passed = true;
+#pragma warning disable CS0219 // Variable is assigned but its value is never used
+            bool passed = true;
+#pragma warning restore CS0219 // Variable is assigned but its value is never used
 
-            foreach (var expression in part.Expressions.ToArray())
+            foreach (Expression expression in part.Expressions.ToArray())
                 try
                 {
-                    if(!expression.IsInterpartExpression)
+                    if (!expression.IsInterpartExpression)
                         continue;
 
-                    expression.GetInterpartExpressionNames(out var partName, out _);
+                    expression.GetInterpartExpressionNames(out string partName, out _);
 
-                    if(partName.StartsWith(folder.dir_job))
+                    if (partName.StartsWith(folder.DirJob))
                         continue;
 
-                    var exp_node = new TreeNode(expression.Name) { Tag = expression };
+                    TreeNode exp_node = new TreeNode(expression.Name) { Tag = expression };
                     result_node.Nodes.Add(exp_node);
                     passed = false;
                 }
@@ -75,7 +78,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
                     ex.__PrintException();
                 }
 
-            return passed;
+            return DCResult.fail;
         }
     }
 }

@@ -5,17 +5,17 @@ using NXOpen;
 using NXOpen.UF;
 using TSG_Library.Attributes;
 using static TSG_Library.UFuncs._UFunc;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.Extensions;
 
 namespace TSG_Library.UFuncs
 {
     [UFunc(ufunc_show_only)]
-    [RevisionEntry("1.0", "2018", "06", "20")]
-    [Revision("1.0.1", "Revision Log Created for NX 11.")]
-    [RevisionEntry("1.1", "2019", "03", "11")]
-    [Revision("1.1.1", "Code moved to CTS_Library and updated for new server.")]
-    [RevisionEntry("11.1", "2023", "01", "09")]
-    [Revision("11.1.1", "Removed validation")]
+    //[RevisionEntry("1.0", "2018", "06", "20")]
+    //[Revision("1.0.1", "Revision Log Created for NX 11.")]
+    //[RevisionEntry("1.1", "2019", "03", "11")]
+    //[Revision("1.1.1", "Code moved to CTS_Library and updated for new server.")]
+    //[RevisionEntry("11.1", "2023", "01", "09")]
+    //[Revision("11.1.1", "Removed validation")]
     public partial class ShowOnlyForm : _UFuncForm
     {
         private readonly HashSet<Tag> _blankedOffObjects = new HashSet<Tag>();
@@ -24,7 +24,7 @@ namespace TSG_Library.UFuncs
         {
             InitializeComponent();
 
-            var materialValues = from part in session_.Parts.OfType<Part>()
+            IEnumerable<string> materialValues = from part in session_.Parts.OfType<Part>()
                 from att in part.GetUserAttributes()
                 where att.Title.ToUpper() == "MATERIAL"
                 where att.Type == NXObject.AttributeType.String
@@ -40,10 +40,10 @@ namespace TSG_Library.UFuncs
         private void BlankOff(TaggedObject part)
         {
             // Gets all the occurrences of {part} in the current assembly.
-            ufsession_.Assem.AskOccsOfPart(__display_part_.Tag, part.Tag, out var partOccs);
+            ufsession_.Assem.AskOccsOfPart(__display_part_.Tag, part.Tag, out Tag[] partOccs);
 
             // Iterates through the partOccurrences if {part} in the current {DisplayedPart}.
-            foreach (var partOcc in partOccs)
+            foreach (Tag partOcc in partOccs)
             {
                 // Blanks off the object.
                 ufsession_.Obj.SetBlankStatus(partOcc, UFConstants.UF_OBJ_BLANKED);
@@ -55,10 +55,10 @@ namespace TSG_Library.UFuncs
         private void Unblank(TaggedObject part)
         {
             // Gets all the occurrences of {part} in the current assembly.
-            ufsession_.Assem.AskOccsOfPart(__display_part_.Tag, part.Tag, out var partOccs);
+            ufsession_.Assem.AskOccsOfPart(__display_part_.Tag, part.Tag, out Tag[] partOccs);
 
             // Iterates through the partOccurrences if {part} in the current {DisplayedPart}.
-            foreach (var partOcc in partOccs)
+            foreach (Tag partOcc in partOccs)
             {
                 // Blanks off the object.
                 ufsession_.Obj.SetBlankStatus(partOcc, UFConstants.UF_OBJ_NOT_BLANKED);
@@ -69,7 +69,7 @@ namespace TSG_Library.UFuncs
 
         private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(!(cmbMaterialsBox.SelectedItem is string selected))
+            if (!(cmbMaterialsBox.SelectedItem is string selected))
                 return;
 
             foreach (Part part in session_.Parts)
@@ -77,23 +77,23 @@ namespace TSG_Library.UFuncs
                 // We want to ignore any sort of assembly part.
                 // This takes care of the issue where nothing was being un blanked because the assembly holders almost always don't have 
                 // a material attribute and so they end up being blanked off which blanks their sub assembly off.
-                if(part.Leaf.__IsAssemblyHolder())
+                if (part.Leaf.__IsAssemblyHolder())
                     continue;
 
                 // If the part doesn't have a {MATERIAL} attribute then we want to blank the occurrences of 
                 // this part off.
-                if(!part.HasUserAttribute("MATERIAL", NXObject.AttributeType.String, -1))
+                if (!part.HasUserAttribute("MATERIAL", NXObject.AttributeType.String, -1))
                 {
                     BlankOff(part);
                     continue;
                 }
 
                 // Get the {MATERIAL} attribute value.
-                var materialAttributeValue =
+                string materialAttributeValue =
                     part.GetUserAttributeAsString("MATERIAL", NXObject.AttributeType.String, -1);
 
                 // If the material attribute values are equal, then we want to un blank all occurrences of this part.
-                if(materialAttributeValue?.ToUpper() == selected)
+                if (materialAttributeValue?.ToUpper() == selected)
                 {
                     Unblank(part);
                     continue;
@@ -105,13 +105,13 @@ namespace TSG_Library.UFuncs
 
         private void BtnReset_Click(object sender, EventArgs e)
         {
-            var counter = 0;
+            int counter = 0;
 
-            foreach (var obj in _blankedOffObjects)
+            foreach (Tag obj in _blankedOffObjects)
             {
                 ufsession_.Ui.SetPrompt($"Unblanking {++counter} of {_blankedOffObjects.Count}");
 
-                if(obj.__ToTaggedObject() is DisplayableObject disp)
+                if (obj.__ToTaggedObject() is DisplayableObject disp)
                     disp.Unblank();
             }
         }

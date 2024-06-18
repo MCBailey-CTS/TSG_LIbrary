@@ -5,20 +5,20 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using NXOpen;
 using NXOpen.Annotations;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.Extensions;
 
 namespace TSG_Library.UFuncUtilities.AssemblyAutoDetailUtilities
 {
     [Obsolete]
     public static class DrillChart
     {
-        private const string holeChartText = @"U:\nxFiles\UfuncFiles\HoleChart.txt";
+        private const string HoleChartText = @"U:\nxFiles\UfuncFiles\HoleChart.txt";
 
         private static Part __display_part_ => Session.GetSession().Parts.Display;
 
         public static string[] Main()
         {
-            var lines = File.ReadAllLines(holeChartText)
+            string[] lines = File.ReadAllLines(HoleChartText)
                 .Where(s => !string.IsNullOrEmpty(s))
                 .Where(s => !string.IsNullOrWhiteSpace(s))
                 .Where(s => !s.StartsWith("//"))
@@ -26,39 +26,39 @@ namespace TSG_Library.UFuncUtilities.AssemblyAutoDetailUtilities
 
             IList<string[]> holeChart = new List<string[]>();
 
-            for (var i = 1; i < lines.Length; i++)
+            for (int i = 1; i < lines.Length; i++)
             {
-                var split = lines[i].Split('\t');
+                string[] split = lines[i].Split('\t');
 
                 holeChart.Add(split);
             }
 
             // Get the solid body on layer 1
-            var solidBody = __display_part_.__SolidBodyLayer1OrNull();
+            Body solidBody = __display_part_.__SolidBodyLayer1OrNull();
 
-            if(solidBody is null)
+            if (solidBody is null)
                 throw new ArgumentException("Display part does not have solid body on layer 1");
 
             IDictionary<double, Tuple<int[], IList<Face>, string[]>> dict =
                 new Dictionary<double, Tuple<int[], IList<Face>, string[]>>();
 
-            foreach (var face in solidBody.GetFaces())
+            foreach (Face face in solidBody.GetFaces())
             {
-                if(face.SolidFaceType != Face.FaceType.Cylindrical)
+                if (face.SolidFaceType != Face.FaceType.Cylindrical)
                     continue;
 
-                if(!face.Name.ToUpper().Contains("HOLECHART"))
+                if (!face.Name.ToUpper().Contains("HOLECHART"))
                     continue;
 
-                var point = new double[3];
-                var dir = new double[3];
-                var box = new double[6];
+                double[] point = new double[3];
+                double[] dir = new double[3];
+                double[] box = new double[6];
 
-                TheUFSession.Modl.AskFaceData(face.Tag, out var _, point, dir, box, out var radius, out _, out _);
+                TheUFSession.Modl.AskFaceData(face.Tag, out int _, point, dir, box, out double radius, out _, out _);
 
-                var diameter = radius * 2; // * 25.4;
+                double diameter = radius * 2; // * 25.4;
 
-                var actualLine =
+                string[] actualLine =
                 (
                     from line in holeChart
                     let tempRadius = double.Parse(line[1])
@@ -66,14 +66,14 @@ namespace TSG_Library.UFuncUtilities.AssemblyAutoDetailUtilities
                     select line
                 ).FirstOrDefault();
 
-                if(actualLine is null)
+                if (actualLine is null)
                 {
                     print_($"Couldn't find hole chart: {diameter}");
 
                     continue;
                 }
 
-                if(!dict.ContainsKey(diameter))
+                if (!dict.ContainsKey(diameter))
                     dict.Add(diameter,
                         new Tuple<int[], IList<Face>, string[]>(new[] { 0 }, new List<Face>(), actualLine));
 
@@ -84,28 +84,28 @@ namespace TSG_Library.UFuncUtilities.AssemblyAutoDetailUtilities
 
             session_.__DeleteObjects(__display_part_.Layers.GetAllObjectsOnLayer(230).OfType<Note>().ToArray());
 
-            var letter = 'A';
+            char letter = 'A';
 
             IList<IList<string>> actualLines = new List<IList<string>>();
 
-            foreach (var diameter in dict.Keys)
+            foreach (double diameter in dict.Keys)
             {
-                var tuple = dict[diameter];
+                Tuple<int[], IList<Face>, string[]> tuple = dict[diameter];
 
-                var count = tuple.Item1[0];
+                int count = tuple.Item1[0];
 
                 IList<string> list = new List<string>();
 
-                var faces = tuple.Item2;
+                IList<Face> faces = tuple.Item2;
 
-                var message = tuple.Item3;
+                string[] message = tuple.Item3;
 
                 list.Add($"{letter} ");
 
-                var temp = message.Length == 3 ? $"{message[2]} " : $"{message[0]} ";
+                string temp = message.Length == 3 ? $"{message[2]} " : $"{message[0]} ";
 
 
-                var split = Regex.Split(temp, "FOR\\s");
+                string[] split = Regex.Split(temp, "FOR\\s");
 
                 list.Add($"{split[0]}FOR");
                 list.Add(split[1]);
@@ -118,26 +118,27 @@ namespace TSG_Library.UFuncUtilities.AssemblyAutoDetailUtilities
                 actualLines.Add(list);
 
 
-                foreach (var face in faces)
+                foreach (Face face in faces)
                 {
-                    var point = new double[3];
-                    var dir = new double[3];
-                    var box = new double[6];
+                    double[] point = new double[3];
+                    double[] dir = new double[3];
+                    double[] box = new double[6];
 
-                    TheUFSession.Modl.AskFaceData(face.Tag, out var _, point, dir, box, out var _, out _, out _);
+                    TheUFSession.Modl.AskFaceData(face.Tag, out int _, point, dir, box, out double _, out _, out _);
 
                     using (session_.__UsingDoUpdate())
                     {
-                        using (var letteringPreferences1 =
+                        using (LetteringPreferences letteringPreferences1 =
                                __work_part_.Annotations.Preferences.GetLetteringPreferences())
-                        using (var userSymbolPreferences1 = __work_part_.Annotations.NewUserSymbolPreferences(
+                        using (UserSymbolPreferences userSymbolPreferences1 =
+                               __work_part_.Annotations.NewUserSymbolPreferences(
                                    UserSymbolPreferences.SizeType.ScaleAspectRatio,
                                    1.0,
                                    1.0))
                         {
                             userSymbolPreferences1.SetLengthAndHeight(.125, .125);
 
-                            var note1 = __work_part_.Annotations.CreateNote(
+                            Note note1 = __work_part_.Annotations.CreateNote(
                                 new[] { $"{letter}" },
                                 point.__ToPoint3d(),
                                 AxisOrientation.Horizontal,
@@ -151,7 +152,8 @@ namespace TSG_Library.UFuncUtilities.AssemblyAutoDetailUtilities
                             note1.SetName("HOLECHARTNOTE");
                             TheUFSession.View.ConvertToModel(__display_part_.ModelingViews.WorkView.Tag, note1.Tag);
 
-                            var draftingNoteBuilder1 = __work_part_.Annotations.CreateDraftingNoteBuilder(note1);
+                            DraftingNoteBuilder draftingNoteBuilder1 =
+                                __work_part_.Annotations.CreateDraftingNoteBuilder(note1);
 
                             using (session_.__UsingBuilderDestroyer(draftingNoteBuilder1))
                             {
@@ -167,20 +169,19 @@ namespace TSG_Library.UFuncUtilities.AssemblyAutoDetailUtilities
 
             IList<string> note = new List<string>();
 
-            foreach (var t in actualLines)
+            foreach (IList<string> t in actualLines)
             {
-                var _letter = t[0];
-                var drill = t[1];
-                var fastenr = t[2];
-                var quantity = t[3];
+                string _letter = t[0];
+                string drill = t[1];
+                string fastenr = t[2];
+                string quantity = t[3];
 
                 note.Add($"{_letter}{drill}");
                 note.Add($"{fastenr}{quantity}".ToUpper());
                 note.Add("");
 
 
-                var s = "";
-                foreach (var k in t) s += k;
+                string s = t.Aggregate("", (current, k) => current + k);
 
                 note.Add(s);
             }

@@ -62,13 +62,13 @@ namespace TSG_Library.Disposable
 
         public Destroyer(Part part, out CopyPasteBuilder builder, params Feature[] featuresToCopy)
         {
-            if(featuresToCopy == null)
+            if (featuresToCopy == null)
                 throw new ArgumentNullException(nameof(featuresToCopy));
 
-            if(featuresToCopy.Length == 0)
+            if (featuresToCopy.Length == 0)
                 throw new ArgumentOutOfRangeException(nameof(featuresToCopy));
 
-            if(part.Tag != Session.GetSession().Parts.Work.Tag)
+            if (part.Tag != Session.GetSession().Parts.Work.Tag)
                 throw new ArgumentException($@"Part ""{part.Leaf}"" must be the current work part.", nameof(part));
 
             // ReSharper disable once CoVariantArrayConversion
@@ -81,54 +81,54 @@ namespace TSG_Library.Disposable
             _builder = builder;
         }
 
-        public Destroyer(ExtractFace feature, out ExtractFaceBuilder builder)
-        {
-            builder = feature.__OwningPart().Features.CreateExtractFaceBuilder(feature);
+        // public Destroyer(ExtractFace feature, out ExtractFaceBuilder builder)
+        // {
+        //     builder = feature.__OwningPart().Features.CreateExtractFaceBuilder(feature);
 
-            _builder = builder;
-        }
+        //     _builder = builder;
+        // }
 
-        public Destroyer(Block feature, out BlockFeatureBuilder builder)
-        {
-            builder = feature.__OwningPart().Features.CreateBlockFeatureBuilder(feature);
+        // public Destroyer(Block feature, out BlockFeatureBuilder builder)
+        // {
+        //     builder = feature.__OwningPart().Features.CreateBlockFeatureBuilder(feature);
 
-            _builder = builder;
-        }
+        //     _builder = builder;
+        // }
 
-        public Destroyer(DeleteFace feature, out DeleteFaceBuilder builder)
-        {
-            builder = feature.__OwningPart().Features.CreateDeleteFaceBuilder(feature);
+        // public Destroyer(DeleteFace feature, out DeleteFaceBuilder builder)
+        // {
+        //     builder = feature.__OwningPart().Features.CreateDeleteFaceBuilder(feature);
 
-            _builder = builder;
-        }
+        //     _builder = builder;
+        // }
 
-        public Destroyer(Extrude feature, out ExtrudeBuilder builder)
-        {
-            builder = feature.__OwningPart().Features.CreateExtrudeBuilder(feature);
+        // public Destroyer(Extrude feature, out ExtrudeBuilder builder)
+        // {
+        //     builder = feature.__OwningPart().Features.CreateExtrudeBuilder(feature);
 
-            _builder = builder;
-        }
+        //     _builder = builder;
+        // }
 
-        public Destroyer(EdgeBlend feature, out EdgeBlendBuilder builder)
-        {
-            builder = feature.__OwningPart().Features.CreateEdgeBlendBuilder(feature);
+        // public Destroyer(EdgeBlend feature, out EdgeBlendBuilder builder)
+        // {
+        //     builder = feature.__OwningPart().Features.CreateEdgeBlendBuilder(feature);
 
-            _builder = builder;
-        }
+        //     _builder = builder;
+        // }
 
-        public Destroyer(Chamfer feature, out ChamferBuilder builder)
-        {
-            builder = feature.__OwningPart().Features.CreateChamferBuilder(feature);
+        // public Destroyer(Chamfer feature, out ChamferBuilder builder)
+        // {
+        //     builder = feature.__OwningPart().Features.CreateChamferBuilder(feature);
 
-            _builder = builder;
-        }
+        //     _builder = builder;
+        // }
 
-        public Destroyer(OffsetFace feature, out OffsetFaceBuilder builder)
-        {
-            builder = feature.__OwningPart().Features.CreateOffsetFaceBuilder(feature);
+        // public Destroyer(OffsetFace feature, out OffsetFaceBuilder builder)
+        // {
+        //     builder = feature.__OwningPart().Features.CreateOffsetFaceBuilder(feature);
 
-            _builder = builder;
-        }
+        //     _builder = builder;
+        // }
 
 
         public Destroyer(Part part, out CreateNewComponentBuilder builder)
@@ -149,11 +149,11 @@ namespace TSG_Library.Disposable
 
         public void Dispose()
         {
-            if(!(_editWithRollbackManager is null))
+            if (!(_editWithRollbackManager is null))
             {
                 _editWithRollbackManager.UpdateFeature(_updateFeatureBeforeStop);
 
-                if(_callStop)
+                if (_callStop)
                     _editWithRollbackManager.Stop();
 
                 _editWithRollbackManager.Destroy();
@@ -169,11 +169,11 @@ namespace TSG_Library.Disposable
 
             _section?.Destroy();
 
-            if(_rules is null)
+            if (_rules is null)
                 return;
 
-            foreach (var rule in _rules)
-                if(!(rule is null))
+            foreach (SelectionIntentRule rule in _rules)
+                if (!(rule is null))
                     using (rule)
                     {
                     }

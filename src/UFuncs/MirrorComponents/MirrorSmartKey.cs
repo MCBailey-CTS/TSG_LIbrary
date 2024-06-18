@@ -11,7 +11,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
     {
         public bool IsLibraryComponent(Component component)
         {
-            if(!component.HasUserAttribute("LIBRARY", NXObject.AttributeType.String, -1))
+            if (!component.HasUserAttribute("LIBRARY", NXObject.AttributeType.String, -1))
                 return false;
 
             // Check to see if it is a smart key metric
@@ -39,8 +39,8 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             //    mirroredOrientation = new NXOpen.Matrix3x3(newXDir, newYDir);
 
-            //    NXOpen.Assemblies.Component newFromComp = fromComp._OwningPart().ComponentAssembly.AddComponent(
-            //        fromComp._Prototype(),
+            //    NXOpen.Assemblies.Component newFromComp = fromComp.__OwningPart().ComponentAssembly.AddComponent(
+            //        fromComp.__Prototype(),
             //        "Entire Part",
             //        fromComp.Name,
             //        mirroredOrigin,
@@ -48,7 +48,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             //        fromComp.Layer,
             //        out NXOpen.PartLoadStatus status);
 
-            //    NXOpen.Features.ExtractFaceBuilder builder = originalLinkedBody._OwningPart().Features.CreateExtractFaceBuilder(originalLinkedBody);
+            //    NXOpen.Features.ExtractFaceBuilder builder = originalLinkedBody.__OwningPart().Features.CreateExtractFaceBuilder(originalLinkedBody);
 
             //    NXOpen.Body[] originalBodies = builder.ExtractBodyCollector.GetObjects().OfType<NXOpen.Body>().ToArray();
 
@@ -59,7 +59,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 
             //    status.Dispose();
 
-            //    _WorkPart = mirroredComp._Prototype();
+            //    _WorkPart = mirroredComp.__Prototype();
             //    __work_component_ = mirroredComp;
 
             //    NXOpen.Session.UndoMarkId markId2 = session_.SetUndoMark(NXOpen.Session.MarkVisibility.Visible, "Redefine Feature");

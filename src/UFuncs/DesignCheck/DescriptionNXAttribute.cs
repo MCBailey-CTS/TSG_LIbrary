@@ -1,23 +1,24 @@
 ﻿using System;
 using System.Windows.Forms;
 using NXOpen;
+using TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 {
     [Obsolete]
     public class DescriptionNXAttribute : IDesignCheck
     {
-        [Obsolete]
-        public bool IsPartValidForCheck(Part part, out string message)
-        {
-            message = "";
-            return true;
-        }
+        //[Obsolete]
+        //public bool IsPartValidForCheck(Part part, out string message)
+        //{
+        //    message = "";
+        //    return true;
+        //}
 
-        public bool PerformCheck(Part part, out TreeNode result_node)
+        public DCResult PerformCheck(Part part, out TreeNode result_node)
         {
             result_node = part.__TreeNode();
-            return false;
+            return DCResult.fail;
         }
 
         [Obsolete]
@@ -38,7 +39,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
             //{
             //    Component comp = (Component)NXOpen.Utilities.NXObjectManager.Get(partOcc);
 
-            //    Part prototype = comp._Prototype();
+            //    Part prototype = comp.__Prototype();
             //    string partDescription = prototype.GetUserAttributeAsString(requiredAttributeTitle, NXObject.AttributeType.String, -1);
             //    string compDescription = comp.GetUserAttributeAsString(requiredAttributeTitle, NXObject.AttributeType.String, -1);
 

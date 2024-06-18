@@ -108,7 +108,7 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
             //        NXOpen.Features.Extrude extrusion = _model.DrainHoleCreator.CreateExtrusionCore(result, curves, _model.DrainHoleSettings);
 
             //        // Adds the {extrusion} to the the feature group.
-            //        //   AddToFeatureGroup(Globals._WorkPart, _model.DrainHoleSettings.FeatureGroupName, extrusion);
+            //        //   AddToFeatureGroup(__work_part_, _model.DrainHoleSettings.FeatureGroupName, extrusion);
 
             //        NXOpen.Features.BooleanFeature subtractionFeature = null;
 
@@ -117,7 +117,7 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
             //            subtractionFeature = _model.DrainHoleCreator.CreateSubtraction(result, extrusion, _model.DrainHoleSettings);
 
             //            // Adds the {extrusion} to the the feature group.
-            //            // AddToFeatureGroup(Globals._WorkPart, _model.DrainHoleSettings.FeatureGroupName, subtractionFeature);
+            //            // AddToFeatureGroup(__work_part_, _model.DrainHoleSettings.FeatureGroupName, subtractionFeature);
             //        }
 
             //        _model.DrainHoleCreator.CleanUp(result, curves, extrusion, subtractionFeature, _model.DrainHoleSettings);
@@ -135,12 +135,12 @@ namespace TSG_Library.UFuncs.DrainHoleCreator
         private static void AddToFeatureGroup(Part owningPart, string featureGroupName, Feature feature)
         {
             // Attempts to get a feature group with the given {featureGroupName} from the {owningPart}.
-            var featureGroup = owningPart.Features
+            FeatureGroup featureGroup = owningPart.Features
                 .OfType<FeatureGroup>()
                 .SingleOrDefault(group => group.Name == featureGroupName);
 
             // If {featureGroup is not null, then add the {feature}.
-            if(featureGroup != null)
+            if (featureGroup != null)
             {
                 featureGroup.AddMembersWithRelocation(new[] { feature }, false, false);
                 return;

@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using NXOpen.Features;
 using TSG_Library.Attributes;
 using TSG_Library.Properties;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.Extensions;
 using static TSG_Library.UFuncs.AssemblyWavelink.__UFunc__;
 
 namespace TSG_Library.UFuncs.AssemblyWavelink
@@ -31,7 +31,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
         {
             using (session_.__UsingFormShowHide(this))
             {
-                WaveLinkFasteners(chkBlankTools.Checked, Refset_ShortTap, Refset_ReamShort);
+                WaveLinkFasteners(chkBlankTools.Checked, RefsetShortTap, RefsetReamShort);
             }
         }
 
@@ -39,7 +39,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
         {
             using (session_.__UsingFormShowHide(this))
             {
-                WaveLinkFasteners(chkBlankTools.Checked, Refset_Tap, Refset_Ream);
+                WaveLinkFasteners(chkBlankTools.Checked, RefsetTap, RefsetReam);
             }
         }
 
@@ -47,7 +47,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
         {
             using (session_.__UsingFormShowHide(this))
             {
-                WaveLinkFasteners(chkBlankTools.Checked, Refset_Tap, null);
+                WaveLinkFasteners(chkBlankTools.Checked, RefsetTap, null);
             }
         }
 
@@ -55,7 +55,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
         {
             using (session_.__UsingFormShowHide(this))
             {
-                WaveLinkFasteners(chkBlankTools.Checked, null, Refset_Ream);
+                WaveLinkFasteners(chkBlankTools.Checked, null, RefsetReam);
             }
         }
 
@@ -63,7 +63,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
         {
             using (session_.__UsingFormShowHide(this))
             {
-                WaveLinkFasteners(chkBlankTools.Checked, Refset_ShortTap, null);
+                WaveLinkFasteners(chkBlankTools.Checked, RefsetShortTap, null);
             }
         }
 
@@ -71,7 +71,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
         {
             using (session_.__UsingFormShowHide(this))
             {
-                WaveLinkFasteners(chkBlankTools.Checked, null, Refset_ReamShort);
+                WaveLinkFasteners(chkBlankTools.Checked, null, RefsetReamShort);
             }
         }
 
@@ -79,7 +79,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
         {
             using (session_.__UsingFormShowHide(this))
             {
-                WaveLinkFasteners(chkBlankTools.Checked, Refset_ClrHole, Refset_ClrHole);
+                WaveLinkFasteners(chkBlankTools.Checked, RefsetClrHole, RefsetClrHole);
             }
         }
 

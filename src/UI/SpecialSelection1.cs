@@ -4,6 +4,7 @@ using System.Linq;
 using NXOpen;
 using NXOpen.UF;
 using NXOpen.Utilities;
+// ReSharper disable UnusedType.Global
 
 namespace TSG_Library.Ui
 {
@@ -56,20 +57,20 @@ namespace TSG_Library.Ui
             try
             {
                 UFUi.SelInitFnT initialProcess = null;
-                if(SelectionPredicate != null) initialProcess = InitialProcess;
+                if (SelectionPredicate != null) initialProcess = InitialProcess;
                 Ui.LockUgAccess(UFConstants.UF_UI_FROM_CUSTOM);
                 T[] result;
-                if(multiple)
+                if (multiple)
                 {
                     Ui.SelectWithClassDialog(Prompt, Prompt, (int)Scope, initialProcess, IntPtr.Zero, out _, out _,
-                        out var selectedObj);
+                        out Tag[] selectedObj);
                     result = selectedObj.Select(x => (T)NXObjectManager.Get(x)).ToArray();
                 }
                 else
                 {
-                    var cursor = new double[3];
+                    double[] cursor = new double[3];
                     Ui.SelectWithSingleDialog(Prompt, Prompt, (int)Scope, initialProcess, IntPtr.Zero, out _,
-                        out var selectedObj, cursor, out _);
+                        out Tag selectedObj, cursor, out _);
                     result = new[] { (T)NXObjectManager.Get(selectedObj) };
                 }
 
@@ -82,9 +83,9 @@ namespace TSG_Library.Ui
             }
         }
 
-        protected virtual int FilterProcess(Tag _object, int[] type, IntPtr userData, IntPtr select)
+        protected virtual int FilterProcess(Tag @object, int[] type, IntPtr userData, IntPtr select)
         {
-            if(!(NXObjectManager.Get(_object) is T taggedObject)) return Reject;
+            if (!(NXObjectManager.Get(@object) is T taggedObject)) return Reject;
 
             //Snap.UI.Selection.SelectObject("").Show().
 
@@ -92,13 +93,13 @@ namespace TSG_Library.Ui
             {
                 //accept = 1
                 //reject = 0
-                var result = SelectionPredicate(taggedObject) ? Accept : Reject;
+                int result = SelectionPredicate(taggedObject) ? Accept : Reject;
                 return result;
             }
             catch (Exception ex)
             {
-                var lw = Session.GetSession().ListingWindow;
-                if(!lw.IsOpen) lw.Open();
+                ListingWindow lw = Session.GetSession().ListingWindow;
+                if (!lw.IsOpen) lw.Open();
                 lw.WriteLine("Exception occurred in the filtering process of " + taggedObject.JournalIdentifier + ".");
                 lw.WriteLine("Exception: " + ex.GetType() + " : " + ex.Message);
             }
@@ -108,7 +109,7 @@ namespace TSG_Library.Ui
 
         protected virtual int InitialProcess(IntPtr select, IntPtr userData)
         {
-            if(Masks != null && Masks.Any())
+            if (Masks != null && Masks.Any())
                 Ui.SetSelMask(select, UFUi.SelMaskAction.SelMaskClearAndEnableSpecific, 1, Masks);
             Ui.SetSelProcs(select, FilterProcess, null, userData);
             return UFConstants.UF_UI_SEL_SUCCESS;

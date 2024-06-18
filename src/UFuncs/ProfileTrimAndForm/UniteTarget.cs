@@ -14,6 +14,7 @@ namespace TSG_Library.UFuncs
 
         private Vector3d Vector => Slugs.First().Vector;
 
+        // ReSharper disable once MemberCanBeMadeStatic.Global
         public Face TopMostFace => throw
             //NXOpen.Vector3d unitizedVector = Vector.Unitize();
             //NXOpen.Face[] validFaces = Unite.GetFaces()

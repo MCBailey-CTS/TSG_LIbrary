@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using NXOpen;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.Extensions;
 
 namespace TSG_Library.Exceptions
 {
@@ -19,7 +19,7 @@ namespace TSG_Library.Exceptions
         {
             get
             {
-                var solid_bodies = __work_part_
+                Body[] solid_bodies = __work_part_
                     .Bodies
                     .ToArray()
                     .Where(__body => __body.IsSolidBody)

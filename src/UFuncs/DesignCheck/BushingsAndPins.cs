@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using NXOpen;
+using TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 {
@@ -13,16 +14,16 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
             "GuidePins"
         };
 
-        public bool IsPartValidForCheck(Part part, out string message)
-        {
-            message = "";
-            return true;
-        }
+        //public bool IsPartValidForCheck(Part part, out string message)
+        //{
+        //    message = "";
+        //    return true;
+        //}
 
-        public bool PerformCheck(Part part, out TreeNode result_node)
+        public DCResult PerformCheck(Part part, out TreeNode result_node)
         {
             result_node = part.__TreeNode();
-            return false;
+            return DCResult.fail;
         }
 
         [Obsolete]
@@ -36,7 +37,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
             //{
             //    if 
 
-            if(!part.__HasAttribute("LibraryPath"))
+            if (!part.__HasAttribute("LibraryPath"))
                 return part.__TreeNode().__SetText("Didn't have library path attribute");
 
             throw new NotImplementedException("I still don't quite understand what this check is doing");

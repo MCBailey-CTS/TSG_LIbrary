@@ -6,25 +6,25 @@ using NXOpen.Preferences;
 using TSG_Library.Attributes;
 using TSG_Library.Properties;
 using static TSG_Library.UFuncs._UFunc;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.Extensions;
 
 namespace TSG_Library.UFuncs
 {
-    [RevisionLog("Wire Start Hole")]
-    [RevisionEntry("1.0", "2016", "03", "03")]
-    [Revision("1.0.1", "Released as a single ufunc that does all 3 sizes and added option to Extrude/Subtract.")]
-    [RevisionEntry("1.1", "2016", "05", "18")]
-    [Revision("1.1.1", "Updated to add start hole at current wcs instead of absolute of part.")]
-    [RevisionEntry("2.00", "2017", "06", "05")]
-    [Revision("2.00.1", "Recompiled for NX.")]
-    [RevisionEntry("2.01", "2017", "08", "16")]
-    [Revision("2.01.1", "Fixed issue with not finding a dynamic block with the Extrude/Subtract check box turned on.")]
-    [RevisionEntry("2.02", "2017", "08", "22")]
-    [Revision("2.02.1", "Signed so it can run outside of CTS")]
-    [RevisionEntry("2.03", "2017", "09", "08")]
-    [Revision("2.03.1", "Added validation check")]
-    [RevisionEntry("11.1", "2023", "01", "09")]
-    [Revision("11.1.1", "Removed validation")]
+    //[RevisionLog("Wire Start Hole")]
+    //[RevisionEntry("1.0", "2016", "03", "03")]
+    //[Revision("1.0.1", "Released as a single ufunc that does all 3 sizes and added option to Extrude/Subtract.")]
+    //[RevisionEntry("1.1", "2016", "05", "18")]
+    //[Revision("1.1.1", "Updated to add start hole at current wcs instead of absolute of part.")]
+    //[RevisionEntry("2.00", "2017", "06", "05")]
+    //[Revision("2.00.1", "Recompiled for NX.")]
+    //[RevisionEntry("2.01", "2017", "08", "16")]
+    //[Revision("2.01.1", "Fixed issue with not finding a dynamic block with the Extrude/Subtract check box turned on.")]
+    //[RevisionEntry("2.02", "2017", "08", "22")]
+    //[Revision("2.02.1", "Signed so it can run outside of CTS")]
+    //[RevisionEntry("2.03", "2017", "09", "08")]
+    //[Revision("2.03.1", "Added validation check")]
+    //[RevisionEntry("11.1", "2023", "01", "09")]
+    //[Revision("11.1.1", "Removed validation")]
     [UFunc(ufunc_wire_start_hole)]
     public partial class WireStartHoleForm : _UFuncForm
     {
@@ -46,22 +46,22 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if(__display_part_ is null)
+                if (__display_part_ is null)
                 {
                     print_("No DisplayPart");
                     return;
                 }
 
-                if(!__display_part_.__HasDynamicBlock())
+                if (!__display_part_.__HasDynamicBlock())
                 {
                     print_("No Dynamic Block");
                     return;
                 }
 
-                var dynamic_block = __display_part_.__DynamicBlock();
+                Block dynamic_block = __display_part_.__DynamicBlock();
 
-                if(chkSubtract.Checked)
-                    if(!__work_part_.__HasDynamicBlock())
+                if (chkSubtract.Checked)
+                    if (!__work_part_.__HasDynamicBlock())
                     {
                         print_("Current Work Part doesn't not contain a dynamic block");
 
@@ -72,7 +72,7 @@ namespace TSG_Library.UFuncs
                         __display_part_.WCS.SetOriginAndMatrix(_Point3dOrigin, _Matrix3x3Identity);
                     }
 
-                var workPlane1 = __display_part_.Preferences.Workplane;
+                WorkPlane workPlane1 = __display_part_.Preferences.Workplane;
 
                 using (session_.__UsingFormShowHide(this))
                 {
@@ -193,7 +193,7 @@ namespace TSG_Library.UFuncs
 
             using (session_.__UsingBuilderDestroyer(importer1))
             {
-                var partImporter1 = (PartImporter)importer1;
+                PartImporter partImporter1 = (PartImporter)importer1;
                 partImporter1.FileName = path;
                 partImporter1.Scale = 1.0;
                 partImporter1.CreateNamedGroup = false;
@@ -202,11 +202,10 @@ namespace TSG_Library.UFuncs
                 partImporter1.LayerOption = PartImporter.LayerOptionType.Original;
                 partImporter1.DestinationCoordinateSystemSpecification =
                     PartImporter.DestinationCoordinateSystemSpecificationType.Work;
-                var element1 = __work_part_.WCS.CoordinateSystem.Orientation.Element;
-                var nXMatrix1 = __work_part_.NXMatrices.Create(element1);
+                Matrix3x3 element1 = __work_part_.WCS.CoordinateSystem.Orientation.Element;
+                NXMatrix nXMatrix1 = __work_part_.NXMatrices.Create(element1);
                 partImporter1.DestinationCoordinateSystem = nXMatrix1;
-                var destinationPoint1 = location;
-                partImporter1.DestinationPoint = destinationPoint1;
+                partImporter1.DestinationPoint = location;
                 partImporter1.Commit();
             }
         }

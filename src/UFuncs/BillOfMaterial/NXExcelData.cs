@@ -61,9 +61,9 @@ namespace TSG_Library.UFuncs
             worksheet.Columns.Font.Name = REPORT_TEXT;
             worksheet.Columns.Font.Size = REPORT_TEXT_SIZE;
             //excelApp.SetCell(checkerStockListPath, 1, rowIndex, colIndex, data.Data.ToUpper().Replace("-ALTER", ""));
-            for (var index = 0; index < data.Count; index++)
+            for (int index = 0; index < data.Count; index++)
             {
-                var nxExcelData = data[index];
+                NXExcelData nxExcelData = data[index];
                 UFSession.GetUFSession().Ui.SetPrompt($"Writing BOM sheet. Cell {index + 1} of {data.Count}.");
                 worksheet.Cells[nxExcelData.RowIndex, nxExcelData.ColumnIndex] =
                     nxExcelData.Data.ToUpper().ToUpper().Replace("-ALTER", "");
@@ -73,12 +73,12 @@ namespace TSG_Library.UFuncs
 
         public static void Color(string[] strings, _Worksheet worksheet, IEnumerable<NXExcelData> data)
         {
-            foreach (var excelData in data)
+            foreach (NXExcelData excelData in data)
             {
-                if(strings.All(str =>
-                       !string.Equals(str, excelData.Data, StringComparison.CurrentCultureIgnoreCase))) continue;
+                if (strings.All(str =>
+                        !string.Equals(str, excelData.Data, StringComparison.CurrentCultureIgnoreCase))) continue;
                 excelData.ColorCell = true;
-                if(worksheet.Cells[excelData.RowIndex, excelData.ColumnIndex] is Range range)
+                if (worksheet.Cells[excelData.RowIndex, excelData.ColumnIndex] is Range range)
                     range.Interior.Color = System.Drawing.Color.FromArgb(0, 255, 0);
             }
         }

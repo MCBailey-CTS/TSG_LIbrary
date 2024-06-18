@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NXOpen.Assemblies;
+using TSG_Library.Extensions;
 
 namespace TSG_Library.Disposable
 {
@@ -13,11 +14,11 @@ namespace TSG_Library.Disposable
         {
             _compStringDictionary = new Dictionary<Component, string>();
 
-            foreach (var component in components)
+            foreach (Component component in components)
             {
                 // Checks to see if the {component} is already in the {_compStringDictionary}.
                 // If it is we can ignore it.
-                if(_compStringDictionary.ContainsKey(component))
+                if (_compStringDictionary.ContainsKey(component))
                     continue;
 
                 // If we get here then we want to add the {component} and it's current reference set to the {_compStringDictionary}.
@@ -32,7 +33,7 @@ namespace TSG_Library.Disposable
 
         public void Dispose()
         {
-            foreach (var keyComponent in _compStringDictionary.Keys)
+            foreach (Component keyComponent in _compStringDictionary.Keys)
             {
                 keyComponent.__ReferenceSet(_compStringDictionary[keyComponent]);
                 keyComponent.RedisplayObject();

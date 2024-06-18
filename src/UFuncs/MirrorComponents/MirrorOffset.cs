@@ -4,7 +4,7 @@ using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
 using TSG_Library.Geom;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.__Extensions_;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
 {
@@ -18,9 +18,9 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             Surface.Plane plane,
             Component originalComp)
         {
-            var mirrorFeature = (OffsetFace)dict[originalFeature];
-            var mirrorComponent = (Component)dict[originalComp];
-            var builder = originalComp.__Prototype().Features.CreateOffsetFaceBuilder(originalFeature);
+            OffsetFace mirrorFeature = (OffsetFace)dict[originalFeature];
+            Component mirrorComponent = (Component)dict[originalComp];
+            OffsetFaceBuilder builder = originalComp.__Prototype().Features.CreateOffsetFaceBuilder(originalFeature);
             DisplayableObject[] originalObjects;
 
             using (session_.__UsingBuilderDestroyer(builder))
@@ -35,7 +35,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             {
                 IList<SelectionIntentRule> mirrorRules = new List<SelectionIntentRule>();
 
-                foreach (var originalObj in originalObjects)
+                foreach (DisplayableObject originalObj in originalObjects)
                     switch (originalObj)
                     {
                         case Edge _:
@@ -43,10 +43,10 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
                         case Body _:
                             throw new MirrorException("Can't mirror body in offset face.");
                         case Face originalFace:
-                            if(!dict.ContainsKey(originalFace))
+                            if (!dict.ContainsKey(originalFace))
                                 throw new MirrorException("OffsetFace dictionary did not contain FACE as a key.");
 
-                            var mirrorFace = (Face)dict[originalFace];
+                            Face mirrorFace = (Face)dict[originalFace];
 
                             SelectionIntentRule mirrorRule = mirrorComponent.__Prototype().ScRuleFactory
                                 .CreateRuleFaceDumb(new[] { mirrorFace });
@@ -59,7 +59,7 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
                                 $"Unknown object type \"{originalObj.GetType().Name}\" in offset face.");
                     }
 
-                if(mirrorRules.Count == 0)
+                if (mirrorRules.Count == 0)
                     throw new MirrorException("Did not have enough SelectionIntentRules for OffsetFace commit.");
 
                 builder.FaceCollector.ReplaceRules(mirrorRules.ToArray(), false);

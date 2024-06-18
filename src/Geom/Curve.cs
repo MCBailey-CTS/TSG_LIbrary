@@ -1,5 +1,7 @@
 ﻿using System;
 using NXOpen;
+using TSG_Library.Extensions;
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace TSG_Library.Geom
 {
@@ -28,7 +30,7 @@ namespace TSG_Library.Geom
         /// <summary>Represents a non-persistent infinite line -- not stored in NX</summary>
         public class Ray : Curve
         {
-            private Vector3d axis;
+            private Vector3d _axis;
 
             /// <summary>Constructs a ray from a given position and vector</summary>
             /// <param name="origin">Point lying on ray</param>
@@ -56,8 +58,8 @@ namespace TSG_Library.Geom
             /// </remarks>
             public Vector3d Axis
             {
-                get => axis;
-                set => axis = value.__Unit();
+                get => _axis;
+                set => _axis = value.__Unit();
             }
 
             /// <summary> A position on the ray</summary>
@@ -86,9 +88,9 @@ namespace TSG_Library.Geom
         /// <summary>Represents a non-persistent circular arc -- not stored in NX</summary>
         public class Arc : Curve
         {
-            private Vector3d axisX;
+            private Vector3d _axisX;
 
-            private Vector3d axisY;
+            private Vector3d _axisY;
 
             /// <summary>Constructs an arc from center, axes, radius, angles in degrees</summary>
             /// <param name="center">Center point (in absolute coordinates)</param>
@@ -118,15 +120,15 @@ namespace TSG_Library.Geom
             /// <summary> A unit vector along the X-axis of the arc (where angle = 0)</summary>
             public Vector3d AxisX
             {
-                get => axisX;
-                set => axisX = value.__Unit();
+                get => _axisX;
+                set => _axisX = value.__Unit();
             }
 
             /// <summary> A unit vector along the Y-axis of the arc (where angle = 90)</summary>
             public Vector3d AxisY
             {
-                get => axisY;
-                set => axisY = value.__Unit();
+                get => _axisY;
+                set => _axisY = value.__Unit();
             }
 
             /// <summary> The radius of the arc</summary>
@@ -152,18 +154,17 @@ namespace TSG_Library.Geom
             /// </remarks>
             public static Arc Fillet(Point3d p0, Point3d pa, Point3d p1, double radius)
             {
-                var vector = p0.__Subtract(pa).__Unit();
-                var vector2 = p1.__Subtract(pa).__Unit();
-                var vector3 = vector.__Add(vector2).__Unit();
-                var num = vector.__Angle(vector2) / 2.0;
-                var num2 = radius / Math.SinD(num);
-                var center = vector3.__Multiply(num2).__Add(pa);
-                var vector4 = vector3.__Negate();
-                var vector5 = vector2.__Subtract(vector).__Unit();
-                var num3 = 90.0 - num;
-                var startAngle = 0.0 - num3;
-                var endAngle = num3;
-                return new Arc(center, vector4, vector5, radius, startAngle, endAngle);
+                Vector3d vector = p0.__Subtract(pa).__Unit();
+                Vector3d vector2 = p1.__Subtract(pa).__Unit();
+                Vector3d vector3 = vector.__Add(vector2).__Unit();
+                double num = vector.__Angle(vector2) / 2.0;
+                double num2 = radius / Math.SinD(num);
+                Point3d center = vector3.__Multiply(num2).__Add(pa);
+                Vector3d vector4 = vector3.__Negate();
+                Vector3d vector5 = vector2.__Subtract(vector).__Unit();
+                double num3 = 90.0 - num;
+                double startAngle = 0.0 - num3;
+                return new Arc(center, vector4, vector5, radius, startAngle, num3);
             }
         }
 
@@ -271,7 +272,7 @@ namespace TSG_Library.Geom
             {
                 get
                 {
-                    var num = Poles.Length;
+                    int num = Poles.Length;
                     return Knots.Length - num;
                 }
             }
@@ -307,7 +308,7 @@ namespace TSG_Library.Geom
             /// <seealso cref="O:Snap.Create.SplineThroughPoints">SplineThroughPoints</seealso>
             public static Spline Create(double[] knots, Point3d[] poles)
             {
-                var weights = UnitWeights(poles.Length);
+                double[] weights = UnitWeights(poles.Length);
                 return new Spline(knots, poles, weights);
             }
 
@@ -316,6 +317,9 @@ namespace TSG_Library.Geom
             /// <param name="weights">Array of m+1 weights</param>
             /// <returns>A Snap.Geom.Curve.Spline object that is a rational Bezier curve of degree m</returns>
             [Obsolete(nameof(NotImplementedException))]
+            // ReSharper disable once UnusedParameter.Global
+            // ReSharper disable once UnusedMember.Global
+            // ReSharper disable once UnusedParameter.Global
             public static Spline CreateBezier(Point3d[] poles, double[] weights)
             {
                 //return new Spline(Math.SplineMath.BezierKnots(poles.Length - 1), poles, weights);
@@ -394,8 +398,8 @@ namespace TSG_Library.Geom
 
             private static double[] UnitWeights(int n)
             {
-                var array = new double[n];
-                for (var i = 0; i < n; i++) array[i] = 1.0;
+                double[] array = new double[n];
+                for (int i = 0; i < n; i++) array[i] = 1.0;
 
                 return array;
             }

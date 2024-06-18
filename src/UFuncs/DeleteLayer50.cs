@@ -2,8 +2,9 @@
 using System.Windows.Forms;
 using MoreLinq.Extensions;
 using NXOpen;
+using NXOpen.Assemblies;
 using TSG_Library.Attributes;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.Extensions;
 
 namespace TSG_Library.UFuncs
 {
@@ -12,49 +13,49 @@ namespace TSG_Library.UFuncs
     {
         public override void execute()
         {
-            if(Session.GetSession().Parts.Display is null)
+            if (Session.GetSession().Parts.Display is null)
             {
                 print_("There is no displayed part loaded");
                 return;
             }
 
-            var result = MessageBox.Show(
+            DialogResult result = MessageBox.Show(
                 "Question?",
                 "Are you sure you want to delete all bodies on layer 50-55 in the current assembly",
                 MessageBoxButtons.YesNo);
 
-            if(result == DialogResult.No)
+            if (result == DialogResult.No)
                 return;
 
             using (session_.__UsingSuppressDisplay())
             {
-                var part = __work_part_;
+                Part part = __work_part_;
 
-                var comps = __work_part_.ComponentAssembly.RootComponent
+                Component[] comps = __work_part_.ComponentAssembly.RootComponent
                     .__Descendants()
                     .Where(__c => !__c.IsSuppressed)
                     .Where(__c => __c.__IsLoaded())
                     .DistinctBy(__c => __c)
                     .ToArray();
 
-                var components = comps.DistinctBy(__c => __c.DisplayName)
+                Component[] components = comps.DistinctBy(__c => __c.DisplayName)
                     .ToArray();
 
-                var foundBodies = false;
+                bool foundBodies = false;
 
-                var message = "";
+                string message = "";
 
-                foreach (var component in components)
+                foreach (Component component in components)
                 {
-                    if(component.IsSuppressed)
+                    if (component.IsSuppressed)
                         continue;
 
-                    if(!component.__IsLoaded())
+                    if (!component.__IsLoaded())
                         continue;
 
                     __display_part_ = component.__Prototype();
 
-                    var bodiesToDelete = __work_part_.Bodies
+                    Body[] bodiesToDelete = __work_part_.Bodies
                         .ToArray()
                         .Where(body => body.Layer >= 50
                                        && body.Layer <= 55
@@ -62,7 +63,7 @@ namespace TSG_Library.UFuncs
                                        && body.LineFont == DisplayableObject.ObjectFont.Phantom)
                         .ToArray();
 
-                    if(bodiesToDelete.Length <= 0)
+                    if (bodiesToDelete.Length <= 0)
                         continue;
 
                     foundBodies = true;
@@ -72,7 +73,7 @@ namespace TSG_Library.UFuncs
                     session_.__DeleteObjects(bodiesToDelete);
                 }
 
-                if(foundBodies)
+                if (foundBodies)
                 {
                     print_("Deleted layer 50 bodies off of these components.");
                     print_(message);

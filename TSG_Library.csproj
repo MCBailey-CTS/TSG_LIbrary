@@ -102,6 +102,7 @@
     <Compile Include="src\Disposable\RegenerateDisplay.cs" />
     <Compile Include="src\Disposable\ResetComponentReferenceSet.cs" />
     <Compile Include="src\Disposable\ResetShadeRendering.cs" />
+    <Compile Include="src\Disposable\Rollback.cs" />
     <Compile Include="src\Disposable\SetWorkPartContextQuietly.cs" />
     <Compile Include="src\Disposable\SuppressDisplayReset.cs" />
     <Compile Include="src\Enum\DirectionUV.cs" />
@@ -126,7 +127,65 @@
     <Compile Include="src\Exceptions\NothingSelectedException.cs" />
     <Compile Include="src\Exceptions\NullWorkComponentException.cs" />
     <Compile Include="src\Exceptions\PartIsNotWorkOrDisplayException.cs" />
-    <Compile Include="src\Extensions.cs" />
+    <Compile Include="src\Extensions\Arc.cs" />
+    <Compile Include="src\Extensions\BasePart.cs" />
+    <Compile Include="src\Extensions\Block.cs" />
+    <Compile Include="src\Extensions\Body.cs" />
+    <Compile Include="src\Extensions\Builder.cs" />
+    <Compile Include="src\Extensions\CartesianCoordinateSystem.cs" />
+    <Compile Include="src\Extensions\Chamfer.cs" />
+    <Compile Include="src\Extensions\Collections.cs" />
+    <Compile Include="src\Extensions\Component.cs" />
+    <Compile Include="src\Extensions\ComponentAssembly.cs" />
+    <Compile Include="src\Extensions\ComponentConstraint.cs" />
+    <Compile Include="src\Extensions\Conic.cs" />
+    <Compile Include="src\Extensions\Constants.cs" />
+    <Compile Include="src\Extensions\ConstraintReference.cs" />
+    <Compile Include="src\Extensions\CoordinateSystem.cs" />
+    <Compile Include="src\Extensions\Curve.cs" />
+    <Compile Include="src\Extensions\DatumAxis.cs" />
+    <Compile Include="src\Extensions\DatumAxisFeature.cs" />
+    <Compile Include="src\Extensions\DatumCsys.cs" />
+    <Compile Include="src\Extensions\Dimension.cs" />
+    <Compile Include="src\Extensions\DisplayableObject.cs" />
+    <Compile Include="src\Extensions\DoubleArray.cs" />
+    <Compile Include="src\Extensions\Edge.cs" />
+    <Compile Include="src\Extensions\EdgeBlend.cs" />
+    <Compile Include="src\Extensions\Ellipse.cs" />
+    <Compile Include="src\Extensions\Exception.cs" />
+    <Compile Include="src\Extensions\ExtractFace.cs" />
+    <Compile Include="src\Extensions\Extrude.cs" />
+    <Compile Include="src\Extensions\Face.cs" />
+    <Compile Include="src\Extensions\Feature.cs" />
+    <Compile Include="src\Extensions\FileNew.cs" />
+    <Compile Include="src\Extensions\Globals.cs" />
+    <Compile Include="src\Extensions\ICurve.cs" />
+    <Compile Include="src\Extensions\Int.cs" />
+    <Compile Include="src\Extensions\IntegerArray.cs" />
+    <Compile Include="src\Extensions\Line.cs" />
+    <Compile Include="src\Extensions\Masks.cs" />
+    <Compile Include="src\Extensions\Matrix3x3.cs" />
+    <Compile Include="src\Extensions\Mirror.cs" />
+    <Compile Include="src\Extensions\NXMatrix.cs" />
+    <Compile Include="src\Extensions\NXObject.cs" />
+    <Compile Include="src\Extensions\Obj.cs" />
+    <Compile Include="src\Extensions\Part.cs" />
+    <Compile Include="src\Extensions\Point3d.cs" />
+    <Compile Include="src\Extensions\Rules.cs" />
+    <Compile Include="src\Extensions\ScCollector.cs" />
+    <Compile Include="src\Extensions\Section.cs" />
+    <Compile Include="src\Extensions\Session.cs" />
+    <Compile Include="src\Extensions\SmartObject.cs" />
+    <Compile Include="src\Extensions\Spline.cs" />
+    <Compile Include="src\Extensions\Sql.cs" />
+    <Compile Include="src\Extensions\String.cs" />
+    <Compile Include="src\Extensions\Tag.cs" />
+    <Compile Include="src\Extensions\TreeNode.cs" />
+    <Compile Include="src\Extensions\Trns.cs" />
+    <Compile Include="src\Extensions\Vector3d.cs" />
+    <Compile Include="src\Extensions\Wcs.cs" />
+    <Compile Include="src\Extensions\__Extensions_.cs" />
+    <Compile Include="src\Extensions_.cs" />
     <Compile Include="src\Geom\Box3d.cs" />
     <Compile Include="src\Geom\Curve.cs" />
     <Compile Include="src\Geom\Surface.cs" />
@@ -265,11 +324,11 @@
     <Compile Include="src\UFuncs\ComponentBuilder\CtsComponentColor.cs" />
     <Compile Include="src\UFuncs\ComponentBuilder\CtsComponentType.cs" />
     <Compile Include="src\UFuncs\ComponentBuilder\CtsSubtoolColor.cs" />
-    <Compile Include="src\UFuncs\ComponentBuilder\EditBlock.cs">
+    <Compile Include="src\UFuncs\ComponentBuilder\EditBlockForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\UFuncs\ComponentBuilder\EditBlock.Designer.cs">
-      <DependentUpon>EditBlock.cs</DependentUpon>
+    <Compile Include="src\UFuncs\ComponentBuilder\EditBlockForm.Designer.cs">
+      <DependentUpon>EditBlockForm.cs</DependentUpon>
     </Compile>
     <Compile Include="src\UFuncs\ComponentBuilder\EditSizeForm.cs">
       <SubType>Form</SubType>
@@ -405,42 +464,39 @@
     </Compile>
     <Compile Include="src\UFuncs\LayoutRefSets.cs" />
     <Compile Include="src\UFuncs\LoadColorPalette.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\BaseMirrorFeature.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\BaseMirrorRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\ILibraryComponent.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\IMirrorFeature.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\IMirrorRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorBlock.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorChamfer.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorComponentsForm.cs">
+    <Compile Include="src\UFuncs\Mirror\LibraryComponents\MirrorSmartButton.cs" />
+    <Compile Include="src\UFuncs\Mirror\LibraryComponents\MirrorSmartKey.cs" />
+    <Compile Include="src\UFuncs\Mirror\LibraryComponents\MirrorSmartStandardLiftersGuidedKeepersMetric.cs" />
+    <Compile Include="src\UFuncs\Mirror\LibraryComponents\MirrorSmartStockEjector.cs" />
+    <Compile Include="src\UFuncs\Mirror\Rules\BaseMirrorRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\Extensions_Position.cs" />
+    <Compile Include="src\UFuncs\Mirror\Extensions_Vector.cs" />
+    <Compile Include="src\UFuncs\Mirror\Features\BaseMirrorFeature.cs" />
+    <Compile Include="src\UFuncs\Mirror\Features\IMirrorFeature.cs" />
+    <Compile Include="src\UFuncs\Mirror\Features\MirrorBlock.cs" />
+    <Compile Include="src\UFuncs\Mirror\Features\MirrorEdgeBlend.cs" />
+    <Compile Include="src\UFuncs\Mirror\Features\MirrorIntersect.cs" />
+    <Compile Include="src\UFuncs\Mirror\Features\MirrorLinkedBody.cs" />
+    <Compile Include="src\UFuncs\Mirror\Features\MirrorSubtract.cs" />
+    <Compile Include="src\UFuncs\Mirror\Features\MirrorUnite.cs" />
+    <Compile Include="src\UFuncs\Mirror\LibraryComponents\ILibraryComponent.cs" />
+    <Compile Include="src\UFuncs\Mirror\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorComponentsForm.Designer.cs">
-      <DependentUpon>MirrorComponentsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeBlend.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeBodyRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeBoundaryRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeChainRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeDumbRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeMultipleSeedTangentRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeTangentRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorEdgeVertexRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorException.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorExtractedBody.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorExtrude.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorFaceAndAdjacentFacesRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorFaceDumbRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorFaceTangentRule.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorIntersect.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorLinkedBody.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorOffset.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorSmartButton.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorSmartKey.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorSmartStandardLiftersGuidedKeepersMetric.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorSmartStockEjector.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorSubtract.cs" />
-    <Compile Include="src\UFuncs\MirrorComponents\MirrorUnite.cs" />
+    <Compile Include="src\UFuncs\Mirror\Features\MirrorChamfer.cs" />
+    <Compile Include="src\UFuncs\Mirror\MirrorException.cs" />
+    <Compile Include="src\UFuncs\Mirror\Program.cs" />
+    <Compile Include="src\UFuncs\Mirror\Rules\IMirrorRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\Rules\MirrorEdgeBodyRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\Rules\MirrorEdgeBoundaryRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\Rules\MirrorEdgeChainRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\Rules\MirrorEdgeDumbRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\Rules\MirrorEdgeMultipleSeedTangentRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\Rules\MirrorEdgeTangentRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\Rules\MirrorEdgeVertexRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\Rules\MirrorFaceAndAdjacentFacesRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\Rules\MirrorFaceDumbRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\Rules\MirrorFaceTangentRule.cs" />
     <Compile Include="src\UFuncs\NitroTravels.cs" />
     <Compile Include="src\UFuncs\Nx7zip\Nx7ZipCompression.cs" />
     <Compile Include="src\UFuncs\Nx7zip\Nx7zipForm.cs">
@@ -533,10 +589,13 @@
     <Compile Include="src\UI\SpecialSelectionAssWavelink.cs" />
     <Compile Include="src\Utilities\ComparerPoint3d.cs" />
     <Compile Include="src\Utilities\CtsAttributes.cs" />
+    <Compile Include="src\Utilities\EqualityPos.cs" />
     <Compile Include="src\Utilities\GFolder.cs" />
     <Compile Include="src\Utilities\Ucf.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".editorconfig" />
+    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -593,8 +652,8 @@
     <EmbeddedResource Include="src\UFuncs\ComponentBuilder\ComponentBuilder.resx">
       <DependentUpon>ComponentBuilder.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\ComponentBuilder\EditBlock.resx">
-      <DependentUpon>EditBlock.cs</DependentUpon>
+    <EmbeddedResource Include="src\UFuncs\ComponentBuilder\EditBlockForm.resx">
+      <DependentUpon>EditBlockForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\UFuncs\ComponentBuilder\EditSizeForm.resx">
       <DependentUpon>EditSizeForm.cs</DependentUpon>
@@ -632,6 +691,9 @@
     <EmbeddedResource Include="src\UFuncs\IdentifyAndDeleteForm.resx">
       <DependentUpon>IdentifyAndDeleteForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="src\UFuncs\Mirror\MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="src\UFuncs\Nx7zip\Nx7zipForm.resx">
       <DependentUpon>Nx7zipForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -666,6 +728,7 @@
   <ItemGroup>
     <None Include="Resources\NXSigningResource.res" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -675,4 +738,9 @@
     <Error Condition="!Exists('packages\PostSharp.2024.1.4\build\PostSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\PostSharp.2024.1.4\build\PostSharp.targets'))" />
   </Target>
   <Import Project="packages\PostSharp.2024.1.4\build\PostSharp.targets" Condition="Exists('packages\PostSharp.2024.1.4\build\PostSharp.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>SignDotNet $(TargetFileName)
+copy C:\Repos\TSG_Library\bin\Debug\TSG_Library.dll "G:\CTS\junk\0Ufunc Testing\temp1\TSG_Library.dll"
+copy C:\Repos\TSG_Library\bin\Debug\TSG_Library.pdb "G:\CTS\junk\0Ufunc Testing\temp1\TSG_Library.pdb"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

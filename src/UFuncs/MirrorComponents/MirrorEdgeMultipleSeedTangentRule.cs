@@ -4,6 +4,7 @@ using System.Linq;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
+using TSG_Library.Extensions;
 using TSG_Library.Geom;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
@@ -20,35 +21,35 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             Component originalComp,
             IDictionary<TaggedObject, TaggedObject> dict)
         {
-            var mirroredComp = (Component)dict[originalComp];
+            Component mirroredComp = (Component)dict[originalComp];
 
-            var mirroredPart = mirroredComp.__Prototype();
+            Part mirroredPart = mirroredComp.__Prototype();
 
-            var mirroredFeature = (Feature)dict[originalFeature];
+            Feature mirroredFeature = (Feature)dict[originalFeature];
 
-            ((EdgeMultipleSeedTangentRule)originalRule).GetData(out var originalSeedEdges, out var angleTolerance,
-                out var hasSameConvexity);
+            ((EdgeMultipleSeedTangentRule)originalRule).GetData(out Edge[] originalSeedEdges, out double angleTolerance,
+                out bool hasSameConvexity);
 
             IList<Edge> newEdges = new List<Edge>();
 
-            foreach (var originalEdge in originalSeedEdges)
+            foreach (Edge originalEdge in originalSeedEdges)
             {
-                var originalBody = originalEdge.GetBody();
+                Body originalBody = originalEdge.GetBody();
 
                 Body mirrorBody;
 
-                if(!dict.ContainsKey(originalBody))
+                if (!dict.ContainsKey(originalBody))
                 {
                     mirroredFeature.Suppress();
 
                     originalFeature.Suppress();
 
-                    var originalOwningFeature =
+                    Feature originalOwningFeature =
                         originalComp.__Prototype().Features.GetParentFeatureOfBody(originalBody);
 
-                    var mirrorOwningFeature = (BodyFeature)dict[originalOwningFeature];
+                    BodyFeature mirrorOwningFeature = (BodyFeature)dict[originalOwningFeature];
 
-                    if(mirrorOwningFeature.GetBodies().Length != 1)
+                    if (mirrorOwningFeature.GetBodies().Length != 1)
                         throw new InvalidOperationException("Invalid number of bodies for feature");
 
                     mirrorBody = mirrorOwningFeature.GetBodies()[0];
@@ -58,12 +59,12 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
                     mirrorBody = (Body)dict[originalBody];
                 }
 
-                var finalStart = originalEdge.__StartPoint().__MirrorMap(plane, originalComp, mirroredComp);
+                Point3d finalStart = originalEdge.__StartPoint().__MirrorMap(plane, originalComp, mirroredComp);
 
-                var finalEnd = originalEdge.__EndPoint().__MirrorMap(plane, originalComp, mirroredComp);
+                Point3d finalEnd = originalEdge.__EndPoint().__MirrorMap(plane, originalComp, mirroredComp);
 
-                foreach (var e in mirrorBody.GetEdges())
-                    if(e.__HasEndPoints(finalStart, finalEnd))
+                foreach (Edge e in mirrorBody.GetEdges())
+                    if (e.__HasEndPoints(finalStart, finalEnd))
                         newEdges.Add(e);
             }
 

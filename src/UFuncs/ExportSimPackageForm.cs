@@ -4,45 +4,46 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using NXOpen;
+using NXOpen.Assemblies;
 using TSG_Library.Attributes;
 using TSG_Library.Utilities;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.Extensions;
 using static TSG_Library.UFuncs._UFunc;
 using Selection = TSG_Library.Ui.Selection;
 
 namespace TSG_Library.UFuncs
 {
-    [RevisionLog("Export Sim Package")]
-    [RevisionEntry("1.0", "2017", "09", "08")]
-    [Revision("1.0.1", "Created fo NX.")]
-    [RevisionEntry("1.1", "2017", "10", "26")]
-    [Revision("1.1.1",
-        "Fixed bug where when you pressed the select button on the form, it would prompt you to delete the export sim folder regardless if the folder existed or not at that time.")]
-    [RevisionEntry("1.2", "2018", "01", "17")]
-    [Revision("1.2.1",
-        "Added a “.dxf” check box. Now if the user selects a component to export that follows the Regex (^CustomerJobNumber-B-) and the dxf checkbox is checked then the program will also export a “.dxf” and place it in the same zip folder.")]
-    [RevisionEntry("1.3", "2018", "04", "26")]
-    [Revision("1.3.1",
-        "Edited the Regex used to find simulation files and customer numbers in a GFolder. It will allow underscores to be a part of the customer job number.")]
-    [Revision("1.3.2",
-        "File created from which the simulation regex is read from. This will allow us to be able to change the regex expression without having to edit the code itself.")]
-    [RevisionEntry("1.4", "2019", "07", "15")]
-    [Revision("1.4.1", "Updated so that the program works with the updated GFolder.")]
-    [Revision("1.4.2", "Program now prints if it successfully creates or does not create the expected files.")]
-    [RevisionEntry("1.5", "2019", "08", "28")]
-    [Revision("1.5.1", "GFolder updated to allow old job number under non cts folder.")]
-    [RevisionEntry("1.6", "2021", "03", "04")]
-    [Revision("1.6.1", "Changed export location for 6 digit jobs.")]
-    [Revision("1.6.2", "The location will now export to {JobFolder\\Layout\\Go}.")]
-    [Revision("1.6.3", "The step files will now be created using the same way as AssemblyExportDesignData.")]
-    [Revision("1.6.4", "Removed the dxf capability from the form. No longer needed.")]
-    [RevisionEntry("1.7", "2021", "03", "08")]
-    [Revision("1.7.1", "Added copy check box to form.")]
-    [Revision("1.7.2",
-        "Checking the copy check box will now copy contents of the created sim package to the \"Process and Sim Data for Design\" directory.")]
-    [RevisionEntry("1.8", "2021", "03", "10")]
-    [Revision("1.8.1",
-        "Checking the copy check box will only copy the created zip file created to the \"Process and Sim Data for Design\".")]
+    //[RevisionLog("Export Sim Package")]
+    //[RevisionEntry("1.0", "2017", "09", "08")]
+    //[Revision("1.0.1", "Created fo NX.")]
+    //[RevisionEntry("1.1", "2017", "10", "26")]
+    //[Revision("1.1.1",
+    //    "Fixed bug where when you pressed the select button on the form, it would prompt you to delete the export sim folder regardless if the folder existed or not at that time.")]
+    //[RevisionEntry("1.2", "2018", "01", "17")]
+    //[Revision("1.2.1",
+    //    "Added a “.dxf” check box. Now if the user selects a component to export that follows the Regex (^CustomerJobNumber-B-) and the dxf checkbox is checked then the program will also export a “.dxf” and place it in the same zip folder.")]
+    //[RevisionEntry("1.3", "2018", "04", "26")]
+    //[Revision("1.3.1",
+    //    "Edited the Regex used to find simulation files and customer numbers in a GFolder. It will allow underscores to be a part of the customer job number.")]
+    //[Revision("1.3.2",
+    //    "File created from which the simulation regex is read from. This will allow us to be able to change the regex expression without having to edit the code itself.")]
+    //[RevisionEntry("1.4", "2019", "07", "15")]
+    //[Revision("1.4.1", "Updated so that the program works with the updated GFolder.")]
+    //[Revision("1.4.2", "Program now prints if it successfully creates or does not create the expected files.")]
+    //[RevisionEntry("1.5", "2019", "08", "28")]
+    //[Revision("1.5.1", "GFolder updated to allow old job number under non cts folder.")]
+    //[RevisionEntry("1.6", "2021", "03", "04")]
+    //[Revision("1.6.1", "Changed export location for 6 digit jobs.")]
+    //[Revision("1.6.2", "The location will now export to {JobFolder\\Layout\\Go}.")]
+    //[Revision("1.6.3", "The step files will now be created using the same way as AssemblyExportDesignData.")]
+    //[Revision("1.6.4", "Removed the dxf capability from the form. No longer needed.")]
+    //[RevisionEntry("1.7", "2021", "03", "08")]
+    //[Revision("1.7.1", "Added copy check box to form.")]
+    //[Revision("1.7.2",
+    //    "Checking the copy check box will now copy contents of the created sim package to the \"Process and Sim Data for Design\" directory.")]
+    //[RevisionEntry("1.8", "2021", "03", "10")]
+    //[Revision("1.8.1",
+    //    "Checking the copy check box will only copy the created zip file created to the \"Process and Sim Data for Design\".")]
     [UFunc(ufunc_export_sim_package)]
     public partial class ExportSimPackageForm : _UFuncForm
     {
@@ -61,63 +62,64 @@ namespace TSG_Library.UFuncs
             {
                 // todo
 
-                var match = Regex.Match(__display_part_.Leaf, SimUcf.SingleValue("SIM_SPECIAL_REGEX"));
+                Match match = Regex.Match(__display_part_.Leaf, SimUcf.SingleValue("SIM_SPECIAL_REGEX"));
 
-                if(!match.Success)
+                if (!match.Success)
                 {
                     print_("Current DisplayPart not in a valid Job Folder.");
                     return;
                 }
 
-                var customerNumber = match.Groups["CustomerNumber"].Value;
+                string customerNumber = match.Groups["CustomerNumber"].Value;
 
-                var folder = GFolder.create_or_null(__work_part_);
+                GFolder folder = GFolder.create_or_null(__work_part_);
 
-                if(folder is null)
+                if (folder is null)
                     throw new InvalidOperationException("The current work part does not reside within a GFolder.");
 
-                var directory = $"{folder.dir_simulation}\\{TodaysDate}-{customerNumber}-Simulation-Package-for-Design";
+                string directory =
+                    $"{folder.DirSimulation}\\{TodaysDate}-{customerNumber}-Simulation-Package-for-Design";
 
-                if(Directory.Exists(directory))
+                if (Directory.Exists(directory))
                 {
-                    var result = MessageBox.Show($@"{directory} already exists, would you like to replace it?",
+                    DialogResult result = MessageBox.Show($@"{directory} already exists, would you like to replace it?",
                         @"Warning", MessageBoxButtons.YesNo);
-                    if(result == DialogResult.No)
+                    if (result == DialogResult.No)
                         return;
                 }
 
-                if(!Directory.Exists(directory))
+                if (!Directory.Exists(directory))
                     Directory.CreateDirectory(directory);
 
                 // Select Components for data export.
-                var selectedComponents = Selection.SelectManyComponents();
+                Component[] selectedComponents = Selection.SelectManyComponents();
 
-                if(selectedComponents.Length == 0)
+                if (selectedComponents.Length == 0)
                     return;
 
-                if(Directory.Exists(directory))
+                if (Directory.Exists(directory))
                     Directory.Delete(directory, true);
 
                 Directory.CreateDirectory(directory);
 
-                foreach (var comp in selectedComponents)
+                foreach (Component comp in selectedComponents)
                     try
                     {
-                        var displayName = comp.DisplayName.ToLower();
+                        string displayName = comp.DisplayName.ToLower();
 
-                        if(!comp.__IsLoaded())
+                        if (!comp.__IsLoaded())
                             continue;
 
-                        if(rdoPrt.Checked)
+                        if (rdoPrt.Checked)
                             try
                             {
-                                var leaf = displayName.Contains("master")
+                                string leaf = displayName.Contains("master")
                                     ? comp.Name
                                     : comp.__Prototype().Leaf;
 
-                                var compPath = $"{directory}\\{leaf}.prt";
+                                string compPath = $"{directory}\\{leaf}.prt";
 
-                                if(File.Exists(compPath))
+                                if (File.Exists(compPath))
                                     File.Delete(compPath);
 
                                 File.Copy(comp.__Prototype().FullPath, compPath);
@@ -131,17 +133,17 @@ namespace TSG_Library.UFuncs
                                 ex.__PrintException();
                             }
 
-                        var exportFileNoExtension = $"{directory}\\{comp.__Prototype().Leaf}";
+                        string exportFileNoExtension = $"{directory}\\{comp.__Prototype().Leaf}";
 
                         try
                         {
-                            if(rdoStpIges.Checked
-                               && (displayName.Contains("fshape")
-                                   || displayName.Contains($"{customerNumber}-t")
-                                   || displayName.Contains("pad")
-                                   || displayName.Contains("profile")
-                                   || displayName.Contains($"{customerNumber}-b"))
-                              )
+                            if (rdoStpIges.Checked
+                                && (displayName.Contains("fshape")
+                                    || displayName.Contains($"{customerNumber}-t")
+                                    || displayName.Contains("pad")
+                                    || displayName.Contains("profile")
+                                    || displayName.Contains($"{customerNumber}-b"))
+                               )
                                 Iges(comp.__Prototype().FullPath, $"{exportFileNoExtension}.igs", true);
                         }
                         catch (Exception ex)
@@ -151,12 +153,12 @@ namespace TSG_Library.UFuncs
 
                         try
                         {
-                            if(rdoStpIges.Checked
-                               && (displayName.Contains($"{customerNumber}-d")
-                                   || displayName.ToLower().Contains("ref-data")
-                                   || displayName.ToLower().Contains("refdata")
-                                   || displayName.ToLower().Contains("master"))
-                              )
+                            if (rdoStpIges.Checked
+                                && (displayName.Contains($"{customerNumber}-d")
+                                    || displayName.ToLower().Contains("ref-data")
+                                    || displayName.ToLower().Contains("refdata")
+                                    || displayName.ToLower().Contains("master"))
+                               )
                                 Export.Stp(comp.__Prototype().FullPath, $"{exportFileNoExtension}.stp",
                                     "U:\\nxFiles\\Step Translator\\214ug.def");
                         }
@@ -173,11 +175,11 @@ namespace TSG_Library.UFuncs
                 // Deletes the log files created.
                 Directory.GetFiles(directory, "*.log").ToList().ForEach(File.Delete);
 
-                var filesToZip = Directory.GetFiles(directory);
+                string[] filesToZip = Directory.GetFiles(directory);
 
-                var zipFileName = $"{customerNumber}-Simulation-Package-for-Design-{TodaysDate}.7z";
+                string zipFileName = $"{customerNumber}-Simulation-Package-for-Design-{TodaysDate}.7z";
 
-                var zipFile = $"{directory}\\{zipFileName}";
+                string zipFile = $"{directory}\\{zipFileName}";
 
                 try
                 {
@@ -185,24 +187,24 @@ namespace TSG_Library.UFuncs
 
                     filesToZip.ToList().ForEach(File.Delete);
 
-                    if(chkCopy.Checked)
+                    if (chkCopy.Checked)
                     {
-                        var processDirectory = folder.dir_process_sim_data_design;
+                        string processDirectory = folder.DirProcessSimDataDesign;
 
-                        if(!Directory.Exists(processDirectory))
+                        if (!Directory.Exists(processDirectory))
                             Directory.CreateDirectory(processDirectory);
 
-                        var directoryName = Path.GetFileNameWithoutExtension(directory);
+                        string directoryName = Path.GetFileNameWithoutExtension(directory);
 
-                        var sourceDir = Path.GetDirectoryName(zipFile);
+                        string sourceDir = Path.GetDirectoryName(zipFile);
 
-                        var destDir = $"{processDirectory}\\{directoryName}";
+                        string destDir = $"{processDirectory}\\{directoryName}";
 
                         Directory.CreateDirectory(destDir);
 
-                        foreach (var file in Directory.GetFiles(directory))
+                        foreach (string file in Directory.GetFiles(directory))
                         {
-                            var fileName = Path.GetFileName(file);
+                            string fileName = Path.GetFileName(file);
                             File.Copy(file, $"{destDir}\\{fileName}");
                         }
                     }
@@ -214,14 +216,14 @@ namespace TSG_Library.UFuncs
 
                 try
                 {
-                    if(chkCopy.Checked)
+                    if (chkCopy.Checked)
                     {
-                        var processDirectory = folder.dir_process_sim_data_design;
+                        string processDirectory = folder.DirProcessSimDataDesign;
 
-                        if(!Directory.Exists(processDirectory))
+                        if (!Directory.Exists(processDirectory))
                             Directory.CreateDirectory(processDirectory);
 
-                        if(File.Exists($"{processDirectory}\\{zipFileName}"))
+                        if (File.Exists($"{processDirectory}\\{zipFileName}"))
                             File.Delete($"{processDirectory}\\{zipFileName}");
 
                         File.Copy(zipFile, $"{processDirectory}\\{zipFileName}");
@@ -246,10 +248,10 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if(File.Exists(igesPath))
+                if (File.Exists(igesPath))
                     throw new ArgumentException(@"Path for iges file already exists.", nameof(igesPath));
 
-                var igesCreator = Session.GetSession().DexManager.CreateIgesCreator();
+                IgesCreator igesCreator = Session.GetSession().DexManager.CreateIgesCreator();
 
                 using (session_.__UsingBuilderDestroyer(igesCreator))
                 {
@@ -272,7 +274,7 @@ namespace TSG_Library.UFuncs
                     igesCreator.Commit();
                 }
 
-                if(wait)
+                if (wait)
                     print_(File.Exists(igesPath)
                         ? $"Successfully created \"{igesPath}\"."
                         : $"Unsuccessfully created \"{igesPath}\".");

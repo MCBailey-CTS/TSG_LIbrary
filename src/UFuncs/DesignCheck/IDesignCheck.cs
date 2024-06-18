@@ -5,9 +5,9 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 {
     public interface IDesignCheck
     {
-        bool PerformCheck(Part part, out TreeNode result_node);
+        DCResult PerformCheck(Part part, out TreeNode result_node);
 
-        bool IsPartValidForCheck(Part part, out string message);
+        //bool IsPartValidForCheck(Part part, out string message);
 
         //NXOpen.TaggedObject[] GetObjectsForCheck(NXOpen.Part part);
 

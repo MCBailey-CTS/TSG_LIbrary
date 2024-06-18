@@ -41,6 +41,7 @@
             this.btnClearSelection = new System.Windows.Forms.Button();
             this.buttonSelect = new System.Windows.Forms.Button();
             this.chkMM = new System.Windows.Forms.CheckBox();
+            this.chk4Digits = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -163,7 +164,7 @@
             this.groupBox2.Controls.Add(this.buttonSelect);
             this.groupBox2.Controls.Add(this.buttonLoadCastings);
             this.groupBox2.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBox2.Location = new System.Drawing.Point(12, 264);
+            this.groupBox2.Location = new System.Drawing.Point(12, 287);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(170, 113);
             this.groupBox2.TabIndex = 9;
@@ -202,11 +203,22 @@
             this.chkMM.Text = "Show MM Dimensions";
             this.chkMM.UseVisualStyleBackColor = true;
             // 
+            // chk4Digits
+            // 
+            this.chk4Digits.AutoSize = true;
+            this.chk4Digits.Location = new System.Drawing.Point(22, 264);
+            this.chk4Digits.Name = "chk4Digits";
+            this.chk4Digits.Size = new System.Drawing.Size(61, 17);
+            this.chk4Digits.TabIndex = 11;
+            this.chk4Digits.Text = "4 Digits";
+            this.chk4Digits.UseVisualStyleBackColor = true;
+            // 
             // BillOfMaterialForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(194, 389);
+            this.ClientSize = new System.Drawing.Size(194, 408);
+            this.Controls.Add(this.chk4Digits);
             this.Controls.Add(this.chkMM);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -240,5 +252,6 @@
         private System.Windows.Forms.Button buttonCreateUGS;
         private System.Windows.Forms.Button btnClearSelection;
         private System.Windows.Forms.CheckBox chkMM;
+        private System.Windows.Forms.CheckBox chk4Digits;
     }
 }

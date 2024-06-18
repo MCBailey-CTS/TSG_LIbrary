@@ -49,11 +49,11 @@ namespace TSG_Library.UFuncs
             // ReSharper disable once StringLiteralTypo
             public static string PunchTopFaceName => "PUNCHTOPFACE";
 
-            public static string Pierced_P => "PIERCED_P";
+            public static string PiercedP => "PIERCED_P";
 
-            public static string Pierced_W => "PIERCED_W";
+            public static string PiercedW => "PIERCED_W";
 
-            public static string Pierced_Type => "PIERCED_TYPE";
+            public static string PiercedType => "PIERCED_TYPE";
 
             public static Regex PiercedFaceRegex => new Regex("^PIERCED_([0-9]{1,})$");
         }

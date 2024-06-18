@@ -3,33 +3,34 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Features;
+using TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 {
     [Obsolete]
     public class SuppressedFeatures : IDesignCheck
     {
-        public bool IsPartValidForCheck(Part part, out string message)
-        {
-            message = "";
-            return true;
-        }
+        //public bool IsPartValidForCheck(Part part, out string message)
+        //{
+        //    message = "";
+        //    return true;
+        //}
 
-        public bool PerformCheck(Part part, out TreeNode result_node)
+        public DCResult PerformCheck(Part part, out TreeNode result_node)
         {
             result_node = part.__TreeNode();
-            return false;
+            return DCResult.fail;
         }
 
         public IEnumerable<Feature> AskNXObjects(Part part)
         {
-            var featureNames = new HashSet<string>();
+            HashSet<string> featureNames = new HashSet<string>();
 
             //var featuresToIgnore = new HashSet<NXOpen.Features.Feature>();
 
-            foreach (var feature in part.Features.GetFeatures())
+            foreach (Feature feature in part.Features.GetFeatures())
             {
-                if(!featureNames.Add(feature.GetFeatureName()))
+                if (!featureNames.Add(feature.GetFeatureName()))
                     continue;
 
                 yield return feature;

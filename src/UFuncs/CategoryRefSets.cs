@@ -2,7 +2,7 @@
 using System.Linq;
 using NXOpen;
 using TSG_Library.Attributes;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.Extensions;
 using static NXOpen.UF.UFConstants;
 
 namespace TSG_Library.UFuncs
@@ -12,28 +12,30 @@ namespace TSG_Library.UFuncs
     {
         public override void execute()
         {
-            var workPart = session_.Parts.Work;
-            var bodyRefSet = Tag.Null;
-            var markId1 = session_.SetUndoMark(Session.MarkVisibility.Visible, "Category Reference Sets");
-            var cycleRefSet = Tag.Null;
-            var refSetTag = new List<Tag>();
-            var isBodyRefSet = false;
+            Part workPart = session_.Parts.Work;
+            Tag bodyRefSet = Tag.Null;
+            Session.UndoMarkId markId1 =
+                session_.SetUndoMark(Session.MarkVisibility.Visible, "Category Reference Sets");
+            Tag cycleRefSet = Tag.Null;
+            List<Tag> refSetTag = new List<Tag>();
+            bool isBodyRefSet = false;
 
             do
             {
                 ufsession_.Obj.CycleObjsInPart(workPart.Tag, UF_reference_set_type, ref cycleRefSet);
 
-                if(cycleRefSet == Tag.Null)
+                if (cycleRefSet == Tag.Null)
                     break;
 
                 refSetTag.Add(cycleRefSet);
-            } while (cycleRefSet != Tag.Null);
+            }
+            while (cycleRefSet != Tag.Null);
 
-            foreach (var refSet in refSetTag)
+            foreach (Tag refSet in refSetTag)
             {
-                ufsession_.Obj.AskName(refSet, out var refSetName);
+                ufsession_.Obj.AskName(refSet, out string refSetName);
 
-                if(refSetName != "BODY")
+                if (refSetName != "BODY")
                     continue;
 
                 isBodyRefSet = true;
@@ -41,7 +43,7 @@ namespace TSG_Library.UFuncs
                 break;
             }
 
-            if(isBodyRefSet)
+            if (isBodyRefSet)
             {
                 //----------------------------------------------
                 // remove all but body and fasteners from body refset
@@ -54,22 +56,22 @@ namespace TSG_Library.UFuncs
                 // add fasteners
 
 
-                ufsession_.Assem.AskRefSetMembers(bodyRefSet, out var memberCount, out var members);
+                ufsession_.Assem.AskRefSetMembers(bodyRefSet, out int memberCount, out Tag[] members);
                 ufsession_.Assem.RemoveRefSetMembers(bodyRefSet, memberCount, members);
 
-                var wpBody = (from Body body in workPart.Bodies
+                List<Tag> wpBody = (from Body body in workPart.Bodies
                         where body.Layer == 1 && body.Tag != Tag.Null
                         select body.Tag)
                     .ToList();
 
-                if(wpBody.Count == 1)
+                if (wpBody.Count == 1)
                 {
                     ufsession_.Assem.AddRefSetMembers(bodyRefSet, wpBody.Count, wpBody.ToArray());
 
-                    if(workPart.ComponentAssembly.RootComponent is null)
+                    if (workPart.ComponentAssembly.RootComponent is null)
                         return;
 
-                    var compList = (from component in workPart.ComponentAssembly.RootComponent.GetChildren()
+                    List<Tag> compList = (from component in workPart.ComponentAssembly.RootComponent.GetChildren()
                         where component.Layer == 99 && component.Tag != Tag.Null
                         select component.Tag).ToList();
 
@@ -85,9 +87,9 @@ namespace TSG_Library.UFuncs
                 return;
             }
 
-            if(workPart.Bodies.ToArray().Length == 0)
+            if (workPart.Bodies.ToArray().Length == 0)
             {
-                if(workPart.LayerCategories.ToArray().Length != 1)
+                if (workPart.LayerCategories.ToArray().Length != 1)
                     return;
 
                 CreateCategoryNames(workPart);
@@ -95,44 +97,44 @@ namespace TSG_Library.UFuncs
                 const string subRefSetName = "SUB_TOOL";
                 const int numOfBodyMembers = 0;
                 const int numOfSubMembers = 0;
-                var origin = new double[3];
-                ufsession_.Csys.AskWcs(out var wcs);
-                ufsession_.Csys.AskCsysInfo(wcs, out var wcsMatrix,
+                double[] origin = new double[3];
+                ufsession_.Csys.AskWcs(out Tag wcs);
+                ufsession_.Csys.AskCsysInfo(wcs, out Tag wcsMatrix,
                     origin); // get origin of current work coordinate system
-                var matrixValue = new double[9];
+                double[] matrixValue = new double[9];
                 ufsession_.Csys.AskMatrixValues(wcsMatrix, matrixValue); // gets the matrix values
                 ufsession_.Assem.CreateRefSet(bodyRefSetName, origin, matrixValue, new Tag[] { }, numOfBodyMembers,
                     out bodyRefSet);
                 ufsession_.Assem.CreateRefSet(subRefSetName, origin, matrixValue, new Tag[] { }, numOfSubMembers,
-                    out var _);
+                    out Tag _);
                 return;
             }
 
-            if(workPart.LayerCategories.ToArray().Length == 1)
+            if (workPart.LayerCategories.ToArray().Length == 1)
             {
                 CreateCategoryNames(workPart);
                 const string bodyRefSetName = "BODY";
                 const string subRefSetName = "SUB_TOOL";
                 const int numOfBodyMembers = 1;
                 const int numOfSubMembers = 0;
-                var origin = new double[3];
-                ufsession_.Csys.AskWcs(out var wcs);
-                ufsession_.Csys.AskCsysInfo(wcs, out var wcsMatrix,
+                double[] origin = new double[3];
+                ufsession_.Csys.AskWcs(out Tag wcs);
+                ufsession_.Csys.AskCsysInfo(wcs, out Tag wcsMatrix,
                     origin); // get origin of current work coordinate system
-                var matrixValue = new double[9];
+                double[] matrixValue = new double[9];
                 ufsession_.Csys.AskMatrixValues(wcsMatrix, matrixValue); // gets the matrix values
 
-                var bodyArray = (from Body body in workPart.Bodies
+                List<Tag> bodyArray = (from Body body in workPart.Bodies
                         where body.Layer == 1 && body.Tag != Tag.Null
                         select body.Tag)
                     .ToList();
 
-                if(bodyArray.Count == 1)
+                if (bodyArray.Count == 1)
                 {
                     ufsession_.Assem.CreateRefSet(bodyRefSetName, origin, matrixValue, bodyArray.ToArray(),
                         numOfBodyMembers, out bodyRefSet);
                     ufsession_.Assem.CreateRefSet(subRefSetName, origin, matrixValue, new Tag[] { }, numOfSubMembers,
-                        out var _);
+                        out Tag _);
                 }
                 else
                 {
@@ -148,29 +150,29 @@ namespace TSG_Library.UFuncs
                 const string subRefSetName = "SUB_TOOL";
                 const int numOfBodyMembers = 1;
                 const int numOfSubMembers = 0;
-                var origin = new double[3];
-                ufsession_.Csys.AskWcs(out var wcs);
-                ufsession_.Csys.AskCsysInfo(wcs, out var wcsMatrix,
+                double[] origin = new double[3];
+                ufsession_.Csys.AskWcs(out Tag wcs);
+                ufsession_.Csys.AskCsysInfo(wcs, out Tag wcsMatrix,
                     origin); // get origin of current work coordinate system
-                var matrixValue = new double[9];
+                double[] matrixValue = new double[9];
                 ufsession_.Csys.AskMatrixValues(wcsMatrix, matrixValue); // gets the matrix values
 
-                var bodyArray = (from Body body in workPart.Bodies
+                List<Tag> bodyArray = (from Body body in workPart.Bodies
                         where body.Layer == 1 && body.Tag != Tag.Null
                         select body.Tag)
                     .ToList();
 
-                if(bodyArray.Count == 1)
+                if (bodyArray.Count == 1)
                 {
                     ufsession_.Assem.CreateRefSet(bodyRefSetName, origin, matrixValue, bodyArray.ToArray(),
                         numOfBodyMembers, out bodyRefSet);
                     ufsession_.Assem.CreateRefSet(subRefSetName, origin, matrixValue, new Tag[] { }, numOfSubMembers,
-                        out var _);
+                        out Tag _);
 
-                    if(workPart.ComponentAssembly.RootComponent is null)
+                    if (workPart.ComponentAssembly.RootComponent is null)
                         return;
 
-                    var compList = (from component in workPart.ComponentAssembly.RootComponent.GetChildren()
+                    List<Tag> compList = (from component in workPart.ComponentAssembly.RootComponent.GetChildren()
                         where component.Layer == 99 && component.Tag != Tag.Null
                         select component.Tag).ToList();
 

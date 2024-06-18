@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using NXOpen;
+using TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 {
@@ -19,40 +20,40 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 
             _dict = new Dictionary<string, string>();
 
-            foreach (var dir in Directory.GetDirectories("G:\\0Library", "*", SearchOption.TopDirectoryOnly))
+            foreach (string dir in Directory.GetDirectories("G:\\0Library", "*", SearchOption.TopDirectoryOnly))
             {
-                if(dir == @"G:\0Library\DfsrPrivate")
+                if (dir == @"G:\0Library\DfsrPrivate")
                     continue;
 
-                foreach (var file in Directory.GetFiles(dir, "Smart*.prt", SearchOption.AllDirectories))
+                foreach (string file in Directory.GetFiles(dir, "Smart*.prt", SearchOption.AllDirectories))
                 {
-                    var leaf = Path.GetFileNameWithoutExtension(file);
+                    string leaf = Path.GetFileNameWithoutExtension(file);
 
                     _dict.Add(leaf, file);
                 }
             }
         }
 
-        public bool IsPartValidForCheck(Part part, out string message)
-        {
-            message = "";
-            return true;
-        }
+        //public bool IsPartValidForCheck(Part part, out string message)
+        //{
+        //    message = "";
+        //    return true;
+        //}
 
         //public TreeNode PerformCheck(NXOpen.Part part)
         //{
         //    throw new NotImplementedException();
         //}
 
-        public bool PerformCheck(Part part, out TreeNode result_node)
+        public DCResult PerformCheck(Part part, out TreeNode result_node)
         {
             result_node = part.__TreeNode();
-            return false;
+            return DCResult.fail;
         }
 
         public void Dispose()
         {
-            foreach (var part in _parts_opened)
+            foreach (Part part in _parts_opened)
                 part.Close(BasePart.CloseWholeTree.True, BasePart.CloseModified.CloseModified, null);
         }
 

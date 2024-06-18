@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Windows.Forms;
 using NXOpen;
+using TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 {
     [Obsolete]
     public class JigJacks : IDesignCheck
     {
-        public bool IsPartValidForCheck(Part part, out string message)
-        {
-            message = "";
-            return true;
-        }
+        //public bool IsPartValidForCheck(Part part, out string message)
+        //{
+        //    message = "";
+        //    return true;
+        //}
 
-        public bool PerformCheck(Part part, out TreeNode result_node)
+        public DCResult PerformCheck(Part part, out TreeNode result_node)
         {
             result_node = part.__TreeNode();
-            return false;
+            return DCResult.fail;
         }
 
         //public IEnumerable<DesignCheckResult> Validate(NXOpen.Part part)
@@ -54,41 +55,41 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
                 case 1:
                     return true;
                 default:
-                    var isInch = false;
+                    bool isInch = false;
                     const double maxSize = 72;
-                    var baseLocation = jjPoint3D[0];
+                    Point3d baseLocation = jjPoint3D[0];
 
-                    for (var i = 1; i < jjPoint3D.Length; i++)
+                    for (int i = 1; i < jjPoint3D.Length; i++)
                     {
-                        var distance1 = Math.Sqrt(
+                        double distance1 = Math.Sqrt(
                             Math.Pow(baseLocation.X - jjPoint3D[i].X, 2) +
                             Math.Pow(baseLocation.Y - jjPoint3D[i].Y, 2) +
                             Math.Pow(baseLocation.Z - jjPoint3D[i].Z, 2));
 
-                        for (var j = 1; j < maxSize; j++)
-                            if(Math.Abs(distance1 - j) < tolerance)
+                        for (int j = 1; j < maxSize; j++)
+                            if (Math.Abs(distance1 - j) < tolerance)
                             {
                                 isInch = true;
                                 break;
                             }
 
-                        if(isInch)
+                        if (isInch)
                             continue;
 
-                        for (var k = 1; k < maxSize; k++)
+                        for (int k = 1; k < maxSize; k++)
                         {
-                            for (var m = 1; m < maxSize; m++)
+                            for (int m = 1; m < maxSize; m++)
                             {
-                                var distance2 = Math.Sqrt(Math.Pow(k, 2) + Math.Pow(m, 2));
+                                double distance2 = Math.Sqrt(Math.Pow(k, 2) + Math.Pow(m, 2));
 
-                                if(!(Math.Abs(distance1 - distance2) < tolerance))
+                                if (!(Math.Abs(distance1 - distance2) < tolerance))
                                     continue;
 
                                 isInch = true;
                                 break;
                             }
 
-                            if(isInch)
+                            if (isInch)
                                 break;
                         }
                     }

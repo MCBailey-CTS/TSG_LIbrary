@@ -4,6 +4,7 @@ using System.Linq;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
+using TSG_Library.Extensions;
 using TSG_Library.Geom;
 
 namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
@@ -19,15 +20,15 @@ namespace TSG_Library.UFuncs.UFuncUtilities.MirrorUtilities
             Component originalComp,
             IDictionary<TaggedObject, TaggedObject> dict)
         {
-            var mirroredComp = (Component)dict[originalComp];
+            Component mirroredComp = (Component)dict[originalComp];
 
-            var mirroredPart = mirroredComp.__Prototype();
+            Part mirroredPart = mirroredComp.__Prototype();
 
-            var mirroredFeature = (Feature)dict[originalFeature];
+            Feature mirroredFeature = (Feature)dict[originalFeature];
 
             mirroredFeature.Suppress();
 
-            ((EdgeBoundaryRule)originalRule).GetData(out var originalFaces);
+            ((EdgeBoundaryRule)originalRule).GetData(out Face[] originalFaces);
 
             IList<Face> newFaces = (from originalFace in originalFaces
                 select (

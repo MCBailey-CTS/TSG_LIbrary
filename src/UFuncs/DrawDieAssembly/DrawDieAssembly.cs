@@ -63,7 +63,7 @@
 //            string op020LayoutRegex = _ucf["OP_020_LAYOUT_REGEX"].Single();
 
 //            // Initializes a GFolderWithCtsNumber for the current displayed part.
-//            _folder = GFolder.create_or_null(Globals._WorkPart) ?? throw new Exception("Must be ran from a valid GFolderWithCtsNumber.");
+//            _folder = GFolder.create_or_null(__work_part_) ?? throw new Exception("Must be ran from a valid GFolderWithCtsNumber.");
 
 //            // Gets the regex pattern for finding the op 020 000.
 //            // ReSharper disable once InconsistentNaming
@@ -386,10 +386,10 @@
 //                int newComponentName = componentName; //int.Parse(_ucf[componentNameUcf].Single());
 
 //                //Constructs the path of the part that will be the defining prototype for the component that is to be added to {partToAddTo}.
-//                string newPartPath = $"{Path.GetDirectoryName(Globals._WorkPart.FullPath)}\\{_folder.CustomerNumber}-020-{newComponentName}.prt";
+//                string newPartPath = $"{Path.GetDirectoryName(__work_part_.FullPath)}\\{_folder.CustomerNumber}-020-{newComponentName}.prt";
 
 //                // Finds the next detail number that doesn't exist. 
-//                while (File.Exists(newPartPath)) newPartPath = $"{Path.GetDirectoryName(Globals._WorkPart.FullPath)}\\{_folder.CustomerNumber}-020-{newComponentName++}.prt";
+//                while (File.Exists(newPartPath)) newPartPath = $"{Path.GetDirectoryName(__work_part_.FullPath)}\\{_folder.CustomerNumber}-020-{newComponentName++}.prt";
 
 //                // Copies the seed_base to the {newPartPath}.
 //                File.Copy(_ucf.SingleValue("SEED_PART"), newPartPath);
@@ -583,10 +583,10 @@
 //            int newComponentName = compName;
 
 //            //Constructs the path of the part that will be the defining prototype for the component that is to be added to {partToAddTo}.
-//            string newPartPath = $"{Path.GetDirectoryName(Globals._WorkPart.FullPath)}\\{_folder.CustomerNumber}-020-{newComponentName}.prt";
+//            string newPartPath = $"{Path.GetDirectoryName(__work_part_.FullPath)}\\{_folder.CustomerNumber}-020-{newComponentName}.prt";
 
 //            // Finds the next detail number that doesn't exist. 
-//            while (File.Exists(newPartPath)) newPartPath = $"{Path.GetDirectoryName(Globals._WorkPart.FullPath)}\\{_folder.CustomerNumber}-020-{newComponentName++}.prt";
+//            while (File.Exists(newPartPath)) newPartPath = $"{Path.GetDirectoryName(__work_part_.FullPath)}\\{_folder.CustomerNumber}-020-{newComponentName++}.prt";
 
 //            standoffPart.SaveAs(newPartPath);
 
@@ -653,10 +653,10 @@
 //            int newComponentName = compName;
 
 //            //Constructs the path of the part that will be the defining prototype for the component that is to be added to {partToAddTo}.
-//            string newPartPath = $"{Path.GetDirectoryName(Globals._WorkPart.FullPath)}\\{_folder.CustomerNumber}-020-{newComponentName}.prt";
+//            string newPartPath = $"{Path.GetDirectoryName(__work_part_.FullPath)}\\{_folder.CustomerNumber}-020-{newComponentName}.prt";
 
 //            // Finds the next detail number that doesn't exist. 
-//            while (File.Exists(newPartPath)) newPartPath = $"{Path.GetDirectoryName(Globals._WorkPart.FullPath)}\\{_folder.CustomerNumber}-020-{newComponentName++}.prt";
+//            while (File.Exists(newPartPath)) newPartPath = $"{Path.GetDirectoryName(__work_part_.FullPath)}\\{_folder.CustomerNumber}-020-{newComponentName++}.prt";
 
 //            smartKeyPart.SaveAs(newPartPath);
 
@@ -717,10 +717,10 @@
 //            int newComponentName = compName;
 
 //            //Constructs the path of the part that will be the defining prototype for the component that is to be added to {partToAddTo}.
-//            string newPartPath = $"{Path.GetDirectoryName(Globals._WorkPart.FullPath)}\\{_folder.CustomerNumber}-020-{newComponentName}.prt";
+//            string newPartPath = $"{Path.GetDirectoryName(__work_part_.FullPath)}\\{_folder.CustomerNumber}-020-{newComponentName}.prt";
 
 //            // Finds the next detail number that doesn't exist. 
-//            while (File.Exists(newPartPath)) newPartPath = $"{Path.GetDirectoryName(Globals._WorkPart.FullPath)}\\{_folder.CustomerNumber}-020-{newComponentName++}.prt";
+//            while (File.Exists(newPartPath)) newPartPath = $"{Path.GetDirectoryName(__work_part_.FullPath)}\\{_folder.CustomerNumber}-020-{newComponentName++}.prt";
 
 //            smartGaugePart.SaveAs(newPartPath);
 

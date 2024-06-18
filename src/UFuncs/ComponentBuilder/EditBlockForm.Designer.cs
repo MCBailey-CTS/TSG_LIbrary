@@ -1,4 +1,24 @@
-﻿namespace TSG_Library.UFuncs
+﻿using NXOpen.UF;
+using NXOpen;
+using System;
+using TSG_Library.Extensions;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Windows.Forms;
+using NXOpen.Assemblies;
+using NXOpen.Features;
+using NXOpen.GeometricUtilities;
+using NXOpen.Preferences;
+using NXOpen.UserDefinedObjects;
+using NXOpenUI;
+using TSG_Library.Properties;
+using TSG_Library.Utilities;
+using static TSG_Library.Extensions.Extensions;
+using static NXOpen.UF.UFConstants;
+using Part = NXOpen.Part;
+using System.Reflection;
+
+namespace TSG_Library.UFuncs
 {
     partial class EditBlockForm
     {
@@ -289,5 +309,10 @@
         private System.Windows.Forms.Button buttonReset;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button buttonApply;
+
+
+
+
+
     }
 }

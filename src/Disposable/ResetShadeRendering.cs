@@ -1,6 +1,7 @@
 ﻿using System;
+using NXOpen.Drafting;
 using NXOpen.Preferences;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.Extensions;
 
 namespace TSG_Library.Disposable
 {
@@ -10,7 +11,7 @@ namespace TSG_Library.Disposable
 
         public ResetShadeRendering()
         {
-            var preferencesBuilder1 = __work_part_.SettingsManager.CreatePreferencesBuilder();
+            PreferencesBuilder preferencesBuilder1 = __work_part_.SettingsManager.CreatePreferencesBuilder();
 
             using (new Destroyer(preferencesBuilder1))
             {
@@ -20,7 +21,7 @@ namespace TSG_Library.Disposable
 
         public void Dispose()
         {
-            var preferencesBuilder1 = __work_part_.SettingsManager.CreatePreferencesBuilder();
+            PreferencesBuilder preferencesBuilder1 = __work_part_.SettingsManager.CreatePreferencesBuilder();
 
             using (new Destroyer(preferencesBuilder1))
             {

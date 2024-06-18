@@ -9,17 +9,17 @@ using NXOpen;
 using NXOpen.Assemblies;
 using TSG_Library.Attributes;
 using TSG_Library.Utilities;
-using static TSG_Library.Extensions;
+using static TSG_Library.Extensions.Extensions;
 
 namespace TSG_Library.UFuncs
 {
     [UFunc("nx-win-zip")]
-    [RevisionEntry("1.0", "2017", "06", "05")]
-    [Revision("1.0.1", "Revision Log Created for NX 11.")]
-    [RevisionEntry("1.1", "2017", "08", "22")]
-    [Revision("1.1.1", "Signed so it will run outside of CTS.")]
-    [RevisionEntry("11.1", "2023", "01", "09")]
-    [Revision("11.1.1", "Removed validation")]
+    //[RevisionEntry("1.0", "2017", "06", "05")]
+    //[Revision("1.0.1", "Revision Log Created for NX 11.")]
+    //[RevisionEntry("1.1", "2017", "08", "22")]
+    //[Revision("1.1.1", "Signed so it will run outside of CTS.")]
+    //[RevisionEntry("11.1", "2023", "01", "09")]
+    //[Revision("11.1.1", "Removed validation")]
     public partial class NxWinZipForm : _UFuncForm
     {
         private static Part displayPart = session_.Parts.Display;
@@ -56,7 +56,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if(displayPart is null)
+                if (displayPart is null)
                 {
                     MessageBox.Show("Please load an assembly", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -74,21 +74,21 @@ namespace TSG_Library.UFuncs
 
                 displayPathText = assemblyPart;
 
-                var total = session_.Parts.ToArray().Length + 1;
-                var count = 1;
+                int total = session_.Parts.ToArray().Length + 1;
+                int count = 1;
 
                 foreach (Part part in session_.Parts)
                 {
-                    var percentComplete = count / Convert.ToDouble(total);
+                    double percentComplete = count / Convert.ToDouble(total);
                     progressBarLoadAssm.Value = Convert.ToInt32(percentComplete * 100);
                     count++;
 
-                    if(part.IsFullyLoaded) continue;
-                    session_.Parts.Open(part.FullPath, out var loadStatus2);
+                    if (part.IsFullyLoaded) continue;
+                    session_.Parts.Open(part.FullPath, out PartLoadStatus loadStatus2);
                     loadStatus2.Dispose();
                 }
 
-                if(displayPart.ComponentAssembly.RootComponent == null)
+                if (displayPart.ComponentAssembly.RootComponent == null)
                 {
                     MessageBox.Show("Display Part is not an Assembly", "Error", MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
@@ -99,8 +99,8 @@ namespace TSG_Library.UFuncs
                 GetAllChildComponents(displayPart.ComponentAssembly.RootComponent);
                 selComponents = allComponents.DistinctBy(__c => __c.DisplayName).ToList();
 
-                if(selComponents != null)
-                    foreach (var comp in selComponents)
+                if (selComponents != null)
+                    foreach (Component comp in selComponents)
                         assmParts.Add((Part)comp.Prototype);
 
                 buttonSelectAssm.Enabled = false;
@@ -116,35 +116,35 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if(displayPart == null)
+                if (displayPart == null)
                 {
-                    if(openFileDialog1.ShowDialog() != DialogResult.OK) return;
+                    if (openFileDialog1.ShowDialog() != DialogResult.OK) return;
                     result = DialogResult.OK;
 
                     assmParts.Clear();
                     UpdateSessionParts();
 
-                    var openAssembly = openFileDialog1.FileName;
+                    string openAssembly = openFileDialog1.FileName;
                     assemblyPart = openFileDialog1.FileName;
 
                     displayPathText = assemblyPart;
 
-                    session_.Parts.Open(openAssembly, out var partLoadStatus);
+                    session_.Parts.Open(openAssembly, out PartLoadStatus partLoadStatus);
                     partLoadStatus.Dispose();
 
                     labelAssmText.Text = openAssembly;
 
-                    var total = session_.Parts.ToArray().Length + 1;
-                    var count = 1;
+                    int total = session_.Parts.ToArray().Length + 1;
+                    int count = 1;
 
                     foreach (Part part in session_.Parts)
                     {
-                        var percentComplete = count / Convert.ToDouble(total);
+                        double percentComplete = count / Convert.ToDouble(total);
                         progressBarLoadAssm.Value = Convert.ToInt32(percentComplete * 100);
                         count++;
 
-                        if(part.IsFullyLoaded) continue;
-                        session_.Parts.Open(part.FullPath, out var loadStatus2);
+                        if (part.IsFullyLoaded) continue;
+                        session_.Parts.Open(part.FullPath, out PartLoadStatus loadStatus2);
                         loadStatus2.Dispose();
                     }
 
@@ -168,18 +168,18 @@ namespace TSG_Library.UFuncs
 
         private void ButtonCloseAssm_Click(object sender, EventArgs e)
         {
-            var closeResult = MessageBox.Show("This will close the loaded assembly", "Verify",
+            DialogResult closeResult = MessageBox.Show("This will close the loaded assembly", "Verify",
                 MessageBoxButtons.OKCancel, MessageBoxIcon.Warning,
                 MessageBoxDefaultButton.Button1);
 
-            if(closeResult != DialogResult.OK) return;
+            if (closeResult != DialogResult.OK) return;
             CloseAssembly();
             SetFormDefaults();
         }
 
         private void ButtonSave_Click(object sender, EventArgs e)
         {
-            if(comboBoxCompression.SelectedIndex == 0)
+            if (comboBoxCompression.SelectedIndex == 0)
             {
                 // ReSharper disable once StringLiteralTypo
                 saveFileDialog1.DefaultExt = "zipx";
@@ -196,10 +196,10 @@ namespace TSG_Library.UFuncs
 
         private void ButtonOk_Click(object sender, EventArgs e)
         {
-            if(result == DialogResult.OK)
+            if (result == DialogResult.OK)
                 CreateZipFile(saveFileDialog1.FileName);
 
-            if(buttonCloseAssm.Enabled)
+            if (buttonCloseAssm.Enabled)
                 CloseAssembly();
 
             SetFormDefaults();
@@ -220,27 +220,27 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if(assmParts.Count == 0) return;
-                var compressionLevel = (WinZipCompression)comboBoxCompression.SelectedItem;
-                var compression = compressionLevel.CompressValue;
-                var tempFile = Path.GetTempPath() + "zipData.txt";
+                if (assmParts.Count == 0) return;
+                WinZipCompression compressionLevel = (WinZipCompression)comboBoxCompression.SelectedItem;
+                string compression = compressionLevel.CompressValue;
+                string tempFile = Path.GetTempPath() + "zipData.txt";
                 // ReSharper disable once StringLiteralTypo
                 const string winZip = "C:\\Program Files (x86)\\WinZip\\wzzip";
 
-                using (var fs = File.Open(tempFile, FileMode.Create))
+                using (FileStream fs = File.Open(tempFile, FileMode.Create))
                 {
                     fs.Close();
                 }
 
-                using (var writer = new StreamWriter(tempFile))
+                using (StreamWriter writer = new StreamWriter(tempFile))
                 {
-                    foreach (var part in assmParts)
+                    foreach (Part part in assmParts)
                         writer.WriteLine(part.FullPath);
                 }
 
-                var process = new Process();
+                Process process = new Process();
 
-                if(checkBoxDirPath.Checked)
+                if (checkBoxDirPath.Checked)
                 {
                     process.EnableRaisingEvents = false;
                     process.StartInfo.FileName = winZip;
@@ -292,15 +292,15 @@ namespace TSG_Library.UFuncs
             comboBoxCompression.Items.Clear();
 
             // ReSharper disable once StringLiteralTypo
-            var zipComp1 = new WinZipCompression("Maximum (.zipx)", "-el");
+            WinZipCompression zipComp1 = new WinZipCompression("Maximum (.zipx)", "-el");
             comboBoxCompression.Items.Add(zipComp1);
-            var zipComp2 = new WinZipCompression("Normal (.zip)", "-en");
+            WinZipCompression zipComp2 = new WinZipCompression("Normal (.zip)", "-en");
             comboBoxCompression.Items.Add(zipComp2);
-            var zipComp3 = new WinZipCompression("Extra (.zip)", "-ex");
+            WinZipCompression zipComp3 = new WinZipCompression("Extra (.zip)", "-ex");
             comboBoxCompression.Items.Add(zipComp3);
-            var zipComp4 = new WinZipCompression("FastenerType (.zip)", "-ef");
+            WinZipCompression zipComp4 = new WinZipCompression("FastenerType (.zip)", "-ef");
             comboBoxCompression.Items.Add(zipComp4);
-            var zipComp5 = new WinZipCompression("SuperFast (.zip)", "-es");
+            WinZipCompression zipComp5 = new WinZipCompression("SuperFast (.zip)", "-es");
             comboBoxCompression.Items.Add(zipComp5);
 
             comboBoxCompression.SelectedIndex = 0;
@@ -319,20 +319,20 @@ namespace TSG_Library.UFuncs
 
         private void SaveZipFile(string fileName)
         {
-            var lastDir = fileName.LastIndexOf("\\", StringComparison.Ordinal);
-            var lastDot = fileName.LastIndexOf(".", StringComparison.Ordinal);
-            var name = fileName.Substring(lastDir + 1, lastDot - (lastDir + 1));
-            var dirOnly = fileName.Remove(lastDir);
+            int lastDir = fileName.LastIndexOf("\\", StringComparison.Ordinal);
+            int lastDot = fileName.LastIndexOf(".", StringComparison.Ordinal);
+            string name = fileName.Substring(lastDir + 1, lastDot - (lastDir + 1));
+            string dirOnly = fileName.Remove(lastDir);
             saveFileDialog1.InitialDirectory = dirOnly;
             saveFileDialog1.FileName = name;
 
-            if(saveFileDialog1.ShowDialog() == DialogResult.OK)
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 result = DialogResult.OK;
                 buttonOk.Enabled = true;
 
-                var lastIndex = saveFileDialog1.FileName.LastIndexOf("\\", StringComparison.Ordinal);
-                var fileOnly = saveFileDialog1.FileName.Substring(lastIndex + 1);
+                int lastIndex = saveFileDialog1.FileName.LastIndexOf("\\", StringComparison.Ordinal);
+                string fileOnly = saveFileDialog1.FileName.Substring(lastIndex + 1);
                 labelZipText.Text = fileOnly;
             }
             else
@@ -344,10 +344,10 @@ namespace TSG_Library.UFuncs
 
         private static void GetAllChildComponents(Component assemblyPart1)
         {
-            foreach (var descendant in assemblyPart1.__DescendantsAll())
+            foreach (Component descendant in assemblyPart1.__DescendantsAll())
             {
-                if(descendant.IsSuppressed) continue;
-                if(descendant.Prototype is Part)
+                if (descendant.IsSuppressed) continue;
+                if (descendant.Prototype is Part)
                 {
                     print_("Heer");
                     allComponents.Add(descendant);
@@ -360,16 +360,16 @@ namespace TSG_Library.UFuncs
 
             try
             {
-                if(assemblyPart1.GetChildren() == null) return;
-                foreach (var child in assemblyPart1.GetChildren())
+                if (assemblyPart1.GetChildren() == null) return;
+                foreach (Component child in assemblyPart1.GetChildren())
                 {
-                    if(child.IsSuppressed) continue;
-                    var instance = TheUFSession.Assem.AskInstOfPartOcc(child.Tag);
-                    if(instance == NXOpen.Tag.Null) continue;
-                    TheUFSession.Assem.AskPartNameOfChild(instance, out var partName);
-                    var partLoad = TheUFSession.Part.IsLoaded(partName);
+                    if (child.IsSuppressed) continue;
+                    Tag instance = TheUFSession.Assem.AskInstOfPartOcc(child.Tag);
+                    if (instance == NXOpen.Tag.Null) continue;
+                    TheUFSession.Assem.AskPartNameOfChild(instance, out string partName);
+                    int partLoad = TheUFSession.Part.IsLoaded(partName);
 
-                    if(partLoad == 1)
+                    if (partLoad == 1)
                     {
                         allComponents.Add(child);
                         GetAllChildComponents(child);
@@ -379,9 +379,9 @@ namespace TSG_Library.UFuncs
                         //var partOpened = CTS_Library.Globals.Find
 
                         print_(partName);
-                        TheUFSession.Part.OpenQuiet(partName, out var partOpen, out _);
+                        TheUFSession.Part.OpenQuiet(partName, out Tag partOpen, out _);
 
-                        if(partOpen == NXOpen.Tag.Null) continue;
+                        if (partOpen == NXOpen.Tag.Null) continue;
                         allComponents.Add(child);
                         GetAllChildComponents(child);
                     }

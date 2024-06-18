@@ -12,13 +12,13 @@ namespace TSG_Library.Utilities
 
         public static int open(string connection_string, string ufunc_name, int hash)
         {
-            using (var cnn = new SqlConnection(connection_string))
+            using (SqlConnection cnn = new SqlConnection(connection_string))
             {
                 cnn.Open();
 
                 int scope_identity;
 
-                using (var sql = new SqlCommand
+                using (SqlCommand sql = new SqlCommand
                        {
                            Connection = cnn,
 
@@ -38,7 +38,7 @@ namespace TSG_Library.Utilities
                 }
 
 
-                using (var sql = new SqlCommand
+                using (SqlCommand sql = new SqlCommand
                        {
                            Connection = cnn,
                            CommandText = $@"INSERT INTO ufuncs_in_use (ufunc_log_id) values ({scope_identity})"
@@ -53,11 +53,11 @@ namespace TSG_Library.Utilities
 
         public static void close(string connection_string, int scope_identity)
         {
-            using (var cnn = new SqlConnection(connection_string))
+            using (SqlConnection cnn = new SqlConnection(connection_string))
             {
                 cnn.Open();
 
-                using (var sql = new SqlCommand
+                using (SqlCommand sql = new SqlCommand
                        {
                            Connection = cnn,
 
@@ -71,11 +71,11 @@ namespace TSG_Library.Utilities
             }
 
 
-            using (var cnn = new SqlConnection(connection_string))
+            using (SqlConnection cnn = new SqlConnection(connection_string))
             {
                 cnn.Open();
 
-                using (var sql = new SqlCommand
+                using (SqlCommand sql = new SqlCommand
                        {
                            Connection = cnn,
 
@@ -90,11 +90,11 @@ namespace TSG_Library.Utilities
 
         public static int method_executed(string connection_string, int scope_identity, string method_signature)
         {
-            using (var cnn = new SqlConnection(connection_string))
+            using (SqlConnection cnn = new SqlConnection(connection_string))
             {
                 cnn.Open();
 
-                using (var sql = new SqlCommand
+                using (SqlCommand sql = new SqlCommand
                        {
                            Connection = cnn,
                            CommandText =
@@ -116,11 +116,11 @@ namespace TSG_Library.Utilities
         public static void method_terminated(string connection_string, int method_scope_identity, int result,
             string message = "")
         {
-            using (var cnn = new SqlConnection(connection_string))
+            using (SqlConnection cnn = new SqlConnection(connection_string))
             {
                 cnn.Open();
 
-                using (var sql = new SqlCommand
+                using (SqlCommand sql = new SqlCommand
                        {
                            Connection = cnn,
 
