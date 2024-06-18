@@ -23,21 +23,35 @@ namespace TSG_Library.UFuncs
             using (session_.__UsingDoUpdate())
             {
                 Curve[] selCurves = Selection.SelectCurves();
-                List<Tag> delCurves = new List<Tag>();
+                //List<Tag> delCurves = new List<Tag>();
 
                 foreach (Curve delete in selCurves)
                 {
-                    TheUFSession.Modl.AskObjectFeat(delete.Tag, out Tag featTag);
+                    if(delete.IsOccurrence)
+                    {
+                        TheUFSession.Modl.AskObjectFeat(delete.__Prototype().Tag, out Tag featTag);
 
-                    if (featTag == Tag.Null)
-                        delCurves.Add(delete.Tag);
+                        if (featTag == Tag.Null)
+                            delete.__Prototype().__Delete();
+
+                    }
+                    else
+                    {
+                        TheUFSession.Modl.AskObjectFeat(delete.Tag, out Tag featTag);
+
+                        if (featTag == Tag.Null)
+                            delete.__Delete();
+                    }
+
+                    
+                        //delCurves.Add(delete.Tag);
                 }
 
-                foreach (NXObject curveObj in delCurves.Select(curve => (NXObject)NXObjectManager.Get(curve)))
-                    session_.UpdateManager.AddToDeleteList(curveObj);
+                //foreach (NXObject curveObj in delCurves.Select(curve => (NXObject)NXObjectManager.Get(curve)))
+                //    session_.UpdateManager.AddToDeleteList(curveObj);
             }
 
-            __display_part_.Views.Refresh();
+            //__display_part_.Views.Refresh();
         }
     }
 }
