@@ -10,6 +10,7 @@ using TSG_Library.Disposable;
 using TSG_Library.Enum;
 using static NXOpen.Session;
 using static NXOpen.UF.UFConstants;
+
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnusedMember.Global
 
@@ -50,9 +51,8 @@ namespace TSG_Library.Extensions
             fileNew.TemplateFileName = __GetTemplateFileName(fileNew, templateType, unitType);
             fileNew.UseBlankTemplate = fileNew.TemplateFileName == "Blank";
 
-            fileNew.Units = unitType == Units.MilliMeters
-                ? Part.Units.Millimeters
-                : Part.Units.Inches;
+            fileNew.Units =
+                unitType == Units.MilliMeters ? Part.Units.Millimeters : Part.Units.Inches;
 
             fileNew.NewFileName = pathName;
             fileNew.MasterFileName = "";
@@ -69,7 +69,17 @@ namespace TSG_Library.Extensions
             return (Part)nXObject;
         }
 
-        public static void __SetWorkPlane(this Session _, double gridSpace, bool snapToGrid, bool showGrid)
+        public static TSG_Library.Disposable.Rollback __UsingRollback(
+            this Session session,
+            NXOpen.Features.Feature feat
+        ) {return new Rollback(feat, "Rollback"); }
+
+        public static void __SetWorkPlane(
+            this Session _,
+            double gridSpace,
+            bool snapToGrid,
+            bool showGrid
+        )
         {
             WorkPlane workPlane1 = __display_part_.Preferences.Workplane;
 
@@ -95,7 +105,11 @@ namespace TSG_Library.Extensions
         }
 
         // ReSharper disable once ParameterHidesMember
-        public static string __SelectMenuItem14gt(this Session session_, string title, string[] items)
+        public static string __SelectMenuItem14gt(
+            this Session session_,
+            string title,
+            string[] items
+        )
         {
             IList<string[]> separated = new List<string[]>();
 
@@ -107,11 +121,7 @@ namespace TSG_Library.Extensions
             if (items.Length == max)
                 using (session_.__UsingLockUiFromCustom())
                 {
-                    int picked_item = ufsession_.Ui.DisplayMenu(
-                        title,
-                        0,
-                        items,
-                        items.Length);
+                    int picked_item = ufsession_.Ui.DisplayMenu(title, 0, items, items.Length);
 
                     switch (picked_item)
                     {
@@ -152,10 +162,11 @@ namespace TSG_Library.Extensions
                         case 19:
                             throw new InvalidOperationException("Unable to display menu");
                         default:
-                            throw new InvalidOperationException($"Unknown picked item: {picked_item}");
+                            throw new InvalidOperationException(
+                                $"Unknown picked item: {picked_item}"
+                            );
                     }
                 }
-
 
             while (list_items.Count > 0)
             {
@@ -180,7 +191,6 @@ namespace TSG_Library.Extensions
                 separated.Add(set_of_items);
             }
 
-
             int current_set_index = 0;
 
             while (true)
@@ -190,7 +200,8 @@ namespace TSG_Library.Extensions
                         title,
                         0,
                         separated[current_set_index],
-                        separated[current_set_index].Length);
+                        separated[current_set_index].Length
+                    );
 
                     switch (picked_item)
                     {
@@ -229,7 +240,10 @@ namespace TSG_Library.Extensions
                         case 17:
                             return separated[current_set_index][12];
                         case 18:
-                            if (separated[current_set_index][13] == __next__ && current_set_index + 1 < separated.Count)
+                            if (
+                                separated[current_set_index][13] == __next__
+                                && current_set_index + 1 < separated.Count
+                            )
                             {
                                 current_set_index++;
                                 continue;
@@ -242,7 +256,9 @@ namespace TSG_Library.Extensions
                         case 19:
                             throw new InvalidOperationException("Unable to display menu");
                         default:
-                            throw new InvalidOperationException($"Unknown picked item: {picked_item}");
+                            throw new InvalidOperationException(
+                                $"Unknown picked item: {picked_item}"
+                            );
                     }
                 }
         }
@@ -257,8 +273,11 @@ namespace TSG_Library.Extensions
             return new DoUpdate(undo_text);
         }
 
-        public static IDisposable __UsingFormShowHide(this Session _, Form __form,
-            bool hide_form = true)
+        public static IDisposable __UsingFormShowHide(
+            this Session _,
+            Form __form,
+            bool hide_form = true
+        )
         {
             if (hide_form)
                 __form.Hide();
@@ -296,7 +315,6 @@ namespace TSG_Library.Extensions
             ufsession_.Part.CloseAll();
         }
 
-
         public static void __SetDisplayToWork(this Session _)
         {
             __work_part_ = __display_part_;
@@ -309,8 +327,13 @@ namespace TSG_Library.Extensions
 
         public static bool __IsAssemblyHolder(this string str)
         {
-            return str.__IsLsh() || str.__IsUsh() || str.__IsLwr() || str.__IsUpr() || str.__IsLsp() || str.__IsUsp() ||
-                   str.__Is000();
+            return str.__IsLsh()
+                || str.__IsUsh()
+                || str.__IsLwr()
+                || str.__IsUpr()
+                || str.__IsLsp()
+                || str.__IsUsp()
+                || str.__Is000();
         }
 
         public static bool __WorkIsNotDisplay(this Session session)
@@ -343,26 +366,32 @@ namespace TSG_Library.Extensions
             return new RegenerateDisplay();
         }
 
-
         public static TaggedObject __GetTaggedObject(this Session session, Tag tag)
         {
             return session.GetObjectManager().GetTaggedObject(tag);
         }
 
-        public static PartCollection.SdpsStatus __SetActiveDisplay(this Session session_1,
-            Part __part)
+        public static PartCollection.SdpsStatus __SetActiveDisplay(
+            this Session session_1,
+            Part __part
+        )
         {
-            if (session_1.Parts.AllowMultipleDisplayedParts != PartCollection.MultipleDisplayedPartStatus.Enabled)
+            if (
+                session_1.Parts.AllowMultipleDisplayedParts
+                != PartCollection.MultipleDisplayedPartStatus.Enabled
+            )
                 throw new Exception("Session does not allow multiple displayed parts");
 
             return session_1.Parts.SetActiveDisplay(
                 __part,
                 DisplayPartOption.AllowAdditional,
                 PartDisplayPartWorkPartOption.UseLast,
-                out _);
+                out _
+            );
         }
 
-        public static void __Delete(this ReferenceSet refst) => refst.OwningPart.DeleteReferenceSet(refst);
+        public static void __Delete(this ReferenceSet refst) =>
+            refst.OwningPart.DeleteReferenceSet(refst);
 
         public static void __SelectSingleObject(
             this Session _,
@@ -374,7 +403,8 @@ namespace TSG_Library.Extensions
             out int response,
             out Tag _object,
             double[] cursor,
-            out Tag view)
+            out Tag view
+        )
         {
             ufsession_.Ui.SelectWithSingleDialog(
                 message,
@@ -385,7 +415,8 @@ namespace TSG_Library.Extensions
                 out response,
                 out _object,
                 cursor,
-                out view);
+                out view
+            );
         }
 
         public static void __SelectSingleObject(
@@ -393,7 +424,8 @@ namespace TSG_Library.Extensions
             UFUi.SelInitFnT init_proc,
             IntPtr user_data,
             out int response,
-            out Tag _object)
+            out Tag _object
+        )
         {
             double[] cursor = new double[3];
 
@@ -406,12 +438,15 @@ namespace TSG_Library.Extensions
                 out response,
                 out _object,
                 cursor,
-                out _);
+                out _
+            );
         }
 
-        public static Initialize2EvaluatorFree __UsingEvaluator(this Session _, Tag tag) => new Initialize2EvaluatorFree(tag);
+        public static Initialize2EvaluatorFree __UsingEvaluator(this Session _, Tag tag) =>
+            new Initialize2EvaluatorFree(tag);
 
-        public static TaggedObject __FindByName(this Session session, string __name) => session.__FindAllByName(__name).First();
+        public static TaggedObject __FindByName(this Session session, string __name) =>
+            session.__FindAllByName(__name).First();
 
         public static IEnumerable<TaggedObject> __FindAllByName(this Session _, string __name)
         {
@@ -423,21 +458,26 @@ namespace TSG_Library.Extensions
 
                 if (__tag != Tag.Null)
                     yield return session_.__GetTaggedObject(__tag);
-            }
-            while (__tag != Tag.Null);
+            } while (__tag != Tag.Null);
         }
 
-        public static void __DeleteObjects(this Session session_, params TaggedObject[] __objects_to_delete)
+        public static void __DeleteObjects(
+            this Session session_,
+            params TaggedObject[] __objects_to_delete
+        )
         {
             using (GetSession().__UsingDoUpdate())
                 session_.UpdateManager.AddObjectsToDeleteList(__objects_to_delete);
         }
 
-        public static void __Delete(this Tag tag) => session_.__DeleteObjects(tag.__ToTaggedObject());
+        public static void __Delete(this Tag tag) =>
+            session_.__DeleteObjects(tag.__ToTaggedObject());
 
-        public static void __Delete(this TaggedObject taggedObject) => session_.__DeleteObjects(taggedObject);
+        public static void __Delete(this TaggedObject taggedObject) =>
+            session_.__DeleteObjects(taggedObject);
 
-        public static IDisposable __UsingGCHandle(this Session _, GCHandle __handle) => new GCHandleFree(__handle);
+        public static IDisposable __UsingGCHandle(this Session _, GCHandle __handle) =>
+            new GCHandleFree(__handle);
 
         public static BasePart __New(this Session session, string file_path, BasePart.Units units)
         {

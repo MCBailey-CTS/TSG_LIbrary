@@ -102,6 +102,7 @@
     <Compile Include="src\Disposable\RegenerateDisplay.cs" />
     <Compile Include="src\Disposable\ResetComponentReferenceSet.cs" />
     <Compile Include="src\Disposable\ResetShadeRendering.cs" />
+    <Compile Include="src\Disposable\Rollback.cs" />
     <Compile Include="src\Disposable\SetWorkPartContextQuietly.cs" />
     <Compile Include="src\Disposable\SuppressDisplayReset.cs" />
     <Compile Include="src\Enum\DirectionUV.cs" />
@@ -164,6 +165,7 @@
     <Compile Include="src\Extensions\Line.cs" />
     <Compile Include="src\Extensions\Masks.cs" />
     <Compile Include="src\Extensions\Matrix3x3.cs" />
+    <Compile Include="src\Extensions\Mirror.cs" />
     <Compile Include="src\Extensions\NXMatrix.cs" />
     <Compile Include="src\Extensions\NXObject.cs" />
     <Compile Include="src\Extensions\Obj.cs" />

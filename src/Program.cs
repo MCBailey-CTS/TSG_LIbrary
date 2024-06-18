@@ -14,7 +14,8 @@ public static class Program
         try
         {
             TSG_Library.UFuncs.Mirror.Program.MirrorStatic();
-            //new TSG_Library.UFuncs.Mirror.MainForm().Show();
+            ////new TSG_Library.UFuncs.Mirror.MainForm().Show();
+            //new AddFastenersForm1().Show();
             return;
 
 #pragma warning disable CS0162 // Unreachable code detected
