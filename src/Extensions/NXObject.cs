@@ -32,6 +32,11 @@ namespace TSG_Library.Extensions
             //nxobject.SetUserAttribute
         }
 
+        public static NXObject __Prototype(this NXObject obj)
+        {
+            return (NXObject)obj.Prototype;
+        }
+
         public static string __GetAttribute(this NXObject nXObject, string title)
         {
             return nXObject.GetUserAttributeAsString(title, NXObject.AttributeType.String, -1);
