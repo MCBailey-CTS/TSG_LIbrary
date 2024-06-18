@@ -253,12 +253,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                
 
-                Unit unit1 = (Unit)workPart.UnitCollection.FindObject("Inch");
-                Expression expression1;
-                expression1 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Expression expression2;
-                expression2 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
+          
 
                 featureReferencesBuilder1.AutomaticMatch(true);
 
@@ -277,23 +272,12 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder1.Associative = true;
 
-                Expression expression3;
-                expression3 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Session.UndoMarkId markId4;
-                markId4 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
-
-                theSession.DeleteUndoMark(markId4, null);
-
-                Session.UndoMarkId markId5;
-                markId5 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
+              
 
                 NXObject nXObject1;
                 nXObject1 = copyPasteBuilder1.Commit();
 
-                theSession.DeleteUndoMark(markId5, null);
-
-                theSession.SetUndoMarkName(markId3, "Paste Feature");
+             
 
                 Block block2 = (Block)nXObject1;
                 Expression[] expressions1;
@@ -301,48 +285,8 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder1.Destroy();
 
-                //try
-                //{
-                //    // Expression is still in use.
-                //    workPart.Expressions.Delete(expression2);
-                //}
-                //catch (NXException ex)
-                //{
-                //    ex.AssertErrorCode(1050029);
-                //}
+             
 
-                //try
-                //{
-                //    // Expression is still in use.
-                //    workPart.Expressions.Delete(expression1);
-                //}
-                //catch (NXException ex)
-                //{
-                //    ex.AssertErrorCode(1050029);
-                //}
-
-
-                workPart.Expressions.Delete(expression3);
-
-                //NXOpen.Point3d scaleAboutPoint1 = new NXOpen.Point3d(12.5711226232368, 3.9973344970514826, 0.0);
-                //NXOpen.Point3d viewCenter1 = new NXOpen.Point3d(-12.571122623236878, -3.9973344970519444, 0.0);
-                //displayPart.ModelingViews.WorkView.ZoomAboutPoint(0.80000000000000004, scaleAboutPoint1, viewCenter1);
-
-                //NXOpen.Point3d scaleAboutPoint2 = new NXOpen.Point3d(14.301417591041867, 4.6435466993133749, 0.0);
-                //NXOpen.Point3d viewCenter2 = new NXOpen.Point3d(-14.30141759104195, -4.6435466993138332, 0.0);
-                //displayPart.ModelingViews.WorkView.ZoomAboutPoint(0.80000000000000004, scaleAboutPoint2, viewCenter2);
-
-                //NXOpen.Point3d scaleAboutPoint3 = new NXOpen.Point3d(17.258809500300529, 5.6720128408913935, 0.0);
-                //NXOpen.Point3d viewCenter3 = new NXOpen.Point3d(-17.258809500300615, -5.6720128408918455, 0.0);
-                //displayPart.ModelingViews.WorkView.ZoomAboutPoint(0.80000000000000004, scaleAboutPoint3, viewCenter3);
-
-                //NXOpen.Point3d scaleAboutPoint4 = new NXOpen.Point3d(23.118418096630208, 11.669559492690217, 0.0);
-                //NXOpen.Point3d viewCenter4 = new NXOpen.Point3d(-23.11841809663029, -11.66955949269067, 0.0);
-                //displayPart.ModelingViews.WorkView.ZoomAboutPoint(1.25, scaleAboutPoint4, viewCenter4);
-
-                //NXOpen.Point3d scaleAboutPoint5 = new NXOpen.Point3d(18.891996077055314, 9.688769016153163, 0.0);
-                //NXOpen.Point3d viewCenter5 = new NXOpen.Point3d(-18.891996077055399, -9.688769016153616, 0.0);
-                //displayPart.ModelingViews.WorkView.ZoomAboutPoint(1.25, scaleAboutPoint5, viewCenter5);
 
                 Session.UndoMarkId markId6;
                 markId6 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Redefine Feature");
@@ -363,21 +307,7 @@ namespace TSG_Library.UFuncs.Mirror
                 targetBodies1[0] = nullNXOpen_Body;
                 blockFeatureBuilder1.BooleanOption.SetTargetBodies(targetBodies1);
 
-                theSession.SetUndoMarkName(markId7, "Block Dialog");
-
-                // ----------------------------------------------
-                //   Dialog Begin Block
-                // ----------------------------------------------
-                Expression expression4;
-                expression4 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Session.UndoMarkId markId8;
-                markId8 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Block");
-
-                theSession.DeleteUndoMark(markId8, null);
-
-                Session.UndoMarkId markId9;
-                markId9 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Block");
+              
 
                 blockFeatureBuilder1.Type = BlockFeatureBuilder.Types.OriginAndEdgeLengths;
 
@@ -398,18 +328,12 @@ namespace TSG_Library.UFuncs.Mirror
                 Feature feature1;
                 feature1 = blockFeatureBuilder1.CommitFeature();
 
-                theSession.DeleteUndoMark(markId9, null);
-
-                theSession.SetUndoMarkName(markId7, "Block");
 
                 Expression expression5 = blockFeatureBuilder1.Width;
                 Expression expression6 = blockFeatureBuilder1.Length;
                 Expression expression7 = blockFeatureBuilder1.Height;
                 blockFeatureBuilder1.Destroy();
 
-                workPart.Expressions.Delete(expression4);
-
-                theSession.DeleteUndoMark(markId7, null);
 
                 editWithRollbackManager1.UpdateFeature(false);
 
@@ -476,12 +400,7 @@ namespace TSG_Library.UFuncs.Mirror
 
               
 
-                Unit unit1 = (Unit)workPart.UnitCollection.FindObject("Inch");
-                Expression expression1;
-                expression1 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Expression expression2;
-                expression2 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
+            
 
                 featureReferencesBuilder1.AutomaticMatch(true);
 
@@ -536,25 +455,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder1.Destroy();
 
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression2);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
-
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression1);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
+            
 
 
                 Session.UndoMarkId markId6;
@@ -597,11 +498,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 
 
-                Expression expression3;
-                expression3 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Expression expression4;
-                expression4 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
+           
 
                 featureReferencesBuilder2.AutomaticMatch(true);
 
@@ -665,25 +562,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder2.Destroy();
 
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression4);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
-
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression3);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
+              
 
 
                 // ----------------------------------------------
@@ -756,12 +635,7 @@ namespace TSG_Library.UFuncs.Mirror
 
               
 
-                Unit unit1 = (Unit)workPart.UnitCollection.FindObject("Inch");
-                Expression expression1;
-                expression1 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Expression expression2;
-                expression2 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
+             
 
                 featureReferencesBuilder1.AutomaticMatch(true);
 
@@ -824,25 +698,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder1.Destroy();
 
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression2);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
-
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression1);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
+               
 
 
                 // ----------------------------------------------
@@ -920,12 +776,6 @@ namespace TSG_Library.UFuncs.Mirror
 
                
 
-                Unit unit1 = (Unit)workPart.UnitCollection.FindObject("Inch");
-                Expression expression1;
-                expression1 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Expression expression2;
-                expression2 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
 
                 featureReferencesBuilder1.AutomaticMatch(true);
 
@@ -993,25 +843,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder1.Destroy();
 
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression2);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
-
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression1);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
+             
 
 
                 // ----------------------------------------------
@@ -1089,12 +921,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                
 
-                Unit unit1 = (Unit)workPart.UnitCollection.FindObject("Inch");
-                Expression expression1;
-                expression1 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Expression expression2;
-                expression2 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
+              
 
                 featureReferencesBuilder1.AutomaticMatch(true);
 
@@ -1153,25 +980,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder1.Destroy();
 
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression2);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
-
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression1);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
+             
 
 
                 Session.UndoMarkId markId8;
@@ -1218,11 +1027,7 @@ namespace TSG_Library.UFuncs.Mirror
 
             
 
-                Expression expression3;
-                expression3 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Expression expression4;
-                expression4 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
+              
 
                 featureReferencesBuilder2.AutomaticMatch(true);
 
@@ -1314,27 +1119,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder2.Destroy();
 
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression4);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
-
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression3);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
-
-
+              
                 Session.UndoMarkId markId13;
                 markId13 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
 
@@ -1536,17 +1321,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 pasteBuilder1.Destroy();
 
-                Point3d scaleAboutPoint1 = new Point3d(-4.0803415967691965, 3.2796707928745015, 0.0);
-                Point3d viewCenter1 = new Point3d(4.0803415967692738, -3.2796707928752848, 0.0);
-                displayPart.ModelingViews.WorkView.ZoomAboutPoint(0.80000000000000004, scaleAboutPoint1, viewCenter1);
-
-                Point3d scaleAboutPoint2 = new Point3d(-5.5238586710979352, 3.9071195478493967, 0.0);
-                Point3d viewCenter2 = new Point3d(5.5238586710980133, -3.9071195478501775, 0.0);
-                displayPart.ModelingViews.WorkView.ZoomAboutPoint(0.80000000000000004, scaleAboutPoint2, viewCenter2);
-
-                Session.UndoMarkId markId5;
-                markId5 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
-
+               
                 PartLoadStatus partLoadStatus3;
                 theSession.Parts.SetWorkComponent(component1, PartCollection.RefsetOption.Current, PartCollection.WorkComponentOption.Visible, out partLoadStatus3);
 
@@ -1581,21 +1356,14 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyCutBuilder2.Destroy();
 
-                theSession.DeleteUndoMark(markId6, null);
-
-                Session.UndoMarkId markId7;
-                markId7 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
+             
 
                 PartLoadStatus partLoadStatus4;
                 theSession.Parts.SetWorkComponent(component2, PartCollection.RefsetOption.Current, PartCollection.WorkComponentOption.Visible, out partLoadStatus4);
 
                 workPart = theSession.Parts.Work; // 001449-010-900
                 partLoadStatus4.Dispose();
-                // ----------------------------------------------
-                //   Menu: Edit->Paste
-                // ----------------------------------------------
-                Session.UndoMarkId markId8;
-                markId8 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Paste");
+               
 
                 NXOpen.Gateway.PasteBuilder pasteBuilder2;
                 pasteBuilder2 = workPart.ClipboardOperationsManager.CreatePasteBuilder();
@@ -1651,32 +1419,7 @@ namespace TSG_Library.UFuncs.Mirror
                 bool allowInterpartPositioning1;
                 allowInterpartPositioning1 = theSession.Preferences.Assemblies.InterpartPositioning;
 
-                Unit nullNXOpen_Unit = null;
-                Expression expression1;
-                expression1 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", nullNXOpen_Unit);
-
-                Unit unit1 = (Unit)workPart.UnitCollection.FindObject("Inch");
-                Expression expression2;
-                expression2 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", unit1);
-
-                Expression expression3;
-                expression3 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Unit unit2 = (Unit)workPart.UnitCollection.FindObject("Degrees");
-                Expression expression4;
-                expression4 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit2);
-
-                Expression expression5;
-                expression5 = workPart.Expressions.CreateSystemExpressionWithUnits("1", nullNXOpen_Unit);
-
-                Expression expression6;
-                expression6 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", unit1);
-
-                Expression expression7;
-                expression7 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Expression expression8;
-                expression8 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit2);
+            
 
                 NXOpen.Positioning.Network network1;
                 network1 = componentPositioner1.EstablishNetwork();
@@ -1783,29 +1526,7 @@ namespace TSG_Library.UFuncs.Mirror
                 bool allowInterpartPositioning2;
                 allowInterpartPositioning2 = theSession.Preferences.Assemblies.InterpartPositioning;
 
-                Expression expression9;
-                expression9 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", nullNXOpen_Unit);
-
-                Expression expression10;
-                expression10 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", unit1);
-
-                Expression expression11;
-                expression11 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression12;
-                expression12 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit2);
-
-                Expression expression13;
-                expression13 = workPart.Expressions.CreateSystemExpressionWithUnits("1", nullNXOpen_Unit);
-
-                Expression expression14;
-                expression14 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", unit1);
-
-                Expression expression15;
-                expression15 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Expression expression16;
-                expression16 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit2);
+              
 
                 NXOpen.Positioning.Network network2;
                 network2 = componentPositioner2.EstablishNetwork();
@@ -1912,29 +1633,6 @@ namespace TSG_Library.UFuncs.Mirror
                 bool allowInterpartPositioning3;
                 allowInterpartPositioning3 = theSession.Preferences.Assemblies.InterpartPositioning;
 
-                Expression expression17;
-                expression17 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", nullNXOpen_Unit);
-
-                Expression expression18;
-                expression18 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", unit1);
-
-                Expression expression19;
-                expression19 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression20;
-                expression20 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit2);
-
-                Expression expression21;
-                expression21 = workPart.Expressions.CreateSystemExpressionWithUnits("1", nullNXOpen_Unit);
-
-                Expression expression22;
-                expression22 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", unit1);
-
-                Expression expression23;
-                expression23 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Expression expression24;
-                expression24 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit2);
 
                 NXOpen.Positioning.Network network3;
                 network3 = componentPositioner3.EstablishNetwork();
@@ -1946,20 +1644,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 componentNetwork3.NetworkArrangementsMode = NXOpen.Positioning.ComponentNetwork.ArrangementsMode.Existing;
 
-                Expression expression25;
-                expression25 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression26;
-                expression26 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression27;
-                expression27 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression28;
-                expression28 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression29;
-                expression29 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit2);
+           
 
                 componentNetwork3.RemoveAllConstraints();
 
@@ -2186,32 +1871,7 @@ namespace TSG_Library.UFuncs.Mirror
                 bool allowInterpartPositioning1;
                 allowInterpartPositioning1 = theSession.Preferences.Assemblies.InterpartPositioning;
 
-                Unit nullNXOpen_Unit = null;
-                Expression expression1;
-                expression1 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", nullNXOpen_Unit);
-
-                Unit unit1 = (Unit)workPart.UnitCollection.FindObject("Inch");
-                Expression expression2;
-                expression2 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", unit1);
-
-                Expression expression3;
-                expression3 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Unit unit2 = (Unit)workPart.UnitCollection.FindObject("Degrees");
-                Expression expression4;
-                expression4 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit2);
-
-                Expression expression5;
-                expression5 = workPart.Expressions.CreateSystemExpressionWithUnits("1", nullNXOpen_Unit);
-
-                Expression expression6;
-                expression6 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", unit1);
-
-                Expression expression7;
-                expression7 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Expression expression8;
-                expression8 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit2);
+               
 
                 NXOpen.Positioning.Network network1;
                 network1 = componentPositioner1.EstablishNetwork();
@@ -2278,17 +1938,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 componentNetwork1.ApplyToModel();
 
-                Session.UndoMarkId markId5;
-                markId5 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Add Component");
-
-                theSession.DeleteUndoMark(markId5, null);
-
-                Session.UndoMarkId markId6;
-                markId6 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Add Component");
-
-                Session.UndoMarkId markId7;
-                markId7 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "AddComponent on_apply");
-
+             
                 componentNetwork1.Solve();
 
                 componentPositioner1.ClearNetwork();
@@ -2313,7 +1963,6 @@ namespace TSG_Library.UFuncs.Mirror
                 errorList1 = addComponentBuilder1.GetOperationFailures();
 
                 errorList1.Dispose();
-                theSession.DeleteUndoMark(markId6, null);
 
                 theSession.SetUndoMarkName(markId2, "Add Component");
 
@@ -2322,15 +1971,8 @@ namespace TSG_Library.UFuncs.Mirror
                 Arrangement nullNXOpen_Assemblies_Arrangement = null;
                 componentPositioner1.PrimaryArrangement = nullNXOpen_Assemblies_Arrangement;
 
-                theSession.DeleteUndoMark(markId3, null);
 
-                theSession.DeleteUndoMark(markId4, null);
-
-                Session.UndoMarkId markId8;
-                markId8 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Replace Reference Set");
-
-                Session.UndoMarkId markId9;
-                markId9 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Replace Reference Set");
+            
 
                 Component[] components1 = new Component[1];
                 Component component3 = (Component)component1.FindObject("COMPONENT 6mm-shcs-012-2x 1");
@@ -2339,11 +1981,6 @@ namespace TSG_Library.UFuncs.Mirror
                 errorList2 = workPart.ComponentAssembly.ReplaceReferenceSetInOwners("BODY", components1);
 
                 errorList2.Dispose();
-                theSession.DeleteUndoMark(markId8, null);
-
-                // ----------------------------------------------
-                //   Menu: Tools->Journal->Stop Recording
-                // ----------------------------------------------
 
             }
 
@@ -2357,8 +1994,6 @@ namespace TSG_Library.UFuncs.Mirror
                 Session theSession = Session.GetSession();
                 Part workPart = theSession.Parts.Work;
                 Part displayPart = theSession.Parts.Display;
-                Session.UndoMarkId markId1;
-                markId1 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
 
                 Component component1 = (Component)workPart.ComponentAssembly.RootComponent.FindObject("COMPONENT 001449-010-109 1");
                 PartLoadStatus partLoadStatus1;
@@ -2366,13 +2001,6 @@ namespace TSG_Library.UFuncs.Mirror
 
                 workPart = theSession.Parts.Work; // 001449-010-109
                 partLoadStatus1.Dispose();
-                // ----------------------------------------------
-                //   Menu: Edit->Copy
-                // ----------------------------------------------
-                workPart.PmiManager.RestoreUnpastedObjects();
-
-                Session.UndoMarkId markId2;
-                markId2 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
 
                 Component component2 = (Component)displayPart.ComponentAssembly.RootComponent.FindObject("COMPONENT 001449-010-900 1");
                 PartLoadStatus partLoadStatus2;
@@ -2380,12 +2008,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 workPart = theSession.Parts.Work; // 001449-010-900
                 partLoadStatus2.Dispose();
-                Session.UndoMarkId markId3;
-                markId3 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Replace Reference Set");
-
-                Session.UndoMarkId markId4;
-                markId4 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Replace Reference Set");
-
+              
                 Component[] components1 = new Component[1];
                 Component component3 = (Component)component2.FindObject("COMPONENT 6mm-shcs-012-2x 1");
                 components1[0] = component3;
@@ -2393,7 +2016,6 @@ namespace TSG_Library.UFuncs.Mirror
                 errorList1 = workPart.ComponentAssembly.ReplaceReferenceSetInOwners("CBORE", components1);
 
                 errorList1.Dispose();
-                theSession.DeleteUndoMark(markId3, null);
 
                 // ----------------------------------------------
                 //   Menu: Edit->Paste
@@ -2415,12 +2037,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                
 
-                Unit unit1 = (Unit)workPart.UnitCollection.FindObject("Inch");
-                Expression expression1;
-                expression1 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Expression expression2;
-                expression2 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
+             
 
                 copyPasteBuilder1.CopyResolveGeometry = true;
 
@@ -2513,20 +2130,12 @@ namespace TSG_Library.UFuncs.Mirror
 
                 featureReferencesBuilder1.AutomaticMatch(false);
 
-                Session.UndoMarkId markId6;
-                markId6 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
-
-                theSession.DeleteUndoMark(markId6, null);
-
-                Session.UndoMarkId markId7;
-                markId7 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
+              
 
                 NXObject nXObject1;
                 nXObject1 = copyPasteBuilder1.Commit();
 
-                theSession.DeleteUndoMark(markId7, null);
-
-                theSession.SetUndoMarkName(markId5, "Paste Feature");
+              
 
                 ExtractFace extractFace2 = (ExtractFace)nXObject1;
                 Expression[] expressions1;
@@ -2537,8 +2146,6 @@ namespace TSG_Library.UFuncs.Mirror
                
 
 
-                Session.UndoMarkId markId8;
-                markId8 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
 
                 PartLoadStatus partLoadStatus3;
                 theSession.Parts.SetWorkComponent(component1, PartCollection.RefsetOption.Current, PartCollection.WorkComponentOption.Visible, out partLoadStatus3);
@@ -2550,9 +2157,7 @@ namespace TSG_Library.UFuncs.Mirror
                 // ----------------------------------------------
                 workPart.PmiManager.RestoreUnpastedObjects();
 
-                Session.UndoMarkId markId9;
-                markId9 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
-
+              
                 PartLoadStatus partLoadStatus4;
                 theSession.Parts.SetWorkComponent(component2, PartCollection.RefsetOption.Current, PartCollection.WorkComponentOption.Visible, out partLoadStatus4);
 
@@ -2577,11 +2182,7 @@ namespace TSG_Library.UFuncs.Mirror
 
               
 
-                Expression expression3;
-                expression3 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Expression expression4;
-                expression4 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
+              
 
                 copyPasteBuilder2.SelectOption = CopyPasteBuilder.ParentSelectOption.InputForOriginalParent;
 
@@ -2594,20 +2195,7 @@ namespace TSG_Library.UFuncs.Mirror
 
              
 
-                Section section3;
-                section3 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
-
-                Section section4;
-                section4 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
-
-                Section section5;
-                section5 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
-
-                section3.Destroy();
-
-                section4.Destroy();
-
-                section5.Destroy();
+           
 
                 copyPasteBuilder2.UpdateBuilder();
 
@@ -2663,20 +2251,11 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder2.Associative = false;
 
-                Session.UndoMarkId markId11;
-                markId11 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
-
-                theSession.DeleteUndoMark(markId11, null);
-
-                Session.UndoMarkId markId12;
-                markId12 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
+             
 
                 NXObject nXObject2;
                 nXObject2 = copyPasteBuilder2.Commit();
 
-                theSession.DeleteUndoMark(markId12, null);
-
-                theSession.SetUndoMarkName(markId10, "Paste Feature");
 
                 BooleanFeature booleanFeature2 = (BooleanFeature)nXObject2;
                 Expression[] expressions2;
@@ -2684,36 +2263,14 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder2.Destroy();
 
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression4);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
-
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression3);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
+              
 
 
                 Component[] components2 = new Component[1];
                 components2[0] = component2;
                 component2.UpdateStructure(components2, 2, true);
 
-                Session.UndoMarkId markId13;
-                markId13 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Replace Reference Set");
-
-                Session.UndoMarkId markId14;
-                markId14 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Replace Reference Set");
+              
 
                 Component[] components3 = new Component[1];
                 components3[0] = component3;
@@ -2721,7 +2278,6 @@ namespace TSG_Library.UFuncs.Mirror
                 errorList2 = workPart.ComponentAssembly.ReplaceReferenceSetInOwners("BODY", components3);
 
                 errorList2.Dispose();
-                theSession.DeleteUndoMark(markId13, null);
 
                 // ----------------------------------------------
                 //   Menu: Tools->Journal->Stop Recording
@@ -2759,32 +2315,7 @@ namespace TSG_Library.UFuncs.Mirror
                 bool allowInterpartPositioning1;
                 allowInterpartPositioning1 = theSession.Preferences.Assemblies.InterpartPositioning;
 
-                Unit nullNXOpen_Unit = null;
-                Expression expression1;
-                expression1 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", nullNXOpen_Unit);
-
-                Unit unit1 = (Unit)workPart.UnitCollection.FindObject("Inch");
-                Expression expression2;
-                expression2 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", unit1);
-
-                Expression expression3;
-                expression3 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Unit unit2 = (Unit)workPart.UnitCollection.FindObject("Degrees");
-                Expression expression4;
-                expression4 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit2);
-
-                Expression expression5;
-                expression5 = workPart.Expressions.CreateSystemExpressionWithUnits("1", nullNXOpen_Unit);
-
-                Expression expression6;
-                expression6 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", unit1);
-
-                Expression expression7;
-                expression7 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Expression expression8;
-                expression8 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit2);
+              
 
                 NXOpen.Positioning.Network network1;
                 network1 = componentPositioner1.EstablishNetwork();
@@ -2832,17 +2363,7 @@ namespace TSG_Library.UFuncs.Mirror
                 movableObjects1[0] = component1;
                 componentNetwork1.SetMovingGroup(movableObjects1);
 
-                Session.UndoMarkId markId3;
-                markId3 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Add Component");
-
-                theSession.DeleteUndoMark(markId3, null);
-
-                Session.UndoMarkId markId4;
-                markId4 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Add Component");
-
-                Session.UndoMarkId markId5;
-                markId5 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "AddComponent on_apply");
-
+              
                 componentNetwork1.Solve();
 
                 componentPositioner1.ClearNetwork();
@@ -2867,9 +2388,6 @@ namespace TSG_Library.UFuncs.Mirror
                 errorList1 = addComponentBuilder1.GetOperationFailures();
 
                 errorList1.Dispose();
-                theSession.DeleteUndoMark(markId4, null);
-
-                theSession.SetUndoMarkName(markId1, "Add Component");
 
                 addComponentBuilder1.Destroy();
 
@@ -2899,29 +2417,7 @@ namespace TSG_Library.UFuncs.Mirror
                 bool allowInterpartPositioning2;
                 allowInterpartPositioning2 = theSession.Preferences.Assemblies.InterpartPositioning;
 
-                Expression expression9;
-                expression9 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", nullNXOpen_Unit);
-
-                Expression expression10;
-                expression10 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", unit1);
-
-                Expression expression11;
-                expression11 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression12;
-                expression12 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit2);
-
-                Expression expression13;
-                expression13 = workPart.Expressions.CreateSystemExpressionWithUnits("1", nullNXOpen_Unit);
-
-                Expression expression14;
-                expression14 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", unit1);
-
-                Expression expression15;
-                expression15 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Expression expression16;
-                expression16 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit2);
+              
 
                 NXOpen.Positioning.Network network2;
                 network2 = componentPositioner2.EstablishNetwork();
@@ -2994,16 +2490,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 addComponentBuilder2.Layer = 0;
 
-                Session.UndoMarkId markId8;
-                markId8 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Add Component");
-
-                theSession.DeleteUndoMark(markId8, null);
-
-                Session.UndoMarkId markId9;
-                markId9 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Add Component");
-
-                Session.UndoMarkId markId10;
-                markId10 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "AddComponent on_apply");
+           
 
                 componentNetwork2.Solve();
 
@@ -3029,7 +2516,6 @@ namespace TSG_Library.UFuncs.Mirror
                 errorList2 = addComponentBuilder2.GetOperationFailures();
 
                 errorList2.Dispose();
-                theSession.DeleteUndoMark(markId9, null);
 
                 theSession.SetUndoMarkName(markId6, "Add Component");
 
@@ -3086,29 +2572,7 @@ namespace TSG_Library.UFuncs.Mirror
                 bool allowInterpartPositioning3;
                 allowInterpartPositioning3 = theSession.Preferences.Assemblies.InterpartPositioning;
 
-                Expression expression17;
-                expression17 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", nullNXOpen_Unit);
-
-                Expression expression18;
-                expression18 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", unit1);
-
-                Expression expression19;
-                expression19 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression20;
-                expression20 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit2);
-
-                Expression expression21;
-                expression21 = workPart.Expressions.CreateSystemExpressionWithUnits("1", nullNXOpen_Unit);
-
-                Expression expression22;
-                expression22 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", unit1);
-
-                Expression expression23;
-                expression23 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Expression expression24;
-                expression24 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit2);
+             
 
                 NXOpen.Positioning.Network network3;
                 network3 = componentPositioner3.EstablishNetwork();
@@ -3233,29 +2697,7 @@ namespace TSG_Library.UFuncs.Mirror
                 bool allowInterpartPositioning4;
                 allowInterpartPositioning4 = theSession.Preferences.Assemblies.InterpartPositioning;
 
-                Expression expression25;
-                expression25 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", nullNXOpen_Unit);
-
-                Expression expression26;
-                expression26 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", unit1);
-
-                Expression expression27;
-                expression27 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression28;
-                expression28 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit2);
-
-                Expression expression29;
-                expression29 = workPart.Expressions.CreateSystemExpressionWithUnits("1", nullNXOpen_Unit);
-
-                Expression expression30;
-                expression30 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", unit1);
-
-                Expression expression31;
-                expression31 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Expression expression32;
-                expression32 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit2);
+              
 
                 NXOpen.Positioning.Network network4;
                 network4 = componentPositioner4.EstablishNetwork();
@@ -3421,29 +2863,7 @@ namespace TSG_Library.UFuncs.Mirror
                 bool allowInterpartPositioning5;
                 allowInterpartPositioning5 = theSession.Preferences.Assemblies.InterpartPositioning;
 
-                Expression expression33;
-                expression33 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", nullNXOpen_Unit);
-
-                Expression expression34;
-                expression34 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", unit1);
-
-                Expression expression35;
-                expression35 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression36;
-                expression36 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit2);
-
-                Expression expression37;
-                expression37 = workPart.Expressions.CreateSystemExpressionWithUnits("1", nullNXOpen_Unit);
-
-                Expression expression38;
-                expression38 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", unit1);
-
-                Expression expression39;
-                expression39 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Expression expression40;
-                expression40 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit2);
+              
 
                 NXOpen.Positioning.Network network5;
                 network5 = componentPositioner5.EstablishNetwork();
@@ -3455,20 +2875,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 componentNetwork5.NetworkArrangementsMode = NXOpen.Positioning.ComponentNetwork.ArrangementsMode.Existing;
 
-                Expression expression41;
-                expression41 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression42;
-                expression42 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression43;
-                expression43 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression44;
-                expression44 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression45;
-                expression45 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit2);
+               
 
                 componentNetwork5.RemoveAllConstraints();
 
@@ -3645,29 +3052,7 @@ namespace TSG_Library.UFuncs.Mirror
                 bool allowInterpartPositioning6;
                 allowInterpartPositioning6 = theSession.Preferences.Assemblies.InterpartPositioning;
 
-                Expression expression46;
-                expression46 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", nullNXOpen_Unit);
-
-                Expression expression47;
-                expression47 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", unit1);
-
-                Expression expression48;
-                expression48 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression49;
-                expression49 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit2);
-
-                Expression expression50;
-                expression50 = workPart.Expressions.CreateSystemExpressionWithUnits("1", nullNXOpen_Unit);
-
-                Expression expression51;
-                expression51 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", unit1);
-
-                Expression expression52;
-                expression52 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Expression expression53;
-                expression53 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit2);
+              
 
                 NXOpen.Positioning.Network network6;
                 network6 = componentPositioner6.EstablishNetwork();
@@ -3679,20 +3064,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 componentNetwork6.NetworkArrangementsMode = NXOpen.Positioning.ComponentNetwork.ArrangementsMode.Existing;
 
-                Expression expression54;
-                expression54 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression55;
-                expression55 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression56;
-                expression56 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression57;
-                expression57 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression58;
-                expression58 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit2);
+              
 
                 componentNetwork6.RemoveAllConstraints();
 
@@ -4007,29 +3379,7 @@ namespace TSG_Library.UFuncs.Mirror
                 bool allowInterpartPositioning7;
                 allowInterpartPositioning7 = theSession.Preferences.Assemblies.InterpartPositioning;
 
-                Expression expression59;
-                expression59 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", nullNXOpen_Unit);
-
-                Expression expression60;
-                expression60 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", unit1);
-
-                Expression expression61;
-                expression61 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression62;
-                expression62 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit2);
-
-                Expression expression63;
-                expression63 = workPart.Expressions.CreateSystemExpressionWithUnits("1", nullNXOpen_Unit);
-
-                Expression expression64;
-                expression64 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", unit1);
-
-                Expression expression65;
-                expression65 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Expression expression66;
-                expression66 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit2);
+             
 
                 NXOpen.Positioning.Network network7;
                 network7 = componentPositioner7.EstablishNetwork();
@@ -4041,20 +3391,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 componentNetwork7.NetworkArrangementsMode = NXOpen.Positioning.ComponentNetwork.ArrangementsMode.Existing;
 
-                Expression expression67;
-                expression67 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression68;
-                expression68 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression69;
-                expression69 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression70;
-                expression70 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression71;
-                expression71 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit2);
+              
 
                 componentNetwork7.RemoveAllConstraints();
 
@@ -4274,12 +3611,7 @@ namespace TSG_Library.UFuncs.Mirror
 
               
 
-                Unit unit1 = (Unit)workPart.UnitCollection.FindObject("Inch");
-                Expression expression1;
-                expression1 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Expression expression2;
-                expression2 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
+             
 
                 copyPasteBuilder1.SelectOption = CopyPasteBuilder.ParentSelectOption.InputForOriginalParent;
 
@@ -4539,11 +3871,7 @@ namespace TSG_Library.UFuncs.Mirror
 
              
 
-                Expression expression3;
-                expression3 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Expression expression4;
-                expression4 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
+            
 
                 copyPasteBuilder2.SelectOption = CopyPasteBuilder.ParentSelectOption.InputForOriginalParent;
 
@@ -4647,25 +3975,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder2.Destroy();
 
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression4);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
-
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression3);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
+              
 
 
                 Session.UndoMarkId markId22;
@@ -4894,13 +4204,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                
 
-                Unit unit1 = (Unit)workPart.UnitCollection.FindObject("Inch");
-                Expression expression1;
-                expression1 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Expression expression2;
-                expression2 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
+            
                 copyPasteBuilder1.SelectOption = CopyPasteBuilder.ParentSelectOption.InputForOriginalParent;
 
                 featureReferencesBuilder1.AutomaticMatch(true);
@@ -4912,22 +4216,22 @@ namespace TSG_Library.UFuncs.Mirror
 
             
 
-                Section section1;
-                section1 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
+                //Section section1;
+                //section1 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
 
-                section1.Clear();
+                //section1.Clear();
 
-                Section section2;
-                section2 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
+                //Section section2;
+                //section2 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
 
-                Section section3;
-                section3 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
+                //Section section3;
+                //section3 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
 
-                section2.Destroy();
+                //section2.Destroy();
 
-                section1.Destroy();
+                //section1.Destroy();
 
-                section3.Destroy();
+                //section3.Destroy();
 
                 copyPasteBuilder1.UpdateBuilder();
 
@@ -4988,11 +4292,11 @@ namespace TSG_Library.UFuncs.Mirror
 
                 theSession.DeleteUndoMark(markId12, null);
 
-                Session.UndoMarkId markId14;
-                markId14 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "section mark");
+                //Session.UndoMarkId markId14;
+                //markId14 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "section mark");
 
-                Session.UndoMarkId markId15;
-                markId15 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, null);
+                //Session.UndoMarkId markId15;
+                //markId15 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, null);
 
                 IBaseCurve[] curves2 = new IBaseCurve[1];
                 Line line6 = (Line)workPart.Lines.FindObject("ENTITY 3 6 1");
@@ -5007,7 +4311,7 @@ namespace TSG_Library.UFuncs.Mirror
                 Point3d helpPoint2 = new Point3d(14.973043195357299, -2.6699941733691785, 9.0899510141184692e-15);
                 section4.AddToSection(rules2, line6, nullNXOpen_NXObject, nullNXOpen_NXObject, helpPoint2, Section.Mode.Create, false);
 
-                theSession.DeleteUndoMark(markId15, null);
+                //theSession.DeleteUndoMark(markId15, null);
 
                 matchedReferenceData2[0].MatchedEntity = section4; // WARNING: use of matchedReferenceData2[0] may be unreliable on replay
 
@@ -5015,13 +4319,13 @@ namespace TSG_Library.UFuncs.Mirror
 
                 featureReferencesBuilder1.AutomaticMatch(false);
 
-                theSession.DeleteUndoMark(markId14, null);
+                //theSession.DeleteUndoMark(markId14, null);
 
-                Session.UndoMarkId markId16;
-                markId16 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "section mark");
+                //Session.UndoMarkId markId16;
+                //markId16 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "section mark");
 
-                Session.UndoMarkId markId17;
-                markId17 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, null);
+                //Session.UndoMarkId markId17;
+                //markId17 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, null);
 
                 IBaseCurve[] curves3 = new IBaseCurve[1];
                 Line line7 = (Line)workPart.Lines.FindObject("ENTITY 3 4 1");
@@ -5036,7 +4340,7 @@ namespace TSG_Library.UFuncs.Mirror
                 Point3d helpPoint3 = new Point3d(14.837778387448598, 0.71864938141959622, 1.3322676295501878e-15);
                 section4.AddToSection(rules3, line7, nullNXOpen_NXObject, nullNXOpen_NXObject, helpPoint3, Section.Mode.Create, false);
 
-                theSession.DeleteUndoMark(markId17, null);
+                //theSession.DeleteUndoMark(markId17, null);
 
                 matchedReferenceData2[0].MatchedEntity = section4; // WARNING: use of matchedReferenceData2[0] may be unreliable on replay
 
@@ -5044,13 +4348,13 @@ namespace TSG_Library.UFuncs.Mirror
 
                 featureReferencesBuilder1.AutomaticMatch(false);
 
-                theSession.DeleteUndoMark(markId16, null);
+                //theSession.DeleteUndoMark(markId16, null);
 
-                Session.UndoMarkId markId18;
-                markId18 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "section mark");
+                //Session.UndoMarkId markId18;
+                //markId18 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "section mark");
 
-                Session.UndoMarkId markId19;
-                markId19 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, null);
+                //Session.UndoMarkId markId19;
+                //markId19 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, null);
 
                 IBaseCurve[] curves4 = new IBaseCurve[1];
                 Line line8 = (Line)workPart.Lines.FindObject("ENTITY 3 3 1");
@@ -5065,7 +4369,7 @@ namespace TSG_Library.UFuncs.Mirror
                 Point3d helpPoint4 = new Point3d(13.556267750982716, 1.759563278925574, 1.5543122344752192e-15);
                 section4.AddToSection(rules4, line8, nullNXOpen_NXObject, nullNXOpen_NXObject, helpPoint4, Section.Mode.Create, false);
 
-                theSession.DeleteUndoMark(markId19, null);
+                //theSession.DeleteUndoMark(markId19, null);
 
                 matchedReferenceData2[0].MatchedEntity = section4; // WARNING: use of matchedReferenceData2[0] may be unreliable on replay
 
@@ -5073,7 +4377,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 featureReferencesBuilder1.AutomaticMatch(false);
 
-                theSession.DeleteUndoMark(markId18, null);
+                //theSession.DeleteUndoMark(markId18, null);
 
                 Session.UndoMarkId markId20;
                 markId20 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "section mark");
@@ -5141,20 +4445,20 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder1.Associative = true;
 
-                Session.UndoMarkId markId24;
-                markId24 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
+                //Session.UndoMarkId markId24;
+                //markId24 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
 
-                theSession.DeleteUndoMark(markId24, null);
+                //theSession.DeleteUndoMark(markId24, null);
 
-                Session.UndoMarkId markId25;
-                markId25 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
+                //Session.UndoMarkId markId25;
+                //markId25 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
 
                 NXObject nXObject5;
                 nXObject5 = copyPasteBuilder1.Commit();
 
-                theSession.DeleteUndoMark(markId25, null);
+                //theSession.DeleteUndoMark(markId25, null);
 
-                theSession.SetUndoMarkName(markId11, "Paste Feature");
+                //theSession.SetUndoMarkName(markId11, "Paste Feature");
 
                 Extrude extrude2 = (Extrude)nXObject5;
                 Expression[] expressions1;
@@ -5195,32 +4499,6 @@ namespace TSG_Library.UFuncs.Mirror
                 bool allowInterpartPositioning1;
                 allowInterpartPositioning1 = theSession.Preferences.Assemblies.InterpartPositioning;
 
-                Unit nullNXOpen_Unit = null;
-                Expression expression1;
-                expression1 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", nullNXOpen_Unit);
-
-                Unit unit1 = (Unit)workPart.UnitCollection.FindObject("Inch");
-                Expression expression2;
-                expression2 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", unit1);
-
-                Expression expression3;
-                expression3 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Unit unit2 = (Unit)workPart.UnitCollection.FindObject("Degrees");
-                Expression expression4;
-                expression4 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit2);
-
-                Expression expression5;
-                expression5 = workPart.Expressions.CreateSystemExpressionWithUnits("1", nullNXOpen_Unit);
-
-                Expression expression6;
-                expression6 = workPart.Expressions.CreateSystemExpressionWithUnits("1.0", unit1);
-
-                Expression expression7;
-                expression7 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Expression expression8;
-                expression8 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit2);
 
                 NXOpen.Positioning.Network network1;
                 network1 = componentPositioner1.EstablishNetwork();
@@ -5233,20 +4511,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 componentNetwork1.NetworkArrangementsMode = NXOpen.Positioning.ComponentNetwork.ArrangementsMode.Existing;
 
-                Expression expression9;
-                expression9 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression10;
-                expression10 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression11;
-                expression11 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression12;
-                expression12 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit1);
-
-                Expression expression13;
-                expression13 = workPart.Expressions.CreateSystemExpressionWithUnits("0.0", unit2);
+           
 
                 componentNetwork1.RemoveAllConstraints();
 
@@ -5386,12 +4651,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 
 
-                Unit unit3 = (Unit)workPart.UnitCollection.FindObject("Inch");
-                Expression expression14;
-                expression14 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit3);
-
-                Expression expression15;
-                expression15 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit3);
+           
 
                 copyPasteBuilder1.SelectOption = CopyPasteBuilder.ParentSelectOption.InputForOriginalParent;
 
@@ -5673,11 +4933,7 @@ namespace TSG_Library.UFuncs.Mirror
 
               
 
-                Expression expression16;
-                expression16 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit3);
-
-                Expression expression17;
-                expression17 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit3);
+               
 
                 copyPasteBuilder2.SelectOption = CopyPasteBuilder.ParentSelectOption.InputForOriginalParent;
 
@@ -5690,20 +4946,20 @@ namespace TSG_Library.UFuncs.Mirror
 
               
 
-                Section section3;
-                section3 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
+                //Section section3;
+                //section3 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
 
-                Section section4;
-                section4 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
+                //Section section4;
+                //section4 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
 
-                Section section5;
-                section5 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
+                //Section section5;
+                //section5 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
 
-                section3.Destroy();
+                //section3.Destroy();
 
-                section4.Destroy();
+                //section4.Destroy();
 
-                section5.Destroy();
+                //section5.Destroy();
 
                 copyPasteBuilder2.UpdateBuilder();
 
@@ -5760,18 +5016,18 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder2.Associative = false;
 
-                Session.UndoMarkId markId28;
-                markId28 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
+                //Session.UndoMarkId markId28;
+                //markId28 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
 
-                theSession.DeleteUndoMark(markId28, null);
+                //theSession.DeleteUndoMark(markId28, null);
 
-                Session.UndoMarkId markId29;
-                markId29 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
+                //Session.UndoMarkId markId29;
+                //markId29 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
 
                 NXObject nXObject4;
                 nXObject4 = copyPasteBuilder2.Commit();
 
-                theSession.DeleteUndoMark(markId29, null);
+                //theSession.DeleteUndoMark(markId29, null);
 
                 //theSession.SetUndoMarkName(markId27, "Paste Feature");
 
@@ -5784,15 +5040,15 @@ namespace TSG_Library.UFuncs.Mirror
            
 
 
-                Session.UndoMarkId markId30;
-                markId30 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
+                //Session.UndoMarkId markId30;
+                //markId30 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
 
                 PartLoadStatus partLoadStatus5;
                 theSession.Parts.SetWorkComponent(nullNXOpen_Assemblies_Component, PartCollection.RefsetOption.Current, PartCollection.WorkComponentOption.Visible, out partLoadStatus5);
 
                 workPart = theSession.Parts.Work; // 001449-010-lsp1
                 partLoadStatus5.Dispose();
-                theSession.SetUndoMarkName(markId30, "Make Work Part");
+                //theSession.SetUndoMarkName(markId30, "Make Work Part");
 
                 //Session.UndoMarkId markId31;
                 //markId31 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Replace Reference Set");
@@ -5819,11 +5075,11 @@ namespace TSG_Library.UFuncs.Mirror
                 Session theSession = Session.GetSession();
                 Part workPart = theSession.Parts.Work;
                 Part displayPart = theSession.Parts.Display;
-                Session.UndoMarkId markId1;
-                markId1 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Replace Reference Set");
+                //Session.UndoMarkId markId1;
+                //markId1 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Replace Reference Set");
 
-                Session.UndoMarkId markId2;
-                markId2 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Replace Reference Set");
+                //Session.UndoMarkId markId2;
+                //markId2 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Replace Reference Set");
 
                 Component[] components1 = new Component[1];
                 Component component1 = (Component)workPart.ComponentAssembly.RootComponent.FindObject("COMPONENT 001449-010-147 1");
@@ -5832,7 +5088,7 @@ namespace TSG_Library.UFuncs.Mirror
                 errorList1 = workPart.ComponentAssembly.ReplaceReferenceSetInOwners("SUB_TOOL", components1);
 
                 errorList1.Dispose();
-                theSession.DeleteUndoMark(markId1, null);
+                //theSession.DeleteUndoMark(markId1, null);
 
                 Session.UndoMarkId markId3;
                 markId3 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
@@ -5848,8 +5104,6 @@ namespace TSG_Library.UFuncs.Mirror
                 // ----------------------------------------------
                 workPart.PmiManager.RestoreUnpastedObjects();
 
-                Session.UndoMarkId markId4;
-                markId4 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
 
                 Component component3 = (Component)displayPart.ComponentAssembly.RootComponent.FindObject("COMPONENT 001449-010-900 1");
                 PartLoadStatus partLoadStatus2;
@@ -5857,11 +5111,6 @@ namespace TSG_Library.UFuncs.Mirror
 
                 workPart = theSession.Parts.Work; // 001449-010-900
                 partLoadStatus2.Dispose();
-                // ----------------------------------------------
-                //   Menu: Edit->Paste
-                // ----------------------------------------------
-                Session.UndoMarkId markId5;
-                markId5 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Start");
 
                 NXObject[] features1 = new NXObject[1];
                 Part part1 = (Part)theSession.Parts.FindObject("001449-010-109");
@@ -5877,18 +5126,12 @@ namespace TSG_Library.UFuncs.Mirror
 
               
 
-                Unit unit1 = (Unit)workPart.UnitCollection.FindObject("Inch");
-                Expression expression1;
-                expression1 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Expression expression2;
-                expression2 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
+            
 
                 copyPasteBuilder1.SelectOption = CopyPasteBuilder.ParentSelectOption.InputForOriginalParent;
 
                 featureReferencesBuilder1.AutomaticMatch(true);
 
-                theSession.SetUndoMarkName(markId5, "Paste Feature Dialog");
 
                 MatchedReferenceBuilder[] matchedReferenceData1;
                 matchedReferenceData1 = featureReferencesBuilder1.GetMatchedReferences();
@@ -5977,9 +5220,6 @@ namespace TSG_Library.UFuncs.Mirror
                 NXObject nXObject1;
                 nXObject1 = copyPasteBuilder1.Commit();
 
-                theSession.DeleteUndoMark(markId7, null);
-
-                theSession.SetUndoMarkName(markId5, "Paste Feature");
 
                 ExtractFace extractFace2 = (ExtractFace)nXObject1;
                 Expression[] expressions1;
@@ -5987,25 +5227,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder1.Destroy();
 
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression2);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
-
-                try
-                {
-                    // Expression is still in use.
-                    workPart.Expressions.Delete(expression1);
-                }
-                catch (NXException ex)
-                {
-                    ex.AssertErrorCode(1050029);
-                }
+               
 
 
                 Session.UndoMarkId markId8;
@@ -6035,20 +5257,8 @@ namespace TSG_Library.UFuncs.Mirror
                         replacementobjects1[0] = body2;
                         extractFaceBuilder1.ReplacementAssistant.SetNewParents(replacementobjects1);
 
-                        theSession.SetUndoMarkName(markId9, "WAVE Geometry Linker Dialog");
 
-                        // ----------------------------------------------
-                        //   Dialog Begin WAVE Geometry Linker
-                        // ----------------------------------------------
                         extractFaceBuilder1.Associative = false;
-
-                        //Session.UndoMarkId markId10;
-                        //markId10 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "WAVE Geometry Linker");
-
-                        //theSession.DeleteUndoMark(markId10, null);
-
-                        //Session.UndoMarkId markId11;
-                        //markId11 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "WAVE Geometry Linker");
 
                         TaggedObject nullNXOpen_TaggedObject = null;
                         extractFaceBuilder1.SourcePartOccurrence = nullNXOpen_TaggedObject;
@@ -6087,8 +5297,6 @@ namespace TSG_Library.UFuncs.Mirror
                 try
                 {
 
-                    //Session.UndoMarkId markId13;
-                    //markId13 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Start");
 
                     ExtractFaceBuilder extractFaceBuilder2;
                     extractFaceBuilder2 = workPart.Features.CreateExtractFaceBuilder(extractFace3);
@@ -6099,11 +5307,6 @@ namespace TSG_Library.UFuncs.Mirror
                         DisplayableObject[] replacementobjects2 = new DisplayableObject[0];
                         extractFaceBuilder2.ReplacementAssistant.SetNewParents(replacementobjects2);
 
-                        //theSession.SetUndoMarkName(markId13, "WAVE Geometry Linker Dialog");
-
-                        // ----------------------------------------------
-                        //   Dialog Begin WAVE Geometry Linker
-                        // ----------------------------------------------
                         Body[] bodies2 = new Body[1];
                         bodies2[0] = body1;
                         BodyDumbRule bodyDumbRule2;
@@ -6128,13 +5331,6 @@ namespace TSG_Library.UFuncs.Mirror
 
                         extractFaceBuilder2.InheritDisplayProperties = true;
 
-                        //Session.UndoMarkId markId14;
-                        //markId14 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "WAVE Geometry Linker");
-
-                        //theSession.DeleteUndoMark(markId14, null);
-
-                        //Session.UndoMarkId markId15;
-                        //markId15 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "WAVE Geometry Linker");
 
                         extractFaceBuilder2.SourcePartOccurrence = null;
 
@@ -6143,13 +5339,8 @@ namespace TSG_Library.UFuncs.Mirror
 
                         nXObject3 = extractFaceBuilder2.Commit();
 
-                        //theSession.DeleteUndoMark(markId15, null);
-
-                        //theSession.SetUndoMarkName(markId13, "WAVE Geometry Linker");
 
                     }
-
-                    //theSession.DeleteUndoMark(markId13, null);
                 }
                 finally
                 {
@@ -6188,11 +5379,7 @@ namespace TSG_Library.UFuncs.Mirror
                 featureReferencesBuilder2 = copyPasteBuilder2.GetFeatureReferences();
 
               
-                Expression expression3;
-                expression3 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
-
-                Expression expression4;
-                expression4 = workPart.Expressions.CreateSystemExpressionWithUnits("0", unit1);
+            
 
                 featureReferencesBuilder2.AutomaticMatch(true);
 
@@ -6248,18 +5435,11 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder2.Associative = false;
 
-                Session.UndoMarkId markId19;
-                markId19 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
-
-                theSession.DeleteUndoMark(markId19, null);
-
-                Session.UndoMarkId markId20;
-                markId20 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
+              
 
                 NXObject nXObject4;
                 nXObject4 = copyPasteBuilder2.Commit();
 
-                theSession.DeleteUndoMark(markId20, null);
 
 
                 BooleanFeature booleanFeature2 = (BooleanFeature)nXObject4;
@@ -6271,8 +5451,7 @@ namespace TSG_Library.UFuncs.Mirror
 
 
 
-                Session.UndoMarkId markId21;
-                markId21 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
+             
 
                 Component nullNXOpen_Assemblies_Component = null;
                 PartLoadStatus partLoadStatus5;
@@ -6314,111 +5493,39 @@ namespace TSG_Library.UFuncs.Mirror
                 components1[0] = component1;
                 ErrorList errorList1;
                 errorList1 = workPart.ComponentAssembly.ReplaceReferenceSetInOwners("SUBTOOL", components1);
-
                 errorList1.Dispose();
-
-                //Session.UndoMarkId markId3;
-                //markId3 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
-
                 Component component2 = frComp;
                 PartLoadStatus partLoadStatus1;
                 theSession.Parts.SetWorkComponent(component2, PartCollection.RefsetOption.Current, PartCollection.WorkComponentOption.Visible, out partLoadStatus1);
-
                 workPart = theSession.Parts.Work; // 001449-010-109
                 partLoadStatus1.Dispose();
-                // ----------------------------------------------
-                //   Menu: Edit->Copy
-                // ----------------------------------------------
-                workPart.PmiManager.RestoreUnpastedObjects();
-
-                //Session.UndoMarkId markId4;
-                //markId4 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
-
                 Component component3 = toComp;
                 PartLoadStatus partLoadStatus2;
                 theSession.Parts.SetWorkComponent(component3, PartCollection.RefsetOption.Current, PartCollection.WorkComponentOption.Visible, out partLoadStatus2);
-
                 workPart = theSession.Parts.Work; // 001449-010-900
                 partLoadStatus2.Dispose();
-                // ----------------------------------------------
-                //   Menu: Edit->Paste
-                // ----------------------------------------------
-                //Session.UndoMarkId markId5;
-                //markId5 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Start");
-
                 NXObject[] features1 = new NXObject[1];
                 Part part1 = frComp.__Prototype();
                 ExtractFace extractFace1 = (ExtractFace)part1.Features.FindObject("LINKED_BODY(66)");
                 features1[0] = extractFace1;
                 CopyPasteBuilder copyPasteBuilder1;
                 copyPasteBuilder1 = workPart.Features.CreateCopyPasteBuilder2(features1);
-
                 copyPasteBuilder1.SetBuilderVersion((CopyPasteBuilder.BuilderVersion)7);
-
                 FeatureReferencesBuilder featureReferencesBuilder1;
                 featureReferencesBuilder1 = copyPasteBuilder1.GetFeatureReferences();
-
-               
-
                 featureReferencesBuilder1.AutomaticMatch(true);
-
-                //theSession.SetUndoMarkName(markId5, "Paste Feature Dialog");
-
                 MatchedReferenceBuilder[] matchedReferenceData1;
                 matchedReferenceData1 = featureReferencesBuilder1.GetMatchedReferences();
-
-               
-
                 copyPasteBuilder1.ExpressionOption = CopyPasteBuilder.ExpressionTransferOption.CreateNew;
-
                 matchedReferenceData1[0].MatchedStatus = MatchedReferenceBuilder.ResolvedStatus.BySystem;
-
-                //Session.UndoMarkId markId6;
-                //markId6 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
-
-                //theSession.DeleteUndoMark(markId6, null);
-
-                //Session.UndoMarkId markId7;
-                //markId7 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
-
                 NXObject nXObject1;
                 nXObject1 = copyPasteBuilder1.Commit();
-
-                //theSession.DeleteUndoMark(markId7, null);
-
-                //theSession.SetUndoMarkName(markId5, "Paste Feature");
-
                 ExtractFace extractFace2 = (ExtractFace)nXObject1;
                 Expression[] expressions1;
                 expressions1 = extractFace2.GetExpressions();
-
                 copyPasteBuilder1.Destroy();
-
-                //try
-                //{
-                //    // Expression is still in use.
-                //    workPart.Expressions.Delete(expression2);
-                //}
-                //catch (NXException ex)
-                //{
-                //    ex.AssertErrorCode(1050029);
-                //}
-
-                //try
-                //{
-                //    // Expression is still in use.
-                //    workPart.Expressions.Delete(expression1);
-                //}
-                //catch (NXException ex)
-                //{
-                //    ex.AssertErrorCode(1050029);
-                //}
-
-                //plane1.DestroyPlane();
-
                 Session.UndoMarkId markId8;
                 markId8 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Redefine Feature");
-
                 EditWithRollbackManager editWithRollbackManager1;
                 editWithRollbackManager1 = workPart.Features.StartEditWithRollbackManager(extractFace2, markId8);
                 NXObject nXObject2;
@@ -6427,46 +5534,22 @@ namespace TSG_Library.UFuncs.Mirror
                 {
                     Session.UndoMarkId markId9;
                     markId9 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Start");
-
                     ExtractFaceBuilder extractFaceBuilder1;
                     extractFaceBuilder1 = workPart.Features.CreateExtractFaceBuilder(extractFace2);
 
                     using (session_.__UsingBuilderDestroyer(extractFaceBuilder1))
                     {
-
                         DisplayableObject[] replacementobjects1 = new DisplayableObject[1];
                         Component component4 = (Component)displayPart.ComponentAssembly.RootComponent.FindObject("COMPONENT 001449-010-106 2");
                         Body body1 = (Body)component4.FindObject("PROTO#.Bodies|CYLINDER(44)");
                         replacementobjects1[0] = body1;
                         extractFaceBuilder1.ReplacementAssistant.SetNewParents(replacementobjects1);
-
-                        theSession.SetUndoMarkName(markId9, "WAVE Geometry Linker Dialog");
-
-                        // ----------------------------------------------
-                        //   Dialog Begin WAVE Geometry Linker
-                        // ----------------------------------------------
                         extractFaceBuilder1.Associative = false;
-
-                        //Session.UndoMarkId markId10;
-                        //markId10 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "WAVE Geometry Linker");
-
-                        //theSession.DeleteUndoMark(markId10, null);
-
-                        //Session.UndoMarkId markId11;
-                        //markId11 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "WAVE Geometry Linker");
-
                         TaggedObject nullNXOpen_TaggedObject = null;
                         extractFaceBuilder1.SourcePartOccurrence = nullNXOpen_TaggedObject;
-
                         NXOpen.Assemblies.ProductInterface.InterfaceObject[] selectedobjects1 = new NXOpen.Assemblies.ProductInterface.InterfaceObject[0];
                         extractFaceBuilder1.SetProductInterfaceObjects(selectedobjects1);
-
                         nXObject2 = extractFaceBuilder1.Commit();
-
-                        //theSession.DeleteUndoMark(markId11, null);
-
-                        //theSession.SetUndoMarkName(markId9, "WAVE Geometry Linker");
-
                     }
                 }
                 finally
