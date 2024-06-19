@@ -142,6 +142,7 @@
     <Compile Include="src\Extensions\Constants.cs" />
     <Compile Include="src\Extensions\ConstraintReference.cs" />
     <Compile Include="src\Extensions\CoordinateSystem.cs" />
+    <Compile Include="src\Extensions\CopyPasteBuilder.cs" />
     <Compile Include="src\Extensions\Curve.cs" />
     <Compile Include="src\Extensions\DatumAxis.cs" />
     <Compile Include="src\Extensions\DatumAxisFeature.cs" />

@@ -20,6 +20,8 @@ public static class Program
 
             TSG_Library.UFuncs.Mirror.Program.MirrorStatic();
 
+            //new AssemblyColorCodeForm().Show();
+
             return;
             //////new TSG_Library.UFuncs.Mirror.MainForm().Show();
             ////new AddFastenersForm1().Show();
