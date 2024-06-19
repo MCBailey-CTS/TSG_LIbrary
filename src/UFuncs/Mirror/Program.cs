@@ -115,236 +115,56 @@ namespace TSG_Library.UFuncs.Mirror
             IDictionary<TaggedObject, TaggedObject> mirrorDict = new Dictionary<TaggedObject, TaggedObject>();
 
 
-            // Mirrors Csys
-            {
-                Session theSession = Session.GetSession();
-                Part workPart = theSession.Parts.Work;
-                Part displayPart = theSession.Parts.Display;
-                Session.UndoMarkId markId1;
-                markId1 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
-
-                Component component1 = (Component)displayPart.ComponentAssembly.RootComponent.FindObject("COMPONENT 001449-010-109 1");
-                PartLoadStatus partLoadStatus1;
-                theSession.Parts.SetWorkComponent(component1, PartCollection.RefsetOption.Current, PartCollection.WorkComponentOption.Visible, out partLoadStatus1);
-
-                workPart = theSession.Parts.Work; // 001449-010-109
-                partLoadStatus1.Dispose();
-                // ----------------------------------------------
-                //   Menu: Edit->Copy
-                // ----------------------------------------------
-                workPart.PmiManager.RestoreUnpastedObjects();
-
-                Session.UndoMarkId markId2;
-                markId2 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Copy");
-
-                NXOpen.Gateway.CopyCutBuilder copyCutBuilder1;
-                copyCutBuilder1 = workPart.ClipboardOperationsManager.CreateCopyCutBuilder();
-
-                copyCutBuilder1.CanCopyAsSketch = true;
-
-                copyCutBuilder1.IsCut = false;
-
-                copyCutBuilder1.ToClipboard = true;
-
-                copyCutBuilder1.DestinationFilename = null;
-
-                NXObject[] objects1 = new NXObject[1];
-                CartesianCoordinateSystem frCsys = (CartesianCoordinateSystem)component1.FindObject("PROTO#HANDLE R-19764");
-                objects1[0] = frCsys;
-                copyCutBuilder1.SetObjects(objects1);
-
-                NXObject nXObject1;
-                nXObject1 = copyCutBuilder1.Commit();
-
-                copyCutBuilder1.Destroy();
-
-                theSession.DeleteUndoMark(markId2, null);
-
-                Session.UndoMarkId markId3;
-                markId3 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
-
-                Component component2 = (Component)displayPart.ComponentAssembly.RootComponent.FindObject("COMPONENT 001449-010-900 1");
-                PartLoadStatus partLoadStatus2;
-                theSession.Parts.SetWorkComponent(component2, PartCollection.RefsetOption.Current, PartCollection.WorkComponentOption.Visible, out partLoadStatus2);
-
-                workPart = theSession.Parts.Work; // 001449-010-900
-                partLoadStatus2.Dispose();
-                // ----------------------------------------------
-                //   Menu: Edit->Paste
-                // ----------------------------------------------
-                Session.UndoMarkId markId4;
-                markId4 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Paste");
-
-                NXOpen.Gateway.PasteBuilder pasteBuilder1;
-                pasteBuilder1 = workPart.ClipboardOperationsManager.CreatePasteBuilder();
-
-                NXObject nXObject2;
-                nXObject2 = pasteBuilder1.Commit();
-
-
-                var toCsys = (CoordinateSystem)pasteBuilder1.GetCommittedObjects()[0];
-
-                pasteBuilder1.Destroy();
-
-                // ----------------------------------------------
-                //   Menu: Tools->Journal->Stop Recording
-                // ----------------------------------------------
-
-
-                var toOrigin_ = frCsys.__Origin().__MirrorMap(plane, frComp, toComp);
-
-                toCsys.Origin = toOrigin_;
-                toCsys.RedisplayObject();
-                ufsession_.Modl.Update();
-
-            }
-
 
 
             __work_part_ = __display_part_;
 
             // mirrors block
             {
-                Session theSession = Session.GetSession();
-                Part workPart = __work_part_;
-                Part displayPart = theSession.Parts.Display;
-                Session.UndoMarkId markId1;
-                markId1 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
-
-                Component component1 = (Component)workPart.ComponentAssembly.RootComponent.FindObject("COMPONENT 001449-010-109 1");
-                PartLoadStatus partLoadStatus1;
-                theSession.Parts.SetWorkComponent(component1, PartCollection.RefsetOption.Current, PartCollection.WorkComponentOption.Visible, out partLoadStatus1);
-
-                workPart = theSession.Parts.Work; // 001449-010-109
-                partLoadStatus1.Dispose();
-                // ----------------------------------------------
-                //   Menu: Edit->Copy
-                // ----------------------------------------------
-                workPart.PmiManager.RestoreUnpastedObjects();
-
-                Session.UndoMarkId markId2;
-                markId2 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
-
-                Component component2 = (Component)displayPart.ComponentAssembly.RootComponent.FindObject("COMPONENT 001449-010-900 1");
-                PartLoadStatus partLoadStatus2;
-                theSession.Parts.SetWorkComponent(component2, PartCollection.RefsetOption.Current, PartCollection.WorkComponentOption.Visible, out partLoadStatus2);
-
-                workPart = theSession.Parts.Work; // 001449-010-900
-                partLoadStatus2.Dispose();
-                theSession.SetUndoMarkName(markId2, "Make Work Part");
-
-                // ----------------------------------------------
-                //   Menu: Edit->Paste
-                // ----------------------------------------------
-                Session.UndoMarkId markId3;
-                markId3 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Start");
-
+                __work_component_ = toComp;
                 NXObject[] features1 = new NXObject[1];
-                Part part1 = (Part)theSession.Parts.FindObject("001449-010-109");
+                Part part1 = frComp.__Prototype();
                 Block block1 = (Block)part1.Features.FindObject("BLOCK(0)");
                 features1[0] = block1;
-                CopyPasteBuilder copyPasteBuilder1;
-                copyPasteBuilder1 = workPart.Features.CreateCopyPasteBuilder2(features1);
+                CopyPasteBuilder copyPasteBuilder1 = __work_part_.Features.CreateCopyPasteBuilder2(features1);
+                Block block2;
 
-                copyPasteBuilder1.SetBuilderVersion((CopyPasteBuilder.BuilderVersion)7);
+                print_("in here");
+                using (session_.__UsingBuilderDestroyer(copyPasteBuilder1))
+                {
+                    copyPasteBuilder1.SetBuilderVersion((CopyPasteBuilder.BuilderVersion)7);
+                    MatchedReferenceBuilder[] matchedReferenceData1 = copyPasteBuilder1.GetFeatureReferences().GetMatchedReferences();
+                    NXObject nXObject1 = copyPasteBuilder1.Commit();
+                    block2 = (Block)nXObject1;
+                }
 
-                FeatureReferencesBuilder featureReferencesBuilder1;
-                featureReferencesBuilder1 = copyPasteBuilder1.GetFeatureReferences();
+                Session.UndoMarkId markId6 = session_.SetUndoMark(Session.MarkVisibility.Visible, "Redefine Feature");
+                EditWithRollbackManager editWithRollbackManager1 = __work_part_.Features.StartEditWithRollbackManager(block2, markId6);
 
-               
+                try
+                {
+                    BlockFeatureBuilder blockFeatureBuilder1 = __work_part_.Features.CreateBlockFeatureBuilder(block2);
 
-          
+                    using (session_.__UsingBuilderDestroyer(blockFeatureBuilder1))
+                    {
+                        blockFeatureBuilder1.BooleanOption.Type = NXOpen.GeometricUtilities.BooleanOperation.BooleanType.Create;
 
-                featureReferencesBuilder1.AutomaticMatch(true);
-
-                theSession.SetUndoMarkName(markId3, "Paste Feature Dialog");
-
-                MatchedReferenceBuilder[] matchedReferenceData1;
-                matchedReferenceData1 = featureReferencesBuilder1.GetMatchedReferences();
-
-             
-
-                copyPasteBuilder1.ExpressionOption = CopyPasteBuilder.ExpressionTransferOption.CreateNew;
-
-                matchedReferenceData1[0].MatchedStatus = MatchedReferenceBuilder.ResolvedStatus.Initial;
-
-                copyPasteBuilder1.CopyResolveGeometry = true;
-
-                copyPasteBuilder1.Associative = true;
-
-              
-
-                NXObject nXObject1;
-                nXObject1 = copyPasteBuilder1.Commit();
-
-             
-
-                Block block2 = (Block)nXObject1;
-                Expression[] expressions1;
-                expressions1 = block2.GetExpressions();
-
-                copyPasteBuilder1.Destroy();
-
-             
-
-
-                Session.UndoMarkId markId6;
-                markId6 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Redefine Feature");
-
-                EditWithRollbackManager editWithRollbackManager1;
-                editWithRollbackManager1 = workPart.Features.StartEditWithRollbackManager(block2, markId6);
-
-                Session.UndoMarkId markId7;
-                markId7 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Start");
-
-                BlockFeatureBuilder blockFeatureBuilder1;
-                blockFeatureBuilder1 = workPart.Features.CreateBlockFeatureBuilder(block2);
-
-                blockFeatureBuilder1.BooleanOption.Type = NXOpen.GeometricUtilities.BooleanOperation.BooleanType.Create;
-
-                Body[] targetBodies1 = new Body[1];
-                Body nullNXOpen_Body = null;
-                targetBodies1[0] = nullNXOpen_Body;
-                blockFeatureBuilder1.BooleanOption.SetTargetBodies(targetBodies1);
-
-              
-
-                blockFeatureBuilder1.Type = BlockFeatureBuilder.Types.OriginAndEdgeLengths;
-
-                theSession.UpdateManager.LogForUpdate(blockFeatureBuilder1.Length);
-
-                theSession.UpdateManager.LogForUpdate(blockFeatureBuilder1.Width);
-
-                Point point1;
-                point1 = blockFeatureBuilder1.OriginPoint;
-
-                blockFeatureBuilder1.OriginPoint = point1;
-
-                Point3d originPoint1 = new Point3d(0.0, 0.0, -2.0);
-                blockFeatureBuilder1.SetOriginAndLengths(originPoint1, "p5=8.5", "p7=3.75", "p9=2");
-
-                blockFeatureBuilder1.SetBooleanOperationAndTarget(Feature.BooleanType.Create, nullNXOpen_Body);
-
-                Feature feature1;
-                feature1 = blockFeatureBuilder1.CommitFeature();
-
-
-                Expression expression5 = blockFeatureBuilder1.Width;
-                Expression expression6 = blockFeatureBuilder1.Length;
-                Expression expression7 = blockFeatureBuilder1.Height;
-                blockFeatureBuilder1.Destroy();
-
-
-                editWithRollbackManager1.UpdateFeature(false);
-
-                editWithRollbackManager1.Stop();
-
-                editWithRollbackManager1.Destroy();
-
-                // ----------------------------------------------
-                //   Menu: Tools->Journal->Stop Recording
-                // ----------------------------------------------
-
+                        Point3d originPoint1 = new Point3d(0.0, 0.0, -2.0);
+                        var new_width = blockFeatureBuilder1.Length.GetFormula();
+                        var new_length = blockFeatureBuilder1.Width.GetFormula();
+                        var height = blockFeatureBuilder1.Height.GetFormula();
+                        var origin = blockFeatureBuilder1.Origin;
+                        blockFeatureBuilder1.SetOriginAndLengths(origin, new_length, new_width, height);
+                        blockFeatureBuilder1.SetBooleanOperationAndTarget(Feature.BooleanType.Create, null);
+                        blockFeatureBuilder1.CommitFeature();
+                    }
+                }
+                finally
+                {
+                    editWithRollbackManager1.UpdateFeature(false);
+                    editWithRollbackManager1.Stop();
+                    editWithRollbackManager1.Destroy();
+                }
             }
 
 
@@ -355,220 +175,93 @@ namespace TSG_Library.UFuncs.Mirror
                 Session theSession = Session.GetSession();
                 Part workPart = theSession.Parts.Work;
                 Part displayPart = theSession.Parts.Display;
-                Session.UndoMarkId markId1;
-                markId1 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
-
                 Component component1 = (Component)workPart.ComponentAssembly.RootComponent.FindObject("COMPONENT 001449-010-109 1");
                 PartLoadStatus partLoadStatus1;
                 theSession.Parts.SetWorkComponent(component1, PartCollection.RefsetOption.Current, PartCollection.WorkComponentOption.Visible, out partLoadStatus1);
-
                 workPart = theSession.Parts.Work; // 001449-010-109
                 partLoadStatus1.Dispose();
-                theSession.SetUndoMarkName(markId1, "Make Work Part");
-
-                // ----------------------------------------------
-                //   Menu: Edit->Copy
-                // ----------------------------------------------
-                workPart.PmiManager.RestoreUnpastedObjects();
-
-                Session.UndoMarkId markId2;
-                markId2 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
-
                 Component component2 = (Component)displayPart.ComponentAssembly.RootComponent.FindObject("COMPONENT 001449-010-900 1");
                 PartLoadStatus partLoadStatus2;
                 theSession.Parts.SetWorkComponent(component2, PartCollection.RefsetOption.Current, PartCollection.WorkComponentOption.Visible, out partLoadStatus2);
-
                 workPart = theSession.Parts.Work; // 001449-010-900
                 partLoadStatus2.Dispose();
-                // ----------------------------------------------
-                //   Menu: Edit->Paste
-                // ----------------------------------------------
-                Session.UndoMarkId markId3;
-                markId3 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Start");
-
                 NXObject[] features1 = new NXObject[1];
-                Part part1 = (Part)theSession.Parts.FindObject("001449-010-109");
+                Part part1 = frComp.__Prototype();
                 ExtractFace extractFace1 = (ExtractFace)part1.Features.FindObject("EXTRACT_BODY(1)");
                 features1[0] = extractFace1;
                 CopyPasteBuilder copyPasteBuilder1;
                 copyPasteBuilder1 = workPart.Features.CreateCopyPasteBuilder2(features1);
-
                 copyPasteBuilder1.SetBuilderVersion((CopyPasteBuilder.BuilderVersion)7);
-
                 FeatureReferencesBuilder featureReferencesBuilder1;
                 featureReferencesBuilder1 = copyPasteBuilder1.GetFeatureReferences();
-
-              
-
-            
-
                 featureReferencesBuilder1.AutomaticMatch(true);
-
-                theSession.SetUndoMarkName(markId3, "Paste Feature Dialog");
-
                 MatchedReferenceBuilder[] matchedReferenceData1;
                 matchedReferenceData1 = featureReferencesBuilder1.GetMatchedReferences();
-
-              
-
                 copyPasteBuilder1.ExpressionOption = CopyPasteBuilder.ExpressionTransferOption.CreateNew;
-
                 matchedReferenceData1[0].MatchedStatus = MatchedReferenceBuilder.ResolvedStatus.BySystem;
-
                 ScCollector scCollector1;
                 scCollector1 = workPart.ScCollectors.CreateCollector();
-
                 Feature[] features2 = new Feature[1];
                 Block block1 = (Block)workPart.Features.FindObject("BLOCK(0)");
                 features2[0] = block1;
                 BodyFeatureRule bodyFeatureRule1;
                 bodyFeatureRule1 = workPart.ScRuleFactory.CreateRuleBodyFeature(features2, true, component2);
-
                 SelectionIntentRule[] rules1 = new SelectionIntentRule[1];
                 rules1[0] = bodyFeatureRule1;
                 scCollector1.ReplaceRules(rules1, false);
-
                 matchedReferenceData1[0].MatchedEntity = scCollector1;
-
                 matchedReferenceData1[0].MatchedStatus = MatchedReferenceBuilder.ResolvedStatus.ByUser;
-
                 featureReferencesBuilder1.AutomaticMatch(false);
-
-                Session.UndoMarkId markId4;
-                markId4 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
-
-                theSession.DeleteUndoMark(markId4, null);
-
-                Session.UndoMarkId markId5;
-                markId5 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
-
                 NXObject nXObject1;
                 nXObject1 = copyPasteBuilder1.Commit();
-
-                theSession.DeleteUndoMark(markId5, null);
-
-                theSession.SetUndoMarkName(markId3, "Paste Feature");
-
                 ExtractFace extractFace2 = (ExtractFace)nXObject1;
                 Expression[] expressions1;
                 expressions1 = extractFace2.GetExpressions();
-
                 copyPasteBuilder1.Destroy();
-
-            
-
-
-                Session.UndoMarkId markId6;
-                markId6 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
-
                 PartLoadStatus partLoadStatus3;
                 theSession.Parts.SetWorkComponent(component1, PartCollection.RefsetOption.Current, PartCollection.WorkComponentOption.Visible, out partLoadStatus3);
-
                 workPart = theSession.Parts.Work; // 001449-010-109
                 partLoadStatus3.Dispose();
-                // ----------------------------------------------
-                //   Menu: Edit->Copy
-                // ----------------------------------------------
-                workPart.PmiManager.RestoreUnpastedObjects();
-
-                Session.UndoMarkId markId7;
-                markId7 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
-
                 PartLoadStatus partLoadStatus4;
                 theSession.Parts.SetWorkComponent(component2, PartCollection.RefsetOption.Current, PartCollection.WorkComponentOption.Visible, out partLoadStatus4);
-
                 workPart = theSession.Parts.Work; // 001449-010-900
                 partLoadStatus4.Dispose();
-                // ----------------------------------------------
-                //   Menu: Edit->Paste
-                // ----------------------------------------------
-                Session.UndoMarkId markId8;
-                markId8 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Start");
-
                 NXObject[] features3 = new NXObject[1];
                 ApexRangeChamfer apexRangeChamfer1 = (ApexRangeChamfer)part1.Features.FindObject("CHAMFER(60)");
                 features3[0] = apexRangeChamfer1;
                 CopyPasteBuilder copyPasteBuilder2;
                 copyPasteBuilder2 = workPart.Features.CreateCopyPasteBuilder2(features3);
-
                 copyPasteBuilder2.SetBuilderVersion((CopyPasteBuilder.BuilderVersion)7);
-
                 FeatureReferencesBuilder featureReferencesBuilder2;
                 featureReferencesBuilder2 = copyPasteBuilder2.GetFeatureReferences();
-
-                
-
-           
-
                 featureReferencesBuilder2.AutomaticMatch(true);
-
-                theSession.SetUndoMarkName(markId8, "Paste Feature Dialog");
-
                 MatchedReferenceBuilder[] matchedReferenceData2;
                 matchedReferenceData2 = featureReferencesBuilder2.GetMatchedReferences();
-
-               
-
                 copyPasteBuilder2.ExpressionOption = CopyPasteBuilder.ExpressionTransferOption.CreateNew;
-
                 matchedReferenceData2[0].MatchedStatus = MatchedReferenceBuilder.ResolvedStatus.Initial;
-
                 copyPasteBuilder2.CopyResolveGeometry = true;
-
                 copyPasteBuilder2.Associative = true;
-
                 ScCollector scCollector2;
                 scCollector2 = workPart.ScCollectors.CreateCollector();
-
                 scCollector2.SetAllowRefCurves(false);
-
                 Edge edge1 = (Edge)block1.FindObject("EDGE * 1 * 6 {(8.5,3.75,0)(8.5,1.875,0)(8.5,0,0) BLOCK(0)}");
                 Edge nullNXOpen_Edge = null;
                 EdgeTangentRule edgeTangentRule1;
                 edgeTangentRule1 = workPart.ScRuleFactory.CreateRuleEdgeTangent(edge1, nullNXOpen_Edge, false, 0.5, false, false);
-
                 SelectionIntentRule[] rules2 = new SelectionIntentRule[1];
                 rules2[0] = edgeTangentRule1;
                 scCollector2.ReplaceRules(rules2, false);
-
                 matchedReferenceData2[0].MatchedEntity = scCollector2;
-
                 matchedReferenceData2[0].MatchedStatus = MatchedReferenceBuilder.ResolvedStatus.ByUser;
-
                 featureReferencesBuilder2.AutomaticMatch(false);
-
                 copyPasteBuilder2.CopyResolveGeometry = false;
-
                 copyPasteBuilder2.Associative = false;
-
-                Session.UndoMarkId markId9;
-                markId9 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
-
-                theSession.DeleteUndoMark(markId9, null);
-
-                Session.UndoMarkId markId10;
-                markId10 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
-
                 NXObject nXObject2;
                 nXObject2 = copyPasteBuilder2.Commit();
-
-                theSession.DeleteUndoMark(markId10, null);
-
-                theSession.SetUndoMarkName(markId8, "Paste Feature");
-
                 ApexRangeChamfer apexRangeChamfer2 = (ApexRangeChamfer)nXObject2;
                 Expression[] expressions2;
                 expressions2 = apexRangeChamfer2.GetExpressions();
-
                 copyPasteBuilder2.Destroy();
-
-              
-
-
-                // ----------------------------------------------
-                //   Menu: Tools->Journal->Stop Recording
-                // ----------------------------------------------
-
             }
 
             __work_part_ = __display_part_;
@@ -622,7 +315,7 @@ namespace TSG_Library.UFuncs.Mirror
                 markId5 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Start");
 
                 NXObject[] features1 = new NXObject[1];
-                Part part1 = (Part)theSession.Parts.FindObject("001449-010-109");
+                Part part1 = frComp.__Prototype();
                 OffsetFace offsetFace1 = (OffsetFace)part1.Features.FindObject("OFFSET(61)");
                 features1[0] = offsetFace1;
                 CopyPasteBuilder copyPasteBuilder1;
@@ -633,9 +326,9 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder1;
                 featureReferencesBuilder1 = copyPasteBuilder1.GetFeatureReferences();
 
-              
 
-             
+
+
 
                 featureReferencesBuilder1.AutomaticMatch(true);
 
@@ -644,7 +337,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData1;
                 matchedReferenceData1 = featureReferencesBuilder1.GetMatchedReferences();
 
-             
+
 
                 copyPasteBuilder1.ExpressionOption = CopyPasteBuilder.ExpressionTransferOption.CreateNew;
 
@@ -678,19 +371,19 @@ namespace TSG_Library.UFuncs.Mirror
                 copyPasteBuilder1.Associative = false;
 
                 Session.UndoMarkId markId6;
-                markId6 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
 
-                theSession.DeleteUndoMark(markId6, null);
+
+
 
                 Session.UndoMarkId markId7;
-                markId7 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
+
 
                 NXObject nXObject1;
                 nXObject1 = copyPasteBuilder1.Commit();
 
-                theSession.DeleteUndoMark(markId7, null);
 
-                theSession.SetUndoMarkName(markId5, "Paste Feature");
+
+
 
                 OffsetFace offsetFace2 = (OffsetFace)nXObject1;
                 Expression[] expressions1;
@@ -698,7 +391,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder1.Destroy();
 
-               
+
 
 
                 // ----------------------------------------------
@@ -763,7 +456,7 @@ namespace TSG_Library.UFuncs.Mirror
                 markId5 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Start");
 
                 NXObject[] features1 = new NXObject[1];
-                Part part1 = (Part)theSession.Parts.FindObject("001449-010-109");
+                Part part1 = frComp.__Prototype();
                 EdgeBlend edgeBlend1 = (EdgeBlend)part1.Features.FindObject("BLEND(62)");
                 features1[0] = edgeBlend1;
                 CopyPasteBuilder copyPasteBuilder1;
@@ -774,7 +467,7 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder1;
                 featureReferencesBuilder1 = copyPasteBuilder1.GetFeatureReferences();
 
-               
+
 
 
                 featureReferencesBuilder1.AutomaticMatch(true);
@@ -784,7 +477,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData1;
                 matchedReferenceData1 = featureReferencesBuilder1.GetMatchedReferences();
 
-               
+
 
                 copyPasteBuilder1.ExpressionOption = CopyPasteBuilder.ExpressionTransferOption.CreateNew;
 
@@ -823,19 +516,19 @@ namespace TSG_Library.UFuncs.Mirror
                 copyPasteBuilder1.Associative = false;
 
                 Session.UndoMarkId markId6;
-                markId6 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
 
-                theSession.DeleteUndoMark(markId6, null);
+
+
 
                 Session.UndoMarkId markId7;
-                markId7 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
+
 
                 NXObject nXObject1;
                 nXObject1 = copyPasteBuilder1.Commit();
 
-                theSession.DeleteUndoMark(markId7, null);
 
-                theSession.SetUndoMarkName(markId5, "Paste Feature");
+
+
 
                 EdgeBlend edgeBlend2 = (EdgeBlend)nXObject1;
                 Expression[] expressions1;
@@ -843,7 +536,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder1.Destroy();
 
-             
+
 
 
                 // ----------------------------------------------
@@ -908,7 +601,7 @@ namespace TSG_Library.UFuncs.Mirror
                 markId5 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Start");
 
                 NXObject[] features1 = new NXObject[1];
-                Part part1 = (Part)theSession.Parts.FindObject("001449-010-109");
+                Part part1 = frComp.__Prototype();
                 ExtractFace extractFace1 = (ExtractFace)part1.Features.FindObject("LINKED_BODY(63)");
                 features1[0] = extractFace1;
                 CopyPasteBuilder copyPasteBuilder1;
@@ -919,9 +612,9 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder1;
                 featureReferencesBuilder1 = copyPasteBuilder1.GetFeatureReferences();
 
-               
 
-              
+
+
 
                 featureReferencesBuilder1.AutomaticMatch(true);
 
@@ -930,7 +623,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData1;
                 matchedReferenceData1 = featureReferencesBuilder1.GetMatchedReferences();
 
-              
+
 
                 copyPasteBuilder1.ExpressionOption = CopyPasteBuilder.ExpressionTransferOption.CreateNew;
 
@@ -960,19 +653,19 @@ namespace TSG_Library.UFuncs.Mirror
                 featureReferencesBuilder1.AutomaticMatch(false);
 
                 Session.UndoMarkId markId6;
-                markId6 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
 
-                theSession.DeleteUndoMark(markId6, null);
+
+
 
                 Session.UndoMarkId markId7;
-                markId7 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
+
 
                 NXObject nXObject1;
                 nXObject1 = copyPasteBuilder1.Commit();
 
-                theSession.DeleteUndoMark(markId7, null);
 
-                theSession.SetUndoMarkName(markId5, "Paste Feature");
+
+
 
                 ExtractFace extractFace2 = (ExtractFace)nXObject1;
                 Expression[] expressions1;
@@ -980,7 +673,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder1.Destroy();
 
-             
+
 
 
                 Session.UndoMarkId markId8;
@@ -1025,9 +718,9 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder2;
                 featureReferencesBuilder2 = copyPasteBuilder2.GetFeatureReferences();
 
-            
 
-              
+
+
 
                 featureReferencesBuilder2.AutomaticMatch(true);
 
@@ -1036,7 +729,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData2;
                 matchedReferenceData2 = featureReferencesBuilder2.GetMatchedReferences();
 
-              
+
 
                 copyPasteBuilder2.ExpressionOption = CopyPasteBuilder.ExpressionTransferOption.CreateNew;
 
@@ -1119,7 +812,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder2.Destroy();
 
-              
+
                 Session.UndoMarkId markId13;
                 markId13 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
 
@@ -1157,75 +850,72 @@ namespace TSG_Library.UFuncs.Mirror
                 Session theSession = Session.GetSession();
                 Part workPart = theSession.Parts.Work;
                 Part displayPart = theSession.Parts.Display;
-                // ----------------------------------------------
-                //   Menu: Assemblies->Context Control->Open Part in Window
-                // ----------------------------------------------
                 Session.UndoMarkId markId1;
                 markId1 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Change Displayed Part");
-
                 Part part1 = (Part)theSession.Parts.FindObject("001449-010-900");
                 PartLoadStatus partLoadStatus1;
                 PartCollection.SdpsStatus status1;
                 status1 = theSession.Parts.SetActiveDisplay(part1, DisplayPartOption.AllowAdditional, PartDisplayPartWorkPartOption.UseLast, out partLoadStatus1);
-
                 workPart = theSession.Parts.Work; // 001449-010-900
                 displayPart = theSession.Parts.Display; // 001449-010-900
                 partLoadStatus1.Dispose();
                 Session.UndoMarkId markId2;
                 markId2 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Redefine Feature");
-
                 ExtractFace extractFace1 = (ExtractFace)workPart.Features.FindObject("LINKED_BODY(5)");
-                EditWithRollbackManager editWithRollbackManager1;
-                editWithRollbackManager1 = workPart.Features.StartEditWithRollbackManager(extractFace1, markId2);
+                EditWithRollbackManager editWithRollbackManager1 = workPart.Features.StartEditWithRollbackManager(extractFace1, markId2);
 
-                Session.UndoMarkId markId3;
-                markId3 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Start");
+                try
+                {
 
-                ExtractFaceBuilder extractFaceBuilder1;
-                extractFaceBuilder1 = workPart.Features.CreateExtractFaceBuilder(extractFace1);
+                    Session.UndoMarkId markId3;
+                    markId3 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Start");
 
-                DisplayableObject[] replacementobjects1 = new DisplayableObject[1];
-                Part part2 = (Part)theSession.Parts.FindObject("001449-010-layout");
-                Body body1 = (Body)part2.Bodies.FindObject("EXTRUDE(32)");
-                replacementobjects1[0] = body1;
-                extractFaceBuilder1.ReplacementAssistant.SetNewParents(replacementobjects1);
+                    ExtractFaceBuilder extractFaceBuilder1;
+                    extractFaceBuilder1 = workPart.Features.CreateExtractFaceBuilder(extractFace1);
 
-                theSession.SetUndoMarkName(markId3, "WAVE Geometry Linker Dialog");
+                    DisplayableObject[] replacementobjects1 = new DisplayableObject[1];
+                    Part part2 = (Part)theSession.Parts.FindObject("001449-010-layout");
+                    Body body1 = (Body)part2.Bodies.FindObject("EXTRUDE(32)");
+                    replacementobjects1[0] = body1;
+                    extractFaceBuilder1.ReplacementAssistant.SetNewParents(replacementobjects1);
 
-                extractFaceBuilder1.InheritDisplayProperties = true;
+                    theSession.SetUndoMarkName(markId3, "WAVE Geometry Linker Dialog");
 
-                Session.UndoMarkId markId4;
-                markId4 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "WAVE Geometry Linker");
+                    extractFaceBuilder1.InheritDisplayProperties = true;
 
-                theSession.DeleteUndoMark(markId4, null);
+                    Session.UndoMarkId markId4;
+                    markId4 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "WAVE Geometry Linker");
 
-                Session.UndoMarkId markId5;
-                markId5 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "WAVE Geometry Linker");
+                    theSession.DeleteUndoMark(markId4, null);
 
-                TaggedObject nullNXOpen_TaggedObject = null;
-                extractFaceBuilder1.SourcePartOccurrence = nullNXOpen_TaggedObject;
+                    Session.UndoMarkId markId5;
+                    markId5 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "WAVE Geometry Linker");
 
-                NXOpen.Assemblies.ProductInterface.InterfaceObject[] selectedobjects1 = new NXOpen.Assemblies.ProductInterface.InterfaceObject[0];
-                extractFaceBuilder1.SetProductInterfaceObjects(selectedobjects1);
+                    TaggedObject nullNXOpen_TaggedObject = null;
+                    extractFaceBuilder1.SourcePartOccurrence = nullNXOpen_TaggedObject;
 
-                NXObject nXObject1;
-                nXObject1 = extractFaceBuilder1.Commit();
+                    NXOpen.Assemblies.ProductInterface.InterfaceObject[] selectedobjects1 = new NXOpen.Assemblies.ProductInterface.InterfaceObject[0];
+                    extractFaceBuilder1.SetProductInterfaceObjects(selectedobjects1);
 
-                theSession.DeleteUndoMark(markId5, null);
+                    NXObject nXObject1;
+                    nXObject1 = extractFaceBuilder1.Commit();
 
-                theSession.SetUndoMarkName(markId3, "WAVE Geometry Linker");
+                    theSession.DeleteUndoMark(markId5, null);
 
-                extractFaceBuilder1.Destroy();
+                    theSession.SetUndoMarkName(markId3, "WAVE Geometry Linker");
 
-                theSession.DeleteUndoMark(markId3, null);
+                    extractFaceBuilder1.Destroy();
 
-                editWithRollbackManager1.UpdateFeature(false);
+                    theSession.DeleteUndoMark(markId3, null);
 
-                editWithRollbackManager1.Stop();
-
-                theSession.Preferences.Modeling.UpdatePending = false;
-
-                editWithRollbackManager1.Destroy();
+                }
+                finally
+                {
+                    editWithRollbackManager1.UpdateFeature(false);
+                    editWithRollbackManager1.Stop();
+                    theSession.Preferences.Modeling.UpdatePending = false;
+                    editWithRollbackManager1.Destroy();
+                }
 
                 Session.UndoMarkId markId6;
                 markId6 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Undisplay Part");
@@ -1321,7 +1011,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 pasteBuilder1.Destroy();
 
-               
+
                 PartLoadStatus partLoadStatus3;
                 theSession.Parts.SetWorkComponent(component1, PartCollection.RefsetOption.Current, PartCollection.WorkComponentOption.Visible, out partLoadStatus3);
 
@@ -1338,40 +1028,46 @@ namespace TSG_Library.UFuncs.Mirror
                 NXOpen.Gateway.CopyCutBuilder copyCutBuilder2;
                 copyCutBuilder2 = workPart.ClipboardOperationsManager.CreateCopyCutBuilder();
 
-                copyCutBuilder2.CanCopyAsSketch = true;
+                using (session_.__UsingBuilderDestroyer(copyCutBuilder2))
+                {
 
-                copyCutBuilder2.IsCut = false;
+                    copyCutBuilder2.CanCopyAsSketch = true;
 
-                copyCutBuilder2.ToClipboard = true;
+                    copyCutBuilder2.IsCut = false;
 
-                copyCutBuilder2.DestinationFilename = null;
+                    copyCutBuilder2.ToClipboard = true;
 
-                NXObject[] objects2 = new NXObject[1];
-                Line line1 = (Line)component1.FindObject("PROTO#.Lines|HANDLE R-20336");
-                objects2[0] = line1;
-                copyCutBuilder2.SetObjects(objects2);
+                    copyCutBuilder2.DestinationFilename = null;
 
-                NXObject nXObject3;
-                nXObject3 = copyCutBuilder2.Commit();
+                    NXObject[] objects2 = new NXObject[1];
+                    Line line1 = (Line)component1.FindObject("PROTO#.Lines|HANDLE R-20336");
+                    objects2[0] = line1;
+                    copyCutBuilder2.SetObjects(objects2);
 
-                copyCutBuilder2.Destroy();
+                    NXObject nXObject3;
+                    nXObject3 = copyCutBuilder2.Commit();
 
-             
+                }
+
+
 
                 PartLoadStatus partLoadStatus4;
                 theSession.Parts.SetWorkComponent(component2, PartCollection.RefsetOption.Current, PartCollection.WorkComponentOption.Visible, out partLoadStatus4);
 
                 workPart = theSession.Parts.Work; // 001449-010-900
                 partLoadStatus4.Dispose();
-               
+
 
                 NXOpen.Gateway.PasteBuilder pasteBuilder2;
                 pasteBuilder2 = workPart.ClipboardOperationsManager.CreatePasteBuilder();
 
-                NXObject nXObject4;
-                nXObject4 = pasteBuilder2.Commit();
+                using (session_.__UsingBuilderDestroyer(pasteBuilder2))
+                {
 
-                pasteBuilder2.Destroy();
+                    NXObject nXObject4;
+                    nXObject4 = pasteBuilder2.Commit();
+
+                }
 
                 Session.UndoMarkId markId9;
                 markId9 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
@@ -1419,7 +1115,7 @@ namespace TSG_Library.UFuncs.Mirror
                 bool allowInterpartPositioning1;
                 allowInterpartPositioning1 = theSession.Preferences.Assemblies.InterpartPositioning;
 
-            
+
 
                 NXOpen.Positioning.Network network1;
                 network1 = componentPositioner1.EstablishNetwork();
@@ -1526,7 +1222,7 @@ namespace TSG_Library.UFuncs.Mirror
                 bool allowInterpartPositioning2;
                 allowInterpartPositioning2 = theSession.Preferences.Assemblies.InterpartPositioning;
 
-              
+
 
                 NXOpen.Positioning.Network network2;
                 network2 = componentPositioner2.EstablishNetwork();
@@ -1581,7 +1277,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 componentPositioner2.EndAssemblyConstraints();
 
-                theSession.DeleteUndoMark(markId6, null);
+
 
                 theSession.UndoToMark(markId5, null);
 
@@ -1600,7 +1296,7 @@ namespace TSG_Library.UFuncs.Mirror
                 errorList2 = workPart.ComponentAssembly.ReplaceReferenceSetInOwners("BODY", components1);
 
                 errorList2.Dispose();
-                theSession.DeleteUndoMark(markId7, null);
+
 
                 Matrix3x3 rotMatrix2 = new Matrix3x3();
                 rotMatrix2.Xx = -0.81165715080716117;
@@ -1644,7 +1340,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 componentNetwork3.NetworkArrangementsMode = NXOpen.Positioning.ComponentNetwork.ArrangementsMode.Existing;
 
-           
+
 
                 componentNetwork3.RemoveAllConstraints();
 
@@ -1871,7 +1567,7 @@ namespace TSG_Library.UFuncs.Mirror
                 bool allowInterpartPositioning1;
                 allowInterpartPositioning1 = theSession.Preferences.Assemblies.InterpartPositioning;
 
-               
+
 
                 NXOpen.Positioning.Network network1;
                 network1 = componentPositioner1.EstablishNetwork();
@@ -1938,7 +1634,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 componentNetwork1.ApplyToModel();
 
-             
+
                 componentNetwork1.Solve();
 
                 componentPositioner1.ClearNetwork();
@@ -1972,7 +1668,7 @@ namespace TSG_Library.UFuncs.Mirror
                 componentPositioner1.PrimaryArrangement = nullNXOpen_Assemblies_Arrangement;
 
 
-            
+
 
                 Component[] components1 = new Component[1];
                 Component component3 = (Component)component1.FindObject("COMPONENT 6mm-shcs-012-2x 1");
@@ -2008,7 +1704,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 workPart = theSession.Parts.Work; // 001449-010-900
                 partLoadStatus2.Dispose();
-              
+
                 Component[] components1 = new Component[1];
                 Component component3 = (Component)component2.FindObject("COMPONENT 6mm-shcs-012-2x 1");
                 components1[0] = component3;
@@ -2024,7 +1720,7 @@ namespace TSG_Library.UFuncs.Mirror
                 markId5 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Start");
 
                 NXObject[] features1 = new NXObject[1];
-                Part part1 = (Part)theSession.Parts.FindObject("001449-010-109");
+                Part part1 = frComp.__Prototype();
                 ExtractFace extractFace1 = (ExtractFace)part1.Features.FindObject("LINKED_BODY(83)");
                 features1[0] = extractFace1;
                 CopyPasteBuilder copyPasteBuilder1;
@@ -2035,9 +1731,9 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder1;
                 featureReferencesBuilder1 = copyPasteBuilder1.GetFeatureReferences();
 
-               
 
-             
+
+
 
                 copyPasteBuilder1.CopyResolveGeometry = true;
 
@@ -2050,7 +1746,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData1;
                 matchedReferenceData1 = featureReferencesBuilder1.GetMatchedReferences();
 
-              
+
 
                 copyPasteBuilder1.ExpressionOption = CopyPasteBuilder.ExpressionTransferOption.CreateNew;
 
@@ -2085,22 +1781,12 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder1.SelectOption = CopyPasteBuilder.ParentSelectOption.InputForOriginalParent;
 
-                Section section1;
-                section1 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
 
-                Section section2;
-                section2 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
-
-                section1.Destroy();
-
-                section2.Destroy();
-
-                copyPasteBuilder1.UpdateBuilder();
 
                 MatchedReferenceBuilder[] matchedReferenceData2;
                 matchedReferenceData2 = featureReferencesBuilder1.GetMatchedReferences();
 
-              
+
 
                 featureReferencesBuilder1.AutomaticMatch(false);
 
@@ -2130,12 +1816,12 @@ namespace TSG_Library.UFuncs.Mirror
 
                 featureReferencesBuilder1.AutomaticMatch(false);
 
-              
+
 
                 NXObject nXObject1;
                 nXObject1 = copyPasteBuilder1.Commit();
 
-              
+
 
                 ExtractFace extractFace2 = (ExtractFace)nXObject1;
                 Expression[] expressions1;
@@ -2143,7 +1829,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder1.Destroy();
 
-               
+
 
 
 
@@ -2157,7 +1843,7 @@ namespace TSG_Library.UFuncs.Mirror
                 // ----------------------------------------------
                 workPart.PmiManager.RestoreUnpastedObjects();
 
-              
+
                 PartLoadStatus partLoadStatus4;
                 theSession.Parts.SetWorkComponent(component2, PartCollection.RefsetOption.Current, PartCollection.WorkComponentOption.Visible, out partLoadStatus4);
 
@@ -2180,9 +1866,9 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder2;
                 featureReferencesBuilder2 = copyPasteBuilder2.GetFeatureReferences();
 
-              
 
-              
+
+
 
                 copyPasteBuilder2.SelectOption = CopyPasteBuilder.ParentSelectOption.InputForOriginalParent;
 
@@ -2193,16 +1879,16 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData3;
                 matchedReferenceData3 = featureReferencesBuilder2.GetMatchedReferences();
 
-             
 
-           
+
+
 
                 copyPasteBuilder2.UpdateBuilder();
 
                 MatchedReferenceBuilder[] matchedReferenceData4;
                 matchedReferenceData4 = featureReferencesBuilder2.GetMatchedReferences();
 
-             
+
 
                 featureReferencesBuilder2.AutomaticMatch(false);
 
@@ -2251,7 +1937,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder2.Associative = false;
 
-             
+
 
                 NXObject nXObject2;
                 nXObject2 = copyPasteBuilder2.Commit();
@@ -2263,14 +1949,14 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder2.Destroy();
 
-              
+
 
 
                 Component[] components2 = new Component[1];
                 components2[0] = component2;
                 component2.UpdateStructure(components2, 2, true);
 
-              
+
 
                 Component[] components3 = new Component[1];
                 components3[0] = component3;
@@ -2315,7 +2001,7 @@ namespace TSG_Library.UFuncs.Mirror
                 bool allowInterpartPositioning1;
                 allowInterpartPositioning1 = theSession.Preferences.Assemblies.InterpartPositioning;
 
-              
+
 
                 NXOpen.Positioning.Network network1;
                 network1 = componentPositioner1.EstablishNetwork();
@@ -2363,7 +2049,7 @@ namespace TSG_Library.UFuncs.Mirror
                 movableObjects1[0] = component1;
                 componentNetwork1.SetMovingGroup(movableObjects1);
 
-              
+
                 componentNetwork1.Solve();
 
                 componentPositioner1.ClearNetwork();
@@ -2417,7 +2103,7 @@ namespace TSG_Library.UFuncs.Mirror
                 bool allowInterpartPositioning2;
                 allowInterpartPositioning2 = theSession.Preferences.Assemblies.InterpartPositioning;
 
-              
+
 
                 NXOpen.Positioning.Network network2;
                 network2 = componentPositioner2.EstablishNetwork();
@@ -2490,7 +2176,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 addComponentBuilder2.Layer = 0;
 
-           
+
 
                 componentNetwork2.Solve();
 
@@ -2523,7 +2209,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 componentPositioner2.PrimaryArrangement = nullNXOpen_Assemblies_Arrangement;
 
-                theSession.DeleteUndoMark(markId7, null);
+
 
                 Matrix3x3 rotMatrix1 = new Matrix3x3();
                 rotMatrix1.Xx = 0.46725280404396713;
@@ -2572,7 +2258,7 @@ namespace TSG_Library.UFuncs.Mirror
                 bool allowInterpartPositioning3;
                 allowInterpartPositioning3 = theSession.Preferences.Assemblies.InterpartPositioning;
 
-             
+
 
                 NXOpen.Positioning.Network network3;
                 network3 = componentPositioner3.EstablishNetwork();
@@ -2697,7 +2383,7 @@ namespace TSG_Library.UFuncs.Mirror
                 bool allowInterpartPositioning4;
                 allowInterpartPositioning4 = theSession.Preferences.Assemblies.InterpartPositioning;
 
-              
+
 
                 NXOpen.Positioning.Network network4;
                 network4 = componentPositioner4.EstablishNetwork();
@@ -2863,7 +2549,7 @@ namespace TSG_Library.UFuncs.Mirror
                 bool allowInterpartPositioning5;
                 allowInterpartPositioning5 = theSession.Preferences.Assemblies.InterpartPositioning;
 
-              
+
 
                 NXOpen.Positioning.Network network5;
                 network5 = componentPositioner5.EstablishNetwork();
@@ -2875,7 +2561,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 componentNetwork5.NetworkArrangementsMode = NXOpen.Positioning.ComponentNetwork.ArrangementsMode.Existing;
 
-               
+
 
                 componentNetwork5.RemoveAllConstraints();
 
@@ -3052,7 +2738,7 @@ namespace TSG_Library.UFuncs.Mirror
                 bool allowInterpartPositioning6;
                 allowInterpartPositioning6 = theSession.Preferences.Assemblies.InterpartPositioning;
 
-              
+
 
                 NXOpen.Positioning.Network network6;
                 network6 = componentPositioner6.EstablishNetwork();
@@ -3064,7 +2750,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 componentNetwork6.NetworkArrangementsMode = NXOpen.Positioning.ComponentNetwork.ArrangementsMode.Existing;
 
-              
+
 
                 componentNetwork6.RemoveAllConstraints();
 
@@ -3379,7 +3065,7 @@ namespace TSG_Library.UFuncs.Mirror
                 bool allowInterpartPositioning7;
                 allowInterpartPositioning7 = theSession.Preferences.Assemblies.InterpartPositioning;
 
-             
+
 
                 NXOpen.Positioning.Network network7;
                 network7 = componentPositioner7.EstablishNetwork();
@@ -3391,7 +3077,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 componentNetwork7.NetworkArrangementsMode = NXOpen.Positioning.ComponentNetwork.ArrangementsMode.Existing;
 
-              
+
 
                 componentNetwork7.RemoveAllConstraints();
 
@@ -3598,7 +3284,7 @@ namespace TSG_Library.UFuncs.Mirror
                 markId6 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Start");
 
                 NXObject[] features1 = new NXObject[1];
-                Part part1 = (Part)theSession.Parts.FindObject("001449-010-109");
+                Part part1 = frComp.__Prototype();
                 ExtractFace extractFace1 = (ExtractFace)part1.Features.FindObject("LINKED_BODY(70)");
                 features1[0] = extractFace1;
                 CopyPasteBuilder copyPasteBuilder1;
@@ -3609,9 +3295,9 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder1;
                 featureReferencesBuilder1 = copyPasteBuilder1.GetFeatureReferences();
 
-              
 
-             
+
+
 
                 copyPasteBuilder1.SelectOption = CopyPasteBuilder.ParentSelectOption.InputForOriginalParent;
 
@@ -3622,7 +3308,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData1;
                 matchedReferenceData1 = featureReferencesBuilder1.GetMatchedReferences();
 
-                
+
 
                 Section section1;
                 section1 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
@@ -3639,7 +3325,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData2;
                 matchedReferenceData2 = featureReferencesBuilder1.GetMatchedReferences();
 
-              
+
 
                 featureReferencesBuilder1.AutomaticMatch(false);
 
@@ -3671,9 +3357,9 @@ namespace TSG_Library.UFuncs.Mirror
                 featureReferencesBuilder1.AutomaticMatch(false);
 
                 Session.UndoMarkId markId7;
-                markId7 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
 
-                theSession.DeleteUndoMark(markId7, null);
+
+
 
                 Session.UndoMarkId markId8;
                 markId8 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
@@ -3691,7 +3377,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder1.Destroy();
 
-               
+
 
                 Session.UndoMarkId markId9;
                 markId9 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Redefine Feature");
@@ -3869,9 +3555,9 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder2;
                 featureReferencesBuilder2 = copyPasteBuilder2.GetFeatureReferences();
 
-             
 
-            
+
+
 
                 copyPasteBuilder2.SelectOption = CopyPasteBuilder.ParentSelectOption.InputForOriginalParent;
 
@@ -3882,7 +3568,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData3;
                 matchedReferenceData3 = featureReferencesBuilder2.GetMatchedReferences();
 
-              
+
 
                 Section section3;
                 section3 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
@@ -3904,7 +3590,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData4;
                 matchedReferenceData4 = featureReferencesBuilder2.GetMatchedReferences();
 
-             
+
 
                 featureReferencesBuilder2.AutomaticMatch(false);
 
@@ -3975,7 +3661,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder2.Destroy();
 
-              
+
 
 
                 Session.UndoMarkId markId22;
@@ -4139,7 +3825,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyCutBuilder2.Destroy();
 
-                theSession.DeleteUndoMark(markId6, null);
+
 
                 Session.UndoMarkId markId7;
                 markId7 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Make Work Part");
@@ -4191,7 +3877,7 @@ namespace TSG_Library.UFuncs.Mirror
                 markId11 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Start");
 
                 NXObject[] features1 = new NXObject[1];
-                Part part1 = (Part)theSession.Parts.FindObject("001449-010-109");
+                Part part1 = frComp.__Prototype();
                 Extrude extrude1 = (Extrude)part1.Features.FindObject("EXTRUDE(87)");
                 features1[0] = extrude1;
                 CopyPasteBuilder copyPasteBuilder1;
@@ -4202,9 +3888,9 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder1;
                 featureReferencesBuilder1 = copyPasteBuilder1.GetFeatureReferences();
 
-               
 
-            
+
+
                 copyPasteBuilder1.SelectOption = CopyPasteBuilder.ParentSelectOption.InputForOriginalParent;
 
                 featureReferencesBuilder1.AutomaticMatch(true);
@@ -4214,7 +3900,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData1;
                 matchedReferenceData1 = featureReferencesBuilder1.GetMatchedReferences();
 
-            
+
 
                 //Section section1;
                 //section1 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
@@ -4238,7 +3924,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData2;
                 matchedReferenceData2 = featureReferencesBuilder1.GetMatchedReferences();
 
-             
+
                 featureReferencesBuilder1.AutomaticMatch(false);
 
                 Section section4;
@@ -4511,7 +4197,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 componentNetwork1.NetworkArrangementsMode = NXOpen.Positioning.ComponentNetwork.ArrangementsMode.Existing;
 
-           
+
 
                 componentNetwork1.RemoveAllConstraints();
 
@@ -4638,7 +4324,7 @@ namespace TSG_Library.UFuncs.Mirror
                 markId10 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Start");
 
                 NXObject[] features1 = new NXObject[1];
-                Part part1 = (Part)theSession.Parts.FindObject("001449-010-109");
+                Part part1 = frComp.__Prototype();
                 ExtractFace extractFace1 = (ExtractFace)part1.Features.FindObject("LINKED_BODY(65)");
                 features1[0] = extractFace1;
                 CopyPasteBuilder copyPasteBuilder1;
@@ -4649,9 +4335,9 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder1;
                 featureReferencesBuilder1 = copyPasteBuilder1.GetFeatureReferences();
 
-                
 
-           
+
+
 
                 copyPasteBuilder1.SelectOption = CopyPasteBuilder.ParentSelectOption.InputForOriginalParent;
 
@@ -4662,7 +4348,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData1;
                 matchedReferenceData1 = featureReferencesBuilder1.GetMatchedReferences();
 
-              
+
 
                 Section section1;
                 section1 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
@@ -4679,7 +4365,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData2;
                 matchedReferenceData2 = featureReferencesBuilder1.GetMatchedReferences();
 
-             
+
 
                 featureReferencesBuilder1.AutomaticMatch(false);
 
@@ -4731,7 +4417,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder1.Destroy();
 
-              
+
 
                 Session.UndoMarkId markId13;
                 markId13 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Replace Reference Set");
@@ -4931,9 +4617,9 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder2;
                 featureReferencesBuilder2 = copyPasteBuilder2.GetFeatureReferences();
 
-              
 
-               
+
+
 
                 copyPasteBuilder2.SelectOption = CopyPasteBuilder.ParentSelectOption.InputForOriginalParent;
 
@@ -4944,7 +4630,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData3;
                 matchedReferenceData3 = featureReferencesBuilder2.GetMatchedReferences();
 
-              
+
 
                 //Section section3;
                 //section3 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
@@ -4966,7 +4652,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData4;
                 matchedReferenceData4 = featureReferencesBuilder2.GetMatchedReferences();
 
-             
+
 
                 featureReferencesBuilder2.AutomaticMatch(false);
 
@@ -5037,7 +4723,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder2.Destroy();
 
-           
+
 
 
                 //Session.UndoMarkId markId30;
@@ -5113,7 +4799,7 @@ namespace TSG_Library.UFuncs.Mirror
                 partLoadStatus2.Dispose();
 
                 NXObject[] features1 = new NXObject[1];
-                Part part1 = (Part)theSession.Parts.FindObject("001449-010-109");
+                Part part1 = frComp.__Prototype();
                 ExtractFace extractFace1 = (ExtractFace)part1.Features.FindObject("LINKED_BODY(85)");
                 features1[0] = extractFace1;
                 CopyPasteBuilder copyPasteBuilder1;
@@ -5124,9 +4810,9 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder1;
                 featureReferencesBuilder1 = copyPasteBuilder1.GetFeatureReferences();
 
-              
 
-            
+
+
 
                 copyPasteBuilder1.SelectOption = CopyPasteBuilder.ParentSelectOption.InputForOriginalParent;
 
@@ -5136,7 +4822,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData1;
                 matchedReferenceData1 = featureReferencesBuilder1.GetMatchedReferences();
 
-              
+
 
                 Section section1;
                 section1 = workPart.Sections.CreateSection(0.00038000000000000002, 0.00040000000000000002, 0.5);
@@ -5153,7 +4839,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData2;
                 matchedReferenceData2 = featureReferencesBuilder1.GetMatchedReferences();
 
-              
+
 
                 featureReferencesBuilder1.AutomaticMatch(false);
 
@@ -5178,7 +4864,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData3;
                 matchedReferenceData3 = featureReferencesBuilder1.GetMatchedReferences();
 
-              
+
 
                 featureReferencesBuilder1.AutomaticMatch(false);
 
@@ -5210,12 +4896,12 @@ namespace TSG_Library.UFuncs.Mirror
                 featureReferencesBuilder1.AutomaticMatch(false);
 
                 Session.UndoMarkId markId6;
-                markId6 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
 
-                theSession.DeleteUndoMark(markId6, null);
+
+
 
                 Session.UndoMarkId markId7;
-                markId7 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
+
 
                 NXObject nXObject1;
                 nXObject1 = copyPasteBuilder1.Commit();
@@ -5227,7 +4913,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder1.Destroy();
 
-               
+
 
 
                 Session.UndoMarkId markId8;
@@ -5378,8 +5064,8 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder2;
                 featureReferencesBuilder2 = copyPasteBuilder2.GetFeatureReferences();
 
-              
-            
+
+
 
                 featureReferencesBuilder2.AutomaticMatch(true);
 
@@ -5387,7 +5073,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData4;
                 matchedReferenceData4 = featureReferencesBuilder2.GetMatchedReferences();
 
-              
+
 
                 copyPasteBuilder2.ExpressionOption = CopyPasteBuilder.ExpressionTransferOption.CreateNew;
 
@@ -5435,7 +5121,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 copyPasteBuilder2.Associative = false;
 
-              
+
 
                 NXObject nXObject4;
                 nXObject4 = copyPasteBuilder2.Commit();
@@ -5451,7 +5137,7 @@ namespace TSG_Library.UFuncs.Mirror
 
 
 
-             
+
 
                 Component nullNXOpen_Assemblies_Component = null;
                 PartLoadStatus partLoadStatus5;
@@ -5677,7 +5363,7 @@ namespace TSG_Library.UFuncs.Mirror
                 FeatureReferencesBuilder featureReferencesBuilder2;
                 featureReferencesBuilder2 = copyPasteBuilder2.GetFeatureReferences();
 
-               
+
 
                 featureReferencesBuilder2.AutomaticMatch(true);
 
@@ -5686,7 +5372,7 @@ namespace TSG_Library.UFuncs.Mirror
                 MatchedReferenceBuilder[] matchedReferenceData2;
                 matchedReferenceData2 = featureReferencesBuilder2.GetMatchedReferences();
 
-               
+
 
                 copyPasteBuilder2.ExpressionOption = CopyPasteBuilder.ExpressionTransferOption.CreateNew;
 

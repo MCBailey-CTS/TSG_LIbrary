@@ -18,7 +18,9 @@ public static class Program
 
             //new DeleteUnusedCurves
 
-            //TSG_Library.UFuncs.Mirror.Program.MirrorStatic();
+            TSG_Library.UFuncs.Mirror.Program.MirrorStatic();
+
+            return;
             //////new TSG_Library.UFuncs.Mirror.MainForm().Show();
             ////new AddFastenersForm1().Show();
             //return;
