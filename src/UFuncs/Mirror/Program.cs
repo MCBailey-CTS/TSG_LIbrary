@@ -98,6 +98,7 @@ namespace TSG_Library.UFuncs.Mirror
 
         public static void MirrorStatic()
         {
+            print_("in here");
             //var plane = new Surface.Plane(_Point3dOrigin, __Vector3dY());
             var frComp = __display_part_.__RootComponent().GetChildren().Single(c => c.DisplayName.EndsWith("109"));
             frComp.__SetWcsToComponent();

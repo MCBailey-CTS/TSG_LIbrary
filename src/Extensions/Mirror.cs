@@ -22,6 +22,7 @@ namespace TSG_Library.Extensions
 
         public static EdgeTangentRule __Mirror(this EdgeTangentRule original, Surface.Plane plane, Component from, Component to)
         {
+            throw new NotImplementedException();
             original.__Data(out var fStart, out var fEnd, out var isFromStart, out var angleTolerance, out var hasSameConvexity);
 
             var fStartCurve = fStart.__ToCurve();
