@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NXOpen;
 using NXOpen.UF;
 using TSG_Library.Attributes;
+using TSG_Library.Geom;
 using TSG_Library.UFuncs;
+using TSG_Library.UFuncs.Mirror;
 using static TSG_Library.Extensions.Extensions;
 
 public static class Program
@@ -14,19 +17,9 @@ public static class Program
         try
         {
 
-            //args = new string[] { "delete-unused-curves" };
-
-            //new DeleteUnusedCurves
-
-            TSG_Library.UFuncs.Mirror.Program.MirrorStatic();
-
-            //new AssemblyColorCodeForm().Show();
+             new CycleComponentsForm().execute();
 
             return;
-            //////new TSG_Library.UFuncs.Mirror.MainForm().Show();
-            ////new AddFastenersForm1().Show();
-            //return;
-
 #pragma warning disable CS0162 // Unreachable code detected
             if (args.Length == 0)
             {

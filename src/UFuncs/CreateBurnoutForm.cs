@@ -66,6 +66,7 @@ namespace TSG_Library.UFuncs
             {
                 _allComponents.Clear();
                 _selComponents.Clear();
+
                 if (sender == buttonSelect)
                 {
                     // Select: User selects components.
@@ -542,3 +543,4 @@ namespace TSG_Library.UFuncs
         }
     }
 }
+// 546

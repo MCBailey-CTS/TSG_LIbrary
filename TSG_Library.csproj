@@ -465,6 +465,8 @@
     </Compile>
     <Compile Include="src\UFuncs\LayoutRefSets.cs" />
     <Compile Include="src\UFuncs\LoadColorPalette.cs" />
+    <Compile Include="src\UFuncs\Mirror\Features\MirrorExtractedBody.cs" />
+    <Compile Include="src\UFuncs\Mirror\Features\MirrorExtrude.cs" />
     <Compile Include="src\UFuncs\Mirror\LibraryComponents\MirrorSmartButton.cs" />
     <Compile Include="src\UFuncs\Mirror\LibraryComponents\MirrorSmartKey.cs" />
     <Compile Include="src\UFuncs\Mirror\LibraryComponents\MirrorSmartStandardLiftersGuidedKeepersMetric.cs" />
@@ -740,7 +742,8 @@
   </Target>
   <Import Project="packages\PostSharp.2024.1.4\build\PostSharp.targets" Condition="Exists('packages\PostSharp.2024.1.4\build\PostSharp.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>SignDotNet $(TargetFileName)
+copy C:\Repos\TSG_Library\bin\Debug\TSG_Library.dll "G:\CTS\junk\0Ufunc Testing\temp1\TSG_Library.dll"
+copy C:\Repos\TSG_Library\bin\Debug\TSG_Library.pdb "G:\CTS\junk\0Ufunc Testing\temp1\TSG_Library.pdb"</PostBuildEvent>
   </PropertyGroup>
 </Project>

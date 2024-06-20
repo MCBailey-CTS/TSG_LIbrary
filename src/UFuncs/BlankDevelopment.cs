@@ -22,8 +22,10 @@ namespace TSG_Library.UFuncs
     {
         public override void execute()
         {
+            string message = $"{AssemblyFileVersion} - Blank Development";
+
             session_.SetUndoMark(Session.MarkVisibility.Visible, "Develop Curve");
-            Curve[] lengthObjs = Selection.SelectCurves();
+            Curve[] lengthObjs = Selection.SelectCurves(message, message);
 
             // get total length of selected lines
             double addLength = lengthObjs.Select(selTag => (Curve)session_.__GetTaggedObject(selTag.Tag))
@@ -63,8 +65,6 @@ namespace TSG_Library.UFuncs
                 builder.CurvelengthData.ExtensionDirection = ExtensionDirection.Natural;
                 section1.DistanceTolerance = 0.01;
                 section1.ChainingTolerance = 0.0095;
-                builder.CurvelengthData.SetStartDistance("0.0");
-                builder.CurvelengthData.SetEndDistance("0.0");
                 section1.SetAllowedEntityTypes(Section.AllowTypes.OnlyCurves);
                 builder.CurvelengthData.ExtensionSide = ExtensionSide.StartEnd;
                 Curve[] curves1 = new Curve[1];
@@ -75,15 +75,10 @@ namespace TSG_Library.UFuncs
                 rules1[0] = curveDumbRule1;
                 Point3d helpPoint1 = new Point3d(cursor[0], cursor[1], cursor[2]);
                 section1.AddToSection(rules1, editLine, null, null, helpPoint1, Section.Mode.Create, false);
-                builder.CurvelengthData.SetStartDistance("0");
-                builder.CurvelengthData.SetEndDistance("0");
-                builder.CurvelengthData.SetStartDistance("0");
-                builder.CurvelengthData.SetEndDistance("0");
                 builder.CurvelengthData.SetStartDistance(editLength.ToString());
                 builder.CurvelengthData.SetEndDistance("0");
                 builder.CurveOptions.InputCurveOption = CurveOptions.InputCurve.Retain;
                 builder.Commit();
-                builder.GetCommittedObjects();
             }
         }
 

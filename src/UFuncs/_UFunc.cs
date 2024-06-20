@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NXOpen.UF;
+using System;
+using TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs
 {
@@ -54,13 +56,30 @@ namespace TSG_Library.UFuncs
 
         protected _UFunc()
         {
-            ufunc_name = GetType().Name;
+            try
+            {
+                ufunc_name = GetType().Name;
+
+                string syslogmessage = $"////////////////////////////////////////////////////////\n" +
+                    $"{ufunc_name}\n" +
+                    $"{Extensions.Extensions.AssemblyFileVersion}\n" +
+                    $"{typeof(_UFunc).Assembly.Location}\n" +
+                    $"////////////////////////////////////////////////////////";
+
+                UFSession.GetUFSession().UF.PrintSyslog(syslogmessage, false);
+                
+            }
+            catch (Exception ex)
+            {
+                ex.__PrintException();
+            }
         }
 
         public int revision => throw new NotImplementedException();
 
         public string ufunc_name { get; set; }
 
+        public string ufunc_rev_name => $"{Extensions.Extensions.AssemblyFileVersion} -  {ufunc_name}";
 
         public abstract void execute();
         //public const string ufunc_ = "";

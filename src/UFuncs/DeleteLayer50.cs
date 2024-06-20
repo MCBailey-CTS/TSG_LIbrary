@@ -13,20 +13,21 @@ namespace TSG_Library.UFuncs
     {
         public override void execute()
         {
-            if (Session.GetSession().Parts.Display is null)
+            if (__display_part_ is null)
             {
                 print_("There is no displayed part loaded");
                 return;
             }
 
             DialogResult result = MessageBox.Show(
-                "Question?",
                 "Are you sure you want to delete all bodies on layer 50-55 in the current assembly",
+                $"{AssemblyFileVersion} - Question?",
                 MessageBoxButtons.YesNo);
 
             if (result == DialogResult.No)
                 return;
 
+            using (session_.__UsingDisplayPartReset())
             using (session_.__UsingSuppressDisplay())
             {
                 Part part = __work_part_;
@@ -42,7 +43,6 @@ namespace TSG_Library.UFuncs
                     .ToArray();
 
                 bool foundBodies = false;
-
                 string message = "";
 
                 foreach (Component component in components)
@@ -67,9 +67,7 @@ namespace TSG_Library.UFuncs
                         continue;
 
                     foundBodies = true;
-
                     message += $"{component.DisplayName}: {bodiesToDelete.Length}\n";
-
                     session_.__DeleteObjects(bodiesToDelete);
                 }
 
@@ -79,12 +77,9 @@ namespace TSG_Library.UFuncs
                     print_(message);
                 }
                 else
-                {
-                    print_(
-                        "No solids on layers 50-55, with white coloring, and phantom lines found in current assembly.\n");
-                }
-
-                __display_part_ = part;
+                    print_("No solids on layers 50-55, " +
+                        "with white coloring, " +
+                        "and phantom lines found in current assembly.\n");
             }
         }
     }

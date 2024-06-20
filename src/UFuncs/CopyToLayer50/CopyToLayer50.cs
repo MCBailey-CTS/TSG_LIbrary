@@ -23,7 +23,12 @@ namespace TSG_Library.UFuncs
 
         public override void execute()
         {
-            Component[] compList = Selection.SelectManyComponents();
+            string message = $"{AssemblyFileVersion} - Copy To Layer 50";
+
+            Component[] compList = Selection.SelectManyComponents(message);
+
+            if (compList.Length == 0)
+                return;
 
             using (session_.__UsingDisplayPartReset())
             {
@@ -31,13 +36,10 @@ namespace TSG_Library.UFuncs
                 {
                     print_("/////////////////");
                     Part compPart = (Part)comp.Prototype;
-
                     BasePart.Units units = compPart.PartUnits;
-
                     __work_component_ = comp;
 
                     // if body exists on layer 50, delete body
-
                     Body[] bodies_on_layer_50 = comp.__Prototype().Bodies
                         .ToArray()
                         .Where(__b => __b.IsSolidBody)
@@ -67,9 +69,17 @@ namespace TSG_Library.UFuncs
                     Body[] layer_50_bodies = comp.__Prototype()
                         .Layers
                         .GetAllObjectsOnLayer(LAYER).OfType<Body>().ToArray();
-                    comp.__Prototype().Layers.CopyObjects(LAYER, solid_bodies_layer_1);
-                    List<Body> new_layer_50_bodies = comp.__Prototype().Layers.GetAllObjectsOnLayer(LAYER)
-                        .Except(layer_50_bodies).OfType<Body>().ToList();
+
+                    comp.__Prototype()
+                        .Layers
+                        .CopyObjects(LAYER, solid_bodies_layer_1);
+
+                    List<Body> new_layer_50_bodies = comp.__Prototype()
+                        .Layers
+                        .GetAllObjectsOnLayer(LAYER)
+                        .Except(layer_50_bodies)
+                        .OfType<Body>()
+                        .ToList();
 
                     foreach (Body body in new_layer_50_bodies)
                     {
@@ -96,8 +106,10 @@ namespace TSG_Library.UFuncs
                         body.Color = 7;
                         body.LineFont = DisplayableObject.ObjectFont.Phantom;
                         body.RedisplayObject();
-                        print_(
-                            $"Copied solid body to {comp.__Prototype().Features.GetAssociatedFeature(body).GetFeatureName()} in part {comp.DisplayName}");
+
+                        print_($"Copied solid body to " +
+                            $"{comp.__Prototype().Features.GetAssociatedFeature(body).GetFeatureName()} " +
+                            $"in part {comp.DisplayName}");
                     }
 
                     try
