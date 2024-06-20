@@ -38,6 +38,7 @@ namespace TSG_Library.UFuncs
         {
             SetFormDefaults();
             SetSessionLoadOptions();
+            Text = AssemblyFileVersion;
         }
 
         private void LabelAssmText_MouseHover(object sender, EventArgs e)

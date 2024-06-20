@@ -6,6 +6,7 @@ using NXOpen.UF;
 using TSG_Library.Attributes;
 using TSG_Library.Extensions;
 using Selection = TSG_Library.Ui.Selection;
+using static TSG_Library.Extensions.Extensions;
 
 namespace TSG_Library.UFuncs
 {
@@ -18,68 +19,73 @@ namespace TSG_Library.UFuncs
         {
             try
             {
+                print_($"Launched: {ufunc_rev_name}");
                 // generate curve pts tol \/
                 double[] tolerances = { 0.005, 0.1, 1.0 }; // 0.005,, was 0.01, 0.1, 1.0
                 // create new geom tolerance \/
                 double tolerance = 0.05; // 0.05 was 0.125
                 double jumpGap = 1.0; // was 2.0
                 double[][] pts = new double[MaxLength][];
+
                 for (int i = 0; i < MaxLength; i++)
                     pts[i] = new double[3];
+
                 double[][] xyz = new double[MaxLength][];
+
                 for (int i = 0; i < MaxLength; i++)
                     xyz[i] = new double[3];
+
                 int cc;
                 const int currentCurve = 0;
                 int currentCurveEnd = 2;
                 int numOfCurves = 0;
                 int numOfLines = 0;
                 int numOfPts = 0;
-
                 double[][] origLineData = new double[200][];
+
                 for (int i = 0; i < 200; i++)
                     origLineData[i] = new double[7];
 
                 int[][] curvesSe = new int[200][];
+
                 for (int i = 0; i < 200; i++)
                     curvesSe[i] = new int[9];
+
                 UFCurve.PtSlopeCrvatr[] pointData = new UFCurve.PtSlopeCrvatr[MaxLength];
-
-                // UFSession.GetUFSession().Modl.AskDistanceTolerance(out _);
-
                 GetPartUnits(tolerances, ref jumpGap, ref tolerance);
-
-                Tag[] curves = Selection.SelectCurves().Select(curve => curve.Tag).ToArray();
-                UFSession.GetUFSession().Disp.Refresh();
+                Tag[] curves = Selection.SelectCurves(ufunc_rev_name).Select(curve => curve.Tag).ToArray();
+                ufsession_.Disp.Refresh();
 
                 for (cc = 0; cc < curves.Length; cc++)
                     ProcessCurve(tolerances, curves[cc], ref numOfCurves, curvesSe, xyz, origLineData, ref numOfLines);
-
 
                 GetCurveOrder(numOfCurves, currentCurve, currentCurveEnd, jumpGap, curvesSe, xyz);
                 currentCurveEnd = 3;
                 GetCurveOrder(numOfCurves, currentCurve, currentCurveEnd, jumpGap, curvesSe, xyz);
                 int ret = RecallPointsFillArray(numOfCurves, curvesSe, ref numOfPts, pts, xyz);
 
+                if (ret != 0) 
+                    return;
 
-                if (ret != 0) return;
                 int ii;
+
                 for (ii = 0; ii < numOfPts; ii++)
                 {
                     double[] tempVec = new double[3];
-                    UFSession.GetUFSession().Vec3.Copy(pts[ii], tempVec);
+                    ufsession_.Vec3.Copy(pts[ii], tempVec);
                     pointData[ii].point = tempVec;
-                    if (ii == 0 || ii == numOfPts)
-                        pointData[ii].slope_type = UFConstants.UF_CURVE_SLOPE_AUTO;
-                    else
-                        pointData[ii].slope_type = UFConstants.UF_CURVE_SLOPE_NONE;
+
+                    pointData[ii].slope_type = ii == 0 || ii == numOfPts 
+                        ? UFConstants.UF_CURVE_SLOPE_AUTO 
+                        : UFConstants.UF_CURVE_SLOPE_NONE;
+
                     pointData[ii].crvatr_type = UFConstants.UF_CURVE_CRVATR_NONE;
                 }
 
-                UFSession.GetUFSession().Curve.CreateSplineThruPts(3, 0, numOfPts, pointData, null, 0, out Tag spline);
-                UFSession.GetUFSession().Curve.CreateSimplifiedCurve(1, new[] { spline }, tolerance, out _, out _);
+                ufsession_.Curve.CreateSplineThruPts(3, 0, numOfPts, pointData, null, 0, out Tag spline);
+                ufsession_.Curve.CreateSimplifiedCurve(1, new[] { spline }, tolerance, out _, out _);
 
-                UFSession.GetUFSession().Obj.DeleteObject(spline);
+                ufsession_.Obj.DeleteObject(spline);
             }
             catch (Exception ex)
             {
@@ -99,10 +105,12 @@ namespace TSG_Library.UFuncs
 
         private static void GetPartUnits(IList<double> gTolerances, ref double jumpGap, ref double tolerance)
         {
-            Tag partTag = UFSession.GetUFSession().Part.AskDisplayPart();
-            UFSession.GetUFSession().Part.AskUnits(partTag, out int partUnits);
+            Tag partTag = ufsession_.Part.AskDisplayPart();
+            ufsession_.Part.AskUnits(partTag, out int partUnits);
 
-            if (partUnits != UFConstants.UF_PART_ENGLISH) return;
+            if (partUnits != UFConstants.UF_PART_ENGLISH) 
+                return;
+
             jumpGap = 0.07;
             gTolerances[0] = 0.0002;
             tolerance = 0.001;
@@ -117,16 +125,21 @@ namespace TSG_Library.UFuncs
             IReadOnlyList<double[]> xyz)
         {
             int curveMatch = 0, done = 0;
+
             while (done == 0)
             {
                 double dist = 1000000.0;
                 bool endMatch = false;
                 bool startMatch = false;
                 int jj;
+
                 for (jj = 0; jj < numOfCurves; jj++)
                 {
-                    if (jj == currentCurve) continue;
+                    if (jj == currentCurve) 
+                        continue;
+
                     double tmpDist;
+
                     if (curvesSe[jj][7] == 0) // Start of curve has NOT been matched up yet
                     {
                         tmpDist = CheckDistance(xyz[curvesSe[currentCurve][currentCurveEnd]][0],
@@ -143,12 +156,17 @@ namespace TSG_Library.UFuncs
                         }
                     }
 
-                    if (curvesSe[jj][8] != 0) continue; // End of curve has NOT been matched up yet
+                    if (curvesSe[jj][8] != 0) 
+                        continue; // End of curve has NOT been matched up yet
+
                     tmpDist = CheckDistance(xyz[curvesSe[currentCurve][currentCurveEnd]][0],
                         xyz[curvesSe[currentCurve][currentCurveEnd]][1],
                         xyz[curvesSe[currentCurve][currentCurveEnd]][2],
                         xyz[curvesSe[jj][3]][0], xyz[curvesSe[jj][3]][1], xyz[curvesSe[jj][3]][2]);
-                    if (!(tmpDist < dist)) continue;
+
+                    if (!(tmpDist < dist)) 
+                        continue;
+
                     dist = tmpDist;
                     curveMatch = jj;
                     endMatch = true;
@@ -158,7 +176,6 @@ namespace TSG_Library.UFuncs
                 if (dist >= jumpGap)
                 {
                     done = 1;
-
                     continue;
                 }
 
@@ -184,10 +201,11 @@ namespace TSG_Library.UFuncs
                 }
                 else if (endMatch)
                 {
-                    curvesSe[curveMatch][6] =
-                        currentCurve; // set the curve we just matched to, = to curve number we compared to
-                    curvesSe[curveMatch][8] =
-                        currentCurveEnd; // set the curve we just matches to, = to start(2) / end(3)
+                    // set the curve we just matched to, = to curve number we compared to
+                    curvesSe[curveMatch][6] =currentCurve;
+                    // set the curve we just matches to, = to start(2) / end(3)
+                    curvesSe[curveMatch][8] =currentCurveEnd; 
+
                     // ReSharper disable once ConvertIfStatementToSwitchStatement
                     if (currentCurveEnd == 2)
                     {
@@ -230,10 +248,10 @@ namespace TSG_Library.UFuncs
             IReadOnlyList<int[]> curvesSe,
             IReadOnlyList<double[]> xyz, IReadOnlyList<double[]> origLineData, ref int numOfLines)
         {
-            UFSession.GetUFSession().Curve.AskArcLength(curve, 0.0, 1.0, ModlUnits.ModlUnitsPart, out double arcLength);
+            ufsession_.Curve.AskArcLength(curve, 0.0, 1.0, ModlUnits.ModlUnitsPart, out double arcLength);
 
             if (!(arcLength > 0.050)) return;
-            UFSession.GetUFSession().Modl.AskCurvePoints(curve, pTolerances[0], pTolerances[1], pTolerances[2],
+            ufsession_.Modl.AskCurvePoints(curve, pTolerances[0], pTolerances[1], pTolerances[2],
                 out int np, out double[] pts);
 
 
@@ -243,11 +261,11 @@ namespace TSG_Library.UFuncs
             curvesSe[numOfCurves][0] = -1; // recall order
 
 
-            UFSession.GetUFSession().Eval.Initialize(curve, out IntPtr eval);
-            UFSession.GetUFSession().Eval.IsLine(eval, out bool isLine);
+            ufsession_.Eval.Initialize(curve, out IntPtr eval);
+            ufsession_.Eval.IsLine(eval, out bool isLine);
             if (isLine)
             {
-                UFSession.GetUFSession().Eval.AskLine(eval, out UFEval.Line uFEvalLine);
+                ufsession_.Eval.AskLine(eval, out UFEval.Line uFEvalLine);
                 origLineData[numOfLines][0] = uFEvalLine.start[0];
                 origLineData[numOfLines][1] = uFEvalLine.start[1];
                 origLineData[numOfLines][2] = uFEvalLine.start[2];
@@ -349,7 +367,7 @@ namespace TSG_Library.UFuncs
                 {
                     for (jj = curvesSe[cc][2]; jj <= curvesSe[cc][3]; jj++)
                     {
-                        UFSession.GetUFSession().Vec3.Copy(xyz[jj], pts[numOfPts]);
+                        ufsession_.Vec3.Copy(xyz[jj], pts[numOfPts]);
                         ++numOfPts;
                     }
 
@@ -366,7 +384,7 @@ namespace TSG_Library.UFuncs
                 {
                     for (jj = curvesSe[cc][2]; jj <= curvesSe[cc][3]; jj++)
                     {
-                        UFSession.GetUFSession().Vec3.Copy(xyz[jj], pts[numOfPts]);
+                        ufsession_.Vec3.Copy(xyz[jj], pts[numOfPts]);
                         ++numOfPts;
                     }
 
@@ -398,7 +416,7 @@ namespace TSG_Library.UFuncs
                 {
                     for (jj = curvesSe[cc][3]; jj >= curvesSe[cc][2]; jj--)
                     {
-                        UFSession.GetUFSession().Vec3.Copy(xyz[jj], pts[numOfPts]);
+                        ufsession_.Vec3.Copy(xyz[jj], pts[numOfPts]);
                         ++numOfPts;
                     }
 

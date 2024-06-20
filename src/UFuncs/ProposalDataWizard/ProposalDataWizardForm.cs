@@ -906,6 +906,14 @@ namespace TSG_Library.UFuncs
 
         private void ProposalDataWizardForm_Load(object sender, EventArgs e)
         {
+            Text = AssemblyFileVersion;
+            Location = Properties.Settings.Default.proposal_data_wizard_form_window_location;
+        }
+
+        private void ProposalDataWizardForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Properties.Settings.Default.proposal_data_wizard_form_window_location = Location;
+            Properties.Settings.Default.Save();
         }
     }
 }

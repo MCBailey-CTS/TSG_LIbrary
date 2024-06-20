@@ -14,6 +14,11 @@ namespace TSG_Library.UFuncs
             Show();
         }
 
+        public _UFuncForm()
+        {
+            Text = Extensions.Extensions.AssemblyFileVersion;
+        }
+
         private void InitializeComponent()
         {
             SuspendLayout();

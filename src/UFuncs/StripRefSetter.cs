@@ -11,14 +11,11 @@ namespace TSG_Library.UFuncs
     [UFunc(ufunc_strip_ref_setter)]
     public class StripRefSetter : _UFunc
     {
-        public static void Prompt(string message)
-        {
-            UFSession.GetUFSession().Ui.SetPrompt(message);
-        }
-
         public override void execute()
         {
-            if (GetSession().Parts.Display is null)
+            print_(ufunc_rev_name);
+
+            if (__display_part_ is null)
             {
                 print_("There is no displayed part loaded");
                 return;
@@ -215,15 +212,17 @@ namespace TSG_Library.UFuncs
                 prog_only_work_refset.AddObjectsToReferenceSet(layer100Objects
                     .Where(obj => !obj.Name.StartsWith("T"))
                     .ToArray()); // set children to body reference set before adding
+
                 prog_only_work_refset.AddObjectsToReferenceSet(layer101Objects
                     .Where(obj => !obj.Name.StartsWith("T"))
                     .ToArray()); // set children to body-no-slugs reference set before adding
+
                 prog_only_work_refset.AddObjectsToReferenceSet(layer102Objects
                     .Where(obj => !obj.Name.StartsWith("T"))
                     .ToArray()); // set children to body-no-slugs reference set before adding
             }
 
-            Prompt("Complete");
+            prompt_("Complete");
         }
     }
 }

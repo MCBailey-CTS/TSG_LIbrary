@@ -168,6 +168,15 @@ namespace TSG_Library.Ui
                 predicate);
         }
 
+        public static Body[] SelectManySheetBodies(string message = "Select Many Sheet Bodies", Predicate<Body> predicate = null)
+        {
+            return SelectMultipleTaggedObjects(
+                message,
+                message,
+                new[] { Masks.SolidBody_Mask },
+                predicate);
+        }
+
         public static Body[] SelectManySheetBodies(Predicate<Body> predicate = null)
         {
             return SelectMultipleTaggedObjects(
