@@ -5,6 +5,7 @@ using NXOpen;
 using NXOpen.UF;
 using TSG_Library.Attributes;
 using TSG_Library.UFuncs;
+using TSG_Library.UFuncs.Mirror;
 using static TSG_Library.Extensions.Extensions;
 
 public static class Program
@@ -14,13 +15,33 @@ public static class Program
         try
         {
 
-            //args = new string[] { "delete-unused-curves" };
+            //foreach (var f in __work_part_.Features.ToArray())
+            //    print_(f.FeatureType);
 
-            //new DeleteUnusedCurves
+            //return;
 
-            TSG_Library.UFuncs.Mirror.Program.MirrorStatic();
+            //new MainForm().Show();
 
-            //new AssemblyColorCodeForm().Show();
+            Testing.Mirror();
+
+            return;
+
+            //var plane = new Surface.Plane(_Point3dOrigin, __Vector3dY());
+            //var frComp = __display_part_.__RootComponent().GetChildren().Single(c => c.DisplayName.EndsWith("1100"));
+            //frComp.__SetWcsToComponent();
+            //var toOrigin = frComp.__Origin().__Mirror(plane);
+            //var toOrientation = frComp.__Orientation().__Mirror(plane);
+            //string toFilePath = "H:\\CTS\\003939 (mirror-001774)\\001774-010\\001774-010-9000.prt";
+            //var toPart = session_.__New(toFilePath, frComp.__Prototype().PartUnits);
+            //var toComp = __display_part_.__AddComponent(toPart, origin: toOrigin, orientation: toOrientation);
+
+
+            //var dict = new Dictionary<TaggedObject, TaggedObject>
+            //{
+            //    { frComp, toComp }
+            //};
+
+            //TSG_Library.UFuncs.Mirror.Program.Mirror208_3001(plane, frComp, dict);
 
             return;
             //////new TSG_Library.UFuncs.Mirror.MainForm().Show();

@@ -39,6 +39,7 @@ namespace TSG_Library.UFuncs.Mirror.Features
                     dictionary.Add(i, Tuple.Create(source.ToArray(), radius));
                 }
             }
+            
 
             Session.UndoMarkId featureEditMark = session_.SetUndoMark(Session.MarkVisibility.Visible, "Fine");
             EditWithRollbackManager editWithRollbackManager =
@@ -64,5 +65,4 @@ namespace TSG_Library.UFuncs.Mirror.Features
             edgeBlend.Unsuppress();
         }
     }
-    //}
 }

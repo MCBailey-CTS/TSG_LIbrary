@@ -14,28 +14,32 @@ namespace TSG_Library.UFuncs.Mirror
 {
     public class Program
     {
-        public static void Mirror208_3001(Surface.Plane plane, Component originalComp,
+        public static void Mirror208_3001(Surface.Plane plane, Component frComp,
             IDictionary<TaggedObject, TaggedObject> dict)
         {
-            Component component = (Component)dict[originalComp];
+            Component toComp = (Component)dict[frComp];
+            frComp.__ReferenceSet("Entire Part");
+            toComp.__ReferenceSet("Entire Part");
+
             try
             {
-                IMirrorFeature[] source = new IMirrorFeature[9]
+                IMirrorFeature[] source = new IMirrorFeature[]
                 {
-                    new MirrorLinkedBody(),
-                    new MirrorEdgeBlend(),
+                    //new MirrorLinkedBody(),
+                    //new MirrorEdgeBlend(),
                     new MirrorChamfer(),
-                    new MirrorSubtract(),
-                    new MirrorIntersect(),
-                    new MirrorUnite(),
+                    //new MirrorSubtract(),
+                    //new MirrorIntersect(),
+                    //new MirrorUnite(),
                     new MirrorBlock(),
-                    new MirrorExtractedBody(),
-                    new MirrorExtrude()
+                    //new MirrorExtractedBody(),
+                    //new MirrorExtrude(),
+                    //new MirrorOffsetFace(),
                 };
-                Part part = originalComp.__Prototype();
-                Part part2 = component.__Prototype();
-                originalComp.__Prototype().Features.SuppressFeatures(originalComp.__Prototype().Features.GetFeatures());
-                component.__Prototype().Features.SuppressFeatures(component.__Prototype().Features.GetFeatures());
+                Part part = frComp.__Prototype();
+                Part part2 = toComp.__Prototype();
+                frComp.__Prototype().Features.SuppressFeatures(frComp.__Prototype().Features.GetFeatures());
+                toComp.__Prototype().Features.SuppressFeatures(toComp.__Prototype().Features.GetFeatures());
                 Body[] array = part.Bodies.ToArray();
                 Body[] array2 = part2.Bodies.ToArray();
                 for (int i = 0; i < array.Length; i++) dict.Add(array[i], array2[i]);
@@ -43,11 +47,13 @@ namespace TSG_Library.UFuncs.Mirror
                 foreach (Feature originalFeature in part.Features)
                     try
                     {
+                        print_($"{originalFeature.GetFeatureName()} - {originalFeature.FeatureType}");
+
                         IMirrorFeature mirrorFeature =
                             source.SingleOrDefault(mirror => mirror.FeatureType == originalFeature.FeatureType);
                         if (mirrorFeature != null)
                         {
-                            mirrorFeature.Mirror(originalFeature, dict, plane, originalComp);
+                            mirrorFeature.Mirror(originalFeature, dict, plane, frComp);
                             continue;
                         }
 
@@ -66,22 +72,26 @@ namespace TSG_Library.UFuncs.Mirror
                         print_(ex.Message);
                         print_("////////////////////////////////////////////////////");
                     }
-
-                __work_part_ = __display_part_;
-                foreach (Part item in __display_part_.__DescendantParts())
-                    foreach (Expression expression3 in item.Expressions)
+                    catch (Exception ex)
                     {
-                        if (expression3.Status != Expression.StatusOption.Broken) continue;
-
-                        Expression[] array3 = expression3.__OwningPart().Expressions.ToArray();
-                        foreach (Expression expression2 in array3)
-                            if (expression2.Tag != expression3.Tag && expression3.Name == expression2.RightHandSide)
-                                item.Expressions.Delete(expression2);
-
-                        item.Expressions.Delete(expression3);
-                        print_("Deleted broken expression \"" + expression3.Name + "\" in part \"" +
-                               expression3.__OwningPart().Leaf + "\"");
+                        ex.__PrintException();
                     }
+
+                //__work_part_ = __display_part_;
+                //foreach (Part item in __display_part_.__DescendantParts())
+                //    foreach (Expression expression3 in item.Expressions)
+                //    {
+                //        if (expression3.Status != Expression.StatusOption.Broken) continue;
+
+                //        Expression[] array3 = expression3.__OwningPart().Expressions.ToArray();
+                //        foreach (Expression expression2 in array3)
+                //            if (expression2.Tag != expression3.Tag && expression3.Name == expression2.RightHandSide)
+                //                item.Expressions.Delete(expression2);
+
+                //        item.Expressions.Delete(expression3);
+                //        print_("Deleted broken expression \"" + expression3.Name + "\" in part \"" +
+                //               expression3.__OwningPart().Leaf + "\"");
+                //    }
             }
             catch (Exception ex2)
             {
