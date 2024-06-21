@@ -1099,7 +1099,7 @@ namespace TSG_Library.UFuncs.Mirror
 
         }
 
-        private void buttonOk_Click_1(object sender, EventArgs e)
+        private void buttonOk_Click_12(object sender, EventArgs e)
         {
             Hide();
             bool interruptUpdateOnError = session_.Preferences.Modeling.InterruptUpdateOnError;

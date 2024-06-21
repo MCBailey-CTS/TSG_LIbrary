@@ -1,4 +1,9 @@
-﻿namespace TSG_Library.UFuncs
+﻿using NXOpen;
+using NXOpen.UF;
+using System;
+using static TSG_Library.Extensions.Extensions;
+
+namespace TSG_Library.UFuncs
 {
     partial class BlockAttributerForm
     {
@@ -728,5 +733,800 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button buttonSelectWeldmentOff;
         private System.Windows.Forms.Button buttonSelectWeldmentOn;
+
+
+
+
+        //////////////////////////////////////////////////////////////////////////////
+
+        #region finding expression
+
+        private static void NewMethod27(ref bool isNamedExpression, ref Expression AddX, ref Expression AddY, ref Expression AddZ, ref Expression BurnDir, ref Expression Burnout, ref Expression Grind, ref Expression GrindTolerance, ref double xValue, ref double yValue, ref double zValue, ref string burnDirValue, ref string burnoutValue, ref string grindValue, ref string grindTolValue)
+        {
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+            {
+                if (exp.Name == "AddX")
+                {
+                    isNamedExpression = true;
+                    AddX = exp;
+                    xValue = exp.Value;
+                }
+
+                if (exp.Name == "AddY")
+                {
+                    isNamedExpression = true;
+                    AddY = exp;
+                    yValue = exp.Value;
+                }
+
+                if (exp.Name == "AddZ")
+                {
+                    isNamedExpression = true;
+                    AddZ = exp;
+                    zValue = exp.Value;
+                }
+
+                if (exp.Name == "BurnDir")
+                {
+                    isNamedExpression = true;
+                    BurnDir = exp;
+                    burnDirValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Burnout")
+                {
+                    isNamedExpression = true;
+                    Burnout = exp;
+                    burnoutValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Grind")
+                {
+                    isNamedExpression = true;
+                    Grind = exp;
+                    grindValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "GrindTolerance")
+                {
+                    isNamedExpression = true;
+                    GrindTolerance = exp;
+                    grindTolValue = exp.RightHandSide;
+                }
+            }
+        }
+
+
+
+
+
+        private static void NewMethod4(ref bool isNamedExpression, ref Expression AddX, ref Expression AddY, ref Expression AddZ, ref Expression BurnDir, ref Expression Burnout, ref Expression Grind, ref Expression GrindTolerance, ref double xValue, ref double yValue, ref double zValue, ref string burnDirValue, ref string burnoutValue, ref string grindValue, ref string grindTolValue)
+        {
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+            {
+                if (exp.Name == "AddX")
+                {
+                    isNamedExpression = true;
+                    AddX = exp;
+                    xValue = exp.Value;
+                }
+
+                if (exp.Name == "AddY")
+                {
+                    isNamedExpression = true;
+                    AddY = exp;
+                    yValue = exp.Value;
+                }
+
+                if (exp.Name == "AddZ")
+                {
+                    isNamedExpression = true;
+                    AddZ = exp;
+                    zValue = exp.Value;
+                }
+
+                if (exp.Name == "BurnDir")
+                {
+                    isNamedExpression = true;
+                    BurnDir = exp;
+                    burnDirValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Burnout")
+                {
+                    isNamedExpression = true;
+                    Burnout = exp;
+                    burnoutValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Grind")
+                {
+                    isNamedExpression = true;
+                    Grind = exp;
+                    grindValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "GrindTolerance")
+                {
+                    isNamedExpression = true;
+                    GrindTolerance = exp;
+                    grindTolValue = exp.RightHandSide;
+                }
+            }
+        }
+
+        private static void NewMethod15(ref bool isNamedExpression, ref Expression AddX, ref Expression AddY, ref Expression AddZ, ref Expression BurnDir, ref Expression Burnout, ref Expression Grind, ref Expression GrindTolerance, ref double xValue, ref double yValue, ref double zValue, ref string burnDirValue, ref string burnoutValue, ref string grindValue, ref string grindTolValue)
+        {
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+            {
+                if (exp.Name == "AddX")
+                {
+                    isNamedExpression = true;
+                    AddX = exp;
+                    xValue = exp.Value;
+                }
+
+                if (exp.Name == "AddY")
+                {
+                    isNamedExpression = true;
+                    AddY = exp;
+                    yValue = exp.Value;
+                }
+
+                if (exp.Name == "AddZ")
+                {
+                    isNamedExpression = true;
+                    AddZ = exp;
+                    zValue = exp.Value;
+                }
+
+                if (exp.Name == "BurnDir")
+                {
+                    isNamedExpression = true;
+                    BurnDir = exp;
+                    burnDirValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Burnout")
+                {
+                    isNamedExpression = true;
+                    Burnout = exp;
+                    burnoutValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Grind")
+                {
+                    isNamedExpression = true;
+                    Grind = exp;
+                    grindValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "GrindTolerance")
+                {
+                    isNamedExpression = true;
+                    GrindTolerance = exp;
+                    grindTolValue = exp.RightHandSide;
+                }
+            }
+        }
+
+
+
+
+        private static void NewMethod9(ref bool isNamedExpression, ref Expression AddX, ref Expression AddY, ref Expression AddZ, ref Expression BurnDir, ref Expression Burnout, ref Expression Grind, ref Expression GrindTolerance, ref double xValue, ref double yValue, ref double zValue, ref string burnDirValue, ref string burnoutValue, ref string grindValue, ref string grindTolValue)
+        {
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+            {
+                if (exp.Name == "AddX")
+                {
+                    isNamedExpression = true;
+                    AddX = exp;
+                    xValue = exp.Value;
+                }
+
+                if (exp.Name == "AddY")
+                {
+                    isNamedExpression = true;
+                    AddY = exp;
+                    yValue = exp.Value;
+                }
+
+                if (exp.Name == "AddZ")
+                {
+                    isNamedExpression = true;
+                    AddZ = exp;
+                    zValue = exp.Value;
+                }
+
+                if (exp.Name == "BurnDir")
+                {
+                    isNamedExpression = true;
+                    BurnDir = exp;
+                    burnDirValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Burnout")
+                {
+                    isNamedExpression = true;
+                    Burnout = exp;
+                    burnoutValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Grind")
+                {
+                    isNamedExpression = true;
+                    Grind = exp;
+                    grindValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "GrindTolerance")
+                {
+                    isNamedExpression = true;
+                    GrindTolerance = exp;
+                    grindTolValue = exp.RightHandSide;
+                }
+            }
+        }
+
+
+
+
+        private static void NewMethod21(ref bool isNamedExpression, ref Expression AddX, ref Expression AddY, ref Expression AddZ, ref Expression BurnDir, ref Expression Burnout, ref Expression Grind, ref Expression GrindTolerance, ref double xValue, ref double yValue, ref double zValue, ref string burnDirValue, ref string burnoutValue, ref string grindValue, ref string grindTolValue)
+        {
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+            {
+                if (exp.Name == "AddX")
+                {
+                    isNamedExpression = true;
+                    AddX = exp;
+                    xValue = exp.Value;
+                }
+
+                if (exp.Name == "AddY")
+                {
+                    isNamedExpression = true;
+                    AddY = exp;
+                    yValue = exp.Value;
+                }
+
+                if (exp.Name == "AddZ")
+                {
+                    isNamedExpression = true;
+                    AddZ = exp;
+                    zValue = exp.Value;
+                }
+
+                if (exp.Name == "BurnDir")
+                {
+                    isNamedExpression = true;
+                    BurnDir = exp;
+                    burnDirValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Burnout")
+                {
+                    isNamedExpression = true;
+                    Burnout = exp;
+                    burnoutValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Grind")
+                {
+                    isNamedExpression = true;
+                    Grind = exp;
+                    grindValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "GrindTolerance")
+                {
+                    isNamedExpression = true;
+                    GrindTolerance = exp;
+                    grindTolValue = exp.RightHandSide;
+                }
+            }
+        }
+
+
+        private static void NewMethod22(ref bool isNamedExpression, ref Expression AddX, ref Expression AddY, ref Expression AddZ, ref Expression BurnDir, ref Expression Burnout, ref Expression Grind, ref Expression GrindTolerance, ref Expression Dieset, ref double xValue, ref double yValue, ref double zValue, ref string burnDirValue, ref string burnoutValue, ref string grindValue, ref string grindTolValue, ref string diesetValue)
+        {
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+            {
+                if (exp.Name == "AddX")
+                {
+                    isNamedExpression = true;
+                    AddX = exp;
+                    xValue = exp.Value;
+                }
+
+                if (exp.Name == "AddY")
+                {
+                    isNamedExpression = true;
+                    AddY = exp;
+                    yValue = exp.Value;
+                }
+
+                if (exp.Name == "AddZ")
+                {
+                    isNamedExpression = true;
+                    AddZ = exp;
+                    zValue = exp.Value;
+                }
+
+                if (exp.Name == "BurnDir")
+                {
+                    isNamedExpression = true;
+                    BurnDir = exp;
+                    burnDirValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Burnout")
+                {
+                    isNamedExpression = true;
+                    Burnout = exp;
+                    burnoutValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Grind")
+                {
+                    isNamedExpression = true;
+                    Grind = exp;
+                    grindValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "GrindTolerance")
+                {
+                    isNamedExpression = true;
+                    GrindTolerance = exp;
+                    grindTolValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "DiesetNote")
+                {
+                    Dieset = exp;
+                    diesetValue = exp.RightHandSide;
+                }
+            }
+        }
+
+
+
+        private static void NewMethod25(ref bool isNamedExpression, ref double xValue, ref double yValue, ref double zValue, ref string burnDirValue, ref string burnoutValue, ref string grindValue, ref string grindTolValue, ref string diesetValue)
+        {
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+            {
+                if (exp.Name == "AddX")
+                {
+                    isNamedExpression = true;
+                    xValue = exp.Value;
+                }
+
+                if (exp.Name == "AddY")
+                {
+                    isNamedExpression = true;
+                    yValue = exp.Value;
+                }
+
+                if (exp.Name == "AddZ")
+                {
+                    isNamedExpression = true;
+                    zValue = exp.Value;
+                }
+
+                if (exp.Name == "BurnDir")
+                {
+                    isNamedExpression = true;
+                    burnDirValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Burnout")
+                {
+                    isNamedExpression = true;
+                    burnoutValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Grind")
+                {
+                    isNamedExpression = true;
+                    grindValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "GrindTolerance")
+                {
+                    isNamedExpression = true;
+                    grindTolValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "DiesetNote") diesetValue = exp.RightHandSide;
+            }
+        }
+
+
+        #endregion
+
+        /////////////////////////////////////////////////////////////////////
+        
+        #region rounding
+        private void NewMethod8(double xValue, double yValue, double zValue)
+        {
+            // get bounding box info
+
+            double[] minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            double[] distances = new double[3];
+
+            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
+                __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
+
+            // add stock values
+
+            distances[0] += xValue;
+            distances[1] += yValue;
+            distances[2] += zValue;
+
+            if (_workPart.PartUnits == BasePart.Units.Millimeters)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+
+            for (int i = 0; i < 3; i++)
+            {
+                double roundValue = System.Math.Round(distances[i], 3);
+                double truncateValue = System.Math.Truncate(roundValue);
+                double fractionValue = roundValue - truncateValue;
+                if (fractionValue != 0)
+                    for (double ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (fractionValue <= ii)
+                        {
+                            double finalValue = truncateValue + ii;
+                            distances[i] = finalValue;
+                            break;
+                        }
+                    }
+                else
+                    distances[i] = roundValue;
+            }
+
+            CreateTempBlockLines(__display_part_.WCS.Origin, distances[0], distances[1],
+                distances[2]);
+            _allowBoundingBox = true;
+        }
+
+
+        private static double[] NewMethod3(double xValue, double yValue, double zValue)
+        {
+            // get bounding box info
+
+            double[] minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            double[] distances = new double[3];
+
+            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
+                __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
+
+            // add stock values
+
+            distances[0] += xValue;
+            distances[1] += yValue;
+            distances[2] += zValue;
+
+            if (_workPart.PartUnits == BasePart.Units.Millimeters)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+
+            for (int i = 0; i < 3; i++)
+            {
+                double roundValue = System.Math.Round(distances[i], 3);
+                double truncateValue = System.Math.Truncate(roundValue);
+                double fractionValue = roundValue - truncateValue;
+                if (fractionValue != 0)
+                    for (double ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (fractionValue <= ii)
+                        {
+                            double finalValue = truncateValue + ii;
+                            distances[i] = finalValue;
+                            break;
+                        }
+                    }
+                else
+                    distances[i] = roundValue;
+            }
+
+            return distances;
+        }
+
+
+
+
+        private void NewMethod20(double xValue, double yValue, double zValue)
+        {
+            // get bounding box info
+
+            double[] minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            double[] distances = new double[3];
+
+            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
+                __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
+
+            // add stock values
+
+            distances[0] += xValue;
+            distances[1] += yValue;
+            distances[2] += zValue;
+
+            if (_workPart.PartUnits == BasePart.Units.Millimeters)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+
+            for (int i = 0; i < 3; i++)
+            {
+                double roundValue = System.Math.Round(distances[i], 3);
+                double truncateValue = System.Math.Truncate(roundValue);
+                double fractionValue = roundValue - truncateValue;
+                if (fractionValue != 0)
+                    for (double ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (fractionValue <= ii)
+                        {
+                            double finalValue = truncateValue + ii;
+                            distances[i] = finalValue;
+                            break;
+                        }
+                    }
+                else
+                    distances[i] = roundValue;
+            }
+
+            CreateTempBlockLines(__display_part_.WCS.Origin, distances[0], distances[1],
+                distances[2]);
+            _allowBoundingBox = true;
+        }
+
+
+
+        private void NewMethod14(double xValue, double yValue, double zValue)
+        {
+            // get bounding box info
+
+            double[] minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            double[] distances = new double[3];
+
+            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
+                __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
+
+            // add stock values
+
+            distances[0] += xValue;
+            distances[1] += yValue;
+            distances[2] += zValue;
+
+            if (_workPart.PartUnits == BasePart.Units.Millimeters)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+
+            for (int i = 0; i < 3; i++)
+            {
+                double roundValue = System.Math.Round(distances[i], 3);
+                double truncateValue = System.Math.Truncate(roundValue);
+                double fractionValue = roundValue - truncateValue;
+                if (fractionValue != 0)
+                    for (double ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (fractionValue <= ii)
+                        {
+                            double finalValue = truncateValue + ii;
+                            distances[i] = finalValue;
+                            break;
+                        }
+                    }
+                else
+                    distances[i] = roundValue;
+            }
+
+            CreateTempBlockLines(__display_part_.WCS.Origin, distances[0], distances[1],
+                distances[2]);
+            _allowBoundingBox = true;
+        }
+
+
+
+        private static double[] NewMethod24(CartesianCoordinateSystem tempCsys, bool isMetric)
+        {
+            // get bounding box of solid body
+
+            double[] minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            double[] distances = new double[3];
+
+            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag, tempCsys.Tag, minCorner, directions,
+                distances);
+
+            if (isMetric)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+
+            for (int i = 0; i < 3; i++)
+            {
+                double roundValue = System.Math.Round(distances[i], 3);
+                double truncateValue = System.Math.Truncate(roundValue);
+                double fractionValue = roundValue - truncateValue;
+                if (fractionValue != 0)
+                    for (double ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (fractionValue <= ii)
+                        {
+                            double finalValue = truncateValue + ii;
+                            distances[i] = finalValue;
+                            break;
+                        }
+                    }
+                else
+                    distances[i] = roundValue;
+            }
+
+            return distances;
+        }
+
+        private static void NewMethod23(double[] distances)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                double roundValue = System.Math.Round(distances[i], 3);
+                double truncateValue = System.Math.Truncate(roundValue);
+                double fractionValue = roundValue - truncateValue;
+                if (fractionValue != 0)
+                    for (double ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (fractionValue <= ii)
+                        {
+                            double finalValue = truncateValue + ii;
+                            distances[i] = finalValue;
+                            break;
+                        }
+                    }
+                else
+                    distances[i] = roundValue;
+            }
+        }
+
+        private static double[] NewMethod32(bool isMetric, Body[] sizeBody, Tag tempCsys)
+        {
+            double[] minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            double[] distances = new double[3];
+
+            ufsession_.Modl.AskBoundingBoxExact(sizeBody[0].Tag, tempCsys, minCorner, directions,
+                distances);
+
+            if (isMetric)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+
+            for (int i = 0; i < 3; i++)
+            {
+                double roundValue = System.Math.Round(distances[i], 3);
+                double truncateValue = System.Math.Truncate(roundValue);
+                double fractionValue = roundValue - truncateValue;
+                if (fractionValue != 0)
+                    for (double ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (fractionValue <= ii)
+                        {
+                            double finalValue = truncateValue + ii;
+                            distances[i] = finalValue;
+                            break;
+                        }
+                    }
+                else
+                    distances[i] = roundValue;
+            }
+
+            return distances;
+        }
+
+        private static void NewMethod31(bool isMetric, string burnoutValue, double[] distances)
+        {
+            if (isMetric)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+
+            if (burnoutValue.ToLower() == "no")
+                for (int i = 0; i < 3; i++)
+                {
+                    double roundValue = System.Math.Round(distances[i], 3);
+                    double truncateValue = System.Math.Truncate(roundValue);
+                    double fractionValue = roundValue - truncateValue;
+                    if (fractionValue != 0)
+                        for (double ii = .125; ii <= 1; ii += .125)
+                        {
+                            if (fractionValue <= ii)
+                            {
+                                double finalValue = truncateValue + ii;
+                                distances[i] = finalValue;
+                                break;
+                            }
+                        }
+                    else
+                        distances[i] = roundValue;
+                }
+        }
+
+        private double AskSteelSize(double distance, BasePart part)
+        {
+            //            if (part.Leaf.Contains("200"))
+            //                Debugger.Launch();
+            double roundValue = System.Math.Round(distance, 3);
+            double truncateValue = System.Math.Truncate(roundValue);
+            double fractionValue = roundValue - truncateValue;
+
+            // If it doesn't seem to be working you might have any issue with metric vs english,
+            // or you can revert the code back to the orignal line before you changed to float-point comparison.
+            if (System.Math.Abs(fractionValue) > .001)
+            {
+                for (double ii = .125; ii <= 1; ii += .125)
+                    if (fractionValue <= ii)
+                    {
+                        double finalValue = truncateValue + ii;
+                        return finalValue;
+                    }
+            }
+            else
+            {
+                return roundValue;
+            }
+
+            throw new Exception($"Ask Steel Size, Part: {part.Leaf}. {nameof(distance)}: {distance}");
+        }
+
+        private static double[] NewMethod33(double xValue, double yValue, double zValue)
+        {
+            double[] minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            double[] distances = new double[3];
+
+            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag, __display_part_.WCS.CoordinateSystem.Tag,
+                minCorner, directions, distances);
+
+            // add stock values
+
+            distances[0] += xValue;
+            distances[1] += yValue;
+            distances[2] += zValue;
+
+            if (_workPart.PartUnits == BasePart.Units.Millimeters)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+
+            for (int i = 0; i < 3; i++)
+            {
+                double roundValue = System.Math.Round(distances[i], 3);
+                double truncateValue = System.Math.Truncate(roundValue);
+                double fractionValue = roundValue - truncateValue;
+                if (fractionValue != 0)
+                    for (double ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (fractionValue <= ii)
+                        {
+                            double finalValue = truncateValue + ii;
+                            distances[i] = finalValue;
+                            break;
+                        }
+                    }
+                else
+                    distances[i] = roundValue;
+            }
+
+            return distances;
+        }
+
+
+
+        #endregion
+
+
+
+
     }
 }

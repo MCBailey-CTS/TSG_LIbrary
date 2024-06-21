@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using NXOpen;
 using NXOpen.Assemblies;
+using TSG_Library.Utilities;
 
 namespace TSG_Library.Extensions
 {
@@ -10,7 +13,12 @@ namespace TSG_Library.Extensions
     {
         #region String
 
-        private static bool __FastenerInfo(string file, string regex, out string diameter, out string length)
+        private static bool __FastenerInfo(
+            string file,
+            string regex,
+            out string diameter,
+            out string length
+        )
         {
             if (file.Contains("\\"))
                 file = Path.GetFileNameWithoutExtension(file);
@@ -37,7 +45,7 @@ namespace TSG_Library.Extensions
         public static bool _IsBlhcs_(this string leafOrDisplayName)
         {
             return leafOrDisplayName.ToLower().Contains("0375-bhcs-062")
-                   || leafOrDisplayName.ToLower().Contains("10mm-bhcs-016");
+                || leafOrDisplayName.ToLower().Contains("10mm-bhcs-016");
         }
 
         //[IgnoreExtensionAspect]
@@ -146,20 +154,20 @@ namespace TSG_Library.Extensions
         public static bool _IsFastener_(this string leafOrDisplayName)
         {
             return leafOrDisplayName._IsShcs_()
-                   || leafOrDisplayName._IsDwl_()
-                   || leafOrDisplayName._IsJckScrew_()
-                   || leafOrDisplayName._IsJckScrewTsg_();
+                || leafOrDisplayName._IsDwl_()
+                || leafOrDisplayName._IsJckScrew_()
+                || leafOrDisplayName._IsJckScrewTsg_();
         }
 
         //[IgnoreExtensionAspect]
         public static bool _IsFastenerExtended_(this string leafOrDisplayName)
         {
             return leafOrDisplayName.__IsFastener()
-                   || leafOrDisplayName._IsLhcs_()
-                   || leafOrDisplayName._IsSss_()
-                   || leafOrDisplayName._IsBhcs_()
-                   || leafOrDisplayName._IsFhcs_()
-                   || leafOrDisplayName._IsBlhcs_();
+                || leafOrDisplayName._IsLhcs_()
+                || leafOrDisplayName._IsSss_()
+                || leafOrDisplayName._IsBhcs_()
+                || leafOrDisplayName._IsFhcs_()
+                || leafOrDisplayName._IsBlhcs_();
         }
 
         public static string __AskDetailNumber(this string file)
@@ -193,18 +201,12 @@ namespace TSG_Library.Extensions
             return file.__IsJckScrewTsg(out _);
         }
 
-        public static bool __IsShcs(
-            this string file,
-            out string diameter,
-            out string length)
+        public static bool __IsShcs(this string file, out string diameter, out string length)
         {
             return __FastenerInfo(file, RegexShcs, out diameter, out length);
         }
 
-        public static bool __IsDwl(
-            this string file,
-            out string diameter,
-            out string length)
+        public static bool __IsDwl(this string file, out string diameter, out string length)
         {
             return __FastenerInfo(file, RegexDwl, out diameter, out length);
         }
@@ -214,30 +216,22 @@ namespace TSG_Library.Extensions
             return file.__IsFastener(out _);
         }
 
-        public static bool __IsShcs(
-            this string file,
-            out string diameter)
+        public static bool __IsShcs(this string file, out string diameter)
         {
             return file.__IsShcs(out diameter, out _);
         }
 
-        public static bool __IsDwl(
-            this string file,
-            out string diameter)
+        public static bool __IsDwl(this string file, out string diameter)
         {
             return file.__IsDwl(out diameter, out _);
         }
 
-        public static bool __IsJckScrew(
-            this string file,
-            out string diameter)
+        public static bool __IsJckScrew(this string file, out string diameter)
         {
             return __FastenerInfo(file, RegexJckScrew, out diameter, out _);
         }
 
-        public static bool __IsJckScrewTsg(
-            this string file,
-            out string diameter)
+        public static bool __IsJckScrewTsg(this string file, out string diameter)
         {
             return __FastenerInfo(file, RegexJckScrewTsg, out diameter, out _);
         }
@@ -279,7 +273,6 @@ namespace TSG_Library.Extensions
             return Regex.IsMatch(leaf, "^\\d+-\\d+-\\d+$");
         }
 
-
         public static string __AskDetailOp(this string path)
         {
             string leaf = Path.GetFileNameWithoutExtension(path);
@@ -291,7 +284,6 @@ namespace TSG_Library.Extensions
 
             return match.Groups["op"].Value;
         }
-
 
         //public static bool __IsAssemblyHolder(string str)
         //{
@@ -389,6 +381,43 @@ namespace TSG_Library.Extensions
         public static bool __Is000(this string str)
         {
             return Regex.IsMatch(str, RegexOp000Holder, RegexOptions.IgnoreCase);
+        }
+
+        public static string PerformStreamReaderString(
+            this string path,
+            string startSearchString,
+            string endSearchString
+        )
+        {
+            StreamReader sr = new StreamReader(path);
+            string content = sr.ReadToEnd();
+            sr.Close();
+            string[] startSplit = Regex.Split(content, startSearchString);
+            string[] endSplit = Regex.Split(startSplit[1], endSearchString);
+            string textSetting = endSplit[0];
+            textSetting = textSetting.Replace("\r\n", string.Empty);
+            return textSetting.Length > 0 ? textSetting : null;
+        }
+
+        public static List<CtsAttributes> PerformStreamReaderList(
+            this string path,
+            string startSearchString,
+            string endSearchString
+        )
+        {
+            StreamReader sr = new StreamReader(path);
+            string content = sr.ReadToEnd();
+            sr.Close();
+            string[] startSplit = Regex.Split(content, startSearchString);
+            string[] endSplit = Regex.Split(startSplit[1], endSearchString);
+            string textData = endSplit[0];
+            string[] splitData = Regex.Split(textData, "\r\n");
+            List<CtsAttributes> compData = (
+                from sData in splitData
+                where sData != string.Empty
+                select new CtsAttributes { AttrValue = sData }
+            ).ToList();
+            return compData.Count > 0 ? compData : null;
         }
 
         #endregion

@@ -19,6 +19,7 @@ using static TSG_Library.Extensions.Extensions;
 using static NXOpen.UF.UFConstants;
 using static TSG_Library.UFuncs._UFunc;
 using Part = NXOpen.Part;
+using TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs
 {
@@ -66,25 +67,25 @@ namespace TSG_Library.UFuncs
             toolTip1.SetToolTip(buttonPurple, CtsComponentColor.Purple.ToString());
             toolTip1.SetToolTip(buttonDarkDullBlue, CtsComponentColor.DarkDullBlue.ToString());
 
-            string getName = PerformStreamReaderString(FilePathUcf, ":DETAIL_TYPE_ATTRIBUTE_NAME:",
+            string getName = FilePathUcf.PerformStreamReaderString( ":DETAIL_TYPE_ATTRIBUTE_NAME:",
                 ":END_DETAIL_TYPE_ATTRIBUTE_NAME:");
 
-            string getMaterial = PerformStreamReaderString(FilePathUcf, ":MATERIAL_ATTRIBUTE_NAME:",
+            string getMaterial = FilePathUcf.PerformStreamReaderString( ":MATERIAL_ATTRIBUTE_NAME:",
                 ":END_MATERIAL_ATTRIBUTE_NAME:");
 
-            _compNames = PerformStreamReaderList(FilePathUcf, ":COMPONENT_NAMES:", ":END_COMPONENT_NAMES:");
+            _compNames = FilePathUcf.PerformStreamReaderList(":COMPONENT_NAMES:", ":END_COMPONENT_NAMES:");
 
             foreach (CtsAttributes cName in _compNames)
                 cName.AttrName = getName != string.Empty ? getName : "DETAIL NAME";
 
             _compMaterials =
-                PerformStreamReaderList(FilePathUcf, ":COMPONENT_MATERIALS:", ":END_COMPONENT_MATERIALS:");
+               FilePathUcf.PerformStreamReaderList(":COMPONENT_MATERIALS:", ":END_COMPONENT_MATERIALS:");
 
             foreach (CtsAttributes cMaterial in _compMaterials)
                 cMaterial.AttrName = getMaterial != string.Empty ? getMaterial : "MATERIAL";
 
             _compTolerances =
-                PerformStreamReaderList(FilePathUcf, ":COMPONENT_TOLERANCES:", ":END_COMPONENT_TOLERANCES:");
+                FilePathUcf.PerformStreamReaderList( ":COMPONENT_TOLERANCES:", ":END_COMPONENT_TOLERANCES:");
 
             foreach (CtsAttributes cTolerance in _compTolerances)
                 cTolerance.AttrName = "TOLERANCE";
@@ -1785,7 +1786,8 @@ namespace TSG_Library.UFuncs
                         .Where(delFeature => delFeature.Name == "DYNAMIC BLOCK").Cast<NXObject>().ToList();
                     delObjects.AddRange(_workPart.Lines.Cast<Line>().Where(nLine => nLine.Name != string.Empty));
                     delObjects.AddRange(_workPart.Points.Cast<Point>().Where(nPoint => nPoint.Name != string.Empty));
-                    if (delObjects.Count > 0) DeleteNxObjects(delObjects);
+                    if (delObjects.Count > 0) 
+                        session_.__DeleteObjects(delObjects.ToArray());
                 }
             }
             catch (Exception ex)
@@ -2194,7 +2196,7 @@ namespace TSG_Library.UFuncs
                     delObjects.AddRange(_workPart.Lines.Cast<Line>().Where(nLine => nLine.Name != string.Empty));
                     delObjects.AddRange(_workPart.Points.Cast<Point>().Where(nPoint => nPoint.Name != string.Empty));
                     if (delObjects.Count > 0)
-                        DeleteNxObjects(delObjects);
+                    session_.__DeleteObjects(delObjects.ToArray());
                 }
             }
             catch (Exception ex)
@@ -3145,40 +3147,10 @@ namespace TSG_Library.UFuncs
             return compSelection;
         }
 
-        private void DeleteNxObjects(List<NXObject> objsToDelete)
-        {
-            Session.UndoMarkId markDeleteObjs = session_.SetUndoMark(Session.MarkVisibility.Invisible, "");
-            session_.UpdateManager.AddObjectsToDeleteList(objsToDelete.ToArray());
-            session_.UpdateManager.DoUpdate(markDeleteObjs);
-        }
+       
 
-        private string PerformStreamReaderString(string path, string startSearchString, string endSearchString)
-        {
-            StreamReader sr = new StreamReader(path);
-            string content = sr.ReadToEnd();
-            sr.Close();
-            string[] startSplit = Regex.Split(content, startSearchString);
-            string[] endSplit = Regex.Split(startSplit[1], endSearchString);
-            string textSetting = endSplit[0];
-            textSetting = textSetting.Replace("\r\n", string.Empty);
-            return textSetting.Length > 0 ? textSetting : null;
-        }
-
-        private List<CtsAttributes> PerformStreamReaderList(string path, string startSearchString,
-            string endSearchString)
-        {
-            StreamReader sr = new StreamReader(path);
-            string content = sr.ReadToEnd();
-            sr.Close();
-            string[] startSplit = Regex.Split(content, startSearchString);
-            string[] endSplit = Regex.Split(startSplit[1], endSearchString);
-            string textData = endSplit[0];
-            string[] splitData = Regex.Split(textData, "\r\n");
-            List<CtsAttributes> compData = (from sData in splitData
-                                            where sData != string.Empty
-                                            select new CtsAttributes { AttrValue = sData }).ToList();
-            return compData.Count > 0 ? compData : null;
-        }
+       
+       
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {

@@ -65,18 +65,6 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        private static string PerformStreamReaderString(string path, string startSearchString, string endSearchString)
-        {
-            StreamReader sr = new StreamReader(path);
-            string content = sr.ReadToEnd();
-            sr.Close();
-            string[] startSplit = Regex.Split(content, startSearchString);
-            string[] endSplit = Regex.Split(startSplit[1], endSearchString);
-            string textSetting = endSplit[0];
-            textSetting = textSetting.Replace("\r\n", string.Empty);
-            return textSetting.Length > 0 ? textSetting : null;
-        }
-
         private void SelectButton_Click(object sender, EventArgs e)
         {
             using (session_.__UsingFormShowHide(this))
@@ -783,10 +771,10 @@ namespace TSG_Library.UFuncs
 
         private static List<CtsAttributes> CreateBurnoutMaterialList()
         {
-            string getMaterial = PerformStreamReaderString(FilePathUcf, ":COMPONENT_BURN_MATERIALS:",
+            string getMaterial = FilePathUcf.PerformStreamReaderString(":COMPONENT_BURN_MATERIALS:",
                 ":END_COMPONENT_BURN_MATERIALS:");
             List<CtsAttributes> compMaterials =
-                PerformStreamReaderList(FilePathUcf, ":COMPONENT_MATERIALS:", ":END_COMPONENT_MATERIALS:");
+               FilePathUcf. PerformStreamReaderList(":COMPONENT_MATERIALS:", ":END_COMPONENT_MATERIALS:");
             foreach (CtsAttributes cMaterial in compMaterials)
                 cMaterial.AttrName = getMaterial != string.Empty ? getMaterial : "MATERIAL";
             return compMaterials;
@@ -795,30 +783,16 @@ namespace TSG_Library.UFuncs
         private static List<CtsAttributes> CreateMaterialList()
         {
             _ = new List<CtsAttributes>();
-            string getMaterial = PerformStreamReaderString(FilePathUcf, ":MATERIAL_ATTRIBUTE_NAME:",
+            string getMaterial = FilePathUcf.PerformStreamReaderString(":MATERIAL_ATTRIBUTE_NAME:",
                 ":END_MATERIAL_ATTRIBUTE_NAME:");
             List<CtsAttributes> compMaterials =
-                PerformStreamReaderList(FilePathUcf, ":COMPONENT_MATERIALS:", ":END_COMPONENT_MATERIALS:");
+                FilePathUcf.PerformStreamReaderList( ":COMPONENT_MATERIALS:", ":END_COMPONENT_MATERIALS:");
             foreach (CtsAttributes cMaterial in compMaterials)
                 cMaterial.AttrName = getMaterial != string.Empty ? getMaterial : "MATERIAL";
             return compMaterials;
         }
 
-        private static List<CtsAttributes> PerformStreamReaderList(string path, string startSearchString,
-            string endSearchString)
-        {
-            StreamReader sr = new StreamReader(path);
-            string content = sr.ReadToEnd();
-            sr.Close();
-            string[] startSplit = Regex.Split(content, startSearchString);
-            string[] endSplit = Regex.Split(startSplit[1], endSearchString);
-            string textData = endSplit[0];
-            string[] splitData = Regex.Split(textData, "\r\n");
-            List<CtsAttributes> compData = (from sData in splitData
-                                            where sData != string.Empty
-                                            select new CtsAttributes { AttrValue = sData }).ToList();
-            return compData.Count > 0 ? compData : null;
-        }
+      
 
         public void SetDisplayPart(Component comp)
         {
