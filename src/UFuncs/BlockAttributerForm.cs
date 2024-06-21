@@ -119,22 +119,15 @@ namespace TSG_Library.UFuncs
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (WindowState == FormWindowState.Normal)
-            {
-                Settings.Default.block_attributer_form_window_location = Location;
-                Settings.Default.Save();
-            }
-            else
-            {
-                //Settings.Default.WindowSize = RestoreBounds.Size;
-                //Settings.Default.WindowLocation = Location;
-                Settings.Default.Save();
-            }
+            Settings.Default.block_attributer_form_window_location = Location;
+            Settings.Default.Save();
         }
 
         private void comboBoxDescription_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBoxDescription.Text == string.Empty) return;
+            if (comboBoxDescription.Text == string.Empty)
+                return;
+
             textBoxDescription.Clear();
             textBoxDescription.Text = comboBoxDescription.Text;
             comboBoxDescription.SelectedIndex = -1;
@@ -144,67 +137,57 @@ namespace TSG_Library.UFuncs
 
         private void comboBoxPurMaterials_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBoxPurMaterials.SelectedIndex != -1)
-            {
-                textBoxMaterial.Text = string.Empty;
-                comboBoxCustomMaterials.SelectedIndex = -1;
-            }
+            if (comboBoxPurMaterials.SelectedIndex == -1)
+                return;
+
+            textBoxMaterial.Text = string.Empty;
+            comboBoxCustomMaterials.SelectedIndex = -1;
         }
 
         private void comboBoxCustomMaterials_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBoxCustomMaterials.SelectedIndex != -1)
-            {
-                textBoxMaterial.Text = string.Empty;
-                comboBoxPurMaterials.SelectedIndex = -1;
+            if (comboBoxCustomMaterials.SelectedIndex == -1)
+                return;
 
-                CtsAttributes material = (CtsAttributes)comboBoxCustomMaterials.SelectedItem;
+            textBoxMaterial.Text = string.Empty;
+            comboBoxPurMaterials.SelectedIndex = -1;
+            CtsAttributes material = (CtsAttributes)comboBoxCustomMaterials.SelectedItem;
 
-                if (material.AttrValue == "STEELCRAFT")
-                    textBoxDescription.Text = "NITROGEN PLATE SYSTEM";
-            }
+            if (material.AttrValue == "STEELCRAFT")
+                textBoxDescription.Text = "NITROGEN PLATE SYSTEM";
         }
 
-        private void comboBoxAddx_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            UpdateBoundingBox();
-        }
+        private void comboBoxAddx_SelectedIndexChanged(object sender, EventArgs e) => UpdateBoundingBox();
 
-        private void comboBoxAddy_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            UpdateBoundingBox();
-        }
+        private void comboBoxAddy_SelectedIndexChanged(object sender, EventArgs e) => UpdateBoundingBox();
 
-        private void comboBoxAddz_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            UpdateBoundingBox();
-        }
+        private void comboBoxAddz_SelectedIndexChanged(object sender, EventArgs e) => UpdateBoundingBox();
 
         private void checkBoxBurnDirX_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBoxBurnDirX.Checked)
-            {
-                checkBoxBurnDirY.Checked = false;
-                checkBoxBurnDirZ.Checked = false;
-            }
+            if (!checkBoxBurnDirX.Checked)
+                return;
+
+            checkBoxBurnDirY.Checked = false;
+            checkBoxBurnDirZ.Checked = false;
         }
 
         private void checkBoxBurnDirY_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBoxBurnDirY.Checked)
-            {
-                checkBoxBurnDirX.Checked = false;
-                checkBoxBurnDirZ.Checked = false;
-            }
+            if (!checkBoxBurnDirY.Checked)
+                return;
+
+            checkBoxBurnDirX.Checked = false;
+            checkBoxBurnDirZ.Checked = false;
         }
 
         private void checkBoxBurnDirZ_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBoxBurnDirZ.Checked)
-            {
-                checkBoxBurnDirX.Checked = false;
-                checkBoxBurnDirY.Checked = false;
-            }
+            if (!checkBoxBurnDirZ.Checked)
+                return;
+
+            checkBoxBurnDirX.Checked = false;
+            checkBoxBurnDirY.Checked = false;
         }
 
         private void checkBoxBurnout_CheckedChanged(object sender, EventArgs e)
@@ -213,26 +196,24 @@ namespace TSG_Library.UFuncs
             {
                 checkBoxBurnDirZ.Checked = true;
                 comboBoxMaterial.Items.Clear();
-                //Add code here to populate list for Burn Components
-                foreach (CtsAttributes custBurnMatl in _burnCompMaterials)
-                    comboBoxMaterial.Items.Add(custBurnMatl);
+                comboBoxMaterial.Items.AddRange(_burnCompMaterials.ToArray());
+                return;
             }
-            else if (!checkBoxBurnout.Checked)
+
+            if (!checkBoxBurnout.Checked)
             {
                 checkBoxBurnDirZ.Checked = false;
                 comboBoxMaterial.Items.Clear();
-                foreach (CtsAttributes matl in _compMaterials)
-                    comboBoxMaterial.Items.Add(matl);
+                comboBoxMaterial.Items.Add(_compMaterials.ToArray());
+                return;
             }
-            else
-            {
-                if (!checkBoxGrind.Checked)
-                {
-                    checkBoxBurnDirX.Checked = false;
-                    checkBoxBurnDirY.Checked = false;
-                    checkBoxBurnDirZ.Checked = false;
-                }
-            }
+
+            if (checkBoxGrind.Checked)
+                return;
+
+            checkBoxBurnDirX.Checked = false;
+            checkBoxBurnDirY.Checked = false;
+            checkBoxBurnDirZ.Checked = false;
         }
 
         private void checkBoxGrind_CheckedChanged(object sender, EventArgs e)
@@ -242,23 +223,21 @@ namespace TSG_Library.UFuncs
                 comboBoxTolerance.Enabled = true;
                 comboBoxTolerance.SelectedIndex = 0;
                 checkBoxBurnDirZ.Checked = true;
+                return;
             }
-            else
+
+            if (checkBoxBurnout.Checked)
             {
-                if (!checkBoxBurnout.Checked)
-                {
-                    comboBoxTolerance.Enabled = false;
-                    comboBoxTolerance.SelectedIndex = -1;
-                    checkBoxBurnDirX.Checked = false;
-                    checkBoxBurnDirY.Checked = false;
-                    checkBoxBurnDirZ.Checked = false;
-                }
-                else
-                {
-                    comboBoxTolerance.Enabled = false;
-                    comboBoxTolerance.SelectedIndex = -1;
-                }
+                comboBoxTolerance.Enabled = false;
+                comboBoxTolerance.SelectedIndex = -1;
+                return;
             }
+
+            comboBoxTolerance.Enabled = false;
+            comboBoxTolerance.SelectedIndex = -1;
+            checkBoxBurnDirX.Checked = false;
+            checkBoxBurnDirY.Checked = false;
+            checkBoxBurnDirZ.Checked = false;
         }
 
         private void textBoxMaterial_Click(object sender, EventArgs e)
@@ -269,26 +248,17 @@ namespace TSG_Library.UFuncs
 
         private void textBoxDescription_TextChanged(object sender, EventArgs e)
         {
-            if (textBoxDescription.Text != string.Empty)
-            {
-                bool isBlockComp = false;
-
-                if (_selComp != null)
-                {
-                    Part compProto = (Part)_selComp.Prototype;
-
-                    foreach (Feature featDynamic in compProto.Features)
-                        if (featDynamic.FeatureType == "BLOCK")
-                            if (featDynamic.Name == "DYNAMIC BLOCK")
-                                isBlockComp = true;
-                    if (isBlockComp)
-                        groupBoxDescription.Text = "Description = Auto Update Off";
-                }
-            }
-            else
+            if (textBoxDescription.Text == string.Empty)
             {
                 groupBoxDescription.Text = "Description";
+                return;
             }
+
+            if (_selComp is null)
+                return;
+
+            if (_selComp.__Prototype().__HasDynamicBlock())
+                groupBoxDescription.Text = "Description = Auto Update Off";
         }
 
         private void textBoxDescription_KeyDown(object sender, KeyEventArgs e)
@@ -301,6 +271,7 @@ namespace TSG_Library.UFuncs
         {
             if (e.KeyCode.Equals(Keys.Tab))
                 buttonApply.Focus();
+
             if (e.KeyCode.Equals(Keys.Return))
                 buttonApply.PerformClick();
         }
@@ -316,65 +287,47 @@ namespace TSG_Library.UFuncs
                 groupBoxMaterial.Enabled = true;
                 groupBoxAttributes.Enabled = true;
                 comboBoxMaterial.Enabled = false;
-
                 UpdateSessionParts();
                 UpdateOriginalParts();
-
                 _isCustom = true;
                 _isMeasureBody = false;
                 _isSelectMultiple = false;
-
                 _selComp = SelectOneComponent();
 
-                if (_selComp != null)
+                NXObject obj = _selComp != null
+                    ? (NXObject)_selComp
+                    : _workPart;
+
+                NXObject.AttributeInformation[] attrInfo = obj.__GetAttributes();
+
+                if (attrInfo.Length == 0)
+                    return;
+
+                foreach (NXObject.AttributeInformation attr in obj.__GetAttributes())
                 {
-                    NXObject.AttributeInformation[] attrInfo = _selComp.__GetAttributes();
+                    if (attr.Title == "DESCRIPTION")
+                        if (obj.__GetStringAttribute(attr.Title) != "")
+                            textBoxDescription.Text = obj.__GetStringAttribute(attr.Title);
+                        else
+                            textBoxDescription.Text = "NO DESCRIPTION";
 
-                    if (attrInfo.Length != 0)
-                        foreach (NXObject.AttributeInformation attr in _selComp.__GetAttributes())
-                        {
-                            if (attr.Title == "DESCRIPTION")
-                                if (_selComp.__GetStringAttribute(attr.Title) != "")
-                                    textBoxDescription.Text = _selComp.__GetStringAttribute(attr.Title);
-                                else
-                                    textBoxDescription.Text = "NO DESCRIPTION";
-                            if (attr.Title == "MATERIAL")
-                                if (_selComp.__GetStringAttribute(attr.Title) != "")
-                                    textBoxMaterial.Text = _selComp.__GetStringAttribute(attr.Title);
-                                else
-                                    textBoxMaterial.Text = "NO MATERIAL";
-                        }
-
-                    textBoxDescription.Focus();
-                    groupBoxBlockExpressions.Enabled = false;
-                    buttonApply.Enabled = true;
-                }
-                else
-                {
-                    NXObject.AttributeInformation[] attrInfo = _workPart.__GetAttributes();
-
-                    if (attrInfo.Length != 0)
-                        foreach (NXObject.AttributeInformation attr in _workPart.__GetAttributes())
-                        {
-                            if (attr.Title == "DESCRIPTION")
-                                if (_workPart.__GetStringAttribute(attr.Title) != "")
-                                    textBoxDescription.Text = _workPart.__GetStringAttribute(attr.Title);
-                                else
-                                    textBoxDescription.Text = "NO DESCRIPTION";
-                            if (attr.Title == "MATERIAL")
-                                if (_workPart.__GetStringAttribute(attr.Title) != "")
-                                    textBoxMaterial.Text = _workPart.__GetStringAttribute(attr.Title);
-                                else
-                                    textBoxMaterial.Text = "NO MATERIAL";
-                        }
-
-                    groupBoxBlockExpressions.Enabled = false;
-                    buttonApply.Enabled = true;
+                    if (attr.Title == "MATERIAL")
+                        if (obj.__GetStringAttribute(attr.Title) != "")
+                            textBoxMaterial.Text = obj.__GetStringAttribute(attr.Title);
+                        else
+                            textBoxMaterial.Text = "NO MATERIAL";
                 }
             }
-            catch (NXException ex)
+            catch (Exception ex)
             {
-                TheUi.NXMessageBox.Show("Caught exception : Select Custom", NXMessageBox.DialogType.Error, ex.Message);
+                ex.__PrintException();
+            }
+            finally
+            {
+                textBoxDescription.Focus();
+                groupBoxBlockExpressions.Enabled = false;
+                buttonApply.Enabled = true;
+
             }
         }
 
@@ -391,20 +344,17 @@ namespace TSG_Library.UFuncs
                 groupBoxMaterial.Enabled = true;
                 groupBoxAttributes.Enabled = true;
                 groupBoxBlockExpressions.Enabled = false;
-
                 _isCustom = true;
                 _isMeasureBody = false;
                 _isSelectMultiple = true;
-
                 _allSelectedComponents = SelectMultipleComponents();
 
                 if (_allSelectedComponents.Count > 0)
                     _selectedComponents = GetOneComponentOfMany(_allSelectedComponents);
             }
-            catch (NXException ex)
+            catch (Exception ex)
             {
-                TheUi.NXMessageBox.Show("Caught exception : Select Multiple", NXMessageBox.DialogType.Error,
-                    ex.Message);
+                ex.__PrintException();
             }
         }
 
@@ -416,14 +366,11 @@ namespace TSG_Library.UFuncs
                 textBoxMaterial.Clear();
                 comboBoxDescription.SelectedIndex = -1;
                 comboBoxMaterial.SelectedIndex = -1;
-
                 UpdateSessionParts();
                 UpdateOriginalParts();
-
                 _isCustom = false;
                 _isMeasureBody = false;
                 _isSelectMultiple = false;
-
                 _selectedComponents = SelectMultipleComponents();
 
                 if (_selectedComponents.Count > 0)
@@ -432,11 +379,8 @@ namespace TSG_Library.UFuncs
 
                     foreach (Component diesetComp in _selectedComponents)
                     {
-                        BasePart makeDisp = (BasePart)diesetComp.Prototype;
-                        session_.Parts.SetDisplay(makeDisp, false, false, out PartLoadStatus partLoadStatus1);
-                        partLoadStatus1.Dispose();
+                        __display_part_ = diesetComp.__Prototype();
                         UpdateSessionParts();
-
                         Expression noteExp = null;
                         bool isExpression = false;
 
@@ -449,10 +393,7 @@ namespace TSG_Library.UFuncs
 
                         bool isDescription = false;
                         string description = string.Empty;
-
-                        foreach (NXObject.AttributeInformation attr in _workPart.__GetAttributes())
-                            if (attr.Title == "DESCRIPTION")
-                                isDescription = true;
+                        isDescription = _workPart.__HasAttribute("DESCRIPTION");
 
                         if (isDescription)
                             description = _workPart.__GetStringAttribute("DESCRIPTION");
@@ -467,43 +408,49 @@ namespace TSG_Library.UFuncs
                                 _workPart.__SetAttribute("DESCRIPTION", description);
                             }
 
-                            if (isExpression)
-                            {
-                                noteExp.RightHandSide = "\"yes\"";
-                            }
-                            else
-                            {
-                                Expression diesetExp =
-                                    _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
-                            }
+                            NewMethod(noteExp, isExpression);
                         }
                         else
-                        {
-                            if (isExpression)
-                            {
-                                noteExp.RightHandSide = "\"yes\"";
-                            }
-                            else
-                            {
-                                Expression diesetExp =
-                                    _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
-                            }
-                        }
+                            NewMethod1(noteExp, isExpression);
                     }
-
-                    session_.Parts.SetDisplay(_originalDisplayPart, false, false, out PartLoadStatus partLoadStatus2);
-                    partLoadStatus2.Dispose();
+                    __display_part_ = _originalDisplayPart;
                     UpdateSessionParts();
 
                     ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
                     ufsession_.Disp.RegenerateDisplay();
                 }
             }
-            catch (NXException ex)
+            catch (Exception ex)
             {
                 ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
-                TheUi.NXMessageBox.Show("Caught exception : Select Dieset", NXMessageBox.DialogType.Error, ex.Message);
                 ufsession_.Disp.RegenerateDisplay();
+                ex.__PrintException();
+            }
+        }
+
+        private static void NewMethod1(Expression noteExp, bool isExpression)
+        {
+            if (isExpression)
+            {
+                noteExp.RightHandSide = "\"yes\"";
+            }
+            else
+            {
+                Expression diesetExp =
+                    _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
+            }
+        }
+
+        private static void NewMethod(Expression noteExp, bool isExpression)
+        {
+            if (isExpression)
+            {
+                noteExp.RightHandSide = "\"yes\"";
+            }
+            else
+            {
+                Expression diesetExp =
+                    _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
             }
         }
 
@@ -724,13 +671,7 @@ namespace TSG_Library.UFuncs
 
                         Expression noteExp = null;
                         bool isExpression = false;
-
-                        foreach (Expression exp in _workPart.Expressions)
-                            if (exp.Name == "WeldmentNote")
-                            {
-                                isExpression = true;
-                                noteExp = exp;
-                            }
+                        NewMethod2(ref noteExp, ref isExpression);
 
                         string description = _workPart.__GetStringAttribute("DESCRIPTION");
 
@@ -778,6 +719,16 @@ namespace TSG_Library.UFuncs
                 TheUi.NXMessageBox.Show("Caught exception : Select Weldment", NXMessageBox.DialogType.Error,
                     ex.Message);
             }
+        }
+
+        private static void NewMethod2(ref Expression noteExp, ref bool isExpression)
+        {
+            foreach (Expression exp in _workPart.Expressions)
+                if (exp.Name == "WeldmentNote")
+                {
+                    isExpression = true;
+                    noteExp = exp;
+                }
         }
 
         private void buttonSelectBlockComp_Click(object sender, EventArgs e)
@@ -858,97 +809,180 @@ namespace TSG_Library.UFuncs
                 //End revision 1.01
 
 
-                if (_sizeBody != null)
+                if (_sizeBody is null)
                 {
-                    _selComp = _sizeBody.OwningComponent;
+                    buttonReset.PerformClick();
+                    return;
+                }
+                _selComp = _sizeBody.OwningComponent;
 
-                    if (_selComp != null)
+                if (_selComp != null)
+                {
+                    _selComp.Unhighlight();
+
+                    Part makeWork = (Part)_selComp.Prototype;
+                    BasePart.Units wpUnits = makeWork.PartUnits;
+
+                    if (__display_part_.PartUnits == wpUnits)
                     {
-                        _selComp.Unhighlight();
+                        session_.Parts.SetWorkComponent(_selComp, PartCollection.RefsetOption.Current,
+                            PartCollection.WorkComponentOption.Given,
+                            out PartLoadStatus loadStatus1);
+                        loadStatus1.Dispose();
 
-                        Part makeWork = (Part)_selComp.Prototype;
-                        BasePart.Units wpUnits = makeWork.PartUnits;
+                        UpdateSessionParts();
+                    }
+                    else
+                    {
+                        unitsMatch = false;
+                    }
+                }
 
-                        if (__display_part_.PartUnits == wpUnits)
+                if (unitsMatch)
+                {
+                    bool isBlockComp = false;
+
+                    foreach (Feature featDynamic in _workPart.Features)
+                        if (featDynamic.FeatureType == "BLOCK")
+                            if (featDynamic.Name == "DYNAMIC BLOCK")
+                                isBlockComp = true;
+                    if (isBlockComp)
+                    {
+                        SetWcsToWorkPart(_selComp);
+
+                        // get named expressions
+
+                        foreach (Expression exp in _workPart.Expressions.ToArray())
                         {
-                            session_.Parts.SetWorkComponent(_selComp, PartCollection.RefsetOption.Current,
-                                PartCollection.WorkComponentOption.Given,
-                                out PartLoadStatus loadStatus1);
-                            loadStatus1.Dispose();
+                            if (exp.Name == "AddX")
+                            {
+                                isNamedExpression = true;
+                                AddX = exp;
+                                xValue = exp.Value;
+                            }
 
-                            UpdateSessionParts();
+                            if (exp.Name == "AddY")
+                            {
+                                isNamedExpression = true;
+                                AddY = exp;
+                                yValue = exp.Value;
+                            }
+
+                            if (exp.Name == "AddZ")
+                            {
+                                isNamedExpression = true;
+                                AddZ = exp;
+                                zValue = exp.Value;
+                            }
+
+                            if (exp.Name == "BurnDir")
+                            {
+                                isNamedExpression = true;
+                                BurnDir = exp;
+                                burnDirValue = exp.RightHandSide;
+                            }
+
+                            if (exp.Name == "Burnout")
+                            {
+                                isNamedExpression = true;
+                                Burnout = exp;
+                                burnoutValue = exp.RightHandSide;
+                            }
+
+                            if (exp.Name == "Grind")
+                            {
+                                isNamedExpression = true;
+                                Grind = exp;
+                                grindValue = exp.RightHandSide;
+                            }
+
+                            if (exp.Name == "GrindTolerance")
+                            {
+                                isNamedExpression = true;
+                                GrindTolerance = exp;
+                                grindTolValue = exp.RightHandSide;
+                            }
+                        }
+
+                        burnDirValue = burnDirValue.Replace("\"", string.Empty);
+                        burnoutValue = burnoutValue.Replace("\"", string.Empty);
+                        grindValue = grindValue.Replace("\"", string.Empty);
+                        grindTolValue = grindTolValue.Replace("\"", string.Empty);
+
+                        if (isNamedExpression)
+                        {
+                            foreach (CtsAttributes addX in comboBoxAddx.Items)
+                                try
+                                {
+                                    if (AddX.RightHandSide == addX.AttrValue)
+                                    {
+                                        comboBoxAddx.SelectedItem = addX;
+
+                                        break;
+                                    }
+
+                                    comboBoxAddx.SelectedIndex = 0;
+                                }
+                                catch (Exception ex)
+                                {
+                                    UI.GetUI().NXMessageBox.Show("DJ", NXMessageBox.DialogType.Error, ex.Message);
+                                }
+
+                            foreach (CtsAttributes addY in comboBoxAddy.Items)
+                            {
+                                if (AddY.RightHandSide == addY.AttrValue)
+                                {
+                                    comboBoxAddy.SelectedItem = addY;
+
+                                    break;
+                                }
+
+                                comboBoxAddy.SelectedIndex = 0;
+                            }
+
+                            foreach (CtsAttributes addZ in comboBoxAddz.Items)
+                            {
+                                if (AddZ.RightHandSide == addZ.AttrValue)
+                                {
+                                    comboBoxAddz.SelectedItem = addZ;
+
+                                    break;
+                                }
+
+                                comboBoxAddz.SelectedIndex = 0;
+                            }
+
+                            if (burnoutValue.ToLower() == "yes")
+                                checkBoxBurnout.Checked = true;
+                            else
+                                checkBoxBurnout.Checked = false;
+                            if (grindValue.ToLower() == "yes")
+                                checkBoxGrind.Checked = true;
+                            else
+                                checkBoxGrind.Checked = false;
+                            if (burnDirValue.ToLower() == "x")
+                                checkBoxBurnDirX.Checked = true;
+                            if (burnDirValue.ToLower() == "y")
+                                checkBoxBurnDirY.Checked = true;
+                            if (burnDirValue.ToLower() == "z")
+                                checkBoxBurnDirZ.Checked = true;
+                            foreach (CtsAttributes tolSetting in comboBoxTolerance.Items)
+                                if (grindTolValue == tolSetting.AttrValue)
+                                    comboBoxTolerance.SelectedItem = tolSetting;
+
+                            double[] distances = NewMethod3(xValue, yValue, zValue);
+
+                            CreateTempBlockLines(__display_part_.WCS.Origin, distances[0], distances[1],
+                                distances[2]);
+                            _allowBoundingBox = true;
                         }
                         else
                         {
-                            unitsMatch = false;
-                        }
-                    }
-
-                    if (unitsMatch)
-                    {
-                        bool isBlockComp = false;
-
-                        foreach (Feature featDynamic in _workPart.Features)
-                            if (featDynamic.FeatureType == "BLOCK")
-                                if (featDynamic.Name == "DYNAMIC BLOCK")
-                                    isBlockComp = true;
-                        if (isBlockComp)
-                        {
-                            SetWcsToWorkPart(_selComp);
+                            CreateCompExpressions();
 
                             // get named expressions
 
-                            foreach (Expression exp in _workPart.Expressions.ToArray())
-                            {
-                                if (exp.Name == "AddX")
-                                {
-                                    isNamedExpression = true;
-                                    AddX = exp;
-                                    xValue = exp.Value;
-                                }
-
-                                if (exp.Name == "AddY")
-                                {
-                                    isNamedExpression = true;
-                                    AddY = exp;
-                                    yValue = exp.Value;
-                                }
-
-                                if (exp.Name == "AddZ")
-                                {
-                                    isNamedExpression = true;
-                                    AddZ = exp;
-                                    zValue = exp.Value;
-                                }
-
-                                if (exp.Name == "BurnDir")
-                                {
-                                    isNamedExpression = true;
-                                    BurnDir = exp;
-                                    burnDirValue = exp.RightHandSide;
-                                }
-
-                                if (exp.Name == "Burnout")
-                                {
-                                    isNamedExpression = true;
-                                    Burnout = exp;
-                                    burnoutValue = exp.RightHandSide;
-                                }
-
-                                if (exp.Name == "Grind")
-                                {
-                                    isNamedExpression = true;
-                                    Grind = exp;
-                                    grindValue = exp.RightHandSide;
-                                }
-
-                                if (exp.Name == "GrindTolerance")
-                                {
-                                    isNamedExpression = true;
-                                    GrindTolerance = exp;
-                                    grindTolValue = exp.RightHandSide;
-                                }
-                            }
+                            NewMethod4(ref isNamedExpression, ref AddX, ref AddY, ref AddZ, ref BurnDir, ref Burnout, ref Grind, ref GrindTolerance, ref xValue, ref yValue, ref zValue, ref burnDirValue, ref burnoutValue, ref grindValue, ref grindTolValue);
 
                             burnDirValue = burnDirValue.Replace("\"", string.Empty);
                             burnoutValue = burnoutValue.Replace("\"", string.Empty);
@@ -957,46 +991,9 @@ namespace TSG_Library.UFuncs
 
                             if (isNamedExpression)
                             {
-                                foreach (CtsAttributes addX in comboBoxAddx.Items)
-                                    try
-                                    {
-                                        if (AddX.RightHandSide == addX.AttrValue)
-                                        {
-                                            comboBoxAddx.SelectedItem = addX;
-
-                                            break;
-                                        }
-
-                                        comboBoxAddx.SelectedIndex = 0;
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        UI.GetUI().NXMessageBox.Show("DJ", NXMessageBox.DialogType.Error, ex.Message);
-                                    }
-
-                                foreach (CtsAttributes addY in comboBoxAddy.Items)
-                                {
-                                    if (AddY.RightHandSide == addY.AttrValue)
-                                    {
-                                        comboBoxAddy.SelectedItem = addY;
-
-                                        break;
-                                    }
-
-                                    comboBoxAddy.SelectedIndex = 0;
-                                }
-
-                                foreach (CtsAttributes addZ in comboBoxAddz.Items)
-                                {
-                                    if (AddZ.RightHandSide == addZ.AttrValue)
-                                    {
-                                        comboBoxAddz.SelectedItem = addZ;
-
-                                        break;
-                                    }
-
-                                    comboBoxAddz.SelectedIndex = 0;
-                                }
+                                NewMethod5(AddX);
+                                NewMethod6(AddY);
+                                NewMethod7(AddZ);
 
                                 if (burnoutValue.ToLower() == "yes")
                                     checkBoxBurnout.Checked = true;
@@ -1015,252 +1012,232 @@ namespace TSG_Library.UFuncs
                                 foreach (CtsAttributes tolSetting in comboBoxTolerance.Items)
                                     if (grindTolValue == tolSetting.AttrValue)
                                         comboBoxTolerance.SelectedItem = tolSetting;
-
-
-                                // get bounding box info
-
-                                double[] minCorner = new double[3];
-                                double[,] directions = new double[3, 3];
-                                double[] distances = new double[3];
-
-                                ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
-                                    __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
-
-                                // add stock values
-
-                                distances[0] += xValue;
-                                distances[1] += yValue;
-                                distances[2] += zValue;
-
-                                if (_workPart.PartUnits == BasePart.Units.Millimeters)
-                                    for (int i = 0; i < distances.Length; i++)
-                                        distances[i] /= 25.4d;
-
-                                for (int i = 0; i < 3; i++)
-                                {
-                                    double roundValue = System.Math.Round(distances[i], 3);
-                                    double truncateValue = System.Math.Truncate(roundValue);
-                                    double fractionValue = roundValue - truncateValue;
-                                    if (fractionValue != 0)
-                                        for (double ii = .125; ii <= 1; ii += .125)
-                                        {
-                                            if (fractionValue <= ii)
-                                            {
-                                                double finalValue = truncateValue + ii;
-                                                distances[i] = finalValue;
-                                                break;
-                                            }
-                                        }
-                                    else
-                                        distances[i] = roundValue;
-                                }
-
-                                CreateTempBlockLines(__display_part_.WCS.Origin, distances[0], distances[1],
-                                    distances[2]);
-                                _allowBoundingBox = true;
+                                NewMethod8(xValue, yValue, zValue);
                             }
                             else
                             {
-                                CreateCompExpressions();
+                                session_.Parts.SetWork(__display_part_);
+                                buttonReset.PerformClick();
 
-                                // get named expressions
-
-                                foreach (Expression exp in _workPart.Expressions.ToArray())
-                                {
-                                    if (exp.Name == "AddX")
-                                    {
-                                        isNamedExpression = true;
-                                        AddX = exp;
-                                        xValue = exp.Value;
-                                    }
-
-                                    if (exp.Name == "AddY")
-                                    {
-                                        isNamedExpression = true;
-                                        AddY = exp;
-                                        yValue = exp.Value;
-                                    }
-
-                                    if (exp.Name == "AddZ")
-                                    {
-                                        isNamedExpression = true;
-                                        AddZ = exp;
-                                        zValue = exp.Value;
-                                    }
-
-                                    if (exp.Name == "BurnDir")
-                                    {
-                                        isNamedExpression = true;
-                                        BurnDir = exp;
-                                        burnDirValue = exp.RightHandSide;
-                                    }
-
-                                    if (exp.Name == "Burnout")
-                                    {
-                                        isNamedExpression = true;
-                                        Burnout = exp;
-                                        burnoutValue = exp.RightHandSide;
-                                    }
-
-                                    if (exp.Name == "Grind")
-                                    {
-                                        isNamedExpression = true;
-                                        Grind = exp;
-                                        grindValue = exp.RightHandSide;
-                                    }
-
-                                    if (exp.Name == "GrindTolerance")
-                                    {
-                                        isNamedExpression = true;
-                                        GrindTolerance = exp;
-                                        grindTolValue = exp.RightHandSide;
-                                    }
-                                }
-
-                                burnDirValue = burnDirValue.Replace("\"", string.Empty);
-                                burnoutValue = burnoutValue.Replace("\"", string.Empty);
-                                grindValue = grindValue.Replace("\"", string.Empty);
-                                grindTolValue = grindTolValue.Replace("\"", string.Empty);
-
-                                if (isNamedExpression)
-                                {
-                                    foreach (CtsAttributes addX in comboBoxAddx.Items)
-                                    {
-                                        if (AddX.RightHandSide == addX.AttrValue)
-                                        {
-                                            comboBoxAddx.SelectedItem = addX;
-
-                                            break;
-                                        }
-
-                                        comboBoxAddx.SelectedIndex = 0;
-                                    }
-
-                                    foreach (CtsAttributes addY in comboBoxAddy.Items)
-                                    {
-                                        if (AddY.RightHandSide == addY.AttrValue)
-                                        {
-                                            comboBoxAddy.SelectedItem = addY;
-
-                                            break;
-                                        }
-
-                                        comboBoxAddy.SelectedIndex = 0;
-                                    }
-
-                                    foreach (CtsAttributes addZ in comboBoxAddz.Items)
-                                    {
-                                        if (AddZ.RightHandSide == addZ.AttrValue)
-                                        {
-                                            comboBoxAddz.SelectedItem = addZ;
-
-                                            break;
-                                        }
-
-                                        comboBoxAddz.SelectedIndex = 0;
-                                    }
-
-                                    if (burnoutValue.ToLower() == "yes")
-                                        checkBoxBurnout.Checked = true;
-                                    else
-                                        checkBoxBurnout.Checked = false;
-                                    if (grindValue.ToLower() == "yes")
-                                        checkBoxGrind.Checked = true;
-                                    else
-                                        checkBoxGrind.Checked = false;
-                                    if (burnDirValue.ToLower() == "x")
-                                        checkBoxBurnDirX.Checked = true;
-                                    if (burnDirValue.ToLower() == "y")
-                                        checkBoxBurnDirY.Checked = true;
-                                    if (burnDirValue.ToLower() == "z")
-                                        checkBoxBurnDirZ.Checked = true;
-                                    foreach (CtsAttributes tolSetting in comboBoxTolerance.Items)
-                                        if (grindTolValue == tolSetting.AttrValue)
-                                            comboBoxTolerance.SelectedItem = tolSetting;
-
-                                    // get bounding box info
-
-                                    double[] minCorner = new double[3];
-                                    double[,] directions = new double[3, 3];
-                                    double[] distances = new double[3];
-
-                                    ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
-                                        __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
-
-                                    // add stock values
-
-                                    distances[0] += xValue;
-                                    distances[1] += yValue;
-                                    distances[2] += zValue;
-
-                                    if (_workPart.PartUnits == BasePart.Units.Millimeters)
-                                        for (int i = 0; i < distances.Length; i++)
-                                            distances[i] /= 25.4d;
-
-                                    for (int i = 0; i < 3; i++)
-                                    {
-                                        double roundValue = System.Math.Round(distances[i], 3);
-                                        double truncateValue = System.Math.Truncate(roundValue);
-                                        double fractionValue = roundValue - truncateValue;
-                                        if (fractionValue != 0)
-                                            for (double ii = .125; ii <= 1; ii += .125)
-                                            {
-                                                if (fractionValue <= ii)
-                                                {
-                                                    double finalValue = truncateValue + ii;
-                                                    distances[i] = finalValue;
-                                                    break;
-                                                }
-                                            }
-                                        else
-                                            distances[i] = roundValue;
-                                    }
-
-                                    CreateTempBlockLines(__display_part_.WCS.Origin, distances[0], distances[1],
-                                        distances[2]);
-                                    _allowBoundingBox = true;
-                                }
-                                else
-                                {
-                                    session_.Parts.SetWork(__display_part_);
-                                    buttonReset.PerformClick();
-
-                                    UI.GetUI()
-                                        .NXMessageBox.Show("Caught exception : Select Block",
-                                            NXMessageBox.DialogType.Error,
-                                            "Expressions not created or do not exist");
-                                }
+                                UI.GetUI()
+                                    .NXMessageBox.Show("Caught exception : Select Block",
+                                        NXMessageBox.DialogType.Error,
+                                        "Expressions not created or do not exist");
                             }
-
-                            groupBoxCustom.Enabled = false;
-                            buttonApply.Enabled = true;
                         }
-                        else
-                        {
-                            session_.Parts.SetWork(__display_part_);
-                            buttonReset.PerformClick();
 
-                            UI.GetUI()
-                                .NXMessageBox.Show("Caught exception : Select Block", NXMessageBox.DialogType.Error,
-                                    "Not a block component\r\n" + "Select Measure");
-                        }
+                        groupBoxCustom.Enabled = false;
+                        buttonApply.Enabled = true;
                     }
                     else
                     {
-                        UI.GetUI().NXMessageBox.Show("Caught exception : Select Block", NXMessageBox.DialogType.Error,
-                            "Part units do not match");
+                        session_.Parts.SetWork(__display_part_);
                         buttonReset.PerformClick();
+
+                        UI.GetUI()
+                            .NXMessageBox.Show("Caught exception : Select Block", NXMessageBox.DialogType.Error,
+                                "Not a block component\r\n" + "Select Measure");
                     }
                 }
                 else
                 {
+                    UI.GetUI().NXMessageBox.Show("Caught exception : Select Block", NXMessageBox.DialogType.Error,
+                        "Part units do not match");
                     buttonReset.PerformClick();
                 }
             }
-            catch (NXException ex)
+            catch (Exception ex)
             {
-                TheUi.NXMessageBox.Show("Caught exception : Select Block", NXMessageBox.DialogType.Error, ex.Message);
+                ex.__PrintException();
             }
+        }
+
+        private void NewMethod8(double xValue, double yValue, double zValue)
+        {
+            // get bounding box info
+
+            double[] minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            double[] distances = new double[3];
+
+            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
+                __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
+
+            // add stock values
+
+            distances[0] += xValue;
+            distances[1] += yValue;
+            distances[2] += zValue;
+
+            if (_workPart.PartUnits == BasePart.Units.Millimeters)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+
+            for (int i = 0; i < 3; i++)
+            {
+                double roundValue = System.Math.Round(distances[i], 3);
+                double truncateValue = System.Math.Truncate(roundValue);
+                double fractionValue = roundValue - truncateValue;
+                if (fractionValue != 0)
+                    for (double ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (fractionValue <= ii)
+                        {
+                            double finalValue = truncateValue + ii;
+                            distances[i] = finalValue;
+                            break;
+                        }
+                    }
+                else
+                    distances[i] = roundValue;
+            }
+
+            CreateTempBlockLines(__display_part_.WCS.Origin, distances[0], distances[1],
+                distances[2]);
+            _allowBoundingBox = true;
+        }
+
+        private void NewMethod7(Expression AddZ)
+        {
+            foreach (CtsAttributes addZ in comboBoxAddz.Items)
+            {
+                if (AddZ.RightHandSide == addZ.AttrValue)
+                {
+                    comboBoxAddz.SelectedItem = addZ;
+
+                    break;
+                }
+
+                comboBoxAddz.SelectedIndex = 0;
+            }
+        }
+
+        private void NewMethod6(Expression AddY)
+        {
+            foreach (CtsAttributes addY in comboBoxAddy.Items)
+            {
+                if (AddY.RightHandSide == addY.AttrValue)
+                {
+                    comboBoxAddy.SelectedItem = addY;
+
+                    break;
+                }
+
+                comboBoxAddy.SelectedIndex = 0;
+            }
+        }
+
+        private void NewMethod5(Expression AddX)
+        {
+            foreach (CtsAttributes addX in comboBoxAddx.Items)
+            {
+                if (AddX.RightHandSide == addX.AttrValue)
+                {
+                    comboBoxAddx.SelectedItem = addX;
+
+                    break;
+                }
+
+                comboBoxAddx.SelectedIndex = 0;
+            }
+        }
+
+        private static void NewMethod4(ref bool isNamedExpression, ref Expression AddX, ref Expression AddY, ref Expression AddZ, ref Expression BurnDir, ref Expression Burnout, ref Expression Grind, ref Expression GrindTolerance, ref double xValue, ref double yValue, ref double zValue, ref string burnDirValue, ref string burnoutValue, ref string grindValue, ref string grindTolValue)
+        {
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+            {
+                if (exp.Name == "AddX")
+                {
+                    isNamedExpression = true;
+                    AddX = exp;
+                    xValue = exp.Value;
+                }
+
+                if (exp.Name == "AddY")
+                {
+                    isNamedExpression = true;
+                    AddY = exp;
+                    yValue = exp.Value;
+                }
+
+                if (exp.Name == "AddZ")
+                {
+                    isNamedExpression = true;
+                    AddZ = exp;
+                    zValue = exp.Value;
+                }
+
+                if (exp.Name == "BurnDir")
+                {
+                    isNamedExpression = true;
+                    BurnDir = exp;
+                    burnDirValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Burnout")
+                {
+                    isNamedExpression = true;
+                    Burnout = exp;
+                    burnoutValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Grind")
+                {
+                    isNamedExpression = true;
+                    Grind = exp;
+                    grindValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "GrindTolerance")
+                {
+                    isNamedExpression = true;
+                    GrindTolerance = exp;
+                    grindTolValue = exp.RightHandSide;
+                }
+            }
+        }
+
+        private static double[] NewMethod3(double xValue, double yValue, double zValue)
+        {
+            // get bounding box info
+
+            double[] minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            double[] distances = new double[3];
+
+            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
+                __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
+
+            // add stock values
+
+            distances[0] += xValue;
+            distances[1] += yValue;
+            distances[2] += zValue;
+
+            if (_workPart.PartUnits == BasePart.Units.Millimeters)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+
+            for (int i = 0; i < 3; i++)
+            {
+                double roundValue = System.Math.Round(distances[i], 3);
+                double truncateValue = System.Math.Truncate(roundValue);
+                double fractionValue = roundValue - truncateValue;
+                if (fractionValue != 0)
+                    for (double ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (fractionValue <= ii)
+                        {
+                            double finalValue = truncateValue + ii;
+                            distances[i] = finalValue;
+                            break;
+                        }
+                    }
+                else
+                    distances[i] = roundValue;
+            }
+
+            return distances;
         }
 
         private void buttonMeasure_Click(object sender, EventArgs e)
@@ -1351,57 +1328,7 @@ namespace TSG_Library.UFuncs
                         {
                             // get named expressions
 
-                            foreach (Expression exp in _workPart.Expressions.ToArray())
-                            {
-                                if (exp.Name == "AddX")
-                                {
-                                    isNamedExpression = true;
-                                    AddX = exp;
-                                    xValue = exp.Value;
-                                }
-
-                                if (exp.Name == "AddY")
-                                {
-                                    isNamedExpression = true;
-                                    AddY = exp;
-                                    yValue = exp.Value;
-                                }
-
-                                if (exp.Name == "AddZ")
-                                {
-                                    isNamedExpression = true;
-                                    AddZ = exp;
-                                    zValue = exp.Value;
-                                }
-
-                                if (exp.Name == "BurnDir")
-                                {
-                                    isNamedExpression = true;
-                                    BurnDir = exp;
-                                    burnDirValue = exp.RightHandSide;
-                                }
-
-                                if (exp.Name == "Burnout")
-                                {
-                                    isNamedExpression = true;
-                                    Burnout = exp;
-                                    burnoutValue = exp.RightHandSide;
-                                }
-
-                                if (exp.Name == "Grind")
-                                {
-                                    isNamedExpression = true;
-                                    Grind = exp;
-                                    grindValue = exp.RightHandSide;
-                                }
-
-                                if (exp.Name == "GrindTolerance")
-                                {
-                                    isNamedExpression = true;
-                                    GrindTolerance = exp;
-                                    grindTolValue = exp.RightHandSide;
-                                }
-                            }
+                            NewMethod9(ref isNamedExpression, ref AddX, ref AddY, ref AddZ, ref BurnDir, ref Burnout, ref Grind, ref GrindTolerance, ref xValue, ref yValue, ref zValue, ref burnDirValue, ref burnoutValue, ref grindValue, ref grindTolValue);
 
                             burnDirValue = burnDirValue.Replace("\"", string.Empty);
                             burnoutValue = burnoutValue.Replace("\"", string.Empty);
@@ -1410,157 +1337,20 @@ namespace TSG_Library.UFuncs
 
                             if (isNamedExpression)
                             {
-                                foreach (CtsAttributes addX in comboBoxAddx.Items)
-                                {
-                                    if (AddX.RightHandSide == addX.AttrValue)
-                                    {
-                                        comboBoxAddx.SelectedItem = addX;
+                                NewMethod10(AddX);
+                                NewMethod11(AddY);
 
-                                        break;
-                                    }
-
-                                    comboBoxAddx.SelectedIndex = 0;
-                                }
-
-                                foreach (CtsAttributes addY in comboBoxAddy.Items)
-                                {
-                                    if (AddY.RightHandSide == addY.AttrValue)
-                                    {
-                                        comboBoxAddy.SelectedItem = addY;
-
-                                        break;
-                                    }
-
-                                    comboBoxAddy.SelectedIndex = 0;
-                                }
-
-                                foreach (CtsAttributes addZ in comboBoxAddz.Items)
-                                {
-                                    if (AddZ.RightHandSide == addZ.AttrValue)
-                                    {
-                                        comboBoxAddz.SelectedItem = addZ;
-
-                                        break;
-                                    }
-
-                                    comboBoxAddz.SelectedIndex = 0;
-                                }
-
-                                if (burnoutValue.ToLower() == "yes")
-                                    checkBoxBurnout.Checked = true;
-                                else
-                                    checkBoxBurnout.Checked = false;
-                                if (grindValue.ToLower() == "yes")
-                                    checkBoxGrind.Checked = true;
-                                else
-                                    checkBoxGrind.Checked = false;
-                                if (burnDirValue.ToLower() == "x")
-                                    checkBoxBurnDirX.Checked = true;
-                                if (burnDirValue.ToLower() == "y")
-                                    checkBoxBurnDirY.Checked = true;
-                                if (burnDirValue.ToLower() == "z")
-                                    checkBoxBurnDirZ.Checked = true;
+                                NewMethod12(AddZ);
+                                NewMethod13(burnDirValue, burnoutValue, grindValue);
                                 foreach (CtsAttributes tolSetting in comboBoxTolerance.Items)
                                     if (grindTolValue == tolSetting.AttrValue)
                                         comboBoxTolerance.SelectedItem = tolSetting;
-
-                                // get bounding box info
-
-                                double[] minCorner = new double[3];
-                                double[,] directions = new double[3, 3];
-                                double[] distances = new double[3];
-
-                                ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
-                                    __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
-
-                                // add stock values
-
-                                distances[0] += xValue;
-                                distances[1] += yValue;
-                                distances[2] += zValue;
-
-                                if (_workPart.PartUnits == BasePart.Units.Millimeters)
-                                    for (int i = 0; i < distances.Length; i++)
-                                        distances[i] /= 25.4d;
-
-                                for (int i = 0; i < 3; i++)
-                                {
-                                    double roundValue = System.Math.Round(distances[i], 3);
-                                    double truncateValue = System.Math.Truncate(roundValue);
-                                    double fractionValue = roundValue - truncateValue;
-                                    if (fractionValue != 0)
-                                        for (double ii = .125; ii <= 1; ii += .125)
-                                        {
-                                            if (fractionValue <= ii)
-                                            {
-                                                double finalValue = truncateValue + ii;
-                                                distances[i] = finalValue;
-                                                break;
-                                            }
-                                        }
-                                    else
-                                        distances[i] = roundValue;
-                                }
-
-                                CreateTempBlockLines(__display_part_.WCS.Origin, distances[0], distances[1],
-                                    distances[2]);
-                                _allowBoundingBox = true;
+                                NewMethod14(xValue, yValue, zValue);
                             }
                             else
                             {
                                 CreateCompExpressions();
-
-                                foreach (Expression exp in _workPart.Expressions.ToArray())
-                                {
-                                    if (exp.Name == "AddX")
-                                    {
-                                        isNamedExpression = true;
-                                        AddX = exp;
-                                        xValue = exp.Value;
-                                    }
-
-                                    if (exp.Name == "AddY")
-                                    {
-                                        isNamedExpression = true;
-                                        AddY = exp;
-                                        yValue = exp.Value;
-                                    }
-
-                                    if (exp.Name == "AddZ")
-                                    {
-                                        isNamedExpression = true;
-                                        AddZ = exp;
-                                        zValue = exp.Value;
-                                    }
-
-                                    if (exp.Name == "BurnDir")
-                                    {
-                                        isNamedExpression = true;
-                                        BurnDir = exp;
-                                        burnDirValue = exp.RightHandSide;
-                                    }
-
-                                    if (exp.Name == "Burnout")
-                                    {
-                                        isNamedExpression = true;
-                                        Burnout = exp;
-                                        burnoutValue = exp.RightHandSide;
-                                    }
-
-                                    if (exp.Name == "Grind")
-                                    {
-                                        isNamedExpression = true;
-                                        Grind = exp;
-                                        grindValue = exp.RightHandSide;
-                                    }
-
-                                    if (exp.Name == "GrindTolerance")
-                                    {
-                                        isNamedExpression = true;
-                                        GrindTolerance = exp;
-                                        grindTolValue = exp.RightHandSide;
-                                    }
-                                }
+                                NewMethod15(ref isNamedExpression, ref AddX, ref AddY, ref AddZ, ref BurnDir, ref Burnout, ref Grind, ref GrindTolerance, ref xValue, ref yValue, ref zValue, ref burnDirValue, ref burnoutValue, ref grindValue, ref grindTolValue);
 
                                 burnDirValue = burnDirValue.Replace("\"", string.Empty);
                                 burnoutValue = burnoutValue.Replace("\"", string.Empty);
@@ -1569,101 +1359,11 @@ namespace TSG_Library.UFuncs
 
                                 if (isNamedExpression)
                                 {
-                                    foreach (CtsAttributes addX in comboBoxAddx.Items)
-                                    {
-                                        if (AddX.RightHandSide == addX.AttrValue)
-                                        {
-                                            comboBoxAddx.SelectedItem = addX;
-
-                                            break;
-                                        }
-
-                                        comboBoxAddx.SelectedIndex = 0;
-                                    }
-
-                                    foreach (CtsAttributes addY in comboBoxAddy.Items)
-                                    {
-                                        if (AddY.RightHandSide == addY.AttrValue)
-                                        {
-                                            comboBoxAddy.SelectedItem = addY;
-
-                                            break;
-                                        }
-
-                                        comboBoxAddy.SelectedIndex = 0;
-                                    }
-
-                                    foreach (CtsAttributes addZ in comboBoxAddz.Items)
-                                    {
-                                        if (AddZ.RightHandSide == addZ.AttrValue)
-                                        {
-                                            comboBoxAddz.SelectedItem = addZ;
-
-                                            break;
-                                        }
-
-                                        comboBoxAddz.SelectedIndex = 0;
-                                    }
-
-                                    if (burnoutValue.ToLower() == "yes")
-                                        checkBoxBurnout.Checked = true;
-                                    else
-                                        checkBoxBurnout.Checked = false;
-                                    if (grindValue.ToLower() == "yes")
-                                        checkBoxGrind.Checked = true;
-                                    else
-                                        checkBoxGrind.Checked = false;
-                                    if (burnDirValue.ToLower() == "x")
-                                        checkBoxBurnDirX.Checked = true;
-                                    if (burnDirValue.ToLower() == "y")
-                                        checkBoxBurnDirY.Checked = true;
-                                    if (burnDirValue.ToLower() == "z")
-                                        checkBoxBurnDirZ.Checked = true;
-                                    foreach (CtsAttributes tolSetting in comboBoxTolerance.Items)
-                                        if (grindTolValue == tolSetting.AttrValue)
-                                            comboBoxTolerance.SelectedItem = tolSetting;
-
-                                    // get bounding box info
-
-                                    double[] minCorner = new double[3];
-                                    double[,] directions = new double[3, 3];
-                                    double[] distances = new double[3];
-
-                                    ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
-                                        __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
-
-                                    // add stock values
-
-                                    distances[0] += xValue;
-                                    distances[1] += yValue;
-                                    distances[2] += zValue;
-
-                                    if (_workPart.PartUnits == BasePart.Units.Millimeters)
-                                        for (int i = 0; i < distances.Length; i++)
-                                            distances[i] /= 25.4d;
-
-                                    for (int i = 0; i < 3; i++)
-                                    {
-                                        double roundValue = System.Math.Round(distances[i], 3);
-                                        double truncateValue = System.Math.Truncate(roundValue);
-                                        double fractionValue = roundValue - truncateValue;
-                                        if (fractionValue != 0)
-                                            for (double ii = .125; ii <= 1; ii += .125)
-                                            {
-                                                if (fractionValue <= ii)
-                                                {
-                                                    double finalValue = truncateValue + ii;
-                                                    distances[i] = finalValue;
-                                                    break;
-                                                }
-                                            }
-                                        else
-                                            distances[i] = roundValue;
-                                    }
-
-                                    CreateTempBlockLines(__display_part_.WCS.Origin, distances[0], distances[1],
-                                        distances[2]);
-                                    _allowBoundingBox = true;
+                                    NewMethod16(AddX);
+                                    NewMethod17(AddY);
+                                    NewMethod18(AddZ);
+                                    NewMethod19(burnDirValue, burnoutValue, grindValue, grindTolValue);
+                                    NewMethod20(xValue, yValue, zValue);
                                 }
                                 else
                                 {
@@ -1701,9 +1401,338 @@ namespace TSG_Library.UFuncs
                     buttonReset.PerformClick();
                 }
             }
-            catch (NXException ex)
+            catch (Exception ex)
             {
-                TheUi.NXMessageBox.Show("Caught exception : Measure", NXMessageBox.DialogType.Error, ex.Message);
+                ex.__PrintException();
+            }
+        }
+
+        private void NewMethod20(double xValue, double yValue, double zValue)
+        {
+            // get bounding box info
+
+            double[] minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            double[] distances = new double[3];
+
+            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
+                __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
+
+            // add stock values
+
+            distances[0] += xValue;
+            distances[1] += yValue;
+            distances[2] += zValue;
+
+            if (_workPart.PartUnits == BasePart.Units.Millimeters)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+
+            for (int i = 0; i < 3; i++)
+            {
+                double roundValue = System.Math.Round(distances[i], 3);
+                double truncateValue = System.Math.Truncate(roundValue);
+                double fractionValue = roundValue - truncateValue;
+                if (fractionValue != 0)
+                    for (double ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (fractionValue <= ii)
+                        {
+                            double finalValue = truncateValue + ii;
+                            distances[i] = finalValue;
+                            break;
+                        }
+                    }
+                else
+                    distances[i] = roundValue;
+            }
+
+            CreateTempBlockLines(__display_part_.WCS.Origin, distances[0], distances[1],
+                distances[2]);
+            _allowBoundingBox = true;
+        }
+
+        private void NewMethod19(string burnDirValue, string burnoutValue, string grindValue, string grindTolValue)
+        {
+            if (burnoutValue.ToLower() == "yes")
+                checkBoxBurnout.Checked = true;
+            else
+                checkBoxBurnout.Checked = false;
+            if (grindValue.ToLower() == "yes")
+                checkBoxGrind.Checked = true;
+            else
+                checkBoxGrind.Checked = false;
+            if (burnDirValue.ToLower() == "x")
+                checkBoxBurnDirX.Checked = true;
+            if (burnDirValue.ToLower() == "y")
+                checkBoxBurnDirY.Checked = true;
+            if (burnDirValue.ToLower() == "z")
+                checkBoxBurnDirZ.Checked = true;
+            foreach (CtsAttributes tolSetting in comboBoxTolerance.Items)
+                if (grindTolValue == tolSetting.AttrValue)
+                    comboBoxTolerance.SelectedItem = tolSetting;
+        }
+
+        private void NewMethod18(Expression AddZ)
+        {
+            foreach (CtsAttributes addZ in comboBoxAddz.Items)
+            {
+                if (AddZ.RightHandSide == addZ.AttrValue)
+                {
+                    comboBoxAddz.SelectedItem = addZ;
+
+                    break;
+                }
+
+                comboBoxAddz.SelectedIndex = 0;
+            }
+        }
+
+        private void NewMethod17(Expression AddY)
+        {
+            foreach (CtsAttributes addY in comboBoxAddy.Items)
+            {
+                if (AddY.RightHandSide == addY.AttrValue)
+                {
+                    comboBoxAddy.SelectedItem = addY;
+
+                    break;
+                }
+
+                comboBoxAddy.SelectedIndex = 0;
+            }
+        }
+
+        private void NewMethod16(Expression AddX)
+        {
+            foreach (CtsAttributes addX in comboBoxAddx.Items)
+            {
+                if (AddX.RightHandSide == addX.AttrValue)
+                {
+                    comboBoxAddx.SelectedItem = addX;
+
+                    break;
+                }
+
+                comboBoxAddx.SelectedIndex = 0;
+            }
+        }
+
+        private static void NewMethod15(ref bool isNamedExpression, ref Expression AddX, ref Expression AddY, ref Expression AddZ, ref Expression BurnDir, ref Expression Burnout, ref Expression Grind, ref Expression GrindTolerance, ref double xValue, ref double yValue, ref double zValue, ref string burnDirValue, ref string burnoutValue, ref string grindValue, ref string grindTolValue)
+        {
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+            {
+                if (exp.Name == "AddX")
+                {
+                    isNamedExpression = true;
+                    AddX = exp;
+                    xValue = exp.Value;
+                }
+
+                if (exp.Name == "AddY")
+                {
+                    isNamedExpression = true;
+                    AddY = exp;
+                    yValue = exp.Value;
+                }
+
+                if (exp.Name == "AddZ")
+                {
+                    isNamedExpression = true;
+                    AddZ = exp;
+                    zValue = exp.Value;
+                }
+
+                if (exp.Name == "BurnDir")
+                {
+                    isNamedExpression = true;
+                    BurnDir = exp;
+                    burnDirValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Burnout")
+                {
+                    isNamedExpression = true;
+                    Burnout = exp;
+                    burnoutValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Grind")
+                {
+                    isNamedExpression = true;
+                    Grind = exp;
+                    grindValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "GrindTolerance")
+                {
+                    isNamedExpression = true;
+                    GrindTolerance = exp;
+                    grindTolValue = exp.RightHandSide;
+                }
+            }
+        }
+
+        private void NewMethod14(double xValue, double yValue, double zValue)
+        {
+            // get bounding box info
+
+            double[] minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            double[] distances = new double[3];
+
+            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
+                __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
+
+            // add stock values
+
+            distances[0] += xValue;
+            distances[1] += yValue;
+            distances[2] += zValue;
+
+            if (_workPart.PartUnits == BasePart.Units.Millimeters)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+
+            for (int i = 0; i < 3; i++)
+            {
+                double roundValue = System.Math.Round(distances[i], 3);
+                double truncateValue = System.Math.Truncate(roundValue);
+                double fractionValue = roundValue - truncateValue;
+                if (fractionValue != 0)
+                    for (double ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (fractionValue <= ii)
+                        {
+                            double finalValue = truncateValue + ii;
+                            distances[i] = finalValue;
+                            break;
+                        }
+                    }
+                else
+                    distances[i] = roundValue;
+            }
+
+            CreateTempBlockLines(__display_part_.WCS.Origin, distances[0], distances[1],
+                distances[2]);
+            _allowBoundingBox = true;
+        }
+
+        private void NewMethod13(string burnDirValue, string burnoutValue, string grindValue)
+        {
+            if (burnoutValue.ToLower() == "yes")
+                checkBoxBurnout.Checked = true;
+            else
+                checkBoxBurnout.Checked = false;
+            if (grindValue.ToLower() == "yes")
+                checkBoxGrind.Checked = true;
+            else
+                checkBoxGrind.Checked = false;
+            if (burnDirValue.ToLower() == "x")
+                checkBoxBurnDirX.Checked = true;
+            if (burnDirValue.ToLower() == "y")
+                checkBoxBurnDirY.Checked = true;
+            if (burnDirValue.ToLower() == "z")
+                checkBoxBurnDirZ.Checked = true;
+        }
+
+        private void NewMethod12(Expression AddZ)
+        {
+            foreach (CtsAttributes addZ in comboBoxAddz.Items)
+            {
+                if (AddZ.RightHandSide == addZ.AttrValue)
+                {
+                    comboBoxAddz.SelectedItem = addZ;
+
+                    break;
+                }
+
+                comboBoxAddz.SelectedIndex = 0;
+            }
+        }
+
+        private void NewMethod11(Expression AddY)
+        {
+            foreach (CtsAttributes addY in comboBoxAddy.Items)
+            {
+                if (AddY.RightHandSide == addY.AttrValue)
+                {
+                    comboBoxAddy.SelectedItem = addY;
+
+                    break;
+                }
+
+                comboBoxAddy.SelectedIndex = 0;
+            }
+        }
+
+        private void NewMethod10(Expression AddX)
+        {
+            foreach (CtsAttributes addX in comboBoxAddx.Items)
+            {
+                if (AddX.RightHandSide == addX.AttrValue)
+                {
+                    comboBoxAddx.SelectedItem = addX;
+
+                    break;
+                }
+
+                comboBoxAddx.SelectedIndex = 0;
+            }
+        }
+
+        private static void NewMethod9(ref bool isNamedExpression, ref Expression AddX, ref Expression AddY, ref Expression AddZ, ref Expression BurnDir, ref Expression Burnout, ref Expression Grind, ref Expression GrindTolerance, ref double xValue, ref double yValue, ref double zValue, ref string burnDirValue, ref string burnoutValue, ref string grindValue, ref string grindTolValue)
+        {
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+            {
+                if (exp.Name == "AddX")
+                {
+                    isNamedExpression = true;
+                    AddX = exp;
+                    xValue = exp.Value;
+                }
+
+                if (exp.Name == "AddY")
+                {
+                    isNamedExpression = true;
+                    AddY = exp;
+                    yValue = exp.Value;
+                }
+
+                if (exp.Name == "AddZ")
+                {
+                    isNamedExpression = true;
+                    AddZ = exp;
+                    zValue = exp.Value;
+                }
+
+                if (exp.Name == "BurnDir")
+                {
+                    isNamedExpression = true;
+                    BurnDir = exp;
+                    burnDirValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Burnout")
+                {
+                    isNamedExpression = true;
+                    Burnout = exp;
+                    burnoutValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Grind")
+                {
+                    isNamedExpression = true;
+                    Grind = exp;
+                    grindValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "GrindTolerance")
+                {
+                    isNamedExpression = true;
+                    GrindTolerance = exp;
+                    grindTolValue = exp.RightHandSide;
+                }
             }
         }
 
@@ -1779,12 +1808,11 @@ namespace TSG_Library.UFuncs
                     }
                 }
             }
-            catch (NXException ex)
+            catch (Exception ex)
             {
                 ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
                 ufsession_.Disp.RegenerateDisplay();
-                UI.GetUI().NXMessageBox.Show("Caught exception : Auto Update On", NXMessageBox.DialogType.Error,
-                    ex.Message);
+                ex.__PrintException();
             }
         }
 
@@ -2006,7 +2034,53 @@ namespace TSG_Library.UFuncs
                 burnoutValue = string.Empty,
                 grindValue = string.Empty,
                 grindTolValue = string.Empty;
+            NewMethod21(ref isNamedExpression, ref AddX, ref AddY, ref AddZ, ref BurnDir, ref Burnout, ref Grind, ref GrindTolerance, ref xValue, ref yValue, ref zValue, ref burnDirValue, ref burnoutValue, ref grindValue, ref grindTolValue);
 
+            if (isNamedExpression)
+            {
+                if (comboBoxAddx.SelectedIndex >= 0)
+                    AddX.RightHandSide = comboBoxAddx.Text;
+
+                if (comboBoxAddy.SelectedIndex >= 0)
+                    AddY.RightHandSide = comboBoxAddy.Text;
+
+                if (comboBoxAddz.SelectedIndex >= 0)
+                    AddZ.RightHandSide = comboBoxAddz.Text;
+
+                if (checkBoxBurnout.Checked)
+                    Burnout.RightHandSide = "\"" + "yes" + "\"";
+                else
+                    Burnout.RightHandSide = "\"" + "no" + "\"";
+                if (checkBoxGrind.Checked)
+                {
+                    Grind.RightHandSide = "\"" + "yes" + "\"";
+
+                    if (comboBoxTolerance.SelectedIndex != -1)
+                        GrindTolerance.RightHandSide = "\"" + comboBoxTolerance.Text + "\"";
+                    else
+                        GrindTolerance.RightHandSide = "\"" + "none" + "\"";
+                }
+                else
+                {
+                    Grind.RightHandSide = "\"" + "no" + "\"";
+
+                    GrindTolerance.RightHandSide = "\"" + "none" + "\"";
+                }
+
+                if (checkBoxBurnDirX.Checked)
+                    BurnDir.RightHandSide = "\"" + "X" + "\"";
+                else if (checkBoxBurnDirY.Checked)
+                    BurnDir.RightHandSide = "\"" + "Y" + "\"";
+                else if (checkBoxBurnDirZ.Checked)
+                    BurnDir.RightHandSide = "\"" + "Z" + "\"";
+                else
+                    BurnDir.RightHandSide = "\"" + "none" + "\"";
+                _ = session_.UpdateManager.DoUpdate(updateExpressions);
+            }
+        }
+
+        private static void NewMethod21(ref bool isNamedExpression, ref Expression AddX, ref Expression AddY, ref Expression AddZ, ref Expression BurnDir, ref Expression Burnout, ref Expression Grind, ref Expression GrindTolerance, ref double xValue, ref double yValue, ref double zValue, ref string burnDirValue, ref string burnoutValue, ref string grindValue, ref string grindTolValue)
+        {
             foreach (Expression exp in _workPart.Expressions.ToArray())
             {
                 if (exp.Name == "AddX")
@@ -2057,48 +2131,6 @@ namespace TSG_Library.UFuncs
                     GrindTolerance = exp;
                     grindTolValue = exp.RightHandSide;
                 }
-            }
-
-            if (isNamedExpression)
-            {
-                if (comboBoxAddx.SelectedIndex >= 0)
-                    AddX.RightHandSide = comboBoxAddx.Text;
-
-                if (comboBoxAddy.SelectedIndex >= 0)
-                    AddY.RightHandSide = comboBoxAddy.Text;
-
-                if (comboBoxAddz.SelectedIndex >= 0)
-                    AddZ.RightHandSide = comboBoxAddz.Text;
-
-                if (checkBoxBurnout.Checked)
-                    Burnout.RightHandSide = "\"" + "yes" + "\"";
-                else
-                    Burnout.RightHandSide = "\"" + "no" + "\"";
-                if (checkBoxGrind.Checked)
-                {
-                    Grind.RightHandSide = "\"" + "yes" + "\"";
-
-                    if (comboBoxTolerance.SelectedIndex != -1)
-                        GrindTolerance.RightHandSide = "\"" + comboBoxTolerance.Text + "\"";
-                    else
-                        GrindTolerance.RightHandSide = "\"" + "none" + "\"";
-                }
-                else
-                {
-                    Grind.RightHandSide = "\"" + "no" + "\"";
-
-                    GrindTolerance.RightHandSide = "\"" + "none" + "\"";
-                }
-
-                if (checkBoxBurnDirX.Checked)
-                    BurnDir.RightHandSide = "\"" + "X" + "\"";
-                else if (checkBoxBurnDirY.Checked)
-                    BurnDir.RightHandSide = "\"" + "Y" + "\"";
-                else if (checkBoxBurnDirZ.Checked)
-                    BurnDir.RightHandSide = "\"" + "Z" + "\"";
-                else
-                    BurnDir.RightHandSide = "\"" + "none" + "\"";
-                _ = session_.UpdateManager.DoUpdate(updateExpressions);
             }
         }
 
@@ -2212,64 +2244,7 @@ namespace TSG_Library.UFuncs
                         grindValue = string.Empty,
                         grindTolValue = string.Empty,
                         diesetValue = string.Empty;
-
-                    foreach (Expression exp in _workPart.Expressions.ToArray())
-                    {
-                        if (exp.Name == "AddX")
-                        {
-                            isNamedExpression = true;
-                            AddX = exp;
-                            xValue = exp.Value;
-                        }
-
-                        if (exp.Name == "AddY")
-                        {
-                            isNamedExpression = true;
-                            AddY = exp;
-                            yValue = exp.Value;
-                        }
-
-                        if (exp.Name == "AddZ")
-                        {
-                            isNamedExpression = true;
-                            AddZ = exp;
-                            zValue = exp.Value;
-                        }
-
-                        if (exp.Name == "BurnDir")
-                        {
-                            isNamedExpression = true;
-                            BurnDir = exp;
-                            burnDirValue = exp.RightHandSide;
-                        }
-
-                        if (exp.Name == "Burnout")
-                        {
-                            isNamedExpression = true;
-                            Burnout = exp;
-                            burnoutValue = exp.RightHandSide;
-                        }
-
-                        if (exp.Name == "Grind")
-                        {
-                            isNamedExpression = true;
-                            Grind = exp;
-                            grindValue = exp.RightHandSide;
-                        }
-
-                        if (exp.Name == "GrindTolerance")
-                        {
-                            isNamedExpression = true;
-                            GrindTolerance = exp;
-                            grindTolValue = exp.RightHandSide;
-                        }
-
-                        if (exp.Name == "DiesetNote")
-                        {
-                            Dieset = exp;
-                            diesetValue = exp.RightHandSide;
-                        }
-                    }
+                    NewMethod22(ref isNamedExpression, ref AddX, ref AddY, ref AddZ, ref BurnDir, ref Burnout, ref Grind, ref GrindTolerance, ref Dieset, ref xValue, ref yValue, ref zValue, ref burnDirValue, ref burnoutValue, ref grindValue, ref grindTolValue, ref diesetValue);
 
                     burnDirValue = burnDirValue.Replace("\"", string.Empty);
                     burnoutValue = burnoutValue.Replace("\"", string.Empty);
@@ -2302,24 +2277,7 @@ namespace TSG_Library.UFuncs
                                 distances[i] /= 25.4d;
 
                         if (burnoutValue.ToLower() == "no")
-                            for (int i = 0; i < 3; i++)
-                            {
-                                double roundValue = System.Math.Round(distances[i], 3);
-                                double truncateValue = System.Math.Truncate(roundValue);
-                                double fractionValue = roundValue - truncateValue;
-                                if (fractionValue != 0)
-                                    for (double ii = .125; ii <= 1; ii += .125)
-                                    {
-                                        if (fractionValue <= ii)
-                                        {
-                                            double finalValue = truncateValue + ii;
-                                            distances[i] = finalValue;
-                                            break;
-                                        }
-                                    }
-                                else
-                                    distances[i] = roundValue;
-                            }
+                            NewMethod23(distances);
 
                         double xDist = distances[0];
                         double yDist = distances[1];
@@ -2439,37 +2397,7 @@ namespace TSG_Library.UFuncs
                     }
                     else
                     {
-                        // get bounding box of solid body
-
-                        double[] minCorner = new double[3];
-                        double[,] directions = new double[3, 3];
-                        double[] distances = new double[3];
-
-                        ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag, tempCsys.Tag, minCorner, directions,
-                            distances);
-
-                        if (isMetric)
-                            for (int i = 0; i < distances.Length; i++)
-                                distances[i] /= 25.4d;
-
-                        for (int i = 0; i < 3; i++)
-                        {
-                            double roundValue = System.Math.Round(distances[i], 3);
-                            double truncateValue = System.Math.Truncate(roundValue);
-                            double fractionValue = roundValue - truncateValue;
-                            if (fractionValue != 0)
-                                for (double ii = .125; ii <= 1; ii += .125)
-                                {
-                                    if (fractionValue <= ii)
-                                    {
-                                        double finalValue = truncateValue + ii;
-                                        distances[i] = finalValue;
-                                        break;
-                                    }
-                                }
-                            else
-                                distances[i] = roundValue;
-                        }
+                        double[] distances = NewMethod24(tempCsys, isMetric);
 
                         // Create the description attribute
 
@@ -2522,6 +2450,126 @@ namespace TSG_Library.UFuncs
                 ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
                 ufsession_.Disp.RegenerateDisplay();
                 TheUi.NXMessageBox.Show("Caught exception : Measure", NXMessageBox.DialogType.Error, ex.Message);
+            }
+        }
+
+        private static double[] NewMethod24(CartesianCoordinateSystem tempCsys, bool isMetric)
+        {
+            // get bounding box of solid body
+
+            double[] minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            double[] distances = new double[3];
+
+            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag, tempCsys.Tag, minCorner, directions,
+                distances);
+
+            if (isMetric)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+
+            for (int i = 0; i < 3; i++)
+            {
+                double roundValue = System.Math.Round(distances[i], 3);
+                double truncateValue = System.Math.Truncate(roundValue);
+                double fractionValue = roundValue - truncateValue;
+                if (fractionValue != 0)
+                    for (double ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (fractionValue <= ii)
+                        {
+                            double finalValue = truncateValue + ii;
+                            distances[i] = finalValue;
+                            break;
+                        }
+                    }
+                else
+                    distances[i] = roundValue;
+            }
+
+            return distances;
+        }
+
+        private static void NewMethod23(double[] distances)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                double roundValue = System.Math.Round(distances[i], 3);
+                double truncateValue = System.Math.Truncate(roundValue);
+                double fractionValue = roundValue - truncateValue;
+                if (fractionValue != 0)
+                    for (double ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (fractionValue <= ii)
+                        {
+                            double finalValue = truncateValue + ii;
+                            distances[i] = finalValue;
+                            break;
+                        }
+                    }
+                else
+                    distances[i] = roundValue;
+            }
+        }
+
+        private static void NewMethod22(ref bool isNamedExpression, ref Expression AddX, ref Expression AddY, ref Expression AddZ, ref Expression BurnDir, ref Expression Burnout, ref Expression Grind, ref Expression GrindTolerance, ref Expression Dieset, ref double xValue, ref double yValue, ref double zValue, ref string burnDirValue, ref string burnoutValue, ref string grindValue, ref string grindTolValue, ref string diesetValue)
+        {
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+            {
+                if (exp.Name == "AddX")
+                {
+                    isNamedExpression = true;
+                    AddX = exp;
+                    xValue = exp.Value;
+                }
+
+                if (exp.Name == "AddY")
+                {
+                    isNamedExpression = true;
+                    AddY = exp;
+                    yValue = exp.Value;
+                }
+
+                if (exp.Name == "AddZ")
+                {
+                    isNamedExpression = true;
+                    AddZ = exp;
+                    zValue = exp.Value;
+                }
+
+                if (exp.Name == "BurnDir")
+                {
+                    isNamedExpression = true;
+                    BurnDir = exp;
+                    burnDirValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Burnout")
+                {
+                    isNamedExpression = true;
+                    Burnout = exp;
+                    burnoutValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Grind")
+                {
+                    isNamedExpression = true;
+                    Grind = exp;
+                    grindValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "GrindTolerance")
+                {
+                    isNamedExpression = true;
+                    GrindTolerance = exp;
+                    grindTolValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "DiesetNote")
+                {
+                    Dieset = exp;
+                    diesetValue = exp.RightHandSide;
+                }
             }
         }
 
@@ -2580,53 +2628,7 @@ namespace TSG_Library.UFuncs
                             grindValue = string.Empty,
                             grindTolValue = string.Empty,
                             diesetValue = string.Empty;
-
-                        foreach (Expression exp in _workPart.Expressions.ToArray())
-                        {
-                            if (exp.Name == "AddX")
-                            {
-                                isNamedExpression = true;
-                                xValue = exp.Value;
-                            }
-
-                            if (exp.Name == "AddY")
-                            {
-                                isNamedExpression = true;
-                                yValue = exp.Value;
-                            }
-
-                            if (exp.Name == "AddZ")
-                            {
-                                isNamedExpression = true;
-                                zValue = exp.Value;
-                            }
-
-                            if (exp.Name == "BurnDir")
-                            {
-                                isNamedExpression = true;
-                                burnDirValue = exp.RightHandSide;
-                            }
-
-                            if (exp.Name == "Burnout")
-                            {
-                                isNamedExpression = true;
-                                burnoutValue = exp.RightHandSide;
-                            }
-
-                            if (exp.Name == "Grind")
-                            {
-                                isNamedExpression = true;
-                                grindValue = exp.RightHandSide;
-                            }
-
-                            if (exp.Name == "GrindTolerance")
-                            {
-                                isNamedExpression = true;
-                                grindTolValue = exp.RightHandSide;
-                            }
-
-                            if (exp.Name == "DiesetNote") diesetValue = exp.RightHandSide;
-                        }
+                        NewMethod25(ref isNamedExpression, ref xValue, ref yValue, ref zValue, ref burnDirValue, ref burnoutValue, ref grindValue, ref grindTolValue, ref diesetValue);
 
                         burnDirValue = burnDirValue.Replace("\"", string.Empty);
                         burnoutValue = burnoutValue.Replace("\"", string.Empty);
@@ -2900,9 +2902,59 @@ namespace TSG_Library.UFuncs
                     _workPart.SetUserAttribute("DESCRIPTION", -1, descriptionAtt + " PARALLEL",
                         NXOpen.Update.Option.Now);
             }
-            catch (NXException ex)
+            catch (Exception ex)
             {
-                TheUi.NXMessageBox.Show("Update Block Description", NXMessageBox.DialogType.Error, ex.Message);
+                ex.__PrintException();
+            }
+        }
+
+        private static void NewMethod25(ref bool isNamedExpression, ref double xValue, ref double yValue, ref double zValue, ref string burnDirValue, ref string burnoutValue, ref string grindValue, ref string grindTolValue, ref string diesetValue)
+        {
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+            {
+                if (exp.Name == "AddX")
+                {
+                    isNamedExpression = true;
+                    xValue = exp.Value;
+                }
+
+                if (exp.Name == "AddY")
+                {
+                    isNamedExpression = true;
+                    yValue = exp.Value;
+                }
+
+                if (exp.Name == "AddZ")
+                {
+                    isNamedExpression = true;
+                    zValue = exp.Value;
+                }
+
+                if (exp.Name == "BurnDir")
+                {
+                    isNamedExpression = true;
+                    burnDirValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Burnout")
+                {
+                    isNamedExpression = true;
+                    burnoutValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Grind")
+                {
+                    isNamedExpression = true;
+                    grindValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "GrindTolerance")
+                {
+                    isNamedExpression = true;
+                    grindTolValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "DiesetNote") diesetValue = exp.RightHandSide;
             }
         }
 
@@ -3412,7 +3464,7 @@ namespace TSG_Library.UFuncs
 
             foreach (Component comp in compList)
             {
-                Component foundComponent = oneComp.Find(delegate(Component c)
+                Component foundComponent = oneComp.Find(delegate (Component c)
                 {
                     return c.DisplayName == comp.DisplayName;
                 });
@@ -3647,62 +3699,80 @@ namespace TSG_Library.UFuncs
             dispProps.color = 7;
             UFCurve.Line lineData1 = new UFCurve.Line();
 
-            Point3d endPointX1 =
-                new Point3d(mappedStartPoint1.X + lineLength, mappedStartPoint1.Y, mappedStartPoint1.Z);
+            Point3d endPointX1 = mappedStartPoint1.__AddX(lineLength);
             Point3d mappedEndPointX1 = MapWcsToAbsolute(endPointX1);
-            double[] startX1 = { wcsOrigin.X, wcsOrigin.Y, wcsOrigin.Z };
-            double[] endX1 = { mappedEndPointX1.X, mappedEndPointX1.Y, mappedEndPointX1.Z };
+            double[] startX1 = wcsOrigin.__ToArray();
+            double[] endX1 = mappedEndPointX1.__ToArray();
             lineData1.start_point = startX1;
             lineData1.end_point = endX1;
-            ufsession_.Disp.DisplayTemporaryLine(__display_part_.Views.WorkView.Tag, UFDisp.ViewType.UseWorkView,
-                lineData1.start_point, lineData1.end_point,
+
+            ufsession_.Disp.DisplayTemporaryLine(
+                __display_part_.Views.WorkView.Tag,
+                UFDisp.ViewType.UseWorkView,
+                lineData1.start_point,
+                lineData1.end_point,
                 ref dispProps);
+
             ShowTemporarySizeText(lineLength, wcsOrigin, mappedEndPointX1);
 
-            Point3d endPointY1 = new Point3d(mappedStartPoint1.X, mappedStartPoint1.Y + lineWidth, mappedStartPoint1.Z);
+            Point3d endPointY1 = mappedStartPoint1.__AddY(lineWidth);
             Point3d mappedEndPointY1 = MapWcsToAbsolute(endPointY1);
-            double[] startY1 = { wcsOrigin.X, wcsOrigin.Y, wcsOrigin.Z };
-            double[] endY1 = { mappedEndPointY1.X, mappedEndPointY1.Y, mappedEndPointY1.Z };
+            double[] startY1 = wcsOrigin.__ToArray();
+            double[] endY1 = mappedEndPointY1.__ToArray();
             lineData1.start_point = startY1;
             lineData1.end_point = endY1;
-            ufsession_.Disp.DisplayTemporaryLine(__display_part_.Views.WorkView.Tag, UFDisp.ViewType.UseWorkView,
-                lineData1.start_point, lineData1.end_point,
-                ref dispProps);
-            ShowTemporarySizeText(lineWidth, wcsOrigin, mappedEndPointY1);
 
-            Point3d endPointZ1 =
-                new Point3d(mappedStartPoint1.X, mappedStartPoint1.Y, mappedStartPoint1.Z + lineHeight);
+            ufsession_.Disp.DisplayTemporaryLine(
+                __display_part_.Views.WorkView.Tag, 
+                UFDisp.ViewType.UseWorkView,
+                lineData1.start_point, 
+                lineData1.end_point,
+                ref dispProps);
+
+            ShowTemporarySizeText(lineWidth, wcsOrigin, mappedEndPointY1);
+            Point3d endPointZ1 = mappedStartPoint1.__AddZ(lineHeight);
             Point3d mappedEndPointZ1 = MapWcsToAbsolute(endPointZ1);
-            double[] startZ1 = { wcsOrigin.X, wcsOrigin.Y, wcsOrigin.Z };
-            double[] endZ1 = { mappedEndPointZ1.X, mappedEndPointZ1.Y, mappedEndPointZ1.Z };
+            double[] startZ1 = wcsOrigin.__ToArray();
+            double[] endZ1 = mappedEndPointZ1.__ToArray();
             lineData1.start_point = startZ1;
             lineData1.end_point = endZ1;
-            ufsession_.Disp.DisplayTemporaryLine(__display_part_.Views.WorkView.Tag, UFDisp.ViewType.UseWorkView,
-                lineData1.start_point, lineData1.end_point,
+
+            ufsession_.Disp.DisplayTemporaryLine(
+                __display_part_.Views.WorkView.Tag, 
+                UFDisp.ViewType.UseWorkView,
+                lineData1.start_point, 
+                lineData1.end_point,
                 ref dispProps);
+
             ShowTemporarySizeText(lineHeight, wcsOrigin, mappedEndPointZ1);
 
             //==================================================================================================================
 
             Point3d mappedStartPoint2 = MapAbsoluteToWcs(mappedEndPointY1);
-
-            Point3d endPointX2 =
-                new Point3d(mappedStartPoint2.X + lineLength, mappedStartPoint2.Y, mappedStartPoint2.Z);
+            Point3d endPointX2 = mappedStartPoint2.__AddX(lineLength);
             Point3d mappedEndPointX2 = MapWcsToAbsolute(endPointX2);
-            double[] startX2 = { mappedEndPointY1.X, mappedEndPointY1.Y, mappedEndPointY1.Z };
-            double[] endX2 = { mappedEndPointX2.X, mappedEndPointX2.Y, mappedEndPointX2.Z };
+            double[] startX2 = mappedEndPointY1.__ToArray();
+            double[] endX2 = mappedEndPointX2.__ToArray();
             lineData1.start_point = startX2;
             lineData1.end_point = endX2;
-            ufsession_.Disp.DisplayTemporaryLine(__display_part_.Views.WorkView.Tag, UFDisp.ViewType.UseWorkView,
-                lineData1.start_point, lineData1.end_point,
+
+            ufsession_.Disp.DisplayTemporaryLine(
+                __display_part_.Views.WorkView.Tag, 
+                UFDisp.ViewType.UseWorkView,
+                lineData1.start_point, 
+                lineData1.end_point,
                 ref dispProps);
 
-            double[] startY2 = { mappedEndPointX1.X, mappedEndPointX1.Y, mappedEndPointX1.Z };
-            double[] endY2 = { mappedEndPointX2.X, mappedEndPointX2.Y, mappedEndPointX2.Z };
+            double[] startY2 = mappedEndPointX1.__ToArray();
+            double[] endY2 = mappedEndPointX2.__ToArray();
             lineData1.start_point = startY2;
             lineData1.end_point = endY2;
-            ufsession_.Disp.DisplayTemporaryLine(__display_part_.Views.WorkView.Tag, UFDisp.ViewType.UseWorkView,
-                lineData1.start_point, lineData1.end_point,
+
+            ufsession_.Disp.DisplayTemporaryLine(
+                __display_part_.Views.WorkView.Tag, 
+                UFDisp.ViewType.UseWorkView,
+                lineData1.start_point, 
+                lineData1.end_point,
                 ref dispProps);
 
             //==================================================================================================================
@@ -4007,3 +4077,4 @@ namespace TSG_Library.UFuncs
      */
     //}
 }
+// 4010
