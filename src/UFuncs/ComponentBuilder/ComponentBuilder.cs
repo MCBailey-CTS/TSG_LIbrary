@@ -3175,8 +3175,8 @@ namespace TSG_Library.UFuncs
             string textData = endSplit[0];
             string[] splitData = Regex.Split(textData, "\r\n");
             List<CtsAttributes> compData = (from sData in splitData
-                where sData != string.Empty
-                select new CtsAttributes { AttrValue = sData }).ToList();
+                                            where sData != string.Empty
+                                            select new CtsAttributes { AttrValue = sData }).ToList();
             return compData.Count > 0 ? compData : null;
         }
 
@@ -3289,6 +3289,44 @@ namespace TSG_Library.UFuncs
             Lower,
             Upper,
             None
+        }
+
+        private void btnMakeUnique_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var selected = Ui.Selection.SelectSingleComponent();
+
+                if (selected is null)
+                    return;
+
+                var parent = selected.Parent;
+                var op = parent.DisplayName.__AskDetailOp();
+                var owning_ass = parent.__Prototype();
+                var builder = __work_part_.AssemblyManager.CreateMakeUniquePartBuilder();
+
+                using (session_.__UsingBuilderDestroyer(builder))
+                {
+                    var detail = textBoxDetailNumber.Text;
+
+                    if(string.IsNullOrEmpty(detail))
+                    {
+                        print_("please type a detail number");
+                        return;
+                    }
+
+                    var folder = GFolder.Create(parent.__Prototype().FullPath);
+                    var new_path = folder.file_detail0(op, detail);
+                    builder.SelectedComponents.Add(selected);
+                    selected.__Prototype().SetMakeUniqueName(new_path);
+                    builder.Commit();
+                    parent.GetChildren().Where(c=>c.DisplayName.EndsWith(detail)).ToList().ForEach(c=>c.SetName(detail));
+                }
+            }
+            catch (Exception ex)
+            {
+                ex.__PrintException();
+            }
         }
     }
 }

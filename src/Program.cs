@@ -16,11 +16,7 @@ public static class Program
     {
         try
         {
-
-             new ProposalDataWizardForm().execute();
-             new SimRefSetsForm().execute();
-
-            return;
+          
 #pragma warning disable CS0162 // Unreachable code detected
             if (args.Length == 0)
             {

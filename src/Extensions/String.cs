@@ -284,7 +284,7 @@ namespace TSG_Library.Extensions
         {
             string leaf = Path.GetFileNameWithoutExtension(path);
 
-            Match match = Regex.Match(leaf, "^\\d+-(?<op>\\d+)-\\d+$");
+            Match match = Regex.Match(leaf, "^\\d+-(?<op>\\d+)-.+$");
 
             if (!match.Success)
                 throw new Exception($"could not find an op: '{leaf}'");
