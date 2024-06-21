@@ -70,6 +70,7 @@
             this.checkBoxBurnDirX = new System.Windows.Forms.CheckBox();
             this.chk4Digits = new System.Windows.Forms.CheckBox();
             this.chkAnyAssembly = new System.Windows.Forms.CheckBox();
+            this.btnMakeUnique = new System.Windows.Forms.Button();
             this.groupBoxColor.SuspendLayout();
             this.groupBoxEditAssembly.SuspendLayout();
             this.groupBoxWorkPlane.SuspendLayout();
@@ -252,6 +253,7 @@
             // 
             // groupBoxEditAssembly
             // 
+            this.groupBoxEditAssembly.Controls.Add(this.btnMakeUnique);
             this.groupBoxEditAssembly.Controls.Add(this.buttonLwrRetAssm);
             this.groupBoxEditAssembly.Controls.Add(this.buttonAutoLwr);
             this.groupBoxEditAssembly.Controls.Add(this.buttonAutoUpr);
@@ -261,7 +263,7 @@
             this.groupBoxEditAssembly.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.groupBoxEditAssembly.Location = new System.Drawing.Point(15, 491);
             this.groupBoxEditAssembly.Name = "groupBoxEditAssembly";
-            this.groupBoxEditAssembly.Size = new System.Drawing.Size(190, 125);
+            this.groupBoxEditAssembly.Size = new System.Drawing.Size(190, 156);
             this.groupBoxEditAssembly.TabIndex = 8;
             this.groupBoxEditAssembly.TabStop = false;
             this.groupBoxEditAssembly.Text = "Edit Assembly";
@@ -313,7 +315,7 @@
             // copyButton
             // 
             this.copyButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.copyButton.Location = new System.Drawing.Point(8, 71);
+            this.copyButton.Location = new System.Drawing.Point(7, 97);
             this.copyButton.Name = "copyButton";
             this.copyButton.Size = new System.Drawing.Size(174, 20);
             this.copyButton.TabIndex = 0;
@@ -324,7 +326,7 @@
             // saveAsButton
             // 
             this.saveAsButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.saveAsButton.Location = new System.Drawing.Point(8, 97);
+            this.saveAsButton.Location = new System.Drawing.Point(7, 123);
             this.saveAsButton.Name = "saveAsButton";
             this.saveAsButton.Size = new System.Drawing.Size(174, 20);
             this.saveAsButton.TabIndex = 2;
@@ -376,7 +378,7 @@
             // buttonExit
             // 
             this.buttonExit.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonExit.Location = new System.Drawing.Point(22, 622);
+            this.buttonExit.Location = new System.Drawing.Point(20, 653);
             this.buttonExit.Name = "buttonExit";
             this.buttonExit.Size = new System.Drawing.Size(175, 20);
             this.buttonExit.TabIndex = 11;
@@ -519,11 +521,11 @@
             this.checkBoxBurnDirX.UseVisualStyleBackColor = true;
             this.checkBoxBurnDirX.CheckedChanged += new System.EventHandler(this.CheckBoxBurnDirX_CheckedChanged);
             // 
-            // chkDigits
+            // chk4Digits
             // 
             this.chk4Digits.AutoSize = true;
             this.chk4Digits.Location = new System.Drawing.Point(12, 39);
-            this.chk4Digits.Name = "chkDigits";
+            this.chk4Digits.Name = "chk4Digits";
             this.chk4Digits.Size = new System.Drawing.Size(91, 17);
             this.chk4Digits.TabIndex = 27;
             this.chk4Digits.Text = "4 Digit Details";
@@ -541,11 +543,22 @@
             this.chkAnyAssembly.UseVisualStyleBackColor = true;
             this.chkAnyAssembly.CheckedChanged += new System.EventHandler(this.chkAnyAssembly_CheckedChanged);
             // 
+            // btnMakeUnique
+            // 
+            this.btnMakeUnique.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnMakeUnique.Location = new System.Drawing.Point(6, 71);
+            this.btnMakeUnique.Name = "btnMakeUnique";
+            this.btnMakeUnique.Size = new System.Drawing.Size(174, 20);
+            this.btnMakeUnique.TabIndex = 7;
+            this.btnMakeUnique.Text = "Make Unique";
+            this.btnMakeUnique.UseVisualStyleBackColor = true;
+            this.btnMakeUnique.Click += new System.EventHandler(this.btnMakeUnique_Click);
+            // 
             // ComponentBuilder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(214, 651);
+            this.ClientSize = new System.Drawing.Size(214, 683);
             this.ControlBox = false;
             this.Controls.Add(this.chkAnyAssembly);
             this.Controls.Add(this.chk4Digits);
@@ -622,5 +635,6 @@
         private System.Windows.Forms.Button buttonUprRetAssm;
         private System.Windows.Forms.CheckBox chk4Digits;
         private System.Windows.Forms.CheckBox chkAnyAssembly;
+        private System.Windows.Forms.Button btnMakeUnique;
     }
 }

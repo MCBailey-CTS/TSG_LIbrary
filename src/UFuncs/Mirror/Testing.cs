@@ -64,7 +64,7 @@ namespace TSG_Library.UFuncs.Mirror
 
                 var entity = (NXOpen.Curve)linked_curve.GetEntities()[0];
 
-                entity
+                //entity
 
                 linked_curve.RemoveParameters();
 
