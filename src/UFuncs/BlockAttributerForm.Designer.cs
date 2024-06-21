@@ -1,6 +1,7 @@
 ﻿using NXOpen;
 using NXOpen.UF;
 using System;
+using TSG_Library.Utilities;
 using static TSG_Library.Extensions.Extensions;
 
 namespace TSG_Library.UFuncs
@@ -1144,7 +1145,7 @@ namespace TSG_Library.UFuncs
         #endregion
 
         /////////////////////////////////////////////////////////////////////
-        
+
         #region rounding
         private void NewMethod8(double xValue, double yValue, double zValue)
         {
@@ -1526,6 +1527,454 @@ namespace TSG_Library.UFuncs
         #endregion
 
 
+        #region other stuff
+        private static void NewMethod50()
+        {
+            Expression Weldment = null;
+
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+                if (exp.Name == "WeldmentNote")
+                    Weldment = exp;
+
+            if (Weldment != null)
+                Weldment.RightHandSide = "\"no\"";
+            else
+                _ = _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"no\"");
+
+            string description = _workPart.__GetStringAttribute("DESCRIPTION");
+            description = description.Replace("WELDMENT", "");
+            _workPart.__SetAttribute("DESCRIPTION", description);
+        }
+
+        private static void NewMethod49()
+        {
+            Expression Weldment = null;
+
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+                if (exp.Name == "WeldmentNote")
+                    Weldment = exp;
+
+            if (Weldment != null)
+                Weldment.RightHandSide = "\"yes\"";
+            else
+                _ = _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"yes\"");
+
+            string description = _workPart.__GetStringAttribute("DESCRIPTION");
+
+            if (!description.ToLower().Contains("weldment"))
+            {
+                description += " WELDMENT";
+                _workPart.__SetAttribute("DESCRIPTION", description);
+            }
+        }
+
+        private static void NewMethod48()
+        {
+            Expression Dieset = null;
+
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+                if (exp.Name == "DiesetNote")
+                    Dieset = exp;
+
+            if (Dieset != null)
+                Dieset.RightHandSide = "\"no\"";
+            else
+                _ = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
+
+            string description = _workPart.__GetStringAttribute("DESCRIPTION");
+            description = description.Replace("DIESET", "");
+            _workPart.__SetAttribute("DESCRIPTION", description);
+        }
+
+        private static void NewMethod47()
+        {
+            Expression Dieset = null;
+
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+                if (exp.Name == "DiesetNote")
+                    Dieset = exp;
+
+            if (Dieset != null)
+                Dieset.RightHandSide = "\"yes\"";
+            else
+                _ = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
+
+            string description = _workPart.__GetStringAttribute("DESCRIPTION");
+
+            if (!description.ToLower().Contains("dieset"))
+            {
+                description += " DIESET";
+                _workPart.__SetAttribute("DESCRIPTION", description);
+            }
+        }
+
+        private static void NewMethod46()
+        {
+            Expression Weldment = null;
+
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+                if (exp.Name == "WeldmentNote")
+                    Weldment = exp;
+
+            if (Weldment != null)
+                Weldment.RightHandSide = "\"no\"";
+            else
+                _ = _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"no\"");
+
+            string description = _workPart.__GetStringAttribute("DESCRIPTION");
+            description = description.Replace("WELDMENT", "");
+            _workPart.__SetAttribute("DESCRIPTION", description);
+        }
+
+        private static void NewMethod45()
+        {
+            Expression Weldment = null;
+
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+                if (exp.Name == "WeldmentNote")
+                    Weldment = exp;
+
+            if (Weldment != null)
+                Weldment.RightHandSide = "\"yes\"";
+            else
+                _ = _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"yes\"");
+
+            string description = _workPart.__GetStringAttribute("DESCRIPTION");
+            if (!description.ToLower().Contains("weldment"))
+            {
+                description += " WELDMENT";
+                _workPart.__SetAttribute("DESCRIPTION", description);
+            }
+        }
+
+        private static void NewMethod44()
+        {
+            Expression Dieset = null;
+
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+                if (exp.Name == "DiesetNote")
+                    Dieset = exp;
+
+            if (Dieset != null)
+                Dieset.RightHandSide = "\"no\"";
+            else
+                _ = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
+
+            string description = _workPart.__GetStringAttribute("DESCRIPTION");
+            description = description.Replace("DIESET", "");
+            _workPart.__SetAttribute("DESCRIPTION", description);
+        }
+
+        private static void NewMethod43()
+        {
+            Expression Dieset = null;
+
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+                if (exp.Name == "DiesetNote")
+                    Dieset = exp;
+
+            if (Dieset != null)
+                Dieset.RightHandSide = "\"yes\"";
+            else
+                _ = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
+
+            string description = _workPart.__GetStringAttribute("DESCRIPTION");
+            if (!description.ToLower().Contains("dieset"))
+            {
+                description += " DIESET";
+                _workPart.__SetAttribute("DESCRIPTION", description);
+            }
+        }
+        #endregion
+
+
+
+
+
+
+        #region CTS Attributes
+
+
+
+        private void NewMethod12(Expression AddZ)
+        {
+            foreach (CtsAttributes addZ in comboBoxAddz.Items)
+            {
+                if (AddZ.RightHandSide == addZ.AttrValue)
+                {
+                    comboBoxAddz.SelectedItem = addZ;
+
+                    break;
+                }
+
+                comboBoxAddz.SelectedIndex = 0;
+            }
+        }
+
+        private void NewMethod11(Expression AddY)
+        {
+            foreach (CtsAttributes addY in comboBoxAddy.Items)
+            {
+                if (AddY.RightHandSide == addY.AttrValue)
+                {
+                    comboBoxAddy.SelectedItem = addY;
+
+                    break;
+                }
+
+                comboBoxAddy.SelectedIndex = 0;
+            }
+        }
+
+        private void NewMethod10(Expression AddX)
+        {
+            foreach (CtsAttributes addX in comboBoxAddx.Items)
+            {
+                if (AddX.RightHandSide == addX.AttrValue)
+                {
+                    comboBoxAddx.SelectedItem = addX;
+
+                    break;
+                }
+
+                comboBoxAddx.SelectedIndex = 0;
+            }
+        }
+
+        private void NewMethod18(Expression AddZ)
+        {
+            foreach (CtsAttributes addZ in comboBoxAddz.Items)
+            {
+                if (AddZ.RightHandSide == addZ.AttrValue)
+                {
+                    comboBoxAddz.SelectedItem = addZ;
+
+                    break;
+                }
+
+                comboBoxAddz.SelectedIndex = 0;
+            }
+        }
+
+        private void NewMethod17(Expression AddY)
+        {
+            foreach (CtsAttributes addY in comboBoxAddy.Items)
+            {
+                if (AddY.RightHandSide == addY.AttrValue)
+                {
+                    comboBoxAddy.SelectedItem = addY;
+
+                    break;
+                }
+
+                comboBoxAddy.SelectedIndex = 0;
+            }
+        }
+
+        private void NewMethod16(Expression AddX)
+        {
+            foreach (CtsAttributes addX in comboBoxAddx.Items)
+            {
+                if (AddX.RightHandSide == addX.AttrValue)
+                {
+                    comboBoxAddx.SelectedItem = addX;
+
+                    break;
+                }
+
+                comboBoxAddx.SelectedIndex = 0;
+            }
+        }
+
+
+        private void NewMethod28(Expression AddX, Expression AddY, Expression AddZ)
+        {
+            foreach (CtsAttributes addX in comboBoxAddx.Items)
+                try
+                {
+                    if (AddX.RightHandSide == addX.AttrValue)
+                    {
+                        comboBoxAddx.SelectedItem = addX;
+
+                        break;
+                    }
+
+                    comboBoxAddx.SelectedIndex = 0;
+                }
+                catch (Exception ex)
+                {
+                    UI.GetUI().NXMessageBox.Show("DJ", NXMessageBox.DialogType.Error, ex.Message);
+                }
+
+            foreach (CtsAttributes addY in comboBoxAddy.Items)
+            {
+                if (AddY.RightHandSide == addY.AttrValue)
+                {
+                    comboBoxAddy.SelectedItem = addY;
+
+                    break;
+                }
+
+                comboBoxAddy.SelectedIndex = 0;
+            }
+
+            foreach (CtsAttributes addZ in comboBoxAddz.Items)
+            {
+                if (AddZ.RightHandSide == addZ.AttrValue)
+                {
+                    comboBoxAddz.SelectedItem = addZ;
+
+                    break;
+                }
+
+                comboBoxAddz.SelectedIndex = 0;
+            }
+        }
+
+
+
+        private void NewMethod7(Expression AddZ)
+        {
+            foreach (CtsAttributes addZ in comboBoxAddz.Items)
+            {
+                if (AddZ.RightHandSide == addZ.AttrValue)
+                {
+                    comboBoxAddz.SelectedItem = addZ;
+
+                    break;
+                }
+
+                comboBoxAddz.SelectedIndex = 0;
+            }
+        }
+
+        private void NewMethod6(Expression AddY)
+        {
+            foreach (CtsAttributes addY in comboBoxAddy.Items)
+            {
+                if (AddY.RightHandSide == addY.AttrValue)
+                {
+                    comboBoxAddy.SelectedItem = addY;
+
+                    break;
+                }
+
+                comboBoxAddy.SelectedIndex = 0;
+            }
+        }
+
+        private void NewMethod5(Expression AddX)
+        {
+            foreach (CtsAttributes addX in comboBoxAddx.Items)
+            {
+                if (AddX.RightHandSide == addX.AttrValue)
+                {
+                    comboBoxAddx.SelectedItem = addX;
+
+                    break;
+                }
+
+                comboBoxAddx.SelectedIndex = 0;
+            }
+        }
+
+
+
+        #endregion
+
+
+        private void NewMethod30(string burnDirValue, string burnoutValue, string grindValue, string grindTolValue)
+        {
+            if (burnoutValue.ToLower() == "yes")
+                checkBoxBurnout.Checked = true;
+            else
+                checkBoxBurnout.Checked = false;
+            if (grindValue.ToLower() == "yes")
+                checkBoxGrind.Checked = true;
+            else
+                checkBoxGrind.Checked = false;
+            if (burnDirValue.ToLower() == "x")
+                checkBoxBurnDirX.Checked = true;
+            if (burnDirValue.ToLower() == "y")
+                checkBoxBurnDirY.Checked = true;
+            if (burnDirValue.ToLower() == "z")
+                checkBoxBurnDirZ.Checked = true;
+            foreach (CtsAttributes tolSetting in comboBoxTolerance.Items)
+                if (grindTolValue == tolSetting.AttrValue)
+                    comboBoxTolerance.SelectedItem = tolSetting;
+        }
+
+        private void NewMethod29(double xValue, double yValue, double zValue, string burnDirValue, string burnoutValue, string grindValue, string grindTolValue)
+        {
+            if (burnoutValue.ToLower() == "yes")
+                checkBoxBurnout.Checked = true;
+            else
+                checkBoxBurnout.Checked = false;
+            if (grindValue.ToLower() == "yes")
+                checkBoxGrind.Checked = true;
+            else
+                checkBoxGrind.Checked = false;
+            if (burnDirValue.ToLower() == "x")
+                checkBoxBurnDirX.Checked = true;
+            if (burnDirValue.ToLower() == "y")
+                checkBoxBurnDirY.Checked = true;
+            if (burnDirValue.ToLower() == "z")
+                checkBoxBurnDirZ.Checked = true;
+            foreach (CtsAttributes tolSetting in comboBoxTolerance.Items)
+                if (grindTolValue == tolSetting.AttrValue)
+                    comboBoxTolerance.SelectedItem = tolSetting;
+
+            double[] distances = NewMethod3(xValue, yValue, zValue);
+
+            CreateTempBlockLines(__display_part_.WCS.Origin, distances[0], distances[1],
+                distances[2]);
+            _allowBoundingBox = true;
+        }
+
+
+        private void NewMethod19(string burnDirValue, string burnoutValue, string grindValue, string grindTolValue)
+        {
+            if (burnoutValue.ToLower() == "yes")
+                checkBoxBurnout.Checked = true;
+            else
+                checkBoxBurnout.Checked = false;
+            if (grindValue.ToLower() == "yes")
+                checkBoxGrind.Checked = true;
+            else
+                checkBoxGrind.Checked = false;
+            if (burnDirValue.ToLower() == "x")
+                checkBoxBurnDirX.Checked = true;
+            if (burnDirValue.ToLower() == "y")
+                checkBoxBurnDirY.Checked = true;
+            if (burnDirValue.ToLower() == "z")
+                checkBoxBurnDirZ.Checked = true;
+            foreach (CtsAttributes tolSetting in comboBoxTolerance.Items)
+                if (grindTolValue == tolSetting.AttrValue)
+                    comboBoxTolerance.SelectedItem = tolSetting;
+        }
+
+
+
+
+
+
+        private void NewMethod13(string burnDirValue, string burnoutValue, string grindValue)
+        {
+            if (burnoutValue.ToLower() == "yes")
+                checkBoxBurnout.Checked = true;
+            else
+                checkBoxBurnout.Checked = false;
+            if (grindValue.ToLower() == "yes")
+                checkBoxGrind.Checked = true;
+            else
+                checkBoxGrind.Checked = false;
+            if (burnDirValue.ToLower() == "x")
+                checkBoxBurnDirX.Checked = true;
+            if (burnDirValue.ToLower() == "y")
+                checkBoxBurnDirY.Checked = true;
+            if (burnDirValue.ToLower() == "z")
+                checkBoxBurnDirZ.Checked = true;
+        }
 
 
     }
