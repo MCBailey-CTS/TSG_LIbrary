@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.UF;
@@ -11,6 +12,23 @@ namespace TSG_Library.Extensions
     public static partial class Extensions
     {
         #region Globals
+
+        static Extensions()
+        {
+            try
+            {
+                __assemblyFileVersion = typeof(Program).Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
+            }
+            catch (Exception ex)
+            {
+                ex.__PrintException();
+            }
+        }
+
+        public static string AssemblyFileVersion => __assemblyFileVersion;
+
+        private static readonly string __assemblyFileVersion;
+
 
         /// <summary>A function that evaluates a position at a point on a curve</summary>
         /// <param name="data">Data item to be used in evaluation</param>

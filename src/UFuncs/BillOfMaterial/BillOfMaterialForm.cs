@@ -1044,6 +1044,7 @@ namespace TSG_Library.UFuncs
         {
             if (_selectedComponents.Count > 0)
                 prompt_($"Cleared {_selectedComponents.Count} selected components");
+
             _selectedComponents.Clear();
             _childComponents.Clear();
             ErrorComponents.Clear();
@@ -1053,6 +1054,7 @@ namespace TSG_Library.UFuncs
         private void BillOfMaterialForm_Load(object sender, EventArgs e)
         {
             Location = Settings.Default.bill_of_material_form_window_location;
+            Text = AssemblyFileVersion;
         }
 
         private void BillOfMaterialForm_FormClosed(object sender, FormClosedEventArgs e)

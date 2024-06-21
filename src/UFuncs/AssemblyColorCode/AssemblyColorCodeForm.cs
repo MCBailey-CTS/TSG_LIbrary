@@ -104,7 +104,6 @@ namespace TSG_Library.UFuncs
         public AssemblyColorCodeForm()
         {
             InitializeComponent();
-
             LoadColors("U:\\nxFiles\\UfuncFiles\\AssemblyColorCode.ucf");
         }
 
@@ -113,6 +112,7 @@ namespace TSG_Library.UFuncs
             try
             {
                 Location = Settings.Default.assembly_color_code_form_window_location;
+                Text = AssemblyFileVersion;
 
                 switch (Settings.Default.AssemblyColorCodeLastUsed)
                 {
@@ -153,7 +153,6 @@ namespace TSG_Library.UFuncs
                 @"^{(?<Color>.+)}\s*{A:(?<A>\d+)}\s*{B:(?<B>\d+)}\s*{G:(?<G>\d+)}\s*{R:(?<R>\d+)}\s*{NX:(?<NX>\d+)}\s*{DETAILS:(?<Details>-.*)}\s*{DCB:(?<Dcb>-.*)?}$";
 
             int xCounter = 0;
-
             int yCounter = 0;
 
             foreach (string colorLine in ucf["COLORS"])
@@ -176,28 +175,21 @@ namespace TSG_Library.UFuncs
 
                 // Gets the "A" value.
                 int aValue = int.Parse(match.Groups["A"].Value);
-
                 // Gets the "R" value.
                 int rValue = int.Parse(match.Groups["R"].Value);
-
                 // Gets the "G" value.
                 int gValue = int.Parse(match.Groups["G"].Value);
-
                 // Gets the "B" value.
                 int bValue = int.Parse(match.Groups["B"].Value);
-
                 // Gets the title of the color.
                 string colorTitle = match.Groups["Color"].Value;
-
                 // Gets the detail notes pertaining to this color.
                 string detailNotes = match.Groups["Details"].Value;
-
                 // Gets the dieset, castings, & burnout notes for this color.
                 string dcb = match.Groups["Dcb"].Value;
-
                 // Creates a button. 
                 int nxColor = int.Parse(match.Groups["NX"].Value);
-                // ReSharper disable once UseObjectOrCollectionInitializer
+
                 Button button = new Button
                 {
                     BackColor = Color.FromArgb(aValue, rValue, gValue, bValue),
@@ -209,17 +201,16 @@ namespace TSG_Library.UFuncs
                 };
 
                 button.Click += ColorButtons_Click;
-
                 string toolTipString = $"{button.Name} = {(int)button.Tag}";
 
-                if (detailNotes != "-") toolTipString += $"\n\nDetails:\n{detailNotes}";
+                if (detailNotes != "-") 
+                    toolTipString += $"\n\nDetails:\n{detailNotes}";
 
-                if (dcb != "-") toolTipString += $"\n\nDiesets, Castings, & Burnouts:\n{dcb}";
+                if (dcb != "-") 
+                    toolTipString += $"\n\nDiesets, Castings, & Burnouts:\n{dcb}";
 
                 toolTipString = toolTipString.Replace("\\n", "\n");
-
                 toolTip.SetToolTip(button, toolTipString);
-
                 groupBoxColors.Controls.Add(button);
             }
         }
@@ -236,7 +227,9 @@ namespace TSG_Library.UFuncs
 
             if (__triples is null && rdoFeature.Checked)
             {
-                UI.GetUI().SelectionManager.SelectFeatures("Select Features", Selection.SelectionFeatureType.Browsable,
+                uisession_.SelectionManager.SelectFeatures(
+                    "Select Features", 
+                    Selection.SelectionFeatureType.Browsable,
                     out Feature[] features);
 
                 foreach (Feature feature in features)
@@ -301,7 +294,6 @@ namespace TSG_Library.UFuncs
         private void ColorButtons_Click(object sender, EventArgs e)
         {
             using (session_.__UsingFormShowHide(this))
-            {
                 try
                 {
                     Button button = (Button)sender;
@@ -311,16 +303,14 @@ namespace TSG_Library.UFuncs
                 {
                     ex.__PrintException();
                 }
-            }
         }
 
         private void ButtonInheritColor_Click(object sender, EventArgs e)
         {
             using (session_.__UsingFormShowHide(this))
-            {
                 try
                 {
-                    UI.GetUI().SelectionManager.SelectTaggedObject(
+                    uisession_.SelectionManager.SelectTaggedObject(
                         "",
                         "",
                         Selection.SelectionScope.AnyInAssembly,
@@ -343,12 +333,8 @@ namespace TSG_Library.UFuncs
                 {
                     ex.__PrintException();
                 }
-            }
         }
 
-        private void ButtonReset_Click(object sender, EventArgs e)
-        {
-            GetSession().Parts.SetWork(GetSession().Parts.Display);
-        }
+        private void ButtonReset_Click(object sender, EventArgs e) => __work_part_ = __display_part_;
     }
 }

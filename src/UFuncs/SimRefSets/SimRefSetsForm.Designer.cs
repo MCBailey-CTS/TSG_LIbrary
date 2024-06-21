@@ -36,7 +36,7 @@
             // btnAddTo
             // 
             this.btnAddTo.Location = new System.Drawing.Point(68, 15);
-            this.btnAddTo.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnAddTo.Margin = new System.Windows.Forms.Padding(4);
             this.btnAddTo.Name = "btnAddTo";
             this.btnAddTo.Size = new System.Drawing.Size(100, 28);
             this.btnAddTo.TabIndex = 6;
@@ -47,7 +47,7 @@
             // btnAddAll
             // 
             this.btnAddAll.Location = new System.Drawing.Point(68, 50);
-            this.btnAddAll.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnAddAll.Margin = new System.Windows.Forms.Padding(4);
             this.btnAddAll.Name = "btnAddAll";
             this.btnAddAll.Size = new System.Drawing.Size(100, 28);
             this.btnAddAll.TabIndex = 7;
@@ -59,7 +59,7 @@
             // 
             this.chkDelete.AutoSize = true;
             this.chkDelete.Location = new System.Drawing.Point(61, 86);
-            this.chkDelete.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkDelete.Margin = new System.Windows.Forms.Padding(4);
             this.chkDelete.Name = "chkDelete";
             this.chkDelete.Size = new System.Drawing.Size(118, 20);
             this.chkDelete.TabIndex = 8;
@@ -74,7 +74,7 @@
             this.Controls.Add(this.chkDelete);
             this.Controls.Add(this.btnAddAll);
             this.Controls.Add(this.btnAddTo);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(262, 165);
             this.MinimizeBox = false;
@@ -83,6 +83,8 @@
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "1919";
             this.TopMost = true;
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SimRefSetsForm_FormClosed);
+            this.Load += new System.EventHandler(this.SimRefSetsForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -145,7 +145,7 @@ namespace TSG_Library.UFuncs
         private void CloneAssemblyForm_Load(object sender, EventArgs e)
         {
             Location = Settings.Default.clone_assembly_form_window_location;
-
+            Text = AssemblyFileVersion;
             rdoProressive.Checked = true;
 
             rdoTransfer.Checked = true;

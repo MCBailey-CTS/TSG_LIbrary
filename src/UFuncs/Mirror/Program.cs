@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using NXOpen;
 using NXOpen.Assemblies;
-using NXOpen.CAE.Xyplot;
 using NXOpen.Features;
 using TSG_Library.Geom;
 using TSG_Library.UFuncs.Mirror.Features;

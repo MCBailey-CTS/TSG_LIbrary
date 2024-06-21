@@ -59,6 +59,7 @@ namespace TSG_Library.UFuncs
         public CopyAttributesForm()
         {
             InitializeComponent();
+
             try
             {
                 SetFormDefaults();
@@ -91,6 +92,8 @@ namespace TSG_Library.UFuncs
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            Location = Properties.Settings.Default.copy_attributes_form_window_location;
+            Text = AssemblyFileVersion;
         }
 
         private void SetUpDropDown()
@@ -106,6 +109,7 @@ namespace TSG_Library.UFuncs
                 Visible = false,
                 Enabled = false
             };
+
             attributeCombo.Items.AddRange(Shop1Name.ToArray<object>());
             groupBox2.Controls.Add(attributeCombo);
         }
@@ -146,9 +150,7 @@ namespace TSG_Library.UFuncs
             {
                 _childComponents.Clear();
                 _selectedComponents.Clear();
-
                 _childComponents.AddRange(Selection.SelectManyComponents().ToList());
-
 
                 if (_childComponents.Count == 0)
                 {
@@ -191,8 +193,7 @@ namespace TSG_Library.UFuncs
             try
             {
                 NXObject.AttributeInformation info = ((MyAttribute)listBoxAttributes.SelectedItem).Attribute;
-                NXObject.AttributeInformation info1 =
-                    session_.Parts.Display.GetUserAttribute(info.Title, NXObject.AttributeType.String, 0);
+                NXObject.AttributeInformation info1 = session_.Parts.Display.GetUserAttribute(info.Title, NXObject.AttributeType.String, 0);
                 info1.StringValue = _flag ? attributeCombo.SelectedItem as string : textBoxAttrValue.Text;
                 session_.Parts.Display.SetUserAttribute(info1, NXOpen.Update.Option.Later);
                 UpdateLoadedAttributes();
@@ -207,8 +208,7 @@ namespace TSG_Library.UFuncs
         {
             foreach (CtsAttributes delAttr in listBoxAttributes.Items)
                 if (listBoxAttributes.GetSelected(listBoxAttributes.Items.IndexOf(delAttr)))
-                    __display_part_.DeleteUserAttribute(NXObject.AttributeType.String, delAttr.AttrName, true,
-                        NXOpen.Update.Option.Now);
+                    __display_part_.DeleteUserAttribute(NXObject.AttributeType.String, delAttr.AttrName, true, NXOpen.Update.Option.Now);
 
             UpdateLoadedAttributes();
             textBoxAttrTitle.Clear();
@@ -217,7 +217,9 @@ namespace TSG_Library.UFuncs
 
         private void textBoxAttrTitle_KeyDown(object sender, KeyEventArgs e)
         {
-            if (!e.KeyCode.Equals(Keys.Tab)) return;
+            if (!e.KeyCode.Equals(Keys.Tab)) 
+                return;
+
             textBoxAttrValue.Clear();
             textBoxAttrValue.Focus();
         }
@@ -239,6 +241,7 @@ namespace TSG_Library.UFuncs
         public static string[] InputFromUcf(string start, string end)
         {
             List<string> strings = new List<string>();
+
             using (StreamReader textFile = new StreamReader(FilePathUcf))
             {
                 while (textFile.ReadLine() != start)
@@ -246,7 +249,9 @@ namespace TSG_Library.UFuncs
                 }
 
                 string line;
-                while ((line = textFile.ReadLine()) != end) strings.Add(line);
+
+                while ((line = textFile.ReadLine()) != end) 
+                    strings.Add(line);
             }
 
             return strings.ToArray();
@@ -254,8 +259,11 @@ namespace TSG_Library.UFuncs
 
         private void listBoxAttributes_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!(listBoxAttributes.SelectedItem is MyAttribute selected)) return;
+            if (!(listBoxAttributes.SelectedItem is MyAttribute selected)) 
+                return;
+
             textBoxAttrTitle.Text = selected.Attribute.Title;
+
             switch (selected.Attribute.Title)
             {
                 case "SHOP 1 NAME":
@@ -294,11 +302,13 @@ namespace TSG_Library.UFuncs
         private void buttonCopyApply_Click(object sender, EventArgs e)
         {
             List<NXObject.AttributeInformation> attributes = new List<NXObject.AttributeInformation>();
+
             if (listBoxAttributes.SelectedItems.Count == 0)
                 attributes.AddRange(from MyAttribute attribute in listBoxAttributes.Items select attribute.Attribute);
             else
                 attributes.AddRange(from MyAttribute attribute in listBoxAttributes.SelectedItems
-                    select attribute.Attribute);
+                                    select attribute.Attribute);
+
             CopyAttributes(attributes.ToArray());
             progressBarCopyAttr.Value = 0;
         }
@@ -307,11 +317,14 @@ namespace TSG_Library.UFuncs
         {
             progressBarCopyAttr.Maximum = _selectedComponents.Count;
             progressBarCopyAttr.Value = 0;
+
             foreach (Component comp in _selectedComponents.Select(__c => __c))
             {
                 Part part = (Part)comp.Prototype;
+
                 foreach (NXObject.AttributeInformation attribute in attributes)
                     part.SetUserAttribute(attribute, NXOpen.Update.Option.Later);
+
                 UpdateQuantity(part);
                 UpdateDetail(part, comp.DisplayName.Substring(comp.DisplayName.Length - 3, 3));
                 progressBarCopyAttr.PerformStep();
@@ -320,7 +333,7 @@ namespace TSG_Library.UFuncs
 
         public static void UpdateQuantity(Part part)
         {
-            UFSession.GetUFSession().Assem.AskOccsOfPart(__display_part_.Tag, part.Tag, out Tag[] partOccs);
+            ufsession_.Assem.AskOccsOfPart(__display_part_.Tag, part.Tag, out Tag[] partOccs);
 
             int __count = partOccs.Select(session_.__GetTaggedObject)
                 .Cast<Component>()
@@ -378,9 +391,7 @@ namespace TSG_Library.UFuncs
             _attrInfo = __display_part_.GetUserAttributes();
 
             if (_attrInfo.Length == 0)
-            {
                 listBoxAttributes.Items.Add("NO ATTRIBUTES IN DISPLAY PART");
-            }
             else
             {
                 foreach (NXObject.AttributeInformation attr in _attrInfo)
@@ -430,7 +441,7 @@ namespace TSG_Library.UFuncs
                     continue;
                 }
 
-                UFSession.GetUFSession().Cfi.AskFileExist(partName, out int status);
+                ufsession_.Cfi.AskFileExist(partName, out int status);
 
                 if (status != 0)
                     continue;
@@ -468,9 +479,9 @@ namespace TSG_Library.UFuncs
             List<Component> oneComp = new List<Component> { compList[0] };
 
             foreach (Component comp in from comp in compList
-                     let foundComponent = oneComp.Find(c => c.DisplayName == comp.DisplayName)
-                     where foundComponent == null
-                     select comp) oneComp.Add(comp);
+                                       let foundComponent = oneComp.Find(c => c.DisplayName == comp.DisplayName)
+                                       where foundComponent == null
+                                       select comp) oneComp.Add(comp);
 
             return oneComp.Count != 0 ? oneComp : null;
         }
@@ -512,6 +523,12 @@ namespace TSG_Library.UFuncs
                         return true;
                 return false;
             }
+        }
+
+        private void CopyAttributesForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Properties.Settings.Default.copy_attributes_form_window_location = Location;
+            Properties.Settings.Default.Save();
         }
     }
 }

@@ -869,6 +869,14 @@ namespace TSG_Library.UFuncs
 
         private void ExportStripForm_Load(object sender, EventArgs e)
         {
+            Text = AssemblyFileVersion;
+            Location = Properties.Settings.Default.export_strip_form_window_location;
+        }
+
+        private void ExportStripForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Properties.Settings.Default.export_strip_form_window_location = Location;
+            Properties.Settings.Default.Save();
         }
     }
 

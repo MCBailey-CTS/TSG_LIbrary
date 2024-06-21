@@ -108,6 +108,7 @@ namespace TSG_Library.UFuncs
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            Text = AssemblyFileVersion;
             _sizeFile = PerformStreamReaderString(FilePathUcf, ":HOLESIZE_FILE_LOCATION:",
                 ":END_HOLESIZE_FILE_LOCATION:");
             _borderFile =

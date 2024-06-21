@@ -52,13 +52,10 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                // Set window location
+                Text = AssemblyFileVersion;
                 Location = Settings.Default.cycle_components_form_window_location;
                 _compMaterials = CreateMaterialList();
-
-                foreach (CtsAttributes matl in _compMaterials)
-                    materialComboBox.Items.Add(matl);
-
+                materialComboBox.Items.AddRange(_compMaterials.ToArray());
                 materialSelectButton.Enabled = false;
                 materialComboBox.SelectedIndex = -1;
             }
@@ -104,15 +101,14 @@ namespace TSG_Library.UFuncs
                     foreach (Component component in _selComponents)
                         DisplayName?.Add(component.DisplayName);
 
-                    if (DisplayName != null)
+                    if (!(DisplayName is null))
                         foreach (string name in DisplayName)
                             selCompListBox.Items.Add(name);
 
                     selCompListBox.SelectedIndex = 0;
                     string dispComponent = (string)selCompListBox.SelectedItem;
 
-                    foreach (Component component in _selComponents.Where(component =>
-                                 component.DisplayName == dispComponent))
+                    foreach (Component component in _selComponents.Where(component => component.DisplayName == dispComponent))
                         SetDisplayPart(component);
 
                     selectButton.Enabled = false;
@@ -155,18 +151,18 @@ namespace TSG_Library.UFuncs
                     List<Component> passedComponents = new List<Component>();
 
                     foreach (Component comp in AllComponents)
-                    foreach (NXObject.AttributeInformation attr in comp.GetUserAttributes())
-                    {
-                        if (attr.Title.ToUpper() != "MATERIAL")
-                            continue;
+                        foreach (NXObject.AttributeInformation attr in comp.GetUserAttributes())
+                        {
+                            if (attr.Title.ToUpper() != "MATERIAL")
+                                continue;
 
-                        string value = comp.GetUserAttributeAsString("MATERIAL", NXObject.AttributeType.String, -1);
+                            string value = comp.GetUserAttributeAsString("MATERIAL", NXObject.AttributeType.String, -1);
 
-                        if (value != "")
-                            passedComponents.AddRange(from matAttr in materials
-                                where matAttr.AttrValue == value
-                                select comp);
-                    }
+                            if (value != "")
+                                passedComponents.AddRange(from matAttr in materials
+                                                          where matAttr.AttrValue == value
+                                                          select comp);
+                        }
 
                     if (passedComponents.Count == 0)
                         return;
@@ -183,8 +179,7 @@ namespace TSG_Library.UFuncs
                     foreach (Component compName in _selComponents)
                         DisplayName.Add(compName.DisplayName);
 
-                    foreach (string name in DisplayName)
-                        selCompListBox.Items.Add(name);
+                    selCompListBox.Items.AddRange(DisplayName.ToArray());
 
                     selCompListBox.SelectedIndex = 0;
                     string dispComponent = (string)selCompListBox.SelectedItem;
@@ -210,15 +205,8 @@ namespace TSG_Library.UFuncs
 
         private void MaterialComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            try
-            {
-                if (materialComboBox.SelectedIndex != -1)
-                    materialSelectButton.Enabled = true;
-            }
-            catch (Exception ex)
-            {
-                ex.__PrintException();
-            }
+            if (materialComboBox.SelectedIndex != -1)
+                materialSelectButton.Enabled = true;
         }
 
         private void MaterialSelectButton_Click(object sender, EventArgs e)
@@ -232,10 +220,17 @@ namespace TSG_Library.UFuncs
                 DisplayName.Clear();
                 selCompListBox.Items.Clear();
                 materialComboBox.Enabled = false;
-                if (__display_part_.ComponentAssembly.RootComponent == null) return;
+
+                if (__display_part_.ComponentAssembly.RootComponent is null)
+                    return;
+
                 GetChildComponents(__display_part_.ComponentAssembly.RootComponent);
-                if (AllComponents.Count == 0) return;
+
+                if (AllComponents.Count == 0)
+                    return;
+
                 List<Component> selOneComp = GetOneComponentOfMany(AllComponents);
+
                 foreach (Component comp in
                          from comp in selOneComp
                          from attrAll in comp.GetUserAttributes()
@@ -251,36 +246,36 @@ namespace TSG_Library.UFuncs
 
                 if (DisplayName.Count != 0)
                 {
-                    foreach (string name in DisplayName)
-                        selCompListBox.Items.Add(name);
+                    selCompListBox.Items.AddRange(DisplayName.ToArray());
                     selCompListBox.SelectedIndex = 0;
                     string dispComponent = (string)selCompListBox.SelectedItem;
+
                     foreach (Component component in _selComponents)
                         if (component.DisplayName == dispComponent)
                             SetDisplayPart(component);
+
                     selectButton.Enabled = false;
                     selectAllButton.Enabled = false;
                     materialSelectButton.Enabled = false;
                     burnoutCompButton.Enabled = false;
                     fourViewButton.Enabled = false;
                     buttonNonAssocDimsSymbols.Enabled = false;
+                    return;
                 }
-                else
-                {
-                    print_("There are no components with the material type " + materialComboBox.Text);
-                    selectButton.Enabled = true;
-                    selectAllButton.Enabled = true;
-                    materialComboBox.SelectedIndex = -1;
-                    materialComboBox.Enabled = true;
-                    materialSelectButton.Enabled = false;
-                    burnoutCompButton.Enabled = true;
-                    fourViewButton.Enabled = true;
-                    buttonNonAssocDimsSymbols.Enabled = true;
-                    _selComponents = new List<Component>();
-                    AllComponents.Clear();
-                    DisplayName.Clear();
-                    selCompListBox.Items.Clear();
-                }
+
+                print_($"There are no components with the material type {materialComboBox.Text}");
+                selectButton.Enabled = true;
+                selectAllButton.Enabled = true;
+                materialComboBox.SelectedIndex = -1;
+                materialComboBox.Enabled = true;
+                materialSelectButton.Enabled = false;
+                burnoutCompButton.Enabled = true;
+                fourViewButton.Enabled = true;
+                buttonNonAssocDimsSymbols.Enabled = true;
+                _selComponents = new List<Component>();
+                AllComponents.Clear();
+                DisplayName.Clear();
+                selCompListBox.Items.Clear();
             }
             catch (Exception ex)
             {
@@ -302,22 +297,25 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if (Session.GetSession().Parts.Work.ComponentAssembly.RootComponent == null)
+                if (__work_part_.ComponentAssembly.RootComponent is null)
                 {
                     print_("No Assembly in current __work_part_.");
                     return;
                 }
 
                 // Revision 2017 – 08 – 16
-                if (!IsAssemblyLoaded(Session.GetSession().Parts.Work.ComponentAssembly.RootComponent))
+                if (!IsAssemblyLoaded(__work_part_.ComponentAssembly.RootComponent))
                     print_("Assembly is not fully loaded. Please fully load it to ensure accurate results.");
 
                 UpdateSessionParts();
                 UpdateOriginalParts();
                 _selComponents = new List<Component>();
                 selCompListBox.Items.Clear();
-                IEnumerable<Component> descendants = __display_part_.ComponentAssembly.RootComponent.__DescendantsAll()
+
+                IEnumerable<Component> descendants = __display_part_.ComponentAssembly.RootComponent
+                    .__DescendantsAll()
                     .Where(__c => !__c.IsSuppressed);
+
                 HashSet<Component> hashSet = new HashSet<Component>(descendants.DistinctBy(__d => __d.DisplayName));
                 Component[] trimmedComponents = hashSet.Select(component => component).ToArray();
 
@@ -328,7 +326,7 @@ namespace TSG_Library.UFuncs
 
                     foreach (Feature feature in part.Features)
                     {
-                        if (feature.GetType().ToString() != "NXOpen.Features.ExtractFace")
+                        if (!(feature is ExtractFace))
                             continue;
 
                         ufsession_.Wave.IsLinkBroken(feature.Tag, out bool flag);
@@ -361,17 +359,21 @@ namespace TSG_Library.UFuncs
                 DisplayName.Clear();
                 selCompListBox.Items.Clear();
                 _isBurnout = true;
-                if (__display_part_.ComponentAssembly.RootComponent == null) return;
-                GetChildComponents(__display_part_.ComponentAssembly.RootComponent);
-                if (AllComponents.Count == 0) return;
-                List<Component> selOneComp = GetOneComponentOfMany(AllComponents);
 
+                if (__display_part_.ComponentAssembly.RootComponent is null)
+                    return;
+
+                GetChildComponents(__display_part_.ComponentAssembly.RootComponent);
+                if (AllComponents.Count == 0)
+                    return;
+
+                List<Component> selOneComp = GetOneComponentOfMany(AllComponents);
                 HashSet<string> materials = new HashSet<string>();
                 //const string path = @"U:\NX110\Concept\ConceptControlFile.UCF";
-                const string start = ":NXOpen.Assemblies.ComponentBURN_MATERIALS:";
-                const string end = ":END_NXOpen.Assemblies.ComponentBURN_MATERIALS:";
-                IEnumerable<string> result =
-                    Ucf.StaticRead(FilePathUcf, start, end, StringComparison.InvariantCultureIgnoreCase);
+                const string start = ":BURN_MATERIALS:";
+                const string end = ":END_BURN_MATERIALS:";
+                IEnumerable<string> result = Ucf.StaticRead(FilePathUcf, start, end, StringComparison.InvariantCultureIgnoreCase);
+
                 foreach (string temp in result)
                     materials.Add(temp);
 
@@ -395,15 +397,17 @@ namespace TSG_Library.UFuncs
                     return;
                 }
 
-                foreach (string name in DisplayName)
-                    selCompListBox.Items.Add(name);
+                selCompListBox.Items.AddRange(DisplayName.ToArray());
                 selCompListBox.SelectedIndex = 0;
                 string dispComponent = (string)selCompListBox.SelectedItem;
+
                 foreach (Component component in _selComponents.Where(
                              component => component.DisplayName == dispComponent))
                     SetDisplayPart(component);
+
                 if (_isBurnout)
                     SetBurnoutComponentState();
+
                 selectButton.Enabled = false;
                 selectAllButton.Enabled = false;
                 materialComboBox.Enabled = false;
@@ -470,8 +474,7 @@ namespace TSG_Library.UFuncs
                     return;
                 }
 
-                foreach (string name in DisplayName)
-                    selCompListBox.Items.Add(name);
+                selCompListBox.Items.AddRange(DisplayName.ToArray());
 
                 selCompListBox.SelectedIndex = 0;
                 string dispComponent = (string)selCompListBox.SelectedItem;
@@ -550,8 +553,8 @@ namespace TSG_Library.UFuncs
                             foreach (UFDrf.IdSymbolInfo info in symbolInfo)
                             {
                                 if ((from leaderInfo in info.leader_info
-                                        let numAssocObj = 0
-                                        select leaderInfo.num_assoc_objs).All(numAssocObj => numAssocObj != 0))
+                                     let numAssocObj = 0
+                                     select leaderInfo.num_assoc_objs).All(numAssocObj => numAssocObj != 0))
                                     continue;
 
                                 isSymbolRetained = true;
@@ -572,9 +575,7 @@ namespace TSG_Library.UFuncs
                     return;
                 }
 
-                foreach (string name in DisplayName)
-                    selCompListBox.Items.Add(name);
-
+                selCompListBox.Items.AddRange(DisplayName.ToArray());
                 Show();
                 selCompListBox.SelectedIndex = 0;
                 string dispComponent = (string)selCompListBox.SelectedItem;
@@ -607,11 +608,14 @@ namespace TSG_Library.UFuncs
                 {
                     SetDisplayPart(component);
                     SetDefaultLayers();
-                    if (!removeCompCheckBox.Checked) continue;
+
+                    if (!removeCompCheckBox.Checked)
+                        continue;
+
                     selCompListBox.Items.Clear();
                     DisplayName.Remove(DisplayName1);
-                    foreach (string name in DisplayName)
-                        selCompListBox.Items.Add(name);
+                    selCompListBox.Items.AddRange(DisplayName.ToArray());
+
                     if (selCompListBox.Items.Count != 0)
                         selCompListBox.SelectedIndex = 0;
                 }
@@ -676,10 +680,7 @@ namespace TSG_Library.UFuncs
 
                     selCompListBox.Items.Clear();
                     DisplayName.Remove(currentName);
-
-                    foreach (string name in DisplayName)
-                        selCompListBox.Items.Add(name);
-
+                    selCompListBox.Items.AddRange(DisplayName.ToArray());
                     int indexOfName = selCompListBox.FindString(prevName);
                     selCompListBox.SelectedIndex = indexOfName;
                 }
@@ -782,10 +783,6 @@ namespace TSG_Library.UFuncs
 
         private static List<CtsAttributes> CreateBurnoutMaterialList()
         {
-            _ = new List<CtsAttributes>();
-            //const string settingsPath = "U:\\NX110\\Concept";
-            //var settingsFile = Directory.GetFiles(settingsPath, "*.UCF");
-            //if (settingsFile.Length != 1) return compMaterials;
             string getMaterial = PerformStreamReaderString(FilePathUcf, ":COMPONENT_BURN_MATERIALS:",
                 ":END_COMPONENT_BURN_MATERIALS:");
             List<CtsAttributes> compMaterials =
@@ -798,9 +795,6 @@ namespace TSG_Library.UFuncs
         private static List<CtsAttributes> CreateMaterialList()
         {
             _ = new List<CtsAttributes>();
-            //const string settingsPath = "U:\\NX110\\Concept";
-            //var settingsFile = Directory.GetFiles(settingsPath, "*.UCF");
-            //if (settingsFile.Length != 1) return compMaterials;
             string getMaterial = PerformStreamReaderString(FilePathUcf, ":MATERIAL_ATTRIBUTE_NAME:",
                 ":END_MATERIAL_ATTRIBUTE_NAME:");
             List<CtsAttributes> compMaterials =
@@ -821,8 +815,8 @@ namespace TSG_Library.UFuncs
             string textData = endSplit[0];
             string[] splitData = Regex.Split(textData, "\r\n");
             List<CtsAttributes> compData = (from sData in splitData
-                where sData != string.Empty
-                select new CtsAttributes { AttrValue = sData }).ToList();
+                                            where sData != string.Empty
+                                            select new CtsAttributes { AttrValue = sData }).ToList();
             return compData.Count > 0 ? compData : null;
         }
 
@@ -964,9 +958,9 @@ namespace TSG_Library.UFuncs
         {
             List<Component> oneComp = new List<Component> { compList[0] };
             foreach (Component comp in from comp in compList
-                     let foundComponent = oneComp.Find(c => c.DisplayName == comp.DisplayName)
-                     where foundComponent == null
-                     select comp) oneComp.Add(comp);
+                                       let foundComponent = oneComp.Find(c => c.DisplayName == comp.DisplayName)
+                                       where foundComponent == null
+                                       select comp) oneComp.Add(comp);
 
             return oneComp.Count != 0 ? oneComp : null;
         }

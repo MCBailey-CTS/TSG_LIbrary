@@ -16,7 +16,7 @@ namespace TSG_Library.UFuncs
     {
         public override void execute()
         {
-            if (Session.GetSession().Parts.Display is null)
+            if (__display_part_ is null)
             {
                 print_("There is no displayed part loaded");
                 return;
@@ -25,7 +25,7 @@ namespace TSG_Library.UFuncs
             session_.SetUndoMark(Session.MarkVisibility.Visible, "ExtractFreeEdgeCurves");
 
             // Allows the user to select sheet bodies.
-            Body[] selectedSheetBodies = Selection.SelectManySheetBodies();
+            Body[] selectedSheetBodies = Selection.SelectManySheetBodies(ufunc_rev_name);
 
             // Gets the edges from the selected sheet bodies.
             Edge[] edges = selectedSheetBodies.SelectMany(body => body.GetEdges()).ToArray();

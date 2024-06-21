@@ -177,6 +177,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
+                Text = AssemblyFileVersion;
                 switch (_1x_2x)
                 {
                     case 1:
