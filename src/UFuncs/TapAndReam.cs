@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NXOpen;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -19,7 +20,7 @@ namespace TSG_Library.UFuncs
         // ReSharper disable once InconsistentNaming
         private static NXOpen.Part originalWorkPart = workPart;
 
-        public TapAndReam() 
+        public TapAndReam()
         {
             InitializeComponent();
         }
@@ -33,29 +34,36 @@ namespace TSG_Library.UFuncs
 
                 NXOpen.Assemblies.Component selectedComp = SelectOneComponent();
 
-                if (selectedComp == null) return;
+                if (selectedComp is null) 
+                    return;
+
                 session_.Parts.SetWork((NXOpen.Part)selectedComp.Prototype);
-
-                UpdateSessionParts();
-
+                workPart = session_.Parts.Work;
                 NXOpen.Features.Feature[] allFeatures = workPart.Features.ToArray();
                 NXOpen.Features.Feature lastFeature = allFeatures[allFeatures.Length - 1];
                 int lastFeatureTimeStamp = allFeatures[allFeatures.Length - 1].Timestamp;
-
                 List<FeatureGroup> moveFeatures = new List<FeatureGroup>();
 
                 foreach (NXOpen.Features.Feature feature in workPart.Features)
                 {
-                    if (feature.FeatureType != "LINKED_BODY") continue;
-                    if (feature.Suppressed) continue;
+                    if (feature.FeatureType != "LINKED_BODY") 
+                        continue;
+
+                    if (feature.Suppressed) 
+                        continue;
+
                     NXOpen.Features.Feature[] featChildren = feature.GetChildren();
 
                     foreach (NXOpen.Features.Feature bFeature in featChildren)
                     {
-                        if (bFeature.Suppressed) continue;
+                        if (bFeature.Suppressed) 
+                            continue;
+
                         FeatureGroup orderFeat = new FeatureGroup();
 
-                        if (bFeature.FeatureType != "META") continue;
+                        if (bFeature.FeatureType != "META") 
+                            continue;
+
                         NXOpen.Features.BooleanFeature getTool = (NXOpen.Features.BooleanFeature)bFeature;
 
                         foreach (NXOpen.Body bBody in getTool.GetBodies())
@@ -63,11 +71,17 @@ namespace TSG_Library.UFuncs
                             {
                                 ufsession_.Obj.AskTypeAndSubtype(bFace.Tag, out int type, out int subType);
 
-                                if (type != NXOpen.UF.UFConstants.UF_solid_type || subType != NXOpen.UF.UFConstants.UF_solid_face_subtype) continue;
+                                if (type != NXOpen.UF.UFConstants.UF_solid_type || subType != NXOpen.UF.UFConstants.UF_solid_face_subtype) 
+                                    continue;
+
                                 NXOpen.Face cFace = (NXOpen.Face)NXOpen.Utilities.NXObjectManager.Get(bFace.Tag);
 
-                                if (cFace.SolidFaceType != NXOpen.Face.FaceType.Cylindrical) continue;
-                                if (cFace.Name != "HOLECHART") continue;
+                                if (cFace.SolidFaceType != NXOpen.Face.FaceType.Cylindrical) 
+                                    continue;
+
+                                if (cFace.Name != "HOLECHART") 
+                                    continue;
+
                                 orderFeat.linkedBody = feature;
                                 orderFeat.booleanFeature = getTool;
                                 moveFeatures.Add(orderFeat);
@@ -76,120 +90,122 @@ namespace TSG_Library.UFuncs
                     }
                 }
 
-                int lastFeatureGroupTimeStamp = moveFeatures[moveFeatures.Count - 1].booleanFeature.Timestamp;
-
-                if (lastFeatureTimeStamp > lastFeatureGroupTimeStamp)
-                {
-                    List<NXOpen.Tag> moveFeatTags = new List<NXOpen.Tag>();
-
-                    foreach (FeatureGroup group in moveFeatures)
-                    {
-                        moveFeatTags.Add(group.linkedBody.Tag);
-                        moveFeatTags.Add(group.booleanFeature.Tag);
-                    }
-
-                    const int reOrderAfter = 2;
-                    ufsession_.Modl.ReorderFeature(allFeatures[allFeatures.Length - 1].Tag, moveFeatTags.ToArray(), reOrderAfter);
-
-                    lastFeature.MakeCurrentFeature();
-                }
-
-                session_.Parts.SetWork(originalWorkPart);
-
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                NewMethod(allFeatures, lastFeature, lastFeatureTimeStamp, moveFeatures);
             }
             catch (Exception ex)
             {
                 ex.__PrintException();
             }
         }
+
+      
 
         private void ButtonSuppressTaps_Click(object sender, EventArgs e)
         {
             try
             {
                 session_.SetUndoMark(NXOpen.Session.MarkVisibility.Visible, "Suppress Taps");
-
                 NXOpen.Assemblies.Component selectedComp = SelectOneComponent();
 
-                if (selectedComp == null) return;
+                if (selectedComp is null) 
+                    return;
+
                 session_.Parts.SetWork((NXOpen.Part)selectedComp.Prototype);
-
-                UpdateSessionParts();
-
+                workPart = session_.Parts.Work;
                 List<FeatureGroup> suppressFeatures = new List<FeatureGroup>();
-
                 FeatureGroup suppressFeat = new FeatureGroup();
-
-                foreach (NXOpen.Features.Feature feature in workPart.Features)
-                {
-                    if (feature.FeatureType != "LINKED_BODY") continue;
-                    if (feature.Suppressed) continue;
-                    NXOpen.Features.Feature[] featChildren = feature.GetChildren();
-
-                    foreach (NXOpen.Features.Feature bFeature in featChildren)
-                    {
-                        if (bFeature.Suppressed) continue;
-                        if (bFeature.FeatureType != "META") continue;
-                        NXOpen.Features.BooleanFeature getTool = (NXOpen.Features.BooleanFeature)bFeature;
-
-                        foreach (NXOpen.Body bBody in getTool.GetBodies())
-                            foreach (NXOpen.Face bFace in bBody.GetFaces())
-                            {
-                                ufsession_.Obj.AskTypeAndSubtype(bFace.Tag, out int type, out int subType);
-
-                                if (type != NXOpen.UF.UFConstants.UF_solid_type || subType != NXOpen.UF.UFConstants.UF_solid_face_subtype) continue;
-                                NXOpen.Face cFace = (NXOpen.Face)NXOpen.Utilities.NXObjectManager.Get(bFace.Tag);
-
-                                if (cFace.SolidFaceType != NXOpen.Face.FaceType.Cylindrical) continue;
-                                if (cFace.Name != "HOLECHART") continue;
-                                if (cFace.Color != 181) continue;
-                                ufsession_.Modl.AskFaceFeats(cFace.Tag, out NXOpen.Tag[] features);
-
-                                foreach (NXOpen.Tag featTag in features)
-                                {
-                                    if (featTag != feature.Tag) continue;
-                                    suppressFeat.linkedBody = feature;
-                                    suppressFeat.booleanFeature = getTool;
-                                    suppressFeat.cylindricalFace = cFace;
-
-                                    if (suppressFeatures.Count == 0)
-                                    {
-                                        suppressFeatures.Add(suppressFeat);
-                                        break;
-                                    }
-
-                                    FeatureGroup findGroup = suppressFeatures.Find(f => f.cylindricalFace == suppressFeat.cylindricalFace);
-                                    if (findGroup.cylindricalFace != null) continue;
-                                    suppressFeatures.Add(suppressFeat);
-                                    break;
-                                }
-                            }
-                    }
-                }
-
-                List<NXOpen.Features.Feature> suppAllFeats = new List<NXOpen.Features.Feature>();
-
-                foreach (FeatureGroup fGroup in suppressFeatures)
-                {
-                    suppAllFeats.Add(fGroup.linkedBody);
-
-                    suppAllFeats.AddRange(fGroup.linkedBody.GetChildren());
-                }
-
-                if (suppAllFeats.Count > 0) workPart.Features.SuppressFeatures(suppAllFeats.ToArray());
-
-                session_.Parts.SetWork(originalWorkPart);
-
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                NewMethod19(suppressFeatures, suppressFeat);
+                NewMethod1(suppressFeatures);
             }
             catch (Exception ex)
             {
                 ex.__PrintException();
             }
         }
+
+        private static void NewMethod19(List<FeatureGroup> suppressFeatures, FeatureGroup suppressFeat)
+        {
+            foreach (NXOpen.Features.Feature feature in workPart.Features)
+            {
+                if (feature.FeatureType != "LINKED_BODY") 
+                    continue;
+
+                if (feature.Suppressed) 
+                    continue;
+
+                NXOpen.Features.Feature[] featChildren = feature.GetChildren();
+                NewMethod18(suppressFeatures, suppressFeat, feature, featChildren);
+            }
+        }
+
+        private static void NewMethod18(List<FeatureGroup> suppressFeatures, FeatureGroup suppressFeat, NXOpen.Features.Feature feature, NXOpen.Features.Feature[] featChildren)
+        {
+            foreach (NXOpen.Features.Feature bFeature in featChildren)
+            {
+                if (bFeature.Suppressed) 
+                    continue;
+
+                if (bFeature.FeatureType != "META") 
+                    continue;
+
+                NXOpen.Features.BooleanFeature getTool = (NXOpen.Features.BooleanFeature)bFeature;
+                NewMethod17(suppressFeatures, suppressFeat, feature, getTool);
+            }
+        }
+
+        private static void NewMethod17(List<FeatureGroup> suppressFeatures, FeatureGroup suppressFeat, NXOpen.Features.Feature feature, NXOpen.Features.BooleanFeature getTool)
+        {
+            foreach (NXOpen.Body bBody in getTool.GetBodies())
+                foreach (NXOpen.Face bFace in bBody.GetFaces())
+                {
+                    ufsession_.Obj.AskTypeAndSubtype(bFace.Tag, out int type, out int subType);
+
+                    if (type != NXOpen.UF.UFConstants.UF_solid_type || subType != NXOpen.UF.UFConstants.UF_solid_face_subtype) 
+                        continue;
+
+                    NXOpen.Face cFace = (NXOpen.Face)NXOpen.Utilities.NXObjectManager.Get(bFace.Tag);
+
+                    if (cFace.SolidFaceType != NXOpen.Face.FaceType.Cylindrical) 
+                        continue;
+
+                    if (cFace.Name != "HOLECHART") 
+                        continue;
+
+                    if (cFace.Color != 181) 
+                        continue;
+
+                    ufsession_.Modl.AskFaceFeats(cFace.Tag, out NXOpen.Tag[] features);
+                    NewMethod16(suppressFeatures, suppressFeat, feature, getTool, cFace, features);
+                }
+        }
+
+        private static void NewMethod16(List<FeatureGroup> suppressFeatures, FeatureGroup suppressFeat, NXOpen.Features.Feature feature, NXOpen.Features.BooleanFeature getTool, Face cFace, Tag[] features)
+        {
+            foreach (NXOpen.Tag featTag in features)
+            {
+                if (featTag != feature.Tag) 
+                    continue;
+
+                suppressFeat.linkedBody = feature;
+                suppressFeat.booleanFeature = getTool;
+                suppressFeat.cylindricalFace = cFace;
+
+                if (suppressFeatures.Count == 0)
+                {
+                    suppressFeatures.Add(suppressFeat);
+                    break;
+                }
+
+                FeatureGroup findGroup = suppressFeatures.Find(f => f.cylindricalFace == suppressFeat.cylindricalFace);
+
+                if (findGroup.cylindricalFace != null) 
+                    continue;
+
+                suppressFeatures.Add(suppressFeat);
+                break;
+            }
+        }
+
 
         private void ButtonSuppressReams_Click(object sender, EventArgs e)
         {
@@ -202,80 +218,87 @@ namespace TSG_Library.UFuncs
                 if (selectedComp == null) return;
                 session_.Parts.SetWork((NXOpen.Part)selectedComp.Prototype);
 
-                UpdateSessionParts();
+                workPart = session_.Parts.Work;
 
                 List<FeatureGroup> suppressFeatures = new List<FeatureGroup>();
 
                 FeatureGroup suppressFeat = new FeatureGroup();
 
-                foreach (NXOpen.Features.Feature feature in workPart.Features)
-                {
-                    if (feature.FeatureType != "LINKED_BODY") continue;
-                    if (feature.Suppressed) continue;
-                    NXOpen.Features.Feature[] featChildren = feature.GetChildren();
+                NewMethod10(suppressFeatures, suppressFeat);
 
-                    foreach (NXOpen.Features.Feature bFeature in featChildren)
-                    {
-                        if (bFeature.Suppressed) continue;
-                        if (bFeature.FeatureType != "META") continue;
-                        NXOpen.Features.BooleanFeature getTool = (NXOpen.Features.BooleanFeature)bFeature;
-
-                        foreach (NXOpen.Body bBody in getTool.GetBodies())
-                            foreach (NXOpen.Face bFace in bBody.GetFaces())
-                            {
-                                ufsession_.Obj.AskTypeAndSubtype(bFace.Tag, out int type, out int subType);
-
-                                if (type != NXOpen.UF.UFConstants.UF_solid_type || subType != NXOpen.UF.UFConstants.UF_solid_face_subtype) continue;
-                                NXOpen.Face cFace = (NXOpen.Face)NXOpen.Utilities.NXObjectManager.Get(bFace.Tag);
-
-                                if (cFace.SolidFaceType != NXOpen.Face.FaceType.Cylindrical) continue;
-                                if (cFace.Name != "HOLECHART") continue;
-                                if (cFace.Color != 42) continue;
-                                ufsession_.Modl.AskFaceFeats(cFace.Tag, out NXOpen.Tag[] features);
-
-                                foreach (NXOpen.Tag featTag in features)
-                                {
-                                    if (featTag != feature.Tag) continue;
-                                    suppressFeat.linkedBody = feature;
-                                    suppressFeat.booleanFeature = getTool;
-                                    suppressFeat.cylindricalFace = cFace;
-
-                                    if (suppressFeatures.Count == 0)
-                                    {
-                                        suppressFeatures.Add(suppressFeat);
-                                        break;
-                                    }
-
-                                    FeatureGroup findGroup = suppressFeatures.Find(f => f.cylindricalFace == suppressFeat.cylindricalFace);
-                                    if (findGroup.cylindricalFace != null) continue;
-                                    suppressFeatures.Add(suppressFeat);
-                                    break;
-                                }
-                            }
-                    }
-                }
-
-                List<NXOpen.Features.Feature> suppAllFeats = new List<NXOpen.Features.Feature>();
-
-                foreach (FeatureGroup fGroup in suppressFeatures)
-                {
-                    suppAllFeats.Add(fGroup.linkedBody);
-
-                    suppAllFeats.AddRange(fGroup.linkedBody.GetChildren());
-                }
-
-                if (suppAllFeats.Count > 0) workPart.Features.SuppressFeatures(suppAllFeats.ToArray());
-
-                session_.Parts.SetWork(originalWorkPart);
-
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                NewMethod2(suppressFeatures);
             }
             catch (Exception ex)
             {
                 ex.__PrintException();
             }
         }
+
+        private static void NewMethod10(List<FeatureGroup> suppressFeatures, FeatureGroup suppressFeat)
+        {
+            foreach (NXOpen.Features.Feature feature in workPart.Features)
+            {
+                if (feature.FeatureType != "LINKED_BODY") continue;
+                if (feature.Suppressed) continue;
+                NXOpen.Features.Feature[] featChildren = feature.GetChildren();
+
+                NewMethod9(suppressFeatures, suppressFeat, feature, featChildren);
+            }
+        }
+
+        private static void NewMethod9(List<FeatureGroup> suppressFeatures, FeatureGroup suppressFeat, NXOpen.Features.Feature feature, NXOpen.Features.Feature[] featChildren)
+        {
+            foreach (NXOpen.Features.Feature bFeature in featChildren)
+            {
+                if (bFeature.Suppressed) continue;
+                if (bFeature.FeatureType != "META") continue;
+                NXOpen.Features.BooleanFeature getTool = (NXOpen.Features.BooleanFeature)bFeature;
+
+                foreach (NXOpen.Body bBody in getTool.GetBodies())
+                    NewMethod8(suppressFeatures, suppressFeat, feature, getTool, bBody);
+            }
+        }
+
+        private static void NewMethod8(List<FeatureGroup> suppressFeatures, FeatureGroup suppressFeat, NXOpen.Features.Feature feature, NXOpen.Features.BooleanFeature getTool, Body bBody)
+        {
+            foreach (NXOpen.Face bFace in bBody.GetFaces())
+            {
+                ufsession_.Obj.AskTypeAndSubtype(bFace.Tag, out int type, out int subType);
+
+                if (type != NXOpen.UF.UFConstants.UF_solid_type || subType != NXOpen.UF.UFConstants.UF_solid_face_subtype) continue;
+                NXOpen.Face cFace = (NXOpen.Face)NXOpen.Utilities.NXObjectManager.Get(bFace.Tag);
+
+                if (cFace.SolidFaceType != NXOpen.Face.FaceType.Cylindrical) continue;
+                if (cFace.Name != "HOLECHART") continue;
+                if (cFace.Color != 42) continue;
+                ufsession_.Modl.AskFaceFeats(cFace.Tag, out NXOpen.Tag[] features);
+
+                NewMethod7(suppressFeatures, suppressFeat, feature, getTool, cFace, features);
+            }
+        }
+
+        private static void NewMethod7(List<FeatureGroup> suppressFeatures, FeatureGroup suppressFeat, NXOpen.Features.Feature feature, NXOpen.Features.BooleanFeature getTool, Face cFace, Tag[] features)
+        {
+            foreach (NXOpen.Tag featTag in features)
+            {
+                if (featTag != feature.Tag) continue;
+                suppressFeat.linkedBody = feature;
+                suppressFeat.booleanFeature = getTool;
+                suppressFeat.cylindricalFace = cFace;
+
+                if (suppressFeatures.Count == 0)
+                {
+                    suppressFeatures.Add(suppressFeat);
+                    break;
+                }
+
+                FeatureGroup findGroup = suppressFeatures.Find(f => f.cylindricalFace == suppressFeat.cylindricalFace);
+                if (findGroup.cylindricalFace != null) continue;
+                suppressFeatures.Add(suppressFeat);
+                break;
+            }
+        }
+
 
         private void ButtonSuppressTapReam_Click(object sender, EventArgs e)
         {
@@ -288,106 +311,125 @@ namespace TSG_Library.UFuncs
                 if (selectedComp == null) return;
                 session_.Parts.SetWork((NXOpen.Part)selectedComp.Prototype);
 
-                UpdateSessionParts();
+                workPart = session_.Parts.Work;
 
                 List<FeatureGroup> suppressFeatures = new List<FeatureGroup>();
 
                 FeatureGroup suppressFeat = new FeatureGroup();
+                suppressFeat = NewMethod15(suppressFeatures, suppressFeat);
 
-                foreach (NXOpen.Features.Feature feature in workPart.Features)
-                {
-                    if (feature.FeatureType != "LINKED_BODY") continue;
-                    if (feature.Suppressed) continue;
-                    NXOpen.Features.Feature[] featChildren = feature.GetChildren();
-
-                    foreach (NXOpen.Features.Feature bFeature in featChildren)
-                    {
-                        if (bFeature.Suppressed) continue;
-                        if (bFeature.FeatureType != "META") continue;
-                        NXOpen.Features.BooleanFeature getTool = (NXOpen.Features.BooleanFeature)bFeature;
-
-                        foreach (NXOpen.Body bBody in getTool.GetBodies())
-                            foreach (NXOpen.Face bFace in bBody.GetFaces())
-                            {
-                                ufsession_.Obj.AskTypeAndSubtype(bFace.Tag, out int type, out int subType);
-
-                                if (type != NXOpen.UF.UFConstants.UF_solid_type || subType != NXOpen.UF.UFConstants.UF_solid_face_subtype) continue;
-                                NXOpen.Face cFace = (NXOpen.Face)NXOpen.Utilities.NXObjectManager.Get(bFace.Tag);
-
-                                if (cFace.SolidFaceType != NXOpen.Face.FaceType.Cylindrical) continue;
-                                if (cFace.Name != "HOLECHART") continue;
-                                if (cFace.Color == 181)
-                                {
-                                    ufsession_.Modl.AskFaceFeats(cFace.Tag, out NXOpen.Tag[] features);
-
-                                    foreach (NXOpen.Tag featTag in features)
-                                    {
-                                        if (featTag != feature.Tag) continue;
-                                        suppressFeat.linkedBody = feature;
-                                        suppressFeat.booleanFeature = getTool;
-                                        suppressFeat.cylindricalFace = cFace;
-
-                                        if (suppressFeatures.Count == 0)
-                                        {
-                                            suppressFeatures.Add(suppressFeat);
-                                            break;
-                                        }
-
-                                        FeatureGroup findGroup = suppressFeatures.Find(f => f.cylindricalFace == suppressFeat.cylindricalFace);
-                                        if (findGroup.cylindricalFace != null) continue;
-                                        suppressFeatures.Add(suppressFeat);
-                                        break;
-                                    }
-                                }
-
-                                if (cFace.Color != 42) continue;
-                                {
-                                    ufsession_.Modl.AskFaceFeats(cFace.Tag, out NXOpen.Tag[] features);
-
-                                    foreach (NXOpen.Tag featTag in features)
-                                    {
-                                        if (featTag != feature.Tag) continue;
-                                        suppressFeat.linkedBody = feature;
-                                        suppressFeat.booleanFeature = getTool;
-                                        suppressFeat.cylindricalFace = cFace;
-
-                                        if (suppressFeatures.Count == 0)
-                                        {
-                                            suppressFeatures.Add(suppressFeat);
-                                            break;
-                                        }
-
-                                        FeatureGroup findGroup = suppressFeatures.Find(f => f.cylindricalFace == suppressFeat.cylindricalFace);
-                                        if (findGroup.cylindricalFace != null) continue;
-                                        suppressFeatures.Add(suppressFeat);
-                                        break;
-                                    }
-                                }
-                            }
-                    }
-                }
-
-                List<NXOpen.Features.Feature> suppAllFeats = new List<NXOpen.Features.Feature>();
-
-                foreach (FeatureGroup fGroup in suppressFeatures)
-                {
-                    suppAllFeats.Add(fGroup.linkedBody);
-
-                    suppAllFeats.AddRange(fGroup.linkedBody.GetChildren());
-                }
-
-                if (suppAllFeats.Count > 0) workPart.Features.SuppressFeatures(suppAllFeats.ToArray());
-
-                session_.Parts.SetWork(originalWorkPart);
-
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                NewMethod3(suppressFeatures);
             }
             catch (Exception ex)
             {
                 ex.__PrintException();
             }
         }
+
+        private static FeatureGroup NewMethod15(List<FeatureGroup> suppressFeatures, FeatureGroup suppressFeat)
+        {
+            foreach (NXOpen.Features.Feature feature in workPart.Features)
+            {
+                if (feature.FeatureType != "LINKED_BODY") continue;
+                if (feature.Suppressed) continue;
+                NXOpen.Features.Feature[] featChildren = feature.GetChildren();
+
+                suppressFeat = NewMethod14(suppressFeatures, suppressFeat, feature, featChildren);
+            }
+
+            return suppressFeat;
+        }
+
+        private static FeatureGroup NewMethod14(List<FeatureGroup> suppressFeatures, FeatureGroup suppressFeat, NXOpen.Features.Feature feature, NXOpen.Features.Feature[] featChildren)
+        {
+            foreach (NXOpen.Features.Feature bFeature in featChildren)
+            {
+                if (bFeature.Suppressed) continue;
+                if (bFeature.FeatureType != "META") continue;
+                NXOpen.Features.BooleanFeature getTool = (NXOpen.Features.BooleanFeature)bFeature;
+
+                suppressFeat = NewMethod13(suppressFeatures, suppressFeat, feature, getTool);
+            }
+
+            return suppressFeat;
+        }
+
+        private static FeatureGroup NewMethod13(List<FeatureGroup> suppressFeatures, FeatureGroup suppressFeat, NXOpen.Features.Feature feature, NXOpen.Features.BooleanFeature getTool)
+        {
+            foreach (NXOpen.Body bBody in getTool.GetBodies())
+                foreach (NXOpen.Face bFace in bBody.GetFaces())
+                {
+                    ufsession_.Obj.AskTypeAndSubtype(bFace.Tag, out int type, out int subType);
+
+                    if (type != NXOpen.UF.UFConstants.UF_solid_type || subType != NXOpen.UF.UFConstants.UF_solid_face_subtype) continue;
+                    NXOpen.Face cFace = (NXOpen.Face)NXOpen.Utilities.NXObjectManager.Get(bFace.Tag);
+
+                    if (cFace.SolidFaceType != NXOpen.Face.FaceType.Cylindrical) continue;
+                    if (cFace.Name != "HOLECHART") continue;
+                    if (cFace.Color == 181)
+                    {
+                        ufsession_.Modl.AskFaceFeats(cFace.Tag, out NXOpen.Tag[] features);
+
+                        suppressFeat = NewMethod12(suppressFeatures, suppressFeat, feature, getTool, cFace, features);
+                    }
+
+                    if (cFace.Color != 42) continue;
+                    {
+                        ufsession_.Modl.AskFaceFeats(cFace.Tag, out NXOpen.Tag[] features);
+
+                        NewMethod11(suppressFeatures, suppressFeat, feature, getTool, cFace, features);
+                    }
+                }
+
+            return suppressFeat;
+        }
+
+        private static FeatureGroup NewMethod12(List<FeatureGroup> suppressFeatures, FeatureGroup suppressFeat, NXOpen.Features.Feature feature, NXOpen.Features.BooleanFeature getTool, Face cFace, Tag[] features)
+        {
+            foreach (NXOpen.Tag featTag in features)
+            {
+                if (featTag != feature.Tag) continue;
+                suppressFeat.linkedBody = feature;
+                suppressFeat.booleanFeature = getTool;
+                suppressFeat.cylindricalFace = cFace;
+
+                if (suppressFeatures.Count == 0)
+                {
+                    suppressFeatures.Add(suppressFeat);
+                    break;
+                }
+
+                FeatureGroup findGroup = suppressFeatures.Find(f => f.cylindricalFace == suppressFeat.cylindricalFace);
+                if (findGroup.cylindricalFace != null) continue;
+                suppressFeatures.Add(suppressFeat);
+                break;
+            }
+
+            return suppressFeat;
+        }
+
+        private static void NewMethod11(List<FeatureGroup> suppressFeatures, FeatureGroup suppressFeat, NXOpen.Features.Feature feature, NXOpen.Features.BooleanFeature getTool, Face cFace, Tag[] features)
+        {
+            foreach (NXOpen.Tag featTag in features)
+            {
+                if (featTag != feature.Tag) continue;
+                suppressFeat.linkedBody = feature;
+                suppressFeat.booleanFeature = getTool;
+                suppressFeat.cylindricalFace = cFace;
+
+                if (suppressFeatures.Count == 0)
+                {
+                    suppressFeatures.Add(suppressFeat);
+                    break;
+                }
+
+                FeatureGroup findGroup = suppressFeatures.Find(f => f.cylindricalFace == suppressFeat.cylindricalFace);
+                if (findGroup.cylindricalFace != null) continue;
+                suppressFeatures.Add(suppressFeat);
+                break;
+            }
+        }
+
 
         private void ButtonDeleteTaps_Click(object sender, EventArgs e)
         {
@@ -400,7 +442,7 @@ namespace TSG_Library.UFuncs
                 if (selectedComp == null) return;
                 session_.Parts.SetWork((NXOpen.Part)selectedComp.Prototype);
 
-                UpdateSessionParts();
+                workPart = session_.Parts.Work;
 
                 List<FeatureGroup> deleteFeatures = new List<FeatureGroup>();
 
@@ -452,26 +494,7 @@ namespace TSG_Library.UFuncs
                     }
                 }
 
-                List<NXOpen.Features.Feature> delAllFeats = new List<NXOpen.Features.Feature>();
-
-                foreach (FeatureGroup fGroup in deleteFeatures)
-                {
-                    delAllFeats.Add(fGroup.linkedBody);
-
-                    delAllFeats.AddRange(fGroup.linkedBody.GetChildren());
-                }
-
-                if (delAllFeats.Count > 0)
-                {
-                    NXOpen.Session.UndoMarkId markIdDelete = session_.SetUndoMark(NXOpen.Session.MarkVisibility.Invisible, "");
-                    session_.UpdateManager.AddToDeleteList(delAllFeats.ToArray<NXOpen.NXObject>());
-                    session_.UpdateManager.DoUpdate(markIdDelete);
-                }
-
-                session_.Parts.SetWork(originalWorkPart);
-
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                NewMethod4(deleteFeatures);
             }
             catch (Exception ex)
             {
@@ -479,6 +502,7 @@ namespace TSG_Library.UFuncs
             }
         }
 
+    
         private void ButtonDeleteReams_Click(object sender, EventArgs e)
         {
             try
@@ -490,7 +514,7 @@ namespace TSG_Library.UFuncs
                 if (selectedComp == null) return;
                 session_.Parts.SetWork((NXOpen.Part)selectedComp.Prototype);
 
-                UpdateSessionParts();
+                workPart = session_.Parts.Work;
 
                 List<FeatureGroup> deleteFeatures = new List<FeatureGroup>();
 
@@ -543,32 +567,14 @@ namespace TSG_Library.UFuncs
                     }
                 }
 
-                List<NXOpen.Features.Feature> delAllFeats = new List<NXOpen.Features.Feature>();
-
-                foreach (FeatureGroup fGroup in deleteFeatures)
-                {
-                    delAllFeats.Add(fGroup.linkedBody);
-
-                    delAllFeats.AddRange(fGroup.linkedBody.GetChildren());
-                }
-
-                if (delAllFeats.Count > 0)
-                {
-                    NXOpen.Session.UndoMarkId markIdDelete = session_.SetUndoMark(NXOpen.Session.MarkVisibility.Invisible, "");
-                    session_.UpdateManager.AddToDeleteList(delAllFeats.ToArray<NXOpen.NXObject>());
-                    session_.UpdateManager.DoUpdate(markIdDelete);
-                }
-
-                session_.Parts.SetWork(originalWorkPart);
-
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                NewMethod5(deleteFeatures);
             }
             catch (Exception ex)
             {
                 ex.__PrintException();
             }
         }
+
 
         private void ButtonDeleteTapsReams_Click(object sender, EventArgs e)
         {
@@ -581,7 +587,7 @@ namespace TSG_Library.UFuncs
                 if (selectedComp == null) return;
                 session_.Parts.SetWork((NXOpen.Part)selectedComp.Prototype);
 
-                UpdateSessionParts();
+                workPart = session_.Parts.Work;
 
                 List<FeatureGroup> deleteFeatures = new List<FeatureGroup>();
 
@@ -661,26 +667,7 @@ namespace TSG_Library.UFuncs
                     }
                 }
 
-                List<NXOpen.Features.Feature> delAllFeats = new List<NXOpen.Features.Feature>();
-
-                foreach (FeatureGroup fGroup in deleteFeatures)
-                {
-                    delAllFeats.Add(fGroup.linkedBody);
-
-                    delAllFeats.AddRange(fGroup.linkedBody.GetChildren());
-                }
-
-                if (delAllFeats.Count > 0)
-                {
-                    NXOpen.Session.UndoMarkId markIdDelete = session_.SetUndoMark(NXOpen.Session.MarkVisibility.Invisible, "");
-                    session_.UpdateManager.AddToDeleteList(delAllFeats.ToArray<NXOpen.NXObject>());
-                    session_.UpdateManager.DoUpdate(markIdDelete);
-                }
-
-                session_.Parts.SetWork(originalWorkPart);
-
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                NewMethod6(deleteFeatures);
             }
             catch (Exception ex)
             {
@@ -688,6 +675,7 @@ namespace TSG_Library.UFuncs
             }
         }
 
+        
         private void ButtonCancel_Click(object sender, EventArgs e)
         {
             Close();
@@ -728,17 +716,6 @@ namespace TSG_Library.UFuncs
             }
         }
 
-
-        private static void UpdateSessionParts()
-        {
-            workPart = session_.Parts.Work;
-        }
-
-        private static void UpdateOriginalParts()
-        {
-            originalWorkPart = session_.Parts.Work;
-        }
-
         private void TapAndReam_Load(object sender, EventArgs e)
         {
             Text = AssemblyFileVersion;
@@ -750,5 +727,164 @@ namespace TSG_Library.UFuncs
             Properties.Settings.Default.tap_and_ream_location = Location;
             Properties.Settings.Default.Save();
         }
+
+
+        private static void NewMethod(NXOpen.Features.Feature[] allFeatures, NXOpen.Features.Feature lastFeature, int lastFeatureTimeStamp, List<FeatureGroup> moveFeatures)
+        {
+            int lastFeatureGroupTimeStamp = moveFeatures[moveFeatures.Count - 1].booleanFeature.Timestamp;
+
+            if (lastFeatureTimeStamp > lastFeatureGroupTimeStamp)
+            {
+                List<NXOpen.Tag> moveFeatTags = new List<NXOpen.Tag>();
+
+                foreach (FeatureGroup group in moveFeatures)
+                {
+                    moveFeatTags.Add(group.linkedBody.Tag);
+                    moveFeatTags.Add(group.booleanFeature.Tag);
+                }
+
+                const int reOrderAfter = 2;
+                ufsession_.Modl.ReorderFeature(allFeatures[allFeatures.Length - 1].Tag, moveFeatTags.ToArray(), reOrderAfter);
+
+                lastFeature.MakeCurrentFeature();
+            }
+
+            session_.Parts.SetWork(originalWorkPart);
+
+            workPart = session_.Parts.Work;
+            originalWorkPart = session_.Parts.Work;
+        }
+
+
+         private static void NewMethod1(List<FeatureGroup> suppressFeatures)
+        {
+            List<NXOpen.Features.Feature> suppAllFeats = new List<NXOpen.Features.Feature>();
+
+            foreach (FeatureGroup fGroup in suppressFeatures)
+            {
+                suppAllFeats.Add(fGroup.linkedBody);
+
+                suppAllFeats.AddRange(fGroup.linkedBody.GetChildren());
+            }
+
+            if (suppAllFeats.Count > 0) workPart.Features.SuppressFeatures(suppAllFeats.ToArray());
+
+            session_.Parts.SetWork(originalWorkPart);
+
+            workPart = session_.Parts.Work;
+            originalWorkPart = session_.Parts.Work;
+        }
+
+        private static void NewMethod2(List<FeatureGroup> suppressFeatures)
+        {
+            List<NXOpen.Features.Feature> suppAllFeats = new List<NXOpen.Features.Feature>();
+
+            foreach (FeatureGroup fGroup in suppressFeatures)
+            {
+                suppAllFeats.Add(fGroup.linkedBody);
+
+                suppAllFeats.AddRange(fGroup.linkedBody.GetChildren());
+            }
+
+            if (suppAllFeats.Count > 0) workPart.Features.SuppressFeatures(suppAllFeats.ToArray());
+
+            session_.Parts.SetWork(originalWorkPart);
+
+            workPart = session_.Parts.Work;
+            originalWorkPart = session_.Parts.Work;
+        }
+
+        private static void NewMethod3(List<FeatureGroup> suppressFeatures)
+        {
+            List<NXOpen.Features.Feature> suppAllFeats = new List<NXOpen.Features.Feature>();
+
+            foreach (FeatureGroup fGroup in suppressFeatures)
+            {
+                suppAllFeats.Add(fGroup.linkedBody);
+
+                suppAllFeats.AddRange(fGroup.linkedBody.GetChildren());
+            }
+
+            if (suppAllFeats.Count > 0) workPart.Features.SuppressFeatures(suppAllFeats.ToArray());
+
+            session_.Parts.SetWork(originalWorkPart);
+
+            workPart = session_.Parts.Work;
+            originalWorkPart = session_.Parts.Work;
+        }
+
+        private static void NewMethod4(List<FeatureGroup> deleteFeatures)
+        {
+            List<NXOpen.Features.Feature> delAllFeats = new List<NXOpen.Features.Feature>();
+
+            foreach (FeatureGroup fGroup in deleteFeatures)
+            {
+                delAllFeats.Add(fGroup.linkedBody);
+
+                delAllFeats.AddRange(fGroup.linkedBody.GetChildren());
+            }
+
+            if (delAllFeats.Count > 0)
+            {
+                NXOpen.Session.UndoMarkId markIdDelete = session_.SetUndoMark(NXOpen.Session.MarkVisibility.Invisible, "");
+                session_.UpdateManager.AddToDeleteList(delAllFeats.ToArray<NXOpen.NXObject>());
+                session_.UpdateManager.DoUpdate(markIdDelete);
+            }
+
+            session_.Parts.SetWork(originalWorkPart);
+
+            workPart = session_.Parts.Work;
+            originalWorkPart = session_.Parts.Work;
+        }
+
+        private static void NewMethod5(List<FeatureGroup> deleteFeatures)
+        {
+            List<NXOpen.Features.Feature> delAllFeats = new List<NXOpen.Features.Feature>();
+
+            foreach (FeatureGroup fGroup in deleteFeatures)
+            {
+                delAllFeats.Add(fGroup.linkedBody);
+
+                delAllFeats.AddRange(fGroup.linkedBody.GetChildren());
+            }
+
+            if (delAllFeats.Count > 0)
+            {
+                NXOpen.Session.UndoMarkId markIdDelete = session_.SetUndoMark(NXOpen.Session.MarkVisibility.Invisible, "");
+                session_.UpdateManager.AddToDeleteList(delAllFeats.ToArray<NXOpen.NXObject>());
+                session_.UpdateManager.DoUpdate(markIdDelete);
+            }
+
+            session_.Parts.SetWork(originalWorkPart);
+
+            workPart = session_.Parts.Work;
+            originalWorkPart = session_.Parts.Work;
+        }
+        private static void NewMethod6(List<FeatureGroup> deleteFeatures)
+        {
+            List<NXOpen.Features.Feature> delAllFeats = new List<NXOpen.Features.Feature>();
+
+            foreach (FeatureGroup fGroup in deleteFeatures)
+            {
+                delAllFeats.Add(fGroup.linkedBody);
+
+                delAllFeats.AddRange(fGroup.linkedBody.GetChildren());
+            }
+
+            if (delAllFeats.Count > 0)
+            {
+                NXOpen.Session.UndoMarkId markIdDelete = session_.SetUndoMark(NXOpen.Session.MarkVisibility.Invisible, "");
+                session_.UpdateManager.AddToDeleteList(delAllFeats.ToArray<NXOpen.NXObject>());
+                session_.UpdateManager.DoUpdate(markIdDelete);
+            }
+
+            session_.Parts.SetWork(originalWorkPart);
+
+            workPart = session_.Parts.Work;
+            originalWorkPart = session_.Parts.Work;
+        }
+
+
     }
 }
+// 755
