@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MoreLinq;
 using NXOpen;
 using NXOpen.Features;
+using NXOpen.GeometricUtilities;
 using NXOpen.UF;
+using NXOpen.Utilities;
 using TSG_Library.Attributes;
 using TSG_Library.Disposable;
 using TSG_Library.Utilities;
@@ -745,7 +748,7 @@ namespace TSG_Library.UFuncs
 
 
             [Obsolete(nameof(NotImplementedException))]
-            public static CartesianCoordinateSystem CreateCoordinateSystem(this Vector3d vector, Point3d origin)
+            public static CartesianCoordinateSystem CreateCoordinateSystem(Vector3d vector, Point3d origin)
             {
                 //NXOpen.NXMatrix nMatrix = __work_part_.NXMatrices.Create(new Orientation_(vector));
                 //NXOpen.UF.UFSession.GetUFSession().Csys.CreateTempCsys(origin.Array, nMatrix.Tag, out NXOpen.Tag tempTag);
@@ -957,6 +960,6 @@ namespace TSG_Library.UFuncs
                 Slugs = slugs;
                 _punches = new List<TaggedObject>();
             }
-        }   
+        }
     }
 }

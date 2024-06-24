@@ -512,16 +512,12 @@
     <Compile Include="src\UFuncs\PlotDetailDrawings.Designer.cs">
       <DependentUpon>PlotDetailDrawings.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\ProfileTrimAndForm\Pad.cs" />
-    <Compile Include="src\UFuncs\ProfileTrimAndForm\ProfileBuilder.cs" />
-    <Compile Include="src\UFuncs\ProfileTrimAndForm\ProfileTrimAndForm.cs">
+    <Compile Include="src\UFuncs\ProfileTrimAndForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\UFuncs\ProfileTrimAndForm\ProfileTrimAndForm.Designer.cs">
+    <Compile Include="src\UFuncs\ProfileTrimAndForm.Designer.cs">
       <DependentUpon>ProfileTrimAndForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\ProfileTrimAndForm\SlugObj.cs" />
-    <Compile Include="src\UFuncs\ProfileTrimAndForm\UniteTarget.cs" />
     <Compile Include="src\UFuncs\ProposalDataWizardForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -712,7 +708,7 @@
     <EmbeddedResource Include="src\UFuncs\PlotDetailDrawings.resx">
       <DependentUpon>PlotDetailDrawings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\ProfileTrimAndForm\ProfileTrimAndForm.resx">
+    <EmbeddedResource Include="src\UFuncs\ProfileTrimAndForm.resx">
       <DependentUpon>ProfileTrimAndForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\UFuncs\ProposalDataWizardForm.resx">
