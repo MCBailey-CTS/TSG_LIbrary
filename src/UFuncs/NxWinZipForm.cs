@@ -393,5 +393,27 @@ namespace TSG_Library.UFuncs
                 ex.__PrintException();
             }
         }
+
+        public class WinZipCompression
+        {
+            public WinZipCompression()
+            {
+            }
+
+            public WinZipCompression(string displayAs, string winZipArg)
+            {
+                CompressDisplay = displayAs;
+                CompressValue = winZipArg;
+            }
+
+            public string CompressDisplay { get; }
+
+            public string CompressValue { get; }
+
+            public override string ToString()
+            {
+                return CompressDisplay;
+            }
+        }
     }
 }

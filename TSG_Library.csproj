@@ -195,55 +195,48 @@
     <Compile Include="src\Program.cs" />
     <Compile Include="src\Sql\SessionSql.cs" />
     <Compile Include="src\Sql\UFuncLog.cs" />
-    <Compile Include="src\UFuncs\AddFasteners\AddFastenersForm1.cs">
+    <Compile Include="src\UFuncs\AddFastenersForm1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\UFuncs\AddFasteners\AddFastenersForm1.Designer.cs">
+    <Compile Include="src\UFuncs\AddFastenersForm1.Designer.cs">
       <DependentUpon>AddFastenersForm1.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\AddFasteners\CycleAdd1.cs" />
-    <Compile Include="src\UFuncs\AddFasteners\CycleAddStruct.cs" />
-    <Compile Include="src\UFuncs\AddFasteners\FastenerListItem.cs" />
-    <Compile Include="src\UFuncs\AddFasteners\GridSpacing.cs" />
     <Compile Include="src\UFuncs\AddPierceComponents.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\UFuncs\AddPierceComponents.Designer.cs">
       <DependentUpon>AddPierceComponents.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\AssemblyAutoDetail\AssemblyAutoDetailForm.cs">
+    <Compile Include="src\UFuncs\AssemblyAutoDetailForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\UFuncs\AssemblyAutoDetail\AssemblyAutoDetailForm.Designer.cs">
+    <Compile Include="src\UFuncs\AssemblyAutoDetailForm.Designer.cs">
       <DependentUpon>AssemblyAutoDetailForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\AssemblyAutoDetail\CtsDimensionData.cs" />
-    <Compile Include="src\UFuncs\AssemblyAutoDetail\DrillChart.cs" />
-    <Compile Include="src\UFuncs\AssemblyColorCode\AssemblyColorCodeAtdForm.cs">
+    <Compile Include="src\UFuncs\AssemblyColorCodeAtdForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\UFuncs\AssemblyColorCode\AssemblyColorCodeAtdForm.Designer.cs">
+    <Compile Include="src\UFuncs\AssemblyColorCodeAtdForm.Designer.cs">
       <DependentUpon>AssemblyColorCodeAtdForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\AssemblyColorCode\AssemblyColorCodeBentlerForm.cs">
+    <Compile Include="src\UFuncs\AssemblyColorCodeBentlerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\UFuncs\AssemblyColorCode\AssemblyColorCodeBentlerForm.Designer.cs">
+    <Compile Include="src\UFuncs\AssemblyColorCodeBentlerForm.Designer.cs">
       <DependentUpon>AssemblyColorCodeBentlerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\AssemblyColorCode\AssemblyColorCodeForm.cs">
+    <Compile Include="src\UFuncs\AssemblyColorCodeForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\UFuncs\AssemblyColorCode\AssemblyColorCodeForm.Designer.cs">
+    <Compile Include="src\UFuncs\AssemblyColorCodeForm.Designer.cs">
       <DependentUpon>AssemblyColorCodeForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\AssemblyExport\AssemblyExportDesignDataForm.cs">
+    <Compile Include="src\UFuncs\AssemblyExportDesignDataForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\UFuncs\AssemblyExport\AssemblyExportDesignDataForm.Designer.cs">
+    <Compile Include="src\UFuncs\AssemblyExportDesignDataForm.Designer.cs">
       <DependentUpon>AssemblyExportDesignDataForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\AssemblyExport\Export.cs" />
     <Compile Include="src\UFuncs\AssemblyNavigator.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -269,22 +262,18 @@
     </Compile>
     <Compile Include="src\UFuncs\AssemblyWavelink\__UFunc__.cs" />
     <Compile Include="src\UFuncs\AutoSizeComponent.cs" />
-    <Compile Include="src\UFuncs\BillOfMaterial\BillOfMaterialForm.cs">
+    <Compile Include="src\UFuncs\BillOfMaterialForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\UFuncs\BillOfMaterial\BillOfMaterialForm.Designer.cs">
+    <Compile Include="src\UFuncs\BillOfMaterialForm.Designer.cs">
       <DependentUpon>BillOfMaterialForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\BillOfMaterial\BomProperties.cs" />
-    <Compile Include="src\UFuncs\BillOfMaterial\CheckBoxDialog.cs">
+    <Compile Include="src\UFuncs\CheckBoxDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\UFuncs\BillOfMaterial\CheckBoxDialog.Designer.cs">
+    <Compile Include="src\UFuncs\CheckBoxDialog.Designer.cs">
       <DependentUpon>CheckBoxDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\BillOfMaterial\CheckProperties.cs" />
-    <Compile Include="src\UFuncs\BillOfMaterial\ExcelApplication.cs" />
-    <Compile Include="src\UFuncs\BillOfMaterial\NXExcelData.cs" />
     <Compile Include="src\UFuncs\BlankDataBuilderForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -342,7 +331,7 @@
     </Compile>
     <Compile Include="src\UFuncs\CopyPasteCleanup.cs" />
     <Compile Include="src\UFuncs\CopyRefSets.cs" />
-    <Compile Include="src\UFuncs\CopyToLayer50\CopyToLayer50.cs" />
+    <Compile Include="src\UFuncs\CopyToLayer50.cs" />
     <Compile Include="src\UFuncs\CreateBurnoutForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -433,13 +422,12 @@
     <Compile Include="src\UFuncs\ExportSimPackageForm.Designer.cs">
       <DependentUpon>ExportSimPackageForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\ExportStrip\ExportStripForm.cs">
+    <Compile Include="src\UFuncs\ExportStripForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\UFuncs\ExportStrip\ExportStripForm.Designer.cs">
+    <Compile Include="src\UFuncs\ExportStripForm.Designer.cs">
       <DependentUpon>ExportStripForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\ExportStrip\Zip7.cs" />
     <Compile Include="src\UFuncs\ExtractFreeEdgeCurves.cs" />
     <Compile Include="src\UFuncs\FShapeExporterForm.cs">
       <SubType>Form</SubType>
@@ -447,11 +435,10 @@
     <Compile Include="src\UFuncs\FShapeExporterForm.Designer.cs">
       <DependentUpon>FShapeExporterForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\Grid\Grid.cs" />
-    <Compile Include="src\UFuncs\Grid\GridForm.cs">
+    <Compile Include="src\UFuncs\GridForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\UFuncs\Grid\GridForm.Designer.cs">
+    <Compile Include="src\UFuncs\GridForm.Designer.cs">
       <DependentUpon>GridForm.cs</DependentUpon>
     </Compile>
     <Compile Include="src\UFuncs\IdentifyAndDeleteForm.cs">
@@ -501,20 +488,18 @@
     <Compile Include="src\UFuncs\Mirror\Testing.cs" />
     <Compile Include="src\UFuncs\MyAttribute.cs" />
     <Compile Include="src\UFuncs\NitroTravels.cs" />
-    <Compile Include="src\UFuncs\Nx7zip\Nx7ZipCompression.cs" />
-    <Compile Include="src\UFuncs\Nx7zip\Nx7zipForm.cs">
+    <Compile Include="src\UFuncs\Nx7zipForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\UFuncs\Nx7zip\Nx7zipForm.Designer.cs">
+    <Compile Include="src\UFuncs\Nx7zipForm.Designer.cs">
       <DependentUpon>Nx7zipForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\NxWinZip\NxWinZipForm.cs">
+    <Compile Include="src\UFuncs\NxWinZipForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\UFuncs\NxWinZip\NxWinZipForm.Designer.cs">
+    <Compile Include="src\UFuncs\NxWinZipForm.Designer.cs">
       <DependentUpon>NxWinZipForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\NxWinZip\WinZipCompression.cs" />
     <Compile Include="src\UFuncs\OrientViewToCsys.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -537,11 +522,10 @@
     </Compile>
     <Compile Include="src\UFuncs\ProfileTrimAndForm\SlugObj.cs" />
     <Compile Include="src\UFuncs\ProfileTrimAndForm\UniteTarget.cs" />
-    <Compile Include="src\UFuncs\ProposalDataWizard\ListItem.cs" />
-    <Compile Include="src\UFuncs\ProposalDataWizard\ProposalDataWizardForm.cs">
+    <Compile Include="src\UFuncs\ProposalDataWizardForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\UFuncs\ProposalDataWizard\ProposalDataWizardForm.Designer.cs">
+    <Compile Include="src\UFuncs\ProposalDataWizardForm.Designer.cs">
       <DependentUpon>ProposalDataWizardForm.cs</DependentUpon>
     </Compile>
     <Compile Include="src\UFuncs\SessionForm.cs">
@@ -562,24 +546,22 @@
     <Compile Include="src\UFuncs\SimplifyCurves.Designer.cs">
       <DependentUpon>SimplifyCurves.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\SimRefSets\ReferenceSetMaker.cs" />
-    <Compile Include="src\UFuncs\SimRefSets\SimRefSetsForm.cs">
+    <Compile Include="src\UFuncs\SimRefSetsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\UFuncs\SimRefSets\SimRefSetsForm.Designer.cs">
+    <Compile Include="src\UFuncs\SimRefSetsForm.Designer.cs">
       <DependentUpon>SimRefSetsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\SimulationDataBuilder\SimDataDeleteConfirm.cs">
+    <Compile Include="src\UFuncs\SimDataDeleteConfirm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\UFuncs\SimulationDataBuilder\SimDataDeleteConfirm.Designer.cs">
+    <Compile Include="src\UFuncs\SimDataDeleteConfirm.Designer.cs">
       <DependentUpon>SimDataDeleteConfirm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\SimulationDataBuilder\SimDataDeletion.cs" />
-    <Compile Include="src\UFuncs\SimulationDataBuilder\SimulationDataBuilderForm.cs">
+    <Compile Include="src\UFuncs\SimulationDataBuilderForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\UFuncs\SimulationDataBuilder\SimulationDataBuilderForm.Designer.cs">
+    <Compile Include="src\UFuncs\SimulationDataBuilderForm.Designer.cs">
       <DependentUpon>SimulationDataBuilderForm.cs</DependentUpon>
     </Compile>
     <Compile Include="src\UFuncs\SplineToCurves.cs" />
@@ -634,25 +616,25 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\AddFasteners\AddFastenersForm1.resx">
+    <EmbeddedResource Include="src\UFuncs\AddFastenersForm1.resx">
       <DependentUpon>AddFastenersForm1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\UFuncs\AddPierceComponents.resx">
       <DependentUpon>AddPierceComponents.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\AssemblyAutoDetail\AssemblyAutoDetailForm.resx">
+    <EmbeddedResource Include="src\UFuncs\AssemblyAutoDetailForm.resx">
       <DependentUpon>AssemblyAutoDetailForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\AssemblyColorCode\AssemblyColorCodeAtdForm.resx">
+    <EmbeddedResource Include="src\UFuncs\AssemblyColorCodeAtdForm.resx">
       <DependentUpon>AssemblyColorCodeAtdForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\AssemblyColorCode\AssemblyColorCodeBentlerForm.resx">
+    <EmbeddedResource Include="src\UFuncs\AssemblyColorCodeBentlerForm.resx">
       <DependentUpon>AssemblyColorCodeBentlerForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\AssemblyColorCode\AssemblyColorCodeForm.resx">
+    <EmbeddedResource Include="src\UFuncs\AssemblyColorCodeForm.resx">
       <DependentUpon>AssemblyColorCodeForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\AssemblyExport\AssemblyExportDesignDataForm.resx">
+    <EmbeddedResource Include="src\UFuncs\AssemblyExportDesignDataForm.resx">
       <DependentUpon>AssemblyExportDesignDataForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\UFuncs\AssemblyNavigator.resx">
@@ -661,7 +643,7 @@
     <EmbeddedResource Include="src\UFuncs\AssemblyWavelink\Form.resx">
       <DependentUpon>Form.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\BillOfMaterial\BillOfMaterialForm.resx">
+    <EmbeddedResource Include="src\UFuncs\BillOfMaterialForm.resx">
       <DependentUpon>BillOfMaterialForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\UFuncs\BlankDataBuilderForm.resx">
@@ -709,13 +691,13 @@
     <EmbeddedResource Include="src\UFuncs\ExportSimPackageForm.resx">
       <DependentUpon>ExportSimPackageForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\ExportStrip\ExportStripForm.resx">
+    <EmbeddedResource Include="src\UFuncs\ExportStripForm.resx">
       <DependentUpon>ExportStripForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\UFuncs\FShapeExporterForm.resx">
       <DependentUpon>FShapeExporterForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\Grid\GridForm.resx">
+    <EmbeddedResource Include="src\UFuncs\GridForm.resx">
       <DependentUpon>GridForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\UFuncs\IdentifyAndDeleteForm.resx">
@@ -724,7 +706,7 @@
     <EmbeddedResource Include="src\UFuncs\Mirror\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\Nx7zip\Nx7zipForm.resx">
+    <EmbeddedResource Include="src\UFuncs\Nx7zipForm.resx">
       <DependentUpon>Nx7zipForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\UFuncs\PlotDetailDrawings.resx">
@@ -733,7 +715,7 @@
     <EmbeddedResource Include="src\UFuncs\ProfileTrimAndForm\ProfileTrimAndForm.resx">
       <DependentUpon>ProfileTrimAndForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\ProposalDataWizard\ProposalDataWizardForm.resx">
+    <EmbeddedResource Include="src\UFuncs\ProposalDataWizardForm.resx">
       <DependentUpon>ProposalDataWizardForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\UFuncs\SessionForm.resx">
@@ -745,10 +727,10 @@
     <EmbeddedResource Include="src\UFuncs\SimplifyCurves.resx">
       <DependentUpon>SimplifyCurves.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\SimRefSets\SimRefSetsForm.resx">
+    <EmbeddedResource Include="src\UFuncs\SimRefSetsForm.resx">
       <DependentUpon>SimRefSetsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\SimulationDataBuilder\SimulationDataBuilderForm.resx">
+    <EmbeddedResource Include="src\UFuncs\SimulationDataBuilderForm.resx">
       <DependentUpon>SimulationDataBuilderForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\UFuncs\TapAndReam.resx">
@@ -767,9 +749,7 @@
   <ItemGroup>
     <None Include="Resources\NXSigningResource.res" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="src\UFuncs\AddPierceComponents\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

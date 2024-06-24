@@ -9,6 +9,7 @@ using NXOpen.Assemblies;
 using TSG_Library.Attributes;
 using TSG_Library.Utilities;
 using static TSG_Library.Extensions.Extensions;
+using static TSG_Library.UFuncs.AssemblyExportDesignDataForm;
 
 namespace TSG_Library.UFuncs
 {

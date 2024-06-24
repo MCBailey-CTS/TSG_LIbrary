@@ -2254,7 +2254,7 @@ namespace TSG_Library.UFuncs.Mirror
                 matchedReferenceData2[0].MatchedEntity = scCollector1;
                 matchedReferenceData2[0].MatchedStatus = MatchedReferenceBuilder.ResolvedStatus.ByUser;
                 featureReferencesBuilder1.AutomaticMatch(false);
-                Session.UndoMarkId markId7;
+                //Session.UndoMarkId markId7;
                 Session.UndoMarkId markId8;
                 markId8 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
                 NXObject nXObject1;

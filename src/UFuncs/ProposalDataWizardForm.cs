@@ -915,5 +915,22 @@ namespace TSG_Library.UFuncs
             Properties.Settings.Default.proposal_data_wizard_form_window_location = Location;
             Properties.Settings.Default.Save();
         }
+
+        public struct ListItem
+        {
+            public Tag Tag { get; }
+            public string TagText { get; }
+
+            public ListItem(Tag tag, string tagText)
+            {
+                Tag = tag;
+                TagText = tagText;
+            }
+
+            public override string ToString()
+            {
+                return TagText;
+            }
+        }
     }
 }

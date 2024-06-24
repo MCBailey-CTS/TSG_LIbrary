@@ -1050,7 +1050,7 @@ namespace TSG_Library.UFuncs
                     if (value > 0.0)
                         __display_part_.Preferences.Workplane.SetRectangularUniformGridSize(
                             new WorkPlane.GridSize
-                                { MajorGridSpacing = value, MinorLinesPerMajor = 1, SnapPointsPerMinor = 1 }
+                            { MajorGridSpacing = value, MinorLinesPerMajor = 1, SnapPointsPerMinor = 1 }
                         );
                 }
                 catch (Exception ex)
@@ -1787,6 +1787,713 @@ namespace TSG_Library.UFuncs
 
             if (rdoTypeScrew.Checked)
                 LoadShcs();
+        }
+
+        public struct CycleAdd1
+        {
+            /// <summary>
+            /// </summary>
+            // ReSharper disable once NotAccessedField.Global
+            public static double MetricCycle;
+
+            /// <summary>
+            /// </summary>
+            // ReSharper disable once NotAccessedField.Global
+            public static double EnglishCycle;
+
+            /// <summary>
+            /// </summary>
+            // ReSharper disable once NotAccessedField.Global
+            public double Diameter;
+
+            /// <summary>
+            /// </summary>
+            // ReSharper disable once NotAccessedField.Global
+            public string ShortDowel;
+
+            /// <summary>
+            /// </summary>
+            // ReSharper disable once NotAccessedField.Global
+            public string LongDowel;
+
+            /// <summary>
+            /// </summary>
+            // ReSharper disable once NotAccessedField.Global
+            public string JackCycle;
+
+            /// <summary>
+            /// </summary>
+            /// <param name="diameter"></param>
+            /// <param name="shortDowel"></param>
+            /// <param name="longDowel"></param>
+            /// <param name="jackCycle"></param>
+            public CycleAdd1(double diameter, string shortDowel, string longDowel, string jackCycle)
+            {
+                Diameter = diameter;
+                ShortDowel = shortDowel;
+                LongDowel = longDowel;
+                JackCycle = jackCycle;
+            }
+
+            public static int MetricDelimeter = 30;
+
+            public static int EnglishDelimeter = 125;
+
+            public static IDictionary<string, string[]> MetricCyclePair
+            {
+                get
+                {
+                    return new Dictionary<string, string[]>
+                {
+                    {
+                        @"G:\0Library\Fasteners\Metric\SocketHeadCapScrews\004",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\Metric\Dowels\6mm-dwl-020.prt",
+                            @"G:\0Library\Fasteners\Metric\Dowels\6mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\\6mm-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\Metric\SocketHeadCapScrews\005",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\Metric\Dowels\6mm-dwl-020.prt",
+                            @"G:\0Library\Fasteners\Metric\Dowels\6mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\JackScrews\6mm-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\Metric\SocketHeadCapScrews\006",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\Metric\Dowels\6mm-dwl-020.prt",
+                            @"G:\0Library\Fasteners\Metric\Dowels\6mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\JackScrews\6mm-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\Metric\SocketHeadCapScrews\008",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\Metric\Dowels\8mm-dwl-025.prt",
+                            @"G:\0Library\Fasteners\Metric\Dowels\8mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\JackScrews\8mm-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\Metric\SocketHeadCapScrews\010",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\Metric\Dowels\10mm-dwl-025.prt",
+                            @"G:\0Library\Fasteners\Metric\Dowels\10mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\JackScrews\10mm-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\Metric\SocketHeadCapScrews\012",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\Metric\Dowels\12mm-dwl-025.prt",
+                            @"G:\0Library\Fasteners\Metric\Dowels\12mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\JackScrews\12mm-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\Metric\SocketHeadCapScrews\016",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\Metric\Dowels\16mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\Dowels\16mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\JackScrews\12mm-jck-screw-tsg"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\Metric\SocketHeadCapScrews\020",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\Metric\Dowels\20mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\Dowels\20mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\JackScrews\12mm-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\Metric\SocketHeadCapScrews\024",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\Metric\Dowels\24mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\Dowels\24mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\JackScrews\12mm-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\Metric\SocketHeadCapScrews\030",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\Metric\Dowels\24mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\Dowels\24mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\JackScrews\12mm-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\Metric\SocketHeadCapScrews\036",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\Metric\Dowels\24mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\Dowels\24mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\JackScrews\12mm-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\English\SocketHeadCapScrews\0006",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\English\0250-dwl-100.prt",
+                            @"G:\0Library\Fasteners\English\0250-dwl-200.prt",
+                            @"G:\0Library\Fasteners\English\_0250-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\English\SocketHeadCapScrews\0008",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\English\0250-dwl-100.prt",
+                            @"G:\0Library\Fasteners\English\0250-dwl-200.prt",
+                            @"G:\0Library\Fasteners\English\_0250-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\English\SocketHeadCapScrews\0010",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\English\Dowels\0250-dwl-100.prt",
+                            @"G:\0Library\Fasteners\English\Dowels\0250-dwl-200.prt",
+                            @"G:\0Library\Fasteners\English\JackScrews\_0250-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\English\SocketHeadCapScrews\0250",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\English\Dowels\0250-dwl-100.prt",
+                            @"G:\0Library\Fasteners\English\Dowels\0250-dwl-200.prt",
+                            @"G:\0Library\Fasteners\English\JackScrews\_0250-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\English\SocketHeadCapScrews\0313",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\English\Dowels\0313-dwl-100.prt",
+                            @"G:\0Library\Fasteners\English\Dowels\0313-dwl-200.prt",
+                            @"G:\0Library\Fasteners\English\JackScrews\_0313-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\English\SocketHeadCapScrews\0375",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\English\Dowels\0375-dwl-100.prt",
+                            @"G:\0Library\Fasteners\English\Dowels\0375-dwl-200.prt",
+                            @"G:\0Library\Fasteners\English\JackScrews\_0375-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\English\SocketHeadCapScrews\0500",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\English\Dowels\0500-dwl-100.prt",
+                            @"G:\0Library\Fasteners\English\Dowels\0500-dwl-200.prt",
+                            @"G:\0Library\Fasteners\English\JackScrews\_0500-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\English\SocketHeadCapScrews\0625",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\English\Dowels\0625-dwl-100.prt",
+                            @"G:\0Library\Fasteners\English\Dowels\0625-dwl-200.prt",
+                            @"G:\0Library\Fasteners\English\JackScrews\_0500-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\English\SocketHeadCapScrews\0750",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\English\Dowels\0750-dwl-100.prt",
+                            @"G:\0Library\Fasteners\English\Dowels\0750-dwl-200.prt",
+                            @"G:\0Library\Fasteners\English\JackScrews\_0500-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\English\SocketHeadCapScrews\0875",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\English\Dowels\0750-dwl-100.prt",
+                            @"G:\0Library\Fasteners\English\Dowels\0750-dwl-200.prt",
+                            @"G:\0Library\Fasteners\English\JackScrews\_0500-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\English\SocketHeadCapScrews\1000",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\English\Dowels\1000-dwl-100.prt",
+                            @"G:\0Library\Fasteners\English\Dowels\1000-dwl-200.prt",
+                            @"G:\0Library\Fasteners\English\JackScrews\_0500-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\English\SocketHeadCapScrews\1250",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\English\Dowels\1000-dwl-100.prt",
+                            @"G:\0Library\Fasteners\English\Dowels\1000-dwl-200.prt",
+                            @"G:\0Library\Fasteners\English\JackScrews\_0500-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\English\SocketHeadCapScrews\1500",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\English\Dowels\1000-dwl-100.prt",
+                            @"G:\0Library\Fasteners\English\Dowels\1000-dwl-200.prt",
+                            @"G:\0Library\Fasteners\English\JackScrews\_0500-jck-screw-tsg.prt"
+                        }
+                    },
+
+
+                    {
+                        @"G:\0Library\Fasteners\Metric\SocketHeadCapScrews-2x\004-2x",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\Metric\Dowels\6mm-dwl-020.prt",
+                            @"G:\0Library\Fasteners\Metric\Dowels\6mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\\6mm-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\Metric\SocketHeadCapScrews-2x\005-2x",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\Metric\Dowels\6mm-dwl-020.prt",
+                            @"G:\0Library\Fasteners\Metric\Dowels\6mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\JackScrews\6mm-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\Metric\SocketHeadCapScrews-2x\006-2x",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\Metric\Dowels\6mm-dwl-020.prt",
+                            @"G:\0Library\Fasteners\Metric\Dowels\6mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\JackScrews\6mm-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\Metric\SocketHeadCapScrews-2x\008-2x",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\Metric\Dowels\8mm-dwl-025.prt",
+                            @"G:\0Library\Fasteners\Metric\Dowels\8mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\JackScrews\8mm-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\Metric\SocketHeadCapScrews-2x\010-2x",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\Metric\Dowels\10mm-dwl-025.prt",
+                            @"G:\0Library\Fasteners\Metric\Dowels\10mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\JackScrews\10mm-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\Metric\SocketHeadCapScrews-2x\012-2x",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\Metric\Dowels\12mm-dwl-025.prt",
+                            @"G:\0Library\Fasteners\Metric\Dowels\12mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\JackScrews\12mm-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\Metric\SocketHeadCapScrews-2x\016-2x",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\Metric\Dowels\16mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\Dowels\16mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\JackScrews\12mm-jck-screw-tsg"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\Metric\SocketHeadCapScrews-2x\020-2x",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\Metric\Dowels\20mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\Dowels\20mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\JackScrews\12mm-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\Metric\SocketHeadCapScrews-2x\024-2x",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\Metric\Dowels\24mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\Dowels\24mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\JackScrews\12mm-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\Metric\SocketHeadCapScrews-2x\030-2x",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\Metric\Dowels\24mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\Dowels\24mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\JackScrews\12mm-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\Metric\SocketHeadCapScrews-2x\036-2x",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\Metric\Dowels\24mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\Dowels\24mm-dwl-050.prt",
+                            @"G:\0Library\Fasteners\Metric\JackScrews\12mm-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\English\SocketHeadCapScrews-2x\0006-2x",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\English\0250-dwl-100.prt",
+                            @"G:\0Library\Fasteners\English\0250-dwl-200.prt",
+                            @"G:\0Library\Fasteners\English\_0250-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\English\SocketHeadCapScrews-2x\0008-2x",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\English\0250-dwl-100.prt",
+                            @"G:\0Library\Fasteners\English\0250-dwl-200.prt",
+                            @"G:\0Library\Fasteners\English\_0250-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\English\SocketHeadCapScrews-2x\0010-2x",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\English\Dowels\0250-dwl-100.prt",
+                            @"G:\0Library\Fasteners\English\Dowels\0250-dwl-200.prt",
+                            @"G:\0Library\Fasteners\English\JackScrews\_0250-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\English\SocketHeadCapScrews-2x\0250-2x",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\English\Dowels\0250-dwl-100.prt",
+                            @"G:\0Library\Fasteners\English\Dowels\0250-dwl-200.prt",
+                            @"G:\0Library\Fasteners\English\JackScrews\_0250-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\English\SocketHeadCapScrews-2x\0313-2x",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\English\Dowels\0313-dwl-100.prt",
+                            @"G:\0Library\Fasteners\English\Dowels\0313-dwl-200.prt",
+                            @"G:\0Library\Fasteners\English\JackScrews\_0313-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\English\SocketHeadCapScrews-2x\0375-2x",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\English\Dowels\0375-dwl-100.prt",
+                            @"G:\0Library\Fasteners\English\Dowels\0375-dwl-200.prt",
+                            @"G:\0Library\Fasteners\English\JackScrews\_0375-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\English\SocketHeadCapScrews-2x\0500-2x",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\English\Dowels\0500-dwl-100.prt",
+                            @"G:\0Library\Fasteners\English\Dowels\0500-dwl-200.prt",
+                            @"G:\0Library\Fasteners\English\JackScrews\_0500-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\English\SocketHeadCapScrews-2x\0625-2x",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\English\Dowels\0625-dwl-100.prt",
+                            @"G:\0Library\Fasteners\English\Dowels\0625-dwl-200.prt",
+                            @"G:\0Library\Fasteners\English\JackScrews\_0500-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\English\SocketHeadCapScrews-2x\0750-2x",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\English\Dowels\0750-dwl-100.prt",
+                            @"G:\0Library\Fasteners\English\Dowels\0750-dwl-200.prt",
+                            @"G:\0Library\Fasteners\English\JackScrews\_0500-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\English\SocketHeadCapScrews-2x\0875-2x",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\English\Dowels\0750-dwl-100.prt",
+                            @"G:\0Library\Fasteners\English\Dowels\0750-dwl-200.prt",
+                            @"G:\0Library\Fasteners\English\JackScrews\_0500-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\English\SocketHeadCapScrews-2x\1000-2x",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\English\Dowels\1000-dwl-100.prt",
+                            @"G:\0Library\Fasteners\English\Dowels\1000-dwl-200.prt",
+                            @"G:\0Library\Fasteners\English\JackScrews\_0500-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\English\SocketHeadCapScrews-2x\1250-2x",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\English\Dowels\1000-dwl-100.prt",
+                            @"G:\0Library\Fasteners\English\Dowels\1000-dwl-200.prt",
+                            @"G:\0Library\Fasteners\English\JackScrews\_0500-jck-screw-tsg.prt"
+                        }
+                    },
+                    {
+                        @"G:\0Library\Fasteners\English\SocketHeadCapScrews-2x\1500-2x",
+                        new[]
+                        {
+                            @"G:\0Library\Fasteners\English\Dowels\1000-dwl-100.prt",
+                            @"G:\0Library\Fasteners\English\Dowels\1000-dwl-200.prt",
+                            @"G:\0Library\Fasteners\English\JackScrews\_0500-jck-screw-tsg.prt"
+                        }
+                    }
+                };
+                }
+            }
+        }
+
+
+        public struct CycleAddStruct
+        {
+            public CycleAddStruct(string shcsDir, string dwlPathMin, string dwlPathMax, string jckTsgPath)
+            {
+                ShcsDir = shcsDir;
+                DwlPathMin = dwlPathMin;
+                DwlPathMax = dwlPathMax;
+                JckTsgPath = jckTsgPath;
+            }
+
+            public string ShcsDir { get; }
+
+            public string DwlPathMin { get; }
+
+            public string DwlPathMax { get; }
+
+            public string JckTsgPath { get; }
+
+            public static double MetricCycle;
+
+            public static double EnglishCycle;
+
+            public const int METRIC_DELIMETER = 30;
+
+            public const int ENGLISH_DELIMETER = 125;
+
+            private const string metric_shcs_dir = "G:\\0Library\\Fasteners\\Metric\\SocketHeadCapScrews\\";
+            private const string metric_dwls_dir = "G:\\0Library\\Fasteners\\Metric\\Dowels\\";
+            private const string metric_jck_tsg_dir = "G:\\0Library\\Fasteners\\Metric\\JackScrews\\";
+
+            private const string english_shcs_dir = "G:\\0Library\\Fasteners\\English\\SocketHeadCapScrews\\";
+            private const string english_dwls_dir = "G:\\0Library\\Fasteners\\English\\Dowels\\";
+            private const string english_jck_tsg_dir = "G:\\0Library\\Fasteners\\English\\JackScrews\\";
+
+            public static readonly IDictionary<string, CycleAddStruct> CycleAddDict = new Dictionary<string, CycleAddStruct>
+            {
+                [metric_shcs_dir + "004"] = new CycleAddStruct(
+                    metric_shcs_dir + "004.prt",
+                    metric_dwls_dir + "6mm-dwl-020.prt",
+                    metric_dwls_dir + "6mm-dwl-050.prt",
+                    metric_jck_tsg_dir + "6mm-jck-screw-tsg.prt.prt"),
+
+                [metric_shcs_dir + "005"] = new CycleAddStruct(
+                    metric_shcs_dir + "005.prt",
+                    metric_dwls_dir + "6mm-dwl-020.prt",
+                    metric_dwls_dir + "6mm-dwl-050.prt",
+                    metric_jck_tsg_dir + "6mm-jck-screw-tsg.prt"),
+
+                [metric_shcs_dir + "006"] = new CycleAddStruct(
+                    metric_shcs_dir + "006.prt",
+                    metric_dwls_dir + "6mm-dwl-020.prt",
+                    metric_dwls_dir + "6mm-dwl-050.prt",
+                    metric_jck_tsg_dir + "6mm-jck-screw-tsg.prt"),
+
+                [metric_shcs_dir + "008"] = new CycleAddStruct(
+                    metric_shcs_dir + "008.prt",
+                    metric_dwls_dir + "8mm-dwl-025.prt",
+                    metric_dwls_dir + "8mm-dwl-050.prt",
+                    metric_jck_tsg_dir + "8mm-jck-screw-tsg.prt"),
+
+                [metric_shcs_dir + "010"] = new CycleAddStruct(
+                    metric_shcs_dir + "010.prt",
+                    metric_dwls_dir + "10mm-dwl-025.prt",
+                    metric_dwls_dir + "10mm-dwl-050.prt",
+                    metric_jck_tsg_dir + "10mm-jck-screw-tsg.prt"),
+
+                [metric_shcs_dir + "012"] = new CycleAddStruct(
+                    metric_shcs_dir + "012.prt",
+                    metric_dwls_dir + "12mm-dwl-025.prt",
+                    metric_dwls_dir + "12mm-dwl-050.prt",
+                    metric_jck_tsg_dir + "12mm-jck-screw-tsg.prt"),
+
+                [metric_shcs_dir + "016"] = new CycleAddStruct(
+                    metric_shcs_dir + "016.prt",
+                    metric_dwls_dir + "16mm-dwl-050.prt",
+                    metric_dwls_dir + "16mm-dwl-050.prt",
+                    metric_jck_tsg_dir + "12mm-jck-screw-tsg.prt"),
+
+                [metric_shcs_dir + "020"] = new CycleAddStruct(
+                    metric_shcs_dir + "020.prt",
+                    metric_dwls_dir + "20mm-dwl-050.prt",
+                    metric_dwls_dir + "20mm-dwl-050.prt",
+                    metric_jck_tsg_dir + "12mm-jck-screw-tsg.prt"),
+
+                [metric_shcs_dir + "024"] = new CycleAddStruct(
+                    metric_shcs_dir + "024.prt",
+                    metric_dwls_dir + "24mm-dwl-050.prt",
+                    metric_dwls_dir + "24mm-dwl-050.prt",
+                    metric_jck_tsg_dir + "12mm-jck-screw-tsg.prt"),
+
+                [metric_shcs_dir + "030"] = new CycleAddStruct(
+                    metric_shcs_dir + "030.prt",
+                    metric_dwls_dir + "24mm-dwl-050.prt",
+                    metric_dwls_dir + "24mm-dwl-050.prt",
+                    metric_jck_tsg_dir + "12mm-jck-screw-tsg.prt"),
+
+                [metric_shcs_dir + "036"] = new CycleAddStruct(
+                    metric_shcs_dir + "036.prt",
+                    metric_dwls_dir + "24mm-dwl-050.prt",
+                    metric_dwls_dir + "24mm-dwl-050.prt",
+                    metric_jck_tsg_dir + "12mm-jck-screw-tsg.prt"),
+
+                [english_shcs_dir + "0006"] = new CycleAddStruct(
+                    english_shcs_dir + "0006.prt",
+                    english_dwls_dir + "0250-dwl-100.prt",
+                    english_dwls_dir + "0250-dwl-200.prt",
+                    english_jck_tsg_dir + "_0250-jck-screw-tsg.prt"),
+
+                [english_shcs_dir + "0008"] = new CycleAddStruct(
+                    english_shcs_dir + "0008.prt",
+                    english_dwls_dir + "0250-dwl-100.prt",
+                    english_dwls_dir + "0250-dwl-200.prt",
+                    english_jck_tsg_dir + "_0250-jck-screw-tsg.prt"),
+
+                [english_shcs_dir + "0010"] = new CycleAddStruct(
+                    english_shcs_dir + "0010.prt",
+                    english_dwls_dir + "0250-dwl-100.prt",
+                    english_dwls_dir + "0250-dwl-200.prt",
+                    english_jck_tsg_dir + "_0250-jck-screw-tsg.prt"),
+
+                [english_shcs_dir + "0250"] = new CycleAddStruct(
+                    english_shcs_dir + "0250.prt",
+                    english_dwls_dir + "0250-dwl-100.prt",
+                    english_dwls_dir + "0250-dwl-200.prt",
+                    english_jck_tsg_dir + "_0250-jck-screw-tsg.prt"),
+
+                [english_shcs_dir + "0313"] = new CycleAddStruct(
+                    english_shcs_dir + "0313.prt",
+                    english_dwls_dir + "0313-dwl-100.prt",
+                    english_dwls_dir + "0313-dwl-200.prt",
+                    english_jck_tsg_dir + "_0375-jck-screw-tsg.prt"),
+
+                [english_shcs_dir + "0375"] = new CycleAddStruct(
+                    english_shcs_dir + "0375.prt",
+                    english_dwls_dir + "0375-dwl-100.prt",
+                    english_dwls_dir + "0375-dwl-200.prt",
+                    english_jck_tsg_dir + "_0375-jck-screw-tsg.prt"),
+
+                [english_shcs_dir + "0500"] = new CycleAddStruct(
+                    english_shcs_dir + "0500.prt",
+                    english_dwls_dir + "0500-dwl-100.prt",
+                    english_dwls_dir + "0500-dwl-200.prt",
+                    english_jck_tsg_dir + "_0500-jck-screw-tsg.prt"),
+
+                [english_shcs_dir + "0750"] = new CycleAddStruct(
+                    english_shcs_dir + "0750.prt",
+                    english_dwls_dir + "0750-dwl-100.prt",
+                    english_dwls_dir + "0750-dwl-200.prt",
+                    english_jck_tsg_dir + "_0500-jck-screw-tsg.prt"),
+
+                [english_shcs_dir + "0875"] = new CycleAddStruct(
+                    english_shcs_dir + "0875.prt",
+                    english_dwls_dir + "0750-dwl-100.prt",
+                    english_dwls_dir + "0750-dwl-200.prt",
+                    english_jck_tsg_dir + "_0500-jck-screw-tsg.prt"),
+
+                [english_shcs_dir + "1000"] = new CycleAddStruct(
+                    english_shcs_dir + "1000.prt",
+                    english_dwls_dir + "1000-dwl-100.prt",
+                    english_dwls_dir + "1000-dwl-200.prt",
+                    english_jck_tsg_dir + "_0500-jck-screw-tsg.prt"),
+
+                [english_shcs_dir + "1250"] = new CycleAddStruct(
+                    english_shcs_dir + "1250.prt",
+                    english_dwls_dir + "1000-dwl-100.prt",
+                    english_dwls_dir + "1000-dwl-200.prt",
+                    english_jck_tsg_dir + "_0500-jck-screw-tsg.prt"),
+
+                [english_shcs_dir + "1500"] = new CycleAddStruct(
+                    english_shcs_dir + "1500.prt",
+                    english_dwls_dir + "1000-dwl-100.prt",
+                    english_dwls_dir + "1000-dwl-200.prt",
+                    english_jck_tsg_dir + "_0500-jck-screw-tsg.prt")
+            };
+        }
+
+
+        public class FastenerListItem
+        {
+            public FastenerListItem(string __text, string __value)
+            {
+                Text = __text;
+                Value = __value;
+            }
+
+            public string Text { get; set; }
+
+            public string Value { get; }
+        }
+
+
+
+        public struct GridSpacing
+        {
+            public double Value { get; private set; }
+
+            public string StringValue { get; }
+
+            public GridSpacing(double value, string stringValue)
+                : this()
+            {
+                Value = value;
+                StringValue = stringValue;
+            }
+
+            public override string ToString()
+            {
+                return StringValue;
+            }
         }
     }
 }

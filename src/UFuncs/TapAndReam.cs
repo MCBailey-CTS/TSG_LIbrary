@@ -34,7 +34,7 @@ namespace TSG_Library.UFuncs
 
                 NXOpen.Assemblies.Component selectedComp = SelectOneComponent();
 
-                if (selectedComp is null) 
+                if (selectedComp is null)
                     return;
 
                 session_.Parts.SetWork((NXOpen.Part)selectedComp.Prototype);
@@ -46,22 +46,22 @@ namespace TSG_Library.UFuncs
 
                 foreach (NXOpen.Features.Feature feature in workPart.Features)
                 {
-                    if (feature.FeatureType != "LINKED_BODY") 
+                    if (feature.FeatureType != "LINKED_BODY")
                         continue;
 
-                    if (feature.Suppressed) 
+                    if (feature.Suppressed)
                         continue;
 
                     NXOpen.Features.Feature[] featChildren = feature.GetChildren();
 
                     foreach (NXOpen.Features.Feature bFeature in featChildren)
                     {
-                        if (bFeature.Suppressed) 
+                        if (bFeature.Suppressed)
                             continue;
 
                         FeatureGroup orderFeat = new FeatureGroup();
 
-                        if (bFeature.FeatureType != "META") 
+                        if (bFeature.FeatureType != "META")
                             continue;
 
                         NXOpen.Features.BooleanFeature getTool = (NXOpen.Features.BooleanFeature)bFeature;
@@ -71,15 +71,15 @@ namespace TSG_Library.UFuncs
                             {
                                 ufsession_.Obj.AskTypeAndSubtype(bFace.Tag, out int type, out int subType);
 
-                                if (type != NXOpen.UF.UFConstants.UF_solid_type || subType != NXOpen.UF.UFConstants.UF_solid_face_subtype) 
+                                if (type != NXOpen.UF.UFConstants.UF_solid_type || subType != NXOpen.UF.UFConstants.UF_solid_face_subtype)
                                     continue;
 
                                 NXOpen.Face cFace = (NXOpen.Face)NXOpen.Utilities.NXObjectManager.Get(bFace.Tag);
 
-                                if (cFace.SolidFaceType != NXOpen.Face.FaceType.Cylindrical) 
+                                if (cFace.SolidFaceType != NXOpen.Face.FaceType.Cylindrical)
                                     continue;
 
-                                if (cFace.Name != "HOLECHART") 
+                                if (cFace.Name != "HOLECHART")
                                     continue;
 
                                 orderFeat.linkedBody = feature;
@@ -98,7 +98,7 @@ namespace TSG_Library.UFuncs
             }
         }
 
-      
+
 
         private void ButtonSuppressTaps_Click(object sender, EventArgs e)
         {
@@ -107,7 +107,7 @@ namespace TSG_Library.UFuncs
                 session_.SetUndoMark(NXOpen.Session.MarkVisibility.Visible, "Suppress Taps");
                 NXOpen.Assemblies.Component selectedComp = SelectOneComponent();
 
-                if (selectedComp is null) 
+                if (selectedComp is null)
                     return;
 
                 session_.Parts.SetWork((NXOpen.Part)selectedComp.Prototype);
@@ -127,10 +127,10 @@ namespace TSG_Library.UFuncs
         {
             foreach (NXOpen.Features.Feature feature in workPart.Features)
             {
-                if (feature.FeatureType != "LINKED_BODY") 
+                if (feature.FeatureType != "LINKED_BODY")
                     continue;
 
-                if (feature.Suppressed) 
+                if (feature.Suppressed)
                     continue;
 
                 NXOpen.Features.Feature[] featChildren = feature.GetChildren();
@@ -142,10 +142,10 @@ namespace TSG_Library.UFuncs
         {
             foreach (NXOpen.Features.Feature bFeature in featChildren)
             {
-                if (bFeature.Suppressed) 
+                if (bFeature.Suppressed)
                     continue;
 
-                if (bFeature.FeatureType != "META") 
+                if (bFeature.FeatureType != "META")
                     continue;
 
                 NXOpen.Features.BooleanFeature getTool = (NXOpen.Features.BooleanFeature)bFeature;
@@ -160,18 +160,18 @@ namespace TSG_Library.UFuncs
                 {
                     ufsession_.Obj.AskTypeAndSubtype(bFace.Tag, out int type, out int subType);
 
-                    if (type != NXOpen.UF.UFConstants.UF_solid_type || subType != NXOpen.UF.UFConstants.UF_solid_face_subtype) 
+                    if (type != NXOpen.UF.UFConstants.UF_solid_type || subType != NXOpen.UF.UFConstants.UF_solid_face_subtype)
                         continue;
 
                     NXOpen.Face cFace = (NXOpen.Face)NXOpen.Utilities.NXObjectManager.Get(bFace.Tag);
 
-                    if (cFace.SolidFaceType != NXOpen.Face.FaceType.Cylindrical) 
+                    if (cFace.SolidFaceType != NXOpen.Face.FaceType.Cylindrical)
                         continue;
 
-                    if (cFace.Name != "HOLECHART") 
+                    if (cFace.Name != "HOLECHART")
                         continue;
 
-                    if (cFace.Color != 181) 
+                    if (cFace.Color != 181)
                         continue;
 
                     ufsession_.Modl.AskFaceFeats(cFace.Tag, out NXOpen.Tag[] features);
@@ -183,7 +183,7 @@ namespace TSG_Library.UFuncs
         {
             foreach (NXOpen.Tag featTag in features)
             {
-                if (featTag != feature.Tag) 
+                if (featTag != feature.Tag)
                     continue;
 
                 suppressFeat.linkedBody = feature;
@@ -198,7 +198,7 @@ namespace TSG_Library.UFuncs
 
                 FeatureGroup findGroup = suppressFeatures.Find(f => f.cylindricalFace == suppressFeat.cylindricalFace);
 
-                if (findGroup.cylindricalFace != null) 
+                if (findGroup.cylindricalFace != null)
                     continue;
 
                 suppressFeatures.Add(suppressFeat);
@@ -305,19 +305,16 @@ namespace TSG_Library.UFuncs
             try
             {
                 session_.SetUndoMark(NXOpen.Session.MarkVisibility.Visible, "Suppress Taps");
-
                 NXOpen.Assemblies.Component selectedComp = SelectOneComponent();
 
-                if (selectedComp == null) return;
+                if (selectedComp is null)
+                    return;
+
                 session_.Parts.SetWork((NXOpen.Part)selectedComp.Prototype);
-
                 workPart = session_.Parts.Work;
-
                 List<FeatureGroup> suppressFeatures = new List<FeatureGroup>();
-
                 FeatureGroup suppressFeat = new FeatureGroup();
                 suppressFeat = NewMethod15(suppressFeatures, suppressFeat);
-
                 NewMethod3(suppressFeatures);
             }
             catch (Exception ex)
@@ -330,10 +327,13 @@ namespace TSG_Library.UFuncs
         {
             foreach (NXOpen.Features.Feature feature in workPart.Features)
             {
-                if (feature.FeatureType != "LINKED_BODY") continue;
-                if (feature.Suppressed) continue;
-                NXOpen.Features.Feature[] featChildren = feature.GetChildren();
+                if (feature.FeatureType != "LINKED_BODY")
+                    continue;
 
+                if (feature.Suppressed)
+                    continue;
+
+                NXOpen.Features.Feature[] featChildren = feature.GetChildren();
                 suppressFeat = NewMethod14(suppressFeatures, suppressFeat, feature, featChildren);
             }
 
@@ -354,37 +354,52 @@ namespace TSG_Library.UFuncs
             return suppressFeat;
         }
 
-        private static FeatureGroup NewMethod13(List<FeatureGroup> suppressFeatures, FeatureGroup suppressFeat, NXOpen.Features.Feature feature, NXOpen.Features.BooleanFeature getTool)
+        private static FeatureGroup NewMethod13(
+            List<FeatureGroup> suppressFeatures, 
+            FeatureGroup suppressFeat, 
+            NXOpen.Features.Feature feature, 
+            NXOpen.Features.BooleanFeature getTool)
         {
             foreach (NXOpen.Body bBody in getTool.GetBodies())
                 foreach (NXOpen.Face bFace in bBody.GetFaces())
                 {
                     ufsession_.Obj.AskTypeAndSubtype(bFace.Tag, out int type, out int subType);
 
-                    if (type != NXOpen.UF.UFConstants.UF_solid_type || subType != NXOpen.UF.UFConstants.UF_solid_face_subtype) continue;
+                    if (type != NXOpen.UF.UFConstants.UF_solid_type || subType != NXOpen.UF.UFConstants.UF_solid_face_subtype)
+                        continue;
+
                     NXOpen.Face cFace = (NXOpen.Face)NXOpen.Utilities.NXObjectManager.Get(bFace.Tag);
 
-                    if (cFace.SolidFaceType != NXOpen.Face.FaceType.Cylindrical) continue;
-                    if (cFace.Name != "HOLECHART") continue;
+                    if (cFace.SolidFaceType != NXOpen.Face.FaceType.Cylindrical)
+                        continue;
+
+                    if (cFace.Name != "HOLECHART")
+                        continue;
+
                     if (cFace.Color == 181)
                     {
-                        ufsession_.Modl.AskFaceFeats(cFace.Tag, out NXOpen.Tag[] features);
+                        ufsession_.Modl.AskFaceFeats(cFace.Tag, out NXOpen.Tag[] features1);
 
-                        suppressFeat = NewMethod12(suppressFeatures, suppressFeat, feature, getTool, cFace, features);
+                        suppressFeat = NewMethod12(suppressFeatures, suppressFeat, feature, getTool, cFace, features1);
                     }
 
-                    if (cFace.Color != 42) continue;
-                    {
-                        ufsession_.Modl.AskFaceFeats(cFace.Tag, out NXOpen.Tag[] features);
+                    if (cFace.Color != 42)
+                        continue;
 
-                        NewMethod11(suppressFeatures, suppressFeat, feature, getTool, cFace, features);
-                    }
+                    ufsession_.Modl.AskFaceFeats(cFace.Tag, out NXOpen.Tag[] features);
+                    NewMethod11(suppressFeatures, suppressFeat, feature, getTool, cFace, features);
                 }
 
             return suppressFeat;
         }
 
-        private static FeatureGroup NewMethod12(List<FeatureGroup> suppressFeatures, FeatureGroup suppressFeat, NXOpen.Features.Feature feature, NXOpen.Features.BooleanFeature getTool, Face cFace, Tag[] features)
+        private static FeatureGroup NewMethod12(
+            List<FeatureGroup> suppressFeatures, 
+            FeatureGroup suppressFeat, 
+            NXOpen.Features.Feature feature, 
+            NXOpen.Features.BooleanFeature getTool, 
+            Face cFace, 
+            Tag[] features)
         {
             foreach (NXOpen.Tag featTag in features)
             {
@@ -502,7 +517,7 @@ namespace TSG_Library.UFuncs
             }
         }
 
-    
+
         private void ButtonDeleteReams_Click(object sender, EventArgs e)
         {
             try
@@ -675,7 +690,7 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        
+
         private void ButtonCancel_Click(object sender, EventArgs e)
         {
             Close();
@@ -756,7 +771,7 @@ namespace TSG_Library.UFuncs
         }
 
 
-         private static void NewMethod1(List<FeatureGroup> suppressFeatures)
+        private static void NewMethod1(List<FeatureGroup> suppressFeatures)
         {
             List<NXOpen.Features.Feature> suppAllFeats = new List<NXOpen.Features.Feature>();
 
@@ -860,6 +875,7 @@ namespace TSG_Library.UFuncs
             workPart = session_.Parts.Work;
             originalWorkPart = session_.Parts.Work;
         }
+        
         private static void NewMethod6(List<FeatureGroup> deleteFeatures)
         {
             List<NXOpen.Features.Feature> delAllFeats = new List<NXOpen.Features.Feature>();

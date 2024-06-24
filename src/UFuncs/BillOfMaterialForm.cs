@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Microsoft.Office.Interop.Excel;
@@ -1061,6 +1062,276 @@ namespace TSG_Library.UFuncs
         {
             Settings.Default.bill_of_material_form_window_location = Location;
             Settings.Default.Save();
+        }
+
+        public struct BomProperties
+        {
+            /// <summary>The column in the Bom template for the detail number.</summary>
+            public const int DetailColumn = 1;
+
+            /// <summary>The column in the Bom template for the required number.</summary>
+            public const int RequiredColumn = 2;
+
+            /// <summary>The column in the Bom template for the description.</summary>
+            public const int DescriptionColumn = 3;
+
+            /// <summary>The column in the Bom template for the material.</summary>
+            public const int MaterialColumn = 4;
+
+            /// <summary>The row in the Bom template to start the details.</summary>
+            public const int StartRow = 16;
+        }
+
+        public struct CheckProperties
+        {
+            /// <summary>The path to the template file used by the check department.</summary>
+            /// <remarks>Revision 1.6 – 2018 / 01 / 10</remarks>
+            public static string CheckerTemplateFilePath => "U:\\nxFiles\\Excel\\CheckerTemplate.xlsx";
+
+            /// <summary>The column in the check template for the detail number.</summary>
+            public static int DetailColumn => 5;
+
+            /// <summary>The column in the check template for the required number.</summary>
+            public static int RequiredColumn => 6;
+
+            /// <summary>The column in the check template for the description.</summary>
+            public static int DescriptionColumn => 7;
+
+            /// <summary>The column in the check template for the material.</summary>
+            public static int MaterialColumn => 8;
+
+            /// <summary>The row in the check template to start the details.</summary>
+            public static int StartRow => 7;
+        }
+
+        public class ExcelApplication : IDisposable
+        {
+            private readonly Microsoft.Office.Interop.Excel.Application _application;
+
+            private readonly List<Range> _ranges;
+
+            private readonly IDictionary<string, Workbook> _workBooks;
+
+            private readonly List<_Worksheet> _workSheets;
+
+            public ExcelApplication()
+            {
+                _application = new Microsoft.Office.Interop.Excel.Application();
+                _workBooks = new Dictionary<string, Workbook>();
+                _workSheets = new List<_Worksheet>();
+                _ranges = new List<Range>();
+            }
+
+
+            //NXOpen.NXObject
+
+
+            public bool Visible
+            {
+                get => _application.Visible;
+                set => _application.Visible = value;
+            }
+
+            public void Dispose()
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+
+                foreach (Range range in _ranges)
+                    if (range != null)
+                        Marshal.ReleaseComObject(range);
+
+                foreach (_Worksheet range in _workSheets)
+                    if (range != null)
+                        Marshal.ReleaseComObject(range);
+
+                foreach (KeyValuePair<string, Workbook> range in _workBooks)
+                    if (range.Value != null)
+                    {
+                        range.Value.Close();
+                        Marshal.ReleaseComObject(range.Value);
+                    }
+
+                _application.Quit();
+                Marshal.ReleaseComObject(_application);
+            }
+
+            public void SetCell(string excelFilePath, int sheetIndex, object rowIndex, object columnIndex, object data)
+            {
+                if (!_workBooks.ContainsKey(excelFilePath))
+                    _workBooks.Add(excelFilePath, _application.Workbooks.Open(excelFilePath));
+
+                _Worksheet workSheet = (_Worksheet)_workBooks[excelFilePath].Sheets[sheetIndex];
+
+                _workSheets.Add(workSheet);
+
+                Range range = workSheet.UsedRange;
+
+                _ranges.Add(range);
+
+                if (!(range[rowIndex, columnIndex] is Range tempRange))
+                    return;
+
+                _ranges.Add(tempRange);
+
+                tempRange.Value2 = data;
+            }
+
+            public void SetCell(string excelFilePath, int sheetIndex, object rowIndex, object columnIndex, Color color)
+            {
+                if (!_workBooks.ContainsKey(excelFilePath))
+                    _workBooks.Add(excelFilePath, _application.Workbooks.Open(excelFilePath));
+
+                _Worksheet workSheet = (_Worksheet)_workBooks[excelFilePath].Sheets[sheetIndex];
+
+                _workSheets.Add(workSheet);
+
+                Range range = workSheet.UsedRange;
+
+                _ranges.Add(range);
+
+                if (!(range[rowIndex, columnIndex] is Range tempRange))
+                    return;
+
+                _ranges.Add(tempRange);
+
+                tempRange.Interior.Color = color;
+            }
+
+            //public _Worksheet WorkBookActiveSheet1(string excelFilePath)
+            //{
+            //    if (!_workBooks.ContainsKey(excelFilePath))
+            //        _workBooks.Add(excelFilePath, _application.Workbooks.Open(excelFilePath));
+
+            //    //_Worksheet workSheet = (_Worksheet)_workBooks[excelFilePath].Worksheets["Sheet1"];
+
+
+            //    _workSheets.Add(workSheet);
+
+            //    return workSheet;
+            //}
+
+            //public _Worksheet WorkBookActiveSheet(string excelFilePath)
+            //{
+            //    if (!_workBooks.ContainsKey(excelFilePath)) 
+            //        _workBooks.Add(excelFilePath, _application.Workbooks.Open(excelFilePath));
+
+            //    _Worksheet workSheet = (_Worksheet)_workBooks[excelFilePath].ActiveSheet;
+
+            //    _workSheets.Add(workSheet);
+
+            //    return workSheet;
+            //}
+
+            public _Worksheet WorkBookActiveSheet(string excelFilePath)
+            {
+                if (!_workBooks.ContainsKey(excelFilePath))
+                    _workBooks.Add(excelFilePath, _application.Workbooks.Open(excelFilePath));
+
+                _Worksheet workSheet = (_Worksheet)_workBooks[excelFilePath].ActiveSheet;
+
+                _workSheets.Add(workSheet);
+
+                return workSheet;
+            }
+
+            public void SaveWorkBook(string excelFilePath)
+            {
+                if (!_workBooks.ContainsKey(excelFilePath))
+                    throw new FileNotFoundException(
+                        $"You cannot save excel sheet \"{excelFilePath}\" when you haven't opened it.");
+                _workBooks[excelFilePath].Save();
+            }
+
+            internal _Worksheet WorkSheet(string excelFilePath, string name)
+            {
+                //if (!_workBooks.ContainsKey(excelFilePath))
+                //    _workBooks.Add(excelFilePath, _application.Workbooks.Open(excelFilePath));
+
+                return (_Worksheet)_workBooks[excelFilePath].Worksheets[name];
+
+                //_workSheets.Add(workSheet);
+
+                //return workSheet;
+            }
+        }
+
+        internal class NXExcelData
+        {
+            public enum RowColumnIndexes
+            {
+                AtsStartRow = 14,
+                CtsStartRow = AtsStartRow,
+                DtsStartRow = AtsStartRow,
+                EtsStartRow = AtsStartRow,
+                HtsStartRow = AtsStartRow,
+                RtsStartRow = AtsStartRow,
+                UgsStartRow = AtsStartRow,
+                NameColumn = 1,
+                QtyColumn = 2,
+                DescriptionColumn = 3,
+                MaterialColumn = 4,
+                WeightColumn = 8
+            }
+            // Data
+
+            // ReSharper disable once InconsistentNaming
+            private const string REPORT_TEXT = "verdana";
+
+            // ReSharper disable once InconsistentNaming
+            private const int REPORT_TEXT_SIZE = 10;
+
+            // Constructors
+
+            public NXExcelData()
+            {
+            }
+
+            public NXExcelData(int rowIndex, int columnIndex, string data)
+            {
+                RowIndex = rowIndex;
+                ColumnIndex = columnIndex;
+                Data = data;
+                ColorCell = false;
+            }
+
+            public int RowIndex { get; set; }
+
+            public int ColumnIndex { get; set; }
+
+            public string Data { get; set; }
+
+            public bool ColorCell { get; set; }
+
+            // Methods
+
+            public static void WriteData(_Worksheet worksheet, List<NXExcelData> data)
+            {
+                worksheet.Columns.HorizontalAlignment = Constants.xlCenter;
+                worksheet.Columns.Font.Name = REPORT_TEXT;
+                worksheet.Columns.Font.Size = REPORT_TEXT_SIZE;
+                //excelApp.SetCell(checkerStockListPath, 1, rowIndex, colIndex, data.Data.ToUpper().Replace("-ALTER", ""));
+                for (int index = 0; index < data.Count; index++)
+                {
+                    NXExcelData nxExcelData = data[index];
+                    UFSession.GetUFSession().Ui.SetPrompt($"Writing BOM sheet. Cell {index + 1} of {data.Count}.");
+                    worksheet.Cells[nxExcelData.RowIndex, nxExcelData.ColumnIndex] =
+                        nxExcelData.Data.ToUpper().ToUpper().Replace("-ALTER", "");
+                }
+            }
+
+
+            public static void Color(string[] strings, _Worksheet worksheet, IEnumerable<NXExcelData> data)
+            {
+                foreach (NXExcelData excelData in data)
+                {
+                    if (strings.All(str =>
+                            !string.Equals(str, excelData.Data, StringComparison.CurrentCultureIgnoreCase))) continue;
+                    excelData.ColorCell = true;
+                    if (worksheet.Cells[excelData.RowIndex, excelData.ColumnIndex] is Range range)
+                        range.Interior.Color = System.Drawing.Color.FromArgb(0, 255, 0);
+                }
+            }
         }
     }
 }
