@@ -16,8 +16,6 @@ public static class Program
     {
         try
         {
-            Testing.Mirror();
-            return;
 #pragma warning disable CS0162 // Unreachable code detected
             if (args.Length == 0)
             {
