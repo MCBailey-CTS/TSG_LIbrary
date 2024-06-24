@@ -12,7 +12,7 @@ namespace TSG_Library.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.8.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.7.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -632,6 +632,42 @@ namespace TSG_Library.Properties {
             }
             set {
                 this["com_builder_any_assembly"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0, 0")]
+        public global::System.Drawing.Point create_reset_datum_csys_location {
+            get {
+                return ((global::System.Drawing.Point)(this["create_reset_datum_csys_location"]));
+            }
+            set {
+                this["create_reset_datum_csys_location"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0, 0")]
+        public global::System.Drawing.Point simplify_curves_window_location {
+            get {
+                return ((global::System.Drawing.Point)(this["simplify_curves_window_location"]));
+            }
+            set {
+                this["simplify_curves_window_location"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0, 0")]
+        public global::System.Drawing.Point plot_detail_drawings_location {
+            get {
+                return ((global::System.Drawing.Point)(this["plot_detail_drawings_location"]));
+            }
+            set {
+                this["plot_detail_drawings_location"] = value;
             }
         }
     }

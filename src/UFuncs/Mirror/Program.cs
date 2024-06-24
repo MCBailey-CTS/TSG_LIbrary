@@ -511,7 +511,6 @@ namespace TSG_Library.UFuncs.Mirror
                 workPart = theSession.Parts.Work; // 001449-010-109
                 Component[] components1 = new Component[1];
                 components1[0] = component1;
-                ErrorList errorList1;
                 component1.__ReferenceSet("Entire Part");
                 Component component2 = toComp;
                 __work_component_ = component2;

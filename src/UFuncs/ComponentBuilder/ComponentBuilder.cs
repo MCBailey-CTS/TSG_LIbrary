@@ -117,7 +117,6 @@ namespace TSG_Library.UFuncs
             Settings.Default.Save();
         }
 
-        [Obsolete("created a text file, need to read from them to get values")]
         private void LoadGridSizes()
         {
             comboBoxGrid.Items.Clear();

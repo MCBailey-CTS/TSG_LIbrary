@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NXOpen;
 using NXOpen.Assemblies;
@@ -352,6 +353,17 @@ namespace TSG_Library.Ui
 
                 return objs.ToArray();
             }
+        }
+
+        [Obsolete]
+        internal static IEnumerable<NXOpen.Assemblies.Component> SelectComponents()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static IEnumerable<NXOpen.NXObject> SelectSplines()
+        {
+            throw new NotImplementedException();
         }
     }
 }

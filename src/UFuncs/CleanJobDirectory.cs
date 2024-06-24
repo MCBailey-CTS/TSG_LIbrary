@@ -50,7 +50,7 @@ namespace TSG_Library.UFuncs
                 return;
             }
 
-            DialogResult result = MessageBox.Show(@"Are you sure you want to run Clean Job Directory?", @"Alert",
+            DialogResult result = MessageBox.Show(@"Are you sure you want to run Clean Job Directory?", $"{AssemblyFileVersion} - Clean Job Directory",
                 MessageBoxButtons.YesNo);
 
             if (result == DialogResult.No)
