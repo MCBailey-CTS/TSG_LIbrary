@@ -12,13 +12,15 @@ namespace TSG_Library.UFuncs
     {
         public override void execute()
         {
+            print_(ufunc_rev_name);
+
             if (__display_part_ is null)
             {
                 print_("There is no displayed part loaded");
                 return;
             }
 
-            session_.SetUndoMark(Session.MarkVisibility.Visible, "LayoutRefsets");
+            session_.SetUndoMark(Session.MarkVisibility.Visible, ufunc_rev_name);
 
             string text = __display_part_.Leaf.ToLower();
 
@@ -37,8 +39,8 @@ namespace TSG_Library.UFuncs
                 list.AddRange(__display_part_.Points.ToArray());
 
                 list.AddRange(from body in __display_part_.Bodies.ToArray()
-                    where body.IsSolidBody
-                    select body);
+                              where body.IsSolidBody
+                              select body);
 
                 NXObject[] array = NewMethod1(list, 10);
 
@@ -66,9 +68,9 @@ namespace TSG_Library.UFuncs
                 List<DisplayableObject> list2 = new List<DisplayableObject>();
                 list2.AddRange(__display_part_.Points.ToArray());
                 list2.AddRange(from body in __display_part_.Bodies.ToArray()
-                    where body.IsSolidBody
-                    where body.Color != 75
-                    select body);
+                               where body.IsSolidBody
+                               where body.Color != 75
+                               select body);
 
                 NXObject[] array2 = NewMethod1(list2, 10);
             }
@@ -165,8 +167,8 @@ namespace TSG_Library.UFuncs
             {
                 ReferenceSet referenceSet10 = __display_part_.__FindReferenceSetOrNull(refset_name);
 
-                if (referenceSet10 != null && referenceSet10.AskAllDirectMembers().Length == 0 &&
-                    referenceSet10.AskMembersInReferenceSet().Length == 0)
+                if (!(referenceSet10 is null) && referenceSet10.AskAllDirectMembers().Length == 0
+                    && referenceSet10.AskMembersInReferenceSet().Length == 0)
                     referenceSet10.OwningPart.DeleteReferenceSet(referenceSet10);
             }
 
@@ -192,18 +194,18 @@ namespace TSG_Library.UFuncs
         private static NXObject[] FindBodiesOnLayerInDisplayPart(int layer)
         {
             return (from body in __display_part_.Bodies.ToArray()
-                where body.IsSolidBody
-                where !body.IsOccurrence
-                where body.Layer == layer
-                select body).Cast<NXObject>().ToArray();
+                    where body.IsSolidBody
+                    where !body.IsOccurrence
+                    where body.Layer == layer
+                    select body).Cast<NXObject>().ToArray();
         }
 
         private static NXObject[] NewMethod1(List<DisplayableObject> list2, int layer)
         {
             return (from obj in list2
-                where obj.Layer == layer
-                where !obj.IsOccurrence
-                select obj).Cast<NXObject>().ToArray();
+                    where obj.Layer == layer
+                    where !obj.IsOccurrence
+                    select obj).Cast<NXObject>().ToArray();
         }
     }
 }

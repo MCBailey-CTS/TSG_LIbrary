@@ -2,6 +2,7 @@
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.UF;
+using PostSharp.Aspects.Advices;
 using TSG_Library.Geom;
 using Curve = NXOpen.Curve;
 
@@ -795,6 +796,38 @@ namespace TSG_Library.Extensions
             Component to)
         {
             throw new NotImplementedException();
+        }
+
+        //
+        // Summary:
+        //     Copies an NX.Curve (with a null transform)
+        //
+        // Returns:
+        //     A copy of the input curve
+        //
+        // Remarks:
+        //     The new curve will be on the same layer as the original one.
+        public static Curve Copy(this Curve curve)
+        {
+            Transform xform = Transform.CreateTranslation(0.0, 0.0, 0.0);
+            return curve.Copy(xform);
+
+        }
+
+        //
+        // Summary:
+        //     Transforms/copies an NX.Curve
+        //
+        // Parameters:
+        //   xform:
+        //     Transform to be applied
+        //
+        // Returns:
+        //     A transformed copy of NX.Curve
+        public static Curve Copy(this Curve curve, Transform xform)
+        {
+            var nxobject = (NXObject)curve;
+            return (Curve)nxobject.Copy(xform);
         }
 
         #endregion

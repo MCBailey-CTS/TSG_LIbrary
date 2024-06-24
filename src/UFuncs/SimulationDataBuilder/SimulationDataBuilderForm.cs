@@ -145,10 +145,11 @@ namespace TSG_Library.UFuncs
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            Text = AssemblyFileVersion;
+            Location = Properties.Settings.Default.simulation_data_builder_form_window_location;
             ControlBox = true;
             MinimizeBox = true;
             MaximizeBox = false;
-            //topMostCheckBox.Checked = Properties.Settings.Default.SimDataBuilderTopMost;
             TopMost = topMostCheckBox.Checked;
         }
 
@@ -787,6 +788,12 @@ namespace TSG_Library.UFuncs
 
                 return list.ToArray();
             }
+        }
+
+        private void SimulationDataBuilderForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Properties.Settings.Default.simulation_data_builder_form_window_location = Location;
+            Properties.Settings.Default.Save();
         }
     }
 }

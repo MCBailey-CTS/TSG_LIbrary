@@ -192,5 +192,17 @@ namespace TSG_Library.UFuncs
             else
                 print_($"Reference Set {newRefSetName} was not able to be created.");
         }
+
+        private void SimRefSetsForm_Load(object sender, EventArgs e)
+        {
+            Text = AssemblyFileVersion;
+            Location = Properties.Settings.Default.sim_ref_sets_form_window_location;
+        }
+
+        private void SimRefSetsForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Properties.Settings.Default.sim_ref_sets_form_window_location = Location;
+            Properties.Settings.Default.Save();
+        }
     }
 }

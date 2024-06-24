@@ -1,5 +1,6 @@
 ﻿using System;
 using NXOpen;
+using NXOpen.Features;
 using NXOpen.UF;
 
 namespace TSG_Library.Extensions
@@ -292,6 +293,11 @@ namespace TSG_Library.Extensions
             eval.EvaluateUnitVectors(evaluator, value, point, tangent, normal, array);
             eval.Free(evaluator);
             return array.__ToVector3d();
+        }
+
+        public static CompositeCurve __LinkEdge(this Edge edge)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

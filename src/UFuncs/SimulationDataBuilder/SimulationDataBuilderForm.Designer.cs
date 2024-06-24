@@ -68,7 +68,7 @@
             // 
             this.btnSelect.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnSelect.Location = new System.Drawing.Point(8, 377);
-            this.btnSelect.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnSelect.Margin = new System.Windows.Forms.Padding(4);
             this.btnSelect.Name = "btnSelect";
             this.btnSelect.Size = new System.Drawing.Size(256, 28);
             this.btnSelect.TabIndex = 0;
@@ -81,7 +81,7 @@
             this.cmbData.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.cmbData.FormattingEnabled = true;
             this.cmbData.Location = new System.Drawing.Point(8, 42);
-            this.cmbData.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbData.Margin = new System.Windows.Forms.Padding(4);
             this.cmbData.Name = "cmbData";
             this.cmbData.Size = new System.Drawing.Size(84, 24);
             this.cmbData.TabIndex = 3;
@@ -92,7 +92,7 @@
             this.cmbOperation.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.cmbOperation.FormattingEnabled = true;
             this.cmbOperation.Location = new System.Drawing.Point(96, 60);
-            this.cmbOperation.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbOperation.Margin = new System.Windows.Forms.Padding(4);
             this.cmbOperation.Name = "cmbOperation";
             this.cmbOperation.Size = new System.Drawing.Size(79, 24);
             this.cmbOperation.TabIndex = 4;
@@ -103,7 +103,7 @@
             this.cmbVersion.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.cmbVersion.FormattingEnabled = true;
             this.cmbVersion.Location = new System.Drawing.Point(184, 60);
-            this.cmbVersion.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbVersion.Margin = new System.Windows.Forms.Padding(4);
             this.cmbVersion.Name = "cmbVersion";
             this.cmbVersion.Size = new System.Drawing.Size(79, 24);
             this.cmbVersion.TabIndex = 5;
@@ -113,7 +113,7 @@
             this.cmbSurface.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.cmbSurface.FormattingEnabled = true;
             this.cmbSurface.Location = new System.Drawing.Point(8, 38);
-            this.cmbSurface.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbSurface.Margin = new System.Windows.Forms.Padding(4);
             this.cmbSurface.Name = "cmbSurface";
             this.cmbSurface.Size = new System.Drawing.Size(112, 24);
             this.cmbSurface.TabIndex = 6;
@@ -123,7 +123,7 @@
             this.cmbToolSide.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.cmbToolSide.FormattingEnabled = true;
             this.cmbToolSide.Location = new System.Drawing.Point(129, 38);
-            this.cmbToolSide.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbToolSide.Margin = new System.Windows.Forms.Padding(4);
             this.cmbToolSide.Name = "cmbToolSide";
             this.cmbToolSide.Size = new System.Drawing.Size(113, 24);
             this.cmbToolSide.TabIndex = 7;
@@ -197,7 +197,7 @@
             // txtJobNumber
             // 
             this.txtJobNumber.Location = new System.Drawing.Point(8, 62);
-            this.txtJobNumber.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtJobNumber.Margin = new System.Windows.Forms.Padding(4);
             this.txtJobNumber.Name = "txtJobNumber";
             this.txtJobNumber.Size = new System.Drawing.Size(79, 22);
             this.txtJobNumber.TabIndex = 15;
@@ -219,7 +219,7 @@
             this.cmbStudyProposal.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.cmbStudyProposal.FormattingEnabled = true;
             this.cmbStudyProposal.Location = new System.Drawing.Point(101, 42);
-            this.cmbStudyProposal.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbStudyProposal.Margin = new System.Windows.Forms.Padding(4);
             this.cmbStudyProposal.Name = "cmbStudyProposal";
             this.cmbStudyProposal.Size = new System.Drawing.Size(60, 24);
             this.cmbStudyProposal.TabIndex = 16;
@@ -228,7 +228,7 @@
             // 
             this.btnReset.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnReset.Location = new System.Drawing.Point(8, 412);
-            this.btnReset.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnReset.Margin = new System.Windows.Forms.Padding(4);
             this.btnReset.Name = "btnReset";
             this.btnReset.Size = new System.Drawing.Size(256, 28);
             this.btnReset.TabIndex = 18;
@@ -252,7 +252,7 @@
             this.cmbEngineeringLevel.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.cmbEngineeringLevel.FormattingEnabled = true;
             this.cmbEngineeringLevel.Location = new System.Drawing.Point(171, 43);
-            this.cmbEngineeringLevel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbEngineeringLevel.Margin = new System.Windows.Forms.Padding(4);
             this.cmbEngineeringLevel.Name = "cmbEngineeringLevel";
             this.cmbEngineeringLevel.Size = new System.Drawing.Size(72, 24);
             this.cmbEngineeringLevel.TabIndex = 19;
@@ -261,7 +261,7 @@
             // txtCustomText
             // 
             this.txtCustomText.Location = new System.Drawing.Point(8, 277);
-            this.txtCustomText.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtCustomText.Margin = new System.Windows.Forms.Padding(4);
             this.txtCustomText.Name = "txtCustomText";
             this.txtCustomText.Size = new System.Drawing.Size(255, 22);
             this.txtCustomText.TabIndex = 21;
@@ -286,9 +286,9 @@
             this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Controls.Add(this.cmbStudyProposal);
             this.groupBox1.Location = new System.Drawing.Point(8, 175);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox1.Size = new System.Drawing.Size(256, 76);
             this.groupBox1.TabIndex = 23;
             this.groupBox1.TabStop = false;
@@ -301,9 +301,9 @@
             this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Controls.Add(this.cmbToolSide);
             this.groupBox2.Location = new System.Drawing.Point(8, 94);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox2.Size = new System.Drawing.Size(256, 74);
             this.groupBox2.TabIndex = 24;
             this.groupBox2.TabStop = false;
@@ -315,9 +315,9 @@
             this.groupBox3.Controls.Add(this.rdoIges);
             this.groupBox3.Controls.Add(this.rdoPrt);
             this.groupBox3.Location = new System.Drawing.Point(8, 309);
-            this.groupBox3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox3.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox3.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox3.Size = new System.Drawing.Size(256, 60);
             this.groupBox3.TabIndex = 25;
             this.groupBox3.TabStop = false;
@@ -327,7 +327,7 @@
             // 
             this.rdoStp.AutoSize = true;
             this.rdoStp.Location = new System.Drawing.Point(165, 23);
-            this.rdoStp.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rdoStp.Margin = new System.Windows.Forms.Padding(4);
             this.rdoStp.Name = "rdoStp";
             this.rdoStp.Size = new System.Drawing.Size(49, 20);
             this.rdoStp.TabIndex = 2;
@@ -339,7 +339,7 @@
             // 
             this.rdoIges.AutoSize = true;
             this.rdoIges.Location = new System.Drawing.Point(95, 23);
-            this.rdoIges.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rdoIges.Margin = new System.Windows.Forms.Padding(4);
             this.rdoIges.Name = "rdoIges";
             this.rdoIges.Size = new System.Drawing.Size(57, 20);
             this.rdoIges.TabIndex = 1;
@@ -351,7 +351,7 @@
             // 
             this.rdoPrt.AutoSize = true;
             this.rdoPrt.Location = new System.Drawing.Point(33, 23);
-            this.rdoPrt.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rdoPrt.Margin = new System.Windows.Forms.Padding(4);
             this.rdoPrt.Name = "rdoPrt";
             this.rdoPrt.Size = new System.Drawing.Size(46, 20);
             this.rdoPrt.TabIndex = 0;
@@ -363,7 +363,7 @@
             // 
             this.btnSimDataDeletion.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnSimDataDeletion.Location = new System.Drawing.Point(8, 448);
-            this.btnSimDataDeletion.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnSimDataDeletion.Margin = new System.Windows.Forms.Padding(4);
             this.btnSimDataDeletion.Name = "btnSimDataDeletion";
             this.btnSimDataDeletion.Size = new System.Drawing.Size(256, 28);
             this.btnSimDataDeletion.TabIndex = 26;
@@ -421,10 +421,11 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Location = new System.Drawing.Point(30, 130);
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "SimulationDataBuilderForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "1919";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SimulationDataBuilderForm_FormClosed);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

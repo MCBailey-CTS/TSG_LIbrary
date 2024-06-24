@@ -142,6 +142,7 @@
     <Compile Include="src\Extensions\Constants.cs" />
     <Compile Include="src\Extensions\ConstraintReference.cs" />
     <Compile Include="src\Extensions\CoordinateSystem.cs" />
+    <Compile Include="src\Extensions\CopyPasteBuilder.cs" />
     <Compile Include="src\Extensions\Curve.cs" />
     <Compile Include="src\Extensions\DatumAxis.cs" />
     <Compile Include="src\Extensions\DatumAxisFeature.cs" />
@@ -302,6 +303,7 @@
     </Compile>
     <Compile Include="src\UFuncs\CategoryRefSets.cs" />
     <Compile Include="src\UFuncs\CircleFromSpline.cs" />
+    <Compile Include="src\UFuncs\CleanBodyRefSet.cs" />
     <Compile Include="src\UFuncs\CleanJobDirectory.cs" />
     <Compile Include="src\UFuncs\CloneAssemblyForm.cs">
       <SubType>Form</SubType>
@@ -337,9 +339,7 @@
       <DependentUpon>EditSizeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="src\UFuncs\ConvertSplineToCircle.cs" />
-    <Compile Include="src\UFuncs\CopyAttributesForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="src\UFuncs\CopyAttributesForm.cs" />
     <Compile Include="src\UFuncs\CopyAttributesForm.Designer.cs">
       <DependentUpon>CopyAttributesForm.cs</DependentUpon>
     </Compile>
@@ -464,6 +464,9 @@
     </Compile>
     <Compile Include="src\UFuncs\LayoutRefSets.cs" />
     <Compile Include="src\UFuncs\LoadColorPalette.cs" />
+    <Compile Include="src\UFuncs\Mirror\Features\MirrorExtractedBody.cs" />
+    <Compile Include="src\UFuncs\Mirror\Features\MirrorExtrude.cs" />
+    <Compile Include="src\UFuncs\Mirror\Features\MirrorOffsetFace.cs" />
     <Compile Include="src\UFuncs\Mirror\LibraryComponents\MirrorSmartButton.cs" />
     <Compile Include="src\UFuncs\Mirror\LibraryComponents\MirrorSmartKey.cs" />
     <Compile Include="src\UFuncs\Mirror\LibraryComponents\MirrorSmartStandardLiftersGuidedKeepersMetric.cs" />
@@ -497,6 +500,8 @@
     <Compile Include="src\UFuncs\Mirror\Rules\MirrorFaceAndAdjacentFacesRule.cs" />
     <Compile Include="src\UFuncs\Mirror\Rules\MirrorFaceDumbRule.cs" />
     <Compile Include="src\UFuncs\Mirror\Rules\MirrorFaceTangentRule.cs" />
+    <Compile Include="src\UFuncs\Mirror\Testing.cs" />
+    <Compile Include="src\UFuncs\MyAttribute.cs" />
     <Compile Include="src\UFuncs\NitroTravels.cs" />
     <Compile Include="src\UFuncs\Nx7zip\Nx7ZipCompression.cs" />
     <Compile Include="src\UFuncs\Nx7zip\Nx7zipForm.cs">

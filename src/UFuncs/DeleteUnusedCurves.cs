@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using NXOpen;
-using NXOpen.Utilities;
+﻿using NXOpen;
 using TSG_Library.Attributes;
 using static TSG_Library.Extensions.Extensions;
 using Selection = TSG_Library.Ui.Selection;
@@ -20,38 +17,25 @@ namespace TSG_Library.UFuncs
     {
         public override void execute()
         {
-            using (session_.__UsingDoUpdate())
+            string message = $"{AssemblyFileVersion} - Delete Unused Curves";
+
+            foreach (Curve delete in Selection.SelectCurves(message, message))
             {
-                Curve[] selCurves = Selection.SelectCurves();
-                //List<Tag> delCurves = new List<Tag>();
-
-                foreach (Curve delete in selCurves)
+                if (delete.IsOccurrence)
                 {
-                    if(delete.IsOccurrence)
-                    {
-                        TheUFSession.Modl.AskObjectFeat(delete.__Prototype().Tag, out Tag featTag);
+                    TheUFSession.Modl.AskObjectFeat(delete.__Prototype().Tag, out Tag featTag);
 
-                        if (featTag == Tag.Null)
-                            delete.__Prototype().__Delete();
-
-                    }
-                    else
-                    {
-                        TheUFSession.Modl.AskObjectFeat(delete.Tag, out Tag featTag);
-
-                        if (featTag == Tag.Null)
-                            delete.__Delete();
-                    }
-
-                    
-                        //delCurves.Add(delete.Tag);
+                    if (featTag == Tag.Null)
+                        delete.__Prototype().__Delete();
                 }
+                else
+                {
+                    TheUFSession.Modl.AskObjectFeat(delete.Tag, out Tag featTag);
 
-                //foreach (NXObject curveObj in delCurves.Select(curve => (NXObject)NXObjectManager.Get(curve)))
-                //    session_.UpdateManager.AddToDeleteList(curveObj);
+                    if (featTag == Tag.Null)
+                        delete.__Delete();
+                }
             }
-
-            //__display_part_.Views.Refresh();
         }
     }
 }

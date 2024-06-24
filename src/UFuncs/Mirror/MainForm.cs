@@ -10,6 +10,7 @@ using NXOpen.Features;
 using NXOpen.UF;
 using NXOpen.Utilities;
 using TSG_Library.Disposable;
+using TSG_Library.Extensions;
 using TSG_Library.Geom;
 using TSG_Library.Properties;
 using TSG_Library.UFuncs.MirrorComponents.Features;
@@ -53,14 +54,13 @@ namespace TSG_Library.UFuncs.Mirror
         private GroupBox groupBox1;
 
         private Label label1;
-
+        private Button button1;
         private TextBox textBoxDetNumber;
 
         public MainForm()
         {
             InitializeComponent();
         }
-
         private void MainForm_Load(object sender, EventArgs e)
         {
             Location = Settings.Default.mirror_components_window_location;
@@ -81,66 +81,7 @@ namespace TSG_Library.UFuncs.Mirror
         {
             //System.Diagnostics.Debugger.Launch();
 
-            Hide();
-            bool interruptUpdateOnError = session_.Preferences.Modeling.InterruptUpdateOnError;
-            bool interruptUpdateOnWarning = session_.Preferences.Modeling.InterruptUpdateOnWarning;
-            try
-            {
-                session_.Preferences.Modeling.InterruptUpdateOnError = false;
-                session_.Preferences.Modeling.InterruptUpdateOnWarning = false;
-                IDictionary<TaggedObject, TaggedObject> dictionary = new Dictionary<TaggedObject, TaggedObject>();
-                try
-                {
-                    UpdateSessionParts();
-                    UpdateOriginalParts();
-                    if (_selectedComponents != null && mirrorPlane != null)
-                    {
-                        if (checkBoxMirrorCopies.Checked)
-                        {
-                            NewMethod(dictionary);
-                        }
-                        else
-                        {
-                            NXObject[] selectedComponents = _selectedComponents;
-                            foreach (NXObject nXObject in selectedComponents)
-                                if (nXObject.OwningComponent != null)
-                                    MirrorComponents.Add(nXObject.OwningComponent);
-                        }
-
-                        if (MirrorComponents.Count > 0)
-                        {
-                            ufsession_.Disp.SetDisplay(0);
-                            NewMethod17();
-                        }
-                        else
-                        {
-                            NewMethod20();
-                        }
-
-                        ufsession_.Disp.SetDisplay(1);
-                        __display_part_.Views.Regenerate();
-                        __display_part_ = _originalDisplayPart;
-                        __work_part_ = _originalWorkPart;
-                        UpdateSessionParts();
-                        ResetForm();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    ufsession_.Disp.SetDisplay(1);
-                    ex.__PrintException();
-                }
-
-                Component[] array = dictionary.Keys.OfType<Component>().ToArray();
-                foreach (Component originalComp in array)
-                    Program.Mirror208_3001(_mirrorPlane, originalComp, dictionary);
-            }
-            finally
-            {
-                Show();
-                session_.Preferences.Modeling.InterruptUpdateOnError = interruptUpdateOnError;
-                session_.Preferences.Modeling.InterruptUpdateOnWarning = interruptUpdateOnWarning;
-            }
+           
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -155,10 +96,10 @@ namespace TSG_Library.UFuncs.Mirror
             //IL_0038: Unknown result type (might be due to invalid IL or missing references)
             //IL_003d: Unknown result type (might be due to invalid IL or missing references)
             //IL_0047: Expected O, but got Unknown
-            _selectedComponents = SelectMultipleComponentBodies().Cast<NXObject>().ToArray();
-            mirrorPlane = SelectMirrorDatumPlane();
-            _mirrorPlane = new Surface.Plane(mirrorPlane.Origin, mirrorPlane.Normal);
-            buttonOk.Enabled = _selectedComponents != null;
+            //_selectedComponents = SelectMultipleComponentBodies().Cast<NXObject>().ToArray();
+            //mirrorPlane = SelectMirrorDatumPlane();
+            //_mirrorPlane = new Surface.Plane(mirrorPlane.Origin, mirrorPlane.Normal);
+            //buttonOk.Enabled = _selectedComponents != null;
         }
 
         private void ButtonExit_Click(object sender, EventArgs e)
@@ -752,7 +693,7 @@ namespace TSG_Library.UFuncs.Mirror
 
         private void NewMethod8(double[] mirrorMatrix, List<Tag> mirrorMove, BlockFeatureBuilder blockFeatureBuilder2)
         {
-           
+
             blockFeatureBuilder2.GetOrientation(out Vector3d xAxis, out Vector3d yAxis);
             double[] csys_origin = blockFeatureBuilder2.Origin._Array();
             double[] x_vec = xAxis._Array();
@@ -950,6 +891,7 @@ namespace TSG_Library.UFuncs.Mirror
             this.label1 = new System.Windows.Forms.Label();
             this.buttonExit = new System.Windows.Forms.Button();
             this.buttonOk = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -962,15 +904,15 @@ namespace TSG_Library.UFuncs.Mirror
             this.buttonSelectComponents.TabIndex = 0;
             this.buttonSelectComponents.Text = "Select Components";
             this.buttonSelectComponents.UseVisualStyleBackColor = true;
-            this.buttonSelectComponents.Click += new System.EventHandler(this.buttonSelectComponents_Click_1);
+            this.buttonSelectComponents.Click += new System.EventHandler(this.ButtonSelectComponents_Click);
             // 
             // textBoxDetNumber
             // 
-            this.textBoxDetNumber.Enabled = false;
             this.textBoxDetNumber.Location = new System.Drawing.Point(59, 49);
             this.textBoxDetNumber.Name = "textBoxDetNumber";
             this.textBoxDetNumber.Size = new System.Drawing.Size(72, 20);
             this.textBoxDetNumber.TabIndex = 1;
+            this.textBoxDetNumber.Text = "900";
             // 
             // checkBoxMirrorCopies
             // 
@@ -983,6 +925,7 @@ namespace TSG_Library.UFuncs.Mirror
             this.checkBoxMirrorCopies.Text = "Mirror Copies";
             this.checkBoxMirrorCopies.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBoxMirrorCopies.UseVisualStyleBackColor = true;
+            this.checkBoxMirrorCopies.CheckedChanged += new System.EventHandler(this.checkBoxMirrorCopies_CheckedChanged_1);
             // 
             // groupBox1
             // 
@@ -1017,7 +960,6 @@ namespace TSG_Library.UFuncs.Mirror
             // 
             // buttonOk
             // 
-            this.buttonOk.Enabled = false;
             this.buttonOk.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.buttonOk.Location = new System.Drawing.Point(110, 127);
             this.buttonOk.Name = "buttonOk";
@@ -1025,12 +967,25 @@ namespace TSG_Library.UFuncs.Mirror
             this.buttonOk.TabIndex = 5;
             this.buttonOk.Text = "Ok";
             this.buttonOk.UseVisualStyleBackColor = true;
+            this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click_1);
+            // 
+            // button1
+            // 
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.button1.Location = new System.Drawing.Point(12, 174);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(184, 23);
+            this.button1.TabIndex = 6;
+            this.button1.Text = "Ok";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(214, 159);
+            this.ClientSize = new System.Drawing.Size(214, 209);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.buttonOk);
             this.Controls.Add(this.buttonExit);
             this.Controls.Add(this.groupBox1);
@@ -1042,7 +997,7 @@ namespace TSG_Library.UFuncs.Mirror
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Mirror Components";
             this.TopMost = true;
-            this.Load += new System.EventHandler(this.MainForm_Load_1);
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
@@ -1051,12 +1006,172 @@ namespace TSG_Library.UFuncs.Mirror
 
         private void MainForm_Load_1(object sender, EventArgs e)
         {
-
+            Location = Settings.Default.mirror_components_window_location;
+            session_.Parts.LoadOptions.LoadLatest = false;
+            session_.Parts.LoadOptions.ComponentLoadMethod = LoadOptions.LoadMethod.AsSaved;
+            session_.Parts.LoadOptions.ComponentsToLoad = LoadOptions.LoadComponents.All;
+            session_.Parts.LoadOptions.UseLightweightRepresentations = false;
+            session_.Parts.LoadOptions.UsePartialLoading = false;
+            session_.Parts.LoadOptions.SetInterpartData(true, LoadOptions.Parent.Immediate);
+            session_.Parts.LoadOptions.AbortOnFailure = false;
+            session_.Parts.LoadOptions.AllowSubstitution = false;
+            session_.Parts.LoadOptions.GenerateMissingPartFamilyMembers = false;
+            session_.Parts.LoadOptions.ReferenceSetOverride = false;
+            textBoxDetNumber.Text = "001";
         }
 
         private void buttonSelectComponents_Click_1(object sender, EventArgs e)
         {
+            _selectedComponents = SelectMultipleComponentBodies().Cast<NXObject>().ToArray();
+            mirrorPlane = SelectMirrorDatumPlane();
+            _mirrorPlane = new Surface.Plane(mirrorPlane.Origin, mirrorPlane.Normal);
+            buttonOk.Enabled = _selectedComponents != null;
+        }
 
+        private void buttonOk_Click_1(object sender, EventArgs e)
+        {
+            Hide();
+            bool interruptUpdateOnError = session_.Preferences.Modeling.InterruptUpdateOnError;
+            bool interruptUpdateOnWarning = session_.Preferences.Modeling.InterruptUpdateOnWarning;
+            try
+            {
+                session_.Preferences.Modeling.InterruptUpdateOnError = false;
+                session_.Preferences.Modeling.InterruptUpdateOnWarning = false;
+                IDictionary<TaggedObject, TaggedObject> dictionary = new Dictionary<TaggedObject, TaggedObject>();
+                try
+                {
+                    UpdateSessionParts();
+                    UpdateOriginalParts();
+                    if (_selectedComponents != null && mirrorPlane != null)
+                    {
+                        if (checkBoxMirrorCopies.Checked)
+                        {
+                            NewMethod(dictionary);
+                        }
+                        else
+                        {
+                            NXObject[] selectedComponents = _selectedComponents;
+                            foreach (NXObject nXObject in selectedComponents)
+                                if (nXObject.OwningComponent != null)
+                                    MirrorComponents.Add(nXObject.OwningComponent);
+                        }
+
+                        if (MirrorComponents.Count > 0)
+                        {
+                            ufsession_.Disp.SetDisplay(0);
+                            NewMethod17();
+                        }
+                        else
+                        {
+                            NewMethod20();
+                        }
+
+                        ufsession_.Disp.SetDisplay(1);
+                        __display_part_.Views.Regenerate();
+                        __display_part_ = _originalDisplayPart;
+                        __work_part_ = _originalWorkPart;
+                        UpdateSessionParts();
+                        ResetForm();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ufsession_.Disp.SetDisplay(1);
+                    ex.__PrintException();
+                }
+
+                Component[] array = dictionary.Keys.OfType<Component>().ToArray();
+                foreach (Component originalComp in array)
+                    Program.Mirror208_3001(_mirrorPlane, originalComp, dictionary);
+            }
+            finally
+            {
+                Show();
+                session_.Preferences.Modeling.InterruptUpdateOnError = interruptUpdateOnError;
+                session_.Preferences.Modeling.InterruptUpdateOnWarning = interruptUpdateOnWarning;
+            }
+        }
+
+        private void checkBoxMirrorCopies_CheckedChanged_1(object sender, EventArgs e)
+        {
+            textBoxDetNumber.Enabled = checkBoxMirrorCopies.Checked;
+            buttonOk.Enabled = true;
+
+        }
+
+        private void buttonOk_Click_12(object sender, EventArgs e)
+        {
+            Hide();
+            bool interruptUpdateOnError = session_.Preferences.Modeling.InterruptUpdateOnError;
+            bool interruptUpdateOnWarning = session_.Preferences.Modeling.InterruptUpdateOnWarning;
+            try
+            {
+                session_.Preferences.Modeling.InterruptUpdateOnError = false;
+                session_.Preferences.Modeling.InterruptUpdateOnWarning = false;
+                IDictionary<TaggedObject, TaggedObject> dictionary = new Dictionary<TaggedObject, TaggedObject>();
+                try
+                {
+                    UpdateSessionParts();
+                    UpdateOriginalParts();
+                    if (_selectedComponents != null && mirrorPlane != null)
+                    {
+                        if (checkBoxMirrorCopies.Checked)
+                        {
+                            NewMethod(dictionary);
+                        }
+                        else
+                        {
+                            NXObject[] selectedComponents = _selectedComponents;
+                            foreach (NXObject nXObject in selectedComponents)
+                                if (nXObject.OwningComponent != null)
+                                    MirrorComponents.Add(nXObject.OwningComponent);
+                        }
+
+                        if (MirrorComponents.Count > 0)
+                        {
+                            ufsession_.Disp.SetDisplay(0);
+                            NewMethod17();
+                        }
+                        else
+                        {
+                            NewMethod20();
+                        }
+
+                        ufsession_.Disp.SetDisplay(1);
+                        __display_part_.Views.Regenerate();
+                        __display_part_ = _originalDisplayPart;
+                        __work_part_ = _originalWorkPart;
+                        UpdateSessionParts();
+                        ResetForm();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ufsession_.Disp.SetDisplay(1);
+                    ex.__PrintException();
+                }
+
+                Component[] array = dictionary.Keys.OfType<Component>().ToArray();
+                foreach (Component originalComp in array)
+                    Program.Mirror208_3001(_mirrorPlane, originalComp, dictionary);
+            }
+            finally
+            {
+                Show();
+                session_.Preferences.Modeling.InterruptUpdateOnError = interruptUpdateOnError;
+                session_.Preferences.Modeling.InterruptUpdateOnWarning = interruptUpdateOnWarning;
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            using(session_.__UsingFormShowHide(this))
+            {
+                buttonSelectComponents.PerformClick();
+                checkBoxMirrorCopies.Checked = true;
+                textBoxDetNumber.Text = "900";
+                buttonOk.PerformClick();
+            }
         }
     }
 }

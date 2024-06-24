@@ -219,6 +219,7 @@ namespace TSG_Library.UFuncs
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            Text = AssemblyFileVersion;
             Location = Settings.Default.clone_strip_form_window_location;
 
             if (Environment.UserName == "mcbailey")

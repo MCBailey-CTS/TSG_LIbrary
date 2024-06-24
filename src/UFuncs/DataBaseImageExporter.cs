@@ -20,10 +20,11 @@ namespace TSG_Library.UFuncs
     {
         public override void execute()
         {
-            if (Session.GetSession().Parts.Display is null)
+            print_(ufunc_rev_name);
+
+            if (__display_part_ is null)
             {
                 print_("There is no displayed part loaded");
-
                 return;
             }
 
@@ -32,28 +33,22 @@ namespace TSG_Library.UFuncs
             if (folder is null)
             {
                 print_("The current displayed part does not reside in a GFolder.");
-
                 return;
             }
 
-            session_.SetUndoMark(Session.MarkVisibility.Visible, "");
+            session_.SetUndoMark(Session.MarkVisibility.Visible, ufunc_rev_name);
 
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog { Filter = "JPEG (.jpg)|*.jpg" };
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog { Filter = "JPEG (.jpg)|*.jpg" ,Title= $"{ufunc_rev_name}: Save As"};
 
             if (!__display_part_.FullPath.Contains("Q:\\"))
             {
                 saveFileDialog1.InitialDirectory = "G:\\CTS\\job-info\\pictures\\";
-
                 saveFileDialog1.FileName = folder.CustomerNumber;
             }
             else
-            {
                 saveFileDialog1.InitialDirectory = folder.DirJob;
-            }
 
-            DialogResult result = saveFileDialog1.ShowDialog();
-
-            if (result != DialogResult.OK)
+            if (saveFileDialog1.ShowDialog() != DialogResult.OK)
                 return;
 
 #pragma warning disable CS0618 // Type or member is obsolete

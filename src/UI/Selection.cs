@@ -39,11 +39,11 @@ namespace TSG_Library.Ui
             };
         }
 
-        public static Curve[] SelectCurves()
+        public static Curve[] SelectCurves(string message = "Select Curves", string title = "Select Curves")
         {
             UI.GetUI().SelectionManager.SelectTaggedObjects(
-                "Select Curves",
-                "Select Curves",
+                message,
+                title,
                 NXOpen.Selection.SelectionScope.AnyInAssembly,
                 false,
                 new[] { NXOpen.Selection.SelectionType.Curves },
@@ -74,6 +74,15 @@ namespace TSG_Library.Ui
             return SelectSingleTaggedObject(
                 "Select single component",
                 "Select single component",
+                new[] { Masks.ComponentMask },
+                predicate);
+        }
+
+        public static Component[] SelectManyComponents(string message, Predicate<Component> predicate = null)
+        {
+            return SelectMultipleTaggedObjects(
+                message,
+                message,
                 new[] { Masks.ComponentMask },
                 predicate);
         }
@@ -155,6 +164,15 @@ namespace TSG_Library.Ui
             return SelectMultipleTaggedObjects(
                 "Select Many Solid Bodies",
                 "Select Many Solid Bodies",
+                new[] { Masks.SolidBody_Mask },
+                predicate);
+        }
+
+        public static Body[] SelectManySheetBodies(string message = "Select Many Sheet Bodies", Predicate<Body> predicate = null)
+        {
+            return SelectMultipleTaggedObjects(
+                message,
+                message,
                 new[] { Masks.SolidBody_Mask },
                 predicate);
         }
