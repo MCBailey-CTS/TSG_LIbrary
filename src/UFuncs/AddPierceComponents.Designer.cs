@@ -1,6 +1,6 @@
 ﻿namespace TSG_Library.UFuncs
 {
-    partial class AddPierceComponentsForm
+    partial class AddPierceComponents
     {
         /// <summary>
         /// Required designer variable.

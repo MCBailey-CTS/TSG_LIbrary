@@ -42,10 +42,11 @@ namespace TSG_Library.UFuncs
         public override void execute()
         {
             // Creates an instance of GFolderWithCtsNumber using the current Displayed Part as it's source.
-            GFolder folder = GFolder.Create(__work_part_.FullPath);
+            GFolder folder = GFolder.create_or_null(__work_part_.FullPath);
 
             if (folder is null)
             {
+                print_($"{AssemblyFileVersion} - Clean Job Directory");
                 print_("The current work part does not reside within a GFolder.");
                 return;
             }

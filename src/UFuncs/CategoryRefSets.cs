@@ -12,10 +12,10 @@ namespace TSG_Library.UFuncs
     {
         public override void execute()
         {
+            print_(ufunc_rev_name);
             Part workPart = session_.Parts.Work;
             Tag bodyRefSet = Tag.Null;
-            Session.UndoMarkId markId1 =
-                session_.SetUndoMark(Session.MarkVisibility.Visible, "Category Reference Sets");
+            Session.UndoMarkId markId1 = session_.SetUndoMark(Session.MarkVisibility.Visible, "Category Reference Sets");
             Tag cycleRefSet = Tag.Null;
             List<Tag> refSetTag = new List<Tag>();
             bool isBodyRefSet = false;
@@ -60,8 +60,8 @@ namespace TSG_Library.UFuncs
                 ufsession_.Assem.RemoveRefSetMembers(bodyRefSet, memberCount, members);
 
                 List<Tag> wpBody = (from Body body in workPart.Bodies
-                        where body.Layer == 1 && body.Tag != Tag.Null
-                        select body.Tag)
+                                    where body.Layer == 1 && body.Tag != Tag.Null
+                                    select body.Tag)
                     .ToList();
 
                 if (wpBody.Count == 1)
@@ -72,8 +72,8 @@ namespace TSG_Library.UFuncs
                         return;
 
                     List<Tag> compList = (from component in workPart.ComponentAssembly.RootComponent.GetChildren()
-                        where component.Layer == 99 && component.Tag != Tag.Null
-                        select component.Tag).ToList();
+                                          where component.Layer == 99 && component.Tag != Tag.Null
+                                          select component.Tag).ToList();
 
                     ufsession_.Assem.AddRefSetMembers(bodyRefSet, compList.Count, compList.ToArray());
                 }
@@ -125,8 +125,8 @@ namespace TSG_Library.UFuncs
                 ufsession_.Csys.AskMatrixValues(wcsMatrix, matrixValue); // gets the matrix values
 
                 List<Tag> bodyArray = (from Body body in workPart.Bodies
-                        where body.Layer == 1 && body.Tag != Tag.Null
-                        select body.Tag)
+                                       where body.Layer == 1 && body.Tag != Tag.Null
+                                       select body.Tag)
                     .ToList();
 
                 if (bodyArray.Count == 1)
@@ -158,8 +158,8 @@ namespace TSG_Library.UFuncs
                 ufsession_.Csys.AskMatrixValues(wcsMatrix, matrixValue); // gets the matrix values
 
                 List<Tag> bodyArray = (from Body body in workPart.Bodies
-                        where body.Layer == 1 && body.Tag != Tag.Null
-                        select body.Tag)
+                                       where body.Layer == 1 && body.Tag != Tag.Null
+                                       select body.Tag)
                     .ToList();
 
                 if (bodyArray.Count == 1)
@@ -173,8 +173,8 @@ namespace TSG_Library.UFuncs
                         return;
 
                     List<Tag> compList = (from component in workPart.ComponentAssembly.RootComponent.GetChildren()
-                        where component.Layer == 99 && component.Tag != Tag.Null
-                        select component.Tag).ToList();
+                                          where component.Layer == 99 && component.Tag != Tag.Null
+                                          select component.Tag).ToList();
 
                     ufsession_.Assem.AddRefSetMembers(bodyRefSet, compList.Count, compList.ToArray());
                 }

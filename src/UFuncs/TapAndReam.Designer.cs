@@ -169,7 +169,7 @@
             this.buttonDeleteTapsReams.UseVisualStyleBackColor = true;
             this.buttonDeleteTapsReams.Click += new System.EventHandler(this.ButtonDeleteTapsReams_Click);
             // 
-            // MainForm
+            // TapAndReam
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -181,10 +181,13 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Location = new System.Drawing.Point(30, 130);
             this.MaximizeBox = false;
-            this.Name = "MainForm";
+            this.MinimizeBox = false;
+            this.Name = "TapAndReam";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "TapReamControl";
             this.TopMost = true;
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.TapAndReam_FormClosed);
+            this.Load += new System.EventHandler(this.TapAndReam_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);

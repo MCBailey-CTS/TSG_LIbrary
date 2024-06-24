@@ -217,6 +217,7 @@ namespace TSG_Library.UFuncs
 
         private void WireStartHoleForm_Load(object sender, EventArgs e)
         {
+            Text = AssemblyFileVersion;
             Location = Settings.Default.wire_start_hole_form_window_location;
         }
 

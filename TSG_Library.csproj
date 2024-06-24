@@ -205,14 +205,11 @@
     <Compile Include="src\UFuncs\AddFasteners\CycleAddStruct.cs" />
     <Compile Include="src\UFuncs\AddFasteners\FastenerListItem.cs" />
     <Compile Include="src\UFuncs\AddFasteners\GridSpacing.cs" />
-    <Compile Include="src\UFuncs\AddPierceComponents\AddPierceComponentsForm.cs">
+    <Compile Include="src\UFuncs\AddPierceComponents.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\UFuncs\AddPierceComponents\AddPierceComponentsForm.Designer.cs">
-      <DependentUpon>AddPierceComponentsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\UFuncs\AddPierceComponents\PierceProperties1.cs">
-      <SubType>Form</SubType>
+    <Compile Include="src\UFuncs\AddPierceComponents.Designer.cs">
+      <DependentUpon>AddPierceComponents.cs</DependentUpon>
     </Compile>
     <Compile Include="src\UFuncs\AssemblyAutoDetail\AssemblyAutoDetailForm.cs">
       <SubType>Form</SubType>
@@ -640,8 +637,8 @@
     <EmbeddedResource Include="src\UFuncs\AddFasteners\AddFastenersForm1.resx">
       <DependentUpon>AddFastenersForm1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\AddPierceComponents\AddPierceComponentsForm.resx">
-      <DependentUpon>AddPierceComponentsForm.cs</DependentUpon>
+    <EmbeddedResource Include="src\UFuncs\AddPierceComponents.resx">
+      <DependentUpon>AddPierceComponents.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\UFuncs\AssemblyAutoDetail\AssemblyAutoDetailForm.resx">
       <DependentUpon>AssemblyAutoDetailForm.cs</DependentUpon>
@@ -754,6 +751,9 @@
     <EmbeddedResource Include="src\UFuncs\SimulationDataBuilder\SimulationDataBuilderForm.resx">
       <DependentUpon>SimulationDataBuilderForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="src\UFuncs\TapAndReam.resx">
+      <DependentUpon>TapAndReam.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="src\UFuncs\WireStartHoleForm.resx">
       <DependentUpon>WireStartHoleForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -768,7 +768,7 @@
     <None Include="Resources\NXSigningResource.res" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="src\UFuncs\OrientViewToCsys\" />
+    <Folder Include="src\UFuncs\AddPierceComponents\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -780,7 +780,8 @@
   </Target>
   <Import Project="packages\PostSharp.2024.1.4\build\PostSharp.targets" Condition="Exists('packages\PostSharp.2024.1.4\build\PostSharp.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>SignDotNet $(TargetFileName)
+copy C:\Repos\TSG_Library\bin\Debug\TSG_Library.dll "G:\CTS\junk\0Ufunc Testing\temp1\TSG_Library.dll"
+copy C:\Repos\TSG_Library\bin\Debug\TSG_Library.pdb "G:\CTS\junk\0Ufunc Testing\temp1\TSG_Library.pdb"</PostBuildEvent>
   </PropertyGroup>
 </Project>

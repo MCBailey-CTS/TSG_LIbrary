@@ -14,12 +14,14 @@ namespace TSG_Library.UFuncs
     //[Revision("1.0.1", "Revision Log Created for NX 11.")]
     //[RevisionEntry("11.1", "2023", "01", "09")]
     //[Revision("11.1.1", "Removed validation")]
-    public class NitroTravels
+    public class NitroTravels : _UFunc
     {
-        public void execute()
+        public override void execute()
         {
             try
             {
+                print_(ufunc_rev_name);
+
                 IEnumerable<string> partFiles = Directory
                     .GetFiles(@"G:\0Library\NitroCylinders", "*.prt", SearchOption.AllDirectories)
                     .Select(Path.GetFileNameWithoutExtension)

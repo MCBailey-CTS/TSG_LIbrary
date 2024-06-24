@@ -14,15 +14,16 @@ using TSG_Library.Utilities;
 using static TSG_Library.Extensions.Extensions;
 using static TSG_Library.UFuncs._UFunc;
 using static NXOpen.Session;
+using TSG_Library.Extensions;
 
 namespace TSG_Library.UFuncs
 {
     [UFunc(ufunc_add_pierce_components)]
-    public partial class AddPierceComponentsForm : _UFuncForm
+    public partial class AddPierceComponents : _UFuncForm
     {
         private static List<Tuple<Component, Face>> _addedComponents;
 
-        public AddPierceComponentsForm()
+        public AddPierceComponents()
         {
             InitializeComponent();
         }
@@ -158,6 +159,57 @@ namespace TSG_Library.UFuncs
                 while (true);
             }
         }
+
+        /// <summary>
+        ///     The path to the "Smart Button Metric.prt" file in G:\\0Library.
+        /// </summary>
+        public static string SmartButtonMetric => "G:\\0Library\\Button\\Smart Button Metric.prt";
+
+        /// <summary>
+        ///     The path to the "Smart Button English.prt" file in G:\\0Library.
+        /// </summary>
+        public static string SmartButtonEnglish => "G:\\0Library\\Button\\Smart Button English.prt";
+
+        /// <summary>
+        ///     The path to the "Smart Punch Metric.prt" file in G:\\0Library.
+        /// </summary>
+        public static string SmartPunchMetric => "G:\\0Library\\PunchPilot\\Metric\\Smart Punch Metric.prt";
+
+        /// <summary>
+        ///     The path to the "Smart Punch English.prt" file in G:\\0Library.
+        /// </summary>
+        public static string SmartPunchEnglish => "G:\\0Library\\PunchPilot\\English\\Smart Punch English.prt";
+
+        /// <summary>
+        ///     The path to the "Smart Ball Lock Retainer Metric.prt" file in G:\\0Library.
+        /// </summary>
+        public static string SmartBallLockRetainerMetric =>
+            "G:\\0Library\\Retainers\\Metric\\Smart Ball Lock Retainer Metric.prt";
+
+        /// <summary>
+        ///     The path to the "Smart Ball Lock Retainer English.prt" file in G:\\0Library.
+        /// </summary>
+        public static string SmartBallLockRetainerEnglish =>
+            "G:\\0Library\\Retainers\\English\\Smart Ball Lock Retainer English.prt";
+
+        /// <summary>
+        ///     Returns the name of the reference set to be used for AddPierceComponents.
+        /// </summary>
+        public static string SlugRefsetName => "SLUG BUTTON ALIGN";
+
+        // ReSharper disable once StringLiteralTypo
+        public static string RetainerAlignPunchFaceName => "ALIGNPUNCH";
+
+        // ReSharper disable once StringLiteralTypo
+        public static string PunchTopFaceName => "PUNCHTOPFACE";
+
+        public static string PiercedP => "PIERCED_P";
+
+        public static string PiercedW => "PIERCED_W";
+
+        public static string PiercedType => "PIERCED_TYPE";
+
+        public static Regex PiercedFaceRegex => new Regex("^PIERCED_([0-9]{1,})$");
 
         public static int GetUspDetailNumberShort(int number)
         {
@@ -349,7 +401,7 @@ namespace TSG_Library.UFuncs
         public static bool IsFaceNameValid(Face snapFace)
         {
             if (snapFace == null) throw new ArgumentNullException(nameof(snapFace));
-            return PierceProperties.PiercedFaceRegex.IsMatch(snapFace.Name);
+            return PiercedFaceRegex.IsMatch(snapFace.Name);
         }
 
         /// <summary>
@@ -362,7 +414,7 @@ namespace TSG_Library.UFuncs
         public static int GetFaceNameInteger(Face snapFace)
         {
             if (snapFace == null) throw new ArgumentNullException(nameof(snapFace));
-            Match match = PierceProperties.PiercedFaceRegex.Match(snapFace.Name);
+            Match match = PiercedFaceRegex.Match(snapFace.Name);
             if (!match.Success) throw new FormatException("\"" + snapFace.Name + "\" is invalid.");
             return int.Parse(match.Groups[1].Value);
         }
@@ -387,11 +439,11 @@ namespace TSG_Library.UFuncs
             switch (buttonUnit)
             {
                 case BasePart.Units.Inches:
-                    buttonPath = PierceProperties.SmartButtonEnglish;
+                    buttonPath = SmartButtonEnglish;
                     multiplier = 1.0;
                     break;
                 case BasePart.Units.Millimeters:
-                    buttonPath = PierceProperties.SmartButtonMetric;
+                    buttonPath = SmartButtonMetric;
                     multiplier = 25.4;
                     break;
                 default:
@@ -414,10 +466,10 @@ namespace TSG_Library.UFuncs
             switch (buttonUnit)
             {
                 case BasePart.Units.Inches:
-                    punchPath = PierceProperties.SmartPunchEnglish;
+                    punchPath = SmartPunchEnglish;
                     break;
                 case BasePart.Units.Millimeters:
-                    punchPath = PierceProperties.SmartPunchMetric;
+                    punchPath = SmartPunchMetric;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(buttonUnit));
@@ -433,10 +485,10 @@ namespace TSG_Library.UFuncs
             switch (buttonUnit)
             {
                 case BasePart.Units.Inches:
-                    retainerPath = PierceProperties.SmartBallLockRetainerEnglish;
+                    retainerPath = SmartBallLockRetainerEnglish;
                     break;
                 case BasePart.Units.Millimeters:
-                    retainerPath = PierceProperties.SmartBallLockRetainerMetric;
+                    retainerPath = SmartBallLockRetainerMetric;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(buttonUnit));
@@ -473,13 +525,13 @@ namespace TSG_Library.UFuncs
             string directory = Path.GetDirectoryName(__display_part_.FullPath);
 
             var details = (from file in Directory.GetFiles(directory, "*.prt", SearchOption.TopDirectoryOnly)
-                where file.__IsDetail()
-                let detailNumber = file.__AskDetailNumber()
-                select new { file, detailNumber }).ToArray();
+                           where file.__IsDetail()
+                           let detailNumber = file.__AskDetailNumber()
+                           select new { file, detailNumber }).ToArray();
 
             if (string.IsNullOrEmpty(ButtonDetail))
             {
-                buttonPath = isMetric ? PierceProperties.SmartButtonMetric : PierceProperties.SmartButtonEnglish;
+                buttonPath = isMetric ? SmartButtonMetric : SmartButtonEnglish;
             }
             else
             {
@@ -494,8 +546,8 @@ namespace TSG_Library.UFuncs
                     throw new InvalidOperationException("The selected part does not have a \'LIBRARY\' attribute.");
 
                 string expectedLibraryAttributeValue = Path.GetFileNameWithoutExtension(isMetric
-                    ? PierceProperties.SmartButtonMetric
-                    : PierceProperties.SmartButtonEnglish);
+                    ? SmartButtonMetric
+                    : SmartButtonEnglish);
                 string libraryAttributeValue =
                     tempPart.GetUserAttributeAsString("LIBRARY", NXObject.AttributeType.String, -1);
 
@@ -508,7 +560,7 @@ namespace TSG_Library.UFuncs
 
             if (string.IsNullOrEmpty(PunchDetail))
             {
-                punchPath = isMetric ? PierceProperties.SmartPunchMetric : PierceProperties.SmartPunchEnglish;
+                punchPath = isMetric ? SmartPunchMetric : SmartPunchEnglish;
             }
             else
             {
@@ -524,8 +576,8 @@ namespace TSG_Library.UFuncs
 
                 string expectedLibraryAttributeValue =
                     Path.GetFileNameWithoutExtension(isMetric
-                        ? PierceProperties.SmartPunchMetric
-                        : PierceProperties.SmartPunchEnglish);
+                        ? SmartPunchMetric
+                        : SmartPunchEnglish);
                 string libraryAttributeValue =
                     tempPart.GetUserAttributeAsString("LIBRARY", NXObject.AttributeType.String, -1);
 
@@ -539,8 +591,8 @@ namespace TSG_Library.UFuncs
             if (string.IsNullOrEmpty(RetainerDetail))
             {
                 retainerPath = isMetric
-                    ? PierceProperties.SmartBallLockRetainerMetric
-                    : PierceProperties.SmartBallLockRetainerEnglish;
+                    ? SmartBallLockRetainerMetric
+                    : SmartBallLockRetainerEnglish;
             }
             else
             {
@@ -557,8 +609,8 @@ namespace TSG_Library.UFuncs
 
                 string expectedLibraryAttributeValue =
                     Path.GetFileNameWithoutExtension(isMetric
-                        ? PierceProperties.SmartBallLockRetainerMetric
-                        : PierceProperties.SmartBallLockRetainerEnglish);
+                        ? SmartBallLockRetainerMetric
+                        : SmartBallLockRetainerEnglish);
                 string libraryAttributeValue =
                     tempPart.GetUserAttributeAsString("LIBRARY", NXObject.AttributeType.String, -1);
 
@@ -661,7 +713,7 @@ namespace TSG_Library.UFuncs
                                 Component button = null, punch = null, retainer = null;
                                 Component layoutComponent = faceW.OwningComponent;
                                 string originalRefset = layoutComponent.ReferenceSet;
-                                layoutComponent.__ReferenceSet(PierceProperties.SlugRefsetName);
+                                layoutComponent.__ReferenceSet(SlugRefsetName);
                                 Expression expression = __display_part_.Expressions
                                     .ToArray()
                                     .SingleOrDefault(tempExpression => tempExpression.Name == "e");
@@ -813,7 +865,7 @@ namespace TSG_Library.UFuncs
                                 Component button = null, punch = null, retainer = null;
                                 Component layoutComponent = faceW.OwningComponent;
                                 string originalRefset = layoutComponent.ReferenceSet;
-                                layoutComponent.__ReferenceSet(PierceProperties.SlugRefsetName);
+                                layoutComponent.__ReferenceSet(SlugRefsetName);
                                 Expression expression = __display_part_.Expressions
                                     .ToArray()
                                     .SingleOrDefault(tempExpression => tempExpression.Name == "e");
@@ -859,64 +911,66 @@ namespace TSG_Library.UFuncs
             }
         }
 
+        [Obsolete]
         private static void PrintResults(bool isMetric)
         {
-            try
-            {
-                print_("Results:");
-                BasePart stripControl = session_.Parts.ToArray().Single(part => part.Leaf.Contains("strip-control"));
-                Expression materialThicknessExp = stripControl.Expressions.ToArray()
-                    .SingleOrDefault(expression => expression.Name == "M");
-                if (materialThicknessExp == null)
-                    print_("Unable to find Material Thickness.");
-                else
-                    print_("Material Thickness (M): " + materialThicknessExp.RightHandSide);
+            throw new NotImplementedException();
+            //try
+            //{
+            //    print_("Results:");
+            //    BasePart stripControl = session_.Parts.ToArray().Single(part => part.Leaf.Contains("strip-control"));
+            //    Expression materialThicknessExp = stripControl.Expressions.ToArray()
+            //        .SingleOrDefault(expression => expression.Name == "M");
+            //    if (materialThicknessExp == null)
+            //        print_("Unable to find Material Thickness.");
+            //    else
+            //        print_("Material Thickness (M): " + materialThicknessExp.RightHandSide);
 
-                if (_addedComponents == null)
-                {
-                    print_("  addedComponents was null");
-                    return;
-                }
+            //    if (_addedComponents == null)
+            //    {
+            //        print_("  addedComponents was null");
+            //        return;
+            //    }
 
-                if (_addedComponents.Count <= 0)
-                {
-                    print_("  addedComponents was empty");
-                    return;
-                }
+            //    if (_addedComponents.Count <= 0)
+            //    {
+            //        print_("  addedComponents was empty");
+            //        return;
+            //    }
 
-                IOrderedEnumerable<Tuple<Component, Face>> trimmedTuples = _addedComponents
-                    .DistinctBy(tup => tup.Item1.DisplayName)
-                    .OrderBy(tuple => tuple, new Comparer());
+            //    IOrderedEnumerable<Tuple<Component, Face>> trimmedTuples = _addedComponents
+            //        .DistinctBy(tup => tup.Item1.DisplayName)
+            //        .OrderBy(tuple => tuple, new Comparer());
 
-                double divider = isMetric ? 1.0 : 25.4;
+            //    double divider = isMetric ? 1.0 : 25.4;
 
-                //foreach (Tuple<NXOpen.Assemblies.Component, NXOpen.Face> tuple in trimmedTuples)
-                //{
-                //    const string circle = "Circle";
-                //    const string roundedRectangle = "RoundedRectangle";
-                //    double p = Math.Round(tuple.Item1.GetRealUserAttribute(PierceProperties.Pierced_P, -1) / divider, 4);
-                //    double w = Math.Round(tuple.Item1.GetRealUserAttribute(PierceProperties.Pierced_W, -1) / divider, 4);
-                //    string type = tuple.Item1.GetStringUserAttribute(PierceProperties.Pierced_Type, -1);
-                //    switch (type)
-                //    {
-                //        case circle:
-                //            print_($"{tuple.Item1.DisplayName}, P = {p}");
-                //            break;
-                //        case roundedRectangle:
-                //            double radius = tuple.Item2.GetEdges().Select(edge => Snap.NX.Edge.Wrap(edge.Tag)).OfType<Snap.NX.Edge.Arc>().First().Geometry.Radius;
-                //            print_($"{tuple.Item1.DisplayName}, P = {p}, W = {w}, R = {radius}");
-                //            break;
-                //        default:
-                //            print_($"{tuple.Item1.DisplayName}, P = {p}, W = {w}");
-                //            break;
-                //    }
-                //}
-                throw new NotImplementedException();
-            }
-            catch (Exception ex)
-            {
-                ex.__PrintException();
-            }
+            //    foreach (Tuple<NXOpen.Assemblies.Component, NXOpen.Face> tuple in trimmedTuples)
+            //    {
+            //        const string circle = "Circle";
+            //        const string roundedRectangle = "RoundedRectangle";
+            //        double p = Math.Round(tuple.Item1.GetRealUserAttribute(PiercedP, -1) / divider, 4);
+            //        double w = Math.Round(tuple.Item1.GetRealUserAttribute(PiercedW, -1) / divider, 4);
+            //        string type = tuple.Item1.GetStringUserAttribute(PiercedType, -1);
+            //        switch (type)
+            //        {
+            //            case circle:
+            //                print_($"{tuple.Item1.DisplayName}, P = {p}");
+            //                break;
+            //            case roundedRectangle:
+            //                double radius = tuple.Item2.GetEdges().Select(edge => Snap.NX.Edge.Wrap(edge.Tag)).OfType<Snap.NX.Edge.Arc>().First().Geometry.Radius;
+            //                print_($"{tuple.Item1.DisplayName}, P = {p}, W = {w}, R = {radius}");
+            //                break;
+            //            default:
+            //                print_($"{tuple.Item1.DisplayName}, P = {p}, W = {w}");
+            //                break;
+            //        }
+            //    }
+            //    throw new NotImplementedException();
+            //}
+            //catch (Exception ex)
+            //{
+            //    ex.__PrintException();
+            //}
         }
 
         private static void ConstrainPunchAndRetainer(Component punch, Component retainer)
@@ -985,14 +1039,14 @@ namespace TSG_Library.UFuncs
                 layer,
                 out _);
 
-            addedComponent.SetUserAttribute(PierceProperties.PiercedP, -1,
-                snapFace.GetStringUserAttribute(PierceProperties.PiercedP, -1), NXOpen.Update.Option.Now);
+            addedComponent.SetUserAttribute(PiercedP, -1,
+                snapFace.GetStringUserAttribute(PiercedP, -1), NXOpen.Update.Option.Now);
 
-            addedComponent.SetUserAttribute(PierceProperties.PiercedW, -1,
-                snapFace.GetStringUserAttribute(PierceProperties.PiercedW, -1), NXOpen.Update.Option.Now);
+            addedComponent.SetUserAttribute(PiercedW, -1,
+                snapFace.GetStringUserAttribute(PiercedW, -1), NXOpen.Update.Option.Now);
 
-            addedComponent.SetUserAttribute(PierceProperties.PiercedType, -1,
-                snapFace.GetStringUserAttribute(PierceProperties.PiercedType, -1), NXOpen.Update.Option.Now);
+            addedComponent.SetUserAttribute(PiercedType, -1,
+                snapFace.GetStringUserAttribute(PiercedType, -1), NXOpen.Update.Option.Now);
 
             addedComponent.__ReferenceSet(referenceSet);
 
@@ -1021,27 +1075,28 @@ namespace TSG_Library.UFuncs
         public static class Selection
         {
             // ReSharper disable once ReturnTypeCanBeEnumerable.Global
+            [Obsolete]
             public static Face[] SelectFaces()
             {
-                const string message = "Select Faces";
-                const int scope = UFConstants.UF_UI_SEL_SCOPE_ANY_IN_ASSEMBLY;
-                UFUi.SelInitFnT initialProcess = InitialProcess;
-                IntPtr userData = IntPtr.Zero;
-                Tag[] objects = null;
-                try
-                {
-                    TheUFSession.Ui.LockUgAccess(UFConstants.UF_UI_FROM_CUSTOM);
-                    TheUFSession.Ui.SelectWithClassDialog(message, message, scope, initialProcess, userData, out _,
-                        out _, out objects);
-                }
-                catch (Exception ex)
-                {
-                    ex.__PrintException();
-                }
-                finally
-                {
-                    TheUFSession.Ui.UnlockUgAccess(UFConstants.UF_UI_FROM_CUSTOM);
-                }
+                //const string message = "Select Faces";
+                //const int scope = UFConstants.UF_UI_SEL_SCOPE_ANY_IN_ASSEMBLY;
+                //UFUi.SelInitFnT initialProcess = InitialProcess;
+                //IntPtr userData = IntPtr.Zero;
+                //Tag[] objects = null;
+                //try
+                //{
+                //    TheUFSession.Ui.LockUgAccess(UFConstants.UF_UI_FROM_CUSTOM);
+                //    TheUFSession.Ui.SelectWithClassDialog(message, message, scope, initialProcess, userData, out _,
+                //        out _, out objects);
+                //}
+                //catch (Exception ex)
+                //{
+                //    ex.__PrintException();
+                //}
+                //finally
+                //{
+                //    TheUFSession.Ui.UnlockUgAccess(UFConstants.UF_UI_FROM_CUSTOM);
+                //}
 
                 //return objects == null || objects.Length == 0 ? new NXOpen.Face[0] : objects.Select(tag => Snap.NX.Face.Wrap(tag).NXOpenFace).ToArray();
 
@@ -1063,13 +1118,20 @@ namespace TSG_Library.UFuncs
 
             private static int FilterProcess(Tag _object, int[] type, IntPtr userData, IntPtr select)
             {
-                //Snap.NX.Face snapFace = Snap.NX.Face.Wrap(_object);
-                //if (!snapFace.Name.StartsWith("PIERCED_")) return NXOpen.UF.UFConstants.UF_UI_SEL_REJECT;
-                //if (!snapFace.IsOccurrence) return NXOpen.UF.UFConstants.UF_UI_SEL_REJECT;
-                //if (snapFace.ObjectSubType != Snap.NX.ObjectTypes.SubType.FacePlane) return NXOpen.UF.UFConstants.UF_UI_SEL_REJECT;
-                //return snapFace.NXOpenFace._NormalVector()._IsEqualTo(-Snap.Vector.AxisZ) ? NXOpen.UF.UFConstants.UF_UI_SEL_REJECT : NXOpen.UF.UFConstants.UF_UI_SEL_ACCEPT;
+                var snapFace = _object.__To<NXOpen.Face>();
 
-                throw new NotImplementedException();
+                if (!snapFace.Name.StartsWith("PIERCED_"))
+                    return NXOpen.UF.UFConstants.UF_UI_SEL_REJECT;
+
+                if (!snapFace.IsOccurrence)
+                    return NXOpen.UF.UFConstants.UF_UI_SEL_REJECT;
+
+                if (!snapFace.__IsPlanar())
+                    return NXOpen.UF.UFConstants.UF_UI_SEL_REJECT;
+
+                return snapFace.__NormalVector().__IsEqualTo(__Vector3dZ().__Negate())
+                    ? NXOpen.UF.UFConstants.UF_UI_SEL_REJECT
+                    : NXOpen.UF.UFConstants.UF_UI_SEL_ACCEPT;
             }
         }
 
@@ -1151,14 +1213,15 @@ namespace TSG_Library.UFuncs
                 return CreateTouchAlignImpl(part, Constraint.Alignment.CoAlign, movableObject, nonMovableObject);
             }
 
+            [Obsolete]
             public static void ConstrainZAxes(Part part, Component punch, Component retainer)
             {
-                //punch._ReferenceSet("ALIGN");
-                //retainer._ReferenceSet("MATE");
-                //NXOpen.DatumAxis retainerZAxis = (NXOpen.DatumAxis)retainer._Members().Single(o => o.Name == "ZAXIS");
-                //NXOpen.CartesianCoordinateSystem punchCartesian = punch._Members().OfType<NXOpen.CartesianCoordinateSystem>().Single();
+                //punch.__ReferenceSet("ALIGN");
+                //retainer.__ReferenceSet("MATE");
+                //NXOpen.DatumAxis retainerZAxis = (NXOpen.DatumAxis)retainer.__Members().Single(o => o.Name == "ZAXIS");
+                //NXOpen.CartesianCoordinateSystem punchCartesian = punch.__Members().OfType<NXOpen.CartesianCoordinateSystem>().Single();
                 //Snap.Orientation punchOrientation = new Snap.Orientation(punchCartesian.Orientation.Element);
-                //NXOpen.DatumAxis punchZAxis = punch._Members().OfType<NXOpen.DatumAxis>()
+                //NXOpen.DatumAxis punchZAxis = punch.__Members().OfType<NXOpen.DatumAxis>()
                 //    .Single(axis => new NXOpen.Vector3d(axis.Direction.X, axis.Direction.Y, axis.Direction.Z)._IsEqualTo(punchOrientation.AxisZ));
                 //NXOpen.Positioning.DisplayedConstraint constraint = CreateAlign(part, retainerZAxis, punchZAxis);
                 //Snap.NX.NXObject.Wrap(constraint.Tag).Layer = 254;
@@ -1199,58 +1262,58 @@ namespace TSG_Library.UFuncs
 
             public static void ConstrainFaces(Part part, Component punch, Component retainer)
             {
-                //punch._ReferenceSet("ALIGN");
-                //retainer._ReferenceSet("MATE");
-                //NXOpen.Face punchFace = punch._Members()
-                //    .OfType<NXOpen.Face>()
-                //      .Single(face => face.Name == PunchTopFaceName);
-                //NXOpen.Face retainerFace = retainer._Members().OfType<NXOpen.Face>()
-                //    .Single(face => face.Name == RetainerAlignPunchFaceName);
-                //NXOpen.Positioning.DisplayedConstraint constraint = CreateTouch(part, retainerFace, punchFace);
-                //Snap.NX.NXObject.Wrap(constraint.Tag).Layer = 254;
+                punch.__ReferenceSet("ALIGN");
+                retainer.__ReferenceSet("MATE");
 
-                throw new NotImplementedException();
+                NXOpen.Face punchFace = punch.__Members()
+                    .OfType<NXOpen.Face>()
+                    .Single(face => face.Name == PunchTopFaceName);
+
+                NXOpen.Face retainerFace = retainer.__Members()
+                    .OfType<NXOpen.Face>()
+                    .Single(face => face.Name == RetainerAlignPunchFaceName);
+
+                NXOpen.Positioning.DisplayedConstraint constraint = CreateTouch(part, retainerFace, punchFace);
+                constraint.__Layer(254);
             }
 
             public static DisplayedConstraint CreateParallelConstraint(NXObject movableObject, NXObject geometry)
             {
-                //NXOpen.Positioning.ComponentPositioner positioner = _WorkPart.ComponentAssembly.Positioner;
-                //positioner.ClearNetwork();
-                //positioner.PrimaryArrangement = _WorkPart.ComponentAssembly.Arrangements.FindObject("Arrangement 1");
-                //positioner.BeginAssemblyConstraints();
-                //NXOpen.Positioning.ComponentNetwork componentNetwork = (NXOpen.Positioning.ComponentNetwork)positioner.EstablishNetwork();
-                //componentNetwork.MoveObjectsState = true;
-                //componentNetwork.NetworkArrangementsMode = 0;
-                //NXOpen.Positioning.Constraint constraint = positioner.CreateConstraint(true);
-                //NXOpen.Positioning.ComponentConstraint componentConstraint = (NXOpen.Positioning.ComponentConstraint)constraint;
-                //componentConstraint.ConstraintType = (NXOpen.Positioning.Constraint.Type)5;
-                //componentConstraint.CreateConstraintReference(movableObject.OwningComponent, movableObject, false, false, false);
-                //componentConstraint.CreateConstraintReference(geometry.OwningComponent, geometry, false, false, false);
-                //componentNetwork.Solve();
-                //positioner.ClearNetwork();
-                //Snap.NX.NXObject.Wrap(componentNetwork.Tag).Delete();
-                //positioner.DeleteNonPersistentConstraints();
-                //positioner.EndAssemblyConstraints();
-                //return constraint.GetDisplayedConstraint();
+                NXOpen.Positioning.ComponentPositioner positioner = _WorkPart.ComponentAssembly.Positioner;
+                positioner.ClearNetwork();
+                positioner.PrimaryArrangement = _WorkPart.ComponentAssembly.Arrangements.FindObject("Arrangement 1");
+                positioner.BeginAssemblyConstraints();
+                NXOpen.Positioning.ComponentNetwork componentNetwork = (NXOpen.Positioning.ComponentNetwork)positioner.EstablishNetwork();
+                componentNetwork.MoveObjectsState = true;
+                componentNetwork.NetworkArrangementsMode = 0;
+                NXOpen.Positioning.Constraint constraint = positioner.CreateConstraint(true);
+                NXOpen.Positioning.ComponentConstraint componentConstraint = (NXOpen.Positioning.ComponentConstraint)constraint;
+                componentConstraint.ConstraintType = (NXOpen.Positioning.Constraint.Type)5;
+                componentConstraint.CreateConstraintReference(movableObject.OwningComponent, movableObject, false, false, false);
+                componentConstraint.CreateConstraintReference(geometry.OwningComponent, geometry, false, false, false);
+                componentNetwork.Solve();
+                positioner.ClearNetwork();
+                componentNetwork.__Delete();
+                positioner.DeleteNonPersistentConstraints();
+                positioner.EndAssemblyConstraints();
+                return constraint.GetDisplayedConstraint();
                 throw new NotImplementedException();
             }
 
             public static void ConstrainAlignBallSetAndPlane(Component punch, Component retainer)
             {
-                //punch._ReferenceSet("MATE");
-                //retainer._ReferenceSet("MATE");
-                //// ReSharper disable once InconsistentNaming
-                //NXOpen.DatumPlane retainerXZPlane = (NXOpen.DatumPlane)retainer._Members().Single(o => o.Name == "XZPLANE");
-                //NXOpen.DatumPlane punchBallSeatPlane = (NXOpen.DatumPlane)punch._Members().Single(o => o.Name == "BALL_SEAT_ANGLE");
-                //NXOpen.Positioning.DisplayedConstraint constraint = CreateParallelConstraint(retainerXZPlane, punchBallSeatPlane);
-                //Snap.NX.NXObject.Wrap(constraint.Tag).Layer = 254;
-                throw new NotImplementedException();
+                punch.__ReferenceSet("MATE");
+                retainer.__ReferenceSet("MATE");
+                NXOpen.DatumPlane retainerXZPlane = (NXOpen.DatumPlane)retainer.__Members().Single(o => o.Name == "XZPLANE");
+                NXOpen.DatumPlane punchBallSeatPlane = (NXOpen.DatumPlane)punch.__Members().Single(o => o.Name == "BALL_SEAT_ANGLE");
+                NXOpen.Positioning.DisplayedConstraint constraint = CreateParallelConstraint(retainerXZPlane, punchBallSeatPlane);
+                constraint.__Layer(254);
             }
 
             public static void ConstrainFixPunch(Component punch)
             {
-                //NXOpen.Positioning.DisplayedConstraint constraint = CreateFixedConstraint(punch);
-                //Snap.NX.NXObject.Wrap(constraint.Tag).Layer = 254;
+                NXOpen.Positioning.DisplayedConstraint constraint = CreateFixedConstraint(punch);
+                constraint.__Layer(254);
             }
 
             public static DisplayedConstraint CreateFixedConstraint(Component component)
@@ -1288,8 +1351,8 @@ namespace TSG_Library.UFuncs
         [Obsolete(nameof(NotImplementedException))]
         public static DatumAxis GetZAxisOccurence(Component snapButton)
         {
-            //NXOpen.CoordinateSystem tempCsys = snapButton._Members().OfType<NXOpen.CoordinateSystem>().Single();
-            //IEnumerable<NXOpen.DatumAxis> DatumAxis = snapButton._Members()
+            //NXOpen.CoordinateSystem tempCsys = snapButton.__Members().OfType<NXOpen.CoordinateSystem>().Single();
+            //IEnumerable<NXOpen.DatumAxis> DatumAxis = snapButton.__Members()
             //    .OfType<NXOpen.DatumAxis>();
             //foreach (NXOpen.DatumAxis axis in DatumAxis)
             //    if (((NXOpen.Assemblies.Component)(tempCsys.Tag)).orientation.z_vec._IsEqualTo(axis.Direction))
@@ -1301,8 +1364,8 @@ namespace TSG_Library.UFuncs
         [Obsolete(nameof(NotImplementedException))]
         public static DatumPlane GetYZPlaneOccurence(Component snapButton)
         {
-            //NXOpen.CoordinateSystem tempCsys = snapButton._Members().OfType<NXOpen.CoordinateSystem>().Single();
-            //IEnumerable<NXOpen.DatumPlane> planes = snapButton._Members()
+            //NXOpen.CoordinateSystem tempCsys = snapButton.__Members().OfType<NXOpen.CoordinateSystem>().Single();
+            //IEnumerable<NXOpen.DatumPlane> planes = snapButton.__Members()
             //    .OfType<NXOpen.DatumPlane>();
             //foreach (NXOpen.DatumPlane plane in planes)
             //    if (((NXOpen.Assemblies.Component)(tempCsys.Tag)).orientation.z_vec._IsEqualTo(plane.Normal))
@@ -1335,24 +1398,27 @@ namespace TSG_Library.UFuncs
             return integer.ToString();
         }
 
-        //public static NXOpen.Part _Prototype( NXOpen.Assemblies.Component component) => component.Prototype as NXOpen.Part ?? throw new Exception();
+        public static NXOpen.Part _Prototype(NXOpen.Assemblies.Component component) => component.Prototype as NXOpen.Part ?? throw new Exception();
 
-        //internal static NXOpen.DatumAxis GetZAxisOccurenceOfRetainer(NXOpen.Assemblies.Component retainer)
-        //{
-        //    string retainerRefset = retainer.ReferenceSet;
+        [Obsolete]
+        internal static NXOpen.DatumAxis GetZAxisOccurenceOfRetainer(NXOpen.Assemblies.Component retainer)
+        {
+            //string retainerRefset = retainer.ReferenceSet;
 
-        //    print_(retainer.__Prototype().GetAllReferenceSets().Single(set => set.Name == retainerRefset).AskMembersInReferenceSet()
-        //        .OfType<NXOpen.CoordinateSystem>().Count());
+            //print_(retainer.__Prototype().GetAllReferenceSets().Single(set => set.Name == retainerRefset).AskMembersInReferenceSet()
+            //    .OfType<NXOpen.CoordinateSystem>().Count());
 
-        //    Snap.NX.CoordinateSystem tempCsys = retainer._Members().Select(obj => (Snap.NX.NXObject)obj).OfType<Snap.NX.CoordinateSystem>().Single();
-        //    IEnumerable<NXOpen.DatumAxis> k = retainer._Members()
-        //        .OfType<NXOpen.DatumAxis>();
-        //    foreach (NXOpen.DatumAxis axis in k)
-        //        if (new NXOpen.Vector3d(axis.Direction.X, axis.Direction.Y, axis.Direction.Z)._IsEqualTo(tempCsys.AxisZ))
-        //            return axis;
+            //Snap.NX.CoordinateSystem tempCsys = retainer.__Members().Select(obj => (Snap.NX.NXObject)obj).OfType<Snap.NX.CoordinateSystem>().Single();
+            //IEnumerable<NXOpen.DatumAxis> k = retainer.__Members()
+            //    .OfType<NXOpen.DatumAxis>();
+            //foreach (NXOpen.DatumAxis axis in k)
+            //    if (new NXOpen.Vector3d(axis.Direction.X, axis.Direction.Y, axis.Direction.Z).__IsEqualTo(tempCsys.AxisZ))
+            //        return axis;
 
-        //    throw new ArgumentException("End Exception");
-        //}
+            //throw new ArgumentException("End Exception");
+
+            throw new NotImplementedException();
+        }
 
         #endregion
     }

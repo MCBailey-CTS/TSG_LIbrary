@@ -12,7 +12,7 @@ using static TSG_Library.Extensions.Extensions;
 
 namespace TSG_Library.UFuncs
 {
-    public partial class TapAndReam : Form
+    public partial class TapAndReam : _UFuncForm
     {
         // ReSharper disable once InconsistentNaming
         private static NXOpen.Part workPart = session_.Parts.Work;
@@ -737,6 +737,18 @@ namespace TSG_Library.UFuncs
         private static void UpdateOriginalParts()
         {
             originalWorkPart = session_.Parts.Work;
+        }
+
+        private void TapAndReam_Load(object sender, EventArgs e)
+        {
+            Text = AssemblyFileVersion;
+            Location = Properties.Settings.Default.tap_and_ream_location;
+        }
+
+        private void TapAndReam_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Properties.Settings.Default.tap_and_ream_location = Location;
+            Properties.Settings.Default.Save();
         }
     }
 }
