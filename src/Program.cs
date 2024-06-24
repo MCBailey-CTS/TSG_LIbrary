@@ -16,7 +16,8 @@ public static class Program
     {
         try
         {
-          
+            Testing.Mirror();
+            return;
 #pragma warning disable CS0162 // Unreachable code detected
             if (args.Length == 0)
             {
@@ -35,7 +36,7 @@ public static class Program
 
     public static int GetUnloadOption()
     {
-        return (int)Session.LibraryUnloadOption.Explicitly;
+        return (int)Session.LibraryUnloadOption.Immediately;
     }
 
     public static void UnloadLibrary()

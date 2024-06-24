@@ -71,6 +71,42 @@ namespace TSG_Library.Extensions
             return __work_part_.Curves.CreateLine(p0, p1);
         }
 
+        //
+        // Summary:
+        //     Copies an NX.Line object (with a null transform)
+        //
+        // Returns:
+        //     A copy of the input line
+        //
+        // Remarks:
+        //     The new line will be on the same layer as the original one.
+        [Obsolete]
+        public static Line Copy(this Line line)
+        {
+            Transform xform = Transform.CreateTranslation(0.0, 0.0, 0.0);
+            return line.Copy(xform);
+        }
+
+        //
+        // Summary:
+        //     Transforms/copies an NX.Arc
+        //
+        // Parameters:
+        //   xform:
+        //     Transform to be applied
+        //
+        // Returns:
+        //     A transformed copy of NX.Arc
+        [Obsolete]
+        public static Line Copy(this Line line, Transform xform)
+        {
+            var curve = (NXOpen.Curve)line;
+            return (Line)curve.Copy(xform);
+        }
+
+        // public static void __TryMatch(this TSG_Library.Geom.Curve.Arc)
+
+
         #endregion
     }
 }

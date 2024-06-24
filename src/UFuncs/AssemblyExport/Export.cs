@@ -16,7 +16,7 @@ using static TSG_Library.Extensions.Extensions;
 
 namespace TSG_Library.Utilities
 {
-    public class Export
+    public class Export1
     {
         private const string ExportImportExe =
             @"U:\NX110\Concept\NX110library\Ufunc\ExportImportData\ExportImportData.exe";

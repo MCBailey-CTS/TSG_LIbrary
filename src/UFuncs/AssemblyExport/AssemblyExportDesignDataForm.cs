@@ -107,7 +107,7 @@ namespace TSG_Library.UFuncs
 
             components.Add(__display_part_.ComponentAssembly.RootComponent);
 
-            Export.Design(
+            Export1.Design(
                 __display_part_,
                 components.ToArray(),
                 null,
@@ -154,7 +154,7 @@ namespace TSG_Library.UFuncs
             if (components.Length == 0)
                 return;
 
-            Export.Design(
+            Export1.Design(
                 __display_part_,
                 components,
                 txtFolderName.Text,

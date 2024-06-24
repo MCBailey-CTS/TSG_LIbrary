@@ -67,10 +67,10 @@ namespace TSG_Library.UFuncs
             toolTip1.SetToolTip(buttonPurple, CtsComponentColor.Purple.ToString());
             toolTip1.SetToolTip(buttonDarkDullBlue, CtsComponentColor.DarkDullBlue.ToString());
 
-            string getName = FilePathUcf.PerformStreamReaderString( ":DETAIL_TYPE_ATTRIBUTE_NAME:",
+            string getName = FilePathUcf.PerformStreamReaderString(":DETAIL_TYPE_ATTRIBUTE_NAME:",
                 ":END_DETAIL_TYPE_ATTRIBUTE_NAME:");
 
-            string getMaterial = FilePathUcf.PerformStreamReaderString( ":MATERIAL_ATTRIBUTE_NAME:",
+            string getMaterial = FilePathUcf.PerformStreamReaderString(":MATERIAL_ATTRIBUTE_NAME:",
                 ":END_MATERIAL_ATTRIBUTE_NAME:");
 
             _compNames = FilePathUcf.PerformStreamReaderList(":COMPONENT_NAMES:", ":END_COMPONENT_NAMES:");
@@ -85,7 +85,7 @@ namespace TSG_Library.UFuncs
                 cMaterial.AttrName = getMaterial != string.Empty ? getMaterial : "MATERIAL";
 
             _compTolerances =
-                FilePathUcf.PerformStreamReaderList( ":COMPONENT_TOLERANCES:", ":END_COMPONENT_TOLERANCES:");
+                FilePathUcf.PerformStreamReaderList(":COMPONENT_TOLERANCES:", ":END_COMPONENT_TOLERANCES:");
 
             foreach (CtsAttributes cTolerance in _compTolerances)
                 cTolerance.AttrName = "TOLERANCE";
@@ -1241,9 +1241,9 @@ namespace TSG_Library.UFuncs
                 ufsession_.Disp.RegenerateDisplay();
 
                 if (units != assmUnits)
-                    session_.Parts.SetDisplay(_originalDisplayPart, false, false, out PartLoadStatus partLoadStatus2);
+                    __display_part_ = _originalDisplayPart;
 
-                session_.Parts.SetWork(_originalWorkPart);
+                __work_part_ = _originalWorkPart;
                 UI.GetUI().NXMessageBox.Show("Caught exception", NXMessageBox.DialogType.Error, ex.Message);
                 UpdateSessionParts();
                 UpdateOriginalParts();
@@ -1786,7 +1786,7 @@ namespace TSG_Library.UFuncs
                         .Where(delFeature => delFeature.Name == "DYNAMIC BLOCK").Cast<NXObject>().ToList();
                     delObjects.AddRange(_workPart.Lines.Cast<Line>().Where(nLine => nLine.Name != string.Empty));
                     delObjects.AddRange(_workPart.Points.Cast<Point>().Where(nPoint => nPoint.Name != string.Empty));
-                    if (delObjects.Count > 0) 
+                    if (delObjects.Count > 0)
                         session_.__DeleteObjects(delObjects.ToArray());
                 }
             }
@@ -2196,7 +2196,7 @@ namespace TSG_Library.UFuncs
                     delObjects.AddRange(_workPart.Lines.Cast<Line>().Where(nLine => nLine.Name != string.Empty));
                     delObjects.AddRange(_workPart.Points.Cast<Point>().Where(nPoint => nPoint.Name != string.Empty));
                     if (delObjects.Count > 0)
-                    session_.__DeleteObjects(delObjects.ToArray());
+                        session_.__DeleteObjects(delObjects.ToArray());
                 }
             }
             catch (Exception ex)
@@ -3147,10 +3147,10 @@ namespace TSG_Library.UFuncs
             return compSelection;
         }
 
-       
 
-       
-       
+
+
+
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -3281,7 +3281,7 @@ namespace TSG_Library.UFuncs
                 {
                     var detail = textBoxDetailNumber.Text;
 
-                    if(string.IsNullOrEmpty(detail))
+                    if (string.IsNullOrEmpty(detail))
                     {
                         print_("please type a detail number");
                         return;
@@ -3292,7 +3292,7 @@ namespace TSG_Library.UFuncs
                     builder.SelectedComponents.Add(selected);
                     selected.__Prototype().SetMakeUniqueName(new_path);
                     builder.Commit();
-                    parent.GetChildren().Where(c=>c.DisplayName.EndsWith(detail)).ToList().ForEach(c=>c.SetName(detail));
+                    parent.GetChildren().Where(c => c.DisplayName.EndsWith(detail)).ToList().ForEach(c => c.SetName(detail));
                 }
             }
             catch (Exception ex)

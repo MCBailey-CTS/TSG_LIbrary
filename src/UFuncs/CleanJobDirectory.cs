@@ -152,7 +152,7 @@ namespace TSG_Library.UFuncs
                 TheUFSession.UF.PrintSyslog($"File to be zipped: {path}.{Environment.NewLine}", false);
 
             TheUFSession.UF.PrintSyslog($"Creating zip file {zipPath}.{Environment.NewLine}", false);
-            Export.SevenZip(zipPath, true, fileCleanUpSet.ToArray());
+            Export1.SevenZip(zipPath, true, fileCleanUpSet.ToArray());
 
             foreach (string path in fileCleanUpSet)
             {

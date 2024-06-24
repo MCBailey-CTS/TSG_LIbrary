@@ -742,6 +742,17 @@ namespace TSG_Library.UFuncs
 
         #region finding expression
 
+        private static UFObj.DispProps DisplayTemporaryLine(UFObj.DispProps dispProps, UFCurve.Line lineData1)
+        {
+            ufsession_.Disp.DisplayTemporaryLine(
+                            __display_part_.Views.WorkView.Tag,
+                            UFDisp.ViewType.UseWorkView,
+                            lineData1.start_point,
+                            lineData1.end_point,
+                            ref dispProps);
+            return dispProps;
+        }
+
         private static void NewMethod27(ref bool isNamedExpression, ref Expression AddX, ref Expression AddY, ref Expression AddZ, ref Expression BurnDir, ref Expression Burnout, ref Expression Grind, ref Expression GrindTolerance, ref double xValue, ref double yValue, ref double zValue, ref string burnDirValue, ref string burnoutValue, ref string grindValue, ref string grindTolValue)
         {
             foreach (Expression exp in _workPart.Expressions.ToArray())
@@ -1975,6 +1986,177 @@ namespace TSG_Library.UFuncs
             if (burnDirValue.ToLower() == "z")
                 checkBoxBurnDirZ.Checked = true;
         }
+
+
+
+
+private static void NewMethod26(ref Expression noteExp, ref bool isExpression)
+        {
+            foreach (Expression exp in _workPart.Expressions)
+                if (exp.Name == "DiesetNote")
+                {
+                    isExpression = true;
+                    noteExp = exp;
+                }
+        }
+
+        private static void NewMethod1(Expression noteExp, bool isExpression)
+        {
+            if (isExpression)
+            {
+                noteExp.RightHandSide = "\"yes\"";
+            }
+            else
+            {
+                Expression diesetExp =
+                    _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
+            }
+        }
+
+        private static void NewMethod(Expression noteExp, bool isExpression)
+        {
+            if (isExpression)
+            {
+                noteExp.RightHandSide = "\"yes\"";
+            }
+            else
+            {
+                Expression diesetExp =
+                    _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
+            }
+        }
+
+
+
+private static void NewMethod35(ref Expression noteExp, ref bool isExpression)
+        {
+            foreach (Expression exp in _workPart.Expressions)
+                if (exp.Name == "DiesetNote")
+                {
+                    isExpression = true;
+                    noteExp = exp;
+                }
+        }
+
+        private static void NewMethod34(Expression noteExp, bool isExpression, string description)
+        {
+            if (description != "")
+            {
+                description = description.Replace(" DIESET", "");
+                _workPart.__SetAttribute("DESCRIPTION", description);
+
+                if (isExpression)
+                {
+                    noteExp.RightHandSide = "\"no\"";
+                }
+                else
+                {
+                    Expression diesetExp =
+                        _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
+                }
+            }
+            else
+            {
+                if (isExpression)
+                {
+                    noteExp.RightHandSide = "\"no\"";
+                }
+                else
+                {
+                    Expression diesetExp =
+                        _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
+                }
+            }
+        }
+
+
+private static void NewMethod51(ref Expression noteExp, ref bool isExpression)
+        {
+            foreach (Expression exp in _workPart.Expressions)
+                if (exp.Name == "WeldmentNote")
+                {
+                    isExpression = true;
+                    noteExp = exp;
+                }
+        }
+
+        private static void NewMethod36(Expression noteExp, bool isExpression, string description)
+        {
+            if (description != "")
+            {
+                if (!description.ToLower().Contains("weldment"))
+                {
+                    description += " WELDMENT";
+                    _workPart.__SetAttribute("DESCRIPTION", description);
+                }
+
+                if (isExpression)
+                {
+                    noteExp.RightHandSide = "\"yes\"";
+                }
+                else
+                {
+                    Expression weldmentExp =
+                        _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"yes\"");
+                }
+            }
+            else
+            {
+                if (isExpression)
+                {
+                    noteExp.RightHandSide = "\"yes\"";
+                }
+                else
+                {
+                    Expression weldmentExp =
+                        _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"yes\"");
+                }
+            }
+        }
+
+
+
+        private static void NewMethod37(Expression noteExp, bool isExpression, string description)
+        {
+            if (description != "")
+            {
+                description = description.Replace(" WELDMENT", "");
+                _workPart.__SetAttribute("DESCRIPTION", description);
+
+                if (isExpression)
+                {
+                    noteExp.RightHandSide = "\"no\"";
+                }
+                else
+                {
+                    Expression weldmentExp =
+                        _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"no\"");
+                }
+            }
+            else
+            {
+                if (isExpression)
+                {
+                    noteExp.RightHandSide = "\"no\"";
+                }
+                else
+                {
+                    Expression weldmentExp =
+                        _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"no\"");
+                }
+            }
+        }
+
+        private static void NewMethod2(ref Expression noteExp, ref bool isExpression)
+        {
+            foreach (Expression exp in _workPart.Expressions)
+                if (exp.Name == "WeldmentNote")
+                {
+                    isExpression = true;
+                    noteExp = exp;
+                }
+        }
+
 
 
     }

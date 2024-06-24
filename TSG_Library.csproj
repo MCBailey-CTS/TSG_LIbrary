@@ -339,9 +339,7 @@
       <DependentUpon>EditSizeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="src\UFuncs\ConvertSplineToCircle.cs" />
-    <Compile Include="src\UFuncs\CopyAttributesForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="src\UFuncs\CopyAttributesForm.cs" />
     <Compile Include="src\UFuncs\CopyAttributesForm.Designer.cs">
       <DependentUpon>CopyAttributesForm.cs</DependentUpon>
     </Compile>
@@ -503,6 +501,7 @@
     <Compile Include="src\UFuncs\Mirror\Rules\MirrorFaceDumbRule.cs" />
     <Compile Include="src\UFuncs\Mirror\Rules\MirrorFaceTangentRule.cs" />
     <Compile Include="src\UFuncs\Mirror\Testing.cs" />
+    <Compile Include="src\UFuncs\MyAttribute.cs" />
     <Compile Include="src\UFuncs\NitroTravels.cs" />
     <Compile Include="src\UFuncs\Nx7zip\Nx7ZipCompression.cs" />
     <Compile Include="src\UFuncs\Nx7zip\Nx7zipForm.cs">

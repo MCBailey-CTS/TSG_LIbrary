@@ -159,7 +159,7 @@ namespace TSG_Library.UFuncs
                                     || displayName.ToLower().Contains("refdata")
                                     || displayName.ToLower().Contains("master"))
                                )
-                                Export.Stp(comp.__Prototype().FullPath, $"{exportFileNoExtension}.stp",
+                                Export1.Stp(comp.__Prototype().FullPath, $"{exportFileNoExtension}.stp",
                                     "U:\\nxFiles\\Step Translator\\214ug.def");
                         }
                         catch (Exception ex)
@@ -183,7 +183,7 @@ namespace TSG_Library.UFuncs
 
                 try
                 {
-                    Export.SevenZip(zipFile, true, filesToZip);
+                    Export1.SevenZip(zipFile, true, filesToZip);
 
                     filesToZip.ToList().ForEach(File.Delete);
 
