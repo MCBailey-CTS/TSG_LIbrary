@@ -79,7 +79,7 @@ namespace TSG_Library.UFuncs
 
         public string ufunc_name { get; set; }
 
-        public string ufunc_rev_name => $"{Extensions.Extensions.AssemblyFileVersion} -  {ufunc_name}";
+        public string ufunc_rev_name => $"{Extensions.Extensions.AssemblyFileVersion} - {ufunc_name}";
 
         public abstract void execute();
         //public const string ufunc_ = "";

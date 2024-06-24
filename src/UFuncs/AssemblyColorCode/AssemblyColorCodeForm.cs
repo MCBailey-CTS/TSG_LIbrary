@@ -62,6 +62,7 @@ namespace TSG_Library.UFuncs
         }
 
         private static Selection.MaskTriple[] __triples;
+        private static string __message;
 
         private static readonly Selection.MaskTriple[] all_triples =
         {
@@ -248,8 +249,8 @@ namespace TSG_Library.UFuncs
             }
 
             UI.GetUI().SelectionManager.SelectTaggedObjects(
-                "",
-                "",
+                __message,
+                __message,
                 Selection.SelectionScope.AnyInAssembly,
                 Selection.SelectionAction.ClearAndEnableSpecific,
                 false,
@@ -268,26 +269,31 @@ namespace TSG_Library.UFuncs
             {
                 Settings.Default.AssemblyColorCodeLastUsed = (int)AssemblyColorCodeType.Face;
                 __triples = face_mask;
+                __message = "Select Faces";
             }
             else if (rdoFeature.Checked)
             {
                 Settings.Default.AssemblyColorCodeLastUsed = (int)AssemblyColorCodeType.Feature;
                 __triples = null;
+                __message = "Select Features";
             }
             else if (rdoCurves.Checked)
             {
                 Settings.Default.AssemblyColorCodeLastUsed = (int)AssemblyColorCodeType.Curve;
                 __triples = curves_mask;
+                __message = "Select Curves";
             }
             else if (rdoSolid.Checked)
             {
                 Settings.Default.AssemblyColorCodeLastUsed = (int)AssemblyColorCodeType.Solid;
                 __triples = body_mask;
+                __message = "Select Bodies";
             }
             else if (rdoNoFilter.Checked)
             {
                 Settings.Default.AssemblyColorCodeLastUsed = (int)AssemblyColorCodeType.None;
                 __triples = all_triples;
+                __message = "Select Objects";
             }
         }
 

@@ -108,9 +108,13 @@
             this.Controls.Add(this.chkCopy);
             this.Controls.Add(this.btnSelect);
             this.Controls.Add(this.grpType);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "ExportSimPackageForm";
             this.Text = "1919";
             this.TopMost = true;
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ExportSimPackageForm_FormClosed);
+            this.Load += new System.EventHandler(this.ExportSimPackageForm_Load);
             this.grpType.ResumeLayout(false);
             this.grpType.PerformLayout();
             this.ResumeLayout(false);

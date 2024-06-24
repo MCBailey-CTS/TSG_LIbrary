@@ -28,8 +28,10 @@ namespace TSG_Library.UFuncs
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            Text = AssemblyFileVersion;
             radioButtonWtnNone.Checked = true;
             radioButtonTrimDevNone.Checked = true;
+            Location = Properties.Settings.Default.wire_taper_development_form_window_location;
         }
 
         private void ButtonSelect_Click(object sender, EventArgs e)
@@ -239,6 +241,12 @@ namespace TSG_Library.UFuncs
             part.Layers.SetState(99, State.Selectable);
             part.Layers.SetState(200, State.Selectable);
             part.Layers.SetState(230, State.Selectable);
+        }
+
+        private void WireTaperDevelopmentForm_FormClosed(object sender, System.Windows.Forms.FormClosedEventArgs e)
+        {
+            Properties.Settings.Default.wire_taper_development_form_window_location = Location;
+            Properties.Settings.Default.Save();
         }
     }
 }

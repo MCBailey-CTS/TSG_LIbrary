@@ -38,7 +38,7 @@ namespace TSG_Library.UFuncs
         {
             SetFormDefaults();
             SetSessionLoadOptions();
-            Text = AssemblyFileVersion;
+            Text = $"{AssemblyFileVersion} - NX7Zip";
         }
 
         private void LabelAssmText_MouseHover(object sender, EventArgs e)

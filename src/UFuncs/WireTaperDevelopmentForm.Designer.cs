@@ -47,11 +47,9 @@
             this.groupBox1.Controls.Add(this.radioButtonRemoveWtn);
             this.groupBox1.Controls.Add(this.radioButtonAddWtn);
             this.groupBox1.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBox1.Location = new System.Drawing.Point(16, 15);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.groupBox1.Size = new System.Drawing.Size(173, 117);
+            this.groupBox1.Size = new System.Drawing.Size(130, 95);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Wire Taper Note";
@@ -60,10 +58,9 @@
             // 
             this.radioButtonWtnNone.AutoSize = true;
             this.radioButtonWtnNone.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.radioButtonWtnNone.Location = new System.Drawing.Point(8, 23);
-            this.radioButtonWtnNone.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioButtonWtnNone.Location = new System.Drawing.Point(6, 19);
             this.radioButtonWtnNone.Name = "radioButtonWtnNone";
-            this.radioButtonWtnNone.Size = new System.Drawing.Size(70, 21);
+            this.radioButtonWtnNone.Size = new System.Drawing.Size(57, 18);
             this.radioButtonWtnNone.TabIndex = 2;
             this.radioButtonWtnNone.TabStop = true;
             this.radioButtonWtnNone.Text = "None";
@@ -73,10 +70,9 @@
             // 
             this.radioButtonRemoveWtn.AutoSize = true;
             this.radioButtonRemoveWtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.radioButtonRemoveWtn.Location = new System.Drawing.Point(8, 82);
-            this.radioButtonRemoveWtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioButtonRemoveWtn.Location = new System.Drawing.Point(6, 67);
             this.radioButtonRemoveWtn.Name = "radioButtonRemoveWtn";
-            this.radioButtonRemoveWtn.Size = new System.Drawing.Size(89, 21);
+            this.radioButtonRemoveWtn.Size = new System.Drawing.Size(71, 18);
             this.radioButtonRemoveWtn.TabIndex = 1;
             this.radioButtonRemoveWtn.TabStop = true;
             this.radioButtonRemoveWtn.Text = "Remove";
@@ -86,10 +82,9 @@
             // 
             this.radioButtonAddWtn.AutoSize = true;
             this.radioButtonAddWtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.radioButtonAddWtn.Location = new System.Drawing.Point(8, 53);
-            this.radioButtonAddWtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioButtonAddWtn.Location = new System.Drawing.Point(6, 43);
             this.radioButtonAddWtn.Name = "radioButtonAddWtn";
-            this.radioButtonAddWtn.Size = new System.Drawing.Size(65, 21);
+            this.radioButtonAddWtn.Size = new System.Drawing.Size(53, 18);
             this.radioButtonAddWtn.TabIndex = 0;
             this.radioButtonAddWtn.TabStop = true;
             this.radioButtonAddWtn.Text = "Add ";
@@ -101,11 +96,9 @@
             this.groupBox2.Controls.Add(this.radioButtonRemoveWfft);
             this.groupBox2.Controls.Add(this.radioButtonAddWfft);
             this.groupBox2.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBox2.Location = new System.Drawing.Point(16, 139);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox2.Location = new System.Drawing.Point(12, 113);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.groupBox2.Size = new System.Drawing.Size(173, 117);
+            this.groupBox2.Size = new System.Drawing.Size(130, 95);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Trim Development Note";
@@ -114,10 +107,9 @@
             // 
             this.radioButtonTrimDevNone.AutoSize = true;
             this.radioButtonTrimDevNone.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.radioButtonTrimDevNone.Location = new System.Drawing.Point(8, 23);
-            this.radioButtonTrimDevNone.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioButtonTrimDevNone.Location = new System.Drawing.Point(6, 19);
             this.radioButtonTrimDevNone.Name = "radioButtonTrimDevNone";
-            this.radioButtonTrimDevNone.Size = new System.Drawing.Size(70, 21);
+            this.radioButtonTrimDevNone.Size = new System.Drawing.Size(57, 18);
             this.radioButtonTrimDevNone.TabIndex = 3;
             this.radioButtonTrimDevNone.TabStop = true;
             this.radioButtonTrimDevNone.Text = "None";
@@ -127,10 +119,9 @@
             // 
             this.radioButtonRemoveWfft.AutoSize = true;
             this.radioButtonRemoveWfft.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.radioButtonRemoveWfft.Location = new System.Drawing.Point(8, 82);
-            this.radioButtonRemoveWfft.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioButtonRemoveWfft.Location = new System.Drawing.Point(6, 67);
             this.radioButtonRemoveWfft.Name = "radioButtonRemoveWfft";
-            this.radioButtonRemoveWfft.Size = new System.Drawing.Size(89, 21);
+            this.radioButtonRemoveWfft.Size = new System.Drawing.Size(71, 18);
             this.radioButtonRemoveWfft.TabIndex = 1;
             this.radioButtonRemoveWfft.TabStop = true;
             this.radioButtonRemoveWfft.Text = "Remove";
@@ -140,10 +131,9 @@
             // 
             this.radioButtonAddWfft.AutoSize = true;
             this.radioButtonAddWfft.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.radioButtonAddWfft.Location = new System.Drawing.Point(8, 53);
-            this.radioButtonAddWfft.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioButtonAddWfft.Location = new System.Drawing.Point(6, 43);
             this.radioButtonAddWfft.Name = "radioButtonAddWfft";
-            this.radioButtonAddWfft.Size = new System.Drawing.Size(65, 21);
+            this.radioButtonAddWfft.Size = new System.Drawing.Size(53, 18);
             this.radioButtonAddWfft.TabIndex = 0;
             this.radioButtonAddWfft.TabStop = true;
             this.radioButtonAddWfft.Text = "Add ";
@@ -152,10 +142,9 @@
             // buttonSelect
             // 
             this.buttonSelect.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonSelect.Location = new System.Drawing.Point(16, 270);
-            this.buttonSelect.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonSelect.Location = new System.Drawing.Point(12, 219);
             this.buttonSelect.Name = "buttonSelect";
-            this.buttonSelect.Size = new System.Drawing.Size(173, 28);
+            this.buttonSelect.Size = new System.Drawing.Size(130, 23);
             this.buttonSelect.TabIndex = 2;
             this.buttonSelect.Text = "Select";
             this.buttonSelect.UseVisualStyleBackColor = true;
@@ -163,18 +152,20 @@
             // 
             // WireTaperDevelopmentForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(205, 310);
+            this.ClientSize = new System.Drawing.Size(154, 252);
             this.Controls.Add(this.buttonSelect);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Location = new System.Drawing.Point(30, 130);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "WireTaperDevelopmentForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "1919";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.WireTaperDevelopmentForm_FormClosed);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

@@ -66,20 +66,18 @@
             // 
             this.lblComplete.AutoSize = true;
             this.lblComplete.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblComplete.Location = new System.Drawing.Point(145, 15);
-            this.lblComplete.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblComplete.Location = new System.Drawing.Point(109, 12);
             this.lblComplete.Name = "lblComplete";
-            this.lblComplete.Size = new System.Drawing.Size(67, 17);
+            this.lblComplete.Size = new System.Drawing.Size(51, 13);
             this.lblComplete.TabIndex = 1;
             this.lblComplete.Text = "Complete";
             // 
             // rdoReview100
             // 
             this.rdoReview100.AutoSize = true;
-            this.rdoReview100.Location = new System.Drawing.Point(12, 91);
-            this.rdoReview100.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rdoReview100.Location = new System.Drawing.Point(9, 74);
             this.rdoReview100.Name = "rdoReview100";
-            this.rdoReview100.Size = new System.Drawing.Size(61, 20);
+            this.rdoReview100.Size = new System.Drawing.Size(51, 17);
             this.rdoReview100.TabIndex = 2;
             this.rdoReview100.TabStop = true;
             this.rdoReview100.Text = "100%";
@@ -89,10 +87,10 @@
             // rdoOther
             // 
             this.rdoOther.AutoSize = true;
-            this.rdoOther.Location = new System.Drawing.Point(12, 119);
-            this.rdoOther.Margin = new System.Windows.Forms.Padding(67, 4, 4, 4);
+            this.rdoOther.Location = new System.Drawing.Point(9, 97);
+            this.rdoOther.Margin = new System.Windows.Forms.Padding(50, 3, 3, 3);
             this.rdoOther.Name = "rdoOther";
-            this.rdoOther.Size = new System.Drawing.Size(60, 20);
+            this.rdoOther.Size = new System.Drawing.Size(51, 17);
             this.rdoOther.TabIndex = 4;
             this.rdoOther.TabStop = true;
             this.rdoOther.Text = "Other";
@@ -102,10 +100,9 @@
             // chkPrintDesign
             // 
             this.chkPrintDesign.AutoSize = true;
-            this.chkPrintDesign.Location = new System.Drawing.Point(201, 180);
-            this.chkPrintDesign.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkPrintDesign.Location = new System.Drawing.Point(151, 146);
             this.chkPrintDesign.Name = "chkPrintDesign";
-            this.chkPrintDesign.Size = new System.Drawing.Size(105, 20);
+            this.chkPrintDesign.Size = new System.Drawing.Size(87, 17);
             this.chkPrintDesign.TabIndex = 15;
             this.chkPrintDesign.Text = "Print 4-Views";
             this.chkPrintDesign.UseVisualStyleBackColor = true;
@@ -113,10 +110,9 @@
             // rdoRto
             // 
             this.rdoRto.AutoSize = true;
-            this.rdoRto.Location = new System.Drawing.Point(149, 34);
-            this.rdoRto.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rdoRto.Location = new System.Drawing.Point(112, 28);
             this.rdoRto.Name = "rdoRto";
-            this.rdoRto.Size = new System.Drawing.Size(95, 20);
+            this.rdoRto.Size = new System.Drawing.Size(77, 17);
             this.rdoRto.TabIndex = 3;
             this.rdoRto.TabStop = true;
             this.rdoRto.Text = "Full Design";
@@ -125,10 +121,9 @@
             // 
             // btnDesignAccept
             // 
-            this.btnDesignAccept.Location = new System.Drawing.Point(8, 180);
-            this.btnDesignAccept.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnDesignAccept.Location = new System.Drawing.Point(6, 146);
             this.btnDesignAccept.Name = "btnDesignAccept";
-            this.btnDesignAccept.Size = new System.Drawing.Size(185, 28);
+            this.btnDesignAccept.Size = new System.Drawing.Size(139, 23);
             this.btnDesignAccept.TabIndex = 18;
             this.btnDesignAccept.Text = "Execute";
             this.btnDesignAccept.UseVisualStyleBackColor = true;
@@ -137,10 +132,9 @@
             // rdoChange
             // 
             this.rdoChange.AutoSize = true;
-            this.rdoChange.Location = new System.Drawing.Point(149, 63);
-            this.rdoChange.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rdoChange.Location = new System.Drawing.Point(112, 51);
             this.rdoChange.Name = "rdoChange";
-            this.rdoChange.Size = new System.Drawing.Size(75, 20);
+            this.rdoChange.Size = new System.Drawing.Size(62, 17);
             this.rdoChange.TabIndex = 19;
             this.rdoChange.TabStop = true;
             this.rdoChange.Text = "Change";
@@ -149,19 +143,17 @@
             // 
             // txtFolderName
             // 
-            this.txtFolderName.Location = new System.Drawing.Point(8, 148);
-            this.txtFolderName.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtFolderName.Location = new System.Drawing.Point(6, 120);
             this.txtFolderName.Name = "txtFolderName";
-            this.txtFolderName.Size = new System.Drawing.Size(308, 22);
+            this.txtFolderName.Size = new System.Drawing.Size(232, 20);
             this.txtFolderName.TabIndex = 5;
             // 
             // rdoReview90
             // 
             this.rdoReview90.AutoSize = true;
-            this.rdoReview90.Location = new System.Drawing.Point(12, 63);
-            this.rdoReview90.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rdoReview90.Location = new System.Drawing.Point(9, 51);
             this.rdoReview90.Name = "rdoReview90";
-            this.rdoReview90.Size = new System.Drawing.Size(54, 20);
+            this.rdoReview90.Size = new System.Drawing.Size(45, 17);
             this.rdoReview90.TabIndex = 1;
             this.rdoReview90.TabStop = true;
             this.rdoReview90.Text = "90%";
@@ -171,10 +163,10 @@
             // rdoReview50
             // 
             this.rdoReview50.AutoSize = true;
-            this.rdoReview50.Location = new System.Drawing.Point(12, 34);
-            this.rdoReview50.Margin = new System.Windows.Forms.Padding(13, 4, 4, 4);
+            this.rdoReview50.Location = new System.Drawing.Point(9, 28);
+            this.rdoReview50.Margin = new System.Windows.Forms.Padding(10, 3, 3, 3);
             this.rdoReview50.Name = "rdoReview50";
-            this.rdoReview50.Size = new System.Drawing.Size(54, 20);
+            this.rdoReview50.Size = new System.Drawing.Size(45, 17);
             this.rdoReview50.TabIndex = 0;
             this.rdoReview50.TabStop = true;
             this.rdoReview50.Text = "50%";
@@ -185,10 +177,9 @@
             // 
             this.lblReview.AutoSize = true;
             this.lblReview.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblReview.Location = new System.Drawing.Point(8, 15);
-            this.lblReview.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblReview.Location = new System.Drawing.Point(6, 12);
             this.lblReview.Name = "lblReview";
-            this.lblReview.Size = new System.Drawing.Size(60, 17);
+            this.lblReview.Size = new System.Drawing.Size(48, 13);
             this.lblReview.TabIndex = 0;
             this.lblReview.Text = "Reviews";
             // 
@@ -196,11 +187,9 @@
             // 
             this.grpExportData.AutoSize = true;
             this.grpExportData.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.grpExportData.Location = new System.Drawing.Point(953, 100);
-            this.grpExportData.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.grpExportData.Location = new System.Drawing.Point(715, 81);
             this.grpExportData.Name = "grpExportData";
-            this.grpExportData.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.grpExportData.Size = new System.Drawing.Size(8, 7);
+            this.grpExportData.Size = new System.Drawing.Size(6, 5);
             this.grpExportData.TabIndex = 13;
             this.grpExportData.TabStop = false;
             this.grpExportData.Text = "Export Data";
@@ -216,11 +205,9 @@
             this.grpExportType.Controls.Add(this.chk4ViewPDF);
             this.grpExportType.Controls.Add(this.chkSee3DData);
             this.grpExportType.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.grpExportType.Location = new System.Drawing.Point(8, 7);
-            this.grpExportType.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.grpExportType.Location = new System.Drawing.Point(6, 6);
             this.grpExportType.Name = "grpExportType";
-            this.grpExportType.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.grpExportType.Size = new System.Drawing.Size(196, 258);
+            this.grpExportType.Size = new System.Drawing.Size(147, 210);
             this.grpExportType.TabIndex = 10;
             this.grpExportType.TabStop = false;
             this.grpExportType.Text = "Type";
@@ -229,10 +216,9 @@
             // 
             this.chkDetailStep.AutoSize = true;
             this.chkDetailStep.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.chkDetailStep.Location = new System.Drawing.Point(8, 226);
-            this.chkDetailStep.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkDetailStep.Location = new System.Drawing.Point(6, 184);
             this.chkDetailStep.Name = "chkDetailStep";
-            this.chkDetailStep.Size = new System.Drawing.Size(104, 21);
+            this.chkDetailStep.Size = new System.Drawing.Size(84, 18);
             this.chkDetailStep.TabIndex = 17;
             this.chkDetailStep.Text = "Details .stp";
             this.chkDetailStep.UseVisualStyleBackColor = true;
@@ -241,10 +227,9 @@
             // 
             this.chkPrintData.AutoSize = true;
             this.chkPrintData.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.chkPrintData.Location = new System.Drawing.Point(8, 197);
-            this.chkPrintData.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkPrintData.Location = new System.Drawing.Point(6, 160);
             this.chkPrintData.Name = "chkPrintData";
-            this.chkPrintData.Size = new System.Drawing.Size(107, 21);
+            this.chkPrintData.Size = new System.Drawing.Size(88, 18);
             this.chkPrintData.TabIndex = 7;
             this.chkPrintData.Text = "Print 4-View";
             this.chkPrintData.UseVisualStyleBackColor = true;
@@ -252,10 +237,9 @@
             // chkBurnout
             // 
             this.chkBurnout.AutoSize = true;
-            this.chkBurnout.Location = new System.Drawing.Point(8, 52);
-            this.chkBurnout.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkBurnout.Location = new System.Drawing.Point(6, 42);
             this.chkBurnout.Name = "chkBurnout";
-            this.chkBurnout.Size = new System.Drawing.Size(112, 20);
+            this.chkBurnout.Size = new System.Drawing.Size(94, 17);
             this.chkBurnout.TabIndex = 11;
             this.chkBurnout.Text = "Burnouts .dwg";
             this.chkBurnout.UseVisualStyleBackColor = true;
@@ -263,10 +247,9 @@
             // chkParasolids
             // 
             this.chkParasolids.AutoSize = true;
-            this.chkParasolids.Location = new System.Drawing.Point(8, 140);
-            this.chkParasolids.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkParasolids.Location = new System.Drawing.Point(6, 114);
             this.chkParasolids.Name = "chkParasolids";
-            this.chkParasolids.Size = new System.Drawing.Size(116, 20);
+            this.chkParasolids.Size = new System.Drawing.Size(94, 17);
             this.chkParasolids.TabIndex = 16;
             this.chkParasolids.Text = "Parasolids .x_t";
             this.chkParasolids.UseVisualStyleBackColor = true;
@@ -274,10 +257,9 @@
             // chk4ViewDwg
             // 
             this.chk4ViewDwg.AutoSize = true;
-            this.chk4ViewDwg.Location = new System.Drawing.Point(8, 169);
-            this.chk4ViewDwg.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chk4ViewDwg.Location = new System.Drawing.Point(6, 137);
             this.chk4ViewDwg.Name = "chk4ViewDwg";
-            this.chk4ViewDwg.Size = new System.Drawing.Size(156, 20);
+            this.chk4ViewDwg.Size = new System.Drawing.Size(128, 17);
             this.chk4ViewDwg.TabIndex = 12;
             this.chk4ViewDwg.Text = "4-View .dwg (Legacy)";
             this.chk4ViewDwg.UseVisualStyleBackColor = true;
@@ -285,10 +267,9 @@
             // chkCastings
             // 
             this.chkCastings.AutoSize = true;
-            this.chkCastings.Location = new System.Drawing.Point(8, 82);
-            this.chkCastings.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkCastings.Location = new System.Drawing.Point(6, 67);
             this.chkCastings.Name = "chkCastings";
-            this.chkCastings.Size = new System.Drawing.Size(103, 20);
+            this.chkCastings.Size = new System.Drawing.Size(86, 17);
             this.chkCastings.TabIndex = 13;
             this.chkCastings.Text = "Castings .x_t";
             this.chkCastings.UseVisualStyleBackColor = true;
@@ -296,10 +277,9 @@
             // chk4ViewPDF
             // 
             this.chk4ViewPDF.AutoSize = true;
-            this.chk4ViewPDF.Location = new System.Drawing.Point(8, 23);
-            this.chk4ViewPDF.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chk4ViewPDF.Location = new System.Drawing.Point(6, 19);
             this.chk4ViewPDF.Name = "chk4ViewPDF";
-            this.chk4ViewPDF.Size = new System.Drawing.Size(94, 20);
+            this.chk4ViewPDF.Size = new System.Drawing.Size(79, 17);
             this.chk4ViewPDF.TabIndex = 15;
             this.chk4ViewPDF.Text = "4-View .pdf";
             this.chk4ViewPDF.UseVisualStyleBackColor = true;
@@ -307,10 +287,9 @@
             // chkSee3DData
             // 
             this.chkSee3DData.AutoSize = true;
-            this.chkSee3DData.Location = new System.Drawing.Point(8, 112);
-            this.chkSee3DData.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkSee3DData.Location = new System.Drawing.Point(6, 91);
             this.chkSee3DData.Name = "chkSee3DData";
-            this.chkSee3DData.Size = new System.Drawing.Size(130, 20);
+            this.chkSee3DData.Size = new System.Drawing.Size(108, 17);
             this.chkSee3DData.TabIndex = 14;
             this.chkSee3DData.Text = "See 3D Data .stp";
             this.chkSee3DData.UseVisualStyleBackColor = true;
@@ -320,11 +299,9 @@
             this.groupBox2.Controls.Add(this.btnSelectAll);
             this.groupBox2.Controls.Add(this.btnSelectComponents);
             this.groupBox2.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBox2.Location = new System.Drawing.Point(8, 273);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox2.Location = new System.Drawing.Point(6, 222);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.groupBox2.Size = new System.Drawing.Size(199, 113);
+            this.groupBox2.Size = new System.Drawing.Size(149, 92);
             this.groupBox2.TabIndex = 11;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Selection";
@@ -332,10 +309,9 @@
             // btnSelectAll
             // 
             this.btnSelectAll.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.btnSelectAll.Location = new System.Drawing.Point(8, 64);
-            this.btnSelectAll.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnSelectAll.Location = new System.Drawing.Point(6, 52);
             this.btnSelectAll.Name = "btnSelectAll";
-            this.btnSelectAll.Size = new System.Drawing.Size(183, 33);
+            this.btnSelectAll.Size = new System.Drawing.Size(137, 27);
             this.btnSelectAll.TabIndex = 0;
             this.btnSelectAll.Text = "Select All";
             this.btnSelectAll.UseVisualStyleBackColor = true;
@@ -346,10 +322,9 @@
             this.btnSelectComponents.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnSelectComponents.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnSelectComponents.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.btnSelectComponents.Location = new System.Drawing.Point(8, 23);
-            this.btnSelectComponents.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnSelectComponents.Location = new System.Drawing.Point(6, 19);
             this.btnSelectComponents.Name = "btnSelectComponents";
-            this.btnSelectComponents.Size = new System.Drawing.Size(183, 33);
+            this.btnSelectComponents.Size = new System.Drawing.Size(137, 27);
             this.btnSelectComponents.TabIndex = 1;
             this.btnSelectComponents.Text = "Select Components";
             this.btnSelectComponents.UseVisualStyleBackColor = false;
@@ -361,10 +336,9 @@
             this.tabControl.Controls.Add(this.tabData);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.Location = new System.Drawing.Point(0, 0);
-            this.tabControl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(339, 251);
+            this.tabControl.Size = new System.Drawing.Size(254, 204);
             this.tabControl.TabIndex = 21;
             this.tabControl.Selected += new System.Windows.Forms.TabControlEventHandler(this.TabControl_Selected);
             // 
@@ -381,11 +355,10 @@
             this.tabDesign.Controls.Add(this.rdoRto);
             this.tabDesign.Controls.Add(this.rdoChange);
             this.tabDesign.Controls.Add(this.btnDesignAccept);
-            this.tabDesign.Location = new System.Drawing.Point(4, 25);
-            this.tabDesign.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabDesign.Location = new System.Drawing.Point(4, 22);
             this.tabDesign.Name = "tabDesign";
-            this.tabDesign.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.tabDesign.Size = new System.Drawing.Size(331, 222);
+            this.tabDesign.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabDesign.Size = new System.Drawing.Size(246, 178);
             this.tabDesign.TabIndex = 0;
             this.tabDesign.Text = "Design";
             this.tabDesign.UseVisualStyleBackColor = true;
@@ -394,23 +367,23 @@
             // 
             this.tabData.Controls.Add(this.grpExportType);
             this.tabData.Controls.Add(this.groupBox2);
-            this.tabData.Location = new System.Drawing.Point(4, 25);
-            this.tabData.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabData.Location = new System.Drawing.Point(4, 22);
             this.tabData.Name = "tabData";
-            this.tabData.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.tabData.Size = new System.Drawing.Size(331, 222);
+            this.tabData.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabData.Size = new System.Drawing.Size(246, 178);
             this.tabData.TabIndex = 1;
             this.tabData.Text = "Data";
             this.tabData.UseVisualStyleBackColor = true;
             // 
             // AssemblyExportDesignDataForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(339, 251);
+            this.ClientSize = new System.Drawing.Size(254, 204);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.grpExportData);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "AssemblyExportDesignDataForm";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "1919";

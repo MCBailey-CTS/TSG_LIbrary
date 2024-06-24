@@ -541,6 +541,18 @@ namespace TSG_Library.UFuncs
             print_("");
             print_("==================================================================================");
         }
+
+        private void CreateBurnoutForm_Load(object sender, EventArgs e)
+        {
+            Text = $"{AssemblyFileVersion} - Create Burnout";
+            Location = Properties.Settings.Default.create_burnout_form_window_location;
+        }
+
+        private void CreateBurnoutForm_FormClosed(object sender, System.Windows.Forms.FormClosedEventArgs e)
+        {
+            Properties.Settings.Default.create_burnout_form_window_location = Location;
+            Properties.Settings.Default.Save();
+        }
     }
 }
 // 546

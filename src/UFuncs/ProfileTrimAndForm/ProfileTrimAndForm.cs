@@ -30,7 +30,7 @@ namespace TSG_Library.UFuncs
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            Text = AssemblyFileVersion;
+            Text = $"{AssemblyFileVersion} - ProfileTrimAndForm";
             grpForm.Enabled = true;
             new[] { rdoForm, rdoUpper, rdoInner, rdoAllCurves, rdoTrim }.ToList()
                 .ForEach(button => button.Checked = true);

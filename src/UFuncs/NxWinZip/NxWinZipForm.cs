@@ -39,7 +39,7 @@ namespace TSG_Library.UFuncs
         {
             SetFormDefaults();
             SetSessionLoadOptions();
-            Text = AssemblyFileVersion;
+            Text = $"{AssemblyFileVersion} - NXWinZip";
         }
 
 

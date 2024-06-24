@@ -161,36 +161,34 @@ namespace TSG_Library.UFuncs
                 TheUFSession.Disp.SetHighlight(objs, 0);
 
             // build export/dxf/component name
-
             // Add Current Date
             string currentDate = DateTime.Today.ToString("yyyy-MM-dd");
 
+            if (selObjects.Length <= 0) 
+                return;
 
-            if (selObjects.Length <= 0) return;
             try
             {
                 if (textBoxJobNumber.Text != string.Empty)
                     nameBuilder = textBoxJobNumber.Text;
+
                 if (comboBoxVersion.Text != string.Empty)
-                    nameBuilder += "-" + comboBoxVersion.Text;
+                    nameBuilder += $"-{comboBoxVersion.Text}";
+
                 if (comboBoxOperation.Text != string.Empty)
                 {
-                    // ReSharper disable once ConvertIfStatementToSwitchStatement
                     if (comboBoxOperation.Text == "Hot")
-                        nameBuilder += "-Hot-Blank-" + currentDate;
+                        nameBuilder += $"-Hot-Blank-{currentDate}";
+
                     if (comboBoxOperation.Text == "Cold")
-                        nameBuilder += "-Cold-Blank-" + currentDate;
+                        nameBuilder += $"-Cold-Blank-{currentDate}";
                 }
 
                 if (textBoxCustomText.Text != string.Empty)
-                    nameBuilder += "-" + textBoxCustomText.Text;
-
+                    nameBuilder += $"-{textBoxCustomText.Text}";
 
                 // export temp part for dxf file
-
-                string tempPart = tempDir + "\\" + nameBuilder;
-
-
+                string tempPart = $"{tempDir}\\{nameBuilder}";
                 bool doesExist = false;
 
 
@@ -211,16 +209,14 @@ namespace TSG_Library.UFuncs
                 if (!(displayPart.ComponentAssembly.RootComponent is null))
                     foreach (Component simComp in displayPart.ComponentAssembly.RootComponent.GetChildren())
                     {
-                        if (simComp.Name != nameBuilder.ToUpper()) continue;
+                        if (simComp.Name != nameBuilder.ToUpper()) 
+                            continue;
+
                         Part closeSimPart = (Part)simComp.Prototype;
                         closeSimPart.Close(BasePart.CloseWholeTree.False, BasePart.CloseModified.CloseModified, null);
-
                         Session.UndoMarkId markId1 = session_.SetUndoMark(Session.MarkVisibility.Invisible, "");
-
                         NXObject[] objects1 = { simComp };
-
                         session_.UpdateManager.AddObjectsToDeleteList(objects1);
-
                         session_.UpdateManager.DoUpdate(markId1);
                     }
 
@@ -456,7 +452,8 @@ namespace TSG_Library.UFuncs
 
         private void BlankDataBuilderForm_Load(object sender, EventArgs e)
         {
-            Location = Settings.Default.blank_data_builder_window_location;
+            Text = $"{AssemblyFileVersion} - BlankDataBuilder";
+            Location = Settings.Default.blank_data_builder_form_window_location;
         }
 
         private void BlankDataBuilderForm_FormClosed(object sender, FormClosedEventArgs e)

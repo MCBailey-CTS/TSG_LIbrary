@@ -27,6 +27,9 @@ namespace TSG_Library.UFuncs
             session_.SetUndoMark(Session.MarkVisibility.Visible, "Develop Curve");
             Curve[] lengthObjs = Selection.SelectCurves(message, message);
 
+            if (lengthObjs.Length == 0)
+                return;
+
             // get total length of selected lines
             double addLength = lengthObjs.Select(selTag => (Curve)session_.__GetTaggedObject(selTag.Tag))
                 .Select(selCurve => selCurve.GetLength())

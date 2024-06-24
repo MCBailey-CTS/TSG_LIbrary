@@ -28,8 +28,16 @@ namespace TSG_Library.UFuncs
                     Part originalWorkPart = __work_part_;
                     List<string> refSetName = new List<string>();
                     session_.SetUndoMark(Session.MarkVisibility.Visible, "Copy Reference Sets");
-                    List<Component> fromComponent = Selection.SelectManyComponents().ToList();
-                    List<Component> toComponents = Selection.SelectManyComponents().ToList();
+                    List<Component> fromComponent = Selection.SelectManyComponents($"{ufunc_rev_name} - from").ToList();
+
+                    if (fromComponent.Count == 0)
+                        return;
+
+                    List<Component> toComponents = Selection.SelectManyComponents($"{ufunc_rev_name} - to").ToList();
+
+                    if(toComponents.Count == 0) 
+                        return;
+
                     Tag cycleRefSet = Tag.Null;
 
                     if (fromComponent.Count == 0 || toComponents.Count == 0)

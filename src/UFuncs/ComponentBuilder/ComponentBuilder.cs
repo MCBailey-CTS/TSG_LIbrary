@@ -50,6 +50,7 @@ namespace TSG_Library.UFuncs
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            label1.Text = AssemblyFileVersion;
 
             if (_displayPart != null)
                 WorkPartChanged1(_displayPart);

@@ -19,7 +19,6 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                print_($"Launched: {ufunc_rev_name}");
                 // generate curve pts tol \/
                 double[] tolerances = { 0.005, 0.1, 1.0 }; // 0.005,, was 0.01, 0.1, 1.0
                 // create new geom tolerance \/
@@ -54,6 +53,10 @@ namespace TSG_Library.UFuncs
                 UFCurve.PtSlopeCrvatr[] pointData = new UFCurve.PtSlopeCrvatr[MaxLength];
                 GetPartUnits(tolerances, ref jumpGap, ref tolerance);
                 Tag[] curves = Selection.SelectCurves(ufunc_rev_name).Select(curve => curve.Tag).ToArray();
+
+                if (curves.Length == 0)
+                    return;
+
                 ufsession_.Disp.Refresh();
 
                 for (cc = 0; cc < curves.Length; cc++)

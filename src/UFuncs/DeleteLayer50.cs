@@ -21,7 +21,7 @@ namespace TSG_Library.UFuncs
 
             DialogResult result = MessageBox.Show(
                 "Are you sure you want to delete all bodies on layer 50-55 in the current assembly",
-                $"{AssemblyFileVersion} - Question?",
+                $"{ufunc_rev_name}",
                 MessageBoxButtons.YesNo);
 
             if (result == DialogResult.No)

@@ -49,10 +49,9 @@
             // buttonSelect
             // 
             this.buttonSelect.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonSelect.Location = new System.Drawing.Point(33, 257);
-            this.buttonSelect.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonSelect.Location = new System.Drawing.Point(25, 209);
             this.buttonSelect.Name = "buttonSelect";
-            this.buttonSelect.Size = new System.Drawing.Size(256, 28);
+            this.buttonSelect.Size = new System.Drawing.Size(192, 23);
             this.buttonSelect.TabIndex = 0;
             this.buttonSelect.Text = "Select";
             this.buttonSelect.UseVisualStyleBackColor = true;
@@ -61,10 +60,9 @@
             // buttonReset
             // 
             this.buttonReset.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonReset.Location = new System.Drawing.Point(33, 293);
-            this.buttonReset.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonReset.Location = new System.Drawing.Point(25, 238);
             this.buttonReset.Name = "buttonReset";
-            this.buttonReset.Size = new System.Drawing.Size(256, 28);
+            this.buttonReset.Size = new System.Drawing.Size(192, 23);
             this.buttonReset.TabIndex = 18;
             this.buttonReset.Text = "Reset";
             this.buttonReset.UseVisualStyleBackColor = true;
@@ -72,20 +70,18 @@
             // 
             // textBoxCustomText
             // 
-            this.textBoxCustomText.Location = new System.Drawing.Point(17, 106);
-            this.textBoxCustomText.Margin = new System.Windows.Forms.Padding(4);
+            this.textBoxCustomText.Location = new System.Drawing.Point(13, 86);
             this.textBoxCustomText.Name = "textBoxCustomText";
-            this.textBoxCustomText.Size = new System.Drawing.Size(255, 22);
+            this.textBoxCustomText.Size = new System.Drawing.Size(192, 20);
             this.textBoxCustomText.TabIndex = 21;
             this.textBoxCustomText.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // buttonSetAttribute
             // 
             this.buttonSetAttribute.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonSetAttribute.Location = new System.Drawing.Point(17, 23);
-            this.buttonSetAttribute.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonSetAttribute.Location = new System.Drawing.Point(13, 19);
             this.buttonSetAttribute.Name = "buttonSetAttribute";
-            this.buttonSetAttribute.Size = new System.Drawing.Size(256, 28);
+            this.buttonSetAttribute.Size = new System.Drawing.Size(192, 23);
             this.buttonSetAttribute.TabIndex = 23;
             this.buttonSetAttribute.Text = "Set RevisionText Attribute";
             this.buttonSetAttribute.UseVisualStyleBackColor = true;
@@ -93,20 +89,18 @@
             // 
             // textBoxRevisionLevel
             // 
-            this.textBoxRevisionLevel.Location = new System.Drawing.Point(17, 59);
-            this.textBoxRevisionLevel.Margin = new System.Windows.Forms.Padding(4);
+            this.textBoxRevisionLevel.Location = new System.Drawing.Point(13, 48);
             this.textBoxRevisionLevel.Name = "textBoxRevisionLevel";
-            this.textBoxRevisionLevel.Size = new System.Drawing.Size(255, 22);
+            this.textBoxRevisionLevel.Size = new System.Drawing.Size(192, 20);
             this.textBoxRevisionLevel.TabIndex = 24;
             // 
             // comboBoxOperation
             // 
             this.comboBoxOperation.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.comboBoxOperation.FormattingEnabled = true;
-            this.comboBoxOperation.Location = new System.Drawing.Point(105, 43);
-            this.comboBoxOperation.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxOperation.Location = new System.Drawing.Point(79, 35);
             this.comboBoxOperation.Name = "comboBoxOperation";
-            this.comboBoxOperation.Size = new System.Drawing.Size(79, 24);
+            this.comboBoxOperation.Size = new System.Drawing.Size(60, 21);
             this.comboBoxOperation.TabIndex = 4;
             this.comboBoxOperation.SelectedIndexChanged += new System.EventHandler(this.ComboBoxOperation_SelectedIndexChanged);
             // 
@@ -114,20 +108,18 @@
             // 
             this.comboBoxVersion.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.comboBoxVersion.FormattingEnabled = true;
-            this.comboBoxVersion.Location = new System.Drawing.Point(193, 43);
-            this.comboBoxVersion.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxVersion.Location = new System.Drawing.Point(145, 35);
             this.comboBoxVersion.Name = "comboBoxVersion";
-            this.comboBoxVersion.Size = new System.Drawing.Size(79, 24);
+            this.comboBoxVersion.Size = new System.Drawing.Size(60, 21);
             this.comboBoxVersion.TabIndex = 5;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.label1.Location = new System.Drawing.Point(35, 25);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(26, 20);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(40, 16);
+            this.label1.Size = new System.Drawing.Size(34, 13);
             this.label1.TabIndex = 9;
             this.label1.Text = "Job #";
             // 
@@ -135,10 +127,9 @@
             // 
             this.label3.AutoSize = true;
             this.label3.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.label3.Location = new System.Drawing.Point(111, 23);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Location = new System.Drawing.Point(83, 19);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(66, 16);
+            this.label3.Size = new System.Drawing.Size(53, 13);
             this.label3.TabIndex = 11;
             this.label3.Text = "Operation";
             // 
@@ -146,29 +137,26 @@
             // 
             this.label4.AutoSize = true;
             this.label4.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.label4.Location = new System.Drawing.Point(199, 23);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Location = new System.Drawing.Point(149, 19);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(63, 16);
+            this.label4.Size = new System.Drawing.Size(52, 13);
             this.label4.TabIndex = 12;
             this.label4.Text = "Version #";
             // 
             // textBoxJobNumber
             // 
-            this.textBoxJobNumber.Location = new System.Drawing.Point(17, 44);
-            this.textBoxJobNumber.Margin = new System.Windows.Forms.Padding(4);
+            this.textBoxJobNumber.Location = new System.Drawing.Point(13, 36);
             this.textBoxJobNumber.Name = "textBoxJobNumber";
-            this.textBoxJobNumber.Size = new System.Drawing.Size(79, 22);
+            this.textBoxJobNumber.Size = new System.Drawing.Size(60, 20);
             this.textBoxJobNumber.TabIndex = 15;
             this.textBoxJobNumber.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(71, 84);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Location = new System.Drawing.Point(53, 68);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(151, 16);
+            this.label2.Size = new System.Drawing.Size(120, 13);
             this.label2.TabIndex = 22;
             this.label2.Text = "Add Custom Description";
             // 
@@ -183,11 +171,9 @@
             this.groupBoxName.Controls.Add(this.comboBoxVersion);
             this.groupBoxName.Controls.Add(this.comboBoxOperation);
             this.groupBoxName.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBoxName.Location = new System.Drawing.Point(16, 4);
-            this.groupBoxName.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBoxName.Location = new System.Drawing.Point(12, 3);
             this.groupBoxName.Name = "groupBoxName";
-            this.groupBoxName.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBoxName.Size = new System.Drawing.Size(289, 143);
+            this.groupBoxName.Size = new System.Drawing.Size(217, 116);
             this.groupBoxName.TabIndex = 25;
             this.groupBoxName.TabStop = false;
             this.groupBoxName.Text = "Create Name";
@@ -197,27 +183,26 @@
             this.groupBoxSetRevName.Controls.Add(this.textBoxRevisionLevel);
             this.groupBoxSetRevName.Controls.Add(this.buttonSetAttribute);
             this.groupBoxSetRevName.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBoxSetRevName.Location = new System.Drawing.Point(16, 154);
-            this.groupBoxSetRevName.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBoxSetRevName.Location = new System.Drawing.Point(12, 125);
             this.groupBoxSetRevName.Name = "groupBoxSetRevName";
-            this.groupBoxSetRevName.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBoxSetRevName.Size = new System.Drawing.Size(289, 96);
+            this.groupBoxSetRevName.Size = new System.Drawing.Size(217, 78);
             this.groupBoxSetRevName.TabIndex = 26;
             this.groupBoxSetRevName.TabStop = false;
             this.groupBoxSetRevName.Text = "Revision Text";
             // 
             // BlankDataBuilderForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(321, 334);
+            this.ClientSize = new System.Drawing.Size(241, 271);
             this.Controls.Add(this.groupBoxSetRevName);
             this.Controls.Add(this.groupBoxName);
             this.Controls.Add(this.buttonReset);
             this.Controls.Add(this.buttonSelect);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Location = new System.Drawing.Point(30, 130);
-            this.Margin = new System.Windows.Forms.Padding(4);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "BlankDataBuilderForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "1919";

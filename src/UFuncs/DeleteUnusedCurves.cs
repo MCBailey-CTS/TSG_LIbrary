@@ -17,7 +17,7 @@ namespace TSG_Library.UFuncs
     {
         public override void execute()
         {
-            string message = $"{AssemblyFileVersion} - Delete Unused Curves";
+            string message = ufunc_rev_name;
 
             foreach (Curve delete in Selection.SelectCurves(message, message))
             {

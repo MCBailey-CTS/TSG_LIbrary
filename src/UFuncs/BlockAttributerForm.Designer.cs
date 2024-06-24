@@ -663,6 +663,7 @@ namespace TSG_Library.UFuncs
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Location = new System.Drawing.Point(30, 130);
             this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "BlockAttributerForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "1919";

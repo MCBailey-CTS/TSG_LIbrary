@@ -34,7 +34,7 @@ public static class Program
 
     public static int GetUnloadOption()
     {
-        return (int)Session.LibraryUnloadOption.Immediately;
+        return (int)Session.LibraryUnloadOption.Explicitly;
     }
 
     public static void UnloadLibrary()

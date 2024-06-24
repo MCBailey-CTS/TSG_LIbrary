@@ -58,7 +58,7 @@ namespace TSG_Library.UFuncs
         [Obsolete("need to change settings path from NX110-Concept, also cmove to using indivdual files")]
         private void MainForm_Load(object sender, EventArgs e)
         {
-            // todo: 
+            Text = $"{AssemblyFileVersion} - Block Attributer";
             // Set window location
             Location = Settings.Default.block_attributer_form_window_location;
             const string settingsPath = "U:\\NX110\\Concept";

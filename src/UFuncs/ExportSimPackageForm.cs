@@ -285,61 +285,16 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        //public static void SevenZip(string path, bool wait, params string[] fileNames)
-        //{
-        //    string str = Path.GetRandomFileName() + "zipData.txt";
-        //    using (FileStream fileStream = File.Open(str, FileMode.Create)) fileStream.Close();
+        private void ExportSimPackageForm_Load(object sender, EventArgs e)
+        {
+            Text = AssemblyFileVersion;
+            Location = Properties.Settings.Default.export_sim_package_form_window_location;
+        }
 
-        //    using (StreamWriter streamWriter = new StreamWriter(str))
-        //        foreach (string fileName in fileNames)
-        //            streamWriter.WriteLine(fileName);
-
-        //    SevenZip(path, wait, str);
-        //}
-
-        //public static void SevenZip(string path, bool wait, string textFileToRead)
-        //{
-        //    if (string.IsNullOrEmpty(path))
-        //        throw new ArgumentException(@"Invalid path.", nameof(path));
-
-        //    if (File.Exists(path))
-        //        throw new IOException("The specified output_path already exists.");
-
-        //    if (!File.Exists(textFileToRead))
-        //        throw new FileNotFoundException();
-
-        //    string fileToRead = "a -t7z \"" + path + "\" \"@" + textFileToRead + "\" -mx9";
-
-        //    Process process = new Process()
-        //    {
-        //        EnableRaisingEvents = false,
-        //        StartInfo =
-        //        {
-        //            FileName = "C:\\Program Files\\7-Zip\\7z",
-        //            Arguments = fileToRead
-        //        }
-        //    };
-
-        //    process.Start();
-
-        //    if (!wait)
-        //        return;
-
-        //    process.WaitForExit();
-
-        //    print_(File.Exists(path)
-        //        ? $"Successfully created \"{path}\"."
-        //        : $"Unsuccessfully created \"{path}\".");
-        //}
-
-        //public static Process CreateStpProcess(string partPath, string stpPath, string defPath) => new Process
-        //{
-        //    StartInfo = new ProcessStartInfo
-        //    {
-        //        Arguments = $"O=\"{stpPath}\" D=\"{defPath}\" \"{partPath}\"",
-        //        FileName = $"\"{Step214Ug}\"",
-        //        WindowStyle = ProcessWindowStyle.Hidden
-        //    }
-        //};
+        private void ExportSimPackageForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Properties.Settings.Default.export_sim_package_form_window_location = Location;
+            Properties.Settings.Default.Save();
+        }
     }
 }

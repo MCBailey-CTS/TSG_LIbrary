@@ -54,11 +54,9 @@
             this.grpProfile.Controls.Add(this.cmbLayer);
             this.grpProfile.Controls.Add(this.rdoForm);
             this.grpProfile.Controls.Add(this.rdoTrim);
-            this.grpProfile.Location = new System.Drawing.Point(16, 15);
-            this.grpProfile.Margin = new System.Windows.Forms.Padding(4);
+            this.grpProfile.Location = new System.Drawing.Point(12, 12);
             this.grpProfile.Name = "grpProfile";
-            this.grpProfile.Padding = new System.Windows.Forms.Padding(4);
-            this.grpProfile.Size = new System.Drawing.Size(109, 127);
+            this.grpProfile.Size = new System.Drawing.Size(82, 103);
             this.grpProfile.TabIndex = 0;
             this.grpProfile.TabStop = false;
             this.grpProfile.Text = "Profile Type";
@@ -67,19 +65,17 @@
             // 
             this.cmbLayer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbLayer.FormattingEnabled = true;
-            this.cmbLayer.Location = new System.Drawing.Point(8, 94);
-            this.cmbLayer.Margin = new System.Windows.Forms.Padding(4);
+            this.cmbLayer.Location = new System.Drawing.Point(6, 76);
             this.cmbLayer.Name = "cmbLayer";
-            this.cmbLayer.Size = new System.Drawing.Size(92, 24);
+            this.cmbLayer.Size = new System.Drawing.Size(70, 21);
             this.cmbLayer.TabIndex = 3;
             // 
             // rdoForm
             // 
             this.rdoForm.AutoSize = true;
-            this.rdoForm.Location = new System.Drawing.Point(8, 52);
-            this.rdoForm.Margin = new System.Windows.Forms.Padding(4);
+            this.rdoForm.Location = new System.Drawing.Point(6, 42);
             this.rdoForm.Name = "rdoForm";
-            this.rdoForm.Size = new System.Drawing.Size(59, 20);
+            this.rdoForm.Size = new System.Drawing.Size(48, 17);
             this.rdoForm.TabIndex = 1;
             this.rdoForm.TabStop = true;
             this.rdoForm.Text = "Form";
@@ -88,10 +84,9 @@
             // rdoTrim
             // 
             this.rdoTrim.AutoSize = true;
-            this.rdoTrim.Location = new System.Drawing.Point(8, 23);
-            this.rdoTrim.Margin = new System.Windows.Forms.Padding(4);
+            this.rdoTrim.Location = new System.Drawing.Point(6, 19);
             this.rdoTrim.Name = "rdoTrim";
-            this.rdoTrim.Size = new System.Drawing.Size(55, 20);
+            this.rdoTrim.Size = new System.Drawing.Size(45, 17);
             this.rdoTrim.TabIndex = 0;
             this.rdoTrim.TabStop = true;
             this.rdoTrim.Text = "Trim";
@@ -103,11 +98,9 @@
             this.grpForm.Controls.Add(this.grpPad);
             this.grpForm.Controls.Add(this.rdoLower);
             this.grpForm.Controls.Add(this.rdoUpper);
-            this.grpForm.Location = new System.Drawing.Point(133, 15);
-            this.grpForm.Margin = new System.Windows.Forms.Padding(4);
+            this.grpForm.Location = new System.Drawing.Point(100, 12);
             this.grpForm.Name = "grpForm";
-            this.grpForm.Padding = new System.Windows.Forms.Padding(4);
-            this.grpForm.Size = new System.Drawing.Size(217, 127);
+            this.grpForm.Size = new System.Drawing.Size(163, 103);
             this.grpForm.TabIndex = 1;
             this.grpForm.TabStop = false;
             this.grpForm.Text = "Form Type";
@@ -116,11 +109,9 @@
             // 
             this.grpPad.Controls.Add(this.rdoOuter);
             this.grpPad.Controls.Add(this.rdoInner);
-            this.grpPad.Location = new System.Drawing.Point(88, 23);
-            this.grpPad.Margin = new System.Windows.Forms.Padding(4);
+            this.grpPad.Location = new System.Drawing.Point(66, 19);
             this.grpPad.Name = "grpPad";
-            this.grpPad.Padding = new System.Windows.Forms.Padding(4);
-            this.grpPad.Size = new System.Drawing.Size(111, 92);
+            this.grpPad.Size = new System.Drawing.Size(83, 75);
             this.grpPad.TabIndex = 4;
             this.grpPad.TabStop = false;
             this.grpPad.Text = "Pad Offset";
@@ -128,10 +119,9 @@
             // rdoOuter
             // 
             this.rdoOuter.AutoSize = true;
-            this.rdoOuter.Location = new System.Drawing.Point(8, 52);
-            this.rdoOuter.Margin = new System.Windows.Forms.Padding(4);
+            this.rdoOuter.Location = new System.Drawing.Point(6, 42);
             this.rdoOuter.Name = "rdoOuter";
-            this.rdoOuter.Size = new System.Drawing.Size(60, 20);
+            this.rdoOuter.Size = new System.Drawing.Size(51, 17);
             this.rdoOuter.TabIndex = 3;
             this.rdoOuter.TabStop = true;
             this.rdoOuter.Text = "Outer";
@@ -140,10 +130,9 @@
             // rdoInner
             // 
             this.rdoInner.AutoSize = true;
-            this.rdoInner.Location = new System.Drawing.Point(8, 23);
-            this.rdoInner.Margin = new System.Windows.Forms.Padding(4);
+            this.rdoInner.Location = new System.Drawing.Point(6, 19);
             this.rdoInner.Name = "rdoInner";
-            this.rdoInner.Size = new System.Drawing.Size(57, 20);
+            this.rdoInner.Size = new System.Drawing.Size(49, 17);
             this.rdoInner.TabIndex = 2;
             this.rdoInner.TabStop = true;
             this.rdoInner.Text = "Inner";
@@ -152,10 +141,9 @@
             // rdoLower
             // 
             this.rdoLower.AutoSize = true;
-            this.rdoLower.Location = new System.Drawing.Point(8, 52);
-            this.rdoLower.Margin = new System.Windows.Forms.Padding(4);
+            this.rdoLower.Location = new System.Drawing.Point(6, 42);
             this.rdoLower.Name = "rdoLower";
-            this.rdoLower.Size = new System.Drawing.Size(64, 20);
+            this.rdoLower.Size = new System.Drawing.Size(54, 17);
             this.rdoLower.TabIndex = 3;
             this.rdoLower.TabStop = true;
             this.rdoLower.Text = "Lower";
@@ -164,10 +152,9 @@
             // rdoUpper
             // 
             this.rdoUpper.AutoSize = true;
-            this.rdoUpper.Location = new System.Drawing.Point(8, 23);
-            this.rdoUpper.Margin = new System.Windows.Forms.Padding(4);
+            this.rdoUpper.Location = new System.Drawing.Point(6, 19);
             this.rdoUpper.Name = "rdoUpper";
-            this.rdoUpper.Size = new System.Drawing.Size(66, 20);
+            this.rdoUpper.Size = new System.Drawing.Size(54, 17);
             this.rdoUpper.TabIndex = 2;
             this.rdoUpper.TabStop = true;
             this.rdoUpper.Text = "Upper";
@@ -175,10 +162,9 @@
             // 
             // btnExecute
             // 
-            this.btnExecute.Location = new System.Drawing.Point(12, 256);
-            this.btnExecute.Margin = new System.Windows.Forms.Padding(4);
+            this.btnExecute.Location = new System.Drawing.Point(9, 208);
             this.btnExecute.Name = "btnExecute";
-            this.btnExecute.Size = new System.Drawing.Size(339, 28);
+            this.btnExecute.Size = new System.Drawing.Size(254, 23);
             this.btnExecute.TabIndex = 2;
             this.btnExecute.Text = "Execute";
             this.btnExecute.UseVisualStyleBackColor = true;
@@ -188,11 +174,9 @@
             // 
             this.grpCurve.Controls.Add(this.rdoSelectCurves);
             this.grpCurve.Controls.Add(this.rdoAllCurves);
-            this.grpCurve.Location = new System.Drawing.Point(16, 149);
-            this.grpCurve.Margin = new System.Windows.Forms.Padding(4);
+            this.grpCurve.Location = new System.Drawing.Point(12, 121);
             this.grpCurve.Name = "grpCurve";
-            this.grpCurve.Padding = new System.Windows.Forms.Padding(4);
-            this.grpCurve.Size = new System.Drawing.Size(335, 57);
+            this.grpCurve.Size = new System.Drawing.Size(251, 46);
             this.grpCurve.TabIndex = 5;
             this.grpCurve.TabStop = false;
             this.grpCurve.Text = "Curve Selection";
@@ -200,10 +184,9 @@
             // rdoSelectCurves
             // 
             this.rdoSelectCurves.AutoSize = true;
-            this.rdoSelectCurves.Location = new System.Drawing.Point(112, 23);
-            this.rdoSelectCurves.Margin = new System.Windows.Forms.Padding(4);
+            this.rdoSelectCurves.Location = new System.Drawing.Point(84, 19);
             this.rdoSelectCurves.Name = "rdoSelectCurves";
-            this.rdoSelectCurves.Size = new System.Drawing.Size(111, 20);
+            this.rdoSelectCurves.Size = new System.Drawing.Size(91, 17);
             this.rdoSelectCurves.TabIndex = 3;
             this.rdoSelectCurves.TabStop = true;
             this.rdoSelectCurves.Text = "Select Curves";
@@ -212,10 +195,9 @@
             // rdoAllCurves
             // 
             this.rdoAllCurves.AutoSize = true;
-            this.rdoAllCurves.Location = new System.Drawing.Point(8, 23);
-            this.rdoAllCurves.Margin = new System.Windows.Forms.Padding(4);
+            this.rdoAllCurves.Location = new System.Drawing.Point(6, 19);
             this.rdoAllCurves.Name = "rdoAllCurves";
-            this.rdoAllCurves.Size = new System.Drawing.Size(88, 20);
+            this.rdoAllCurves.Size = new System.Drawing.Size(72, 17);
             this.rdoAllCurves.TabIndex = 2;
             this.rdoAllCurves.TabStop = true;
             this.rdoAllCurves.Text = "All Curves";
@@ -224,25 +206,25 @@
             // chkFeatureGroup
             // 
             this.chkFeatureGroup.AutoSize = true;
-            this.chkFeatureGroup.Location = new System.Drawing.Point(16, 213);
-            this.chkFeatureGroup.Margin = new System.Windows.Forms.Padding(4);
+            this.chkFeatureGroup.Location = new System.Drawing.Point(12, 173);
             this.chkFeatureGroup.Name = "chkFeatureGroup";
-            this.chkFeatureGroup.Size = new System.Drawing.Size(158, 20);
+            this.chkFeatureGroup.Size = new System.Drawing.Size(128, 17);
             this.chkFeatureGroup.TabIndex = 6;
             this.chkFeatureGroup.Text = "Create Feature Group";
             this.chkFeatureGroup.UseVisualStyleBackColor = true;
             // 
             // ProfileTrimAndForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(367, 299);
+            this.ClientSize = new System.Drawing.Size(275, 243);
             this.Controls.Add(this.chkFeatureGroup);
             this.Controls.Add(this.grpCurve);
             this.Controls.Add(this.btnExecute);
             this.Controls.Add(this.grpForm);
             this.Controls.Add(this.grpProfile);
-            this.Margin = new System.Windows.Forms.Padding(4);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "ProfileTrimAndForm";
             this.Text = "";
             this.TopMost = true;

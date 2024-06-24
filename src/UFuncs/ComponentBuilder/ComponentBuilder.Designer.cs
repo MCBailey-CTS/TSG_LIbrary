@@ -45,6 +45,7 @@
             this.changeColorCheckBox = new System.Windows.Forms.CheckBox();
             this.updateSessionButton = new System.Windows.Forms.Button();
             this.groupBoxEditAssembly = new System.Windows.Forms.GroupBox();
+            this.btnMakeUnique = new System.Windows.Forms.Button();
             this.buttonLwrRetAssm = new System.Windows.Forms.Button();
             this.buttonAutoLwr = new System.Windows.Forms.Button();
             this.buttonAutoUpr = new System.Windows.Forms.Button();
@@ -70,7 +71,7 @@
             this.checkBoxBurnDirX = new System.Windows.Forms.CheckBox();
             this.chk4Digits = new System.Windows.Forms.CheckBox();
             this.chkAnyAssembly = new System.Windows.Forms.CheckBox();
-            this.btnMakeUnique = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.groupBoxColor.SuspendLayout();
             this.groupBoxEditAssembly.SuspendLayout();
             this.groupBoxWorkPlane.SuspendLayout();
@@ -80,7 +81,7 @@
             // 
             // textBoxDetailNumber
             // 
-            this.textBoxDetailNumber.Location = new System.Drawing.Point(12, 62);
+            this.textBoxDetailNumber.Location = new System.Drawing.Point(10, 83);
             this.textBoxDetailNumber.Name = "textBoxDetailNumber";
             this.textBoxDetailNumber.Size = new System.Drawing.Size(100, 20);
             this.textBoxDetailNumber.TabIndex = 1;
@@ -101,7 +102,7 @@
             // 
             this.comboBoxCompName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxCompName.FormattingEnabled = true;
-            this.comboBoxCompName.Location = new System.Drawing.Point(12, 88);
+            this.comboBoxCompName.Location = new System.Drawing.Point(10, 109);
             this.comboBoxCompName.Name = "comboBoxCompName";
             this.comboBoxCompName.Size = new System.Drawing.Size(100, 21);
             this.comboBoxCompName.TabIndex = 2;
@@ -120,7 +121,7 @@
             this.groupBoxColor.Controls.Add(this.buttonDarkDullGreen);
             this.groupBoxColor.Controls.Add(this.buttonObscureDullGreen);
             this.groupBoxColor.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBoxColor.Location = new System.Drawing.Point(118, 62);
+            this.groupBoxColor.Location = new System.Drawing.Point(116, 83);
             this.groupBoxColor.Name = "groupBoxColor";
             this.groupBoxColor.Size = new System.Drawing.Size(86, 150);
             this.groupBoxColor.TabIndex = 5;
@@ -231,7 +232,7 @@
             // 
             this.changeColorCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
             this.changeColorCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.changeColorCheckBox.Location = new System.Drawing.Point(118, 218);
+            this.changeColorCheckBox.Location = new System.Drawing.Point(116, 239);
             this.changeColorCheckBox.Name = "changeColorCheckBox";
             this.changeColorCheckBox.Size = new System.Drawing.Size(86, 23);
             this.changeColorCheckBox.TabIndex = 15;
@@ -243,7 +244,7 @@
             // updateSessionButton
             // 
             this.updateSessionButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.updateSessionButton.Location = new System.Drawing.Point(12, 13);
+            this.updateSessionButton.Location = new System.Drawing.Point(10, 34);
             this.updateSessionButton.Name = "updateSessionButton";
             this.updateSessionButton.Size = new System.Drawing.Size(192, 20);
             this.updateSessionButton.TabIndex = 0;
@@ -261,12 +262,23 @@
             this.groupBoxEditAssembly.Controls.Add(this.copyButton);
             this.groupBoxEditAssembly.Controls.Add(this.saveAsButton);
             this.groupBoxEditAssembly.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBoxEditAssembly.Location = new System.Drawing.Point(15, 491);
+            this.groupBoxEditAssembly.Location = new System.Drawing.Point(13, 512);
             this.groupBoxEditAssembly.Name = "groupBoxEditAssembly";
             this.groupBoxEditAssembly.Size = new System.Drawing.Size(190, 156);
             this.groupBoxEditAssembly.TabIndex = 8;
             this.groupBoxEditAssembly.TabStop = false;
             this.groupBoxEditAssembly.Text = "Edit Assembly";
+            // 
+            // btnMakeUnique
+            // 
+            this.btnMakeUnique.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnMakeUnique.Location = new System.Drawing.Point(6, 71);
+            this.btnMakeUnique.Name = "btnMakeUnique";
+            this.btnMakeUnique.Size = new System.Drawing.Size(174, 20);
+            this.btnMakeUnique.TabIndex = 7;
+            this.btnMakeUnique.Text = "Make Unique";
+            this.btnMakeUnique.UseVisualStyleBackColor = true;
+            this.btnMakeUnique.Click += new System.EventHandler(this.btnMakeUnique_Click);
             // 
             // buttonLwrRetAssm
             // 
@@ -339,7 +351,7 @@
             this.groupBoxWorkPlane.Controls.Add(this.buttonViewWcs);
             this.groupBoxWorkPlane.Controls.Add(this.comboBoxGrid);
             this.groupBoxWorkPlane.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBoxWorkPlane.Location = new System.Drawing.Point(12, 353);
+            this.groupBoxWorkPlane.Location = new System.Drawing.Point(10, 374);
             this.groupBoxWorkPlane.Name = "groupBoxWorkPlane";
             this.groupBoxWorkPlane.Size = new System.Drawing.Size(192, 50);
             this.groupBoxWorkPlane.TabIndex = 6;
@@ -360,7 +372,7 @@
             // listBoxMaterial
             // 
             this.listBoxMaterial.FormattingEnabled = true;
-            this.listBoxMaterial.Location = new System.Drawing.Point(12, 115);
+            this.listBoxMaterial.Location = new System.Drawing.Point(10, 136);
             this.listBoxMaterial.Name = "listBoxMaterial";
             this.listBoxMaterial.ScrollAlwaysVisible = true;
             this.listBoxMaterial.Size = new System.Drawing.Size(100, 95);
@@ -369,7 +381,7 @@
             // 
             // textBoxUserMaterial
             // 
-            this.textBoxUserMaterial.Location = new System.Drawing.Point(12, 220);
+            this.textBoxUserMaterial.Location = new System.Drawing.Point(10, 241);
             this.textBoxUserMaterial.Name = "textBoxUserMaterial";
             this.textBoxUserMaterial.Size = new System.Drawing.Size(100, 20);
             this.textBoxUserMaterial.TabIndex = 4;
@@ -378,7 +390,7 @@
             // buttonExit
             // 
             this.buttonExit.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonExit.Location = new System.Drawing.Point(20, 653);
+            this.buttonExit.Location = new System.Drawing.Point(18, 674);
             this.buttonExit.Name = "buttonExit";
             this.buttonExit.Size = new System.Drawing.Size(175, 20);
             this.buttonExit.TabIndex = 11;
@@ -414,7 +426,7 @@
             this.groupBox1.Controls.Add(this.buttonEditBlock);
             this.groupBox1.Controls.Add(this.buttonEditConstruction);
             this.groupBox1.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBox1.Location = new System.Drawing.Point(12, 409);
+            this.groupBox1.Location = new System.Drawing.Point(10, 430);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(192, 76);
             this.groupBox1.TabIndex = 25;
@@ -441,7 +453,7 @@
             this.groupBoxBurnSettings.Controls.Add(this.comboBoxTolerance);
             this.groupBoxBurnSettings.Controls.Add(this.checkBoxBurnDirX);
             this.groupBoxBurnSettings.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBoxBurnSettings.Location = new System.Drawing.Point(12, 247);
+            this.groupBoxBurnSettings.Location = new System.Drawing.Point(10, 268);
             this.groupBoxBurnSettings.Name = "groupBoxBurnSettings";
             this.groupBoxBurnSettings.Size = new System.Drawing.Size(193, 100);
             this.groupBoxBurnSettings.TabIndex = 26;
@@ -524,7 +536,7 @@
             // chk4Digits
             // 
             this.chk4Digits.AutoSize = true;
-            this.chk4Digits.Location = new System.Drawing.Point(12, 39);
+            this.chk4Digits.Location = new System.Drawing.Point(10, 60);
             this.chk4Digits.Name = "chk4Digits";
             this.chk4Digits.Size = new System.Drawing.Size(91, 17);
             this.chk4Digits.TabIndex = 27;
@@ -535,7 +547,7 @@
             // chkAnyAssembly
             // 
             this.chkAnyAssembly.AutoSize = true;
-            this.chkAnyAssembly.Location = new System.Drawing.Point(104, 39);
+            this.chkAnyAssembly.Location = new System.Drawing.Point(102, 60);
             this.chkAnyAssembly.Name = "chkAnyAssembly";
             this.chkAnyAssembly.Size = new System.Drawing.Size(91, 17);
             this.chkAnyAssembly.TabIndex = 28;
@@ -543,23 +555,22 @@
             this.chkAnyAssembly.UseVisualStyleBackColor = true;
             this.chkAnyAssembly.CheckedChanged += new System.EventHandler(this.chkAnyAssembly_CheckedChanged);
             // 
-            // btnMakeUnique
+            // label1
             // 
-            this.btnMakeUnique.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.btnMakeUnique.Location = new System.Drawing.Point(6, 71);
-            this.btnMakeUnique.Name = "btnMakeUnique";
-            this.btnMakeUnique.Size = new System.Drawing.Size(174, 20);
-            this.btnMakeUnique.TabIndex = 7;
-            this.btnMakeUnique.Text = "Make Unique";
-            this.btnMakeUnique.UseVisualStyleBackColor = true;
-            this.btnMakeUnique.Click += new System.EventHandler(this.btnMakeUnique_Click);
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(7, 9);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(35, 13);
+            this.label1.TabIndex = 29;
+            this.label1.Text = "label1";
             // 
             // ComponentBuilder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(214, 683);
+            this.ClientSize = new System.Drawing.Size(214, 704);
             this.ControlBox = false;
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.chkAnyAssembly);
             this.Controls.Add(this.chk4Digits);
             this.Controls.Add(this.groupBoxBurnSettings);
@@ -636,5 +647,6 @@
         private System.Windows.Forms.CheckBox chk4Digits;
         private System.Windows.Forms.CheckBox chkAnyAssembly;
         private System.Windows.Forms.Button btnMakeUnique;
+        private System.Windows.Forms.Label label1;
     }
 }

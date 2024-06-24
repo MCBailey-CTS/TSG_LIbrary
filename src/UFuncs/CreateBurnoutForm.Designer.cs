@@ -43,11 +43,9 @@
             this.groupBox2.Controls.Add(this.buttonSelect);
             this.groupBox2.Controls.Add(this.buttonSelectAll);
             this.groupBox2.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBox2.Location = new System.Drawing.Point(16, 113);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox2.Location = new System.Drawing.Point(12, 92);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.groupBox2.Size = new System.Drawing.Size(180, 105);
+            this.groupBox2.Size = new System.Drawing.Size(135, 85);
             this.groupBox2.TabIndex = 10;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Selection";
@@ -56,10 +54,9 @@
             // 
             this.buttonSelect.Enabled = false;
             this.buttonSelect.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonSelect.Location = new System.Drawing.Point(8, 23);
-            this.buttonSelect.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonSelect.Location = new System.Drawing.Point(6, 19);
             this.buttonSelect.Name = "buttonSelect";
-            this.buttonSelect.Size = new System.Drawing.Size(157, 28);
+            this.buttonSelect.Size = new System.Drawing.Size(118, 23);
             this.buttonSelect.TabIndex = 3;
             this.buttonSelect.Text = "Select";
             this.buttonSelect.UseVisualStyleBackColor = true;
@@ -69,10 +66,9 @@
             // 
             this.buttonSelectAll.Enabled = false;
             this.buttonSelectAll.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonSelectAll.Location = new System.Drawing.Point(8, 59);
-            this.buttonSelectAll.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonSelectAll.Location = new System.Drawing.Point(6, 48);
             this.buttonSelectAll.Name = "buttonSelectAll";
-            this.buttonSelectAll.Size = new System.Drawing.Size(157, 28);
+            this.buttonSelectAll.Size = new System.Drawing.Size(118, 23);
             this.buttonSelectAll.TabIndex = 5;
             this.buttonSelectAll.Text = "Select All";
             this.buttonSelectAll.UseVisualStyleBackColor = true;
@@ -83,11 +79,9 @@
             this.groupBox1.Controls.Add(this.checkBoxDeleteBurnout);
             this.groupBox1.Controls.Add(this.checkBoxBurnoutSheet);
             this.groupBox1.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBox1.Location = new System.Drawing.Point(16, 14);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Location = new System.Drawing.Point(12, 11);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.groupBox1.Size = new System.Drawing.Size(180, 92);
+            this.groupBox1.Size = new System.Drawing.Size(135, 75);
             this.groupBox1.TabIndex = 9;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Options";
@@ -96,10 +90,9 @@
             // 
             this.checkBoxDeleteBurnout.AutoSize = true;
             this.checkBoxDeleteBurnout.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.checkBoxDeleteBurnout.Location = new System.Drawing.Point(8, 53);
-            this.checkBoxDeleteBurnout.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.checkBoxDeleteBurnout.Location = new System.Drawing.Point(6, 43);
             this.checkBoxDeleteBurnout.Name = "checkBoxDeleteBurnout";
-            this.checkBoxDeleteBurnout.Size = new System.Drawing.Size(133, 21);
+            this.checkBoxDeleteBurnout.Size = new System.Drawing.Size(108, 18);
             this.checkBoxDeleteBurnout.TabIndex = 3;
             this.checkBoxDeleteBurnout.Text = "Delete Burnouts";
             this.checkBoxDeleteBurnout.UseVisualStyleBackColor = true;
@@ -109,10 +102,9 @@
             // 
             this.checkBoxBurnoutSheet.AutoSize = true;
             this.checkBoxBurnoutSheet.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.checkBoxBurnoutSheet.Location = new System.Drawing.Point(8, 23);
-            this.checkBoxBurnoutSheet.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.checkBoxBurnoutSheet.Location = new System.Drawing.Point(6, 19);
             this.checkBoxBurnoutSheet.Name = "checkBoxBurnoutSheet";
-            this.checkBoxBurnoutSheet.Size = new System.Drawing.Size(133, 21);
+            this.checkBoxBurnoutSheet.Size = new System.Drawing.Size(108, 18);
             this.checkBoxBurnoutSheet.TabIndex = 1;
             this.checkBoxBurnoutSheet.Text = "Create Burnouts";
             this.checkBoxBurnoutSheet.UseVisualStyleBackColor = true;
@@ -120,20 +112,21 @@
             // 
             // CreateBurnoutForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(212, 225);
+            this.ClientSize = new System.Drawing.Size(159, 183);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Location = new System.Drawing.Point(30, 130);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "CreateBurnoutForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "1919";
             this.TopMost = true;
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.CreateBurnoutForm_FormClosed);
+            this.Load += new System.EventHandler(this.CreateBurnoutForm_Load);
             this.groupBox2.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

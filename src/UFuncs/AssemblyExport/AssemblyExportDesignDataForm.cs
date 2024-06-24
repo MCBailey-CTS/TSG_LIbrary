@@ -228,6 +228,7 @@ namespace TSG_Library.UFuncs
 
         private void AssemblyExportDesignDataForm_Load(object sender, EventArgs e)
         {
+            Text = $"{AssemblyFileVersion} - Assembly Export";
             ResetForm();
             Location = Settings.Default.assembly_export_design_data_form_window_location;
         }
