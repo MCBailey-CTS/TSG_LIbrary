@@ -309,12 +309,6 @@
     <Compile Include="src\UFuncs\ComponentBuilder.Designer.cs">
       <DependentUpon>ComponentBuilder.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\EditBlockForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\UFuncs\EditBlockForm.Designer.cs">
-      <DependentUpon>EditBlockForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="src\UFuncs\EditSizeForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -654,9 +648,6 @@
     <EmbeddedResource Include="src\UFuncs\ComponentBuilder.resx">
       <DependentUpon>ComponentBuilder.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\EditBlockForm.resx">
-      <DependentUpon>EditBlockForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="src\UFuncs\EditSizeForm.resx">
       <DependentUpon>EditSizeForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -754,7 +745,7 @@
   <Import Project="packages\PostSharp.2024.1.4\build\PostSharp.targets" Condition="Exists('packages\PostSharp.2024.1.4\build\PostSharp.targets')" />
   <PropertyGroup>
     <PostBuildEvent>SignDotNet $(TargetFileName)
-copy C:\Repos\TSG_Library\bin\Debug\TSG_Library.dll "G:\CTS\junk\0Ufunc Testing\temp1\TSG_Library.dll"
-copy C:\Repos\TSG_Library\bin\Debug\TSG_Library.pdb "G:\CTS\junk\0Ufunc Testing\temp1\TSG_Library.pdb"</PostBuildEvent>
+copy C:\Repos\TSG_Library\bin\Debug\TSG_Library.dll "G:\CTS\junk\0Ufunc Testing\temp2\TSG_Library.dll"
+copy C:\Repos\TSG_Library\bin\Debug\TSG_Library.pdb "G:\CTS\junk\0Ufunc Testing\temp2\TSG_Library.pdb"</PostBuildEvent>
   </PropertyGroup>
 </Project>
