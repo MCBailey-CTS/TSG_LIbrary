@@ -61,13 +61,9 @@ namespace TSG_Library.UFuncs
             this.buttonViewWcs = new System.Windows.Forms.Button();
             this.comboBoxGridBlock = new System.Windows.Forms.ComboBox();
             this.buttonExit = new System.Windows.Forms.Button();
-            this.buttonEndEditConstruction = new System.Windows.Forms.Button();
-            this.buttonEditConstruction = new System.Windows.Forms.Button();
             this.buttonReset = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBoxEditBlock.SuspendLayout();
             this.groupBoxWorkPlane.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBoxEditBlock
@@ -81,7 +77,7 @@ namespace TSG_Library.UFuncs
             this.groupBoxEditBlock.Controls.Add(this.buttonEditSize);
             this.groupBoxEditBlock.Controls.Add(this.buttonEditMatch);
             this.groupBoxEditBlock.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBoxEditBlock.Location = new System.Drawing.Point(11, 120);
+            this.groupBoxEditBlock.Location = new System.Drawing.Point(11, 67);
             this.groupBoxEditBlock.Name = "groupBoxEditBlock";
             this.groupBoxEditBlock.Size = new System.Drawing.Size(192, 195);
             this.groupBoxEditBlock.TabIndex = 8;
@@ -213,7 +209,7 @@ namespace TSG_Library.UFuncs
             // buttonExit
             // 
             this.buttonExit.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonExit.Location = new System.Drawing.Point(17, 347);
+            this.buttonExit.Location = new System.Drawing.Point(17, 294);
             this.buttonExit.Name = "buttonExit";
             this.buttonExit.Size = new System.Drawing.Size(178, 20);
             this.buttonExit.TabIndex = 12;
@@ -221,32 +217,10 @@ namespace TSG_Library.UFuncs
             this.buttonExit.UseVisualStyleBackColor = true;
             this.buttonExit.Click += new System.EventHandler(this.ButtonExit_Click);
             // 
-            // buttonEndEditConstruction
-            // 
-            this.buttonEndEditConstruction.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonEndEditConstruction.Location = new System.Drawing.Point(99, 19);
-            this.buttonEndEditConstruction.Name = "buttonEndEditConstruction";
-            this.buttonEndEditConstruction.Size = new System.Drawing.Size(85, 20);
-            this.buttonEndEditConstruction.TabIndex = 27;
-            this.buttonEndEditConstruction.Text = "End Edit";
-            this.buttonEndEditConstruction.UseVisualStyleBackColor = true;
-            this.buttonEndEditConstruction.Click += new System.EventHandler(this.ButtonEndEditConstruction_Click);
-            // 
-            // buttonEditConstruction
-            // 
-            this.buttonEditConstruction.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonEditConstruction.Location = new System.Drawing.Point(6, 19);
-            this.buttonEditConstruction.Name = "buttonEditConstruction";
-            this.buttonEditConstruction.Size = new System.Drawing.Size(86, 20);
-            this.buttonEditConstruction.TabIndex = 26;
-            this.buttonEditConstruction.Text = "Start Edit";
-            this.buttonEditConstruction.UseVisualStyleBackColor = true;
-            this.buttonEditConstruction.Click += new System.EventHandler(this.ButtonEditConstruction_Click);
-            // 
             // buttonReset
             // 
             this.buttonReset.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonReset.Location = new System.Drawing.Point(17, 321);
+            this.buttonReset.Location = new System.Drawing.Point(17, 268);
             this.buttonReset.Name = "buttonReset";
             this.buttonReset.Size = new System.Drawing.Size(178, 20);
             this.buttonReset.TabIndex = 28;
@@ -254,25 +228,12 @@ namespace TSG_Library.UFuncs
             this.buttonReset.UseVisualStyleBackColor = true;
             this.buttonReset.Click += new System.EventHandler(this.ButtonReset_Click);
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.buttonEndEditConstruction);
-            this.groupBox1.Controls.Add(this.buttonEditConstruction);
-            this.groupBox1.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBox1.Location = new System.Drawing.Point(11, 67);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(192, 47);
-            this.groupBox1.TabIndex = 29;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Edit Component";
-            // 
             // EditBlockForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(214, 374);
+            this.ClientSize = new System.Drawing.Size(214, 324);
             this.ControlBox = false;
-            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.buttonReset);
             this.Controls.Add(this.groupBoxWorkPlane);
             this.Controls.Add(this.groupBoxEditBlock);
@@ -285,7 +246,6 @@ namespace TSG_Library.UFuncs
             this.Load += new System.EventHandler(this.EditBlockForm_Load);
             this.groupBoxEditBlock.ResumeLayout(false);
             this.groupBoxWorkPlane.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -304,10 +264,7 @@ namespace TSG_Library.UFuncs
         private System.Windows.Forms.Button buttonExit;
         private System.Windows.Forms.Button buttonAlignComponent;
         private System.Windows.Forms.Button buttonAlignEdgeDistance;
-        private System.Windows.Forms.Button buttonEndEditConstruction;
-        private System.Windows.Forms.Button buttonEditConstruction;
         private System.Windows.Forms.Button buttonReset;
-        private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button buttonApply;
 
 

@@ -59,9 +59,7 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.buttonExit = new System.Windows.Forms.Button();
             this.buttonEditBlock = new System.Windows.Forms.Button();
-            this.buttonEditConstruction = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.buttonEndEditConstruction = new System.Windows.Forms.Button();
             this.groupBoxBurnSettings = new System.Windows.Forms.GroupBox();
             this.checkBoxGrind = new System.Windows.Forms.CheckBox();
             this.checkBoxBurnout = new System.Windows.Forms.CheckBox();
@@ -262,7 +260,7 @@
             this.groupBoxEditAssembly.Controls.Add(this.copyButton);
             this.groupBoxEditAssembly.Controls.Add(this.saveAsButton);
             this.groupBoxEditAssembly.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBoxEditAssembly.Location = new System.Drawing.Point(13, 512);
+            this.groupBoxEditAssembly.Location = new System.Drawing.Point(10, 493);
             this.groupBoxEditAssembly.Name = "groupBoxEditAssembly";
             this.groupBoxEditAssembly.Size = new System.Drawing.Size(190, 156);
             this.groupBoxEditAssembly.TabIndex = 8;
@@ -390,7 +388,7 @@
             // buttonExit
             // 
             this.buttonExit.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonExit.Location = new System.Drawing.Point(18, 674);
+            this.buttonExit.Location = new System.Drawing.Point(16, 655);
             this.buttonExit.Name = "buttonExit";
             this.buttonExit.Size = new System.Drawing.Size(175, 20);
             this.buttonExit.TabIndex = 11;
@@ -409,40 +407,16 @@
             this.buttonEditBlock.UseVisualStyleBackColor = true;
             this.buttonEditBlock.Click += new System.EventHandler(this.ButtonEditBlock_Click);
             // 
-            // buttonEditConstruction
-            // 
-            this.buttonEditConstruction.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonEditConstruction.Location = new System.Drawing.Point(8, 45);
-            this.buttonEditConstruction.Name = "buttonEditConstruction";
-            this.buttonEditConstruction.Size = new System.Drawing.Size(86, 20);
-            this.buttonEditConstruction.TabIndex = 24;
-            this.buttonEditConstruction.Text = "Start Edit";
-            this.buttonEditConstruction.UseVisualStyleBackColor = true;
-            this.buttonEditConstruction.Click += new System.EventHandler(this.ButtonEditConstruction_Click);
-            // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.buttonEndEditConstruction);
             this.groupBox1.Controls.Add(this.buttonEditBlock);
-            this.groupBox1.Controls.Add(this.buttonEditConstruction);
             this.groupBox1.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.groupBox1.Location = new System.Drawing.Point(10, 430);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(192, 76);
+            this.groupBox1.Size = new System.Drawing.Size(192, 57);
             this.groupBox1.TabIndex = 25;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Edit Component";
-            // 
-            // buttonEndEditConstruction
-            // 
-            this.buttonEndEditConstruction.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonEndEditConstruction.Location = new System.Drawing.Point(100, 45);
-            this.buttonEndEditConstruction.Name = "buttonEndEditConstruction";
-            this.buttonEndEditConstruction.Size = new System.Drawing.Size(84, 20);
-            this.buttonEndEditConstruction.TabIndex = 25;
-            this.buttonEndEditConstruction.Text = "End Edit";
-            this.buttonEndEditConstruction.UseVisualStyleBackColor = true;
-            this.buttonEndEditConstruction.Click += new System.EventHandler(this.ButtonEndEditConstruction_Click);
             // 
             // groupBoxBurnSettings
             // 
@@ -568,7 +542,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(214, 704);
+            this.ClientSize = new System.Drawing.Size(214, 688);
             this.ControlBox = false;
             this.Controls.Add(this.label1);
             this.Controls.Add(this.chkAnyAssembly);
@@ -629,9 +603,7 @@
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Button buttonExit;
         private System.Windows.Forms.Button buttonEditBlock;
-        private System.Windows.Forms.Button buttonEditConstruction;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Button buttonEndEditConstruction;
         private System.Windows.Forms.GroupBox groupBoxBurnSettings;
         private System.Windows.Forms.ComboBox comboBoxTolerance;
         private System.Windows.Forms.CheckBox checkBoxBurnDirX;

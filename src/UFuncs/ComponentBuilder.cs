@@ -537,133 +537,6 @@ namespace TSG_Library.UFuncs
             blockForm.Show();
         }
 
-        private void ButtonEditConstruction_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                textBoxDetailNumber.Clear();
-                textBoxDetailNumber.Enabled = false;
-                comboBoxCompName.Enabled = false;
-                buttonEditBlock.Enabled = false;
-                changeColorCheckBox.Enabled = false;
-                buttonExit.Enabled = false;
-                session_.Preferences.EmphasisVisualization.WorkPartEmphasis = true;
-                session_.Preferences.Assemblies.WorkPartDisplayAsEntirePart = false;
-                _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
-                _originalWorkPart = _workPart; _originalDisplayPart = _displayPart; ;
-                Component editComponent = SelectOneComponent("Select Component to edit construction");
-
-                if (editComponent is null)
-                    return;
-
-                BasePart.Units assmUnits = _displayPart.PartUnits;
-                BasePart compBase = (BasePart)editComponent.Prototype;
-                BasePart.Units compUnits = compBase.PartUnits;
-
-                if (compUnits != assmUnits)
-                    return;
-
-                using (session_.__UsingSuppressDisplay())
-                {
-                    __display_part_ = (Part)editComponent.Prototype;
-
-                    using (session_.__UsingDoUpdate("Delete Reference Set"))
-                    {
-                        ReferenceSet[] allRefSets = _displayPart.GetAllReferenceSets();
-
-                        foreach (ReferenceSet namedRefSet in allRefSets)
-                            if (namedRefSet.Name == "EDIT")
-                                _workPart.DeleteReferenceSet(namedRefSet);
-                    }
-
-                    using (session_.__UsingDoUpdate("Create New Reference Set"))
-                    {
-                        ReferenceSet editRefSet = _workPart.CreateReferenceSet();
-                        NXObject[] removeComps = editRefSet.AskAllDirectMembers();
-                        editRefSet.RemoveObjectsFromReferenceSet(removeComps);
-                        editRefSet.SetAddComponentsAutomatically(false, false);
-                        editRefSet.SetName("EDIT");
-                        List<NXObject> constructionObjects = new List<NXObject>();
-
-                        for (int i = 1; i < 11; i++)
-                            constructionObjects.AddRange(_displayPart.Layers.GetAllObjectsOnLayer(i));
-
-                        constructionObjects.AddRange(
-                            from CartesianCoordinateSystem csys in _displayPart.CoordinateSystems
-                            where csys.Layer == 254
-                            where csys.Name == "EDITCSYS"
-                            select csys);
-
-                        editRefSet.AddObjectsToReferenceSet(constructionObjects.ToArray());
-                    }
-
-                    __display_part_ = _originalDisplayPart;
-                    _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
-                }
-
-                __work_component_ = editComponent;
-                _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
-                SetWcsToWorkPart(editComponent);
-                __work_component_.__Translucency(75);
-                Component[] setRefComp = { editComponent };
-                _displayPart.ComponentAssembly.ReplaceReferenceSetInOwners("EDIT", setRefComp);
-                _displayPart.Layers.WorkLayer = 3;
-                _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
-                UpdateFormText();
-                buttonEditConstruction.Enabled = false;
-                buttonEndEditConstruction.Enabled = true;
-            }
-            catch (Exception ex)
-            {
-                ex.__PrintException();
-            }
-        }
-
-        private void ButtonEndEditConstruction_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                session_.Preferences.EmphasisVisualization.WorkPartEmphasis = true;
-                session_.Preferences.Assemblies.WorkPartDisplayAsEntirePart = false;
-                __work_component_.__Translucency(0);
-                _displayPart.Layers.WorkLayer = 1;
-                _isNameReset = true;
-                textBoxDetailNumber.Enabled = true;
-                comboBoxCompName.Enabled = false;
-                comboBoxCompName.SelectedIndex = -1;
-
-                using (session_.__UsingDoUpdate("Delete Reference Set"))
-                {
-                    __work_component_.__ReferenceSet("BODY");
-                    _workPart.__ReferenceSets("BODY").__Delete();
-                    _displayPart.ComponentAssembly.ReplaceReferenceSetInOwners("BODY", new[] { __work_component_ });
-                    ReferenceSet[] allRefSets = _workPart.GetAllReferenceSets();
-
-                    foreach (ReferenceSet namedRefSet in allRefSets)
-                        if (namedRefSet.Name == "EDIT")
-                            _workPart.DeleteReferenceSet(namedRefSet);
-                }
-
-                __display_part_ = _originalDisplayPart;
-                __work_part_ = _originalWorkPart;
-                buttonEditConstruction.Enabled = true;
-                buttonEndEditConstruction.Enabled = false;
-                buttonEditBlock.Enabled = true;
-                changeColorCheckBox.Enabled = true;
-                buttonExit.Enabled = true;
-                _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
-                _originalWorkPart = _workPart; _originalDisplayPart = _displayPart; ;
-                UpdateFormText();
-                ResetForm(_workPart);
-                groupBoxColor.Enabled = false;
-                changeColorCheckBox.Checked = false;
-            }
-            catch (Exception ex)
-            {
-                ex.__PrintException();
-            }
-        }
-
         private void ButtonAutoLwr_Click(object sender, EventArgs e)
         {
             try
@@ -1186,86 +1059,87 @@ namespace TSG_Library.UFuncs
             BasePart.Units units = new BasePart.Units();
             BasePart.Units assmUnits = _displayPart.PartUnits;
 
-            try
-            {
-                Component compSaveAs = SelectOneComponent("Select Component to SaveAs");
-
-                while (compSaveAs != null)
-                {
-                    if (!IsNameValid(_workPart))
-                    {
-                        compSaveAs = null;
-                        _isNameReset = false;
-                        _isSaveAs = false;
-                        break;
-                    }
-
-                    bool isNumberValid = FormatDetailNumber();
-
-                    string compName = textBoxDetailNumber.Text;
-
-                    if (!isNumberValid)
-                    {
-                        compSaveAs = null;
-                        _isNameReset = false;
-                        _isSaveAs = false;
-                        break;
-                    }
-
-                    if (!IsSaveAllowed(compSaveAs))
-                    {
-                        MessageBox.Show(
-                            $"Save As is not allowed on this component {compSaveAs.DisplayName}");
-                        compSaveAs = null;
-                        _isNameReset = false;
-                        _isSaveAs = false;
-                        break;
-                    }
-
-                    Part selectedPart = (Part)compSaveAs.Prototype;
-                    units = selectedPart.PartUnits;
-
-                    if (units == assmUnits)
-                    {
-                        SaveAsSameUnits(compSaveAs, compName);
-
-                        compSaveAs = SelectOneComponent("Select Component to SaveAs");
-                    }
-                    else
-                    {
-                        SaveAsDiffUnits(compSaveAs, compName, selectedPart);
-
-                        compSaveAs = SelectOneComponent("Select Component to SaveAs");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                ex.__PrintException();
-                ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
-                ufsession_.Disp.RegenerateDisplay();
-
-                if (units != assmUnits)
-                    __display_part_ = _originalDisplayPart;
-
-                __work_part_ = _originalWorkPart;
-                UI.GetUI().NXMessageBox.Show("Caught exception", NXMessageBox.DialogType.Error, ex.Message);
-                _workPart = session_.Parts.Work;
-                _displayPart = session_.Parts.Display;
-                _originalWorkPart = _workPart;
-                _originalDisplayPart = _displayPart;
-            }
-            finally
-            {
+            using (session_.__UsingFormShowHide(this))
                 try
                 {
-                    ResetForm(_workPart);
+                    Component compSaveAs = SelectOneComponent("Select Component to SaveAs");
+
+                    while (compSaveAs != null)
+                    {
+                        if (!IsNameValid(_workPart))
+                        {
+                            compSaveAs = null;
+                            _isNameReset = false;
+                            _isSaveAs = false;
+                            break;
+                        }
+
+                        bool isNumberValid = FormatDetailNumber();
+
+                        string compName = textBoxDetailNumber.Text;
+
+                        if (!isNumberValid && string.IsNullOrEmpty(compName))
+                        {
+                            compSaveAs = null;
+                            _isNameReset = false;
+                            _isSaveAs = false;
+                            break;
+                        }
+
+                        //if (!IsSaveAllowed(compSaveAs))
+                        //{
+                        //    MessageBox.Show(
+                        //        $"Save As is not allowed on this component {compSaveAs.DisplayName}");
+                        //    compSaveAs = null;
+                        //    _isNameReset = false;
+                        //    _isSaveAs = false;
+                        //    break;
+                        //}
+
+                        Part selectedPart = (Part)compSaveAs.Prototype;
+                        units = selectedPart.PartUnits;
+
+                        if (units == assmUnits)
+                        {
+                            SaveAsSameUnits(compSaveAs, compName);
+
+                            compSaveAs = SelectOneComponent("Select Component to SaveAs");
+                        }
+                        else
+                        {
+                            SaveAsDiffUnits(compSaveAs, compName, selectedPart);
+
+                            compSaveAs = SelectOneComponent("Select Component to SaveAs");
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
                     ex.__PrintException();
+                    ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
+                    ufsession_.Disp.RegenerateDisplay();
+
+                    if (units != assmUnits)
+                        __display_part_ = _originalDisplayPart;
+
+                    __work_part_ = _originalWorkPart;
+                    UI.GetUI().NXMessageBox.Show("Caught exception", NXMessageBox.DialogType.Error, ex.Message);
+                    _workPart = session_.Parts.Work;
+                    _displayPart = session_.Parts.Display;
+                    _originalWorkPart = _workPart;
+                    _originalDisplayPart = _displayPart;
                 }
-            }
+                finally
+                {
+                    try
+                    {
+                        ResetForm(_workPart);
+                    }
+                    catch (Exception ex)
+                    {
+                        ex.__PrintException();
+                    }
+                }
         }
 
 
@@ -2725,7 +2599,6 @@ namespace TSG_Library.UFuncs
 
         private void InitializeMainForm()
         {
-            buttonEndEditConstruction.Enabled = false;
             buttonAutoUpr.Enabled = false;
             buttonAutoLwr.Enabled = false;
             buttonUprRetAssm.Enabled = false;
@@ -2777,7 +2650,6 @@ namespace TSG_Library.UFuncs
             comboBoxTolerance.Text = string.Empty;
             comboBoxTolerance.SelectedIndex = -1;
             comboBoxTolerance.Enabled = false;
-            buttonEditConstruction.Enabled = true;
             saveAsButton.Enabled = false;
             copyButton.Enabled = false;
         }
@@ -2803,7 +2675,6 @@ namespace TSG_Library.UFuncs
             comboBoxTolerance.Text = string.Empty;
             comboBoxTolerance.SelectedIndex = -1;
             comboBoxTolerance.Enabled = false;
-            buttonEditConstruction.Enabled = true;
             saveAsButton.Enabled = true;
             copyButton.Enabled = true;
         }

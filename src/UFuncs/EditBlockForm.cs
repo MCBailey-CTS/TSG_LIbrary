@@ -86,10 +86,6 @@ namespace TSG_Library.UFuncs
 
         private void ButtonEditDynamic_Click(object sender, EventArgs e) => EditDynamic();
 
-        private void ButtonEditConstruction_Click(object sender, EventArgs e) => EditConstruction();
-
-        private void ButtonEndEditConstruction_Click(object sender, EventArgs e) => EndEditConstruction();
-
         private void ButtonEditSize_Click(object sender, EventArgs e) => EditSize();
 
         private void ButtonEditMove_Click(object sender, EventArgs e) => EditMove();
@@ -112,8 +108,6 @@ namespace TSG_Library.UFuncs
             _updateComponent = null;
             _editBody = null;
             _isNewSelection = true;
-            buttonEditConstruction.Enabled = true;
-            buttonEndEditConstruction.Enabled = true;
             buttonApply.Enabled = false;
             buttonReset.Enabled = true;
             buttonExit.Enabled = true;
@@ -349,11 +343,11 @@ namespace TSG_Library.UFuncs
             string dir_xyz,
             bool isPosEnd)
         {
+            print_(inputDist);
             double distance = MapAndConvert(inputDist, mappedBase, mappedPoint, index);
-
+            print_(distance);
             foreach (Line zAxisLine in lines)
                 SetLineEndPoints(distance, zAxisLine, !isPosEnd, dir_xyz);
-
 
             MoveObjects(movePtsHalf, movePtsFull, distance, dir_xyz, false);
             return distance;
@@ -410,8 +404,7 @@ namespace TSG_Library.UFuncs
                     GetLines(out var posXObjs, out var negXObjs, out var posYObjs, out var negYObjs, out var posZObjs,
                         out var negZObjs);
 
-                    List<Line> allxAxisLines, allyAxisLines, allzAxisLines;
-                    AskAxisLines(out allxAxisLines, out allyAxisLines, out allzAxisLines);
+                    AskAxisLines(out List<Line> allxAxisLines, out List<Line> allyAxisLines, out List<Line> allzAxisLines);
 
                     string message = "Select Reference Point";
                     UFUi.PointBaseMethod pbMethod = UFUi.PointBaseMethod.PointInferred;
@@ -426,16 +419,19 @@ namespace TSG_Library.UFuncs
                     {
                         bool isDistance;
 
-                        isDistance = NXInputBox.ParseInputNumber(
-                            "Enter offset value",
-                            "Enter offset value",
-                            .004,
-                            NumberStyles.AllowDecimalPoint,
-                            CultureInfo.InvariantCulture.NumberFormat,
-                            out double inputDist);
+                        string output = NXInputBox.GetInputString("Enter offset value", "Enter offset value", ".004");
+
+                        bool isMetric = output.ToLower().Contains("mm");
+
+                        var nomm = output.ToLower().Replace("mm", "");
+
+                        isDistance = double.TryParse(nomm, out double inputDist);
 
                         if (isDistance)
                         {
+                            if (isMetric)
+                                inputDist = inputDist / 25.4;
+
                             double[] mappedBase = new double[3];
                             ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, basePoint, UF_CSYS_ROOT_WCS_COORDS,
                                 mappedBase);
@@ -446,7 +442,7 @@ namespace TSG_Library.UFuncs
                                 mappedPoint);
 
                             double distance;
-
+                            print_(pointPrototype.Name);
                             switch (pointPrototype.Name)
                             {
                                 case "POSX":
@@ -578,10 +574,6 @@ namespace TSG_Library.UFuncs
 
             EnableForm();
 
-            buttonEditConstruction.Enabled = true;
-            buttonEndEditConstruction.Enabled = true;
-            buttonReset.Enabled = true;
-            buttonExit.Enabled = true;
         }
 
         private void EditMatch(Component editComponent, Component matchComponent)
@@ -773,10 +765,7 @@ namespace TSG_Library.UFuncs
                     out var posZObjs,
                     out var negZObjs
                 );
-                List<Line> allxAxisLines,
-                    allyAxisLines,
-                    allzAxisLines;
-                AskAxisLines(out allxAxisLines, out allyAxisLines, out allzAxisLines);
+                AskAxisLines(out List<Line> allxAxisLines, out List<Line> allyAxisLines, out List<Line> allzAxisLines);
 
                 string message = "Select Reference Point";
                 UFUi.PointBaseMethod pbMethod = UFUi.PointBaseMethod.PointInferred;
@@ -1164,8 +1153,7 @@ namespace TSG_Library.UFuncs
                         out var movePtsFull, pointPrototype.Name.Contains("POS"));
                     GetLines(out var posXObjs, out var negXObjs, out var posYObjs, out var negYObjs, out var posZObjs,
                         out var negZObjs);
-                    List<Line> allxAxisLines, allyAxisLines, allzAxisLines;
-                    AskAxisLines(out allxAxisLines, out allyAxisLines, out allzAxisLines);
+                    AskAxisLines(out List<Line> allxAxisLines, out List<Line> allyAxisLines, out List<Line> allzAxisLines);
 
                     EditSizeForm sizeForm = null;
                     double convertLength = blockLength / 25.4;
@@ -1342,10 +1330,7 @@ namespace TSG_Library.UFuncs
                     out var posZObjs,
                     out var negZObjs
                 );
-                List<Line> allxAxisLines,
-                    allyAxisLines,
-                    allzAxisLines;
-                AskAxisLines(out allxAxisLines, out allyAxisLines, out allzAxisLines);
+                AskAxisLines(out List<Line> allxAxisLines, out List<Line> allyAxisLines, out List<Line> allzAxisLines);
 
                 EditSizeForm sizeForm = null;
                 double convertLength = blockLength / 25.4;
@@ -1461,107 +1446,9 @@ namespace TSG_Library.UFuncs
             return isBlockComponent;
         }
 
-
-        public void EditConstruction()
-        {
-            try
-            {
-                buttonExit.Enabled = false;
-                Component editComponent = SelectOneComponent("Select Component to edit construction");
-
-                if (editComponent is null)
-                    return;
-
-                if (editComponent.__Prototype().PartUnits != __display_part_.PartUnits)
-                {
-                    MessageBox.Show("Component units do not match the display part units");
-                    return;
-                }
-
-                using (session_.__UsingSuppressDisplay())
-                {
-                    Part addRefSetPart = (Part)editComponent.Prototype;
-
-                    using (session_.__UsingDisplayPartReset())
-                    {
-                        __display_part_ = addRefSetPart;
-
-                        if (__display_part_.__HasReferenceSet("EDIT"))
-                            using (session_.__UsingDoUpdate("Delete Reference Set"))
-                                __display_part_.__ReferenceSets("EDIT").__Delete();
-
-                        // create edit reference set
-                        using (session_.__UsingDoUpdate("Create New Reference Set"))
-                        {
-                            ReferenceSet editRefSet = __work_part_.CreateReferenceSet();
-                            NXObject[] removeComps = editRefSet.AskAllDirectMembers();
-                            editRefSet.RemoveObjectsFromReferenceSet(removeComps);
-                            editRefSet.SetAddComponentsAutomatically(false, false);
-                            editRefSet.SetName("EDIT");
-
-                            // get all construction objects to add to reference set
-                            List<NXObject> constructionObjects = new List<NXObject>();
-
-                            for (int i = 1; i < 11; i++)
-                            {
-                                NXObject[] layerObjects = __display_part_.Layers.GetAllObjectsOnLayer(i);
-
-                                foreach (NXObject addObj in layerObjects)
-                                    constructionObjects.Add(addObj);
-                            }
-
-                            editRefSet.AddObjectsToReferenceSet(constructionObjects.ToArray());
-                        }
-                    }
-                }
-
-                __work_component_ = editComponent;
-                SetWcsToWorkPart(editComponent);
-                __work_component_.__Translucency(75);
-                editComponent.__ReferenceSet("EDIT");
-                __display_part_.Layers.WorkLayer = 3;
-                buttonEditConstruction.Enabled = false;
-                buttonEndEditConstruction.Enabled = true;
-            }
-            catch (Exception ex)
-            {
-                buttonReset.Enabled = true;
-                ex.__PrintException();
-            }
-        }
-
-        private void EndEditConstruction()
-        {
-            try
-            {
-                __work_component_.__Translucency(0);
-                __display_part_.Layers.WorkLayer = 1;
-
-                using (session_.__UsingDoUpdate("Delete Reference Set"))
-                {
-                    __work_component_.__ReferenceSet("BODY");
-                    __work_part_.__ReferenceSets("EDIT").__Delete();
-                }
-
-                buttonExit.Enabled = true;
-            }
-            catch (Exception ex)
-            {
-                ex.__PrintException();
-            }
-            finally
-            {
-                buttonEditConstruction.Enabled = true;
-                buttonEndEditConstruction.Enabled = false;
-            }
-        }
-
-
         private void ResetNonBlockError()
         {
             EnableForm();
-            buttonEditConstruction.Enabled = true;
-            buttonEndEditConstruction.Enabled = true;
             buttonReset.Enabled = true;
             buttonExit.Enabled = true;
             _updateComponent = null;
@@ -1575,8 +1462,6 @@ namespace TSG_Library.UFuncs
 
         private void DisableForm()
         {
-            buttonEditConstruction.Enabled = false;
-            buttonEndEditConstruction.Enabled = false;
             buttonEditDynamic.Enabled = false;
             buttonEditMove.Enabled = false;
             buttonEditMatch.Enabled = false;
@@ -1591,8 +1476,6 @@ namespace TSG_Library.UFuncs
 
         private void EnableForm()
         {
-            buttonEditConstruction.Enabled = false;
-            buttonEndEditConstruction.Enabled = false;
             buttonEditDynamic.Enabled = true;
             buttonEditMove.Enabled = true;
             buttonEditMatch.Enabled = true;
@@ -3677,7 +3560,6 @@ namespace TSG_Library.UFuncs
           IntPtr motionCbData
       )
         {
-            Tag viewTag;
             ufsession_.Ui.LockUgAccess(UF_UI_FROM_CUSTOM);
 
             ufsession_.Ui.SpecifyScreenPosition(
@@ -3685,7 +3567,7 @@ namespace TSG_Library.UFuncs
                 MotionCallback,
                 motionCbData,
                 screenPos,
-                out viewTag,
+                out Tag viewTag,
                 out int response
             );
 
@@ -3733,7 +3615,6 @@ namespace TSG_Library.UFuncs
             IntPtr motionCbData
         )
         {
-            Tag viewTag;
             ufsession_.Ui.LockUgAccess(UF_UI_FROM_CUSTOM);
             SetModelingView();
             ufsession_.Ui.SpecifyScreenPosition(
@@ -3741,7 +3622,7 @@ namespace TSG_Library.UFuncs
                 MotionCallback,
                 motionCbData,
                 screenPos,
-                out viewTag,
+                out Tag viewTag,
                 out int response
             );
 
@@ -3786,7 +3667,6 @@ namespace TSG_Library.UFuncs
             IntPtr motionCbData
         )
         {
-            Tag viewTag;
             ufsession_.Ui.LockUgAccess(UF_UI_FROM_CUSTOM);
             SetModelingView();
             ufsession_.Ui.SpecifyScreenPosition(
@@ -3794,7 +3674,7 @@ namespace TSG_Library.UFuncs
                 MotionCallback,
                 motionCbData,
                 screenPos,
-                out viewTag,
+                out Tag viewTag,
                 out int response
             );
 
