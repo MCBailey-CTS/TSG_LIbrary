@@ -1,8 +1,10 @@
 ﻿using NXOpen;
+using NXOpen.Assemblies;
 using System;
 using System.Linq;
 using TSG_Library.Attributes;
 using TSG_Library.Extensions;
+using static TSG_Library.Extensions.Extensions;
 
 namespace TSG_Library.UFuncs
 {
@@ -11,7 +13,7 @@ namespace TSG_Library.UFuncs
     {
         public override void execute()
         {
-            var selected_comps = Ui.Selection.SelectManyComponents();
+            var selected_comps = Ui.Selection.SelectManyComponents(ufunc_rev_name);
 
             if (selected_comps.Length == 0)
                 return;
@@ -20,37 +22,66 @@ namespace TSG_Library.UFuncs
                 .Distinct()
                 .ToArray();
 
-            foreach(var part in selected_parts )
-            {
-                if (!part.__HasReferenceSet("BODY"))
-                    continue;
+            foreach (var part in selected_parts)
+                using (session_.__UsingDisplayPartReset())
+                {
+                    __work_part_ = part;
 
-                var refset = part.__ReferenceSets("BODY");
+                    var layer1Objects = part.Layers.GetAllObjectsOnLayer(1).ToHashSet();
 
-                var curves = refset.AskAllDirectMembers()
-                    .OfType<Curve>()
-                    .ToList();
+                    var layer1Count = layer1Objects.Count();
 
-                curves.FindAll(c => c.Layer == 1).ForEach(c => c.__Layer(3));
+                    var solidBodies = layer1Objects.OfType<Body>()
+                        .Where(b => b.IsSolidBody)
+                        .ToHashSet();
 
-                refset.RemoveObjectsFromReferenceSet(curves.ToArray<NXObject>());
+                    layer1Objects.OfType<Curve>().ToList().ForEach(c => c.__Layer(3));
+                    layer1Objects.OfType<Point>().ToList().ForEach(p => p.__Layer(9));
+                    layer1Objects.OfType<DatumAxis>().ToList().ForEach(p => p.__Layer(255));
+                    layer1Objects.OfType<DatumPlane>().ToList().ForEach(p => p.__Layer(255));
+                    layer1Objects.OfType<CoordinateSystem>().ToList().ForEach(p => p.__Layer(255));
 
-                var datum_planes = refset.AskAllDirectMembers()
-                    .OfType<Curve>()
-                    .ToList();
+                    layer1Objects.OfType<Body>()
+                        .Where(b => b.IsSheetBody)
+                        .ToList()
+                        .ForEach(b => b.__Layer(10));
 
-                curves.FindAll(c => c.Layer == 1).ForEach(c => c.__Layer(3));
+                    part.Layers.GetAllObjectsOnLayer(1).Except(solidBodies)
+                        .OfType<DisplayableObject>()
+                        .ToList()
+                        .ForEach(o => o.__Layer(11));
 
-                refset.RemoveObjectsFromReferenceSet(curves.ToArray<NXObject>());
+                    if (!part.__HasReferenceSet("BODY"))
+                        continue;
 
-                // only objects on layer 1.
+                    var refset = part.__ReferenceSets("BODY");
 
-                // move curves -> 3
-                // datum csys -> 11
-                // datum plane -> 10
-                // sheet bodies -> 10
-                // all other objects -. 70
-            }
+                    var components = refset.AskAllDirectMembers()
+                        .OfType<Component>()
+                        .ToArray();
+
+                    var bodies = refset.AskAllDirectMembers()
+                        .OfType<Body>()
+                        .Where(b => b.IsSolidBody)
+                        .ToArray();
+
+                    var edges = bodies.SelectMany(b => b.GetEdges()).ToArray();
+                    var faces = bodies.SelectMany(b => b.GetFaces()).ToArray();
+
+                    var objects = refset.AskAllDirectMembers()
+                        .Except(components)
+                        .Except(bodies)
+                        .Except(edges)
+                        .Except(faces)
+                        .OfType<NXObject>()
+                        .ToArray();
+
+                    if (objects.Length == 0)
+                        continue;
+
+                    refset.RemoveObjectsFromReferenceSet(objects);
+
+                }
         }
     }
 }

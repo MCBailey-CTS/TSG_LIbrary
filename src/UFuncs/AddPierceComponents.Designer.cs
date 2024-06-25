@@ -48,11 +48,9 @@
             // 
             this.grpBoxUnits.Controls.Add(this.rdoEnglish);
             this.grpBoxUnits.Controls.Add(this.rdoMetric);
-            this.grpBoxUnits.Location = new System.Drawing.Point(16, 15);
-            this.grpBoxUnits.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.grpBoxUnits.Location = new System.Drawing.Point(12, 12);
             this.grpBoxUnits.Name = "grpBoxUnits";
-            this.grpBoxUnits.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.grpBoxUnits.Size = new System.Drawing.Size(177, 60);
+            this.grpBoxUnits.Size = new System.Drawing.Size(133, 49);
             this.grpBoxUnits.TabIndex = 0;
             this.grpBoxUnits.TabStop = false;
             this.grpBoxUnits.Text = "Units";
@@ -60,10 +58,9 @@
             // rdoEnglish
             // 
             this.rdoEnglish.AutoSize = true;
-            this.rdoEnglish.Location = new System.Drawing.Point(91, 25);
-            this.rdoEnglish.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rdoEnglish.Location = new System.Drawing.Point(68, 20);
             this.rdoEnglish.Name = "rdoEnglish";
-            this.rdoEnglish.Size = new System.Drawing.Size(72, 20);
+            this.rdoEnglish.Size = new System.Drawing.Size(59, 17);
             this.rdoEnglish.TabIndex = 1;
             this.rdoEnglish.TabStop = true;
             this.rdoEnglish.Text = "English";
@@ -73,10 +70,9 @@
             // 
             this.rdoMetric.AutoSize = true;
             this.rdoMetric.Checked = true;
-            this.rdoMetric.Location = new System.Drawing.Point(9, 25);
-            this.rdoMetric.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rdoMetric.Location = new System.Drawing.Point(7, 20);
             this.rdoMetric.Name = "rdoMetric";
-            this.rdoMetric.Size = new System.Drawing.Size(64, 20);
+            this.rdoMetric.Size = new System.Drawing.Size(54, 17);
             this.rdoMetric.TabIndex = 0;
             this.rdoMetric.TabStop = true;
             this.rdoMetric.Text = "Metric";
@@ -90,39 +86,34 @@
             this.grpBoxAdd.Controls.Add(this.chkRetainer);
             this.grpBoxAdd.Controls.Add(this.chkButton);
             this.grpBoxAdd.Controls.Add(this.chkPunch);
-            this.grpBoxAdd.Location = new System.Drawing.Point(16, 111);
-            this.grpBoxAdd.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.grpBoxAdd.Location = new System.Drawing.Point(12, 90);
             this.grpBoxAdd.Name = "grpBoxAdd";
-            this.grpBoxAdd.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.grpBoxAdd.Size = new System.Drawing.Size(177, 119);
+            this.grpBoxAdd.Size = new System.Drawing.Size(133, 97);
             this.grpBoxAdd.TabIndex = 1;
             this.grpBoxAdd.TabStop = false;
             this.grpBoxAdd.Text = "Add";
             // 
             // txtRetainer
             // 
-            this.txtRetainer.Location = new System.Drawing.Point(105, 81);
-            this.txtRetainer.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtRetainer.Location = new System.Drawing.Point(79, 66);
             this.txtRetainer.Name = "txtRetainer";
-            this.txtRetainer.Size = new System.Drawing.Size(63, 22);
+            this.txtRetainer.Size = new System.Drawing.Size(48, 20);
             this.txtRetainer.TabIndex = 2;
             this.txtRetainer.TabStop = false;
             // 
             // txtButton
             // 
-            this.txtButton.Location = new System.Drawing.Point(105, 52);
-            this.txtButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtButton.Location = new System.Drawing.Point(79, 42);
             this.txtButton.Name = "txtButton";
-            this.txtButton.Size = new System.Drawing.Size(63, 22);
+            this.txtButton.Size = new System.Drawing.Size(48, 20);
             this.txtButton.TabIndex = 1;
             this.txtButton.TabStop = false;
             // 
             // txtPunch
             // 
-            this.txtPunch.Location = new System.Drawing.Point(105, 21);
-            this.txtPunch.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtPunch.Location = new System.Drawing.Point(79, 17);
             this.txtPunch.Name = "txtPunch";
-            this.txtPunch.Size = new System.Drawing.Size(63, 22);
+            this.txtPunch.Size = new System.Drawing.Size(48, 20);
             this.txtPunch.TabIndex = 0;
             this.txtPunch.TabStop = false;
             // 
@@ -131,10 +122,9 @@
             this.chkRetainer.AutoSize = true;
             this.chkRetainer.Checked = true;
             this.chkRetainer.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkRetainer.Location = new System.Drawing.Point(9, 84);
-            this.chkRetainer.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkRetainer.Location = new System.Drawing.Point(7, 68);
             this.chkRetainer.Name = "chkRetainer";
-            this.chkRetainer.Size = new System.Drawing.Size(80, 20);
+            this.chkRetainer.Size = new System.Drawing.Size(66, 17);
             this.chkRetainer.TabIndex = 2;
             this.chkRetainer.Text = "Retainer";
             this.chkRetainer.UseVisualStyleBackColor = true;
@@ -144,10 +134,9 @@
             this.chkButton.AutoSize = true;
             this.chkButton.Checked = true;
             this.chkButton.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkButton.Location = new System.Drawing.Point(9, 54);
-            this.chkButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkButton.Location = new System.Drawing.Point(7, 44);
             this.chkButton.Name = "chkButton";
-            this.chkButton.Size = new System.Drawing.Size(66, 20);
+            this.chkButton.Size = new System.Drawing.Size(57, 17);
             this.chkButton.TabIndex = 1;
             this.chkButton.Text = "Button";
             this.chkButton.UseVisualStyleBackColor = true;
@@ -157,20 +146,18 @@
             this.chkPunch.AutoSize = true;
             this.chkPunch.Checked = true;
             this.chkPunch.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkPunch.Location = new System.Drawing.Point(9, 25);
-            this.chkPunch.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkPunch.Location = new System.Drawing.Point(7, 20);
             this.chkPunch.Name = "chkPunch";
-            this.chkPunch.Size = new System.Drawing.Size(66, 20);
+            this.chkPunch.Size = new System.Drawing.Size(57, 17);
             this.chkPunch.TabIndex = 0;
             this.chkPunch.Text = "Punch";
             this.chkPunch.UseVisualStyleBackColor = true;
             // 
             // btnSelect
             // 
-            this.btnSelect.Location = new System.Drawing.Point(17, 239);
-            this.btnSelect.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnSelect.Location = new System.Drawing.Point(13, 194);
             this.btnSelect.Name = "btnSelect";
-            this.btnSelect.Size = new System.Drawing.Size(176, 28);
+            this.btnSelect.Size = new System.Drawing.Size(132, 23);
             this.btnSelect.TabIndex = 2;
             this.btnSelect.Text = "Select Slug";
             this.btnSelect.UseVisualStyleBackColor = true;
@@ -179,30 +166,30 @@
             // chkAssembly
             // 
             this.chkAssembly.AutoSize = true;
-            this.chkAssembly.Location = new System.Drawing.Point(25, 82);
-            this.chkAssembly.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkAssembly.Location = new System.Drawing.Point(19, 67);
             this.chkAssembly.Name = "chkAssembly";
-            this.chkAssembly.Size = new System.Drawing.Size(128, 20);
+            this.chkAssembly.Size = new System.Drawing.Size(100, 17);
             this.chkAssembly.TabIndex = 3;
             this.chkAssembly.Text = "Same Assembly";
             this.chkAssembly.UseVisualStyleBackColor = true;
             // 
-            // AddPierceComponentsForm
+            // AddPierceComponents
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(208, 279);
+            this.ClientSize = new System.Drawing.Size(156, 227);
             this.Controls.Add(this.btnSelect);
             this.Controls.Add(this.chkAssembly);
             this.Controls.Add(this.grpBoxAdd);
             this.Controls.Add(this.grpBoxUnits);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "AddPierceComponentsForm";
+            this.Name = "AddPierceComponents";
             this.ShowIcon = false;
             this.Text = "1919";
             this.TopMost = true;
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.AddPierceComponents_FormClosed);
+            this.Load += new System.EventHandler(this.AddPierceComponents_Load);
             this.grpBoxUnits.ResumeLayout(false);
             this.grpBoxUnits.PerformLayout();
             this.grpBoxAdd.ResumeLayout(false);

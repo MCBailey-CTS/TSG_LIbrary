@@ -1423,5 +1423,17 @@ namespace TSG_Library.UFuncs
         }
 
         #endregion
+
+        private void AddPierceComponents_Load(object sender, EventArgs e)
+        {
+            Text = AssemblyFileVersion;
+            Location = Properties.Settings.Default.add_pierce_components_form_window_location;
+        }
+
+        private void AddPierceComponents_FormClosed(object sender, System.Windows.Forms.FormClosedEventArgs e)
+        {
+            Properties.Settings.Default.add_pierce_components_form_window_location = Location;
+            Properties.Settings.Default.Save();
+        }
     }
 }

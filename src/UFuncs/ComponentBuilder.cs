@@ -248,6 +248,11 @@ namespace TSG_Library.UFuncs
 
         private void UpdateSessionButton_Click(object sender, EventArgs e)
         {
+            UpdateForm();
+        }
+
+        private void UpdateForm()
+        {
             try
             {
                 _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
@@ -1245,8 +1250,10 @@ namespace TSG_Library.UFuncs
 
                 __work_part_ = _originalWorkPart;
                 UI.GetUI().NXMessageBox.Show("Caught exception", NXMessageBox.DialogType.Error, ex.Message);
-                _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
-                _originalWorkPart = _workPart; _originalDisplayPart = _displayPart; ;
+                _workPart = session_.Parts.Work;
+                _displayPart = session_.Parts.Display;
+                _originalWorkPart = _workPart;
+                _originalDisplayPart = _displayPart;
             }
             finally
             {
@@ -1260,6 +1267,7 @@ namespace TSG_Library.UFuncs
                 }
             }
         }
+
 
         private void SaveAsDiffUnits(Component compSaveAs, string compName, Part selectedPart)
         {
@@ -1331,7 +1339,8 @@ namespace TSG_Library.UFuncs
             _isSaveAs = true;
 
             session_.Parts.SetWork((Part)compSaveAs.Prototype);
-            _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
+            _workPart = session_.Parts.Work;
+            _displayPart = session_.Parts.Display;
 
             int indexOf = _originalWorkPart.FullPath.LastIndexOf("-");
             string fullName = _originalWorkPart.FullPath.Remove(indexOf + 1);
@@ -1382,9 +1391,11 @@ namespace TSG_Library.UFuncs
 
             session_.Parts.SetWork(_originalWorkPart);
 
-            _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
+            _workPart = session_.Parts.Work;
+            _displayPart = session_.Parts.Display;
 
-            _originalWorkPart = _workPart; _originalDisplayPart = _displayPart; ;
+            _originalWorkPart = _workPart;
+            _originalDisplayPart = _displayPart;
 
             _isNameReset = false;
         }
@@ -3287,6 +3298,89 @@ namespace TSG_Library.UFuncs
             {
                 ex.__PrintException();
             }
+        }
+
+        public enum CtsComponentColor
+        {
+            Orange = 11,
+            LightRedOrange = 113,
+            DarkDullGreen = 101,
+            ObscureDullGreen = 144,
+            LightDullAzure = 92,
+            MediumAzureCyan = 98,
+            MediumAzureBlue = 134,
+            AquaMarine = 14,
+            DarkWeakRed = 167,
+            DarkWeakMagenta = 166,
+            Purple = 12,
+            DarkHardOrange = 84,
+            DarkDullBlue = 171,
+            LightGrey = 87,
+            DarkGrey = 130
+        }
+
+        internal class CtsComponentType
+        {
+            public CtsComponentType(string name, CtsComponentColor color)
+            {
+                ColorName = name;
+                ComponentColor = (int)color;
+            }
+
+            public CtsComponentType(string attrName, string componentName)
+            {
+                AttributeName = attrName;
+                ComponentName = componentName;
+            }
+
+            public CtsComponentType(string attrName, string material, string componentName, CtsComponentColor color)
+            {
+                AttributeName = attrName;
+                Material = material;
+                ComponentName = componentName;
+                ComponentColor = (int)color;
+            }
+
+            public CtsComponentType(string attrName, string material, string componentName, CtsComponentColor color,
+                bool burnout, bool grind, bool dieset)
+            {
+                AttributeName = attrName;
+                Material = material;
+                ComponentName = componentName;
+                ComponentColor = (int)color;
+                IsBurnout = burnout;
+                IsDieset = dieset;
+                IsGrind = grind;
+            }
+
+            public string AttributeName { get; set; }
+
+            public string Material { get; set; }
+
+            public string ComponentName { get; set; }
+
+            public string ColorName { get; set; }
+
+            public int ComponentColor { get; set; }
+
+            public bool IsBurnout { get; set; }
+
+            public bool IsDieset { get; set; }
+
+            public bool IsGrind { get; set; }
+
+            public override string ToString()
+            {
+                return AttributeName == null
+                    ? string.Format("{0}", ColorName)
+                    : string.Format("{0}", ComponentName);
+            }
+        }
+
+        public enum CtsSubtoolColor
+        {
+            Blue = 211,
+            Yellow = 42
         }
     }
 }

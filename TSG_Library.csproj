@@ -303,25 +303,22 @@
     <Compile Include="src\UFuncs\CloneStripForm.Designer.cs">
       <DependentUpon>CloneStripForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\ComponentBuilder\ComponentBuilder.cs">
+    <Compile Include="src\UFuncs\ComponentBuilder.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\UFuncs\ComponentBuilder\ComponentBuilder.Designer.cs">
+    <Compile Include="src\UFuncs\ComponentBuilder.Designer.cs">
       <DependentUpon>ComponentBuilder.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\ComponentBuilder\CtsComponentColor.cs" />
-    <Compile Include="src\UFuncs\ComponentBuilder\CtsComponentType.cs" />
-    <Compile Include="src\UFuncs\ComponentBuilder\CtsSubtoolColor.cs" />
-    <Compile Include="src\UFuncs\ComponentBuilder\EditBlockForm.cs">
+    <Compile Include="src\UFuncs\EditBlockForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\UFuncs\ComponentBuilder\EditBlockForm.Designer.cs">
+    <Compile Include="src\UFuncs\EditBlockForm.Designer.cs">
       <DependentUpon>EditBlockForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\UFuncs\ComponentBuilder\EditSizeForm.cs">
+    <Compile Include="src\UFuncs\EditSizeForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\UFuncs\ComponentBuilder\EditSizeForm.Designer.cs">
+    <Compile Include="src\UFuncs\EditSizeForm.Designer.cs">
       <DependentUpon>EditSizeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="src\UFuncs\ConvertSplineToCircle.cs" />
@@ -654,13 +651,13 @@
     <EmbeddedResource Include="src\UFuncs\CloneStripForm.resx">
       <DependentUpon>CloneStripForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\ComponentBuilder\ComponentBuilder.resx">
+    <EmbeddedResource Include="src\UFuncs\ComponentBuilder.resx">
       <DependentUpon>ComponentBuilder.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\ComponentBuilder\EditBlockForm.resx">
+    <EmbeddedResource Include="src\UFuncs\EditBlockForm.resx">
       <DependentUpon>EditBlockForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\UFuncs\ComponentBuilder\EditSizeForm.resx">
+    <EmbeddedResource Include="src\UFuncs\EditSizeForm.resx">
       <DependentUpon>EditSizeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\UFuncs\CopyAttributesForm.resx">

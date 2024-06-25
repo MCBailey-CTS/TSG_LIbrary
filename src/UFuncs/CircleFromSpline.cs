@@ -18,20 +18,20 @@ namespace TSG_Library.UFuncs
     {
         public override void execute()
         {
-            if (Session.GetSession().Parts.Display is null)
+            if (__display_part_ is null)
             {
                 print_("There is no displayed part loaded");
                 return;
             }
 
-            Spline selObject = Selection.SelectSingleSpline();
+            Spline selObject = Selection.SelectSingleSpline(ufunc_rev_name);
 
             if (selObject is null)
                 return;
 
             do
             {
-                Session.GetSession().SetUndoMark(Session.MarkVisibility.Visible, "CreateOrNull Arc");
+                session_.SetUndoMark(Session.MarkVisibility.Visible, "CircleFromSpline");
                 Spline spline1 = selObject;
 
                 double[] limits = new double[2];
@@ -40,32 +40,29 @@ namespace TSG_Library.UFuncs
                 double[] pointOnCurve3 = new double[3];
                 double[] derivatives = new double[3];
 
-                UFSession.GetUFSession().Eval.Initialize(spline1.Tag, out IntPtr evaluator);
-                UFSession.GetUFSession().Eval.AskLimits(evaluator, limits);
+                ufsession_.Eval.Initialize(spline1.Tag, out IntPtr evaluator);
+                ufsession_.Eval.AskLimits(evaluator, limits);
 
-                UFSession.GetUFSession().Eval.Evaluate(evaluator, 0, limits[0], pointOnCurve1, derivatives);
-                UFSession.GetUFSession().Eval
-                    .Evaluate(evaluator, 0, (limits[1] - limits[0]) * .33, pointOnCurve2, derivatives);
-                UFSession.GetUFSession().Eval
-                    .Evaluate(evaluator, 0, (limits[1] - limits[0]) * .66, pointOnCurve3, derivatives);
+                ufsession_.Eval.Evaluate(evaluator, 0, limits[0], pointOnCurve1, derivatives);
+                ufsession_.Eval.Evaluate(evaluator, 0, (limits[1] - limits[0]) * .33, pointOnCurve2, derivatives);
+                ufsession_.Eval.Evaluate(evaluator, 0, (limits[1] - limits[0]) * .66, pointOnCurve3, derivatives);
 
-                Point3d startPoint1 = new Point3d(pointOnCurve1[0], pointOnCurve1[1], pointOnCurve1[2]);
-                Point3d pointOn1 = new Point3d(pointOnCurve2[0], pointOnCurve2[1], pointOnCurve2[2]);
-                Point3d endPoint1 = new Point3d(pointOnCurve3[0], pointOnCurve3[1], pointOnCurve3[2]);
+                Point3d startPoint1 = pointOnCurve1.__ToPoint3d();
+                Point3d pointOn1 = pointOnCurve2.__ToPoint3d();
+                Point3d endPoint1 = pointOnCurve3.__ToPoint3d();
 
-                Arc arc1 = Session.GetSession().Parts.Work.Curves
-                    .CreateArc(startPoint1, pointOn1, endPoint1, false, out _);
+                Arc arc1 = __work_part_.Curves.CreateArc(startPoint1, pointOn1, endPoint1, false, out _);
 
-                UFSession.GetUFSession().Curve.AskArcData(arc1.Tag, out UFCurve.Arc arcData);
+                ufsession_.Curve.AskArcData(arc1.Tag, out UFCurve.Arc arcData);
                 arcData.start_angle = 0;
                 arcData.end_angle = 2 * Math.PI;
 
-                UFSession.GetUFSession().Curve.EditArcData(arc1.Tag, ref arcData);
+                ufsession_.Curve.EditArcData(arc1.Tag, ref arcData);
 
                 NXObject[] selectedObjects1 = new NXObject[2];
                 selectedObjects1[0] = spline1;
                 selectedObjects1[1] = arc1;
-                Session.GetSession().Information.DisplayObjectsDetails(selectedObjects1);
+                session_.Information.DisplayObjectsDetails(selectedObjects1);
 
                 selObject = Selection.SelectSingleSpline();
             }
