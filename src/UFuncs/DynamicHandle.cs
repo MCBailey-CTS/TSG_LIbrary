@@ -5,7 +5,7 @@ using TSG_Library.Attributes;
 using TSG_Library.UFuncs;
 using static TSG_Library.Extensions.Extensions;
 
-namespace TSG_Library.Ufuncs
+namespace TSG_Library.UFuncs
 {
     [UFunc("dynamic-handle")]
     public class DynamicHandle : _UFunc

@@ -57,8 +57,6 @@
             this.listBoxMaterial = new System.Windows.Forms.ListBox();
             this.textBoxUserMaterial = new System.Windows.Forms.TextBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.buttonEditBlock = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.chk4Digits = new System.Windows.Forms.CheckBox();
             this.chkAnyAssembly = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -74,16 +72,14 @@
             this.groupBoxColor.SuspendLayout();
             this.groupBoxEditAssembly.SuspendLayout();
             this.groupBoxWorkPlane.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.groupBoxEditBlock.SuspendLayout();
             this.SuspendLayout();
             // 
             // textBoxDetailNumber
             // 
-            this.textBoxDetailNumber.Location = new System.Drawing.Point(13, 102);
-            this.textBoxDetailNumber.Margin = new System.Windows.Forms.Padding(4);
+            this.textBoxDetailNumber.Location = new System.Drawing.Point(10, 83);
             this.textBoxDetailNumber.Name = "textBoxDetailNumber";
-            this.textBoxDetailNumber.Size = new System.Drawing.Size(132, 22);
+            this.textBoxDetailNumber.Size = new System.Drawing.Size(100, 20);
             this.textBoxDetailNumber.TabIndex = 1;
             this.textBoxDetailNumber.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TextBoxDetailNumber_MouseClick);
             this.textBoxDetailNumber.TextChanged += new System.EventHandler(this.TextBoxDetailNumber_TextChanged);
@@ -92,10 +88,9 @@
             // 
             this.comboBoxGrid.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxGrid.FormattingEnabled = true;
-            this.comboBoxGrid.Location = new System.Drawing.Point(12, 23);
-            this.comboBoxGrid.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxGrid.Location = new System.Drawing.Point(9, 19);
             this.comboBoxGrid.Name = "comboBoxGrid";
-            this.comboBoxGrid.Size = new System.Drawing.Size(111, 24);
+            this.comboBoxGrid.Size = new System.Drawing.Size(84, 21);
             this.comboBoxGrid.TabIndex = 0;
             this.comboBoxGrid.SelectedIndexChanged += new System.EventHandler(this.ComboBoxGrid_SelectedIndexChanged);
             // 
@@ -103,10 +98,9 @@
             // 
             this.comboBoxCompName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxCompName.FormattingEnabled = true;
-            this.comboBoxCompName.Location = new System.Drawing.Point(13, 134);
-            this.comboBoxCompName.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxCompName.Location = new System.Drawing.Point(10, 109);
             this.comboBoxCompName.Name = "comboBoxCompName";
-            this.comboBoxCompName.Size = new System.Drawing.Size(132, 24);
+            this.comboBoxCompName.Size = new System.Drawing.Size(100, 21);
             this.comboBoxCompName.TabIndex = 2;
             this.comboBoxCompName.SelectedIndexChanged += new System.EventHandler(this.ComboBoxCompName_SelectedIndexChanged);
             // 
@@ -123,11 +117,9 @@
             this.groupBoxColor.Controls.Add(this.buttonDarkDullGreen);
             this.groupBoxColor.Controls.Add(this.buttonObscureDullGreen);
             this.groupBoxColor.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBoxColor.Location = new System.Drawing.Point(155, 102);
-            this.groupBoxColor.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBoxColor.Location = new System.Drawing.Point(116, 83);
             this.groupBoxColor.Name = "groupBoxColor";
-            this.groupBoxColor.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBoxColor.Size = new System.Drawing.Size(115, 185);
+            this.groupBoxColor.Size = new System.Drawing.Size(86, 150);
             this.groupBoxColor.TabIndex = 5;
             this.groupBoxColor.TabStop = false;
             this.groupBoxColor.Text = "Color";
@@ -136,10 +128,9 @@
             // 
             this.checkBoxUpperComp.Appearance = System.Windows.Forms.Appearance.Button;
             this.checkBoxUpperComp.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.checkBoxUpperComp.Location = new System.Drawing.Point(8, 149);
-            this.checkBoxUpperComp.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBoxUpperComp.Location = new System.Drawing.Point(6, 121);
             this.checkBoxUpperComp.Name = "checkBoxUpperComp";
-            this.checkBoxUpperComp.Size = new System.Drawing.Size(96, 25);
+            this.checkBoxUpperComp.Size = new System.Drawing.Size(72, 20);
             this.checkBoxUpperComp.TabIndex = 16;
             this.checkBoxUpperComp.Text = "Upper";
             this.checkBoxUpperComp.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -149,10 +140,9 @@
             // 
             this.buttonDarkDullBlue.BackColor = System.Drawing.Color.Blue;
             this.buttonDarkDullBlue.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.buttonDarkDullBlue.Location = new System.Drawing.Point(61, 85);
-            this.buttonDarkDullBlue.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonDarkDullBlue.Location = new System.Drawing.Point(46, 69);
             this.buttonDarkDullBlue.Name = "buttonDarkDullBlue";
-            this.buttonDarkDullBlue.Size = new System.Drawing.Size(45, 25);
+            this.buttonDarkDullBlue.Size = new System.Drawing.Size(34, 20);
             this.buttonDarkDullBlue.TabIndex = 11;
             this.buttonDarkDullBlue.UseVisualStyleBackColor = false;
             this.buttonDarkDullBlue.Click += new System.EventHandler(this.ButtonDarkDullBlue_Click);
@@ -161,10 +151,9 @@
             // 
             this.buttonPurple.BackColor = System.Drawing.Color.MediumOrchid;
             this.buttonPurple.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.buttonPurple.Location = new System.Drawing.Point(61, 53);
-            this.buttonPurple.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonPurple.Location = new System.Drawing.Point(46, 43);
             this.buttonPurple.Name = "buttonPurple";
-            this.buttonPurple.Size = new System.Drawing.Size(45, 25);
+            this.buttonPurple.Size = new System.Drawing.Size(34, 20);
             this.buttonPurple.TabIndex = 10;
             this.buttonPurple.UseVisualStyleBackColor = false;
             this.buttonPurple.Click += new System.EventHandler(this.ButtonPurple_Click);
@@ -173,10 +162,9 @@
             // 
             this.buttonDarkWeakRed.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.buttonDarkWeakRed.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.buttonDarkWeakRed.Location = new System.Drawing.Point(61, 117);
-            this.buttonDarkWeakRed.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonDarkWeakRed.Location = new System.Drawing.Point(46, 95);
             this.buttonDarkWeakRed.Name = "buttonDarkWeakRed";
-            this.buttonDarkWeakRed.Size = new System.Drawing.Size(45, 25);
+            this.buttonDarkWeakRed.Size = new System.Drawing.Size(34, 20);
             this.buttonDarkWeakRed.TabIndex = 8;
             this.buttonDarkWeakRed.UseVisualStyleBackColor = false;
             this.buttonDarkWeakRed.Click += new System.EventHandler(this.ButtonDarkWeakRed_Click);
@@ -185,10 +173,9 @@
             // 
             this.buttonMedAzureBlue.BackColor = System.Drawing.Color.RoyalBlue;
             this.buttonMedAzureBlue.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.buttonMedAzureBlue.Location = new System.Drawing.Point(8, 53);
-            this.buttonMedAzureBlue.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonMedAzureBlue.Location = new System.Drawing.Point(6, 43);
             this.buttonMedAzureBlue.Name = "buttonMedAzureBlue";
-            this.buttonMedAzureBlue.Size = new System.Drawing.Size(45, 25);
+            this.buttonMedAzureBlue.Size = new System.Drawing.Size(34, 20);
             this.buttonMedAzureBlue.TabIndex = 4;
             this.buttonMedAzureBlue.UseVisualStyleBackColor = false;
             this.buttonMedAzureBlue.Click += new System.EventHandler(this.ButtonMedAzureBlue_Click);
@@ -197,10 +184,9 @@
             // 
             this.buttonDarkWeakMagenta.BackColor = System.Drawing.Color.Purple;
             this.buttonDarkWeakMagenta.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.buttonDarkWeakMagenta.Location = new System.Drawing.Point(8, 85);
-            this.buttonDarkWeakMagenta.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonDarkWeakMagenta.Location = new System.Drawing.Point(6, 69);
             this.buttonDarkWeakMagenta.Name = "buttonDarkWeakMagenta";
-            this.buttonDarkWeakMagenta.Size = new System.Drawing.Size(45, 25);
+            this.buttonDarkWeakMagenta.Size = new System.Drawing.Size(34, 20);
             this.buttonDarkWeakMagenta.TabIndex = 9;
             this.buttonDarkWeakMagenta.UseVisualStyleBackColor = false;
             this.buttonDarkWeakMagenta.Click += new System.EventHandler(this.ButtonDarkWeakMagenta_Click);
@@ -209,10 +195,9 @@
             // 
             this.buttonAquamarine.BackColor = System.Drawing.Color.MediumAquamarine;
             this.buttonAquamarine.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.buttonAquamarine.Location = new System.Drawing.Point(8, 117);
-            this.buttonAquamarine.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonAquamarine.Location = new System.Drawing.Point(6, 95);
             this.buttonAquamarine.Name = "buttonAquamarine";
-            this.buttonAquamarine.Size = new System.Drawing.Size(45, 25);
+            this.buttonAquamarine.Size = new System.Drawing.Size(34, 20);
             this.buttonAquamarine.TabIndex = 3;
             this.buttonAquamarine.UseVisualStyleBackColor = false;
             this.buttonAquamarine.Click += new System.EventHandler(this.ButtonAquamarine_Click);
@@ -221,10 +206,9 @@
             // 
             this.buttonDarkDullGreen.BackColor = System.Drawing.Color.OliveDrab;
             this.buttonDarkDullGreen.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.buttonDarkDullGreen.Location = new System.Drawing.Point(61, 21);
-            this.buttonDarkDullGreen.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonDarkDullGreen.Location = new System.Drawing.Point(46, 17);
             this.buttonDarkDullGreen.Name = "buttonDarkDullGreen";
-            this.buttonDarkDullGreen.Size = new System.Drawing.Size(45, 25);
+            this.buttonDarkDullGreen.Size = new System.Drawing.Size(34, 20);
             this.buttonDarkDullGreen.TabIndex = 5;
             this.buttonDarkDullGreen.UseVisualStyleBackColor = false;
             this.buttonDarkDullGreen.Click += new System.EventHandler(this.ButtonDarkDullGreen_Click);
@@ -233,10 +217,9 @@
             // 
             this.buttonObscureDullGreen.BackColor = System.Drawing.Color.DarkOliveGreen;
             this.buttonObscureDullGreen.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.buttonObscureDullGreen.Location = new System.Drawing.Point(8, 21);
-            this.buttonObscureDullGreen.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonObscureDullGreen.Location = new System.Drawing.Point(6, 17);
             this.buttonObscureDullGreen.Name = "buttonObscureDullGreen";
-            this.buttonObscureDullGreen.Size = new System.Drawing.Size(45, 25);
+            this.buttonObscureDullGreen.Size = new System.Drawing.Size(34, 20);
             this.buttonObscureDullGreen.TabIndex = 2;
             this.buttonObscureDullGreen.UseVisualStyleBackColor = false;
             this.buttonObscureDullGreen.Click += new System.EventHandler(this.ButtonObscureDullGreen_Click);
@@ -245,10 +228,9 @@
             // 
             this.changeColorCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
             this.changeColorCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.changeColorCheckBox.Location = new System.Drawing.Point(155, 294);
-            this.changeColorCheckBox.Margin = new System.Windows.Forms.Padding(4);
+            this.changeColorCheckBox.Location = new System.Drawing.Point(116, 239);
             this.changeColorCheckBox.Name = "changeColorCheckBox";
-            this.changeColorCheckBox.Size = new System.Drawing.Size(115, 28);
+            this.changeColorCheckBox.Size = new System.Drawing.Size(86, 23);
             this.changeColorCheckBox.TabIndex = 15;
             this.changeColorCheckBox.Text = "Change Color";
             this.changeColorCheckBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -258,10 +240,9 @@
             // updateSessionButton
             // 
             this.updateSessionButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.updateSessionButton.Location = new System.Drawing.Point(13, 42);
-            this.updateSessionButton.Margin = new System.Windows.Forms.Padding(4);
+            this.updateSessionButton.Location = new System.Drawing.Point(10, 34);
             this.updateSessionButton.Name = "updateSessionButton";
-            this.updateSessionButton.Size = new System.Drawing.Size(256, 25);
+            this.updateSessionButton.Size = new System.Drawing.Size(192, 20);
             this.updateSessionButton.TabIndex = 0;
             this.updateSessionButton.Text = "Update Session";
             this.updateSessionButton.UseVisualStyleBackColor = true;
@@ -277,11 +258,9 @@
             this.groupBoxEditAssembly.Controls.Add(this.copyButton);
             this.groupBoxEditAssembly.Controls.Add(this.saveAsButton);
             this.groupBoxEditAssembly.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBoxEditAssembly.Location = new System.Drawing.Point(14, 725);
-            this.groupBoxEditAssembly.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBoxEditAssembly.Location = new System.Drawing.Point(9, 526);
             this.groupBoxEditAssembly.Name = "groupBoxEditAssembly";
-            this.groupBoxEditAssembly.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBoxEditAssembly.Size = new System.Drawing.Size(253, 192);
+            this.groupBoxEditAssembly.Size = new System.Drawing.Size(190, 156);
             this.groupBoxEditAssembly.TabIndex = 8;
             this.groupBoxEditAssembly.TabStop = false;
             this.groupBoxEditAssembly.Text = "Edit Assembly";
@@ -289,10 +268,9 @@
             // btnMakeUnique
             // 
             this.btnMakeUnique.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.btnMakeUnique.Location = new System.Drawing.Point(8, 87);
-            this.btnMakeUnique.Margin = new System.Windows.Forms.Padding(4);
+            this.btnMakeUnique.Location = new System.Drawing.Point(6, 71);
             this.btnMakeUnique.Name = "btnMakeUnique";
-            this.btnMakeUnique.Size = new System.Drawing.Size(232, 25);
+            this.btnMakeUnique.Size = new System.Drawing.Size(174, 20);
             this.btnMakeUnique.TabIndex = 7;
             this.btnMakeUnique.Text = "Make Unique";
             this.btnMakeUnique.UseVisualStyleBackColor = true;
@@ -301,10 +279,9 @@
             // buttonLwrRetAssm
             // 
             this.buttonLwrRetAssm.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonLwrRetAssm.Location = new System.Drawing.Point(131, 55);
-            this.buttonLwrRetAssm.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonLwrRetAssm.Location = new System.Drawing.Point(98, 45);
             this.buttonLwrRetAssm.Name = "buttonLwrRetAssm";
-            this.buttonLwrRetAssm.Size = new System.Drawing.Size(112, 25);
+            this.buttonLwrRetAssm.Size = new System.Drawing.Size(84, 20);
             this.buttonLwrRetAssm.TabIndex = 6;
             this.buttonLwrRetAssm.Text = "Lwr Ret Assm";
             this.buttonLwrRetAssm.UseVisualStyleBackColor = true;
@@ -313,10 +290,9 @@
             // buttonAutoLwr
             // 
             this.buttonAutoLwr.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonAutoLwr.Location = new System.Drawing.Point(11, 55);
-            this.buttonAutoLwr.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonAutoLwr.Location = new System.Drawing.Point(8, 45);
             this.buttonAutoLwr.Name = "buttonAutoLwr";
-            this.buttonAutoLwr.Size = new System.Drawing.Size(112, 25);
+            this.buttonAutoLwr.Size = new System.Drawing.Size(84, 20);
             this.buttonAutoLwr.TabIndex = 3;
             this.buttonAutoLwr.Text = "Auto Lower";
             this.buttonAutoLwr.UseVisualStyleBackColor = true;
@@ -325,10 +301,9 @@
             // buttonAutoUpr
             // 
             this.buttonAutoUpr.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonAutoUpr.Location = new System.Drawing.Point(11, 23);
-            this.buttonAutoUpr.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonAutoUpr.Location = new System.Drawing.Point(8, 19);
             this.buttonAutoUpr.Name = "buttonAutoUpr";
-            this.buttonAutoUpr.Size = new System.Drawing.Size(112, 25);
+            this.buttonAutoUpr.Size = new System.Drawing.Size(84, 20);
             this.buttonAutoUpr.TabIndex = 4;
             this.buttonAutoUpr.Text = "Auto Upper";
             this.buttonAutoUpr.UseVisualStyleBackColor = true;
@@ -337,10 +312,9 @@
             // buttonUprRetAssm
             // 
             this.buttonUprRetAssm.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonUprRetAssm.Location = new System.Drawing.Point(131, 23);
-            this.buttonUprRetAssm.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonUprRetAssm.Location = new System.Drawing.Point(98, 19);
             this.buttonUprRetAssm.Name = "buttonUprRetAssm";
-            this.buttonUprRetAssm.Size = new System.Drawing.Size(112, 25);
+            this.buttonUprRetAssm.Size = new System.Drawing.Size(84, 20);
             this.buttonUprRetAssm.TabIndex = 5;
             this.buttonUprRetAssm.Text = "Upr Ret Assm";
             this.buttonUprRetAssm.UseVisualStyleBackColor = true;
@@ -349,10 +323,9 @@
             // copyButton
             // 
             this.copyButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.copyButton.Location = new System.Drawing.Point(9, 119);
-            this.copyButton.Margin = new System.Windows.Forms.Padding(4);
+            this.copyButton.Location = new System.Drawing.Point(7, 97);
             this.copyButton.Name = "copyButton";
-            this.copyButton.Size = new System.Drawing.Size(232, 25);
+            this.copyButton.Size = new System.Drawing.Size(174, 20);
             this.copyButton.TabIndex = 0;
             this.copyButton.Text = "Copy";
             this.copyButton.UseVisualStyleBackColor = true;
@@ -361,10 +334,9 @@
             // saveAsButton
             // 
             this.saveAsButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.saveAsButton.Location = new System.Drawing.Point(9, 151);
-            this.saveAsButton.Margin = new System.Windows.Forms.Padding(4);
+            this.saveAsButton.Location = new System.Drawing.Point(7, 123);
             this.saveAsButton.Name = "saveAsButton";
-            this.saveAsButton.Size = new System.Drawing.Size(232, 25);
+            this.saveAsButton.Size = new System.Drawing.Size(174, 20);
             this.saveAsButton.TabIndex = 2;
             this.saveAsButton.Text = "Save As";
             this.saveAsButton.UseVisualStyleBackColor = true;
@@ -375,11 +347,9 @@
             this.groupBoxWorkPlane.Controls.Add(this.buttonViewWcs);
             this.groupBoxWorkPlane.Controls.Add(this.comboBoxGrid);
             this.groupBoxWorkPlane.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBoxWorkPlane.Location = new System.Drawing.Point(14, 578);
-            this.groupBoxWorkPlane.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBoxWorkPlane.Location = new System.Drawing.Point(10, 470);
             this.groupBoxWorkPlane.Name = "groupBoxWorkPlane";
-            this.groupBoxWorkPlane.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBoxWorkPlane.Size = new System.Drawing.Size(256, 62);
+            this.groupBoxWorkPlane.Size = new System.Drawing.Size(192, 50);
             this.groupBoxWorkPlane.TabIndex = 6;
             this.groupBoxWorkPlane.TabStop = false;
             this.groupBoxWorkPlane.Text = "Work Plane";
@@ -387,10 +357,9 @@
             // buttonViewWcs
             // 
             this.buttonViewWcs.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonViewWcs.Location = new System.Drawing.Point(132, 23);
-            this.buttonViewWcs.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonViewWcs.Location = new System.Drawing.Point(99, 19);
             this.buttonViewWcs.Name = "buttonViewWcs";
-            this.buttonViewWcs.Size = new System.Drawing.Size(112, 26);
+            this.buttonViewWcs.Size = new System.Drawing.Size(84, 21);
             this.buttonViewWcs.TabIndex = 1;
             this.buttonViewWcs.Text = "View WCS";
             this.buttonViewWcs.UseVisualStyleBackColor = true;
@@ -399,56 +368,27 @@
             // listBoxMaterial
             // 
             this.listBoxMaterial.FormattingEnabled = true;
-            this.listBoxMaterial.ItemHeight = 16;
-            this.listBoxMaterial.Location = new System.Drawing.Point(13, 167);
-            this.listBoxMaterial.Margin = new System.Windows.Forms.Padding(4);
+            this.listBoxMaterial.Location = new System.Drawing.Point(10, 136);
             this.listBoxMaterial.Name = "listBoxMaterial";
             this.listBoxMaterial.ScrollAlwaysVisible = true;
-            this.listBoxMaterial.Size = new System.Drawing.Size(132, 116);
+            this.listBoxMaterial.Size = new System.Drawing.Size(100, 95);
             this.listBoxMaterial.TabIndex = 3;
             this.listBoxMaterial.SelectedIndexChanged += new System.EventHandler(this.ListBoxMaterial_SelectedIndexChanged);
             // 
             // textBoxUserMaterial
             // 
-            this.textBoxUserMaterial.Location = new System.Drawing.Point(13, 297);
-            this.textBoxUserMaterial.Margin = new System.Windows.Forms.Padding(4);
+            this.textBoxUserMaterial.Location = new System.Drawing.Point(10, 241);
             this.textBoxUserMaterial.Name = "textBoxUserMaterial";
-            this.textBoxUserMaterial.Size = new System.Drawing.Size(132, 22);
+            this.textBoxUserMaterial.Size = new System.Drawing.Size(100, 20);
             this.textBoxUserMaterial.TabIndex = 4;
             this.textBoxUserMaterial.TextChanged += new System.EventHandler(this.TextBoxUserMaterial_TextChanged);
-            // 
-            // buttonEditBlock
-            // 
-            this.buttonEditBlock.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonEditBlock.Location = new System.Drawing.Point(11, 23);
-            this.buttonEditBlock.Margin = new System.Windows.Forms.Padding(4);
-            this.buttonEditBlock.Name = "buttonEditBlock";
-            this.buttonEditBlock.Size = new System.Drawing.Size(236, 25);
-            this.buttonEditBlock.TabIndex = 23;
-            this.buttonEditBlock.Text = "Block Component";
-            this.buttonEditBlock.UseVisualStyleBackColor = true;
-            this.buttonEditBlock.Click += new System.EventHandler(this.ButtonEditBlock_Click);
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.buttonEditBlock);
-            this.groupBox1.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBox1.Location = new System.Drawing.Point(14, 647);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox1.Size = new System.Drawing.Size(256, 70);
-            this.groupBox1.TabIndex = 25;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Edit Component";
             // 
             // chk4Digits
             // 
             this.chk4Digits.AutoSize = true;
-            this.chk4Digits.Location = new System.Drawing.Point(13, 74);
-            this.chk4Digits.Margin = new System.Windows.Forms.Padding(4);
+            this.chk4Digits.Location = new System.Drawing.Point(10, 60);
             this.chk4Digits.Name = "chk4Digits";
-            this.chk4Digits.Size = new System.Drawing.Size(111, 20);
+            this.chk4Digits.Size = new System.Drawing.Size(91, 17);
             this.chk4Digits.TabIndex = 27;
             this.chk4Digits.Text = "4 Digit Details";
             this.chk4Digits.UseVisualStyleBackColor = true;
@@ -457,10 +397,9 @@
             // chkAnyAssembly
             // 
             this.chkAnyAssembly.AutoSize = true;
-            this.chkAnyAssembly.Location = new System.Drawing.Point(136, 74);
-            this.chkAnyAssembly.Margin = new System.Windows.Forms.Padding(4);
+            this.chkAnyAssembly.Location = new System.Drawing.Point(102, 60);
             this.chkAnyAssembly.Name = "chkAnyAssembly";
-            this.chkAnyAssembly.Size = new System.Drawing.Size(115, 20);
+            this.chkAnyAssembly.Size = new System.Drawing.Size(91, 17);
             this.chkAnyAssembly.TabIndex = 28;
             this.chkAnyAssembly.Text = "Any Assembly";
             this.chkAnyAssembly.UseVisualStyleBackColor = true;
@@ -469,10 +408,9 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 11);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(7, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(44, 16);
+            this.label1.Size = new System.Drawing.Size(35, 13);
             this.label1.TabIndex = 29;
             this.label1.Text = "label1";
             // 
@@ -487,11 +425,9 @@
             this.groupBoxEditBlock.Controls.Add(this.buttonEditSize);
             this.groupBoxEditBlock.Controls.Add(this.buttonEditMatch);
             this.groupBoxEditBlock.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBoxEditBlock.Location = new System.Drawing.Point(12, 330);
-            this.groupBoxEditBlock.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBoxEditBlock.Location = new System.Drawing.Point(9, 268);
             this.groupBoxEditBlock.Name = "groupBoxEditBlock";
-            this.groupBoxEditBlock.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBoxEditBlock.Size = new System.Drawing.Size(256, 240);
+            this.groupBoxEditBlock.Size = new System.Drawing.Size(192, 195);
             this.groupBoxEditBlock.TabIndex = 30;
             this.groupBoxEditBlock.TabStop = false;
             this.groupBoxEditBlock.Text = "Edit Block";
@@ -499,10 +435,9 @@
             // buttonApply
             // 
             this.buttonApply.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonApply.Location = new System.Drawing.Point(8, 191);
-            this.buttonApply.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonApply.Location = new System.Drawing.Point(6, 155);
             this.buttonApply.Name = "buttonApply";
-            this.buttonApply.Size = new System.Drawing.Size(237, 37);
+            this.buttonApply.Size = new System.Drawing.Size(178, 30);
             this.buttonApply.TabIndex = 31;
             this.buttonApply.Text = "Apply";
             this.buttonApply.UseVisualStyleBackColor = true;
@@ -511,10 +446,9 @@
             // buttonAlignEdgeDistance
             // 
             this.buttonAlignEdgeDistance.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonAlignEdgeDistance.Location = new System.Drawing.Point(8, 159);
-            this.buttonAlignEdgeDistance.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonAlignEdgeDistance.Location = new System.Drawing.Point(6, 129);
             this.buttonAlignEdgeDistance.Name = "buttonAlignEdgeDistance";
-            this.buttonAlignEdgeDistance.Size = new System.Drawing.Size(237, 25);
+            this.buttonAlignEdgeDistance.Size = new System.Drawing.Size(178, 20);
             this.buttonAlignEdgeDistance.TabIndex = 10;
             this.buttonAlignEdgeDistance.Text = "Align Edge Distance";
             this.buttonAlignEdgeDistance.UseVisualStyleBackColor = true;
@@ -523,10 +457,9 @@
             // buttonAlignComponent
             // 
             this.buttonAlignComponent.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonAlignComponent.Location = new System.Drawing.Point(8, 127);
-            this.buttonAlignComponent.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonAlignComponent.Location = new System.Drawing.Point(6, 103);
             this.buttonAlignComponent.Name = "buttonAlignComponent";
-            this.buttonAlignComponent.Size = new System.Drawing.Size(237, 25);
+            this.buttonAlignComponent.Size = new System.Drawing.Size(178, 20);
             this.buttonAlignComponent.TabIndex = 9;
             this.buttonAlignComponent.Text = "Align Component";
             this.buttonAlignComponent.UseVisualStyleBackColor = true;
@@ -535,10 +468,9 @@
             // buttonEditDynamic
             // 
             this.buttonEditDynamic.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonEditDynamic.Location = new System.Drawing.Point(8, 23);
-            this.buttonEditDynamic.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonEditDynamic.Location = new System.Drawing.Point(6, 19);
             this.buttonEditDynamic.Name = "buttonEditDynamic";
-            this.buttonEditDynamic.Size = new System.Drawing.Size(237, 25);
+            this.buttonEditDynamic.Size = new System.Drawing.Size(178, 20);
             this.buttonEditDynamic.TabIndex = 0;
             this.buttonEditDynamic.Text = "Dynamic";
             this.buttonEditDynamic.UseVisualStyleBackColor = true;
@@ -547,10 +479,9 @@
             // buttonEditMove
             // 
             this.buttonEditMove.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonEditMove.Location = new System.Drawing.Point(8, 59);
-            this.buttonEditMove.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonEditMove.Location = new System.Drawing.Point(6, 48);
             this.buttonEditMove.Name = "buttonEditMove";
-            this.buttonEditMove.Size = new System.Drawing.Size(113, 25);
+            this.buttonEditMove.Size = new System.Drawing.Size(85, 20);
             this.buttonEditMove.TabIndex = 1;
             this.buttonEditMove.Text = "Move";
             this.buttonEditMove.UseVisualStyleBackColor = true;
@@ -559,10 +490,9 @@
             // buttonEditAlign
             // 
             this.buttonEditAlign.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonEditAlign.Location = new System.Drawing.Point(129, 95);
-            this.buttonEditAlign.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonEditAlign.Location = new System.Drawing.Point(97, 77);
             this.buttonEditAlign.Name = "buttonEditAlign";
-            this.buttonEditAlign.Size = new System.Drawing.Size(116, 25);
+            this.buttonEditAlign.Size = new System.Drawing.Size(87, 20);
             this.buttonEditAlign.TabIndex = 2;
             this.buttonEditAlign.Text = "Align Edge";
             this.buttonEditAlign.UseVisualStyleBackColor = true;
@@ -571,10 +501,9 @@
             // buttonEditSize
             // 
             this.buttonEditSize.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonEditSize.Location = new System.Drawing.Point(8, 95);
-            this.buttonEditSize.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonEditSize.Location = new System.Drawing.Point(6, 77);
             this.buttonEditSize.Name = "buttonEditSize";
-            this.buttonEditSize.Size = new System.Drawing.Size(113, 25);
+            this.buttonEditSize.Size = new System.Drawing.Size(85, 20);
             this.buttonEditSize.TabIndex = 3;
             this.buttonEditSize.Text = "Size";
             this.buttonEditSize.UseVisualStyleBackColor = true;
@@ -583,10 +512,9 @@
             // buttonEditMatch
             // 
             this.buttonEditMatch.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonEditMatch.Location = new System.Drawing.Point(129, 59);
-            this.buttonEditMatch.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonEditMatch.Location = new System.Drawing.Point(97, 48);
             this.buttonEditMatch.Name = "buttonEditMatch";
-            this.buttonEditMatch.Size = new System.Drawing.Size(116, 25);
+            this.buttonEditMatch.Size = new System.Drawing.Size(87, 20);
             this.buttonEditMatch.TabIndex = 8;
             this.buttonEditMatch.Text = "Match";
             this.buttonEditMatch.UseVisualStyleBackColor = true;
@@ -594,14 +522,13 @@
             // 
             // ComponentBuilder
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(281, 913);
+            this.ClientSize = new System.Drawing.Size(211, 689);
             this.Controls.Add(this.groupBoxEditBlock);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.chkAnyAssembly);
             this.Controls.Add(this.chk4Digits);
-            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.changeColorCheckBox);
             this.Controls.Add(this.textBoxUserMaterial);
             this.Controls.Add(this.listBoxMaterial);
@@ -613,7 +540,6 @@
             this.Controls.Add(this.textBoxDetailNumber);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Location = new System.Drawing.Point(30, 130);
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ComponentBuilder";
@@ -625,7 +551,6 @@
             this.groupBoxColor.ResumeLayout(false);
             this.groupBoxEditAssembly.ResumeLayout(false);
             this.groupBoxWorkPlane.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
             this.groupBoxEditBlock.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -656,8 +581,6 @@
         private System.Windows.Forms.TextBox textBoxUserMaterial;
         private System.Windows.Forms.CheckBox changeColorCheckBox;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.Button buttonEditBlock;
-        private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.CheckBox checkBoxUpperComp;
         private System.Windows.Forms.Button buttonAutoLwr;
         private System.Windows.Forms.Button buttonAutoUpr;
