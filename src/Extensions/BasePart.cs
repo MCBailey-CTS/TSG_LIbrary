@@ -2475,6 +2475,12 @@ namespace TSG_Library.Extensions
             return extrude;
         }
 
+        public static bool __TryDynamicBlock(this BasePart basePart, out Block dynamic)
+        {
+            dynamic = basePart.Features.OfType<Block>().Single(f=>f.Name == "DYNAMIC BLOCK");
+            return !(dynamic is null);
+        }
+
         #endregion
     }
 }

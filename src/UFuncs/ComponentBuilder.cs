@@ -262,18 +262,6 @@ namespace TSG_Library.UFuncs
                 groupBoxColor.Enabled = false;
                 changeColorCheckBox.Enabled = true;
                 changeColorCheckBox.Checked = false;
-                checkBoxBurnout.Checked = false;
-                checkBoxBurnout.Enabled = false;
-                checkBoxGrind.Checked = false;
-                checkBoxGrind.Enabled = false;
-                checkBoxBurnDirX.Checked = false;
-                checkBoxBurnDirX.Enabled = false;
-                checkBoxBurnDirY.Checked = false;
-                checkBoxBurnDirY.Enabled = false;
-                checkBoxBurnDirZ.Checked = false;
-                checkBoxBurnDirZ.Enabled = false;
-                comboBoxTolerance.Text = string.Empty;
-                comboBoxTolerance.SelectedIndex = -1;
             }
             catch (Exception ex)
             {
@@ -331,14 +319,6 @@ namespace TSG_Library.UFuncs
                             || listBoxMaterial.Text == "4140 PLT"
                             || listBoxMaterial.Text == "HRS";
 
-                comboBoxTolerance.SelectedIndex = flag ? 0 : -1;
-                checkBoxGrind.Enabled = flag;
-                checkBoxGrind.Checked = flag;
-                checkBoxBurnDirX.Enabled = flag;
-                checkBoxBurnDirY.Enabled = flag;
-                checkBoxBurnDirZ.Enabled = flag;
-                checkBoxBurnDirZ.Checked = flag;
-                comboBoxTolerance.Enabled = flag;
                 groupBoxColor.Enabled = true;
                 textBoxUserMaterial.Text = string.Empty;
                 changeColorCheckBox.Checked = false;
@@ -347,8 +327,6 @@ namespace TSG_Library.UFuncs
                 buttonAutoLwr.Enabled = true;
                 buttonUprRetAssm.Enabled = true;
                 buttonLwrRetAssm.Enabled = true;
-                checkBoxBurnout.Enabled = flag;
-                checkBoxBurnout.Checked = flag;
 
                 if (!flag)
                     return;
@@ -356,14 +334,6 @@ namespace TSG_Library.UFuncs
                 bool boolFlag = listBoxMaterial.Text != "HRS PLT"
                                 && listBoxMaterial.Text != "4140 PLT";
 
-                if (listBoxMaterial.Text != "HRS PLT" && listBoxMaterial.Text != "4140 PLT")
-                {
-                    checkBoxBurnDirZ.Checked = false;
-                    checkBoxGrind.Checked = false;
-                }
-
-                checkBoxBurnout.Enabled = !boolFlag;
-                checkBoxBurnout.Checked = !boolFlag;
             }
             catch (Exception ex)
             {
@@ -490,34 +460,6 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        private void CheckBoxGrind_CheckedChanged(object sender, EventArgs e)
-        {
-            bool flag = checkBoxGrind.Checked;
-            comboBoxTolerance.SelectedIndex = flag ? 0 : -1;
-            if (!flag) comboBoxTolerance.Text = string.Empty;
-            comboBoxTolerance.Enabled = flag;
-        }
-
-        private void CheckBoxBurnDirX_CheckedChanged(object sender, EventArgs e)
-        {
-            if (!checkBoxBurnDirX.Checked) return;
-            checkBoxBurnDirY.Checked = false;
-            checkBoxBurnDirZ.Checked = false;
-        }
-
-        private void CheckBoxBurnDirY_CheckedChanged(object sender, EventArgs e)
-        {
-            if (!checkBoxBurnDirY.Checked) return;
-            checkBoxBurnDirX.Checked = false;
-            checkBoxBurnDirZ.Checked = false;
-        }
-
-        private void CheckBoxBurnDirZ_CheckedChanged(object sender, EventArgs e)
-        {
-            if (!checkBoxBurnDirZ.Checked) return;
-            checkBoxBurnDirX.Checked = false;
-            checkBoxBurnDirY.Checked = false;
-        }
 
         private void ButtonViewWcs_Click(object sender, EventArgs e)
         {
@@ -1369,12 +1311,6 @@ namespace TSG_Library.UFuncs
                     int compNameIndex = comboBoxCompName.SelectedIndex;
                     int compMaterialIndex = listBoxMaterial.SelectedIndex;
                     bool isUpper = checkBoxUpperComp.Checked;
-                    bool isBurn = checkBoxBurnout.Checked;
-                    bool isGrind = checkBoxGrind.Checked;
-                    bool isDirX = checkBoxBurnDirX.Checked;
-                    bool isDirY = checkBoxBurnDirY.Checked;
-                    bool isDirZ = checkBoxBurnDirZ.Checked;
-                    int toleranceIndex = comboBoxTolerance.SelectedIndex;
                     CtsAttributes selectedName = (CtsAttributes)comboBoxCompName.SelectedItem;
                     CtsAttributes selectecMaterial = new CtsAttributes();
                     if (listBoxMaterial.SelectedIndex == -1)
@@ -1499,12 +1435,6 @@ namespace TSG_Library.UFuncs
                         partLoadStatus1.Dispose();
                         _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
                         checkBoxUpperComp.Checked = isUpper;
-                        checkBoxBurnout.Checked = isBurn;
-                        checkBoxGrind.Checked = isGrind;
-                        checkBoxBurnDirX.Checked = isDirX;
-                        checkBoxBurnDirY.Checked = isDirY;
-                        checkBoxBurnDirZ.Checked = isDirZ;
-                        comboBoxTolerance.SelectedIndex = toleranceIndex;
                         Session.UndoMarkId makeExpressions =
                             session_.SetUndoMark(Session.MarkVisibility.Invisible, "Expression");
 
@@ -1514,31 +1444,7 @@ namespace TSG_Library.UFuncs
                         _workPart.Expressions.CreateWithUnits("AddY=.000", unit1);
                         _workPart.Expressions.CreateWithUnits("AddZ=.000", unit1);
 
-                        _workPart.Expressions.CreateExpression("String",
-                            checkBoxBurnout.Checked ? "Burnout=\"yes\"" : "Burnout=\"no\"");
-                        if (checkBoxGrind.Checked)
-                        {
-                            _workPart.Expressions.CreateExpression("String", "Grind=\"yes\"");
-
-                            if (comboBoxTolerance.SelectedIndex != -1)
-                                _workPart.Expressions.CreateExpression("String",
-                                    "GrindTolerance=\"" + comboBoxTolerance.Text + "\"");
-                            else
-                                _workPart.Expressions.CreateExpression("String", "GrindTolerance=\"none\"");
-                        }
-                        else
-                        {
-                            _workPart.Expressions.CreateExpression("String", "Grind=\"no\"");
-
-                            _workPart.Expressions.CreateExpression("String", "GrindTolerance=\"none\"");
-                        }
-
-                        if (checkBoxBurnDirX.Checked) _workPart.Expressions.CreateExpression("String", "BurnDir=\"X\"");
-                        else if (checkBoxBurnDirY.Checked)
-                            _workPart.Expressions.CreateExpression("String", "BurnDir=\"Y\"");
-                        else if (checkBoxBurnDirZ.Checked)
-                            _workPart.Expressions.CreateExpression("String", "BurnDir=\"Z\"");
-                        else _workPart.Expressions.CreateExpression("String", "BurnDir=\"none\"");
+                        
                         session_.UpdateManager.DoUpdate(makeExpressions);
                         _workPart.Layers.WorkLayer = 15;
                         Feature nullFeaturesFeature2 = null;
@@ -1646,12 +1552,6 @@ namespace TSG_Library.UFuncs
                         listBoxMaterial.SelectedIndex = compMaterialIndex;
                         listBoxMaterial.Enabled = true;
                         groupBoxColor.Enabled = true;
-                        checkBoxBurnout.Checked = isBurn;
-                        checkBoxGrind.Checked = isGrind;
-                        checkBoxBurnDirX.Checked = isDirX;
-                        checkBoxBurnDirY.Checked = isDirY;
-                        checkBoxBurnDirZ.Checked = isDirZ;
-                        comboBoxTolerance.SelectedIndex = toleranceIndex;
                     }
                     //}
                     //else
@@ -1711,12 +1611,6 @@ namespace TSG_Library.UFuncs
                     int compNameIndex = comboBoxCompName.SelectedIndex;
                     int compMaterialIndex = listBoxMaterial.SelectedIndex;
                     bool isUpper = checkBoxUpperComp.Checked;
-                    bool isBurn = checkBoxBurnout.Checked;
-                    bool isGrind = checkBoxGrind.Checked;
-                    bool isDirX = checkBoxBurnDirX.Checked;
-                    bool isDirY = checkBoxBurnDirY.Checked;
-                    bool isDirZ = checkBoxBurnDirZ.Checked;
-                    int toleranceIndex = comboBoxTolerance.SelectedIndex;
 
                     CtsAttributes selectedName = (CtsAttributes)comboBoxCompName.SelectedItem;
                     CtsAttributes selectecMaterial = new CtsAttributes();
@@ -1877,12 +1771,6 @@ namespace TSG_Library.UFuncs
                         // create component description attributes
 
                         checkBoxUpperComp.Checked = isUpper;
-                        checkBoxBurnout.Checked = isBurn;
-                        checkBoxGrind.Checked = isGrind;
-                        checkBoxBurnDirX.Checked = isDirX;
-                        checkBoxBurnDirY.Checked = isDirY;
-                        checkBoxBurnDirZ.Checked = isDirZ;
-                        comboBoxTolerance.SelectedIndex = toleranceIndex;
 
                         Session.UndoMarkId makeExpressions =
                             session_.SetUndoMark(Session.MarkVisibility.Invisible, "Expression");
@@ -1904,33 +1792,33 @@ namespace TSG_Library.UFuncs
                             _workPart.Expressions.CreateWithUnits("AddZ=.000", unit1);
                         }
 
-                        _workPart.Expressions.CreateExpression("String",
-                            checkBoxBurnout.Checked ? "Burnout=\"yes\"" : "Burnout=\"no\"");
-                        if (checkBoxGrind.Checked)
-                        {
-                            _workPart.Expressions.CreateExpression("String", "Grind=\"yes\"");
+                        //_workPart.Expressions.CreateExpression("String",
+                        //    checkBoxBurnout.Checked ? "Burnout=\"yes\"" : "Burnout=\"no\"");
+                        //if (checkBoxGrind.Checked)
+                        //{
+                        //    _workPart.Expressions.CreateExpression("String", "Grind=\"yes\"");
 
-                            if (comboBoxTolerance.SelectedIndex != -1)
-                                _workPart.Expressions.CreateExpression("String",
-                                    $"GrindTolerance=\"{comboBoxTolerance.Text}\"");
-                            else
-                                _workPart.Expressions.CreateExpression("String", "GrindTolerance=\"none\"");
-                        }
-                        else
-                        {
-                            _workPart.Expressions.CreateExpression("String", "Grind=\"no\"");
+                        //    if (comboBoxTolerance.SelectedIndex != -1)
+                        //        _workPart.Expressions.CreateExpression("String",
+                        //            $"GrindTolerance=\"{comboBoxTolerance.Text}\"");
+                        //    else
+                        //        _workPart.Expressions.CreateExpression("String", "GrindTolerance=\"none\"");
+                        //}
+                        //else
+                        //{
+                        //    _workPart.Expressions.CreateExpression("String", "Grind=\"no\"");
 
-                            _workPart.Expressions.CreateExpression("String", "GrindTolerance=\"none\"");
-                        }
+                        //    _workPart.Expressions.CreateExpression("String", "GrindTolerance=\"none\"");
+                        //}
 
-                        if (checkBoxBurnDirX.Checked)
-                            _workPart.Expressions.CreateExpression("String", "BurnDir=\"X\"");
-                        else if (checkBoxBurnDirY.Checked)
-                            _workPart.Expressions.CreateExpression("String", "BurnDir=\"Y\"");
-                        else if (checkBoxBurnDirZ.Checked)
-                            _workPart.Expressions.CreateExpression("String", "BurnDir=\"Z\"");
-                        else
-                            _workPart.Expressions.CreateExpression("String", "BurnDir=\"none\"");
+                        //if (checkBoxBurnDirX.Checked)
+                        //    _workPart.Expressions.CreateExpression("String", "BurnDir=\"X\"");
+                        //else if (checkBoxBurnDirY.Checked)
+                        //    _workPart.Expressions.CreateExpression("String", "BurnDir=\"Y\"");
+                        //else if (checkBoxBurnDirZ.Checked)
+                        //    _workPart.Expressions.CreateExpression("String", "BurnDir=\"Z\"");
+                        //else
+                        //    _workPart.Expressions.CreateExpression("String", "BurnDir=\"none\"");
 
                         session_.UpdateManager.DoUpdate(makeExpressions);
 
@@ -2059,12 +1947,6 @@ namespace TSG_Library.UFuncs
                         listBoxMaterial.SelectedIndex = compMaterialIndex;
                         listBoxMaterial.Enabled = true;
                         groupBoxColor.Enabled = true;
-                        checkBoxBurnout.Checked = isBurn;
-                        checkBoxGrind.Checked = isGrind;
-                        checkBoxBurnDirX.Checked = isDirX;
-                        checkBoxBurnDirY.Checked = isDirY;
-                        checkBoxBurnDirZ.Checked = isDirZ;
-                        comboBoxTolerance.SelectedIndex = toleranceIndex;
                     }
                 }
                 catch (NXException ex)
@@ -2603,14 +2485,6 @@ namespace TSG_Library.UFuncs
             buttonAutoLwr.Enabled = false;
             buttonUprRetAssm.Enabled = false;
             buttonLwrRetAssm.Enabled = false;
-            // create list of grind tolerances
-            comboBoxTolerance.Items.Clear();
-
-            foreach (CtsAttributes grindTol in _compTolerances)
-                comboBoxTolerance.Items.Add(grindTol);
-
-            comboBoxTolerance.SelectedIndex = -1;
-            comboBoxTolerance.Enabled = false;
             // create list of component names
             int selectedName;
             selectedName = comboBoxCompName.SelectedIndex;
@@ -2637,19 +2511,6 @@ namespace TSG_Library.UFuncs
             textBoxDetailNumber.Enabled = false;
             comboBoxCompName.Enabled = false;
             listBoxMaterial.Enabled = false;
-            checkBoxBurnout.Checked = false;
-            checkBoxBurnout.Enabled = false;
-            checkBoxGrind.Checked = false;
-            checkBoxGrind.Enabled = false;
-            checkBoxBurnDirX.Checked = false;
-            checkBoxBurnDirX.Enabled = false;
-            checkBoxBurnDirY.Checked = false;
-            checkBoxBurnDirY.Enabled = false;
-            checkBoxBurnDirZ.Checked = false;
-            checkBoxBurnDirZ.Enabled = false;
-            comboBoxTolerance.Text = string.Empty;
-            comboBoxTolerance.SelectedIndex = -1;
-            comboBoxTolerance.Enabled = false;
             saveAsButton.Enabled = false;
             copyButton.Enabled = false;
         }
@@ -2662,19 +2523,6 @@ namespace TSG_Library.UFuncs
             comboBoxCompName.Enabled = false;
             listBoxMaterial.SelectedIndex = -1;
             listBoxMaterial.Enabled = false;
-            checkBoxBurnout.Checked = false;
-            checkBoxBurnout.Enabled = false;
-            checkBoxGrind.Checked = false;
-            checkBoxGrind.Enabled = false;
-            checkBoxBurnDirX.Checked = false;
-            checkBoxBurnDirX.Enabled = false;
-            checkBoxBurnDirY.Checked = false;
-            checkBoxBurnDirY.Enabled = false;
-            checkBoxBurnDirZ.Checked = false;
-            checkBoxBurnDirZ.Enabled = false;
-            comboBoxTolerance.Text = string.Empty;
-            comboBoxTolerance.SelectedIndex = -1;
-            comboBoxTolerance.Enabled = false;
             saveAsButton.Enabled = true;
             copyButton.Enabled = true;
         }
@@ -3252,6 +3100,46 @@ namespace TSG_Library.UFuncs
         {
             Blue = 211,
             Yellow = 42
+        }
+
+        private void buttonEditDynamic_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonEditMove_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonEditMatch_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonEditSize_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonEditAlign_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonAlignComponent_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonAlignEdgeDistance_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonApply_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

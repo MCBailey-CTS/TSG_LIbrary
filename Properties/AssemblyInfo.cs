@@ -1,5 +1,7 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using TSG_Library.Extensions;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
@@ -33,3 +35,6 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.5.0.0")]
 [assembly: AssemblyFileVersion("1.5.0.0")]
+[assembly: DebuggerDisplay("{Leaf}", Target = typeof(NXOpen.BasePart))]
+//[assembly: DebuggerDisplay("{DisplayName} " + "{" +nameof(Extensions.__Origin) + "}", Target = typeof(NXOpen.Assemblies.Component))]
+[assembly: DebuggerDisplay("{DisplayName} {TSG_Library.Extensions.Extensions.__Origin(this)}", Target = typeof(NXOpen.Assemblies.Component))]
