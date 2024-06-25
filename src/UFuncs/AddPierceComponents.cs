@@ -1118,7 +1118,7 @@ namespace TSG_Library.UFuncs
 
             private static int FilterProcess(Tag _object, int[] type, IntPtr userData, IntPtr select)
             {
-                var snapFace = _object.__To<NXOpen.Face>();
+                var snapFace = _object.__To<Face>();
 
                 if (!snapFace.Name.StartsWith("PIERCED_"))
                     return NXOpen.UF.UFConstants.UF_UI_SEL_REJECT;
@@ -1213,19 +1213,21 @@ namespace TSG_Library.UFuncs
                 return CreateTouchAlignImpl(part, Constraint.Alignment.CoAlign, movableObject, nonMovableObject);
             }
 
-            [Obsolete]
             public static void ConstrainZAxes(Part part, Component punch, Component retainer)
             {
-                //punch.__ReferenceSet("ALIGN");
-                //retainer.__ReferenceSet("MATE");
-                //NXOpen.DatumAxis retainerZAxis = (NXOpen.DatumAxis)retainer.__Members().Single(o => o.Name == "ZAXIS");
-                //NXOpen.CartesianCoordinateSystem punchCartesian = punch.__Members().OfType<NXOpen.CartesianCoordinateSystem>().Single();
-                //Snap.Orientation punchOrientation = new Snap.Orientation(punchCartesian.Orientation.Element);
-                //NXOpen.DatumAxis punchZAxis = punch.__Members().OfType<NXOpen.DatumAxis>()
-                //    .Single(axis => new NXOpen.Vector3d(axis.Direction.X, axis.Direction.Y, axis.Direction.Z)._IsEqualTo(punchOrientation.AxisZ));
-                //NXOpen.Positioning.DisplayedConstraint constraint = CreateAlign(part, retainerZAxis, punchZAxis);
-                //Snap.NX.NXObject.Wrap(constraint.Tag).Layer = 254;
-                throw new NotImplementedException();
+                punch.__ReferenceSet("ALIGN");
+                retainer.__ReferenceSet("MATE");
+                DatumAxis retainerZAxis = (DatumAxis)retainer.__Members().Single(o => o.Name == "ZAXIS");
+                CartesianCoordinateSystem punchCartesian = punch.__Members().OfType<CartesianCoordinateSystem>().Single();
+                var punchOrientation = punchCartesian.Orientation.Element;
+
+                DatumAxis punchZAxis = punch.__Members()
+                    .OfType<DatumAxis>()
+                    .Single(axis => new Vector3d(axis.Direction.X, axis.Direction.Y, axis.Direction.Z)
+                        .__IsEqualTo(punchOrientation.__AxisZ()));
+
+                DisplayedConstraint constraint = CreateAlign(part, retainerZAxis, punchZAxis);
+                constraint.__Layer(254);
             }
 
             public static DisplayedConstraint CreateTouchAlignImpl(
@@ -1265,30 +1267,30 @@ namespace TSG_Library.UFuncs
                 punch.__ReferenceSet("ALIGN");
                 retainer.__ReferenceSet("MATE");
 
-                NXOpen.Face punchFace = punch.__Members()
-                    .OfType<NXOpen.Face>()
+                Face punchFace = punch.__Members()
+                    .OfType<Face>()
                     .Single(face => face.Name == PunchTopFaceName);
 
-                NXOpen.Face retainerFace = retainer.__Members()
-                    .OfType<NXOpen.Face>()
+                Face retainerFace = retainer.__Members()
+                    .OfType<Face>()
                     .Single(face => face.Name == RetainerAlignPunchFaceName);
 
-                NXOpen.Positioning.DisplayedConstraint constraint = CreateTouch(part, retainerFace, punchFace);
+                DisplayedConstraint constraint = CreateTouch(part, retainerFace, punchFace);
                 constraint.__Layer(254);
             }
 
             public static DisplayedConstraint CreateParallelConstraint(NXObject movableObject, NXObject geometry)
             {
-                NXOpen.Positioning.ComponentPositioner positioner = _WorkPart.ComponentAssembly.Positioner;
+                ComponentPositioner positioner = _WorkPart.ComponentAssembly.Positioner;
                 positioner.ClearNetwork();
                 positioner.PrimaryArrangement = _WorkPart.ComponentAssembly.Arrangements.FindObject("Arrangement 1");
                 positioner.BeginAssemblyConstraints();
-                NXOpen.Positioning.ComponentNetwork componentNetwork = (NXOpen.Positioning.ComponentNetwork)positioner.EstablishNetwork();
+                ComponentNetwork componentNetwork = (ComponentNetwork)positioner.EstablishNetwork();
                 componentNetwork.MoveObjectsState = true;
                 componentNetwork.NetworkArrangementsMode = 0;
-                NXOpen.Positioning.Constraint constraint = positioner.CreateConstraint(true);
-                NXOpen.Positioning.ComponentConstraint componentConstraint = (NXOpen.Positioning.ComponentConstraint)constraint;
-                componentConstraint.ConstraintType = (NXOpen.Positioning.Constraint.Type)5;
+                Constraint constraint = positioner.CreateConstraint(true);
+                ComponentConstraint componentConstraint = (ComponentConstraint)constraint;
+                componentConstraint.ConstraintType = (Constraint.Type)5;
                 componentConstraint.CreateConstraintReference(movableObject.OwningComponent, movableObject, false, false, false);
                 componentConstraint.CreateConstraintReference(geometry.OwningComponent, geometry, false, false, false);
                 componentNetwork.Solve();
@@ -1304,15 +1306,15 @@ namespace TSG_Library.UFuncs
             {
                 punch.__ReferenceSet("MATE");
                 retainer.__ReferenceSet("MATE");
-                NXOpen.DatumPlane retainerXZPlane = (NXOpen.DatumPlane)retainer.__Members().Single(o => o.Name == "XZPLANE");
-                NXOpen.DatumPlane punchBallSeatPlane = (NXOpen.DatumPlane)punch.__Members().Single(o => o.Name == "BALL_SEAT_ANGLE");
-                NXOpen.Positioning.DisplayedConstraint constraint = CreateParallelConstraint(retainerXZPlane, punchBallSeatPlane);
+                DatumPlane retainerXZPlane = (DatumPlane)retainer.__Members().Single(o => o.Name == "XZPLANE");
+                DatumPlane punchBallSeatPlane = (DatumPlane)punch.__Members().Single(o => o.Name == "BALL_SEAT_ANGLE");
+                DisplayedConstraint constraint = CreateParallelConstraint(retainerXZPlane, punchBallSeatPlane);
                 constraint.__Layer(254);
             }
 
             public static void ConstrainFixPunch(Component punch)
             {
-                NXOpen.Positioning.DisplayedConstraint constraint = CreateFixedConstraint(punch);
+                DisplayedConstraint constraint = CreateFixedConstraint(punch);
                 constraint.__Layer(254);
             }
 
@@ -1398,10 +1400,10 @@ namespace TSG_Library.UFuncs
             return integer.ToString();
         }
 
-        public static NXOpen.Part _Prototype(NXOpen.Assemblies.Component component) => component.Prototype as NXOpen.Part ?? throw new Exception();
+        public static Part _Prototype(Component component) => component.Prototype as Part ?? throw new Exception();
 
         [Obsolete]
-        internal static NXOpen.DatumAxis GetZAxisOccurenceOfRetainer(NXOpen.Assemblies.Component retainer)
+        internal static DatumAxis GetZAxisOccurenceOfRetainer(Component retainer)
         {
             //string retainerRefset = retainer.ReferenceSet;
 

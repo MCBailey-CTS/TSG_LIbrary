@@ -286,8 +286,9 @@ namespace TSG_Library.UFuncs
                 groupBoxMaterial.Enabled = true;
                 groupBoxAttributes.Enabled = true;
                 comboBoxMaterial.Enabled = false;
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                _workPart = session_.Parts.Work;
+                __display_part_ = session_.Parts.Display;
+                _originalWorkPart = _workPart; _originalDisplayPart = __display_part_; ;
                 _isCustom = true;
                 _isMeasureBody = false;
                 _isSelectMultiple = false;
@@ -413,8 +414,9 @@ namespace TSG_Library.UFuncs
                 textBoxMaterial.Clear();
                 comboBoxDescription.SelectedIndex = -1;
                 comboBoxMaterial.SelectedIndex = -1;
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                _workPart = session_.Parts.Work;
+                __display_part_ = session_.Parts.Display;
+                _originalWorkPart = _workPart; _originalDisplayPart = __display_part_; ;
                 _isCustom = false;
                 _isMeasureBody = false;
                 _isSelectMultiple = false;
@@ -449,8 +451,9 @@ namespace TSG_Library.UFuncs
                 textBoxMaterial.Clear();
                 comboBoxDescription.SelectedIndex = -1;
                 comboBoxMaterial.SelectedIndex = -1;
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                _workPart = session_.Parts.Work;
+                __display_part_ = session_.Parts.Display;
+                _originalWorkPart = _workPart; _originalDisplayPart = __display_part_; ;
                 _isCustom = false;
                 _isMeasureBody = false;
                 _isSelectMultiple = false;
@@ -464,7 +467,8 @@ namespace TSG_Library.UFuncs
                     foreach (Component weldmentComp in _selectedComponents)
                     {
                         __display_part_ = weldmentComp.__Prototype();
-                        UpdateSessionParts();
+                        _workPart = session_.Parts.Work;
+                        __display_part_ = session_.Parts.Display;
                         Expression noteExp = null;
                         bool isExpression = false;
                         NewMethod51(ref noteExp, ref isExpression);
@@ -492,8 +496,9 @@ namespace TSG_Library.UFuncs
                 textBoxMaterial.Clear();
                 comboBoxDescription.SelectedIndex = -1;
                 comboBoxMaterial.SelectedIndex = -1;
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                _workPart = session_.Parts.Work;
+                __display_part_ = session_.Parts.Display;
+                _originalWorkPart = _workPart; _originalDisplayPart = __display_part_; ;
                 _isCustom = false;
                 _isMeasureBody = false;
                 _isSelectMultiple = false;
@@ -536,8 +541,9 @@ namespace TSG_Library.UFuncs
                 buttonSelectDiesetOff.Enabled = false;
                 buttonSelectWeldmentOn.Enabled = false;
                 buttonSelectWeldmentOff.Enabled = false;
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                _workPart = session_.Parts.Work;
+                __display_part_ = session_.Parts.Display;
+                _originalWorkPart = _workPart; _originalDisplayPart = __display_part_; ;
                 _isMeasureBody = false;
                 _isCustom = false;
                 _isSelectMultiple = false;
@@ -692,7 +698,8 @@ namespace TSG_Library.UFuncs
                 return false;
 
             __work_component_ = _selComp;
-            UpdateSessionParts();
+            _workPart = session_.Parts.Work;
+            __display_part_ = session_.Parts.Display;
             return unitsMatch;
         }
 
@@ -712,8 +719,9 @@ namespace TSG_Library.UFuncs
                 buttonSelectWeldmentOn.Enabled = false;
                 buttonSelectWeldmentOff.Enabled = false;
 
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                _workPart = session_.Parts.Work;
+                __display_part_ = session_.Parts.Display;
+                _originalWorkPart = _workPart; _originalDisplayPart = __display_part_; ;
 
                 _isMeasureBody = true;
                 _isCustom = false;
@@ -847,7 +855,8 @@ namespace TSG_Library.UFuncs
                 return false;
 
             __work_component_ = _selComp;
-            UpdateSessionParts();
+            _workPart = session_.Parts.Work;
+            __display_part_ = session_.Parts.Display;
             return unitsMatch;
         }
 
@@ -855,8 +864,9 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                _workPart = session_.Parts.Work;
+                __display_part_ = session_.Parts.Display;
+                _originalWorkPart = _workPart; _originalDisplayPart = __display_part_; ;
 
                 if (session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoAutoSizeComponent") is null)
                     return;
@@ -884,7 +894,8 @@ namespace TSG_Library.UFuncs
                         sComp.Unhighlight();
                         __display_part_ = sComp.__Prototype();
                         __work_part_ = sComp.__Prototype();
-                        UpdateSessionParts();
+                        _workPart = session_.Parts.Work;
+                        __display_part_ = session_.Parts.Display;
                         UserDefinedClass udoClass = session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoAutoSizeComponent");
                         UserDefinedObject[] currentUdo = _workPart.UserDefinedObjectManager.GetUdosOfClass(udoClass);
 
@@ -896,7 +907,8 @@ namespace TSG_Library.UFuncs
                         UpdateBlockDescription();
                     }
 
-                UpdateSessionParts();
+                _workPart = session_.Parts.Work;
+                __display_part_ = session_.Parts.Display;
             }
             catch (Exception ex)
             {
@@ -924,8 +936,9 @@ namespace TSG_Library.UFuncs
 
         private void buttonReset_Click(object sender, EventArgs e)
         {
-            UpdateSessionParts();
-            UpdateOriginalParts();
+            _workPart = session_.Parts.Work;
+            __display_part_ = session_.Parts.Display;
+            _originalWorkPart = _workPart; _originalDisplayPart = __display_part_; ;
 
             session_.Parts.SetWork(__display_part_);
 
@@ -1389,27 +1402,23 @@ namespace TSG_Library.UFuncs
 
                     tempCsys.__Delete();
                     UpdateCompAttributes();
-                    ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
                     ufsession_.Disp.RegenerateDisplay();
 
                     if (_selComp == null)
                         __display_part_.Views.Regenerate();
 
                     __display_part_ = _originalDisplayPart;
-                    UpdateSessionParts();
+                    _workPart = session_.Parts.Work;
+                    __display_part_ = session_.Parts.Display;
                 }
                 else
                 {
-                    ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
-                    ufsession_.Disp.RegenerateDisplay();
                     TheUi.NXMessageBox.Show("Caught exception : Measure", NXMessageBox.DialogType.Error,
                         "Coordinate System not found " + _workPart.FullPath);
                 }
             }
             catch (Exception ex)
             {
-                ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
-                ufsession_.Disp.RegenerateDisplay();
                 ex.__PrintException();
             }
         }
@@ -1521,10 +1530,7 @@ namespace TSG_Library.UFuncs
                     $"{grindDistances[0]:f3} {grindTolValue} X {$"{distances[1]:f2}"} X {string.Format("{0:f2}", distances[2])}");
             if (xGrindDist == grindDistances[1])
                 _workPart.__SetAttribute("DESCRIPTION",
-                    string.Format("{0:f2}", distances[0]) + " X " +
-                    string.Format("{0:f3}", grindDistances[1]) + " " + grindTolValue +
-                    " X " +
-                    string.Format("{0:f2}", distances[2]));
+                    $"{distances[0]:f2} X {$"{grindDistances[1]:f3}"} {grindTolValue} X {string.Format("{0:f2}", distances[2])}");
             if (xGrindDist == grindDistances[2])
                 _workPart.__SetAttribute("DESCRIPTION",
                     string.Format("{0:f2}", distances[0]) + " X " +
@@ -1547,11 +1553,9 @@ namespace TSG_Library.UFuncs
                     isMetric = true;
 
 
-                foreach (Feature featDynamic in _workPart.Features)
+                if (_workPart.__HasDynamicBlock())
                 {
-                    if (featDynamic.FeatureType != "BLOCK") continue;
-                    if (featDynamic.Name != "DYNAMIC BLOCK") continue;
-                    Block block1 = (Block)featDynamic;
+                    Block block1 = (Block)_workPart.__DynamicBlock();
                     Body[] sizeBody = block1.GetBodies();
 
                     BlockFeatureBuilder blockFeatureBuilderSize;
@@ -1720,12 +1724,14 @@ namespace TSG_Library.UFuncs
                                     }
                             }
 
-                            if (diesetValue != "yes") continue;
-                            string description =
-                                _workPart.GetUserAttributeAsString("DESCRIPTION", NXObject.AttributeType.String, -1);
-                            //description += " DIESET";
-                            _workPart.SetUserAttribute("DESCRIPTION", -1, $"{description} DIESET",
-                                NXOpen.Update.Option.Now);
+                            if (diesetValue == "yes")
+                            {
+                                string description =
+                                    _workPart.GetUserAttributeAsString("DESCRIPTION", NXObject.AttributeType.String, -1);
+                                //description += " DIESET";
+                                _workPart.SetUserAttribute("DESCRIPTION", -1, $"{description} DIESET",
+                                    NXOpen.Update.Option.Now);
+                            }
                         }
                         else
                         {
@@ -1880,7 +1886,8 @@ namespace TSG_Library.UFuncs
 
                         using (selCompProto.__UsingSetWorkPartQuietly())
                         {
-                            UpdateSessionParts();
+                            _workPart = session_.Parts.Work;
+                            __display_part_ = session_.Parts.Display;
                             bool isBlockComp = false;
 
                             if (_selComp != null)
@@ -1900,7 +1907,8 @@ namespace TSG_Library.UFuncs
                             SetAutoUpdateOff();
                         }
 
-                        UpdateSessionParts();
+                        _workPart = session_.Parts.Work;
+                        __display_part_ = session_.Parts.Display;
                     }
 
                     if (textBoxMaterial.Text != "")
@@ -1931,7 +1939,8 @@ namespace TSG_Library.UFuncs
 #pragma warning disable CS0618 // Type or member is obsolete
                             ufsession_.Assem.SetWorkPartQuietly(selCompProto.Tag, out prevWp);
 #pragma warning restore CS0618 // Type or member is obsolete
-                            UpdateSessionParts();
+                            _workPart = session_.Parts.Work;
+                            __display_part_ = session_.Parts.Display;
 
                             Expression Dieset = null;
 
@@ -1945,7 +1954,8 @@ namespace TSG_Library.UFuncs
                                 _ = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
 
                             ufsession_.Assem.SetWorkPart(prevWp);
-                            UpdateSessionParts();
+                            _workPart = session_.Parts.Work;
+                            __display_part_ = session_.Parts.Display;
 
                             string description = selCompProto.__GetStringAttribute("DESCRIPTION");
 
@@ -1961,7 +1971,8 @@ namespace TSG_Library.UFuncs
 #pragma warning disable CS0618 // Type or member is obsolete
                             ufsession_.Assem.SetWorkPartQuietly(selCompProto.Tag, out prevWp);
 #pragma warning restore CS0618 // Type or member is obsolete
-                            UpdateSessionParts();
+                            _workPart = session_.Parts.Work;
+                            __display_part_ = session_.Parts.Display;
 
                             Expression Dieset = null;
 
@@ -1975,7 +1986,8 @@ namespace TSG_Library.UFuncs
                                 _ = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
 
                             ufsession_.Assem.SetWorkPart(prevWp);
-                            UpdateSessionParts();
+                            _workPart = session_.Parts.Work;
+                            __display_part_ = session_.Parts.Display;
 
                             string description = selCompProto.__GetStringAttribute("DESCRIPTION");
                             description = description.Replace("DIESET", "");
@@ -1990,7 +2002,8 @@ namespace TSG_Library.UFuncs
 #pragma warning disable CS0618 // Type or member is obsolete
                             ufsession_.Assem.SetWorkPartQuietly(selCompProto.Tag, out prevWp);
 #pragma warning restore CS0618 // Type or member is obsolete
-                            UpdateSessionParts();
+                            _workPart = session_.Parts.Work;
+                            __display_part_ = session_.Parts.Display;
 
                             Expression Weldment = null;
 
@@ -2004,7 +2017,8 @@ namespace TSG_Library.UFuncs
                                 _ = _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"yes\"");
 
                             ufsession_.Assem.SetWorkPart(prevWp);
-                            UpdateSessionParts();
+                            _workPart = session_.Parts.Work;
+                            __display_part_ = session_.Parts.Display;
 
                             string description = selCompProto.__GetStringAttribute("DESCRIPTION");
 
@@ -2021,7 +2035,8 @@ namespace TSG_Library.UFuncs
                             //                            ufsession_.Assem.SetWorkPartQuietly(selCompProto.Tag, out prevWp);
                             //#pragma warning restore CS0618 // Type or member is obsolete
                             ufsession_.Assem.SetWorkPartContextQuietly(selCompProto.Tag, out IntPtr prevWp);
-                            UpdateSessionParts();
+                            _workPart = session_.Parts.Work;
+                            __display_part_ = session_.Parts.Display;
 
                             Expression Weldment = null;
 
@@ -2035,7 +2050,8 @@ namespace TSG_Library.UFuncs
                                 _ = _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"no\"");
 
                             ufsession_.Assem.RestoreWorkPartContextQuietly(ref prevWp);
-                            UpdateSessionParts();
+                            _workPart = session_.Parts.Work;
+                            __display_part_ = session_.Parts.Display;
 
                             string description = selCompProto.__GetStringAttribute("DESCRIPTION");
                             description = description.Replace("WELDMENT", "");
@@ -2093,8 +2109,9 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                _workPart = session_.Parts.Work;
+                __display_part_ = session_.Parts.Display;
+                _originalWorkPart = _workPart; _originalDisplayPart = __display_part_; ;
 
 
                 if (session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoAutoSizeComponent") is null)
@@ -2199,137 +2216,140 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if (compRefCsys != null)
+                if (compRefCsys is null)
                 {
-                    ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
-
-                    BasePart compBase = (BasePart)compRefCsys.Prototype;
-
-                    session_.Parts.SetDisplay(compBase, false, false, out PartLoadStatus setDispLoadStatus);
-                    setDispLoadStatus.Dispose();
-                    UpdateSessionParts();
-
-                    foreach (Feature featBlk in _workPart.Features)
-                        if (featBlk.FeatureType == "BLOCK")
-                            if (featBlk.Name == "DYNAMIC BLOCK")
-                            {
-                                Block block1 = (Block)featBlk;
-
-                                BlockFeatureBuilder blockFeatureBuilderMatch;
-                                blockFeatureBuilderMatch = _workPart.Features.CreateBlockFeatureBuilder(block1);
-                                Point3d bOrigin = blockFeatureBuilderMatch.Origin;
-                                string blength = blockFeatureBuilderMatch.Length.RightHandSide;
-                                string bwidth = blockFeatureBuilderMatch.Width.RightHandSide;
-                                string bheight = blockFeatureBuilderMatch.Height.RightHandSide;
-                                double mLength = blockFeatureBuilderMatch.Length.Value;
-                                double mWidth = blockFeatureBuilderMatch.Width.Value;
-                                double mHeight = blockFeatureBuilderMatch.Height.Value;
-
-                                blockFeatureBuilderMatch.GetOrientation(out Vector3d xAxis, out Vector3d yAxis);
-
-                                double[] initOrigin = { bOrigin.X, bOrigin.Y, bOrigin.Z };
-                                double[] xVector = { xAxis.X, xAxis.Y, xAxis.Z };
-                                double[] yVector = { yAxis.X, yAxis.Y, yAxis.Z };
-                                double[] initMatrix = new double[9];
-                                ufsession_.Mtx3.Initialize(xVector, yVector, initMatrix);
-                                ufsession_.Csys.CreateMatrix(initMatrix, out Tag tempMatrix);
-                                ufsession_.Csys.CreateTempCsys(initOrigin, tempMatrix, out Tag tempCsys);
-                                CartesianCoordinateSystem setTempCsys =
-                                    (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
-
-                                __display_part_.WCS.SetOriginAndMatrix(setTempCsys.Origin,
-                                    setTempCsys.Orientation.Element);
-
-                                CartesianCoordinateSystem featBlkCsys = __display_part_.WCS.Save();
-                                featBlkCsys.SetName("EDITCSYS");
-                                featBlkCsys.Layer = 254;
-
-                                NXObject[] addToBody = { featBlkCsys };
-
-                                foreach (ReferenceSet bRefSet in __display_part_.GetAllReferenceSets())
-                                    if (bRefSet.Name == "BODY")
-                                        bRefSet.AddObjectsToReferenceSet(addToBody);
-
-                                session_.Parts.SetDisplay(_originalDisplayPart, false, false,
-                                    out PartLoadStatus setDispLoadStatus1);
-                                setDispLoadStatus1.Dispose();
-
-                                session_.Parts.SetWorkComponent(compRefCsys, PartCollection.RefsetOption.Current,
-                                    PartCollection.WorkComponentOption.Given,
-                                    out PartLoadStatus partLoadStatusWorkComp);
-                                partLoadStatusWorkComp.Dispose();
-                                UpdateSessionParts();
-
-                                foreach (CartesianCoordinateSystem wpCsys in _workPart.CoordinateSystems)
-                                    if (wpCsys.Layer == 254)
-                                        if (wpCsys.Name == "EDITCSYS")
-                                        {
-                                            NXObject csysOccurrence;
-                                            csysOccurrence = session_.Parts.WorkComponent.FindOccurrence(wpCsys);
-
-                                            CartesianCoordinateSystem editCsys =
-                                                (CartesianCoordinateSystem)csysOccurrence;
-
-                                            if (editCsys != null)
-                                                __display_part_.WCS.SetOriginAndMatrix(editCsys.Origin,
-                                                    editCsys.Orientation.Element);
-
-                                            Session.UndoMarkId markDeleteObjs;
-                                            markDeleteObjs = session_.SetUndoMark(Session.MarkVisibility.Invisible, "");
-
-                                            session_.UpdateManager.AddToDeleteList(wpCsys);
-
-                                            int errsDelObjs;
-                                            errsDelObjs = session_.UpdateManager.DoUpdate(markDeleteObjs);
-                                        }
-                            }
-
-                    ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
-                    ufsession_.Disp.RegenerateDisplay();
-                    //Ufs.Disp.Refresh();
+                    NewMethod70();
+                    return;
                 }
-                else
-                {
-                    foreach (Feature featBlk in _workPart.Features)
-                        if (featBlk.FeatureType == "BLOCK")
-                            if (featBlk.Name == "DYNAMIC BLOCK")
-                            {
-                                Block block1 = (Block)featBlk;
 
-                                BlockFeatureBuilder blockFeatureBuilderMatch;
-                                blockFeatureBuilderMatch = _workPart.Features.CreateBlockFeatureBuilder(block1);
-                                Point3d bOrigin = blockFeatureBuilderMatch.Origin;
-                                string blength = blockFeatureBuilderMatch.Length.RightHandSide;
-                                string bwidth = blockFeatureBuilderMatch.Width.RightHandSide;
-                                string bheight = blockFeatureBuilderMatch.Height.RightHandSide;
-                                double mLength = blockFeatureBuilderMatch.Length.Value;
-                                double mWidth = blockFeatureBuilderMatch.Width.Value;
-                                double mHeight = blockFeatureBuilderMatch.Height.Value;
-
-                                blockFeatureBuilderMatch.GetOrientation(out Vector3d xAxis, out Vector3d yAxis);
-
-                                double[] initOrigin = { bOrigin.X, bOrigin.Y, bOrigin.Z };
-                                double[] xVector = { xAxis.X, xAxis.Y, xAxis.Z };
-                                double[] yVector = { yAxis.X, yAxis.Y, yAxis.Z };
-                                double[] initMatrix = new double[9];
-                                ufsession_.Mtx3.Initialize(xVector, yVector, initMatrix);
-                                ufsession_.Csys.CreateMatrix(initMatrix, out Tag tempMatrix);
-                                ufsession_.Csys.CreateTempCsys(initOrigin, tempMatrix, out Tag tempCsys);
-                                CartesianCoordinateSystem setTempCsys =
-                                    (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
-
-                                __display_part_.WCS.SetOriginAndMatrix(setTempCsys.Origin,
-                                    setTempCsys.Orientation.Element);
-                            }
-                }
+                NewMethod71(compRefCsys);
             }
-            catch (NXException ex)
+            catch (Exception ex)
             {
-                UI.GetUI().NXMessageBox.Show("Caught exception in SetWcsToWorkPart", NXMessageBox.DialogType.Error,
-                    ex.Message);
-                ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
-                ufsession_.Disp.RegenerateDisplay();
+                ex.__PrintException();
             }
+        }
+
+        private static void NewMethod71(Component compRefCsys)
+        {
+
+            BasePart compBase = (BasePart)compRefCsys.Prototype;
+
+            session_.Parts.SetDisplay(compBase, false, false, out PartLoadStatus setDispLoadStatus);
+            setDispLoadStatus.Dispose();
+            _workPart = session_.Parts.Work;
+            __display_part_ = session_.Parts.Display;
+
+            if (_workPart.__HasDynamicBlock())
+            {
+                Block block1 = (Block)_workPart.__DynamicBlock();
+
+                BlockFeatureBuilder blockFeatureBuilderMatch;
+                blockFeatureBuilderMatch = _workPart.Features.CreateBlockFeatureBuilder(block1);
+                Point3d bOrigin = blockFeatureBuilderMatch.Origin;
+                string blength = blockFeatureBuilderMatch.Length.RightHandSide;
+                string bwidth = blockFeatureBuilderMatch.Width.RightHandSide;
+                string bheight = blockFeatureBuilderMatch.Height.RightHandSide;
+                double mLength = blockFeatureBuilderMatch.Length.Value;
+                double mWidth = blockFeatureBuilderMatch.Width.Value;
+                double mHeight = blockFeatureBuilderMatch.Height.Value;
+
+                blockFeatureBuilderMatch.GetOrientation(out Vector3d xAxis, out Vector3d yAxis);
+
+                double[] initOrigin = { bOrigin.X, bOrigin.Y, bOrigin.Z };
+                double[] xVector = { xAxis.X, xAxis.Y, xAxis.Z };
+                double[] yVector = { yAxis.X, yAxis.Y, yAxis.Z };
+                double[] initMatrix = new double[9];
+                ufsession_.Mtx3.Initialize(xVector, yVector, initMatrix);
+                ufsession_.Csys.CreateMatrix(initMatrix, out Tag tempMatrix);
+                ufsession_.Csys.CreateTempCsys(initOrigin, tempMatrix, out Tag tempCsys);
+                CartesianCoordinateSystem setTempCsys =
+                    (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
+
+                __display_part_.WCS.SetOriginAndMatrix(setTempCsys.Origin,
+                    setTempCsys.Orientation.Element);
+
+                CartesianCoordinateSystem featBlkCsys = __display_part_.WCS.Save();
+                featBlkCsys.SetName("EDITCSYS");
+                featBlkCsys.Layer = 254;
+
+                NXObject[] addToBody = { featBlkCsys };
+
+                foreach (ReferenceSet bRefSet in __display_part_.GetAllReferenceSets())
+                    if (bRefSet.Name == "BODY")
+                        bRefSet.AddObjectsToReferenceSet(addToBody);
+
+                session_.Parts.SetDisplay(_originalDisplayPart, false, false,
+                    out PartLoadStatus setDispLoadStatus1);
+                setDispLoadStatus1.Dispose();
+
+                session_.Parts.SetWorkComponent(compRefCsys, PartCollection.RefsetOption.Current,
+                    PartCollection.WorkComponentOption.Given,
+                    out PartLoadStatus partLoadStatusWorkComp);
+                partLoadStatusWorkComp.Dispose();
+                _workPart = session_.Parts.Work;
+                __display_part_ = session_.Parts.Display;
+
+                foreach (CartesianCoordinateSystem wpCsys in _workPart.CoordinateSystems)
+                    if (wpCsys.Layer == 254)
+                        if (wpCsys.Name == "EDITCSYS")
+                        {
+                            NXObject csysOccurrence;
+                            csysOccurrence = session_.Parts.WorkComponent.FindOccurrence(wpCsys);
+
+                            CartesianCoordinateSystem editCsys =
+                                (CartesianCoordinateSystem)csysOccurrence;
+
+                            if (editCsys != null)
+                                __display_part_.WCS.SetOriginAndMatrix(editCsys.Origin,
+                                    editCsys.Orientation.Element);
+
+                            Session.UndoMarkId markDeleteObjs;
+                            markDeleteObjs = session_.SetUndoMark(Session.MarkVisibility.Invisible, "");
+
+                            session_.UpdateManager.AddToDeleteList(wpCsys);
+
+                            int errsDelObjs;
+                            errsDelObjs = session_.UpdateManager.DoUpdate(markDeleteObjs);
+                        }
+            }
+
+
+        }
+
+        private static void NewMethod70()
+        {
+            foreach (Feature featBlk in _workPart.Features)
+                if (featBlk.FeatureType == "BLOCK")
+                    if (featBlk.Name == "DYNAMIC BLOCK")
+                    {
+                        Block block1 = (Block)featBlk;
+
+                        BlockFeatureBuilder blockFeatureBuilderMatch;
+                        blockFeatureBuilderMatch = _workPart.Features.CreateBlockFeatureBuilder(block1);
+                        Point3d bOrigin = blockFeatureBuilderMatch.Origin;
+                        string blength = blockFeatureBuilderMatch.Length.RightHandSide;
+                        string bwidth = blockFeatureBuilderMatch.Width.RightHandSide;
+                        string bheight = blockFeatureBuilderMatch.Height.RightHandSide;
+                        double mLength = blockFeatureBuilderMatch.Length.Value;
+                        double mWidth = blockFeatureBuilderMatch.Width.Value;
+                        double mHeight = blockFeatureBuilderMatch.Height.Value;
+
+                        blockFeatureBuilderMatch.GetOrientation(out Vector3d xAxis, out Vector3d yAxis);
+
+                        double[] initOrigin = { bOrigin.X, bOrigin.Y, bOrigin.Z };
+                        double[] xVector = { xAxis.X, xAxis.Y, xAxis.Z };
+                        double[] yVector = { yAxis.X, yAxis.Y, yAxis.Z };
+                        double[] initMatrix = new double[9];
+                        ufsession_.Mtx3.Initialize(xVector, yVector, initMatrix);
+                        ufsession_.Csys.CreateMatrix(initMatrix, out Tag tempMatrix);
+                        ufsession_.Csys.CreateTempCsys(initOrigin, tempMatrix, out Tag tempCsys);
+                        CartesianCoordinateSystem setTempCsys =
+                            (CartesianCoordinateSystem)NXObjectManager.Get(tempCsys);
+
+                        __display_part_.WCS.SetOriginAndMatrix(setTempCsys.Origin,
+                            setTempCsys.Orientation.Element);
+                    }
         }
 
         private Point3d MapWcsToAbsolute(Point3d pointToMap)
@@ -2428,7 +2448,7 @@ namespace TSG_Library.UFuncs
 
             Point3d endPointY1 = mappedStartPoint1.__AddY(lineWidth);
             Point3d mappedEndPointY1 = MapWcsToAbsolute(endPointY1);
-            lineData1 = NewMethod103(wcsOrigin, ref dispProps, mappedEndPointY1);
+            _ = NewMethod103(wcsOrigin, ref dispProps, mappedEndPointY1);
 
             ShowTemporarySizeText(lineWidth, wcsOrigin, mappedEndPointY1);
 
@@ -2471,7 +2491,8 @@ namespace TSG_Library.UFuncs
             }
 
             __work_part_ = prevWork.__To<Part>();
-            UpdateSessionParts();
+            _workPart = session_.Parts.Work;
+            __display_part_ = session_.Parts.Display;
 
             //==================================================================================================================
         }
@@ -2741,17 +2762,13 @@ namespace TSG_Library.UFuncs
 
 
 
-        private void UpdateSessionParts()
-        {
-            _workPart = session_.Parts.Work;
-            __display_part_ = session_.Parts.Display;
-        }
+        //private void UpdateSessionParts()
+        //{
+        //    _workPart = session_.Parts.Work;
+        //    __display_part_ = session_.Parts.Display;
+        //}
 
-        private void UpdateOriginalParts()
-        {
-            _originalWorkPart = _workPart;
-            _originalDisplayPart = __display_part_;
-        }
+
 
         private void DeleteNxObjects(List<NXObject> objsToDelete)
         {

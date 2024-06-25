@@ -51,7 +51,8 @@ namespace TSG_Library.UFuncs
 
         private void ButtonOk_Click(object sender, EventArgs e)
         {
-            UpdateSessionParts();
+            workPart = session_.Parts.Work;
+            displayPart = session_.Parts.Display;
             UpdateOriginalParts();
             //UnHighlight.Program.Execute();
             selectedComponents.Clear();
@@ -95,7 +96,8 @@ namespace TSG_Library.UFuncs
                     session_.Parts.SetDisplay(originalDisplayPart, false, false, out NXOpen.PartLoadStatus partLoadStatus1);
                     partLoadStatus1.Dispose();
 
-                    UpdateSessionParts();
+                    workPart = session_.Parts.Work;
+                    displayPart = session_.Parts.Display;
                     selectedComponents.Clear();
                     children.Clear();
                     displayName.Clear();
@@ -133,7 +135,8 @@ namespace TSG_Library.UFuncs
                     session_.Parts.SetDisplay(originalDisplayPart, false, false, out NXOpen.PartLoadStatus partLoadStatus1);
                     partLoadStatus1.Dispose();
 
-                    UpdateSessionParts();
+                    workPart = session_.Parts.Work;
+                    displayPart = session_.Parts.Display;
                     selectedComponents.Clear();
                     children.Clear();
                     displayName.Clear();
@@ -157,7 +160,9 @@ namespace TSG_Library.UFuncs
                                 foreach (string name in displayName)
                                     foreach (NXOpen.Assemblies.Component comp in selectedComponents)
                                     {
-                                        if (name != comp.DisplayName) continue;
+                                        if (name != comp.DisplayName) 
+                                            continue;
+
                                         SetDisplayPart(comp);
                                         PrintDetailDrawing(name);
                                     }
@@ -167,13 +172,15 @@ namespace TSG_Library.UFuncs
                     session_.Parts.SetDisplay(originalDisplayPart, false, false, out NXOpen.PartLoadStatus partLoadStatus1);
                     partLoadStatus1.Dispose();
 
-                    UpdateSessionParts();
+                    workPart = session_.Parts.Work;
+                    displayPart = session_.Parts.Display;
                     selectedComponents.Clear();
                     children.Clear();
                     displayName.Clear();
                 }
 
-                UpdateSessionParts();
+                workPart = session_.Parts.Work;
+                displayPart = session_.Parts.Display;
                 UpdateOriginalParts();
 
 
@@ -199,7 +206,6 @@ namespace TSG_Library.UFuncs
         //  Methods
         //===========================================
 
-        [Obsolete]
         private static void PrintDetailDrawing(string displayPartName)
         {
             NXOpen.Tag drawing = NXOpen.Tag.Null;
@@ -242,11 +248,12 @@ namespace TSG_Library.UFuncs
                 printBuilder1.Output = NXOpen.PrintBuilder.OutputOption.WireframeBlackWhite;
                 printBuilder1.ShadedGeometry = true;
                 NXOpen.NXObject[] sheets1 = new NXOpen.NXObject[1];
+#pragma warning disable CS0618 // Type or member is obsolete
                 NXOpen.Drawings.DrawingSheet drawingSheet1 = workPart.DrawingSheets.FindObject("4-VIEW");
+#pragma warning restore CS0618 // Type or member is obsolete
                 sheets1[0] = drawingSheet1;
                 printBuilder1.SourceBuilder.SetSheets(sheets1);
-                throw new NotImplementedException();
-                //printBuilder1.PrinterText =  PrinterCts;
+                printBuilder1.PrinterText = __PrinterCts;
                 printBuilder1.Orientation = NXOpen.PrintBuilder.OrientationOption.Landscape;
                 printBuilder1.Paper = NXOpen.PrintBuilder.PaperSize.Letter;
 
@@ -331,11 +338,11 @@ namespace TSG_Library.UFuncs
             displayPart.Layers.SetState(230, NXOpen.Layer.State.Selectable);
         }
 
-        private static void UpdateSessionParts()
-        {
-            workPart = session_.Parts.Work;
-            displayPart = session_.Parts.Display;
-        }
+        //private static void UpdateSessionParts()
+        //{
+        //    workPart = session_.Parts.Work;
+        //    displayPart = session_.Parts.Display;
+        //}
 
         private static void UpdateOriginalParts()
         {

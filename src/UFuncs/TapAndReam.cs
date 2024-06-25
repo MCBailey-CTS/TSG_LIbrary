@@ -408,22 +408,7 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        private static void NewMethod25(List<FeatureGroup> moveFeatures, NXOpen.Features.Feature feature, NXOpen.Features.Feature[] featChildren)
-        {
-            foreach (NXOpen.Features.Feature bFeature in featChildren)
-            {
-                if (bFeature.Suppressed)
-                    continue;
-
-                FeatureGroup orderFeat = new FeatureGroup();
-
-                if (bFeature.FeatureType != "META")
-                    continue;
-
-                NXOpen.Features.BooleanFeature getTool = (NXOpen.Features.BooleanFeature)bFeature;
-                NewMethod24(moveFeatures, feature, orderFeat, getTool);
-            }
-        }
+        
 
         private static void NewMethod24(List<FeatureGroup> moveFeatures, NXOpen.Features.Feature feature, FeatureGroup orderFeat, NXOpen.Features.BooleanFeature getTool)
         {
@@ -466,20 +451,7 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        private static void NewMethod18(List<FeatureGroup> suppressFeatures, FeatureGroup suppressFeat, NXOpen.Features.Feature feature, NXOpen.Features.Feature[] featChildren)
-        {
-            foreach (NXOpen.Features.Feature bFeature in featChildren)
-            {
-                if (bFeature.Suppressed)
-                    continue;
-
-                if (bFeature.FeatureType != "META")
-                    continue;
-
-                NXOpen.Features.BooleanFeature getTool = (NXOpen.Features.BooleanFeature)bFeature;
-                NewMethod17(suppressFeatures, suppressFeat, feature, getTool);
-            }
-        }
+        
 
         private static void NewMethod17(List<FeatureGroup> suppressFeatures, FeatureGroup suppressFeat, NXOpen.Features.Feature feature, NXOpen.Features.BooleanFeature getTool)
         {
@@ -549,22 +521,7 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        private static void NewMethod9(List<FeatureGroup> suppressFeatures, FeatureGroup suppressFeat, NXOpen.Features.Feature feature, NXOpen.Features.Feature[] featChildren)
-        {
-            foreach (NXOpen.Features.Feature bFeature in featChildren)
-            {
-                if (bFeature.Suppressed)
-                    continue;
-
-                if (bFeature.FeatureType != "META")
-                    continue;
-
-                NXOpen.Features.BooleanFeature getTool = (NXOpen.Features.BooleanFeature)bFeature;
-
-                foreach (NXOpen.Body bBody in getTool.GetBodies())
-                    NewMethod8(suppressFeatures, suppressFeat, feature, getTool, bBody);
-            }
-        }
+        
 
         private static void NewMethod8(List<FeatureGroup> suppressFeatures, FeatureGroup suppressFeat, NXOpen.Features.Feature feature, NXOpen.Features.BooleanFeature getTool, Body bBody)
         {
@@ -736,22 +693,7 @@ namespace TSG_Library.UFuncs
             return suppressFeat;
         }
 
-        private static FeatureGroup NewMethod14(List<FeatureGroup> suppressFeatures, FeatureGroup suppressFeat, NXOpen.Features.Feature feature, NXOpen.Features.Feature[] featChildren)
-        {
-            foreach (NXOpen.Features.Feature bFeature in featChildren)
-            {
-                if (bFeature.Suppressed)
-                    continue;
-
-                if (bFeature.FeatureType != "META")
-                    continue;
-
-                NXOpen.Features.BooleanFeature getTool = (NXOpen.Features.BooleanFeature)bFeature;
-                suppressFeat = NewMethod13(suppressFeatures, suppressFeat, feature, getTool);
-            }
-
-            return suppressFeat;
-        }
+        
 
         private static void NewMethod30(List<FeatureGroup> deleteFeatures, FeatureGroup deleteFeat)
         {
@@ -768,20 +710,7 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        private static void NewMethod29(List<FeatureGroup> deleteFeatures, FeatureGroup deleteFeat, NXOpen.Features.Feature feature, NXOpen.Features.Feature[] featChildren)
-        {
-            foreach (NXOpen.Features.Feature bFeature in featChildren)
-            {
-                if (bFeature.Suppressed)
-                    continue;
-
-                if (bFeature.FeatureType != "META")
-                    continue;
-
-                NXOpen.Features.BooleanFeature getTool = (NXOpen.Features.BooleanFeature)bFeature;
-                NewMethod28(deleteFeatures, deleteFeat, feature, getTool);
-            }
-        }
+        
 
         private static void NewMethod28(List<FeatureGroup> deleteFeatures, FeatureGroup deleteFeat, NXOpen.Features.Feature feature, NXOpen.Features.BooleanFeature getTool)
         {
@@ -850,20 +779,7 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        private static void NewMethod22(List<FeatureGroup> deleteFeatures, FeatureGroup deleteFeat, NXOpen.Features.Feature feature, NXOpen.Features.Feature[] featChildren)
-        {
-            foreach (NXOpen.Features.Feature bFeature in featChildren)
-            {
-                if (bFeature.Suppressed)
-                    continue;
-
-                if (bFeature.FeatureType != "META")
-                    continue;
-
-                NXOpen.Features.BooleanFeature getTool = (NXOpen.Features.BooleanFeature)bFeature;
-                NewMethod21(deleteFeatures, deleteFeat, feature, getTool);
-            }
-        }
+        
 
         private static void NewMethod21(List<FeatureGroup> deleteFeatures, FeatureGroup deleteFeat, NXOpen.Features.Feature feature, NXOpen.Features.BooleanFeature getTool)
         {
@@ -937,22 +853,7 @@ namespace TSG_Library.UFuncs
             return deleteFeat;
         }
 
-        private static FeatureGroup NewMethod34(List<FeatureGroup> deleteFeatures, FeatureGroup deleteFeat, NXOpen.Features.Feature feature, NXOpen.Features.Feature[] featChildren)
-        {
-            foreach (NXOpen.Features.Feature bFeature in featChildren)
-            {
-                if (bFeature.Suppressed)
-                    continue;
-
-                if (bFeature.FeatureType != "META")
-                    continue;
-
-                NXOpen.Features.BooleanFeature getTool = (NXOpen.Features.BooleanFeature)bFeature;
-                deleteFeat = NewMethod33(deleteFeatures, deleteFeat, feature, getTool);
-            }
-
-            return deleteFeat;
-        }
+        
 
         private static FeatureGroup NewMethod33(List<FeatureGroup> deleteFeatures, FeatureGroup deleteFeat, NXOpen.Features.Feature feature, NXOpen.Features.BooleanFeature getTool)
         {
@@ -1045,6 +946,122 @@ namespace TSG_Library.UFuncs
             }
         }
 
+
+
+        private static void NewMethod9(List<FeatureGroup> suppressFeatures, FeatureGroup suppressFeat, NXOpen.Features.Feature feature, NXOpen.Features.Feature[] featChildren)
+        {
+            foreach (NXOpen.Features.Feature bFeature in featChildren)
+            {
+                if (bFeature.Suppressed)
+                    continue;
+
+                if (bFeature.FeatureType != "META")
+                    continue;
+
+                NXOpen.Features.BooleanFeature getTool = (NXOpen.Features.BooleanFeature)bFeature;
+
+                foreach (NXOpen.Body bBody in getTool.GetBodies())
+                    NewMethod8(suppressFeatures, suppressFeat, feature, getTool, bBody);
+            }
+        }
+
+
+
+private static void NewMethod18(List<FeatureGroup> suppressFeatures, FeatureGroup suppressFeat, NXOpen.Features.Feature feature, NXOpen.Features.Feature[] featChildren)
+        {
+            foreach (NXOpen.Features.Feature bFeature in featChildren)
+            {
+                if (bFeature.Suppressed)
+                    continue;
+
+                if (bFeature.FeatureType != "META")
+                    continue;
+
+                NXOpen.Features.BooleanFeature getTool = (NXOpen.Features.BooleanFeature)bFeature;
+                NewMethod17(suppressFeatures, suppressFeat, feature, getTool);
+            }
+        }
+
+        private static void NewMethod25(List<FeatureGroup> moveFeatures, NXOpen.Features.Feature feature, NXOpen.Features.Feature[] featChildren)
+        {
+            foreach (NXOpen.Features.Feature bFeature in featChildren)
+            {
+                if (bFeature.Suppressed)
+                    continue;
+
+                FeatureGroup orderFeat = new FeatureGroup();
+
+                if (bFeature.FeatureType != "META")
+                    continue;
+
+                NXOpen.Features.BooleanFeature getTool = (NXOpen.Features.BooleanFeature)bFeature;
+                NewMethod24(moveFeatures, feature, orderFeat, getTool);
+            }
+        }
+
+        private static FeatureGroup NewMethod14(List<FeatureGroup> suppressFeatures, FeatureGroup suppressFeat, NXOpen.Features.Feature feature, NXOpen.Features.Feature[] featChildren)
+        {
+            foreach (NXOpen.Features.Feature bFeature in featChildren)
+            {
+                if (bFeature.Suppressed)
+                    continue;
+
+                if (bFeature.FeatureType != "META")
+                    continue;
+
+                NXOpen.Features.BooleanFeature getTool = (NXOpen.Features.BooleanFeature)bFeature;
+                suppressFeat = NewMethod13(suppressFeatures, suppressFeat, feature, getTool);
+            }
+
+            return suppressFeat;
+        }
+
+        private static void NewMethod29(List<FeatureGroup> deleteFeatures, FeatureGroup deleteFeat, NXOpen.Features.Feature feature, NXOpen.Features.Feature[] featChildren)
+        {
+            foreach (NXOpen.Features.Feature bFeature in featChildren)
+            {
+                if (bFeature.Suppressed)
+                    continue;
+
+                if (bFeature.FeatureType != "META")
+                    continue;
+
+                NXOpen.Features.BooleanFeature getTool = (NXOpen.Features.BooleanFeature)bFeature;
+                NewMethod28(deleteFeatures, deleteFeat, feature, getTool);
+            }
+        }
+
+        private static void NewMethod22(List<FeatureGroup> deleteFeatures, FeatureGroup deleteFeat, NXOpen.Features.Feature feature, NXOpen.Features.Feature[] featChildren)
+        {
+            foreach (NXOpen.Features.Feature bFeature in featChildren)
+            {
+                if (bFeature.Suppressed)
+                    continue;
+
+                if (bFeature.FeatureType != "META")
+                    continue;
+
+                NXOpen.Features.BooleanFeature getTool = (NXOpen.Features.BooleanFeature)bFeature;
+                NewMethod21(deleteFeatures, deleteFeat, feature, getTool);
+            }
+        }
+
+        private static FeatureGroup NewMethod34(List<FeatureGroup> deleteFeatures, FeatureGroup deleteFeat, NXOpen.Features.Feature feature, NXOpen.Features.Feature[] featChildren)
+        {
+            foreach (NXOpen.Features.Feature bFeature in featChildren)
+            {
+                if (bFeature.Suppressed)
+                    continue;
+
+                if (bFeature.FeatureType != "META")
+                    continue;
+
+                NXOpen.Features.BooleanFeature getTool = (NXOpen.Features.BooleanFeature)bFeature;
+                deleteFeat = NewMethod33(deleteFeatures, deleteFeat, feature, getTool);
+            }
+
+            return deleteFeat;
+        }
     }
 }
 // 755

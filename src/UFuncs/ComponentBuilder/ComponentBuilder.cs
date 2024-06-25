@@ -91,8 +91,8 @@ namespace TSG_Library.UFuncs
             foreach (CtsAttributes cTolerance in _compTolerances)
                 cTolerance.AttrName = "TOLERANCE";
 
-            UpdateSessionParts();
-            UpdateOriginalParts();
+            _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
+            _originalWorkPart = _workPart; _originalDisplayPart = _displayPart; ;
             ResetForm(_workPart);
             LoadGridSizes();
 
@@ -158,7 +158,7 @@ namespace TSG_Library.UFuncs
 
         private void SetWorkPlane(bool snapToGrid)
         {
-            UpdateSessionParts();
+            _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
             session_.__SetWorkPlane(GridSpace, snapToGrid, false);
         }
 
@@ -179,7 +179,7 @@ namespace TSG_Library.UFuncs
             {
                 if (!_isSaveAs)
                 {
-                    UpdateSessionParts();
+                    _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
                     ResetForm(_workPart);
                     LoadGridSizes();
                     listBoxMaterial.Enabled = false;
@@ -250,8 +250,8 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
+                _originalWorkPart = _workPart; _originalDisplayPart = _displayPart; ;
                 UpdateFormText();
                 ResetForm(_workPart);
                 groupBoxColor.Enabled = false;
@@ -516,8 +516,8 @@ namespace TSG_Library.UFuncs
 
         private void ButtonViewWcs_Click(object sender, EventArgs e)
         {
-            UpdateSessionParts();
-            UpdateOriginalParts();
+            _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
+            _originalWorkPart = _workPart; _originalDisplayPart = _displayPart; ;
             CoordinateSystem coordSystem = _displayPart.WCS.CoordinateSystem;
             Matrix3x3 orientation = coordSystem.Orientation.Element;
             _displayPart.Views.WorkView.Orient(orientation);
@@ -544,8 +544,8 @@ namespace TSG_Library.UFuncs
                 buttonExit.Enabled = false;
                 session_.Preferences.EmphasisVisualization.WorkPartEmphasis = true;
                 session_.Preferences.Assemblies.WorkPartDisplayAsEntirePart = false;
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
+                _originalWorkPart = _workPart; _originalDisplayPart = _displayPart; ;
                 Component editComponent = SelectOneComponent("Select Component to edit construction");
 
                 if (editComponent is null)
@@ -593,17 +593,17 @@ namespace TSG_Library.UFuncs
                     }
 
                     __display_part_ = _originalDisplayPart;
-                    UpdateSessionParts();
+                    _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
                 }
 
                 __work_component_ = editComponent;
-                UpdateSessionParts();
+                _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
                 SetWcsToWorkPart(editComponent);
                 __work_component_.__Translucency(75);
                 Component[] setRefComp = { editComponent };
                 _displayPart.ComponentAssembly.ReplaceReferenceSetInOwners("EDIT", setRefComp);
                 _displayPart.Layers.WorkLayer = 3;
-                UpdateSessionParts();
+                _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
                 UpdateFormText();
                 buttonEditConstruction.Enabled = false;
                 buttonEndEditConstruction.Enabled = true;
@@ -646,8 +646,8 @@ namespace TSG_Library.UFuncs
                 buttonEditBlock.Enabled = true;
                 changeColorCheckBox.Enabled = true;
                 buttonExit.Enabled = true;
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
+                _originalWorkPart = _workPart; _originalDisplayPart = _displayPart; ;
                 UpdateFormText();
                 ResetForm(_workPart);
                 groupBoxColor.Enabled = false;
@@ -663,8 +663,8 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
+                _originalWorkPart = _workPart; _originalDisplayPart = _displayPart; ;
                 checkBoxUpperComp.Checked = false;
                 _displayPart.WCS.SetOriginAndMatrix(_Point3dOrigin, _Matrix3x3Identity);
                 List<Body> bodies = SelectMultipleBodies();
@@ -729,8 +729,8 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
+                _originalWorkPart = _workPart; _originalDisplayPart = _displayPart; ;
                 checkBoxUpperComp.Checked = true;
                 _displayPart.WCS.SetOriginAndMatrix(_Point3dOrigin, _Matrix3x3Identity);
                 List<Body> bodies = SelectMultipleBodies();
@@ -795,8 +795,8 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
+                _originalWorkPart = _workPart; _originalDisplayPart = _displayPart; ;
 
                 checkBoxUpperComp.Checked = false;
 
@@ -972,8 +972,8 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
+                _originalWorkPart = _workPart; _originalDisplayPart = _displayPart; ;
 
                 checkBoxUpperComp.Checked = true;
 
@@ -1245,8 +1245,8 @@ namespace TSG_Library.UFuncs
 
                 __work_part_ = _originalWorkPart;
                 UI.GetUI().NXMessageBox.Show("Caught exception", NXMessageBox.DialogType.Error, ex.Message);
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
+                _originalWorkPart = _workPart; _originalDisplayPart = _displayPart; ;
             }
             finally
             {
@@ -1268,7 +1268,7 @@ namespace TSG_Library.UFuncs
             ufsession_.Disp.SetDisplay(UF_DISP_SUPPRESS_DISPLAY);
             session_.Parts.SetDisplay(selectedPart, false, false, out PartLoadStatus partLoadStatus1);
             partLoadStatus1.Dispose();
-            UpdateSessionParts();
+            _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
 
             int indexOf = _originalWorkPart.FullPath.LastIndexOf("-");
             string fullName = _originalWorkPart.FullPath.Remove(indexOf + 1);
@@ -1319,8 +1319,8 @@ namespace TSG_Library.UFuncs
                 out PartLoadStatus partLoadStatus2);
             session_.Parts.SetWork(_originalWorkPart);
             partLoadStatus2.Dispose();
-            UpdateSessionParts();
-            UpdateOriginalParts();
+            _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
+            _originalWorkPart = _workPart; _originalDisplayPart = _displayPart; ;
             ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
             ufsession_.Disp.RegenerateDisplay();
             _isNameReset = false;
@@ -1331,7 +1331,7 @@ namespace TSG_Library.UFuncs
             _isSaveAs = true;
 
             session_.Parts.SetWork((Part)compSaveAs.Prototype);
-            UpdateSessionParts();
+            _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
 
             int indexOf = _originalWorkPart.FullPath.LastIndexOf("-");
             string fullName = _originalWorkPart.FullPath.Remove(indexOf + 1);
@@ -1382,9 +1382,9 @@ namespace TSG_Library.UFuncs
 
             session_.Parts.SetWork(_originalWorkPart);
 
-            UpdateSessionParts();
+            _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
 
-            UpdateOriginalParts();
+            _originalWorkPart = _workPart; _originalDisplayPart = _displayPart; ;
 
             _isNameReset = false;
         }
@@ -1505,8 +1505,8 @@ namespace TSG_Library.UFuncs
                     //var numberIsValid = FormatDetailNumber();
                     if (true)
                     {
-                        UpdateSessionParts();
-                        UpdateOriginalParts();
+                        _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
+                        _originalWorkPart = _workPart; _originalDisplayPart = _displayPart; ;
                         Point3d prevOrigin = _displayPart.WCS.CoordinateSystem.Origin;
                         Matrix3x3 prevOrientation = _displayPart.WCS.CoordinateSystem.Orientation.Element;
                         _displayPart.WCS.Visibility = false;
@@ -1612,7 +1612,7 @@ namespace TSG_Library.UFuncs
                         BasePart basePart1 = (BasePart)assmComponents[0].Prototype;
                         session_.Parts.SetDisplay(basePart1, false, false, out PartLoadStatus partLoadStatus1);
                         partLoadStatus1.Dispose();
-                        UpdateSessionParts();
+                        _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
                         checkBoxUpperComp.Checked = isUpper;
                         checkBoxBurnout.Checked = isBurn;
                         checkBoxGrind.Checked = isGrind;
@@ -1722,11 +1722,11 @@ namespace TSG_Library.UFuncs
                         session_.Parts.SetDisplay(_originalDisplayPart, false, false,
                             out PartLoadStatus partLoadStatus2);
                         partLoadStatus2.Dispose();
-                        UpdateSessionParts();
+                        _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
                         ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
                         ufsession_.Disp.RegenerateDisplay();
                         session_.Parts.SetWork(_originalWorkPart);
-                        UpdateSessionParts();
+                        _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
                         _displayPart.WCS.SetOriginAndMatrix(prevOrigin, prevOrientation);
                         _displayPart.WCS.Visibility = true;
                         assmComponents[0].RedisplayObject();
@@ -1778,7 +1778,7 @@ namespace TSG_Library.UFuncs
                 {
                     ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
                     ufsession_.Disp.RegenerateDisplay();
-                    UpdateSessionParts();
+                    _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
                     UI.GetUI().NXMessageBox.Show("Caught exception in Create Component", NXMessageBox.DialogType.Error,
                         ex.Message);
                     session_.UndoToLastVisibleMark();
@@ -1849,8 +1849,8 @@ namespace TSG_Library.UFuncs
                     bool numberIsValid = FormatDetailNumber();
                     if (numberIsValid)
                     {
-                        UpdateSessionParts();
-                        UpdateOriginalParts();
+                        _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
+                        _originalWorkPart = _workPart; _originalDisplayPart = _displayPart; ;
 
                         _displayPart.WCS.Visibility = false;
                         _displayPart.WCS.SetOriginAndMatrix(_Point3dOrigin, _Matrix3x3Identity);
@@ -1987,7 +1987,7 @@ namespace TSG_Library.UFuncs
                         session_.Parts.SetDisplay(basePart1, false, false, out PartLoadStatus partLoadStatus1);
                         partLoadStatus1.Dispose();
 
-                        UpdateSessionParts();
+                        _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
 
                         // create component description attributes
 
@@ -2129,12 +2129,12 @@ namespace TSG_Library.UFuncs
                             out PartLoadStatus partLoadStatus2);
                         partLoadStatus2.Dispose();
 
-                        UpdateSessionParts();
+                        _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
 
                         ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
                         ufsession_.Disp.RegenerateDisplay();
                         session_.Parts.SetWork(_originalWorkPart);
-                        UpdateSessionParts();
+                        _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
 
                         _displayPart.WCS.Visibility = true;
                         assmComponents[0].RedisplayObject();
@@ -2187,7 +2187,7 @@ namespace TSG_Library.UFuncs
                     ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
                     ufsession_.Disp.RegenerateDisplay();
                     session_.Parts.SetWork(_originalWorkPart);
-                    UpdateSessionParts();
+                    _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
                     UI.GetUI().NXMessageBox.Show("Caught exception in Create Component", NXMessageBox.DialogType.Error,
                         ex.Message);
                     session_.UndoToLastVisibleMark();
@@ -2286,7 +2286,7 @@ namespace TSG_Library.UFuncs
 
                     BasePart dispComp = (BasePart)_changeColorComponent.Prototype;
                     session_.Parts.SetDisplay(dispComp, false, false, out PartLoadStatus displayLoadStatus);
-                    UpdateSessionParts();
+                    _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
                     displayLoadStatus.Dispose();
 
                     List<Body> bodyCollection = _displayPart.Bodies.Cast<Body>()
@@ -2351,8 +2351,8 @@ namespace TSG_Library.UFuncs
                         ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
                         ufsession_.Disp.RegenerateDisplay();
                         session_.Parts.SetWork(_originalWorkPart);
-                        UpdateSessionParts();
-                        UpdateOriginalParts();
+                        _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
+                        _originalWorkPart = _workPart; _originalDisplayPart = _displayPart; ;
                         _displayPart.Views.Regenerate();
                         displayLoadStatus1.Dispose();
                     }
@@ -2370,8 +2370,8 @@ namespace TSG_Library.UFuncs
                     ufsession_.Disp.SetDisplay(UF_DISP_UNSUPPRESS_DISPLAY);
                     ufsession_.Disp.RegenerateDisplay();
                     session_.Parts.SetWork(_originalWorkPart);
-                    UpdateSessionParts();
-                    UpdateOriginalParts();
+                    _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
+                    _originalWorkPart = _workPart; _originalDisplayPart = _displayPart; ;
                     _displayPart.Views.Regenerate();
                     displayLoadStatus2.Dispose();
 
@@ -2544,7 +2544,7 @@ namespace TSG_Library.UFuncs
 
         private void ResetForm(Part wp)
         {
-            UpdateSessionParts();
+            _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
 
             if (!IsNameValid(wp))
             {
@@ -3030,7 +3030,7 @@ namespace TSG_Library.UFuncs
 
             session_.Parts.SetDisplay(compBase, false, false, out PartLoadStatus setDispLoadStatus);
             setDispLoadStatus.Dispose();
-            UpdateSessionParts();
+            _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
 
             bool isBlockComp = false;
 
@@ -3072,7 +3072,7 @@ namespace TSG_Library.UFuncs
 
                 session_.Parts.SetWorkComponent(compRefCsys, out PartLoadStatus partLoadStatusWorkComp);
                 partLoadStatusWorkComp.Dispose();
-                UpdateSessionParts();
+                _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
 
                 foreach (CartesianCoordinateSystem wpCsys in _workPart.CoordinateSystems)
                 {
@@ -3098,19 +3098,7 @@ namespace TSG_Library.UFuncs
             __display_part_ = _originalDisplayPart;
             __work_component_ = compRefCsys;
             session_.Parts.SetDisplay(_originalDisplayPart, false, false, out _);
-            UpdateSessionParts();
-        }
-
-        private void UpdateSessionParts()
-        {
-            _workPart = session_.Parts.Work;
-            _displayPart = session_.Parts.Display;
-        }
-
-        private void UpdateOriginalParts()
-        {
-            _originalWorkPart = _workPart;
-            _originalDisplayPart = _displayPart;
+            _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
         }
 
         private static List<Body> SelectMultipleBodies()
