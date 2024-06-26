@@ -1,6 +1,7 @@
 ﻿using NXOpen;
 using NXOpen.Assemblies;
 using System;
+using System.Data.SqlClient;
 using System.Linq;
 using TSG_Library.Attributes;
 using TSG_Library.Extensions;
@@ -13,6 +14,33 @@ namespace TSG_Library.UFuncs
     {
         public override void execute()
         {
+            //print_(ufunc_name);
+
+            {
+                string connection_string_ctsapp =
+                @"Data Source=tsgapps2.toolingsystemsgroup.com;Initial Catalog=CTSAPP;User ID=CTSAPP;Password=RI4SU9d2JxH8LcrxSDPS";
+
+                using (var cnn = new SqlConnection(connection_string_ctsapp))
+                {
+                    cnn.Open();
+
+                    var command = new SqlCommand()
+                    {
+                        Connection = cnn,
+                        CommandText = $"insert into UFuncUsage (ufunc, user_) values ('{ufunc_name}', '{Environment.UserName}')"
+                    };
+
+                    command.ExecuteScalar();
+                }
+            }
+
+
+
+
+
+
+
+
             var selected_comps = Ui.Selection.SelectManyComponents(ufunc_rev_name);
 
             if (selected_comps.Length == 0)
