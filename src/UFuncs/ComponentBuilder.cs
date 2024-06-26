@@ -1458,6 +1458,29 @@ namespace TSG_Library.UFuncs
                         _workPart.Expressions.CreateWithUnits("AddZ=.000", unit1);
 
 
+                        _workPart.Expressions.CreateExpression("String",  "Burnout=\"no\"");
+                        //if (checkBoxGrind.Checked)
+                        //{
+                        //    _workPart.Expressions.CreateExpression("String", "Grind=\"yes\"");
+
+                        //    if (comboBoxTolerance.SelectedIndex != -1)
+                        //        _workPart.Expressions.CreateExpression("String", "GrindTolerance=\"" + comboBoxTolerance.Text + "\"");
+                        //    else
+                        //        _workPart.Expressions.CreateExpression("String", "GrindTolerance=\"none\"");
+                        //}
+                        //else
+                        {
+                            _workPart.Expressions.CreateExpression("String", "Grind=\"no\"");
+
+                            _workPart.Expressions.CreateExpression("String", "GrindTolerance=\"none\"");
+                        }
+
+                        //if (checkBoxBurnDirX.Checked) _workPart.Expressions.CreateExpression("String", "BurnDir=\"X\"");
+                        //else if (checkBoxBurnDirY.Checked) _workPart.Expressions.CreateExpression("String", "BurnDir=\"Y\"");
+                        //else if (checkBoxBurnDirZ.Checked) _workPart.Expressions.CreateExpression("String", "BurnDir=\"Z\"");
+                        //else 
+                            _workPart.Expressions.CreateExpression("String", "BurnDir=\"none\"");
+
                         session_.UpdateManager.DoUpdate(makeExpressions);
                         _workPart.Layers.WorkLayer = 15;
                         Feature nullFeaturesFeature2 = null;
@@ -1805,8 +1828,7 @@ namespace TSG_Library.UFuncs
                             _workPart.Expressions.CreateWithUnits("AddZ=.000", unit1);
                         }
 
-                        //_workPart.Expressions.CreateExpression("String",
-                        //    checkBoxBurnout.Checked ? "Burnout=\"yes\"" : "Burnout=\"no\"");
+                        _workPart.Expressions.CreateExpression("String", "Burnout=\"no\"");
                         //if (checkBoxGrind.Checked)
                         //{
                         //    _workPart.Expressions.CreateExpression("String", "Grind=\"yes\"");
@@ -1818,11 +1840,11 @@ namespace TSG_Library.UFuncs
                         //        _workPart.Expressions.CreateExpression("String", "GrindTolerance=\"none\"");
                         //}
                         //else
-                        //{
-                        //    _workPart.Expressions.CreateExpression("String", "Grind=\"no\"");
+                        {
+                            _workPart.Expressions.CreateExpression("String", "Grind=\"no\"");
 
-                        //    _workPart.Expressions.CreateExpression("String", "GrindTolerance=\"none\"");
-                        //}
+                            _workPart.Expressions.CreateExpression("String", "GrindTolerance=\"none\"");
+                        }
 
                         //if (checkBoxBurnDirX.Checked)
                         //    _workPart.Expressions.CreateExpression("String", "BurnDir=\"X\"");
@@ -1831,7 +1853,7 @@ namespace TSG_Library.UFuncs
                         //else if (checkBoxBurnDirZ.Checked)
                         //    _workPart.Expressions.CreateExpression("String", "BurnDir=\"Z\"");
                         //else
-                        //    _workPart.Expressions.CreateExpression("String", "BurnDir=\"none\"");
+                            _workPart.Expressions.CreateExpression("String", "BurnDir=\"none\"");
 
                         session_.UpdateManager.DoUpdate(makeExpressions);
 
@@ -6095,8 +6117,7 @@ namespace TSG_Library.UFuncs
                 if (myUdOclass is null)
                     return;
 
-                UserDefinedObject[] currentUdo =
-                    __work_part_.UserDefinedObjectManager.GetUdosOfClass(myUdOclass);
+                UserDefinedObject[] currentUdo = __work_part_.UserDefinedObjectManager.GetUdosOfClass(myUdOclass);
 
                 if (currentUdo.Length == 0)
                     return;
@@ -6791,7 +6812,7 @@ namespace TSG_Library.UFuncs
             System.Drawing.Brush brush;
             //if (YourListOfDates[e.Index] < DateTime.Now)// compare  date with your list.  
             //{
-                brush = System.Drawing.Brushes.Red;
+            brush = System.Drawing.Brushes.Red;
             //}
             //else
             //{
