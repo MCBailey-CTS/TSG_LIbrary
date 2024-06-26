@@ -1458,7 +1458,7 @@ namespace TSG_Library.UFuncs
                         _workPart.Expressions.CreateWithUnits("AddZ=.000", unit1);
 
 
-                        _workPart.Expressions.CreateExpression("String",  "Burnout=\"no\"");
+                        _workPart.Expressions.CreateExpression("String", "Burnout=\"no\"");
                         //if (checkBoxGrind.Checked)
                         //{
                         //    _workPart.Expressions.CreateExpression("String", "Grind=\"yes\"");
@@ -1479,7 +1479,7 @@ namespace TSG_Library.UFuncs
                         //else if (checkBoxBurnDirY.Checked) _workPart.Expressions.CreateExpression("String", "BurnDir=\"Y\"");
                         //else if (checkBoxBurnDirZ.Checked) _workPart.Expressions.CreateExpression("String", "BurnDir=\"Z\"");
                         //else 
-                            _workPart.Expressions.CreateExpression("String", "BurnDir=\"none\"");
+                        _workPart.Expressions.CreateExpression("String", "BurnDir=\"none\"");
 
                         session_.UpdateManager.DoUpdate(makeExpressions);
                         _workPart.Layers.WorkLayer = 15;
@@ -1853,7 +1853,7 @@ namespace TSG_Library.UFuncs
                         //else if (checkBoxBurnDirZ.Checked)
                         //    _workPart.Expressions.CreateExpression("String", "BurnDir=\"Z\"");
                         //else
-                            _workPart.Expressions.CreateExpression("String", "BurnDir=\"none\"");
+                        _workPart.Expressions.CreateExpression("String", "BurnDir=\"none\"");
 
                         session_.UpdateManager.DoUpdate(makeExpressions);
 
@@ -3418,7 +3418,7 @@ namespace TSG_Library.UFuncs
 
         private void EdgeAlign(bool isBlockComponent)
         {
-            System.Diagnostics.Debugger.Launch();
+            //System.Diagnostics.Debugger.Launch();
 
             if (_editBody is null)
                 return;
@@ -3625,12 +3625,9 @@ namespace TSG_Library.UFuncs
             }
 
             DisableForm();
-            List<Point> pHandle = new List<Point>();
-            pHandle = SelectHandlePoint();
+            var pHandle = SelectHandlePoint();
             _isDynamic = true;
-
-            pHandle = NewMethod6(pHandle);
-
+            EditDynamic(pHandle);
             EnableForm();
         }
 
@@ -3681,7 +3678,7 @@ namespace TSG_Library.UFuncs
 
             List<Point> pHandle = SelectHandlePoint();
             _isDynamic = true;
-            pHandle = NewMethod7(pHandle);
+            pHandle = Dynamic(pHandle);
             EnableForm();
             return;
         }
@@ -3691,6 +3688,8 @@ namespace TSG_Library.UFuncs
         {
             try
             {
+                System.Diagnostics.Debugger.Launch();
+
                 bool isBlockComponent = SetDispUnits();
 
                 if (_isNewSelection && _updateComponent is null)
@@ -5257,20 +5256,17 @@ namespace TSG_Library.UFuncs
 
         private bool IsBlockComponent(bool isBlockComponent, Component editComponent)
         {
-            if (_isNewSelection)
-            {
-                __work_component_ = editComponent;
+            if (!_isNewSelection)
+                return true;
 
-                if (__work_part_.__HasDynamicBlock())
-                {
-                    isBlockComponent = true;
-                    CreateEditData(editComponent);
-                    _isNewSelection = false;
-                }
-            }
-            else
-                isBlockComponent = true;
+            __work_component_ = editComponent;
 
+            if (!__work_part_.__HasDynamicBlock())
+                return isBlockComponent;
+            
+            isBlockComponent = true;
+            CreateEditData(editComponent);
+            _isNewSelection = false;
             return isBlockComponent;
         }
 
@@ -5350,7 +5346,7 @@ namespace TSG_Library.UFuncs
 
 
 
-        private List<Point> NewMethod7(List<Point> pHandle)
+        private List<Point> Dynamic(List<Point> pHandle)
         {
             while (pHandle.Count == 1)
             {
@@ -5366,33 +5362,31 @@ namespace TSG_Library.UFuncs
                 ModelingView mView = (ModelingView)__display_part_.Views.WorkView;
                 __display_part_.Views.WorkView.Orient(mView.Matrix);
                 __display_part_.WCS.SetOriginAndMatrix(mView.Origin, mView.Matrix);
-                ufsession_.Ui.LockUgAccess(UF_UI_FROM_CUSTOM);
-                ufsession_.Ui.SpecifyScreenPosition(
-                    message,
-                    MotionCallback,
-                    motionCbData,
-                    screenPos,
-                    out viewTag,
-                    out int response
-                );
 
-                if (response == UF_UI_PICK_RESPONSE)
+                using (session_.__UsingLockUiFromCustom())
                 {
+                    ufsession_.Ui.SpecifyScreenPosition(
+                        message,
+                        MotionCallback,
+                        motionCbData,
+                        screenPos,
+                        out viewTag,
+                        out int response
+                    );
+
+                    if (response != UF_UI_PICK_RESPONSE)
+                        continue;
+
                     UpdateDynamicHandles();
                     ShowDynamicHandles();
                     pHandle = SelectHandlePoint();
                 }
-
-                ufsession_.Ui.UnlockUgAccess(UF_UI_FROM_CUSTOM);
             }
 
             return pHandle;
         }
 
-
-
-
-        private List<Point> NewMethod6(List<Point> pHandle)
+        private void EditDynamic(List<Point> pHandle)
         {
             while (pHandle.Count == 1)
             {
@@ -5401,45 +5395,39 @@ namespace TSG_Library.UFuncs
                 _udoPointHandle = pHandle[0];
                 string message = "Select New Position";
                 double[] screenPos = new double[3];
-                Tag viewTag = NXOpen.Tag.Null;
                 IntPtr motionCbData = IntPtr.Zero;
-                IntPtr clientData = IntPtr.Zero;
                 __display_part_.WCS.Visibility = false;
                 SetModelingView();
-                viewTag = NewMethod47(ref pHandle, message, screenPos, motionCbData);
+                EditDynamic(ref pHandle, message, screenPos, motionCbData);
             }
-
-            return pHandle;
         }
 
 
-        private Tag NewMethod47(
+        private void EditDynamic(
           ref List<Point> pHandle,
           string message,
           double[] screenPos,
           IntPtr motionCbData
       )
         {
-            ufsession_.Ui.LockUgAccess(UF_UI_FROM_CUSTOM);
-
-            ufsession_.Ui.SpecifyScreenPosition(
-                message,
-                MotionCallback,
-                motionCbData,
-                screenPos,
-                out Tag viewTag,
-                out int response
-            );
-
-            if (response == UF_UI_PICK_RESPONSE)
+            using (session_.__UsingLockUiFromCustom())
             {
+                ufsession_.Ui.SpecifyScreenPosition(
+                    message,
+                    MotionCallback,
+                    motionCbData,
+                    screenPos,
+                    out Tag viewTag,
+                    out int response
+                );
+
+                if (response != UF_UI_PICK_RESPONSE)
+                    return;
+
                 UpdateDynamicHandles();
                 ShowDynamicHandles();
                 pHandle = SelectHandlePoint();
             }
-
-            ufsession_.Ui.UnlockUgAccess(UF_UI_FROM_CUSTOM);
-            return viewTag;
         }
 
 
@@ -5475,27 +5463,28 @@ namespace TSG_Library.UFuncs
             IntPtr motionCbData
         )
         {
-            ufsession_.Ui.LockUgAccess(UF_UI_FROM_CUSTOM);
-            SetModelingView();
-            ufsession_.Ui.SpecifyScreenPosition(
-                message,
-                MotionCallback,
-                motionCbData,
-                screenPos,
-                out Tag viewTag,
-                out int response
-            );
-
-            if (response == UF_UI_PICK_RESPONSE)
+            using (session_.__UsingLockUiFromCustom())
             {
+                SetModelingView();
+
+                ufsession_.Ui.SpecifyScreenPosition(
+                    message,
+                    MotionCallback,
+                    motionCbData,
+                    screenPos,
+                    out Tag viewTag,
+                    out int response
+                );
+
+                if (response != UF_UI_PICK_RESPONSE)
+                    return viewTag;
+
                 UpdateDynamicHandles();
                 ShowDynamicHandles();
                 ShowTemporarySizeText();
                 pHandle = SelectHandlePoint();
+                return viewTag;
             }
-
-            ufsession_.Ui.UnlockUgAccess(UF_UI_FROM_CUSTOM);
-            return viewTag;
         }
 
 
@@ -5527,27 +5516,28 @@ namespace TSG_Library.UFuncs
             IntPtr motionCbData
         )
         {
-            ufsession_.Ui.LockUgAccess(UF_UI_FROM_CUSTOM);
-            SetModelingView();
-            ufsession_.Ui.SpecifyScreenPosition(
-                message,
-                MotionCallback,
-                motionCbData,
-                screenPos,
-                out Tag viewTag,
-                out int response
-            );
-
-            if (response == UF_UI_PICK_RESPONSE)
+            using (session_.__UsingLockUiFromCustom())
             {
+                SetModelingView();
+
+                ufsession_.Ui.SpecifyScreenPosition(
+                    message,
+                    MotionCallback,
+                    motionCbData,
+                    screenPos,
+                    out Tag viewTag,
+                    out int response
+                );
+
+                if (response != UF_UI_PICK_RESPONSE)
+                    return viewTag;
+
                 UpdateDynamicHandles();
                 ShowDynamicHandles();
                 ShowTemporarySizeText();
                 pHandle = SelectHandlePoint();
+                return viewTag;
             }
-
-            ufsession_.Ui.UnlockUgAccess(UF_UI_FROM_CUSTOM);
-            return viewTag;
         }
 
 
@@ -5603,14 +5593,10 @@ namespace TSG_Library.UFuncs
             return viewTag;
         }
 
-
-
-
         private static void NXMessage(string message)
         {
             TheUISession.NXMessageBox.Show("Error", NXMessageBox.DialogType.Error, message);
         }
-
 
         private void Apply()
         {
@@ -5623,37 +5609,6 @@ namespace TSG_Library.UFuncs
             _isNewSelection = true;
             buttonApply.Enabled = false;
         }
-
-        private void Reset()
-        {
-            _updateComponent = null;
-            _editBody = null;
-            _isNewSelection = true;
-            session_.Preferences.EmphasisVisualization.WorkPartEmphasis = true;
-            session_.Preferences.Assemblies.WorkPartDisplayAsEntirePart = false;
-            __work_part_ = __display_part_;
-        }
-
-        private void Exit()
-        {
-            session_.Parts.RemoveWorkPartChangedHandler(_idWorkPartChanged1);
-            Close();
-            Settings.Default.udoComponentBuilderWindowLocation = Location;
-            Settings.Default.Save();
-
-            using (this)
-                new ComponentBuilder().Show();
-        }
-
-
-        private void ViewWcs()
-        {
-            CoordinateSystem coordSystem = __display_part_.WCS.CoordinateSystem;
-            Matrix3x3 orientation = coordSystem.Orientation.Element;
-            __display_part_.Views.WorkView.Orient(orientation);
-        }
-
-
 
         private void ResetNonBlockError()
         {
@@ -5690,9 +5645,6 @@ namespace TSG_Library.UFuncs
             buttonAlignEdgeDistance.Enabled = true;
             buttonApply.Enabled = true;
         }
-
-
-
 
         private void DeleteHandles()
         {
@@ -5793,19 +5745,11 @@ namespace TSG_Library.UFuncs
 
                     using (session_.__UsingBuilderDestroyer(builder))
                     {
-                        // builder.BooleanOption.Type = BooleanOperation.BooleanType.Create;
-                        // Body[] targetBodies1 = new Body[1];
-                        // Body nullBody = null;
-                        // targetBodies1[0] = nullBody;
-                        // builder.BooleanOption.SetTargetBodies(targetBodies1);
-                        // builder.Type = BlockFeatureBuilder.Types.OriginAndEdgeLengths;
                         Point blkFeatBuilderPoint = __work_part_.Points.CreatePoint(blkOrigin);
                         blkFeatBuilderPoint.SetCoordinates(blkOrigin);
                         builder.OriginPoint = blkFeatBuilderPoint;
                         Point3d originPoint1 = blkOrigin;
                         builder.SetOriginAndLengths(originPoint1, length, width, height);
-                        // builder.SetBooleanOperationAndTarget(Feature.BooleanType.Create, nullBody);
-                        // Feature feature1;
                         builder.CommitFeature();
                     }
 
@@ -6052,20 +5996,17 @@ namespace TSG_Library.UFuncs
 
         private bool NewMethod51(bool isBlockComponent, Component editComponent)
         {
-            if (_isNewSelection)
-            {
-                __work_component_ = editComponent;
+            if (!_isNewSelection)
+                return true;
 
-                if (__work_part_.__HasDynamicBlock())
-                {
-                    isBlockComponent = true;
-                    CreateEditData(editComponent);
-                    _isNewSelection = false;
-                }
-            }
-            else
-                isBlockComponent = true;
+            __work_component_ = editComponent;
 
+            if (!__work_part_.__HasDynamicBlock())
+                return isBlockComponent;
+
+            isBlockComponent = true;
+            CreateEditData(editComponent);
+            _isNewSelection = false;
             return isBlockComponent;
         }
 
@@ -6464,153 +6405,6 @@ namespace TSG_Library.UFuncs
             return output.__ToPoint3d();
         }
 
-
-        //private void LoadGridSizes()
-        //{
-        //    comboBoxGridBlock.Items.Clear();
-
-        //    if (__display_part_.PartUnits == BasePart.Units.Inches)
-        //    {
-        //        comboBoxGridBlock.Items.Add("0.002");
-        //        comboBoxGridBlock.Items.Add("0.03125");
-        //        comboBoxGridBlock.Items.Add("0.0625");
-        //        comboBoxGridBlock.Items.Add("0.125");
-        //        comboBoxGridBlock.Items.Add("0.250");
-        //        comboBoxGridBlock.Items.Add("0.500");
-        //        comboBoxGridBlock.Items.Add("1.000");
-        //    }
-        //    else
-        //    {
-        //        comboBoxGridBlock.Items.Add("0.0508");
-        //        comboBoxGridBlock.Items.Add("0.79375");
-        //        comboBoxGridBlock.Items.Add("1.00");
-        //        comboBoxGridBlock.Items.Add("1.5875");
-        //        comboBoxGridBlock.Items.Add("3.175");
-        //        comboBoxGridBlock.Items.Add("5.00");
-        //        comboBoxGridBlock.Items.Add("6.35");
-        //        comboBoxGridBlock.Items.Add("12.7");
-        //        comboBoxGridBlock.Items.Add("25.4");
-        //    }
-
-        //    foreach (string gridSetting in comboBoxGridBlock.Items)
-        //        if (gridSetting == Settings.Default.EditBlockFormGridIncrement)
-        //        {
-        //            comboBoxGridBlock.SelectedIndex = comboBoxGridBlock.Items.IndexOf(gridSetting);
-        //            break;
-        //        }
-        //}
-
-        private void SetWorkPlaneOn()
-        {
-            try
-            {
-                WorkPlane workPlane1;
-                workPlane1 = __display_part_.Preferences.Workplane;
-
-                if (workPlane1 != null)
-                {
-                    workPlane1.GridType = WorkPlane.Grid.Rectangular;
-
-                    workPlane1.GridIsNonUniform = false;
-
-                    WorkPlane.GridSize gridSize1 = new WorkPlane.GridSize(_gridSpace, 1, 1);
-                    workPlane1.SetRectangularUniformGridSize(gridSize1);
-
-                    workPlane1.ShowGrid = false;
-
-                    workPlane1.ShowLabels = false;
-
-                    workPlane1.SnapToGrid = true;
-
-                    workPlane1.GridOnTop = false;
-
-                    workPlane1.RectangularShowMajorLines = false;
-
-                    workPlane1.PolarShowMajorLines = false;
-
-                    workPlane1.GridColor = 7;
-
-#pragma warning disable CS0618
-                    session_.Preferences.WorkPlane.ObjectOffWorkPlane = SessionWorkPlane.ObjectDisplay.Normal;
-#pragma warning restore CS0618
-                }
-                else
-                {
-                    NXMessage("WorkPlane is null.  Reset Modeling State");
-                }
-            }
-            catch (Exception ex)
-            {
-                ex.__PrintException();
-            }
-        }
-
-
-        private void SetWorkPlaneOff()
-        {
-            try
-            {
-                WorkPlane workPlane1;
-                workPlane1 = __display_part_.Preferences.Workplane;
-
-                if (workPlane1 != null)
-                {
-                    workPlane1.GridType = WorkPlane.Grid.Rectangular;
-
-                    workPlane1.GridIsNonUniform = false;
-
-                    WorkPlane.GridSize gridSize1 = new WorkPlane.GridSize(_gridSpace, 1, 1);
-                    workPlane1.SetRectangularUniformGridSize(gridSize1);
-
-                    workPlane1.ShowGrid = false;
-
-                    workPlane1.ShowLabels = false;
-
-                    workPlane1.SnapToGrid = false;
-
-                    workPlane1.GridOnTop = false;
-
-                    workPlane1.RectangularShowMajorLines = false;
-
-                    workPlane1.PolarShowMajorLines = false;
-
-                    workPlane1.GridColor = 7;
-#pragma warning disable CS0618
-                    session_.Preferences.WorkPlane.ObjectOffWorkPlane = SessionWorkPlane.ObjectDisplay.Normal;
-#pragma warning restore CS0618
-                }
-                else
-                {
-                    NXMessage("WorkPlane is null.  Reset Modeling State");
-                }
-            }
-            catch (Exception ex)
-            {
-                ex.__PrintException();
-            }
-        }
-
-
-        //public int Startup()
-        //{
-        //    if (_registered == 0)
-        //    {
-        //        EditBlockForm editForm = this;
-        //        _idWorkPartChanged1 = session_.Parts.AddWorkPartChangedHandler(editForm.WorkPartChanged1);
-        //        _registered = 1;
-        //    }
-
-        //    return 0;
-        //}
-
-        //public void WorkPartChanged1(BasePart p)
-        //{
-        //    SetWorkPlaneOff();
-        //    LoadGridSizes();
-        //    SetWorkPlaneOn();
-        //}
-
-
         private List<Point> SelectHandlePoint()
         {
             Selection.MaskTriple[] mask = new Selection.MaskTriple[1];
@@ -6799,29 +6593,6 @@ namespace TSG_Library.UFuncs
             _nonValidNames.Add("blank");
             _registered = Startup();
         }
-
-        private void comboBox1_DrawItem(object sender, DrawItemEventArgs e)
-        {
-            // Draw the background 
-            e.DrawBackground();
-            int[] temp = { 1, 2, 3, 4, 5, 6, 7 };
-            // Get the item text    
-            string text = ((ComboBox)sender).Items[e.Index].ToString();
-
-            // Determine the forecolor based on whether or not the item is selected    
-            System.Drawing.Brush brush;
-            //if (YourListOfDates[e.Index] < DateTime.Now)// compare  date with your list.  
-            //{
-            brush = System.Drawing.Brushes.Red;
-            //}
-            //else
-            //{
-            //    brush = System.Drawing.Brushes.Green;
-            //}
-
-            // Draw the text    
-            e.Graphics.DrawString(text, ((Control)sender).Font, brush, e.Bounds.X, e.Bounds.Y);
-        }
     }
 }
-// 3292
+// 6827
