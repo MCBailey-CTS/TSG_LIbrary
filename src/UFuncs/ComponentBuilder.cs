@@ -3646,7 +3646,8 @@ namespace TSG_Library.UFuncs
             if (editComponent.__Prototype().PartUnits != __display_part_.PartUnits)
                 return;
 
-            isBlockComponent = IsBlockComponent(isBlockComponent, editComponent);
+            using (session_.__UsingSuppressDisplay())
+                isBlockComponent = IsBlockComponent(isBlockComponent, editComponent);
             EditDynamic(isBlockComponent);
             return;
         }
@@ -3671,10 +3672,11 @@ namespace TSG_Library.UFuncs
             DisableForm();
 
             if (_isNewSelection)
-            {
-                CreateEditData(editComponent);
-                _isNewSelection = false;
-            }
+                using (session_.__UsingSuppressDisplay())
+                {
+                    CreateEditData(editComponent);
+                    _isNewSelection = false;
+                }
 
             List<Point> pHandle = SelectHandlePoint();
             _isDynamic = true;
@@ -3688,8 +3690,6 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                System.Diagnostics.Debugger.Launch();
-
                 bool isBlockComponent = SetDispUnits();
 
                 if (_isNewSelection && _updateComponent is null)
@@ -5134,99 +5134,100 @@ namespace TSG_Library.UFuncs
 
         private void CreateEditData(Component setCompTranslucency)
         {
-            try
-            {
-                // set component translucency
+            using (session_.__UsingSuppressDisplay())
+                try
+                {
+                    // set component translucency
 
-                if (setCompTranslucency != null)
-                    setCompTranslucency.__Translucency(75);
-                else
-                    foreach (Body dispBody in __work_part_.Bodies)
-                        if (dispBody.Layer == 1)
-                            dispBody.__Translucency(75);
+                    if (setCompTranslucency != null)
+                        setCompTranslucency.__Translucency(75);
+                    else
+                        foreach (Body dispBody in __work_part_.Bodies)
+                            if (dispBody.Layer == 1)
+                                dispBody.__Translucency(75);
 
-                SetWcsToWorkPart(setCompTranslucency);
+                    SetWcsToWorkPart(setCompTranslucency);
 
-                if (!__work_part_.__HasDynamicBlock())
-                    return;
+                    if (!__work_part_.__HasDynamicBlock())
+                        return;
 
-                // get current block feature
-                Block block1 = __work_part_.__DynamicBlock();
+                    // get current block feature
+                    Block block1 = __work_part_.__DynamicBlock();
 
-                BlockFeatureBuilder blockFeatureBuilderMatch;
-                blockFeatureBuilderMatch = __work_part_.Features.CreateBlockFeatureBuilder(block1);
-                Point3d bOrigin = blockFeatureBuilderMatch.Origin;
-                string blength = blockFeatureBuilderMatch.Length.RightHandSide;
-                string bwidth = blockFeatureBuilderMatch.Width.RightHandSide;
-                string bheight = blockFeatureBuilderMatch.Height.RightHandSide;
-                double mLength = blockFeatureBuilderMatch.Length.Value;
-                double mWidth = blockFeatureBuilderMatch.Width.Value;
-                double mHeight = blockFeatureBuilderMatch.Height.Value;
+                    BlockFeatureBuilder blockFeatureBuilderMatch;
+                    blockFeatureBuilderMatch = __work_part_.Features.CreateBlockFeatureBuilder(block1);
+                    Point3d bOrigin = blockFeatureBuilderMatch.Origin;
+                    string blength = blockFeatureBuilderMatch.Length.RightHandSide;
+                    string bwidth = blockFeatureBuilderMatch.Width.RightHandSide;
+                    string bheight = blockFeatureBuilderMatch.Height.RightHandSide;
+                    double mLength = blockFeatureBuilderMatch.Length.Value;
+                    double mWidth = blockFeatureBuilderMatch.Width.Value;
+                    double mHeight = blockFeatureBuilderMatch.Height.Value;
 
-                __work_part_ = __display_part_;
+                    __work_part_ = __display_part_;
 
-                if (mLength == 0 || mWidth == 0 || mHeight == 0)
-                    return;
+                    if (mLength == 0 || mWidth == 0 || mHeight == 0)
+                        return;
 
-                // create edit block feature
-                Feature nullFeaturesFeature = null;
-                BlockFeatureBuilder blockFeatureBuilderEdit;
-                blockFeatureBuilderEdit = __display_part_.Features.CreateBlockFeatureBuilder(
-                    nullFeaturesFeature
-                );
+                    // create edit block feature
+                    Feature nullFeaturesFeature = null;
+                    BlockFeatureBuilder blockFeatureBuilderEdit;
+                    blockFeatureBuilderEdit = __display_part_.Features.CreateBlockFeatureBuilder(
+                        nullFeaturesFeature
+                    );
 
-                blockFeatureBuilderEdit.BooleanOption.Type = BooleanOperation.BooleanType.Create;
+                    blockFeatureBuilderEdit.BooleanOption.Type = BooleanOperation.BooleanType.Create;
 
-                Body[] targetBodies1 = new Body[1];
-                Body nullBody = null;
-                targetBodies1[0] = nullBody;
-                blockFeatureBuilderEdit.BooleanOption.SetTargetBodies(targetBodies1);
+                    Body[] targetBodies1 = new Body[1];
+                    Body nullBody = null;
+                    targetBodies1[0] = nullBody;
+                    blockFeatureBuilderEdit.BooleanOption.SetTargetBodies(targetBodies1);
 
-                blockFeatureBuilderEdit.Type = BlockFeatureBuilder.Types.OriginAndEdgeLengths;
+                    blockFeatureBuilderEdit.Type = BlockFeatureBuilder.Types.OriginAndEdgeLengths;
 
-                Point3d originPoint1 = __display_part_.WCS.Origin;
+                    Point3d originPoint1 = __display_part_.WCS.Origin;
 
-                blockFeatureBuilderEdit.SetOriginAndLengths(
-                    originPoint1,
-                    mLength.ToString(),
-                    mWidth.ToString(),
-                    mHeight.ToString()
-                );
+                    blockFeatureBuilderEdit.SetOriginAndLengths(
+                        originPoint1,
+                        mLength.ToString(),
+                        mWidth.ToString(),
+                        mHeight.ToString()
+                    );
 
-                blockFeatureBuilderEdit.SetBooleanOperationAndTarget(
-                    Feature.BooleanType.Create,
-                    nullBody
-                );
+                    blockFeatureBuilderEdit.SetBooleanOperationAndTarget(
+                        Feature.BooleanType.Create,
+                        nullBody
+                    );
 
-                Feature feature1;
-                feature1 = blockFeatureBuilderEdit.CommitFeature();
+                    Feature feature1;
+                    feature1 = blockFeatureBuilderEdit.CommitFeature();
 
-                feature1.SetName("EDIT BLOCK");
+                    feature1.SetName("EDIT BLOCK");
 
-                Block editBlock = (Block)feature1;
-                Body[] editBody = editBlock.GetBodies();
+                    Block editBlock = (Block)feature1;
+                    Body[] editBody = editBlock.GetBodies();
 
-                CreateBlockLines(originPoint1, mLength, mWidth, mHeight);
+                    CreateBlockLines(originPoint1, mLength, mWidth, mHeight);
 
-                blockFeatureBuilderMatch.Destroy();
-                blockFeatureBuilderEdit.Destroy();
+                    blockFeatureBuilderMatch.Destroy();
+                    blockFeatureBuilderEdit.Destroy();
 
-                __work_part_.FacetedBodies.DeleteTemporaryFacesAndEdges();
+                    __work_part_.FacetedBodies.DeleteTemporaryFacesAndEdges();
 
-                CreateDynamicHandleUdo(editBody[0]);
-                ShowDynamicHandles();
-                ShowTemporarySizeText();
+                    CreateDynamicHandleUdo(editBody[0]);
+                    ShowDynamicHandles();
+                    ShowTemporarySizeText();
 
-                Session.UndoMarkId markDeleteObjs1;
-                markDeleteObjs1 = session_.SetUndoMark(Session.MarkVisibility.Invisible, "");
-                session_.UpdateManager.AddToDeleteList(feature1);
-                session_.UpdateManager.DoUpdate(markDeleteObjs1);
-                session_.DeleteUndoMark(markDeleteObjs1, "");
-            }
-            catch (Exception ex)
-            {
-                ex.__PrintException();
-            }
+                    Session.UndoMarkId markDeleteObjs1;
+                    markDeleteObjs1 = session_.SetUndoMark(Session.MarkVisibility.Invisible, "");
+                    session_.UpdateManager.AddToDeleteList(feature1);
+                    session_.UpdateManager.DoUpdate(markDeleteObjs1);
+                    session_.DeleteUndoMark(markDeleteObjs1, "");
+                }
+                catch (Exception ex)
+                {
+                    ex.__PrintException();
+                }
         }
 
 
@@ -5263,7 +5264,7 @@ namespace TSG_Library.UFuncs
 
             if (!__work_part_.__HasDynamicBlock())
                 return isBlockComponent;
-            
+
             isBlockComponent = true;
             CreateEditData(editComponent);
             _isNewSelection = false;
