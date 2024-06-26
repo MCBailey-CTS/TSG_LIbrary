@@ -341,7 +341,7 @@ namespace TSG_Library.UFuncs
                             || listBoxMaterial.Text == "HRS";
 
                 groupBoxColor.Enabled = true;
-                textBoxUserMaterial.Text = string.Empty;
+                //textBoxUserMaterial.Text = string.Empty;
                 changeColorCheckBox.Checked = false;
                 changeColorCheckBox.Enabled = false;
                 buttonAutoUpr.Enabled = true;
@@ -362,37 +362,37 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        private void TextBoxUserMaterial_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                bool flag = textBoxUserMaterial.Text.Length != 0;
-                listBoxMaterial.Enabled = !flag;
+        //private void TextBoxUserMaterial_TextChanged(object sender, EventArgs e)
+        //{
+        //    try
+        //    {
+        //        bool flag = textBoxUserMaterial.Text.Length != 0;
+        //        listBoxMaterial.Enabled = !flag;
 
-                if (flag)
-                {
-                    listBoxMaterial.SelectedIndex = -1;
+        //        if (flag)
+        //        {
+        //            listBoxMaterial.SelectedIndex = -1;
 
-                    if (!textBoxDetailNumber.Enabled
-                        || comboBoxCompName.SelectedIndex == -1
-                        || textBoxUserMaterial.Text == string.Empty)
-                        return;
+        //            if (!textBoxDetailNumber.Enabled
+        //                || comboBoxCompName.SelectedIndex == -1
+        //                || textBoxUserMaterial.Text == string.Empty)
+        //                return;
 
-                    groupBoxColor.Enabled = true;
-                    changeColorCheckBox.Checked = false;
-                }
-                else
-                {
-                    groupBoxColor.Enabled = false;
-                }
+        //            groupBoxColor.Enabled = true;
+        //            changeColorCheckBox.Checked = false;
+        //        }
+        //        else
+        //        {
+        //            groupBoxColor.Enabled = false;
+        //        }
 
-                changeColorCheckBox.Enabled = !flag;
-            }
-            catch (Exception ex)
-            {
-                ex.__PrintException();
-            }
-        }
+        //        changeColorCheckBox.Enabled = !flag;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ex.__PrintException();
+        //    }
+        //}
 
         private void ButtonObscureDullGreen_Click(object sender, EventArgs e)
         {
@@ -1320,7 +1320,7 @@ namespace TSG_Library.UFuncs
                     //if (infoUnits == UF_UI_POUNDS_INCHES && dispUnits == NXOpen.Part.Units.Inches ||
                     //    infoUnits == UF_UI_KILOS_MILLIMETERS && dispUnits == NXOpen.Part.Units.Millimeters)
                     //{
-                    string userMaterial = textBoxUserMaterial.Text;
+                    //string userMaterial = textBoxUserMaterial.Text;
                     int compNameIndex = comboBoxCompName.SelectedIndex;
                     int compMaterialIndex = listBoxMaterial.SelectedIndex;
                     bool isUpper = checkBoxUpperComp.Checked;
@@ -1329,7 +1329,7 @@ namespace TSG_Library.UFuncs
                     if (listBoxMaterial.SelectedIndex == -1)
                     {
                         selectecMaterial.AttrName = "MATERIAL";
-                        selectecMaterial.AttrValue = textBoxUserMaterial.Text;
+                        //selectecMaterial.AttrValue = textBoxUserMaterial.Text;
                     }
                     else
                     {
@@ -1551,15 +1551,15 @@ namespace TSG_Library.UFuncs
                     }
 
                     UpdateFormText();
-                    if (userMaterial.Length != 0)
-                    {
-                        textBoxUserMaterial.Text = userMaterial;
-                        comboBoxCompName.SelectedIndex = compNameIndex;
-                        listBoxMaterial.SelectedIndex = -1;
-                        listBoxMaterial.Enabled = false;
-                        groupBoxColor.Enabled = true;
-                    }
-                    else
+                    //if (userMaterial.Length != 0)
+                    //{
+                    //    textBoxUserMaterial.Text = userMaterial;
+                    //    comboBoxCompName.SelectedIndex = compNameIndex;
+                    //    listBoxMaterial.SelectedIndex = -1;
+                    //    listBoxMaterial.Enabled = false;
+                    //    groupBoxColor.Enabled = true;
+                    //}
+                    //else
                     {
                         comboBoxCompName.SelectedIndex = compNameIndex;
                         listBoxMaterial.SelectedIndex = compMaterialIndex;
@@ -1620,7 +1620,7 @@ namespace TSG_Library.UFuncs
                     }
 
                     //if (!areUnitsEqual) return;
-                    string userMaterial = textBoxUserMaterial.Text;
+                    //string userMaterial = textBoxUserMaterial.Text;
                     int compNameIndex = comboBoxCompName.SelectedIndex;
                     int compMaterialIndex = listBoxMaterial.SelectedIndex;
                     bool isUpper = checkBoxUpperComp.Checked;
@@ -1635,7 +1635,7 @@ namespace TSG_Library.UFuncs
                     else
                     {
                         selectecMaterial.AttrName = "MATERIAL";
-                        selectecMaterial.AttrValue = textBoxUserMaterial.Text;
+                        //selectecMaterial.AttrValue = textBoxUserMaterial.Text;
                     }
 
                     bool numberIsValid = FormatDetailNumber();
@@ -1946,15 +1946,15 @@ namespace TSG_Library.UFuncs
 
                     UpdateFormText();
 
-                    if (userMaterial.Length != 0)
-                    {
-                        textBoxUserMaterial.Text = userMaterial;
-                        comboBoxCompName.SelectedIndex = compNameIndex;
-                        listBoxMaterial.SelectedIndex = -1;
-                        listBoxMaterial.Enabled = false;
-                        groupBoxColor.Enabled = true;
-                    }
-                    else
+                    //if (userMaterial.Length != 0)
+                    //{
+                    //    //textBoxUserMaterial.Text = userMaterial;
+                    //    comboBoxCompName.SelectedIndex = compNameIndex;
+                    //    listBoxMaterial.SelectedIndex = -1;
+                    //    listBoxMaterial.Enabled = false;
+                    //    groupBoxColor.Enabled = true;
+                    //}
+                    //else
                     {
                         comboBoxCompName.SelectedIndex = compNameIndex;
                         listBoxMaterial.SelectedIndex = compMaterialIndex;
@@ -2511,7 +2511,7 @@ namespace TSG_Library.UFuncs
 
             // create list of material types
             listBoxMaterial.Items.Clear();
-            textBoxUserMaterial.Text = string.Empty;
+            //textBoxUserMaterial.Text = string.Empty;
 
             foreach (CtsAttributes matl in _compMaterials)
                 listBoxMaterial.Items.Add(matl);
@@ -2715,7 +2715,7 @@ namespace TSG_Library.UFuncs
             }
             catch (NXException ex) when (ex.ErrorCode == 1535022)
             {
-                AutoSizeComponent.initializeUDO(true);
+                AutoSizeComponent.initializeUDO(false);
                 myUdOclass = session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoAutoSizeComponent");
             }
 
@@ -4437,7 +4437,7 @@ namespace TSG_Library.UFuncs
                                 mappedPoint);
 
                             double distance;
-                            
+
                             switch (pointPrototype.Name)
                             {
                                 case "POSX":
@@ -6080,7 +6080,7 @@ namespace TSG_Library.UFuncs
             }
             catch (NXException ex) when (ex.ErrorCode == 1535022)
             {
-                DynamicHandle.initializeUDO(true);
+                DynamicHandle.initializeUDO(false);
                 return session_.UserDefinedClassManager.GetUserDefinedClassFromClassName("UdoDynamicHandle");
             }
         }
@@ -6090,7 +6090,7 @@ namespace TSG_Library.UFuncs
             try
             {
                 UserDefinedClass myUdOclass = GetDynamicHandle();
-              
+
 
                 if (myUdOclass is null)
                     return;
@@ -6779,9 +6779,28 @@ namespace TSG_Library.UFuncs
             _registered = Startup();
         }
 
+        private void comboBox1_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            // Draw the background 
+            e.DrawBackground();
+            int[] temp = { 1, 2, 3, 4, 5, 6, 7 };
+            // Get the item text    
+            string text = ((ComboBox)sender).Items[e.Index].ToString();
 
+            // Determine the forecolor based on whether or not the item is selected    
+            System.Drawing.Brush brush;
+            //if (YourListOfDates[e.Index] < DateTime.Now)// compare  date with your list.  
+            //{
+                brush = System.Drawing.Brushes.Red;
+            //}
+            //else
+            //{
+            //    brush = System.Drawing.Brushes.Green;
+            //}
 
-
+            // Draw the text    
+            e.Graphics.DrawString(text, ((Control)sender).Font, brush, e.Bounds.X, e.Bounds.Y);
+        }
     }
 }
 // 3292
