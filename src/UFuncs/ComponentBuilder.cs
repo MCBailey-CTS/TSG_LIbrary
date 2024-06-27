@@ -30,7 +30,6 @@ namespace TSG_Library.UFuncs
     [UFunc(ufunc_component_builder)]
     public partial class ComponentBuilder : _UFuncForm
     {
-        private const double GridSpace = 1d;
 
         public const double Tolerance = .0001;
         private static Part _workPart = session_.Parts.Work;
@@ -179,8 +178,9 @@ namespace TSG_Library.UFuncs
 
         private void SetWorkPlane(bool snapToGrid)
         {
-            _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
-            session_.__SetWorkPlane(GridSpace, snapToGrid, false);
+            _workPart = session_.Parts.Work;
+            _displayPart = session_.Parts.Display; ;
+            session_.__SetWorkPlane(double.Parse((string)comboBoxGrid.SelectedItem), snapToGrid, false);
         }
 
         public int Startup()
@@ -3680,7 +3680,7 @@ namespace TSG_Library.UFuncs
 
             List<Point> pHandle = SelectHandlePoint();
             _isDynamic = true;
-            pHandle = Dynamic(pHandle);
+            Dynamic(pHandle);
             EnableForm();
             return;
         }
@@ -3824,11 +3824,12 @@ namespace TSG_Library.UFuncs
             if (editComponent.__Prototype().PartUnits != __display_part_.PartUnits)
                 return isBlockComponent;
 
-            isBlockComponent = NewMethod51(isBlockComponent, editComponent);
+            //using (session_.__UsingSuppressDisplay())
+            isBlockComponent = IsBlockComponent1(editComponent);
 
             if (isBlockComponent)
             {
-                UpdateDynamicBlock(editComponent);
+                //UpdateDynamicBlock(editComponent);
                 CreateEditData(editComponent);
                 DisableForm();
                 var pHandle = SelectHandlePoint();
@@ -3951,6 +3952,8 @@ namespace TSG_Library.UFuncs
                     return;
 
                 Component editComponent = _editBody.OwningComponent;
+
+                System.Diagnostics.Debugger.Launch();
 
                 isBlockComponent = editComponent is null
                     ? EditSize(isBlockComponent, editComponent)
@@ -4622,7 +4625,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if (distance == 0)
+                if (Math.Abs(distance) < 0.001)
                     return;
 
                 __display_part_.WCS.SetOriginAndMatrix(_workCompOrigin, _workCompOrientation);
@@ -4630,16 +4633,10 @@ namespace TSG_Library.UFuncs
 
                 using (session_.__UsingBuilderDestroyer(builder))
                 {
-                    builder.TransformMotion.DistanceAngle.OrientXpress.AxisOption =
-                        OrientXpressBuilder.Axis.Passive;
-                    builder.TransformMotion.DistanceAngle.OrientXpress.PlaneOption =
-                        OrientXpressBuilder.Plane.Passive;
-                    builder.TransformMotion.OrientXpress.AxisOption = OrientXpressBuilder
-                        .Axis
-                        .Passive;
-                    builder.TransformMotion.OrientXpress.PlaneOption = OrientXpressBuilder
-                        .Plane
-                        .Passive;
+                    builder.TransformMotion.DistanceAngle.OrientXpress.AxisOption = OrientXpressBuilder.Axis.Passive;
+                    builder.TransformMotion.DistanceAngle.OrientXpress.PlaneOption = OrientXpressBuilder.Plane.Passive;
+                    builder.TransformMotion.OrientXpress.AxisOption = OrientXpressBuilder.Axis.Passive;
+                    builder.TransformMotion.OrientXpress.PlaneOption = OrientXpressBuilder.Plane.Passive;
                     builder.TransformMotion.Option = ModlMotion.Options.DeltaXyz;
                     builder.TransformMotion.DeltaEnum = ModlMotion.Delta.ReferenceWcsWorkPart;
 
@@ -5347,7 +5344,7 @@ namespace TSG_Library.UFuncs
 
 
 
-        private List<Point> Dynamic(List<Point> pHandle)
+        private void Dynamic(List<Point> pHandle)
         {
             while (pHandle.Count == 1)
             {
@@ -5383,8 +5380,6 @@ namespace TSG_Library.UFuncs
                     pHandle = SelectHandlePoint();
                 }
             }
-
-            return pHandle;
         }
 
         private void EditDynamic(List<Point> pHandle)
@@ -5995,7 +5990,7 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        private bool NewMethod51(bool isBlockComponent, Component editComponent)
+        private bool IsBlockComponent1(Component editComponent)
         {
             if (!_isNewSelection)
                 return true;
@@ -6003,12 +5998,11 @@ namespace TSG_Library.UFuncs
             __work_component_ = editComponent;
 
             if (!__work_part_.__HasDynamicBlock())
-                return isBlockComponent;
+                return false;
 
-            isBlockComponent = true;
-            CreateEditData(editComponent);
+            //CreateEditData(editComponent);
             _isNewSelection = false;
-            return isBlockComponent;
+            return true;
         }
 
 
@@ -6471,11 +6465,24 @@ namespace TSG_Library.UFuncs
 
             Point3d mappedAddX = MapWcsToAbsolute(add);
 
-            if (isStart)
+            try
+            {
 
-                line.SetStartPoint(mappedAddX);
-            else
-                line.SetEndPoint(mappedAddX);
+                if (isStart)
+
+                    line.SetStartPoint(mappedAddX);
+                else
+                    line.SetEndPoint(mappedAddX);
+            }
+            catch (NXException ex) when (ex.ErrorCode == 1710006)
+            {
+                print_("///////////////////");
+                print_(line.StartPoint);
+                print_(line.EndPoint);
+                print_(mappedAddX);
+
+                //System.Diagnostics.Debugger.Launch();
+            }
         }
 
         private double RoundDistanceToGrid(double spacing, double cursor)
