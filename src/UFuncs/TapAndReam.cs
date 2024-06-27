@@ -333,7 +333,7 @@ namespace TSG_Library.UFuncs
             if (delAllFeats.Count > 0)
             {
                 NXOpen.Session.UndoMarkId markIdDelete = session_.SetUndoMark(NXOpen.Session.MarkVisibility.Invisible, "");
-                session_.UpdateManager.AddToDeleteList(delAllFeats.ToArray<NXOpen.NXObject>());
+                session_.UpdateManager.AddObjectsToDeleteList(delAllFeats.ToArray<NXOpen.NXObject>());
                 session_.UpdateManager.DoUpdate(markIdDelete);
             }
 
@@ -357,7 +357,7 @@ namespace TSG_Library.UFuncs
             if (delAllFeats.Count > 0)
             {
                 NXOpen.Session.UndoMarkId markIdDelete = session_.SetUndoMark(NXOpen.Session.MarkVisibility.Invisible, "");
-                session_.UpdateManager.AddToDeleteList(delAllFeats.ToArray<NXOpen.NXObject>());
+                session_.UpdateManager.AddObjectsToDeleteList(delAllFeats.ToArray<NXOpen.NXObject>());
                 session_.UpdateManager.DoUpdate(markIdDelete);
             }
 
@@ -381,7 +381,7 @@ namespace TSG_Library.UFuncs
             if (delAllFeats.Count > 0)
             {
                 NXOpen.Session.UndoMarkId markIdDelete = session_.SetUndoMark(NXOpen.Session.MarkVisibility.Invisible, "");
-                session_.UpdateManager.AddToDeleteList(delAllFeats.ToArray<NXOpen.NXObject>());
+                session_.UpdateManager.AddObjectsToDeleteList(delAllFeats.ToArray<NXOpen.NXObject>());
                 session_.UpdateManager.DoUpdate(markIdDelete);
             }
 

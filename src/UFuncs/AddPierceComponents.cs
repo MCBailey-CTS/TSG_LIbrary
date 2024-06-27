@@ -67,8 +67,10 @@ namespace TSG_Library.UFuncs
                     if (chkAssembly.Checked)
                         SameAssembly(rdoMetric.Checked, chkButton.Checked, chkPunch.Checked, chkRetainer.Checked);
                     else
+#pragma warning disable CS0612 // Type or member is obsolete
                         DifferentAssemblies(rdoMetric.Checked, chkButton.Checked, chkPunch.Checked,
                             chkRetainer.Checked);
+#pragma warning restore CS0612 // Type or member is obsolete
                 }
             }
             catch (Exception ex)
@@ -754,10 +756,13 @@ namespace TSG_Library.UFuncs
             }
             finally
             {
+#pragma warning disable CS0612 // Type or member is obsolete
                 PrintResults(isMetric);
+#pragma warning restore CS0612 // Type or member is obsolete
             }
         }
 
+        [Obsolete]
         public static void DifferentAssemblies(bool isMetric, bool addButton, bool addPunch, bool addRetainer)
         {
             GFolder folder = GFolder.create_or_null(__work_part_)

@@ -669,7 +669,9 @@ namespace TSG_Library.UFuncs
             this.Text = "1919";
             this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+#pragma warning disable CS0618 // Type or member is obsolete
             this.Load += new System.EventHandler(this.MainForm_Load);
+#pragma warning restore CS0618 // Type or member is obsolete
             this.groupBoxAddStock.ResumeLayout(false);
             this.groupBoxAddStock.PerformLayout();
             this.groupBoxBurnSettings.ResumeLayout(false);

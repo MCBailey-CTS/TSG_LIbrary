@@ -107,7 +107,9 @@ namespace TSG_Library.UFuncs
                 {
                     Hide();
 
+#pragma warning disable CS0612 // Type or member is obsolete
                     selectedComponents = Ui.Selection.SelectComponents().ToList();
+#pragma warning restore CS0612 // Type or member is obsolete
 
                     Show();
 
