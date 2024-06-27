@@ -3170,7 +3170,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                bool isBlockComponent = SetDispUnits();
+                SetDispUnits();
 
                 if (_isNewSelection)
                 {
@@ -3195,7 +3195,7 @@ namespace TSG_Library.UFuncs
                     _isNewSelection = true;
                 }
 
-                EditMatch(isBlockComponent);
+                EditMatch();
             }
             catch (Exception ex)
             {
@@ -3210,12 +3210,12 @@ namespace TSG_Library.UFuncs
             try
             {
                 //System.Diagnostics.Debugger.Launch();
-                bool isBlockComponent = SetDispUnits();
+                SetDispUnits();
 
                 if (_isNewSelection && _updateComponent is null)
                     SelectWithFilter_("Select Component to Align Edge");
 
-                AlignEdgeDistance(isBlockComponent);
+                AlignEdgeDistance();
             }
             catch (Exception ex)
             {
@@ -3402,13 +3402,13 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                bool isBlockComponent = SetDispUnits();
+                SetDispUnits();
 
 
                 if (_isNewSelection && _updateComponent is null)
                     SelectWithFilter_("Select Component to Align");
 
-                EdgeAlign(isBlockComponent);
+                EdgeAlign();
             }
             catch (Exception ex)
             {
@@ -3420,10 +3420,8 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        private void EdgeAlign(bool isBlockComponent)
+        private void EdgeAlign()
         {
-            //System.Diagnostics.Debugger.Launch();
-
             if (_editBody is null)
                 return;
 
@@ -3441,9 +3439,7 @@ namespace TSG_Library.UFuncs
             if (editComponent.__Prototype().PartUnits != __display_part_.PartUnits)
                 return;
 
-            isBlockComponent = IsBlockComponent(editComponent);
-
-            if (!isBlockComponent)
+            if (!IsBlockComponent(editComponent))
             {
                 ResetNonBlockError();
                 NXMessage("Not a block component");
@@ -3685,7 +3681,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                bool isBlockComponent = SetDispUnits();
+                SetDispUnits();
 
                 if (_isNewSelection && _updateComponent is null)
                     SelectWithFilter_("Select Component for Dynamic Edit");
@@ -3712,7 +3708,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                bool isBlockComponent = SetDispUnits();
+                SetDispUnits();
 
                 if (_isNewSelection && _updateComponent is null)
                     SelectWithFilter_("Select Component to Move");
@@ -3722,9 +3718,10 @@ namespace TSG_Library.UFuncs
 
                 Component editComponent = _editBody.OwningComponent;
 
-                isBlockComponent = editComponent is null
-                    ? EditMoveDisplay(isBlockComponent, editComponent)
-                    : EditMoveWork(isBlockComponent, editComponent);
+                if (editComponent is null)
+                    EditMoveDisplay(editComponent);
+                else
+                    EditMoveWork(editComponent);
             }
             catch (Exception ex)
             {
@@ -3732,32 +3729,23 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        private bool EditMoveWork(bool isBlockComponent, Component editComponent)
+        private void EditMoveWork(Component editComponent)
         {
             Part checkPartName = (Part)editComponent.Prototype;
-
-            if (checkPartName.FullPath.Contains("mirror"))
-            {
-                NXMessage("Mirrored Component");
-                return isBlockComponent;
-            }
-
             _updateComponent = editComponent;
-
             BasePart.Units assmUnits = __display_part_.PartUnits;
             BasePart compBase = (BasePart)editComponent.Prototype;
             BasePart.Units compUnits = compBase.PartUnits;
 
             if (compUnits != assmUnits)
-                return isBlockComponent;
+                return;
 
-            isBlockComponent = IsBlockComponent(editComponent);
 
-            if (!isBlockComponent)
+            if (!IsBlockComponent(editComponent))
             {
                 ResetNonBlockError();
                 NXMessage("Not a block component");
-                return isBlockComponent;
+                return;
             }
 
             DisableForm();
@@ -3768,22 +3756,18 @@ namespace TSG_Library.UFuncs
             pHandle = NewMethod4(pHandle);
 
             EnableForm();
-
-            return isBlockComponent;
         }
 
 
-        private bool EditMoveDisplay(bool isBlockComponent, Component editComponent)
+        private void EditMoveDisplay(Component editComponent)
         {
             if (__display_part_.FullPath.Contains("mirror"))
             {
                 NXMessage("Mirrored Component");
-                return isBlockComponent;
+                return;
             }
 
-            isBlockComponent = __work_part_.__HasDynamicBlock();
-
-            if (isBlockComponent)
+            if (__work_part_.__HasDynamicBlock())
             {
                 DisableForm();
 
@@ -3793,12 +3777,11 @@ namespace TSG_Library.UFuncs
                     _isNewSelection = false;
                 }
             }
-
-            if (!isBlockComponent)
+            else
             {
                 ResetNonBlockError();
                 NXMessage("Not a block component");
-                return isBlockComponent;
+                return;
             }
 
             List<Point> pHandle = new List<Point>();
@@ -3808,21 +3791,16 @@ namespace TSG_Library.UFuncs
             pHandle = NewMethod(pHandle);
 
             EnableForm();
-
-            return isBlockComponent;
         }
 
-        private bool EditSizeWork(bool isBlockComponent, Component editComponent)
+        private void EditSizeWork(Component editComponent)
         {
             _updateComponent = editComponent;
 
             if (editComponent.__Prototype().PartUnits != __display_part_.PartUnits)
-                return isBlockComponent;
+                return;
 
-            //using (session_.__UsingSuppressDisplay())
-            isBlockComponent = IsBlockComponent1(editComponent);
-
-            if (isBlockComponent)
+            if (IsBlockComponent1(editComponent))
             {
                 //UpdateDynamicBlock(editComponent);
                 CreateEditData(editComponent);
@@ -3927,10 +3905,8 @@ namespace TSG_Library.UFuncs
             {
                 ResetNonBlockError();
                 NXMessage("Not a block component");
-                return isBlockComponent;
+                return;
             }
-
-            return isBlockComponent;
         }
 
 
@@ -3938,7 +3914,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                bool isBlockComponent = SetDispUnits();
+                SetDispUnits();
 
                 if (_isNewSelection && _updateComponent is null)
                     SelectWithFilter_("Select Component to Edit Size");
@@ -3948,11 +3924,10 @@ namespace TSG_Library.UFuncs
 
                 Component editComponent = _editBody.OwningComponent;
 
-                System.Diagnostics.Debugger.Launch();
-
-                isBlockComponent = editComponent is null
-                    ? EditSize(isBlockComponent, editComponent)
-                    : EditSizeWork(isBlockComponent, editComponent);
+                if (editComponent is null)
+                    EditSize(editComponent);
+                else
+                    EditSizeWork(editComponent);
             }
             catch (Exception ex)
             {
@@ -3975,13 +3950,13 @@ namespace TSG_Library.UFuncs
             MoveObjects(movePtsHalf, movePtsFull, distance, dir_xyz, false);
         }
 
-        private bool EditSize(bool isBlockComponent, Component editComponent)
+        private void EditSize(Component editComponent)
         {
             if (!__work_part_.__HasDynamicBlock())
             {
                 ResetNonBlockError();
                 NXMessage("Not a block component");
-                return isBlockComponent;
+                return;
             }
 
             DisableForm();
@@ -4076,7 +4051,7 @@ namespace TSG_Library.UFuncs
                             case "POSX":
                                 lineObjs = posXObjs;
                                 axisLines = allxAxisLines;
-                                distance =  editSize - blockLength;
+                                distance = editSize - blockLength;
                                 break;
                             case "NEGX":
                                 lineObjs = negXObjs;
@@ -4130,11 +4105,11 @@ namespace TSG_Library.UFuncs
             }
 
             EnableForm();
-            return isBlockComponent;
+            return;
         }
 
 
-      
+
         private void AlignComponent()
         {
             SetDispUnits();
@@ -6461,13 +6436,11 @@ namespace TSG_Library.UFuncs
         }
 
 
-        private bool SetDispUnits()
+        private void SetDispUnits()
         {
             buttonApply.Enabled = true;
-            bool isBlockComponent = false;
             Part.Units dispUnits = (Part.Units)__display_part_.PartUnits;
             SetDispUnits(dispUnits);
-            return isBlockComponent;
         }
 
 
