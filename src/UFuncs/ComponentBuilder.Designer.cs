@@ -426,7 +426,7 @@
             this.buttonAlignComponent.Name = "buttonAlignComponent";
             this.buttonAlignComponent.Size = new System.Drawing.Size(177, 20);
             this.buttonAlignComponent.TabIndex = 9;
-            this.buttonAlignComponent.Text = "Align Component";
+            this.buttonAlignComponent.Text = "_Align Component_";
             this.buttonAlignComponent.UseVisualStyleBackColor = true;
             this.buttonAlignComponent.Click += new System.EventHandler(this.buttonAlignComponent_Click);
             // 
@@ -470,7 +470,7 @@
             this.buttonEditSize.Name = "buttonEditSize";
             this.buttonEditSize.Size = new System.Drawing.Size(85, 20);
             this.buttonEditSize.TabIndex = 3;
-            this.buttonEditSize.Text = "Size";
+            this.buttonEditSize.Text = "_Size_";
             this.buttonEditSize.UseVisualStyleBackColor = true;
             this.buttonEditSize.Click += new System.EventHandler(this.buttonEditSize_Click);
             // 

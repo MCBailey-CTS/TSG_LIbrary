@@ -5,6 +5,7 @@ using NXOpen.Features;
 using NXOpen.GeometricUtilities;
 using TSG_Library.Geom;
 using Curve = TSG_Library.Geom.Curve;
+using static NXOpen.UF.UFConstants;
 // ReSharper disable SpecifyACultureInStringConversionExplicitly
 
 namespace TSG_Library.Extensions
@@ -729,8 +730,8 @@ namespace TSG_Library.Extensions
         /// </remarks>
         public static Point3d __MapWcsToAcs(this Point3d workCoords)
         {
-            int input_csys = 3;
-            int output_csys = 1;
+            int input_csys = UF_CSYS_ROOT_WCS_COORDS;
+            int output_csys = UF_CSYS_ROOT_COORDS;
             double[] numArray = new double[3];
             ufsession_.Csys.MapPoint(input_csys, workCoords.__ToArray(), output_csys, numArray);
             return numArray.__ToPoint3d();
@@ -742,8 +743,8 @@ namespace TSG_Library.Extensions
         /// <returns>The coordinates of the given point wrt the Work Coordinate System (WCS)</returns>
         public static Point3d __MapAcsToWcs(this Point3d absCoords)
         {
-            int output_csys = 3;
-            int input_csys = 1;
+            int output_csys = UF_CSYS_ROOT_WCS_COORDS;
+            int input_csys = UF_CSYS_ROOT_COORDS;
             double[] numArray = new double[3];
             ufsession_.Csys.MapPoint(input_csys, absCoords.__ToArray(), output_csys, numArray);
             return numArray.__ToPoint3d();
