@@ -71,8 +71,7 @@ namespace TSG_Library.UFuncs
             {
                 try
                 {
-                    UpdateSessionParts();
-                    UpdateOriginalParts();
+                    _originalDisplayPart = __display_part_;
                     _selComponents = new List<Component>();
                     DisplayName?.Clear();
                     selCompListBox.Items.Clear();
@@ -120,8 +119,7 @@ namespace TSG_Library.UFuncs
             {
                 try
                 {
-                    UpdateSessionParts();
-                    UpdateOriginalParts();
+                    _originalDisplayPart = __display_part_;
                     _selComponents = new List<Component>();
                     AllComponents.Clear();
                     DisplayName.Clear();
@@ -201,8 +199,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                _originalDisplayPart = __display_part_;
                 _selComponents = new List<Component>();
                 AllComponents.Clear();
                 DisplayName.Clear();
@@ -295,8 +292,7 @@ namespace TSG_Library.UFuncs
                 if (!IsAssemblyLoaded(__work_part_.ComponentAssembly.RootComponent))
                     print_("Assembly is not fully loaded. Please fully load it to ensure accurate results.");
 
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                _originalDisplayPart = __display_part_;
                 _selComponents = new List<Component>();
                 selCompListBox.Items.Clear();
 
@@ -340,8 +336,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                _originalDisplayPart = __display_part_;
                 _selComponents = new List<Component>();
                 AllComponents.Clear();
                 DisplayName.Clear();
@@ -414,8 +409,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                _originalDisplayPart = __display_part_;
                 _selComponents = new List<Component>();
                 AllComponents.Clear();
                 DisplayName.Clear();
@@ -492,8 +486,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                _originalDisplayPart = __display_part_;
                 _selComponents = new List<Component>();
                 AllComponents.Clear();
                 DisplayName.Clear();
@@ -641,7 +634,6 @@ namespace TSG_Library.UFuncs
                 if (prevIndex <= -1)
                     return;
 
-                UpdateSessionParts();
                 SetDefaultLayers();
                 string currentName = (string)selCompListBox.SelectedItem;
                 selCompListBox.SelectedIndex = prevIndex;
@@ -653,7 +645,6 @@ namespace TSG_Library.UFuncs
 
                     if (checkBoxDefaultLayers.Checked)
                     {
-                        UpdateSessionParts();
                         SetDefaultLayers();
                     }
 
@@ -694,7 +685,6 @@ namespace TSG_Library.UFuncs
                 if (nextIndex >= selCompListBox.Items.Count)
                     return;
 
-                UpdateSessionParts();
                 SetDefaultLayers();
                 string currentName = (string)selCompListBox.SelectedItem;
                 selCompListBox.SelectedIndex = nextIndex;
@@ -706,7 +696,6 @@ namespace TSG_Library.UFuncs
 
                     if (checkBoxDefaultLayers.Checked)
                     {
-                        UpdateSessionParts();
                         SetDefaultLayers();
                     }
 
@@ -743,8 +732,7 @@ namespace TSG_Library.UFuncs
                 ufsession_.Draw.SetDisplayState(modeling);
                 Part part2 = _originalDisplayPart;
                 __display_part_ = part2;
-                UpdateSessionParts();
-                UpdateOriginalParts();
+                _originalDisplayPart = __display_part_;
                 _isBurnout = false;
                 _is4View = false;
                 selectButton.Enabled = true;
@@ -939,15 +927,9 @@ namespace TSG_Library.UFuncs
             return oneComp.Count != 0 ? oneComp : null;
         }
 
-        private static void UpdateSessionParts()
-        {
-            __display_part_ = Session.GetSession().Parts.Display;
-        }
+      
 
-        private static void UpdateOriginalParts()
-        {
-            _originalDisplayPart = __display_part_;
-        }
+     
 
         private static void SetDefaultLayers()
         {

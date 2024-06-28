@@ -284,6 +284,7 @@ namespace TSG_Library.UFuncs
                     passedComponents = passedComponents.Where(comp => !comp.IsSuppressed)
                         .DistinctBy(comp => comp.DisplayName)
                         .ToList();
+
                     passedComponents.Sort((c1, c2) => string.Compare(c1.Name, c2.Name, StringComparison.Ordinal));
                     DetailComponents(passedComponents);
                 }
@@ -315,8 +316,6 @@ namespace TSG_Library.UFuncs
                     }
                 }
 
-                //ufsession_.Disp.SetDisplay(NXOpen.UF.UFConstants.UF_DISP_UNSUPPRESS_DISPLAY);
-                //ufsession_.Disp.RegenerateDisplay();
                 SetFormDefaults();
             }
         }
@@ -443,8 +442,7 @@ namespace TSG_Library.UFuncs
                     {
                         if (chkColorDetailSheet.Checked)
                         {
-                            preferencesBuilder1.ViewStyle.ViewStyleShading.RenderingStyle =
-                                ShadingRenderingStyleOption.FullyShaded;
+                            preferencesBuilder1.ViewStyle.ViewStyleShading.RenderingStyle = ShadingRenderingStyleOption.FullyShaded;
                             preferencesBuilder1.Commit();
                         }
                     }
@@ -578,7 +576,6 @@ namespace TSG_Library.UFuncs
                             }
 
                             CreateDetailSheet(drillChart);
-
                             SetDefaultLayers();
                             print_($"Created 4-View in {__display_part_.Leaf}");
                         }
@@ -687,7 +684,6 @@ namespace TSG_Library.UFuncs
             dataToAssign.object_view_tag = drfView.Tag;
             dataToAssign.object_assoc_modifier = dataToUse.ExtPointId;
         }
-
 
         private static void DimensionView(DraftingView drfView, IReadOnlyList<double> drfViewPosition, double viewScale,
             IReadOnlyList<double> size, BasePart.Units partUnits)
@@ -798,7 +794,7 @@ namespace TSG_Library.UFuncs
                         minX.DimXvalue = drfVertex1[0] <= drfVertex2[0] ? drfVertex1[0] : drfVertex2[0];
                         minX.ExtPointId = drfVertex1[0] <= drfVertex2[0] ? (int)FirstEndPoint : (int)LastEndPoint;
                         minX.DimYvalue = drfVertex1[1] >= drfVertex2[1] ? drfVertex1[1] : drfVertex2[1];
-                        
+
                         // get maxX greatest Y vertex
                         FindEndPoints(ref maxX, out Point3d vertex3, out Point3d vertex4);
 
@@ -887,7 +883,7 @@ namespace TSG_Library.UFuncs
                         maxY.ExtPointId = drfVertex3[0] <= drfVertex4[0]
                             ? drfVertex3[1] >= drfVertex4[1] ? (int)FirstEndPoint : (int)LastEndPoint
                             : drfVertex3[1] >= drfVertex4[1]
-                                ? (int) FirstEndPoint
+                                ? (int)FirstEndPoint
                                 : (int)LastEndPoint;
                         break;
                     }
@@ -943,30 +939,32 @@ namespace TSG_Library.UFuncs
 
             AssignDraftObject(drfView, minY, ref drfObjMinY);
             AssignDraftObject(drfView, maxY, ref drfObjMaxY);
-            ufsession_.Drf.CreateVerticalDim(ref drfObjMinY, ref drfObjMaxY, ref orthoRightDimText, orthoRightDimOrigin,
+
+            ufsession_.Drf.CreateVerticalDim(
+                ref drfObjMinY,
+                ref drfObjMaxY,
+                ref orthoRightDimText,
+                orthoRightDimOrigin,
                 out _);
         }
 
         private static void FindEndPoints(ref CtsDimensionData maxY, out Point3d vertex3, out Point3d vertex4)
         {
-            if (NXObjectManager.Get(maxY.DimEntity).GetType().ToString() == "NXOpen.Line")
+            if (maxY.DimEntity.__ToTaggedObject() is Line line1)
             {
-                Line line1 = (Line)NXObjectManager.Get(maxY.DimEntity);
                 vertex3 = line1.StartPoint;
                 vertex4 = line1.EndPoint;
+                return;
             }
-            else
-            {
-                Edge edge = (Edge)NXObjectManager.Get(maxY.DimEntity);
-                edge.GetVertices(out vertex3, out vertex4);
-            }
+
+            Edge edge = (Edge)NXObjectManager.Get(maxY.DimEntity);
+            edge.GetVertices(out vertex3, out vertex4);
         }
 
 
         private static void CreateHoleChartNote(Point3d noteOrigin, string[] holeDia, Tag view)
         {
-            Session.UndoMarkId markIdNote =
-                session_.SetUndoMark(Session.MarkVisibility.Invisible, "CreateOrNull Annotation");
+            Session.UndoMarkId markIdNote = session_.SetUndoMark(Session.MarkVisibility.Invisible, "CreateOrNull Annotation");
             LetteringPreferences letteringPreferences1 = __work_part_.Annotations.Preferences.GetLetteringPreferences();
 
             UserSymbolPreferences userSymbolPreferences1 = __work_part_.Annotations.NewUserSymbolPreferences(
@@ -1063,8 +1061,7 @@ namespace TSG_Library.UFuncs
                 __work_part_.Annotations.Preferences.SetLetteringPreferences(letteringPreferences1);
             }
 
-            using (LineAndArrowPreferences lineAndArrowPreferences1 =
-                   __work_part_.Annotations.Preferences.GetLineAndArrowPreferences())
+            using (LineAndArrowPreferences lineAndArrowPreferences1 = __work_part_.Annotations.Preferences.GetLineAndArrowPreferences())
             {
                 LineCfw Cfw(int color)
                 {
@@ -1090,8 +1087,7 @@ namespace TSG_Library.UFuncs
                 __display_part_.Annotations.Preferences.SetLineAndArrowPreferences(lineAndArrowPreferences1);
             }
 
-            using (DimensionPreferences dimensionPreferences =
-                   __display_part_.Annotations.Preferences.GetDimensionPreferences())
+            using (DimensionPreferences dimensionPreferences = __display_part_.Annotations.Preferences.GetDimensionPreferences())
             {
                 dimensionPreferences.ExtensionLineDisplay = ExtensionLineDisplay.Two;
                 dimensionPreferences.ArrowDisplay = ArrowDisplay.Two;
@@ -1109,6 +1105,7 @@ namespace TSG_Library.UFuncs
                     unitsFormatPreferences.PrimaryDimensionUnit = units == BasePart.Units.Inches
                         ? DimensionUnit.Inches
                         : DimensionUnit.Millimeters;
+
                     unitsFormatPreferences.PrimaryDimensionTextFormat = DimensionTextFormat.Decimal;
                     unitsFormatPreferences.DecimalPointCharacter = DecimalPointCharacter.Period;
                     unitsFormatPreferences.DisplayTrailingZeros = true;
@@ -1144,9 +1141,11 @@ namespace TSG_Library.UFuncs
                 Layout layout = __work_part_.Layouts.FindObject("L1");
                 ModelingView backView = __work_part_.ModelingViews.FindObject("Back");
                 layout.ReplaceView(__work_part_.ModelingViews.WorkView, backView, true);
+
                 string viewName = __display_part_.ModelingViews.ToArray().Any(__k => __k.Name == "PLAN")
                     ? "PLAN"
                     : "Top";
+
                 ModelingView view = __display_part_.__FindModelingView(viewName);
                 layout.ReplaceView(backView, view, true);
                 __display_part_.WCS.SetOriginAndMatrix(view.Origin, view.Matrix);

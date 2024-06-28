@@ -838,6 +838,7 @@ namespace TSG_Library.UFuncs
             return proposalReferenceSet;
         }
 
+        [Obsolete]
         public static void CreateData(Component master, Body simulationBody, string dataLevel, string pLevel,
             bool makeStp)
         {

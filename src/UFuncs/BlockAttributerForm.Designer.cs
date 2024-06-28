@@ -1,5 +1,6 @@
 ﻿using NXOpen;
 using NXOpen.UF;
+using NXOpen.UserDefinedObjects;
 using System;
 using TSG_Library.Utilities;
 using static TSG_Library.Extensions.Extensions;
@@ -743,6 +744,544 @@ namespace TSG_Library.UFuncs
 
         //////////////////////////////////////////////////////////////////////////////
 
+        private static string NewMethod73(string description)
+        {
+            if (__work_part_.__HasAttribute("DESCRIPTION"))
+                description = __work_part_.__GetStringAttribute("DESCRIPTION");
+            else
+                __work_part_.__SetAttribute("DESCRIPTION", "NO DESCRIPTION");
+            return description;
+        }
+
+
+        private static void NewMethod73()
+        {
+            using (session_.__UsingSuppressDisplay())
+            using (session_.__UsingDisplayPartReset())
+                foreach (var weldmentComp in _selectedComponents)
+                {
+                    __display_part_ = weldmentComp.__Prototype();
+                    _workPart = session_.Parts.Work;
+                    __display_part_ = session_.Parts.Display;
+                    Expression noteExp = null;
+                    bool isExpression = false;
+                    NewMethod51(ref noteExp, ref isExpression);
+                    string description = string.Empty;
+
+                    description = NewMethod72(description);
+
+                    NewMethod36(noteExp, isExpression, description);
+                }
+        }
+
+        private static string NewMethod72(string description)
+        {
+            if (_workPart.__HasAttribute("DESCRIPTION"))
+                description = _workPart.__GetStringAttribute("DESCRIPTION");
+            else
+                _workPart.__SetAttribute("DESCRIPTION", "NO DESCRIPTION");
+            return description;
+        }
+
+
+        private static void NewMethod76()
+        {
+            using (session_.__UsingSuppressDisplay())
+            using (session_.__UsingDisplayPartReset())
+                foreach (var diesetComp in _selectedComponents)
+                {
+                    __display_part_ = diesetComp.__Prototype();
+                    Expression noteExp = null;
+                    bool isExpression = false;
+                    NewMethod35(ref noteExp, ref isExpression);
+                    string description = _workPart.__GetStringAttribute("DESCRIPTION");
+                    NewMethod34(noteExp, isExpression, description);
+                }
+        }
+
+        private static void NewMethod74()
+        {
+            using (session_.__UsingDisplayPartReset())
+            using (session_.__UsingSuppressDisplay())
+                foreach (var weldmentComp in _selectedComponents)
+                {
+                    __display_part_ = weldmentComp.__Prototype();
+                    Expression noteExp = null;
+                    bool isExpression = false;
+                    NewMethod2(ref noteExp, ref isExpression);
+                    string description = _workPart.__GetStringAttribute("DESCRIPTION");
+                    NewMethod37(noteExp, isExpression, description);
+                }
+        }
+
+        private static void NewMethod59(UserDefinedObject[] currentUdo)
+        {
+            UserDefinedObject myUDO = currentUdo[0];
+            int[] updateFlag = myUDO.GetIntegers();
+            int[] updateOn = { 1 };
+            myUDO.SetIntegers(updateOn);
+            _workPart.__SetAttribute("AUTO UPDATE", "ON");
+        }
+
+        private static void NewMethod58(UserDefinedObject[] currentUdo)
+        {
+            UserDefinedObject myUDO = currentUdo[0];
+            int[] updateFlag = myUDO.GetIntegers();
+            int[] updateOn = { 1 };
+            myUDO.SetIntegers(updateOn);
+            _workPart.__SetAttribute("AUTO UPDATE", "ON");
+        }
+
+
+        private void NewMethod55()
+        {
+            Unit unit1 = _workPart.UnitCollection.FindObject("MilliMeter");
+
+            if (comboBoxAddx.SelectedIndex > 0)
+                _ = _workPart.Expressions.CreateWithUnits($"AddX={comboBoxAddx.Text}", unit1);
+            else
+                _ = _workPart.Expressions.CreateWithUnits("AddX=.000", unit1);
+
+            if (comboBoxAddy.SelectedIndex > 0)
+                _ = _workPart.Expressions.CreateWithUnits($"AddY={comboBoxAddy.Text}", unit1);
+            else
+                _ = _workPart.Expressions.CreateWithUnits("AddY=.000", unit1);
+
+            if (comboBoxAddz.SelectedIndex > 0)
+                _ = _workPart.Expressions.CreateWithUnits(NewMethod60(), unit1);
+            else
+                _ = _workPart.Expressions.CreateWithUnits("AddZ=.000", unit1);
+        }
+
+        private void NewMethod54()
+        {
+            Unit unit1 = _workPart.UnitCollection.FindObject("Inch");
+
+            if (comboBoxAddx.SelectedIndex > 0)
+                _ = _workPart.Expressions.CreateWithUnits($"AddX={comboBoxAddx.Text}", unit1);
+            else
+                _ = _workPart.Expressions.CreateWithUnits("AddX=.000", unit1);
+
+            if (comboBoxAddy.SelectedIndex > 0)
+                _ = _workPart.Expressions.CreateWithUnits($"AddY={comboBoxAddy.Text}", unit1);
+            else
+                _ = _workPart.Expressions.CreateWithUnits("AddY=.000", unit1);
+
+            if (comboBoxAddz.SelectedIndex > 0)
+                _ = _workPart.Expressions.CreateWithUnits($"AddZ={comboBoxAddz.Text}", unit1);
+            else
+                _ = _workPart.Expressions.CreateWithUnits("AddZ=.000", unit1);
+        }
+
+        private static void NewMethod77(string diesetValue)
+        {
+            if (diesetValue == "yes")
+            {
+                string description = _workPart.__GetStringAttribute("DESCRIPTION");
+
+                if (!description.ToLower().Contains("dieset"))
+                {
+                    description += " DIESET";
+                    _workPart.__SetAttribute("DESCRIPTION", description);
+                }
+            }
+        }
+
+        private static void NewMethod75(string diesetValue)
+        {
+            if (diesetValue == "yes")
+            {
+                string description = _workPart.__GetStringAttribute("DESCRIPTION");
+
+                if (!description.ToLower().Contains("dieset"))
+                {
+                    description += " DIESET";
+                    _workPart.__SetAttribute("DESCRIPTION", description);
+                }
+            }
+        }
+
+        private static void NewMethod41(string burnDirValue, string grindTolValue, double xGrindDist, double yGrindDist, double zGrindDist)
+        {
+            if (burnDirValue.ToLower() == "x")
+                _workPart.__SetAttribute("DESCRIPTION", NewMethod61(grindTolValue, xGrindDist));
+
+            if (burnDirValue.ToLower() == "y")
+                _workPart.__SetAttribute("DESCRIPTION", NewMethod62(grindTolValue, yGrindDist));
+
+            if (burnDirValue.ToLower() == "z")
+                _workPart.__SetAttribute("DESCRIPTION", NewMethod63(grindTolValue, zGrindDist));
+        }
+        private static void NewMethod40(string grindTolValue, double[] distances, double[] grindDistances, double zGrindDist)
+        {
+            if (zGrindDist == grindDistances[0])
+                _workPart.__SetAttribute("DESCRIPTION", NewMethod64(grindTolValue, distances, grindDistances));
+
+            if (zGrindDist == grindDistances[1])
+                _workPart.__SetAttribute("DESCRIPTION",
+                    NewMethod65(grindTolValue, distances, grindDistances));
+
+            if (zGrindDist == grindDistances[2])
+                _workPart.__SetAttribute("DESCRIPTION",
+                    NewMethod66(grindTolValue, distances, grindDistances));
+        }
+
+        private static void NewMethod39(string grindTolValue, double[] distances, double[] grindDistances, double yGrindDist)
+        {
+            if (yGrindDist == grindDistances[0])
+                _workPart.__SetAttribute("DESCRIPTION",
+                    NewMethod78(grindTolValue, distances, grindDistances));
+
+            if (yGrindDist == grindDistances[1])
+                _workPart.__SetAttribute("DESCRIPTION",
+                    NewMethod79(grindTolValue, distances, grindDistances));
+            if (yGrindDist == grindDistances[2])
+                _workPart.__SetAttribute("DESCRIPTION",
+                    NewMethod80(grindTolValue, distances, grindDistances));
+        }
+
+        private static void NewMethod38(string grindTolValue, double[] distances, double[] grindDistances, double xGrindDist)
+        {
+            if (xGrindDist == grindDistances[0])
+                _workPart.__SetAttribute("DESCRIPTION",
+                    NewMethod92(grindTolValue, distances, grindDistances));
+            if (xGrindDist == grindDistances[1])
+                _workPart.__SetAttribute("DESCRIPTION",
+                    NewMethod105(grindTolValue, distances, grindDistances));
+            if (xGrindDist == grindDistances[2])
+                NewMethod106(grindTolValue, distances, grindDistances);
+        }
+
+        private static void NewMethod69(string grindTolValue, double[] distances, double[] grindDistances, double zGrindDist, double tolerance)
+        {
+            if (System.Math.Abs(zGrindDist - grindDistances[0]) < tolerance)
+                _workPart.SetUserAttribute("DESCRIPTION", -1,
+                    $"{grindDistances[0]:f3} {grindTolValue} X {distances[1]:f2} X {distances[2]:f2}",
+                    NXOpen.Update.Option.Now);
+            if (System.Math.Abs(zGrindDist - grindDistances[1]) < tolerance)
+                _workPart.SetUserAttribute("DESCRIPTION", -1,
+                    $"{distances[0]:f2} X {grindDistances[1]:f3} {grindTolValue} X {distances[2]:f2}",
+                    NXOpen.Update.Option.Now);
+            if (System.Math.Abs(zGrindDist - grindDistances[2]) < tolerance)
+                _workPart.SetUserAttribute("DESCRIPTION", -1,
+                    $"{distances[0]:f2} X {distances[1]:f2} X {grindDistances[2]:f3} {grindTolValue}",
+                    NXOpen.Update.Option.Now);
+        }
+
+        private static void NewMethod68(string grindTolValue, double[] distances, double[] grindDistances, double yGrindDist, double tolerance)
+        {
+            if (System.Math.Abs(yGrindDist - grindDistances[0]) < tolerance)
+                _workPart.SetUserAttribute("DESCRIPTION", -1,
+                    $"{grindDistances[0]:f3} {grindTolValue} X {distances[1]:f2} X {distances[2]:f2}",
+                    NXOpen.Update.Option.Now);
+            if (System.Math.Abs(yGrindDist - grindDistances[1]) < tolerance)
+                _workPart.SetUserAttribute("DESCRIPTION", -1,
+                    $"{distances[0]:f2} X {grindDistances[1]:f3} {grindTolValue} X {distances[2]:f2}",
+                    NXOpen.Update.Option.Now);
+            if (System.Math.Abs(yGrindDist - grindDistances[2]) < tolerance)
+                _workPart.SetUserAttribute("DESCRIPTION", -1,
+                    $"{distances[0]:f2} X {distances[1]:f2} X {grindDistances[2]:f3} {grindTolValue}",
+                    NXOpen.Update.Option.Now);
+        }
+
+        private static void NewMethod67(string grindTolValue, double[] distances, double[] grindDistances, double xGrindDist, double tolerance)
+        {
+            if (System.Math.Abs(xGrindDist - grindDistances[0]) < tolerance)
+                _workPart.SetUserAttribute("DESCRIPTION", -1,
+                    $"{grindDistances[0]:f3} {grindTolValue} X {distances[1]:f2} X {distances[2]:f2}",
+                    NXOpen.Update.Option.Now);
+            if (System.Math.Abs(xGrindDist - grindDistances[1]) < tolerance)
+                _workPart.SetUserAttribute("DESCRIPTION", -1,
+                    $"{distances[0]:f2} X {grindDistances[1]:f3} {grindTolValue} X {distances[2]:f2}",
+                    NXOpen.Update.Option.Now);
+            if (System.Math.Abs(xGrindDist - grindDistances[2]) < tolerance)
+                _workPart.SetUserAttribute("DESCRIPTION", -1,
+                    $"{distances[0]:f2} X {distances[1]:f2} X {grindDistances[2]:f3} {grindTolValue}",
+                    NXOpen.Update.Option.Now);
+        }
+
+        private static void NewMethod42(string burnDirValue, double yDist, double zDist)
+        {
+            if (burnDirValue.ToLower() == "x")
+                _workPart.__SetAttribute("DESCRIPTION", $"BURN {"{xDist:f2}"}");
+
+            if (burnDirValue.ToLower() == "y")
+                _workPart.__SetAttribute("DESCRIPTION", $"BURN {string.Format("{0:f2}", yDist)}");
+
+            if (burnDirValue.ToLower() == "z")
+                _workPart.__SetAttribute("DESCRIPTION", $"BURN {string.Format("{0:f2}", zDist)}");
+        }
+
+
+
+
+
+        private static string NewMethod57(double[] distances)
+        {
+            return string.Format("{0:f2}", distances[0]) + " X " + string.Format("{0:f2}", distances[1]) +
+                                        " X " +
+                                        string.Format("{0:f2}", distances[2]);
+        }
+
+        private static string NewMethod56(double[] distances)
+        {
+            return $"{distances[0]:f2} X {$"{distances[1]:f2}"} X {distances[2]:f2}";
+        }
+
+
+
+
+        private static string NewMethod63(string grindTolValue, double zGrindDist)
+        {
+            return $"BURN {$"{zGrindDist:f3}"} {grindTolValue}";
+        }
+
+        private static string NewMethod62(string grindTolValue, double yGrindDist)
+        {
+            return $"BURN {$"{yGrindDist:f3}"} {grindTolValue}";
+        }
+
+        private static string NewMethod61(string grindTolValue, double xGrindDist)
+        {
+            return $"BURN {$"{xGrindDist:f3}"} {grindTolValue}";
+        }
+
+
+
+        private static string NewMethod66(string grindTolValue, double[] distances, double[] grindDistances)
+        {
+            return $"{distances[0]:f2}" + " X " +
+                                $"{distances[1]:f2}" + " X " +
+                                $"{grindDistances[2]:f3}" + " " + grindTolValue;
+        }
+
+        private static string NewMethod65(string grindTolValue, double[] distances, double[] grindDistances)
+        {
+            return $"{distances[0]:f2}" + " X " +
+                                $"{grindDistances[1]:f3}" + " " + grindTolValue +
+                                " X " +
+                                $"{distances[2]:f2}";
+        }
+
+        private static string NewMethod64(string grindTolValue, double[] distances, double[] grindDistances)
+        {
+            return $"{grindDistances[0]:f3} {grindTolValue} X {$"{distances[1]:f2}"} X {$"{distances[2]:f2}"}";
+        }
+
+
+
+        private static string NewMethod80(string grindTolValue, double[] distances, double[] grindDistances)
+        {
+            return $"{string.Format("{0:f2}", distances[0])} X {string.Format("{0:f2}", distances[1])} X {string.Format("{0:f3}", grindDistances[2])} {grindTolValue}";
+        }
+
+        private static string NewMethod79(string grindTolValue, double[] distances, double[] grindDistances)
+        {
+            return $"{$"{distances[0]:f2}"} X " +
+                                $"{$"{grindDistances[1]:f3}"} {grindTolValue} X {string.Format("{0:f2}", distances[2])}";
+        }
+
+        private static string NewMethod78(string grindTolValue, double[] distances, double[] grindDistances)
+        {
+            return $"{$"{grindDistances[0]:f3}"} {grindTolValue} X {$"{distances[1]:f2}"} X {string.Format("{0:f2}", distances[2])}";
+        }
+
+
+        private static void NewMethod106(string grindTolValue, double[] distances, double[] grindDistances)
+        {
+            _workPart.__SetAttribute("DESCRIPTION",
+                                string.Format("{0:f2}", distances[0]) + " X " +
+                                string.Format("{0:f2}", distances[1]) + " X " +
+                                string.Format("{0:f3}", grindDistances[2]) + " " + grindTolValue);
+        }
+
+        private static string NewMethod105(string grindTolValue, double[] distances, double[] grindDistances)
+        {
+            return $"{distances[0]:f2} X {$"{grindDistances[1]:f3}"} {grindTolValue} X {string.Format("{0:f2}", distances[2])}";
+        }
+
+        private static string NewMethod92(string grindTolValue, double[] distances, double[] grindDistances)
+        {
+            return $"{grindDistances[0]:f3} {grindTolValue} X {$"{distances[1]:f2}"} X {string.Format("{0:f2}", distances[2])}";
+        }
+
+
+        private static void NewMethod36(Expression noteExp, bool isExpression, string description)
+        {
+            if (description != "")
+            {
+                if (!description.ToLower().Contains("weldment"))
+                {
+                    description += " WELDMENT";
+                    _workPart.__SetAttribute("DESCRIPTION", description);
+                }
+
+                if (isExpression)
+                {
+                    noteExp.RightHandSide = "\"yes\"";
+                }
+                else
+                {
+                    Expression weldmentExp =
+                        _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"yes\"");
+                }
+            }
+            else
+            {
+                if (isExpression)
+                {
+                    noteExp.RightHandSide = "\"yes\"";
+                }
+                else
+                {
+                    Expression weldmentExp =
+                        _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"yes\"");
+                }
+            }
+        }
+
+
+
+        private static void NewMethod37(Expression noteExp, bool isExpression, string description)
+        {
+            if (description != "")
+            {
+                description = description.Replace(" WELDMENT", "");
+                _workPart.__SetAttribute("DESCRIPTION", description);
+
+                if (isExpression)
+                {
+                    noteExp.RightHandSide = "\"no\"";
+                }
+                else
+                {
+                    Expression weldmentExp =
+                        _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"no\"");
+                }
+            }
+            else
+            {
+                if (isExpression)
+                {
+                    noteExp.RightHandSide = "\"no\"";
+                }
+                else
+                {
+                    Expression weldmentExp =
+                        _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"no\"");
+                }
+            }
+        }
+
+  private static void NewMethod34(Expression noteExp, bool isExpression, string description)
+  {
+      if (description != "")
+      {
+          description = description.Replace(" DIESET", "");
+          _workPart.__SetAttribute("DESCRIPTION", description);
+
+          if (isExpression)
+          {
+              noteExp.RightHandSide = "\"no\"";
+          }
+          else
+          {
+              Expression diesetExp =
+                  _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
+          }
+      }
+      else
+      {
+          if (isExpression)
+          {
+              noteExp.RightHandSide = "\"no\"";
+          }
+          else
+          {
+              Expression diesetExp =
+                  _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
+          }
+      }
+  }
+
+  
+        private static void NewMethod1(Expression noteExp, bool isExpression)
+        {
+            if (isExpression)
+            {
+                noteExp.RightHandSide = "\"yes\"";
+            }
+            else
+            {
+                Expression diesetExp =
+                    _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
+            }
+        }
+
+        private static void NewMethod(Expression noteExp, bool isExpression)
+        {
+            if (isExpression)
+            {
+                noteExp.RightHandSide = "\"yes\"";
+            }
+            else
+            {
+                Expression diesetExp =
+                    _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
+            }
+        }
+
+
+
+
+
+        private static void NewMethod26(ref Expression noteExp, ref bool isExpression)
+        {
+            foreach (Expression exp in _workPart.Expressions)
+                if (exp.Name == "DiesetNote")
+                {
+                    isExpression = true;
+                    noteExp = exp;
+                }
+        }
+
+
+
+
+        private static void NewMethod35(ref Expression noteExp, ref bool isExpression)
+        {
+            foreach (Expression exp in _workPart.Expressions)
+                if (exp.Name == "DiesetNote")
+                {
+                    isExpression = true;
+                    noteExp = exp;
+                }
+        }
+
+      
+
+
+        private static void NewMethod51(ref Expression noteExp, ref bool isExpression)
+        {
+            foreach (Expression exp in _workPart.Expressions)
+                if (exp.Name == "WeldmentNote")
+                {
+                    isExpression = true;
+                    noteExp = exp;
+                }
+        }
+
+
+        private static void NewMethod2(ref Expression noteExp, ref bool isExpression)
+        {
+            foreach (Expression exp in _workPart.Expressions)
+                if (exp.Name == "WeldmentNote")
+                {
+                    isExpression = true;
+                    noteExp = exp;
+                }
+        }
+  
 
     }
 }

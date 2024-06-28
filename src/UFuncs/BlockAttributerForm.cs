@@ -380,10 +380,7 @@ namespace TSG_Library.UFuncs
                         NewMethod26(ref noteExp, ref isExpression);
                         string description = string.Empty;
 
-                        if (__work_part_.__HasAttribute("DESCRIPTION"))
-                            description = __work_part_.__GetStringAttribute("DESCRIPTION");
-                        else
-                            __work_part_.__SetAttribute("DESCRIPTION", "NO DESCRIPTION");
+                        description = NewMethod73(description);
 
                         if (description == "")
                         {
@@ -406,6 +403,7 @@ namespace TSG_Library.UFuncs
             }
         }
 
+      
         private void buttonSelectDiesetOff_Click(object sender, EventArgs e)
         {
             try
@@ -425,23 +423,15 @@ namespace TSG_Library.UFuncs
                 if (_selectedComponents.Count <= 0)
                     return;
 
-                using (session_.__UsingSuppressDisplay())
-                using (session_.__UsingDisplayPartReset())
-                    foreach (Component diesetComp in _selectedComponents)
-                    {
-                        __display_part_ = diesetComp.__Prototype();
-                        Expression noteExp = null;
-                        bool isExpression = false;
-                        NewMethod35(ref noteExp, ref isExpression);
-                        string description = _workPart.__GetStringAttribute("DESCRIPTION");
-                        NewMethod34(noteExp, isExpression, description);
-                    }
+                NewMethod76();
             }
             catch (Exception ex)
             {
                 ex.__PrintException();
             }
         }
+
+       
 
         private void buttonSelectWeldmentOn_Click(object sender, EventArgs e)
         {
@@ -462,31 +452,15 @@ namespace TSG_Library.UFuncs
                 if (_selectedComponents.Count <= 0)
                     return;
 
-                using (session_.__UsingSuppressDisplay())
-                using (session_.__UsingDisplayPartReset())
-                    foreach (Component weldmentComp in _selectedComponents)
-                    {
-                        __display_part_ = weldmentComp.__Prototype();
-                        _workPart = session_.Parts.Work;
-                        __display_part_ = session_.Parts.Display;
-                        Expression noteExp = null;
-                        bool isExpression = false;
-                        NewMethod51(ref noteExp, ref isExpression);
-                        string description = string.Empty;
-
-                        if (_workPart.__HasAttribute("DESCRIPTION"))
-                            description = _workPart.__GetStringAttribute("DESCRIPTION");
-                        else
-                            _workPart.__SetAttribute("DESCRIPTION", "NO DESCRIPTION");
-
-                        NewMethod36(noteExp, isExpression, description);
-                    }
+                NewMethod73();
             }
             catch (Exception ex)
             {
                 ex.__PrintException();
             }
         }
+
+       
 
         private void buttonSelectWeldmentOff_Click(object sender, EventArgs e)
         {
@@ -507,23 +481,15 @@ namespace TSG_Library.UFuncs
                 if (_selectedComponents.Count <= 0)
                     return;
 
-                using (session_.__UsingDisplayPartReset())
-                using (session_.__UsingSuppressDisplay())
-                    foreach (Component weldmentComp in _selectedComponents)
-                    {
-                        __display_part_ = weldmentComp.__Prototype();
-                        Expression noteExp = null;
-                        bool isExpression = false;
-                        NewMethod2(ref noteExp, ref isExpression);
-                        string description = _workPart.__GetStringAttribute("DESCRIPTION");
-                        NewMethod37(noteExp, isExpression, description);
-                    }
+                NewMethod74();
             }
             catch (Exception ex)
             {
                 ex.__PrintException();
             }
         }
+
+     
 
         private void buttonSelectBlockComp_Click(object sender, EventArgs e)
         {
@@ -796,7 +762,20 @@ namespace TSG_Library.UFuncs
                     NewMethod10(AddX);
                     NewMethod11(AddY);
                     NewMethod12(AddZ);
-                    NewMethod13(burnDirValue, burnoutValue, grindValue);
+                    if (burnoutValue.ToLower() == "yes")
+                        checkBoxBurnout.Checked = true;
+                    else
+                        checkBoxBurnout.Checked = false;
+                    if (grindValue.ToLower() == "yes")
+                        checkBoxGrind.Checked = true;
+                    else
+                        checkBoxGrind.Checked = false;
+                    if (burnDirValue.ToLower() == "x")
+                        checkBoxBurnDirX.Checked = true;
+                    if (burnDirValue.ToLower() == "y")
+                        checkBoxBurnDirY.Checked = true;
+                    if (burnDirValue.ToLower() == "z")
+                        checkBoxBurnDirZ.Checked = true;
 
                     foreach (CtsAttributes tolSetting in comboBoxTolerance.Items)
                         if (grindTolValue == tolSetting.AttrValue)
@@ -916,23 +895,7 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        private static void NewMethod59(UserDefinedObject[] currentUdo)
-        {
-            UserDefinedObject myUDO = currentUdo[0];
-            int[] updateFlag = myUDO.GetIntegers();
-            int[] updateOn = { 1 };
-            myUDO.SetIntegers(updateOn);
-            _workPart.__SetAttribute("AUTO UPDATE", "ON");
-        }
-
-        private static void NewMethod58(UserDefinedObject[] currentUdo)
-        {
-            UserDefinedObject myUDO = currentUdo[0];
-            int[] updateFlag = myUDO.GetIntegers();
-            int[] updateOn = { 1 };
-            myUDO.SetIntegers(updateOn);
-            _workPart.__SetAttribute("AUTO UPDATE", "ON");
-        }
+    
 
         private void buttonReset_Click(object sender, EventArgs e)
         {
@@ -1220,50 +1183,14 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        private void NewMethod55()
-        {
-            Unit unit1 = _workPart.UnitCollection.FindObject("MilliMeter");
-
-            if (comboBoxAddx.SelectedIndex > 0)
-                _ = _workPart.Expressions.CreateWithUnits($"AddX={comboBoxAddx.Text}", unit1);
-            else
-                _ = _workPart.Expressions.CreateWithUnits("AddX=.000", unit1);
-
-            if (comboBoxAddy.SelectedIndex > 0)
-                _ = _workPart.Expressions.CreateWithUnits($"AddY={comboBoxAddy.Text}", unit1);
-            else
-                _ = _workPart.Expressions.CreateWithUnits("AddY=.000", unit1);
-
-            if (comboBoxAddz.SelectedIndex > 0)
-                _ = _workPart.Expressions.CreateWithUnits(NewMethod60(), unit1);
-            else
-                _ = _workPart.Expressions.CreateWithUnits("AddZ=.000", unit1);
-        }
+      
 
         private string NewMethod60()
         {
             return $"AddZ={comboBoxAddz.Text}";
         }
 
-        private void NewMethod54()
-        {
-            Unit unit1 = _workPart.UnitCollection.FindObject("Inch");
-
-            if (comboBoxAddx.SelectedIndex > 0)
-                _ = _workPart.Expressions.CreateWithUnits($"AddX={comboBoxAddx.Text}", unit1);
-            else
-                _ = _workPart.Expressions.CreateWithUnits("AddX=.000", unit1);
-
-            if (comboBoxAddy.SelectedIndex > 0)
-                _ = _workPart.Expressions.CreateWithUnits($"AddY={comboBoxAddy.Text}", unit1);
-            else
-                _ = _workPart.Expressions.CreateWithUnits("AddY=.000", unit1);
-
-            if (comboBoxAddz.SelectedIndex > 0)
-                _ = _workPart.Expressions.CreateWithUnits($"AddZ={comboBoxAddz.Text}", unit1);
-            else
-                _ = _workPart.Expressions.CreateWithUnits("AddZ=.000", unit1);
-        }
+      
 
         private void MeasureComponentBody()
         {
@@ -1368,16 +1295,7 @@ namespace TSG_Library.UFuncs
                         else
                             NewMethod42(burnDirValue, yDist, zDist);
 
-                        if (diesetValue == "yes")
-                        {
-                            string description = _workPart.__GetStringAttribute("DESCRIPTION");
-
-                            if (!description.ToLower().Contains("dieset"))
-                            {
-                                description += " DIESET";
-                                _workPart.__SetAttribute("DESCRIPTION", description);
-                            }
-                        }
+                        NewMethod75(diesetValue);
                     }
                     else
                     {
@@ -1388,16 +1306,7 @@ namespace TSG_Library.UFuncs
 
                         _workPart.__SetAttribute("DESCRIPTION", NewMethod57(distances));
 
-                        if (diesetValue == "yes")
-                        {
-                            string description = _workPart.__GetStringAttribute("DESCRIPTION");
-
-                            if (!description.ToLower().Contains("dieset"))
-                            {
-                                description += " DIESET";
-                                _workPart.__SetAttribute("DESCRIPTION", description);
-                            }
-                        }
+                        NewMethod77(diesetValue);
                     }
 
                     tempCsys.__Delete();
@@ -1423,120 +1332,6 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        private static string NewMethod57(double[] distances)
-        {
-            return string.Format("{0:f2}", distances[0]) + " X " + string.Format("{0:f2}", distances[1]) +
-                                        " X " +
-                                        string.Format("{0:f2}", distances[2]);
-        }
-
-        private static string NewMethod56(double[] distances)
-        {
-            return $"{distances[0]:f2} X {$"{distances[1]:f2}"} X {distances[2]:f2}";
-        }
-
-        private static void NewMethod42(string burnDirValue, double yDist, double zDist)
-        {
-            if (burnDirValue.ToLower() == "x")
-                _workPart.__SetAttribute("DESCRIPTION", $"BURN {"{xDist:f2}"}");
-
-            if (burnDirValue.ToLower() == "y")
-                _workPart.__SetAttribute("DESCRIPTION", $"BURN {string.Format("{0:f2}", yDist)}");
-
-            if (burnDirValue.ToLower() == "z")
-                _workPart.__SetAttribute("DESCRIPTION", $"BURN {string.Format("{0:f2}", zDist)}");
-        }
-
-        private static void NewMethod41(string burnDirValue, string grindTolValue, double xGrindDist, double yGrindDist, double zGrindDist)
-        {
-            if (burnDirValue.ToLower() == "x")
-                _workPart.__SetAttribute("DESCRIPTION", NewMethod61(grindTolValue, xGrindDist));
-
-            if (burnDirValue.ToLower() == "y")
-                _workPart.__SetAttribute("DESCRIPTION", NewMethod62(grindTolValue, yGrindDist));
-
-            if (burnDirValue.ToLower() == "z")
-                _workPart.__SetAttribute("DESCRIPTION", NewMethod63(grindTolValue, zGrindDist));
-        }
-
-        private static string NewMethod63(string grindTolValue, double zGrindDist)
-        {
-            return $"BURN {$"{zGrindDist:f3}"} {grindTolValue}";
-        }
-
-        private static string NewMethod62(string grindTolValue, double yGrindDist)
-        {
-            return $"BURN {$"{yGrindDist:f3}"} {grindTolValue}";
-        }
-
-        private static string NewMethod61(string grindTolValue, double xGrindDist)
-        {
-            return $"BURN {$"{xGrindDist:f3}"} {grindTolValue}";
-        }
-
-        private static void NewMethod40(string grindTolValue, double[] distances, double[] grindDistances, double zGrindDist)
-        {
-            if (zGrindDist == grindDistances[0])
-                _workPart.__SetAttribute("DESCRIPTION", NewMethod64(grindTolValue, distances, grindDistances));
-
-            if (zGrindDist == grindDistances[1])
-                _workPart.__SetAttribute("DESCRIPTION",
-                    NewMethod65(grindTolValue, distances, grindDistances));
-
-            if (zGrindDist == grindDistances[2])
-                _workPart.__SetAttribute("DESCRIPTION",
-                    NewMethod66(grindTolValue, distances, grindDistances));
-        }
-
-        private static string NewMethod66(string grindTolValue, double[] distances, double[] grindDistances)
-        {
-            return $"{distances[0]:f2}" + " X " +
-                                $"{distances[1]:f2}" + " X " +
-                                $"{grindDistances[2]:f3}" + " " + grindTolValue;
-        }
-
-        private static string NewMethod65(string grindTolValue, double[] distances, double[] grindDistances)
-        {
-            return $"{distances[0]:f2}" + " X " +
-                                $"{grindDistances[1]:f3}" + " " + grindTolValue +
-                                " X " +
-                                $"{distances[2]:f2}";
-        }
-
-        private static string NewMethod64(string grindTolValue, double[] distances, double[] grindDistances)
-        {
-            return $"{grindDistances[0]:f3} {grindTolValue} X {$"{distances[1]:f2}"} X {$"{distances[2]:f2}"}";
-        }
-
-        private static void NewMethod39(string grindTolValue, double[] distances, double[] grindDistances, double yGrindDist)
-        {
-            if (yGrindDist == grindDistances[0])
-                _workPart.__SetAttribute("DESCRIPTION",
-                    $"{$"{grindDistances[0]:f3}"} {grindTolValue} X {$"{distances[1]:f2}"} X {string.Format("{0:f2}", distances[2])}");
-
-            if (yGrindDist == grindDistances[1])
-                _workPart.__SetAttribute("DESCRIPTION",
-                    $"{$"{distances[0]:f2}"} X " +
-                    $"{$"{grindDistances[1]:f3}"} {grindTolValue} X {string.Format("{0:f2}", distances[2])}");
-            if (yGrindDist == grindDistances[2])
-                _workPart.__SetAttribute("DESCRIPTION",
-                    $"{string.Format("{0:f2}", distances[0])} X {string.Format("{0:f2}", distances[1])} X {string.Format("{0:f3}", grindDistances[2])} {grindTolValue}");
-        }
-
-        private static void NewMethod38(string grindTolValue, double[] distances, double[] grindDistances, double xGrindDist)
-        {
-            if (xGrindDist == grindDistances[0])
-                _workPart.__SetAttribute("DESCRIPTION",
-                    $"{grindDistances[0]:f3} {grindTolValue} X {$"{distances[1]:f2}"} X {string.Format("{0:f2}", distances[2])}");
-            if (xGrindDist == grindDistances[1])
-                _workPart.__SetAttribute("DESCRIPTION",
-                    $"{distances[0]:f2} X {$"{grindDistances[1]:f3}"} {grindTolValue} X {string.Format("{0:f2}", distances[2])}");
-            if (xGrindDist == grindDistances[2])
-                _workPart.__SetAttribute("DESCRIPTION",
-                    string.Format("{0:f2}", distances[0]) + " X " +
-                    string.Format("{0:f2}", distances[1]) + " X " +
-                    string.Format("{0:f3}", grindDistances[2]) + " " + grindTolValue);
-        }
 
         private void UpdateBlockDescription()
         {
@@ -1791,53 +1586,7 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        private static void NewMethod69(string grindTolValue, double[] distances, double[] grindDistances, double zGrindDist, double tolerance)
-        {
-            if (System.Math.Abs(zGrindDist - grindDistances[0]) < tolerance)
-                _workPart.SetUserAttribute("DESCRIPTION", -1,
-                    $"{grindDistances[0]:f3} {grindTolValue} X {distances[1]:f2} X {distances[2]:f2}",
-                    NXOpen.Update.Option.Now);
-            if (System.Math.Abs(zGrindDist - grindDistances[1]) < tolerance)
-                _workPart.SetUserAttribute("DESCRIPTION", -1,
-                    $"{distances[0]:f2} X {grindDistances[1]:f3} {grindTolValue} X {distances[2]:f2}",
-                    NXOpen.Update.Option.Now);
-            if (System.Math.Abs(zGrindDist - grindDistances[2]) < tolerance)
-                _workPart.SetUserAttribute("DESCRIPTION", -1,
-                    $"{distances[0]:f2} X {distances[1]:f2} X {grindDistances[2]:f3} {grindTolValue}",
-                    NXOpen.Update.Option.Now);
-        }
-
-        private static void NewMethod68(string grindTolValue, double[] distances, double[] grindDistances, double yGrindDist, double tolerance)
-        {
-            if (System.Math.Abs(yGrindDist - grindDistances[0]) < tolerance)
-                _workPart.SetUserAttribute("DESCRIPTION", -1,
-                    $"{grindDistances[0]:f3} {grindTolValue} X {distances[1]:f2} X {distances[2]:f2}",
-                    NXOpen.Update.Option.Now);
-            if (System.Math.Abs(yGrindDist - grindDistances[1]) < tolerance)
-                _workPart.SetUserAttribute("DESCRIPTION", -1,
-                    $"{distances[0]:f2} X {grindDistances[1]:f3} {grindTolValue} X {distances[2]:f2}",
-                    NXOpen.Update.Option.Now);
-            if (System.Math.Abs(yGrindDist - grindDistances[2]) < tolerance)
-                _workPart.SetUserAttribute("DESCRIPTION", -1,
-                    $"{distances[0]:f2} X {distances[1]:f2} X {grindDistances[2]:f3} {grindTolValue}",
-                    NXOpen.Update.Option.Now);
-        }
-
-        private static void NewMethod67(string grindTolValue, double[] distances, double[] grindDistances, double xGrindDist, double tolerance)
-        {
-            if (System.Math.Abs(xGrindDist - grindDistances[0]) < tolerance)
-                _workPart.SetUserAttribute("DESCRIPTION", -1,
-                    $"{grindDistances[0]:f3} {grindTolValue} X {distances[1]:f2} X {distances[2]:f2}",
-                    NXOpen.Update.Option.Now);
-            if (System.Math.Abs(xGrindDist - grindDistances[1]) < tolerance)
-                _workPart.SetUserAttribute("DESCRIPTION", -1,
-                    $"{distances[0]:f2} X {grindDistances[1]:f3} {grindTolValue} X {distances[2]:f2}",
-                    NXOpen.Update.Option.Now);
-            if (System.Math.Abs(xGrindDist - grindDistances[2]) < tolerance)
-                _workPart.SetUserAttribute("DESCRIPTION", -1,
-                    $"{distances[0]:f2} X {distances[1]:f2} X {grindDistances[2]:f3} {grindTolValue}",
-                    NXOpen.Update.Option.Now);
-        }
+      
 
         private void UpdateCompAttributes()
         {
@@ -1935,174 +1684,199 @@ namespace TSG_Library.UFuncs
                     if (comboBoxDieset.Text != "")
                         if (comboBoxDieset.Text == "YES")
                         {
-                            Tag prevWp = NXOpen.Tag.Null;
-#pragma warning disable CS0618 // Type or member is obsolete
-                            ufsession_.Assem.SetWorkPartQuietly(selCompProto.Tag, out prevWp);
-#pragma warning restore CS0618 // Type or member is obsolete
-                            _workPart = session_.Parts.Work;
-                            __display_part_ = session_.Parts.Display;
-
-                            Expression Dieset = null;
-
-                            foreach (Expression exp in _workPart.Expressions.ToArray())
-                                if (exp.Name == "DiesetNote")
-                                    Dieset = exp;
-
-                            if (Dieset != null)
-                                Dieset.RightHandSide = "\"yes\"";
-                            else
-                                _ = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
-
-                            ufsession_.Assem.SetWorkPart(prevWp);
-                            _workPart = session_.Parts.Work;
-                            __display_part_ = session_.Parts.Display;
-
-                            string description = selCompProto.__GetStringAttribute("DESCRIPTION");
-
-                            if (!description.ToLower().Contains("dieset"))
-                            {
-                                description += " DIESET";
-                                selCompProto.__SetAttribute("DESCRIPTION", description);
-                            }
+                            NewMethod111(selCompProto);
                         }
                         else
                         {
-                            Tag prevWp = NXOpen.Tag.Null;
-#pragma warning disable CS0618 // Type or member is obsolete
-                            ufsession_.Assem.SetWorkPartQuietly(selCompProto.Tag, out prevWp);
-#pragma warning restore CS0618 // Type or member is obsolete
-                            _workPart = session_.Parts.Work;
-                            __display_part_ = session_.Parts.Display;
-
-                            Expression Dieset = null;
-
-                            foreach (Expression exp in _workPart.Expressions.ToArray())
-                                if (exp.Name == "DiesetNote")
-                                    Dieset = exp;
-
-                            if (Dieset != null)
-                                Dieset.RightHandSide = "\"no\"";
-                            else
-                                _ = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
-
-                            ufsession_.Assem.SetWorkPart(prevWp);
-                            _workPart = session_.Parts.Work;
-                            __display_part_ = session_.Parts.Display;
-
-                            string description = selCompProto.__GetStringAttribute("DESCRIPTION");
-                            description = description.Replace("DIESET", "");
-                            selCompProto.__SetAttribute("DESCRIPTION", description);
+                            NewMethod110(selCompProto);
                         }
 
                     //Add Weldment stuff
                     if (comboBoxWeldment.Text != "")
                         if (comboBoxWeldment.Text == "YES")
                         {
-                            Tag prevWp = NXOpen.Tag.Null;
-#pragma warning disable CS0618 // Type or member is obsolete
-                            ufsession_.Assem.SetWorkPartQuietly(selCompProto.Tag, out prevWp);
-#pragma warning restore CS0618 // Type or member is obsolete
-                            _workPart = session_.Parts.Work;
-                            __display_part_ = session_.Parts.Display;
-
-                            Expression Weldment = null;
-
-                            foreach (Expression exp in _workPart.Expressions.ToArray())
-                                if (exp.Name == "WeldmentNote")
-                                    Weldment = exp;
-
-                            if (Weldment != null)
-                                Weldment.RightHandSide = "\"yes\"";
-                            else
-                                _ = _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"yes\"");
-
-                            ufsession_.Assem.SetWorkPart(prevWp);
-                            _workPart = session_.Parts.Work;
-                            __display_part_ = session_.Parts.Display;
-
-                            string description = selCompProto.__GetStringAttribute("DESCRIPTION");
-
-                            if (!description.ToLower().Contains("weldment"))
-                            {
-                                description += " WELDMENT";
-                                selCompProto.__SetAttribute("DESCRIPTION", description);
-                            }
+                            NewMethod109(selCompProto);
                         }
                         else
                         {
-                            //                            NXOpen.Tag prevWp = NXOpen.Tag.Null;
-                            //#pragma warning disable CS0618 // Type or member is obsolete
-                            //                            ufsession_.Assem.SetWorkPartQuietly(selCompProto.Tag, out prevWp);
-                            //#pragma warning restore CS0618 // Type or member is obsolete
-                            ufsession_.Assem.SetWorkPartContextQuietly(selCompProto.Tag, out IntPtr prevWp);
-                            _workPart = session_.Parts.Work;
-                            __display_part_ = session_.Parts.Display;
-
-                            Expression Weldment = null;
-
-                            foreach (Expression exp in _workPart.Expressions.ToArray())
-                                if (exp.Name == "WeldmentNote")
-                                    Weldment = exp;
-
-                            if (Weldment != null)
-                                Weldment.RightHandSide = "\"no\"";
-                            else
-                                _ = _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"no\"");
-
-                            ufsession_.Assem.RestoreWorkPartContextQuietly(ref prevWp);
-                            _workPart = session_.Parts.Work;
-                            __display_part_ = session_.Parts.Display;
-
-                            string description = selCompProto.__GetStringAttribute("DESCRIPTION");
-                            description = description.Replace("WELDMENT", "");
-                            selCompProto.__SetAttribute("DESCRIPTION", description);
+                            NewMethod107(selCompProto);
                         }
                     //End of add Weldment stuff
                 }
                 else
                 {
-                    if (textBoxDescription.Text != "")
-                    {
-                        _workPart.__SetAttribute("DESCRIPTION", textBoxDescription.Text);
-                        SetAutoUpdateOff();
-                    }
-
-                    if (textBoxMaterial.Text != "")
-                    {
-                        _workPart.__SetAttribute("MATERIAL", textBoxMaterial.Text);
-                    }
-                    else
-                    {
-                        if (comboBoxPurMaterials.Text != "")
-                            _workPart.__SetAttribute("MATERIAL", comboBoxPurMaterials.Text);
-                        if (comboBoxCustomMaterials.Text != "")
-                            _workPart.__SetAttribute("MATERIAL", comboBoxCustomMaterials.Text);
-                    }
-
-                    if (comboBoxName.Text != "")
-                        _workPart.__SetAttribute("DETAIL NAME", comboBoxName.Text);
-
-                    if (comboBoxWireTaper.Text != "")
-                        _workPart.__SetAttribute("WTN", comboBoxWireTaper.Text);
-
-                    if (comboBoxWireDev.Text != "")
-                        _workPart.__SetAttribute("WFTD", comboBoxWireDev.Text);
-
-                    if (comboBoxDieset.Text != "")
-                        if (comboBoxDieset.Text == "YES")
-                            NewMethod43();
-                        else
-                            NewMethod44();
-
-                    //Add more Weldment Stuff
-                    if (comboBoxWeldment.Text != "")
-                        if (comboBoxWeldment.Text == "YES")
-                            NewMethod45();
-                        else
-                            NewMethod46();
-                    //End of more Weldment stuff
+                    NewMethod108();
                 }
             }
+        }
+
+        private static void NewMethod111(Part selCompProto)
+        {
+            Tag prevWp = NXOpen.Tag.Null;
+#pragma warning disable CS0618 // Type or member is obsolete
+            ufsession_.Assem.SetWorkPartQuietly(selCompProto.Tag, out prevWp);
+#pragma warning restore CS0618 // Type or member is obsolete
+            _workPart = session_.Parts.Work;
+            __display_part_ = session_.Parts.Display;
+
+            Expression Dieset = null;
+
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+                if (exp.Name == "DiesetNote")
+                    Dieset = exp;
+
+            if (Dieset != null)
+                Dieset.RightHandSide = "\"yes\"";
+            else
+                _ = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
+
+            ufsession_.Assem.SetWorkPart(prevWp);
+            _workPart = session_.Parts.Work;
+            __display_part_ = session_.Parts.Display;
+
+            string description = selCompProto.__GetStringAttribute("DESCRIPTION");
+
+            if (!description.ToLower().Contains("dieset"))
+            {
+                description += " DIESET";
+                selCompProto.__SetAttribute("DESCRIPTION", description);
+            }
+        }
+
+        private static void NewMethod110(Part selCompProto)
+        {
+            Tag prevWp = NXOpen.Tag.Null;
+#pragma warning disable CS0618 // Type or member is obsolete
+            ufsession_.Assem.SetWorkPartQuietly(selCompProto.Tag, out prevWp);
+#pragma warning restore CS0618 // Type or member is obsolete
+            _workPart = session_.Parts.Work;
+            __display_part_ = session_.Parts.Display;
+
+            Expression Dieset = null;
+
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+                if (exp.Name == "DiesetNote")
+                    Dieset = exp;
+
+            if (Dieset != null)
+                Dieset.RightHandSide = "\"no\"";
+            else
+                _ = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
+
+            ufsession_.Assem.SetWorkPart(prevWp);
+            _workPart = session_.Parts.Work;
+            __display_part_ = session_.Parts.Display;
+
+            string description = selCompProto.__GetStringAttribute("DESCRIPTION");
+            description = description.Replace("DIESET", "");
+            selCompProto.__SetAttribute("DESCRIPTION", description);
+        }
+
+        private static void NewMethod109(Part selCompProto)
+        {
+            Tag prevWp = NXOpen.Tag.Null;
+#pragma warning disable CS0618 // Type or member is obsolete
+            ufsession_.Assem.SetWorkPartQuietly(selCompProto.Tag, out prevWp);
+#pragma warning restore CS0618 // Type or member is obsolete
+            _workPart = session_.Parts.Work;
+            __display_part_ = session_.Parts.Display;
+
+            Expression Weldment = null;
+
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+                if (exp.Name == "WeldmentNote")
+                    Weldment = exp;
+
+            if (Weldment != null)
+                Weldment.RightHandSide = "\"yes\"";
+            else
+                _ = _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"yes\"");
+
+            ufsession_.Assem.SetWorkPart(prevWp);
+            _workPart = session_.Parts.Work;
+            __display_part_ = session_.Parts.Display;
+
+            string description = selCompProto.__GetStringAttribute("DESCRIPTION");
+
+            if (!description.ToLower().Contains("weldment"))
+            {
+                description += " WELDMENT";
+                selCompProto.__SetAttribute("DESCRIPTION", description);
+            }
+        }
+
+        private void NewMethod108()
+        {
+            if (textBoxDescription.Text != "")
+            {
+                _workPart.__SetAttribute("DESCRIPTION", textBoxDescription.Text);
+                SetAutoUpdateOff();
+            }
+
+            if (textBoxMaterial.Text != "")
+            {
+                _workPart.__SetAttribute("MATERIAL", textBoxMaterial.Text);
+            }
+            else
+            {
+                if (comboBoxPurMaterials.Text != "")
+                    _workPart.__SetAttribute("MATERIAL", comboBoxPurMaterials.Text);
+                if (comboBoxCustomMaterials.Text != "")
+                    _workPart.__SetAttribute("MATERIAL", comboBoxCustomMaterials.Text);
+            }
+
+            if (comboBoxName.Text != "")
+                _workPart.__SetAttribute("DETAIL NAME", comboBoxName.Text);
+
+            if (comboBoxWireTaper.Text != "")
+                _workPart.__SetAttribute("WTN", comboBoxWireTaper.Text);
+
+            if (comboBoxWireDev.Text != "")
+                _workPart.__SetAttribute("WFTD", comboBoxWireDev.Text);
+
+            if (comboBoxDieset.Text != "")
+                if (comboBoxDieset.Text == "YES")
+                    NewMethod43();
+                else
+                    NewMethod44();
+
+            //Add more Weldment Stuff
+            if (comboBoxWeldment.Text != "")
+                if (comboBoxWeldment.Text == "YES")
+                    NewMethod45();
+                else
+                    NewMethod46();
+            //End of more Weldment stuff
+        }
+
+        private static void NewMethod107(Part selCompProto)
+        {
+            //                            NXOpen.Tag prevWp = NXOpen.Tag.Null;
+            //#pragma warning disable CS0618 // Type or member is obsolete
+            //                            ufsession_.Assem.SetWorkPartQuietly(selCompProto.Tag, out prevWp);
+            //#pragma warning restore CS0618 // Type or member is obsolete
+            ufsession_.Assem.SetWorkPartContextQuietly(selCompProto.Tag, out IntPtr prevWp);
+            _workPart = session_.Parts.Work;
+            __display_part_ = session_.Parts.Display;
+
+            Expression Weldment = null;
+
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+                if (exp.Name == "WeldmentNote")
+                    Weldment = exp;
+
+            if (Weldment != null)
+                Weldment.RightHandSide = "\"no\"";
+            else
+                _ = _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"no\"");
+
+            ufsession_.Assem.RestoreWorkPartContextQuietly(ref prevWp);
+            _workPart = session_.Parts.Work;
+            __display_part_ = session_.Parts.Display;
+
+            string description = selCompProto.__GetStringAttribute("DESCRIPTION");
+            description = description.Replace("WELDMENT", "");
+            selCompProto.__SetAttribute("DESCRIPTION", description);
         }
 
         private void SetAutoUpdateOff()
@@ -4009,195 +3783,6 @@ namespace TSG_Library.UFuncs
 
 
 
-
-
-        private void NewMethod13(string burnDirValue, string burnoutValue, string grindValue)
-        {
-            if (burnoutValue.ToLower() == "yes")
-                checkBoxBurnout.Checked = true;
-            else
-                checkBoxBurnout.Checked = false;
-            if (grindValue.ToLower() == "yes")
-                checkBoxGrind.Checked = true;
-            else
-                checkBoxGrind.Checked = false;
-            if (burnDirValue.ToLower() == "x")
-                checkBoxBurnDirX.Checked = true;
-            if (burnDirValue.ToLower() == "y")
-                checkBoxBurnDirY.Checked = true;
-            if (burnDirValue.ToLower() == "z")
-                checkBoxBurnDirZ.Checked = true;
-        }
-
-
-
-
-        private static void NewMethod26(ref Expression noteExp, ref bool isExpression)
-        {
-            foreach (Expression exp in _workPart.Expressions)
-                if (exp.Name == "DiesetNote")
-                {
-                    isExpression = true;
-                    noteExp = exp;
-                }
-        }
-
-        private static void NewMethod1(Expression noteExp, bool isExpression)
-        {
-            if (isExpression)
-            {
-                noteExp.RightHandSide = "\"yes\"";
-            }
-            else
-            {
-                Expression diesetExp =
-                    _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
-            }
-        }
-
-        private static void NewMethod(Expression noteExp, bool isExpression)
-        {
-            if (isExpression)
-            {
-                noteExp.RightHandSide = "\"yes\"";
-            }
-            else
-            {
-                Expression diesetExp =
-                    _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
-            }
-        }
-
-
-
-        private static void NewMethod35(ref Expression noteExp, ref bool isExpression)
-        {
-            foreach (Expression exp in _workPart.Expressions)
-                if (exp.Name == "DiesetNote")
-                {
-                    isExpression = true;
-                    noteExp = exp;
-                }
-        }
-
-        private static void NewMethod34(Expression noteExp, bool isExpression, string description)
-        {
-            if (description != "")
-            {
-                description = description.Replace(" DIESET", "");
-                _workPart.__SetAttribute("DESCRIPTION", description);
-
-                if (isExpression)
-                {
-                    noteExp.RightHandSide = "\"no\"";
-                }
-                else
-                {
-                    Expression diesetExp =
-                        _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
-                }
-            }
-            else
-            {
-                if (isExpression)
-                {
-                    noteExp.RightHandSide = "\"no\"";
-                }
-                else
-                {
-                    Expression diesetExp =
-                        _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
-                }
-            }
-        }
-
-
-        private static void NewMethod51(ref Expression noteExp, ref bool isExpression)
-        {
-            foreach (Expression exp in _workPart.Expressions)
-                if (exp.Name == "WeldmentNote")
-                {
-                    isExpression = true;
-                    noteExp = exp;
-                }
-        }
-
-        private static void NewMethod36(Expression noteExp, bool isExpression, string description)
-        {
-            if (description != "")
-            {
-                if (!description.ToLower().Contains("weldment"))
-                {
-                    description += " WELDMENT";
-                    _workPart.__SetAttribute("DESCRIPTION", description);
-                }
-
-                if (isExpression)
-                {
-                    noteExp.RightHandSide = "\"yes\"";
-                }
-                else
-                {
-                    Expression weldmentExp =
-                        _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"yes\"");
-                }
-            }
-            else
-            {
-                if (isExpression)
-                {
-                    noteExp.RightHandSide = "\"yes\"";
-                }
-                else
-                {
-                    Expression weldmentExp =
-                        _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"yes\"");
-                }
-            }
-        }
-
-
-
-        private static void NewMethod37(Expression noteExp, bool isExpression, string description)
-        {
-            if (description != "")
-            {
-                description = description.Replace(" WELDMENT", "");
-                _workPart.__SetAttribute("DESCRIPTION", description);
-
-                if (isExpression)
-                {
-                    noteExp.RightHandSide = "\"no\"";
-                }
-                else
-                {
-                    Expression weldmentExp =
-                        _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"no\"");
-                }
-            }
-            else
-            {
-                if (isExpression)
-                {
-                    noteExp.RightHandSide = "\"no\"";
-                }
-                else
-                {
-                    Expression weldmentExp =
-                        _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"no\"");
-                }
-            }
-        }
-
-        private static void NewMethod2(ref Expression noteExp, ref bool isExpression)
-        {
-            foreach (Expression exp in _workPart.Expressions)
-                if (exp.Name == "WeldmentNote")
-                {
-                    isExpression = true;
-                    noteExp = exp;
-                }
-        }
 
 
 
