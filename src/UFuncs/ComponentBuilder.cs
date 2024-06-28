@@ -53,8 +53,6 @@ namespace TSG_Library.UFuncs
         private static readonly List<string> _nonValidNames = new List<string>();
         private static readonly List<Line> _edgeRepLines = new List<Line>();
         private static double _distanceMoved;
-        //private static int _registered;
-        //private static int _idWorkPartChanged1;
         private static Component _updateComponent;
         private static Body _editBody;
         private static bool _isNewSelection = true;
@@ -362,38 +360,6 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        //private void TextBoxUserMaterial_TextChanged(object sender, EventArgs e)
-        //{
-        //    try
-        //    {
-        //        bool flag = textBoxUserMaterial.Text.Length != 0;
-        //        listBoxMaterial.Enabled = !flag;
-
-        //        if (flag)
-        //        {
-        //            listBoxMaterial.SelectedIndex = -1;
-
-        //            if (!textBoxDetailNumber.Enabled
-        //                || comboBoxCompName.SelectedIndex == -1
-        //                || textBoxUserMaterial.Text == string.Empty)
-        //                return;
-
-        //            groupBoxColor.Enabled = true;
-        //            changeColorCheckBox.Checked = false;
-        //        }
-        //        else
-        //        {
-        //            groupBoxColor.Enabled = false;
-        //        }
-
-        //        changeColorCheckBox.Enabled = !flag;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        ex.__PrintException();
-        //    }
-        //}
-
         private void ButtonObscureDullGreen_Click(object sender, EventArgs e)
         {
             _compColor = new CtsComponentType("OBSCURE DULL GREEN", CtsComponentColor.ObscureDullGreen);
@@ -481,17 +447,6 @@ namespace TSG_Library.UFuncs
             }
         }
 
-
-        private void ButtonViewWcs_Click(object sender, EventArgs e)
-        {
-            _workPart = session_.Parts.Work; _displayPart = session_.Parts.Display; ;
-            _originalWorkPart = _workPart; _originalDisplayPart = _displayPart; ;
-            CoordinateSystem coordSystem = _displayPart.WCS.CoordinateSystem;
-            Matrix3x3 orientation = coordSystem.Orientation.Element;
-            _displayPart.Views.WorkView.Orient(orientation);
-        }
-
-
         private void ButtonAutoLwr_Click(object sender, EventArgs e)
         {
             try
@@ -534,7 +489,6 @@ namespace TSG_Library.UFuncs
                 ex.__PrintException();
             }
         }
-
 
         private void AutoLwrEnglish(double[] minCorner, double[] distances)
         {
@@ -3209,7 +3163,7 @@ namespace TSG_Library.UFuncs
 
                     using (session_.__UsingLockUiFromCustom())
                     {
-                        SetModelingView();
+                        //SetModelingView();
 
                         ufsession_.Ui.SpecifyScreenPosition(
                             message,
@@ -4648,8 +4602,33 @@ namespace TSG_Library.UFuncs
                 if (Math.Abs(distance) < 0.001)
                     return;
 
+                print_("//////////////");
+                //print_(_workCompOrientation.__AxisX());
+                //print_(_workCompOrientation.__AxisY());
+                //print_(_workCompOrigin);
+
                 __display_part_.WCS.SetOriginAndMatrix(_workCompOrigin, _workCompOrientation);
+
+                if (deltaXyz == "Z")
+                {
+                    // x needs to become current z
+                    // z becomes neg x
+
+                    var newX = __display_part_.WCS.CoordinateSystem.__AxisZ();
+                    var newY = __display_part_.WCS.CoordinateSystem.__AxisY().__Negate();
+                    var mat = newX.__ToMatrix3x3(newY);
+                    __display_part_.WCS.SetOriginAndMatrix(_workCompOrigin, mat);
+                    //print_(__display_part_.WCS.CoordinateSystem.__AxisX());
+                    //print_(__display_part_.WCS.CoordinateSystem.__AxisY());
+                    __display_part_.WCS.Save();
+                    //print_(_workCompOrientation.__AxisY());
+                    //print_(_workCompOrigin);
+                }
+
+
                 MoveObjectBuilder builder = __work_part_.BaseFeatures.CreateMoveObjectBuilder(null);
+
+                //print_(distance);
 
                 using (session_.__UsingBuilderDestroyer(builder))
                 {
@@ -4691,7 +4670,7 @@ namespace TSG_Library.UFuncs
             }
         }
 
-     
+
 
         private void MoveObjects(
             List<NXObject> movePtsHalf,
@@ -5863,7 +5842,7 @@ namespace TSG_Library.UFuncs
             if (!__work_part_.__HasDynamicBlock())
                 return false;
 
-            //CreateEditData(editComponent);
+            CreateEditData(editComponent);
             _isNewSelection = false;
             return true;
         }
@@ -6003,28 +5982,6 @@ namespace TSG_Library.UFuncs
         }
 
 
-        private void MotionCallbackNotDynamic(List<NXObject> moveAll, double[] mappedPoint, double[] mappedCursor,
-            int index, string dir_xyz)
-        {
-            if (mappedPoint[index] == mappedCursor[index])
-                return;
-
-            double distance = Math.Sqrt(Math.Pow(mappedPoint[index] - mappedCursor[index], 2));
-
-            if (distance < _gridSpace)
-                return;
-
-            if (mappedCursor[index] < mappedPoint[index])
-                distance *= -1;
-
-            _distanceMoved += distance;
-
-            MoveObjects(moveAll.ToArray(), distance, dir_xyz);
-
-            if (dir_xyz == "Z")
-                SetModelingView();
-        }
-
         private void MotionCallback(double[] position, ref UFUi.MotionCbData mtnCbData, IntPtr clientData)
         {
             try
@@ -6046,12 +6003,17 @@ namespace TSG_Library.UFuncs
                     moveAll.AddRange(_edgeRepLines);
                     // get the distance from the selected point to the cursor location
                     __display_part_.WCS.SetOriginAndMatrix(_workCompOrigin, _workCompOrientation);
+
+                    __display_part_.WCS.Visibility = true;
+
+                    //return;
+
                     double[] mappedPoint = _udoPointHandle.Coordinates.__MapAcsToWcs().__ToArray();
                     double[] mappedCursor = position.__ToPoint3d().__MapAcsToWcs().__ToArray();
-                    string letter = $"{pointPrototype.Name.ToCharArray()[3]}";
+                    string dir_xyz = $"{pointPrototype.Name.ToCharArray()[3]}";
                     int index;
 
-                    switch (letter)
+                    switch (dir_xyz)
                     {
                         case "X":
                             index = 0;
@@ -6066,7 +6028,24 @@ namespace TSG_Library.UFuncs
                             throw new ArgumentOutOfRangeException();
                     }
                     __display_part_.WCS.Visibility = true;
-                    MotionCallbackNotDynamic(moveAll, mappedPoint, mappedCursor, index, letter);
+
+                    if (mappedPoint[index] != mappedCursor[index])
+                    {
+                        double distance = Math.Sqrt(Math.Pow(mappedPoint[index] - mappedCursor[index], 2));
+
+                        if (distance >= _gridSpace)
+                        {
+                            if (mappedCursor[index] < mappedPoint[index])
+                                distance *= -1;
+
+                            _distanceMoved += distance;
+
+                            MoveObjects(moveAll.ToArray(), distance, dir_xyz);
+
+                            //if (dir_xyz == "Z")
+                            //    SetModelingView();
+                        }
+                    }
                 }
 
                 double editBlkLength = 0;
@@ -6247,7 +6226,7 @@ namespace TSG_Library.UFuncs
             EditSizeOrAlign(yDistance, movePtsHalf, movePtsFull, allyAxisLines, "Y", pointPrototype.Name == "POSY");
         }
 
-      
+
 
 
 
