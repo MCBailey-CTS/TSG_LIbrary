@@ -3222,7 +3222,7 @@ namespace TSG_Library.UFuncs
 
                         if (response != UF_UI_PICK_RESPONSE)
                             continue;
-                        
+
                         UpdateDynamicHandles();
                         ShowDynamicHandles();
                         ShowTemporarySizeText();
@@ -3249,7 +3249,115 @@ namespace TSG_Library.UFuncs
         private void buttonAlignComponent_Click(object sender, EventArgs e)
         {
             using (session_.__UsingFormShowHide(this))
-                AlignComponent();
+            {
+                SetDispUnits();
+
+                if (_isNewSelection && _updateComponent is null)
+                    SelectWithFilter_("Select Component to Align");
+
+                if (_editBody is null)
+                    return;
+
+                Component editComponent = _editBody.OwningComponent;
+
+                if (editComponent is null)
+                {
+                    NXMessage("This function is not allowed in this context, must be at assembly level");
+                    return;
+                }
+
+                _updateComponent = editComponent;
+
+                if (editComponent.__Prototype().PartUnits != __display_part_.PartUnits)
+                    return;
+
+                if (!IsBlockComponent(editComponent))
+                {
+                    ResetNonBlockError();
+                    NXMessage("Not a Block Component");
+                    return;
+                }
+
+                var pHandle = SelectHandlePoint();
+                _isDynamic = true;
+
+                while (pHandle.Count == 1)
+                {
+                    HideDynamicHandles();
+                    _udoPointHandle = pHandle[0];
+
+                    Point pointPrototype = _udoPointHandle.IsOccurrence
+                        ? (Point)_udoPointHandle.Prototype
+                        : _udoPointHandle;
+
+                    List<NXObject> movePtsFull = new List<NXObject>();
+
+                    foreach (Point nPoint in __work_part_.Points)
+                        if (
+                            nPoint.Name.Contains("X")
+                            || nPoint.Name.Contains("Y")
+                            || nPoint.Name.Contains("Z")
+                            || nPoint.Name.Contains("BLKORIGIN")
+                        )
+                            movePtsFull.Add(nPoint);
+
+                    foreach (Line nLine in __work_part_.Lines)
+                        if (
+                            nLine.Name.Contains("X")
+                            || nLine.Name.Contains("Y")
+                            || nLine.Name.Contains("Z")
+                        )
+                            movePtsFull.Add(nLine);
+
+                    UFUi.PointBaseMethod pbMethod = UFUi.PointBaseMethod.PointInferred;
+                    double[] basePoint = new double[3];
+                    int response;
+
+                    using (session_.__UsingLockUiFromCustom())
+                        ufsession_.Ui.PointConstruct(
+                            "Select Reference Point",
+                            ref pbMethod,
+                            out Tag selection,
+                            basePoint,
+                            out response
+                        );
+
+                    if (response != UF_UI_OK)
+                    {
+                        pHandle = UpdateCreateSelect(editComponent);
+                        continue;
+                    }
+
+                    double[] mappedBase = basePoint.__ToPoint3d().__MapAcsToWcs().__ToArray();
+                    double[] mappedPoint = pointPrototype.Coordinates.__MapAcsToWcs().__ToArray();
+                    double distance;
+                    int index;
+                    string letter = $"{pointPrototype.Name.ToCharArray()[3]}";
+
+                    switch (letter)
+                    {
+                        case "X":
+                            index = 0;
+                            break;
+                        case "Y":
+                            index = 1;
+                            break;
+                        case "Z":
+                            index = 2;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
+                    distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
+
+                    if (mappedBase[index] < mappedPoint[index])
+                        distance *= -1;
+
+                    MoveObjects(movePtsFull.ToArray(), distance, letter);
+                    pHandle = UpdateCreateSelect(editComponent);
+                }
+            }
         }
 
         private void buttonAlignEdgeDistance_Click(object sender, EventArgs e) => AlignEdgeDistance();
@@ -3291,8 +3399,10 @@ namespace TSG_Library.UFuncs
             {
                 ex.__PrintException();
             }
-
-            EnableForm();
+            finally
+            {
+                EnableForm();
+            }
         }
 
         private void AlignEdgeDistance()
@@ -4581,19 +4691,7 @@ namespace TSG_Library.UFuncs
             }
         }
 
-        private static double MapAndConvert(
-            double inputDist,
-            double[] mappedBase,
-            double[] mappedPoint,
-            int index
-        )
-        {
-            double distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
-
-            return mappedBase[index] >= mappedPoint[index]
-                ? distance - inputDist
-                : distance * -1 + inputDist;
-        }
+     
 
         private void MoveObjects(
             List<NXObject> movePtsHalf,
@@ -5911,21 +6009,20 @@ namespace TSG_Library.UFuncs
             if (mappedPoint[index] == mappedCursor[index])
                 return;
 
-            double xDistance = Math.Sqrt(Math.Pow(mappedPoint[index] - mappedCursor[index], 2));
+            double distance = Math.Sqrt(Math.Pow(mappedPoint[index] - mappedCursor[index], 2));
 
-            if (xDistance < _gridSpace)
+            if (distance < _gridSpace)
                 return;
 
             if (mappedCursor[index] < mappedPoint[index])
-                xDistance *= -1;
+                distance *= -1;
 
-            _distanceMoved += xDistance;
+            _distanceMoved += distance;
 
-            MoveObjects(moveAll.ToArray(), xDistance, dir_xyz);
+            MoveObjects(moveAll.ToArray(), distance, dir_xyz);
 
-            if (dir_xyz != "Z")
-                return;
-            SetModelingView();
+            if (dir_xyz == "Z")
+                SetModelingView();
         }
 
         private void MotionCallback(double[] position, ref UFUi.MotionCbData mtnCbData, IntPtr clientData)
@@ -5935,7 +6032,42 @@ namespace TSG_Library.UFuncs
                 if (_isDynamic)
                     MotionCallbackDyanmic(position);
                 else
-                    MotionCalbackNotDynamic(position);
+                {
+                    Point pointPrototype = _udoPointHandle.IsOccurrence
+                        ? (Point)_udoPointHandle.Prototype
+                        : _udoPointHandle;
+
+                    List<NXObject> moveAll = new List<NXObject>();
+
+                    foreach (Point namedPts in __work_part_.Points)
+                        if (namedPts.Name != "")
+                            moveAll.Add(namedPts);
+
+                    moveAll.AddRange(_edgeRepLines);
+                    // get the distance from the selected point to the cursor location
+                    __display_part_.WCS.SetOriginAndMatrix(_workCompOrigin, _workCompOrientation);
+                    double[] mappedPoint = _udoPointHandle.Coordinates.__MapAcsToWcs().__ToArray();
+                    double[] mappedCursor = position.__ToPoint3d().__MapAcsToWcs().__ToArray();
+                    string letter = $"{pointPrototype.Name.ToCharArray()[3]}";
+                    int index;
+
+                    switch (letter)
+                    {
+                        case "X":
+                            index = 0;
+                            break;
+                        case "Y":
+                            index = 1;
+                            break;
+                        case "Z":
+                            index = 2;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                    __display_part_.WCS.Visibility = true;
+                    MotionCallbackNotDynamic(moveAll, mappedPoint, mappedCursor, index, letter);
+                }
 
                 double editBlkLength = 0;
                 double editBlkWidth = 0;
@@ -5984,12 +6116,12 @@ namespace TSG_Library.UFuncs
 
         private void MotionCallbackDyanmic(double[] position)
         {
+            print_("here");
             Point pointPrototype = _udoPointHandle.IsOccurrence
                 ? (Point)_udoPointHandle.Prototype
                 : _udoPointHandle;
 
-
-            MotionCallbackDynamic1(pointPrototype, out var doNotMovePts, out var movePtsHalf, out var movePtsFull,
+            MotionCallbackDynamic1(pointPrototype, out _, out var movePtsHalf, out var movePtsFull,
                 pointPrototype.Name.Contains("POS"));
 
             GetLines(out var posXObjs, out var negXObjs, out var posYObjs, out var negYObjs, out var posZObjs,
@@ -6029,11 +6161,13 @@ namespace TSG_Library.UFuncs
                         mappedCursor, 1);
                     break;
                 case "POSZ":
+                    print_("POSZ");
                     movePtsFull.AddRange(posZObjs);
                     MotionCallbackZDynamic(pointPrototype, movePtsHalf, movePtsFull, allzAxisLines, mappedPoint,
                         mappedCursor);
                     break;
                 case "NEGZ":
+                    print_("NEGZ");
                     movePtsFull.AddRange(negZObjs);
                     MotionCallbackZDynamic(pointPrototype, movePtsHalf, movePtsFull, allzAxisLines, mappedPoint,
                         mappedCursor);
@@ -6113,39 +6247,7 @@ namespace TSG_Library.UFuncs
             EditSizeOrAlign(yDistance, movePtsHalf, movePtsFull, allyAxisLines, "Y", pointPrototype.Name == "POSY");
         }
 
-        private void MotionCalbackNotDynamic(double[] position)
-        {
-            Point pointPrototype;
-
-            if (_udoPointHandle.IsOccurrence)
-                pointPrototype = (Point)_udoPointHandle.Prototype;
-            else
-                pointPrototype = _udoPointHandle;
-
-            List<NXObject> moveAll = new List<NXObject>();
-
-            foreach (Point namedPts in __work_part_.Points)
-                if (namedPts.Name != "")
-                    moveAll.Add(namedPts);
-
-            moveAll.AddRange(_edgeRepLines);
-            // get the distance from the selected point to the cursor location
-            double[] pointStart = _udoPointHandle.Coordinates.__ToArray();
-            double[] mappedPoint = new double[3];
-            double[] mappedCursor = new double[3];
-            __display_part_.WCS.SetOriginAndMatrix(_workCompOrigin, _workCompOrientation);
-            ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, pointStart, UF_CSYS_ROOT_WCS_COORDS, mappedPoint);
-            ufsession_.Csys.MapPoint(UF_CSYS_ROOT_COORDS, position, UF_CSYS_ROOT_WCS_COORDS, mappedCursor);
-
-            if (pointPrototype.Name == "POSX" || pointPrototype.Name == "NEGX")
-                MotionCallbackNotDynamic(moveAll, mappedPoint, mappedCursor, 0, "X");
-
-            if (pointPrototype.Name == "POSY" || pointPrototype.Name == "NEGY")
-                MotionCallbackNotDynamic(moveAll, mappedPoint, mappedCursor, 1, "Y");
-
-            if (pointPrototype.Name == "POSZ" || pointPrototype.Name == "NEGZ")
-                MotionCallbackNotDynamic(moveAll, mappedPoint, mappedCursor, 2, "Z");
-        }
+      
 
 
 
