@@ -448,7 +448,7 @@
             this.buttonEditMove.Name = "buttonEditMove";
             this.buttonEditMove.Size = new System.Drawing.Size(85, 20);
             this.buttonEditMove.TabIndex = 1;
-            this.buttonEditMove.Text = "Move";
+            this.buttonEditMove.Text = "_Move_";
             this.buttonEditMove.UseVisualStyleBackColor = true;
             this.buttonEditMove.Click += new System.EventHandler(this.buttonEditMove_Click);
             // 
