@@ -2197,35 +2197,51 @@ namespace TSG_Library.UFuncs
                 if (exp.Name == "DiesetNote")
                     Dieset = exp;
 
-            if (Dieset != null)
-                Dieset.RightHandSide = "\"no\"";
-            else
-                _ = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
+            NewMethod128(Dieset);
 
             string description = _workPart.__GetStringAttribute("DESCRIPTION");
             description = description.Replace("DIESET", "");
             _workPart.__SetAttribute("DESCRIPTION", description);
         }
 
+        private static void NewMethod128(Expression Dieset)
+        {
+            if (Dieset != null)
+                Dieset.RightHandSide = "\"no\"";
+            else
+                _ = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
+        }
+
         private static void NewMethod43()
+        {
+            Expression Dieset = NewMethod129();
+            NewMethod130(Dieset);
+
+            string description = _workPart.__GetStringAttribute("DESCRIPTION");
+            
+            if (!description.ToLower().Contains("dieset"))
+            {
+                description += " DIESET";
+                _workPart.__SetAttribute("DESCRIPTION", description);
+            }
+        }
+
+        private static void NewMethod130(Expression Dieset)
+        {
+            if (Dieset != null)
+                Dieset.RightHandSide = "\"yes\"";
+            else
+                _ = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
+        }
+
+        private static Expression NewMethod129()
         {
             Expression Dieset = null;
 
             foreach (Expression exp in _workPart.Expressions.ToArray())
                 if (exp.Name == "DiesetNote")
                     Dieset = exp;
-
-            if (Dieset != null)
-                Dieset.RightHandSide = "\"yes\"";
-            else
-                _ = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
-
-            string description = _workPart.__GetStringAttribute("DESCRIPTION");
-            if (!description.ToLower().Contains("dieset"))
-            {
-                description += " DIESET";
-                _workPart.__SetAttribute("DESCRIPTION", description);
-            }
+            return Dieset;
         }
         #endregion
 

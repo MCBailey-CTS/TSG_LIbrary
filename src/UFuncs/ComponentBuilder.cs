@@ -3100,7 +3100,31 @@ namespace TSG_Library.UFuncs
             Yellow = 42
         }
 
-        private void buttonEditDynamic_Click(object sender, EventArgs e) => EditDynamic();
+        private void buttonEditDynamic_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                SetDispUnits();
+
+                if (_isNewSelection && _updateComponent is null)
+                    SelectWithFilter_("Select Component for Dynamic Edit");
+
+                if (_editBody is null)
+                    return;
+
+                Component editComponent = _editBody.OwningComponent;
+
+                if (editComponent is null)
+                    EditDynamicDisplayPart(editComponent);
+                else
+                    EditDynamicWorkPart(editComponent);
+            }
+            catch (Exception ex)
+            {
+                EnableForm();
+                ex.__PrintException();
+            }
+        }
 
         private void buttonEditMove_Click(object sender, EventArgs e)
         {
@@ -3770,6 +3794,7 @@ namespace TSG_Library.UFuncs
 
         private void EditDynamicWorkPart(Component editComponent)
         {
+            print_("here");
             _updateComponent = editComponent;
 
             if (editComponent.__Prototype().PartUnits != __display_part_.PartUnits)
@@ -3873,28 +3898,7 @@ namespace TSG_Library.UFuncs
 
         private void EditDynamic()
         {
-            try
-            {
-                SetDispUnits();
 
-                if (_isNewSelection && _updateComponent is null)
-                    SelectWithFilter_("Select Component for Dynamic Edit");
-
-                if (_editBody is null)
-                    return;
-
-                Component editComponent = _editBody.OwningComponent;
-
-                if (editComponent is null)
-                    EditDynamicDisplayPart(editComponent);
-                else
-                    EditDynamicWorkPart(editComponent);
-            }
-            catch (Exception ex)
-            {
-                EnableForm();
-                ex.__PrintException();
-            }
         }
 
         private void EditSizeWork(Component editComponent)
@@ -4214,32 +4218,9 @@ namespace TSG_Library.UFuncs
 
 
 
-      
 
 
-        private double AlignEdgeDistance(
-            List<NXObject> movePtsHalf,
-            List<NXObject> movePtsFull,
-            List<Line> lines,
-            double inputDist,
-            double[] mappedBase,
-            double[] mappedPoint,
-            int index,
-            string dir_xyz,
-            bool isPosEnd)
-        {
-            double distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
 
-            distance = mappedBase[index] >= mappedPoint[index]
-                ? distance - inputDist
-                : distance * -1 + inputDist;
-
-            foreach (Line zAxisLine in lines)
-                SetLineEndPoints(distance, zAxisLine, !isPosEnd, dir_xyz);
-
-            MoveObjects(movePtsHalf, movePtsFull, distance, dir_xyz, false);
-            return distance;
-        }
 
         private static void SelectWithFilter_(string message)
         {
@@ -4340,35 +4321,12 @@ namespace TSG_Library.UFuncs
                 if (Math.Abs(distance) < 0.001)
                     return;
 
-                //print_(_workCompOrientation.__AxisX());
-                //print_(_workCompOrientation.__AxisY());
-                //print_(_workCompOrigin);
-
                 __display_part_.WCS.SetOriginAndMatrix(_workCompOrigin, _workCompOrientation);
-
-                //if (deltaXyz == "Z")
-                //{
-                //    // x needs to become current z
-                //    // z becomes neg x
-
-                //    var newX = __display_part_.WCS.CoordinateSystem.__AxisZ();
-                //    var newY = __display_part_.WCS.CoordinateSystem.__AxisY().__Negate();
-                //    var mat = newX.__ToMatrix3x3(newY);
-                //    __display_part_.WCS.SetOriginAndMatrix(_workCompOrigin, mat);
-                //    //print_(__display_part_.WCS.CoordinateSystem.__AxisX());
-                //    //print_(__display_part_.WCS.CoordinateSystem.__AxisY());
-                //    __display_part_.WCS.Save();
-                //    //print_(_workCompOrientation.__AxisY());
-                //    //print_(_workCompOrigin);
-                //}
-
-
                 MoveObjectBuilder builder = __work_part_.BaseFeatures.CreateMoveObjectBuilder(null);
-
-                //print_(distance);
 
                 using (session_.__UsingBuilderDestroyer(builder))
                 {
+                    // look at other enum values.
                     builder.TransformMotion.DistanceAngle.OrientXpress.AxisOption = OrientXpressBuilder.Axis.Passive;
                     builder.TransformMotion.DistanceAngle.OrientXpress.PlaneOption = OrientXpressBuilder.Plane.Passive;
                     builder.TransformMotion.OrientXpress.AxisOption = OrientXpressBuilder.Axis.Passive;
@@ -5052,6 +5010,7 @@ namespace TSG_Library.UFuncs
 
                 UpdateDynamicHandles();
                 ShowDynamicHandles();
+                //ShowTemporarySizeText();
                 pHandle = SelectHandlePoint();
             }
         }
@@ -5832,7 +5791,6 @@ namespace TSG_Library.UFuncs
 
         private void MotionCallbackDyanmic(double[] position)
         {
-            print_("here");
             Point pointPrototype = _udoPointHandle.IsOccurrence
                 ? (Point)_udoPointHandle.Prototype
                 : _udoPointHandle;
@@ -5877,13 +5835,11 @@ namespace TSG_Library.UFuncs
                         mappedCursor, 1);
                     break;
                 case "POSZ":
-                    print_("POSZ");
                     movePtsFull.AddRange(posZObjs);
                     MotionCallbackZDynamic(pointPrototype, movePtsHalf, movePtsFull, allzAxisLines, mappedPoint,
                         mappedCursor);
                     break;
                 case "NEGZ":
-                    print_("NEGZ");
                     movePtsFull.AddRange(negZObjs);
                     MotionCallbackZDynamic(pointPrototype, movePtsHalf, movePtsFull, allzAxisLines, mappedPoint,
                         mappedCursor);
