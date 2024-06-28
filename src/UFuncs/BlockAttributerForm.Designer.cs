@@ -744,6 +744,127 @@ namespace TSG_Library.UFuncs
 
         //////////////////////////////////////////////////////////////////////////////
 
+
+        private void UpdateBoundingBox()
+        {
+            if (!_allowBoundingBox)
+                return;
+
+            __display_part_.Views.Refresh();
+
+            // get named expressions
+            bool isNamedExpression = false;
+
+            Expression AddX = null,
+                AddY = null,
+                AddZ = null;
+
+            double xValue = 0,
+                yValue = 0,
+                zValue = 0;
+
+            NewMethod114(ref isNamedExpression, ref AddX, ref AddY, ref AddZ, ref xValue, ref yValue, ref zValue);
+
+            if (!isNamedExpression)
+                return;
+
+            _workPart.Expressions.Edit(AddX, comboBoxAddx.Text);
+            xValue = AddX.Value;
+            _workPart.Expressions.Edit(AddY, comboBoxAddy.Text);
+            yValue = AddY.Value;
+            _workPart.Expressions.Edit(AddZ, comboBoxAddz.Text);
+            zValue = AddZ.Value;
+            // get bounding box info
+            double[] distances = NewMethod33(xValue, yValue, zValue);
+            CreateTempBlockLines(__display_part_.WCS.Origin, distances[0], distances[1], distances[2]);
+        }
+
+        private void CreateTempBlockLines(Point3d wcsOrigin, double lineLength, double lineWidth, double lineHeight)
+        {
+            Tag prevWork = NXOpen.Tag.Null;
+#pragma warning disable CS0618 // Type or member is obsolete
+            ufsession_.Assem.SetWorkPartQuietly(__display_part_.Tag, out prevWork);
+#pragma warning restore CS0618 // Type or member is obsolete
+
+            Point3d mappedStartPoint1 = MapAbsoluteToWcs(wcsOrigin);
+            UFObj.DispProps dispProps = new UFObj.DispProps { color = 7 };
+            UFCurve.Line lineData1 = new UFCurve.Line();
+            Point3d endPointX1 = mappedStartPoint1.__AddX(lineLength);
+            Point3d mappedEndPointX1 = MapWcsToAbsolute(endPointX1);
+            lineData1 = NewMethod104(wcsOrigin, ref dispProps, mappedEndPointX1);
+            ShowTemporarySizeText(lineLength, wcsOrigin, mappedEndPointX1);
+            Point3d endPointY1 = mappedStartPoint1.__AddY(lineWidth);
+            Point3d mappedEndPointY1 = MapWcsToAbsolute(endPointY1);
+            _ = NewMethod103(wcsOrigin, ref dispProps, mappedEndPointY1);
+            ShowTemporarySizeText(lineWidth, wcsOrigin, mappedEndPointY1);
+            Point3d mappedEndPointZ1 = MapWcsToAbsolute(mappedStartPoint1.__AddZ(lineHeight));
+            lineData1 = NewMethod102(wcsOrigin, ref dispProps, mappedEndPointZ1);
+            ShowTemporarySizeText(lineHeight, wcsOrigin, mappedEndPointZ1);
+            Point3d endPointX2 = MapAbsoluteToWcs(mappedEndPointY1).__AddX(lineLength);
+            Point3d mappedEndPointX2 = MapWcsToAbsolute(endPointX2);
+            lineData1 = NewMethod101(ref dispProps, mappedEndPointY1, mappedEndPointX2);
+            lineData1 = NewMethod100(ref dispProps, mappedEndPointX1, mappedEndPointX2);
+            Point3d mappedStartPoint3 = MapAbsoluteToWcs(mappedEndPointZ1);
+            Point3d endPointX1Ceiling = mappedStartPoint3.__AddX(lineLength);
+            Point3d mappedEndPointX1Ceiling = MapWcsToAbsolute(endPointX1Ceiling);
+            lineData1 = NewMethod99(ref dispProps, mappedEndPointZ1, mappedEndPointX1Ceiling);
+            Point3d endPointY1Ceiling = mappedStartPoint3.__AddY(lineWidth);
+            Point3d mappedEndPointY1Ceiling = MapWcsToAbsolute(endPointY1Ceiling);
+            lineData1 = NewMethod86(mappedEndPointZ1, mappedEndPointY1Ceiling);
+            dispProps = DisplayTemporaryLine(dispProps, lineData1);
+            Point3d mappedStartPoint4 = MapAbsoluteToWcs(mappedEndPointY1Ceiling);
+            Point3d endPointX2Ceiling = mappedStartPoint4.__AddX(lineLength);
+            Point3d mappedEndPointX2Ceiling = MapWcsToAbsolute(endPointX2Ceiling);
+            lineData1 = NewMethod98(ref dispProps, mappedEndPointY1Ceiling, mappedEndPointX2Ceiling);
+            lineData1 = NewMethod97(ref dispProps, mappedEndPointX1Ceiling, mappedEndPointX2Ceiling);
+            lineData1 = NewMethod96(ref dispProps, mappedEndPointX1, mappedEndPointX1Ceiling);
+            lineData1 = NewMethod95(ref dispProps, mappedEndPointY1, mappedEndPointY1Ceiling);
+            lineData1 = NewMethod94(ref dispProps, mappedEndPointX2, mappedEndPointX2Ceiling);
+
+            if (_selComp != null)
+            {
+                __work_component_ = _selComp;
+                return;
+            }
+
+            __work_part_ = prevWork.__To<Part>();
+            _workPart = session_.Parts.Work;
+            __display_part_ = session_.Parts.Display;
+
+            //==================================================================================================================
+        }
+
+        private void ShowTemporarySizeText(double length, Point3d start, Point3d end)
+        {
+            Tag view = __display_part_.Views.WorkView.Tag;
+            UFDisp.ViewType viewType = UFDisp.ViewType.UseWorkView;
+
+            string dim = __display_part_.PartUnits == BasePart.Units.Inches
+                ? string.Format("{0:0.000}", System.Math.Round(length, 3))
+                : string.Format("{0:0.000}", System.Math.Round(length, 3) / 25.4);
+
+            double[] midPoint = new double[3];
+            UFObj.DispProps dispProps = new UFObj.DispProps { color = 31 };
+            double charSize;
+            int font = 1;
+            charSize = __display_part_.PartUnits == BasePart.Units.Inches ? .125 : 3.175;
+            midPoint[0] = (start.X + end.X) / 2;
+            midPoint[1] = (start.Y + end.Y) / 2;
+            midPoint[2] = (start.Z + end.Z) / 2;
+            ufsession_.Disp.DisplayTemporaryText(view, viewType, dim, midPoint, UFDisp.TextRef.Middlecenter, ref dispProps, charSize, font);
+        }
+
+        private static UFObj.DispProps DisplayTemporaryLine(UFObj.DispProps dispProps, UFCurve.Line lineData1)
+        {
+            ufsession_.Disp.DisplayTemporaryLine(
+                            __display_part_.Views.WorkView.Tag,
+                            UFDisp.ViewType.UseWorkView,
+                            lineData1.start_point,
+                            lineData1.end_point,
+                            ref dispProps);
+            return dispProps;
+        }
+
         private static string NewMethod73(string description)
         {
             if (__work_part_.__HasAttribute("DESCRIPTION"))
@@ -752,7 +873,6 @@ namespace TSG_Library.UFuncs
                 __work_part_.__SetAttribute("DESCRIPTION", "NO DESCRIPTION");
             return description;
         }
-
 
         private static void NewMethod73()
         {
@@ -1173,38 +1293,38 @@ namespace TSG_Library.UFuncs
             }
         }
 
-  private static void NewMethod34(Expression noteExp, bool isExpression, string description)
-  {
-      if (description != "")
-      {
-          description = description.Replace(" DIESET", "");
-          _workPart.__SetAttribute("DESCRIPTION", description);
+        private static void NewMethod34(Expression noteExp, bool isExpression, string description)
+        {
+            if (description != "")
+            {
+                description = description.Replace(" DIESET", "");
+                _workPart.__SetAttribute("DESCRIPTION", description);
 
-          if (isExpression)
-          {
-              noteExp.RightHandSide = "\"no\"";
-          }
-          else
-          {
-              Expression diesetExp =
-                  _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
-          }
-      }
-      else
-      {
-          if (isExpression)
-          {
-              noteExp.RightHandSide = "\"no\"";
-          }
-          else
-          {
-              Expression diesetExp =
-                  _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
-          }
-      }
-  }
+                if (isExpression)
+                {
+                    noteExp.RightHandSide = "\"no\"";
+                }
+                else
+                {
+                    Expression diesetExp =
+                        _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
+                }
+            }
+            else
+            {
+                if (isExpression)
+                {
+                    noteExp.RightHandSide = "\"no\"";
+                }
+                else
+                {
+                    Expression diesetExp =
+                        _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
+                }
+            }
+        }
 
-  
+
         private static void NewMethod1(Expression noteExp, bool isExpression)
         {
             if (isExpression)
@@ -1258,7 +1378,7 @@ namespace TSG_Library.UFuncs
                 }
         }
 
-      
+
 
 
         private static void NewMethod51(ref Expression noteExp, ref bool isExpression)
@@ -1281,7 +1401,1372 @@ namespace TSG_Library.UFuncs
                     noteExp = exp;
                 }
         }
-  
 
+
+
+        private void NewMethod12(Expression AddZ)
+        {
+            foreach (CtsAttributes addZ in comboBoxAddz.Items)
+            {
+                if (AddZ.RightHandSide == addZ.AttrValue)
+                {
+                    comboBoxAddz.SelectedItem = addZ;
+
+                    break;
+                }
+
+                comboBoxAddz.SelectedIndex = 0;
+            }
+        }
+
+        private void NewMethod11(Expression AddY)
+        {
+            foreach (CtsAttributes addY in comboBoxAddy.Items)
+            {
+                if (AddY.RightHandSide == addY.AttrValue)
+                {
+                    comboBoxAddy.SelectedItem = addY;
+
+                    break;
+                }
+
+                comboBoxAddy.SelectedIndex = 0;
+            }
+        }
+
+        private void NewMethod10(Expression AddX)
+        {
+            foreach (CtsAttributes addX in comboBoxAddx.Items)
+            {
+                if (AddX.RightHandSide == addX.AttrValue)
+                {
+                    comboBoxAddx.SelectedItem = addX;
+
+                    break;
+                }
+
+                comboBoxAddx.SelectedIndex = 0;
+            }
+        }
+
+        private void NewMethod18(Expression AddZ)
+        {
+            foreach (CtsAttributes addZ in comboBoxAddz.Items)
+            {
+                if (AddZ.RightHandSide == addZ.AttrValue)
+                {
+                    comboBoxAddz.SelectedItem = addZ;
+
+                    break;
+                }
+
+                comboBoxAddz.SelectedIndex = 0;
+            }
+        }
+
+        private void NewMethod17(Expression AddY)
+        {
+            foreach (CtsAttributes addY in comboBoxAddy.Items)
+            {
+                if (AddY.RightHandSide == addY.AttrValue)
+                {
+                    comboBoxAddy.SelectedItem = addY;
+
+                    break;
+                }
+
+                comboBoxAddy.SelectedIndex = 0;
+            }
+        }
+
+        private void NewMethod16(Expression AddX)
+        {
+            foreach (CtsAttributes addX in comboBoxAddx.Items)
+            {
+                if (AddX.RightHandSide == addX.AttrValue)
+                {
+                    comboBoxAddx.SelectedItem = addX;
+
+                    break;
+                }
+
+                comboBoxAddx.SelectedIndex = 0;
+            }
+        }
+
+
+        private void NewMethod28(Expression AddX, Expression AddY, Expression AddZ)
+        {
+            foreach (CtsAttributes addX in comboBoxAddx.Items)
+                try
+                {
+                    if (AddX.RightHandSide == addX.AttrValue)
+                    {
+                        comboBoxAddx.SelectedItem = addX;
+
+                        break;
+                    }
+
+                    comboBoxAddx.SelectedIndex = 0;
+                }
+                catch (Exception ex)
+                {
+                    UI.GetUI().NXMessageBox.Show("DJ", NXMessageBox.DialogType.Error, ex.Message);
+                }
+
+            foreach (CtsAttributes addY in comboBoxAddy.Items)
+            {
+                if (AddY.RightHandSide == addY.AttrValue)
+                {
+                    comboBoxAddy.SelectedItem = addY;
+
+                    break;
+                }
+
+                comboBoxAddy.SelectedIndex = 0;
+            }
+
+            foreach (CtsAttributes addZ in comboBoxAddz.Items)
+            {
+                if (AddZ.RightHandSide == addZ.AttrValue)
+                {
+                    comboBoxAddz.SelectedItem = addZ;
+
+                    break;
+                }
+
+                comboBoxAddz.SelectedIndex = 0;
+            }
+        }
+
+
+
+        private void NewMethod7(Expression AddZ)
+        {
+            foreach (CtsAttributes addZ in comboBoxAddz.Items)
+            {
+                if (AddZ.RightHandSide == addZ.AttrValue)
+                {
+                    comboBoxAddz.SelectedItem = addZ;
+
+                    break;
+                }
+
+                comboBoxAddz.SelectedIndex = 0;
+            }
+        }
+
+        private void NewMethod6(Expression AddY)
+        {
+            foreach (CtsAttributes addY in comboBoxAddy.Items)
+            {
+                if (AddY.RightHandSide == addY.AttrValue)
+                {
+                    comboBoxAddy.SelectedItem = addY;
+
+                    break;
+                }
+
+                comboBoxAddy.SelectedIndex = 0;
+            }
+        }
+
+        private void NewMethod5(Expression AddX)
+        {
+            foreach (CtsAttributes addX in comboBoxAddx.Items)
+            {
+                if (AddX.RightHandSide == addX.AttrValue)
+                {
+                    comboBoxAddx.SelectedItem = addX;
+
+                    break;
+                }
+
+                comboBoxAddx.SelectedIndex = 0;
+            }
+        }
+
+
+
+
+        private void NewMethod13(string burnDirValue, string burnoutValue, string grindValue)
+        {
+            if (burnoutValue.ToLower() == "yes")
+                checkBoxBurnout.Checked = true;
+            else
+                checkBoxBurnout.Checked = false;
+            if (grindValue.ToLower() == "yes")
+                checkBoxGrind.Checked = true;
+            else
+                checkBoxGrind.Checked = false;
+            if (burnDirValue.ToLower() == "x")
+                checkBoxBurnDirX.Checked = true;
+            if (burnDirValue.ToLower() == "y")
+                checkBoxBurnDirY.Checked = true;
+            if (burnDirValue.ToLower() == "z")
+                checkBoxBurnDirZ.Checked = true;
+        }
+
+        private void NewMethod112(string burnDirValue, string burnoutValue, string grindValue)
+        {
+            if (burnoutValue.ToLower() == "yes")
+                checkBoxBurnout.Checked = true;
+            else
+                checkBoxBurnout.Checked = false;
+            if (grindValue.ToLower() == "yes")
+                checkBoxGrind.Checked = true;
+            else
+                checkBoxGrind.Checked = false;
+            if (burnDirValue.ToLower() == "x")
+                checkBoxBurnDirX.Checked = true;
+            if (burnDirValue.ToLower() == "y")
+                checkBoxBurnDirY.Checked = true;
+            if (burnDirValue.ToLower() == "z")
+                checkBoxBurnDirZ.Checked = true;
+        }
+        private void NewMethod113(string burnDirValue, string burnoutValue, string grindValue)
+        {
+            if (burnoutValue.ToLower() == "yes")
+                checkBoxBurnout.Checked = true;
+            else
+                checkBoxBurnout.Checked = false;
+            if (grindValue.ToLower() == "yes")
+                checkBoxGrind.Checked = true;
+            else
+                checkBoxGrind.Checked = false;
+            if (burnDirValue.ToLower() == "x")
+                checkBoxBurnDirX.Checked = true;
+            if (burnDirValue.ToLower() == "y")
+                checkBoxBurnDirY.Checked = true;
+            if (burnDirValue.ToLower() == "z")
+                checkBoxBurnDirZ.Checked = true;
+        }
+        private void NewMethod115(string burnDirValue, string burnoutValue, string grindValue)
+        {
+            if (burnoutValue.ToLower() == "yes")
+                checkBoxBurnout.Checked = true;
+            else
+                checkBoxBurnout.Checked = false;
+            if (grindValue.ToLower() == "yes")
+                checkBoxGrind.Checked = true;
+            else
+                checkBoxGrind.Checked = false;
+            if (burnDirValue.ToLower() == "x")
+                checkBoxBurnDirX.Checked = true;
+            if (burnDirValue.ToLower() == "y")
+                checkBoxBurnDirY.Checked = true;
+            if (burnDirValue.ToLower() == "z")
+                checkBoxBurnDirZ.Checked = true;
+        }
+
+        private void NewMethod8(double xValue, double yValue, double zValue)
+        {
+            // get bounding box info
+
+            double[] minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            double[] distances = new double[3];
+
+            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
+                __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
+
+            // add stock values
+
+            distances[0] += xValue;
+            distances[1] += yValue;
+            distances[2] += zValue;
+
+            if (_workPart.PartUnits == BasePart.Units.Millimeters)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+
+            for (int i = 0; i < 3; i++)
+            {
+                double roundValue = System.Math.Round(distances[i], 3);
+                double truncateValue = System.Math.Truncate(roundValue);
+                double fractionValue = roundValue - truncateValue;
+                if (fractionValue != 0)
+                    for (double ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (fractionValue <= ii)
+                        {
+                            double finalValue = truncateValue + ii;
+                            distances[i] = finalValue;
+                            break;
+                        }
+                    }
+                else
+                    distances[i] = roundValue;
+            }
+
+            CreateTempBlockLines(__display_part_.WCS.Origin, distances[0], distances[1],
+                distances[2]);
+            _allowBoundingBox = true;
+        }
+
+
+        private static double[] NewMethod3(double xValue, double yValue, double zValue)
+        {
+            // get bounding box info
+
+            double[] minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            double[] distances = new double[3];
+
+            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
+                __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
+
+            // add stock values
+
+            distances[0] += xValue;
+            distances[1] += yValue;
+            distances[2] += zValue;
+
+            if (_workPart.PartUnits == BasePart.Units.Millimeters)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+
+            for (int i = 0; i < 3; i++)
+            {
+                double roundValue = System.Math.Round(distances[i], 3);
+                double truncateValue = System.Math.Truncate(roundValue);
+                double fractionValue = roundValue - truncateValue;
+                if (fractionValue != 0)
+                    for (double ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (fractionValue <= ii)
+                        {
+                            double finalValue = truncateValue + ii;
+                            distances[i] = finalValue;
+                            break;
+                        }
+                    }
+                else
+                    distances[i] = roundValue;
+            }
+
+            return distances;
+        }
+
+
+
+
+        private void NewMethod20(double xValue, double yValue, double zValue)
+        {
+            // get bounding box info
+
+            double[] minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            double[] distances = new double[3];
+
+            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
+                __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
+
+            // add stock values
+
+            distances[0] += xValue;
+            distances[1] += yValue;
+            distances[2] += zValue;
+
+            if (_workPart.PartUnits == BasePart.Units.Millimeters)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+
+            for (int i = 0; i < 3; i++)
+            {
+                double roundValue = System.Math.Round(distances[i], 3);
+                double truncateValue = System.Math.Truncate(roundValue);
+                double fractionValue = roundValue - truncateValue;
+                if (fractionValue != 0)
+                    for (double ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (fractionValue <= ii)
+                        {
+                            double finalValue = truncateValue + ii;
+                            distances[i] = finalValue;
+                            break;
+                        }
+                    }
+                else
+                    distances[i] = roundValue;
+            }
+
+            CreateTempBlockLines(__display_part_.WCS.Origin, distances[0], distances[1],
+                distances[2]);
+            _allowBoundingBox = true;
+        }
+
+
+
+        private void NewMethod14(double xValue, double yValue, double zValue)
+        {
+            // get bounding box info
+
+            double[] minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            double[] distances = new double[3];
+
+            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
+                __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
+
+            // add stock values
+
+            distances[0] += xValue;
+            distances[1] += yValue;
+            distances[2] += zValue;
+
+            if (_workPart.PartUnits == BasePart.Units.Millimeters)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+
+            for (int i = 0; i < 3; i++)
+            {
+                double roundValue = System.Math.Round(distances[i], 3);
+                double truncateValue = System.Math.Truncate(roundValue);
+                double fractionValue = roundValue - truncateValue;
+                if (fractionValue != 0)
+                    for (double ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (fractionValue <= ii)
+                        {
+                            double finalValue = truncateValue + ii;
+                            distances[i] = finalValue;
+                            break;
+                        }
+                    }
+                else
+                    distances[i] = roundValue;
+            }
+
+            CreateTempBlockLines(__display_part_.WCS.Origin, distances[0], distances[1],
+                distances[2]);
+            _allowBoundingBox = true;
+        }
+
+
+
+        private static double[] NewMethod24(CartesianCoordinateSystem tempCsys, bool isMetric)
+        {
+            // get bounding box of solid body
+
+            double[] minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            double[] distances = new double[3];
+
+            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag, tempCsys.Tag, minCorner, directions,
+                distances);
+
+            if (isMetric)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+
+            for (int i = 0; i < 3; i++)
+            {
+                double roundValue = System.Math.Round(distances[i], 3);
+                double truncateValue = System.Math.Truncate(roundValue);
+                double fractionValue = roundValue - truncateValue;
+                if (fractionValue != 0)
+                    for (double ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (fractionValue <= ii)
+                        {
+                            double finalValue = truncateValue + ii;
+                            distances[i] = finalValue;
+                            break;
+                        }
+                    }
+                else
+                    distances[i] = roundValue;
+            }
+
+            return distances;
+        }
+
+        private static void NewMethod23(double[] distances)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                double roundValue = System.Math.Round(distances[i], 3);
+                double truncateValue = System.Math.Truncate(roundValue);
+                double fractionValue = roundValue - truncateValue;
+                if (fractionValue != 0)
+                    for (double ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (fractionValue <= ii)
+                        {
+                            double finalValue = truncateValue + ii;
+                            distances[i] = finalValue;
+                            break;
+                        }
+                    }
+                else
+                    distances[i] = roundValue;
+            }
+        }
+
+        private static double[] NewMethod32(bool isMetric, Body[] sizeBody, Tag tempCsys)
+        {
+            double[] minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            double[] distances = new double[3];
+
+            ufsession_.Modl.AskBoundingBoxExact(sizeBody[0].Tag, tempCsys, minCorner, directions,
+                distances);
+
+            if (isMetric)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+
+            for (int i = 0; i < 3; i++)
+            {
+                double roundValue = System.Math.Round(distances[i], 3);
+                double truncateValue = System.Math.Truncate(roundValue);
+                double fractionValue = roundValue - truncateValue;
+                if (fractionValue != 0)
+                    for (double ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (fractionValue <= ii)
+                        {
+                            double finalValue = truncateValue + ii;
+                            distances[i] = finalValue;
+                            break;
+                        }
+                    }
+                else
+                    distances[i] = roundValue;
+            }
+
+            return distances;
+        }
+
+        private static void NewMethod31(bool isMetric, string burnoutValue, double[] distances)
+        {
+            if (isMetric)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+
+            if (burnoutValue.ToLower() == "no")
+                for (int i = 0; i < 3; i++)
+                {
+                    double roundValue = System.Math.Round(distances[i], 3);
+                    double truncateValue = System.Math.Truncate(roundValue);
+                    double fractionValue = roundValue - truncateValue;
+                    if (fractionValue != 0)
+                        for (double ii = .125; ii <= 1; ii += .125)
+                        {
+                            if (fractionValue <= ii)
+                            {
+                                double finalValue = truncateValue + ii;
+                                distances[i] = finalValue;
+                                break;
+                            }
+                        }
+                    else
+                        distances[i] = roundValue;
+                }
+        }
+
+        private double AskSteelSize(double distance, BasePart part)
+        {
+            //            if (part.Leaf.Contains("200"))
+            //                Debugger.Launch();
+            double roundValue = System.Math.Round(distance, 3);
+            double truncateValue = System.Math.Truncate(roundValue);
+            double fractionValue = roundValue - truncateValue;
+
+            // If it doesn't seem to be working you might have any issue with metric vs english,
+            // or you can revert the code back to the orignal line before you changed to float-point comparison.
+            if (System.Math.Abs(fractionValue) > .001)
+            {
+                for (double ii = .125; ii <= 1; ii += .125)
+                    if (fractionValue <= ii)
+                    {
+                        double finalValue = truncateValue + ii;
+                        return finalValue;
+                    }
+            }
+            else
+            {
+                return roundValue;
+            }
+
+            throw new Exception($"Ask Steel Size, Part: {part.Leaf}. {nameof(distance)}: {distance}");
+        }
+
+        private static double[] NewMethod33(double xValue, double yValue, double zValue)
+        {
+            double[] minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            double[] distances = new double[3];
+
+            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag, __display_part_.WCS.CoordinateSystem.Tag,
+                minCorner, directions, distances);
+
+            // add stock values
+
+            distances[0] += xValue;
+            distances[1] += yValue;
+            distances[2] += zValue;
+
+            if (_workPart.PartUnits == BasePart.Units.Millimeters)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+
+            for (int i = 0; i < 3; i++)
+            {
+                double roundValue = System.Math.Round(distances[i], 3);
+                double truncateValue = System.Math.Truncate(roundValue);
+                double fractionValue = roundValue - truncateValue;
+                if (fractionValue != 0)
+                    for (double ii = .125; ii <= 1; ii += .125)
+                    {
+                        if (fractionValue <= ii)
+                        {
+                            double finalValue = truncateValue + ii;
+                            distances[i] = finalValue;
+                            break;
+                        }
+                    }
+                else
+                    distances[i] = roundValue;
+            }
+
+            return distances;
+        }
+
+
+
+        private static void NewMethod114(ref bool isNamedExpression, ref Expression AddX, ref Expression AddY, ref Expression AddZ, ref double xValue, ref double yValue, ref double zValue)
+        {
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+            {
+                if (exp.Name == "AddX")
+                {
+                    isNamedExpression = true;
+                    AddX = exp;
+                    xValue = exp.Value;
+                }
+
+                if (exp.Name == "AddY")
+                {
+                    isNamedExpression = true;
+                    AddY = exp;
+                    yValue = exp.Value;
+                }
+
+                if (exp.Name == "AddZ")
+                {
+                    isNamedExpression = true;
+                    AddZ = exp;
+                    zValue = exp.Value;
+                }
+            }
+        }
+
+
+        private static void NewMethod27(ref bool isNamedExpression, ref Expression AddX, ref Expression AddY, ref Expression AddZ, ref Expression BurnDir, ref Expression Burnout, ref Expression Grind, ref Expression GrindTolerance, ref double xValue, ref double yValue, ref double zValue, ref string burnDirValue, ref string burnoutValue, ref string grindValue, ref string grindTolValue)
+        {
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+            {
+                if (exp.Name == "AddX")
+                {
+                    isNamedExpression = true;
+                    AddX = exp;
+                    xValue = exp.Value;
+                }
+
+                if (exp.Name == "AddY")
+                {
+                    isNamedExpression = true;
+                    AddY = exp;
+                    yValue = exp.Value;
+                }
+
+                if (exp.Name == "AddZ")
+                {
+                    isNamedExpression = true;
+                    AddZ = exp;
+                    zValue = exp.Value;
+                }
+
+                if (exp.Name == "BurnDir")
+                {
+                    isNamedExpression = true;
+                    BurnDir = exp;
+                    burnDirValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Burnout")
+                {
+                    isNamedExpression = true;
+                    Burnout = exp;
+                    burnoutValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Grind")
+                {
+                    isNamedExpression = true;
+                    Grind = exp;
+                    grindValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "GrindTolerance")
+                {
+                    isNamedExpression = true;
+                    GrindTolerance = exp;
+                    grindTolValue = exp.RightHandSide;
+                }
+            }
+        }
+
+
+
+
+
+        private static void NewMethod4(ref bool isNamedExpression, ref Expression AddX, ref Expression AddY, ref Expression AddZ, ref Expression BurnDir, ref Expression Burnout, ref Expression Grind, ref Expression GrindTolerance, ref double xValue, ref double yValue, ref double zValue, ref string burnDirValue, ref string burnoutValue, ref string grindValue, ref string grindTolValue)
+        {
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+            {
+                if (exp.Name == "AddX")
+                {
+                    isNamedExpression = true;
+                    AddX = exp;
+                    xValue = exp.Value;
+                }
+
+                if (exp.Name == "AddY")
+                {
+                    isNamedExpression = true;
+                    AddY = exp;
+                    yValue = exp.Value;
+                }
+
+                if (exp.Name == "AddZ")
+                {
+                    isNamedExpression = true;
+                    AddZ = exp;
+                    zValue = exp.Value;
+                }
+
+                if (exp.Name == "BurnDir")
+                {
+                    isNamedExpression = true;
+                    BurnDir = exp;
+                    burnDirValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Burnout")
+                {
+                    isNamedExpression = true;
+                    Burnout = exp;
+                    burnoutValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Grind")
+                {
+                    isNamedExpression = true;
+                    Grind = exp;
+                    grindValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "GrindTolerance")
+                {
+                    isNamedExpression = true;
+                    GrindTolerance = exp;
+                    grindTolValue = exp.RightHandSide;
+                }
+            }
+        }
+
+        private static void NewMethod15(ref bool isNamedExpression, ref Expression AddX, ref Expression AddY, ref Expression AddZ, ref Expression BurnDir, ref Expression Burnout, ref Expression Grind, ref Expression GrindTolerance, ref double xValue, ref double yValue, ref double zValue, ref string burnDirValue, ref string burnoutValue, ref string grindValue, ref string grindTolValue)
+        {
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+            {
+                if (exp.Name == "AddX")
+                {
+                    isNamedExpression = true;
+                    AddX = exp;
+                    xValue = exp.Value;
+                }
+
+                if (exp.Name == "AddY")
+                {
+                    isNamedExpression = true;
+                    AddY = exp;
+                    yValue = exp.Value;
+                }
+
+                if (exp.Name == "AddZ")
+                {
+                    isNamedExpression = true;
+                    AddZ = exp;
+                    zValue = exp.Value;
+                }
+
+                if (exp.Name == "BurnDir")
+                {
+                    isNamedExpression = true;
+                    BurnDir = exp;
+                    burnDirValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Burnout")
+                {
+                    isNamedExpression = true;
+                    Burnout = exp;
+                    burnoutValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Grind")
+                {
+                    isNamedExpression = true;
+                    Grind = exp;
+                    grindValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "GrindTolerance")
+                {
+                    isNamedExpression = true;
+                    GrindTolerance = exp;
+                    grindTolValue = exp.RightHandSide;
+                }
+            }
+        }
+
+
+
+
+        private static void NewMethod9(ref bool isNamedExpression, ref Expression AddX, ref Expression AddY, ref Expression AddZ, ref Expression BurnDir, ref Expression Burnout, ref Expression Grind, ref Expression GrindTolerance, ref double xValue, ref double yValue, ref double zValue, ref string burnDirValue, ref string burnoutValue, ref string grindValue, ref string grindTolValue)
+        {
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+            {
+                if (exp.Name == "AddX")
+                {
+                    isNamedExpression = true;
+                    AddX = exp;
+                    xValue = exp.Value;
+                }
+
+                if (exp.Name == "AddY")
+                {
+                    isNamedExpression = true;
+                    AddY = exp;
+                    yValue = exp.Value;
+                }
+
+                if (exp.Name == "AddZ")
+                {
+                    isNamedExpression = true;
+                    AddZ = exp;
+                    zValue = exp.Value;
+                }
+
+                if (exp.Name == "BurnDir")
+                {
+                    isNamedExpression = true;
+                    BurnDir = exp;
+                    burnDirValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Burnout")
+                {
+                    isNamedExpression = true;
+                    Burnout = exp;
+                    burnoutValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Grind")
+                {
+                    isNamedExpression = true;
+                    Grind = exp;
+                    grindValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "GrindTolerance")
+                {
+                    isNamedExpression = true;
+                    GrindTolerance = exp;
+                    grindTolValue = exp.RightHandSide;
+                }
+            }
+        }
+
+
+
+
+        private static void NewMethod21(ref bool isNamedExpression, ref Expression AddX, ref Expression AddY, ref Expression AddZ, ref Expression BurnDir, ref Expression Burnout, ref Expression Grind, ref Expression GrindTolerance, ref double xValue, ref double yValue, ref double zValue, ref string burnDirValue, ref string burnoutValue, ref string grindValue, ref string grindTolValue)
+        {
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+            {
+                if (exp.Name == "AddX")
+                {
+                    isNamedExpression = true;
+                    AddX = exp;
+                    xValue = exp.Value;
+                }
+
+                if (exp.Name == "AddY")
+                {
+                    isNamedExpression = true;
+                    AddY = exp;
+                    yValue = exp.Value;
+                }
+
+                if (exp.Name == "AddZ")
+                {
+                    isNamedExpression = true;
+                    AddZ = exp;
+                    zValue = exp.Value;
+                }
+
+                if (exp.Name == "BurnDir")
+                {
+                    isNamedExpression = true;
+                    BurnDir = exp;
+                    burnDirValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Burnout")
+                {
+                    isNamedExpression = true;
+                    Burnout = exp;
+                    burnoutValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Grind")
+                {
+                    isNamedExpression = true;
+                    Grind = exp;
+                    grindValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "GrindTolerance")
+                {
+                    isNamedExpression = true;
+                    GrindTolerance = exp;
+                    grindTolValue = exp.RightHandSide;
+                }
+            }
+        }
+
+
+        private static void NewMethod22(ref bool isNamedExpression, ref Expression AddX, ref Expression AddY, ref Expression AddZ, ref Expression BurnDir, ref Expression Burnout, ref Expression Grind, ref Expression GrindTolerance, ref Expression Dieset, ref double xValue, ref double yValue, ref double zValue, ref string burnDirValue, ref string burnoutValue, ref string grindValue, ref string grindTolValue, ref string diesetValue)
+        {
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+            {
+                if (exp.Name == "AddX")
+                {
+                    isNamedExpression = true;
+                    AddX = exp;
+                    xValue = exp.Value;
+                }
+
+                if (exp.Name == "AddY")
+                {
+                    isNamedExpression = true;
+                    AddY = exp;
+                    yValue = exp.Value;
+                }
+
+                if (exp.Name == "AddZ")
+                {
+                    isNamedExpression = true;
+                    AddZ = exp;
+                    zValue = exp.Value;
+                }
+
+                if (exp.Name == "BurnDir")
+                {
+                    isNamedExpression = true;
+                    BurnDir = exp;
+                    burnDirValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Burnout")
+                {
+                    isNamedExpression = true;
+                    Burnout = exp;
+                    burnoutValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Grind")
+                {
+                    isNamedExpression = true;
+                    Grind = exp;
+                    grindValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "GrindTolerance")
+                {
+                    isNamedExpression = true;
+                    GrindTolerance = exp;
+                    grindTolValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "DiesetNote")
+                {
+                    Dieset = exp;
+                    diesetValue = exp.RightHandSide;
+                }
+            }
+        }
+
+
+
+        private static void NewMethod25(ref bool isNamedExpression, ref double xValue, ref double yValue, ref double zValue, ref string burnDirValue, ref string burnoutValue, ref string grindValue, ref string grindTolValue, ref string diesetValue)
+        {
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+            {
+                if (exp.Name == "AddX")
+                {
+                    isNamedExpression = true;
+                    xValue = exp.Value;
+                }
+
+                if (exp.Name == "AddY")
+                {
+                    isNamedExpression = true;
+                    yValue = exp.Value;
+                }
+
+                if (exp.Name == "AddZ")
+                {
+                    isNamedExpression = true;
+                    zValue = exp.Value;
+                }
+
+                if (exp.Name == "BurnDir")
+                {
+                    isNamedExpression = true;
+                    burnDirValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Burnout")
+                {
+                    isNamedExpression = true;
+                    burnoutValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "Grind")
+                {
+                    isNamedExpression = true;
+                    grindValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "GrindTolerance")
+                {
+                    isNamedExpression = true;
+                    grindTolValue = exp.RightHandSide;
+                }
+
+                if (exp.Name == "DiesetNote") diesetValue = exp.RightHandSide;
+            }
+        }
+
+
+
+        private static UFCurve.Line NewMethod93(Point3d wcsOrigin, Point3d mappedEndPointX1)
+        {
+            UFCurve.Line lineData1;
+            double[] startX1 = wcsOrigin.__ToArray();
+            double[] endX1 = mappedEndPointX1.__ToArray();
+            lineData1.start_point = startX1;
+            lineData1.end_point = endX1;
+            return lineData1;
+        }
+
+
+
+        private static UFCurve.Line NewMethod91(Point3d wcsOrigin, Point3d mappedEndPointY1)
+        {
+            UFCurve.Line lineData1;
+            double[] startY1 = wcsOrigin.__ToArray();
+            double[] endY1 = mappedEndPointY1.__ToArray();
+            lineData1.start_point = startY1;
+            lineData1.end_point = endY1;
+            return lineData1;
+        }
+
+        private static UFCurve.Line NewMethod90(Point3d wcsOrigin, Point3d mappedEndPointZ1)
+        {
+            UFCurve.Line lineData1;
+            double[] startZ1 = wcsOrigin.__ToArray();
+            double[] endZ1 = mappedEndPointZ1.__ToArray();
+            lineData1.start_point = startZ1;
+            lineData1.end_point = endZ1;
+            return lineData1;
+        }
+
+        private static UFCurve.Line NewMethod89(Point3d mappedEndPointY1, Point3d mappedEndPointX2)
+        {
+            UFCurve.Line lineData1;
+            double[] startX2 = mappedEndPointY1.__ToArray();
+            double[] endX2 = mappedEndPointX2.__ToArray();
+            lineData1.start_point = startX2;
+            lineData1.end_point = endX2;
+            return lineData1;
+        }
+
+        private static UFCurve.Line NewMethod88(Point3d mappedEndPointX1, Point3d mappedEndPointX2)
+        {
+            UFCurve.Line lineData1;
+            double[] startY2 = mappedEndPointX1.__ToArray();
+            double[] endY2 = mappedEndPointX2.__ToArray();
+            lineData1.start_point = startY2;
+            lineData1.end_point = endY2;
+            return lineData1;
+        }
+
+        private static UFCurve.Line NewMethod87(Point3d mappedEndPointZ1, Point3d mappedEndPointX1Ceiling)
+        {
+            UFCurve.Line lineData1;
+            double[] startX3 = mappedEndPointZ1.__ToArray();
+            double[] endX3 = mappedEndPointX1Ceiling.__ToArray();
+            lineData1.start_point = startX3;
+            lineData1.end_point = endX3;
+            return lineData1;
+        }
+
+        private static UFCurve.Line NewMethod86(Point3d mappedEndPointZ1, Point3d mappedEndPointY1Ceiling)
+        {
+            UFCurve.Line lineData1;
+            double[] startY3 = mappedEndPointZ1.__ToArray();
+            double[] endY3 = mappedEndPointY1Ceiling.__ToArray();
+            lineData1.start_point = startY3;
+            lineData1.end_point = endY3;
+            return lineData1;
+        }
+
+        private static UFCurve.Line NewMethod85(Point3d mappedEndPointY1Ceiling, Point3d mappedEndPointX2Ceiling)
+        {
+            UFCurve.Line lineData1;
+            double[] startX4 = mappedEndPointY1Ceiling.__ToArray();
+            double[] endX4 = mappedEndPointX2Ceiling.__ToArray();
+            lineData1.start_point = startX4;
+            lineData1.end_point = endX4;
+            return lineData1;
+        }
+
+        private static UFCurve.Line NewMethod84(Point3d mappedEndPointX1Ceiling, Point3d mappedEndPointX2Ceiling)
+        {
+            UFCurve.Line lineData1;
+            double[] startY4 = mappedEndPointX1Ceiling.__ToArray();
+            double[] endY4 = mappedEndPointX2Ceiling.__ToArray();
+            lineData1.start_point = startY4;
+            lineData1.end_point = endY4;
+            return lineData1;
+        }
+
+        private static UFCurve.Line NewMethod83(Point3d mappedEndPointX1, Point3d mappedEndPointX1Ceiling)
+        {
+            UFCurve.Line lineData1;
+            double[] startZ2 = mappedEndPointX1.__ToArray();
+            double[] endZ2 = mappedEndPointX1Ceiling.__ToArray();
+            lineData1.start_point = startZ2;
+            lineData1.end_point = endZ2;
+            return lineData1;
+        }
+
+        private static UFCurve.Line NewMethod82(Point3d mappedEndPointY1, Point3d mappedEndPointY1Ceiling)
+        {
+            UFCurve.Line lineData1;
+            double[] startZ3 = mappedEndPointY1.__ToArray();
+            double[] endZ3 = mappedEndPointY1Ceiling.__ToArray();
+            lineData1.start_point = startZ3;
+            lineData1.end_point = endZ3;
+            return lineData1;
+        }
+
+        private static UFCurve.Line NewMethod81(Point3d mappedEndPointX2, Point3d mappedEndPointX2Ceiling)
+        {
+            UFCurve.Line lineData1;
+            double[] startZ4 = mappedEndPointX2.__ToArray();
+            double[] endZ4 = mappedEndPointX2Ceiling.__ToArray();
+            lineData1.start_point = startZ4;
+            lineData1.end_point = endZ4;
+            return lineData1;
+        }
+
+
+
+        private static UFCurve.Line NewMethod104(Point3d wcsOrigin, ref UFObj.DispProps dispProps, Point3d mappedEndPointX1)
+        {
+            UFCurve.Line lineData1 = NewMethod93(wcsOrigin, mappedEndPointX1);
+            dispProps = DisplayTemporaryLine(dispProps, lineData1);
+            return lineData1;
+        }
+
+        private static UFCurve.Line NewMethod103(Point3d wcsOrigin, ref UFObj.DispProps dispProps, Point3d mappedEndPointY1)
+        {
+            UFCurve.Line lineData1 = NewMethod91(wcsOrigin, mappedEndPointY1);
+            dispProps = DisplayTemporaryLine(dispProps, lineData1);
+            return lineData1;
+        }
+
+        private static UFCurve.Line NewMethod102(Point3d wcsOrigin, ref UFObj.DispProps dispProps, Point3d mappedEndPointZ1)
+        {
+            UFCurve.Line lineData1 = NewMethod90(wcsOrigin, mappedEndPointZ1);
+            dispProps = DisplayTemporaryLine(dispProps, lineData1);
+            return lineData1;
+        }
+
+        private static UFCurve.Line NewMethod101(ref UFObj.DispProps dispProps, Point3d mappedEndPointY1, Point3d mappedEndPointX2)
+        {
+            UFCurve.Line lineData1 = NewMethod89(mappedEndPointY1, mappedEndPointX2);
+            dispProps = DisplayTemporaryLine(dispProps, lineData1);
+            return lineData1;
+        }
+
+        private static UFCurve.Line NewMethod100(ref UFObj.DispProps dispProps, Point3d mappedEndPointX1, Point3d mappedEndPointX2)
+        {
+            UFCurve.Line lineData1 = NewMethod88(mappedEndPointX1, mappedEndPointX2);
+            dispProps = DisplayTemporaryLine(dispProps, lineData1);
+            return lineData1;
+        }
+
+        private static UFCurve.Line NewMethod99(ref UFObj.DispProps dispProps, Point3d mappedEndPointZ1, Point3d mappedEndPointX1Ceiling)
+        {
+            UFCurve.Line lineData1 = NewMethod87(mappedEndPointZ1, mappedEndPointX1Ceiling);
+            dispProps = DisplayTemporaryLine(dispProps, lineData1);
+            return lineData1;
+        }
+
+        private static UFCurve.Line NewMethod98(ref UFObj.DispProps dispProps, Point3d mappedEndPointY1Ceiling, Point3d mappedEndPointX2Ceiling)
+        {
+            UFCurve.Line lineData1 = NewMethod85(mappedEndPointY1Ceiling, mappedEndPointX2Ceiling);
+            dispProps = DisplayTemporaryLine(dispProps, lineData1);
+            return lineData1;
+        }
+
+        private static UFCurve.Line NewMethod97(ref UFObj.DispProps dispProps, Point3d mappedEndPointX1Ceiling, Point3d mappedEndPointX2Ceiling)
+        {
+            UFCurve.Line lineData1 = NewMethod84(mappedEndPointX1Ceiling, mappedEndPointX2Ceiling);
+            dispProps = DisplayTemporaryLine(dispProps, lineData1);
+            return lineData1;
+        }
+
+        private static UFCurve.Line NewMethod96(ref UFObj.DispProps dispProps, Point3d mappedEndPointX1, Point3d mappedEndPointX1Ceiling)
+        {
+            UFCurve.Line lineData1 = NewMethod83(mappedEndPointX1, mappedEndPointX1Ceiling);
+            dispProps = DisplayTemporaryLine(dispProps, lineData1);
+            return lineData1;
+        }
+
+        private static UFCurve.Line NewMethod95(ref UFObj.DispProps dispProps, Point3d mappedEndPointY1, Point3d mappedEndPointY1Ceiling)
+        {
+            UFCurve.Line lineData1 = NewMethod82(mappedEndPointY1, mappedEndPointY1Ceiling);
+            dispProps = DisplayTemporaryLine(dispProps, lineData1);
+            return lineData1;
+        }
+
+        private static UFCurve.Line NewMethod94(ref UFObj.DispProps dispProps, Point3d mappedEndPointX2, Point3d mappedEndPointX2Ceiling)
+        {
+            UFCurve.Line lineData1 = NewMethod81(mappedEndPointX2, mappedEndPointX2Ceiling);
+            dispProps = DisplayTemporaryLine(dispProps, lineData1);
+            return lineData1;
+        }
+
+        private void NewMethod116()
+        {
+            textBoxDescription.Clear();
+            textBoxMaterial.Clear();
+            buttonReset.PerformClick();
+            buttonSelectCustom.Enabled = false;
+            comboBoxMaterial.Enabled = false;
+            groupBoxDescription.Enabled = true;
+            groupBoxMaterial.Enabled = true;
+            groupBoxAttributes.Enabled = true;
+            groupBoxBlockExpressions.Enabled = false;
+            _isCustom = true;
+            _isMeasureBody = false;
+            _isSelectMultiple = true;
+            _allSelectedComponents = SelectMultipleComponents();
+        }
+
+        private void NewMethod117()
+        {
+            textBoxDescription.Clear();
+            textBoxMaterial.Clear();
+            comboBoxDescription.SelectedIndex = -1;
+            comboBoxMaterial.SelectedIndex = -1;
+            _isCustom = false;
+            _isMeasureBody = false;
+            _isSelectMultiple = false;
+            _selectedComponents = SelectMultipleComponents();
+        }
+
+
+        private void NewMethod118()
+        {
+            textBoxDescription.Clear();
+            textBoxMaterial.Clear();
+            comboBoxDescription.SelectedIndex = -1;
+            comboBoxMaterial.SelectedIndex = -1;
+            _workPart = session_.Parts.Work;
+            __display_part_ = session_.Parts.Display;
+            _originalWorkPart = _workPart; _originalDisplayPart = __display_part_; ;
+            _isCustom = false;
+            _isMeasureBody = false;
+            _isSelectMultiple = false;
+            _selectedComponents = SelectMultipleComponents();
+        }
+
+        private void NewMethod119()
+        {
+            textBoxDescription.Clear();
+            textBoxMaterial.Clear();
+            comboBoxDescription.SelectedIndex = -1;
+            comboBoxMaterial.SelectedIndex = -1;
+            _workPart = session_.Parts.Work;
+            __display_part_ = session_.Parts.Display;
+            _originalWorkPart = _workPart; _originalDisplayPart = __display_part_; ;
+            _isCustom = false;
+            _isMeasureBody = false;
+            _isSelectMultiple = false;
+            _selectedComponents = SelectMultipleComponents();
+        }
+
+        private void NewMethod120()
+        {
+            textBoxDescription.Clear();
+            textBoxMaterial.Clear();
+            comboBoxDescription.SelectedIndex = -1;
+            comboBoxMaterial.SelectedIndex = -1;
+            _workPart = session_.Parts.Work;
+            __display_part_ = session_.Parts.Display;
+            _originalWorkPart = _workPart; _originalDisplayPart = __display_part_; ;
+            _isCustom = false;
+            _isMeasureBody = false;
+            _isSelectMultiple = false;
+            _selectedComponents = SelectMultipleComponents();
+        }
+
+
+        private void NewMethod124(string grindTolValue)
+        {
+            foreach (CtsAttributes tolSetting in comboBoxTolerance.Items)
+                if (grindTolValue == tolSetting.AttrValue)
+                    comboBoxTolerance.SelectedItem = tolSetting;
+        }
+
+        private void NewMethod125(string grindTolValue)
+        {
+            foreach (CtsAttributes tolSetting in comboBoxTolerance.Items)
+                if (grindTolValue == tolSetting.AttrValue)
+                    comboBoxTolerance.SelectedItem = tolSetting;
+        }
+        private void NewMethod126(string grindTolValue)
+        {
+            foreach (CtsAttributes tolSetting in comboBoxTolerance.Items)
+                if (grindTolValue == tolSetting.AttrValue)
+                    comboBoxTolerance.SelectedItem = tolSetting;
+        }
+
+        private void NewMethod127(string grindTolValue)
+        {
+            foreach (CtsAttributes tolSetting in comboBoxTolerance.Items)
+                if (grindTolValue == tolSetting.AttrValue)
+                    comboBoxTolerance.SelectedItem = tolSetting;
+        }
     }
 }
