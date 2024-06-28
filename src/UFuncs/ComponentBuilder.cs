@@ -3627,7 +3627,20 @@ namespace TSG_Library.UFuncs
             DisableForm();
             var pHandle = SelectHandlePoint();
             _isDynamic = true;
-            EditDynamic(pHandle);
+
+            while (pHandle.Count == 1)
+            {
+                _distanceMoved = 0;
+                HideDynamicHandles();
+                _udoPointHandle = pHandle[0];
+                string message = "Select New Position";
+                double[] screenPos = new double[3];
+                IntPtr motionCbData = IntPtr.Zero;
+                __display_part_.WCS.Visibility = false;
+                SetModelingView();
+                EditDynamic(ref pHandle, message, screenPos, motionCbData);
+            }
+
             EnableForm();
         }
 
@@ -3636,7 +3649,6 @@ namespace TSG_Library.UFuncs
 
         private void EditDynamicWorkPart(Component editComponent)
         {
-            Part checkPartName = (Part)editComponent.Prototype;
             _updateComponent = editComponent;
 
             if (editComponent.__Prototype().PartUnits != __display_part_.PartUnits)
@@ -3648,7 +3660,6 @@ namespace TSG_Library.UFuncs
                 isBlockComponent = IsBlockComponent(editComponent);
 
             EditDynamic(isBlockComponent);
-            return;
         }
 
         private void EditDynamicDisplayPart(Component editComponent)
@@ -3749,12 +3760,21 @@ namespace TSG_Library.UFuncs
             }
 
             DisableForm();
-            List<Point> pHandle = new List<Point>();
-            pHandle = SelectHandlePoint();
+            var pHandle = SelectHandlePoint();
             _isDynamic = false;
-
-            pHandle = NewMethod4(pHandle);
-
+            while (pHandle.Count == 1)
+            {
+                _distanceMoved = 0;
+                HideDynamicHandles();
+                _udoPointHandle = pHandle[0];
+                __display_part_.WCS.Visibility = false;
+                string message = "Select New Position";
+                double[] screenPos = new double[3];
+                Tag viewTag = NXOpen.Tag.Null;
+                IntPtr motionCbData = IntPtr.Zero;
+                IntPtr clientData = IntPtr.Zero;
+                viewTag = NewMethod49(ref pHandle, message, screenPos, motionCbData);
+            }
             EnableForm();
         }
 
@@ -4720,166 +4740,143 @@ namespace TSG_Library.UFuncs
                     foreach (NXOpen.Expression exp in __work_part_.Expressions)
                     {
                         if (exp.Name == "uprParallel")
-                        {
-                            if (exp.RightHandSide.Contains("yes"))
-                            {
-                                _isUprParallel = true;
-                            }
-                            else
-                            {
-                                _isUprParallel = false;
-                            }
-                        }
+                            _isUprParallel = exp.RightHandSide.Contains("yes");
 
                         if (exp.Name == "lwrParallel")
-                        {
-                            if (exp.RightHandSide.Contains("yes"))
-                            {
-                                _isLwrParallel = true;
-                            }
-                            else
-                            {
-                                _isLwrParallel = false;
-                            }
-                        }
+                            _isLwrParallel = exp.RightHandSide.Contains("yes");
                     }
 
-                    foreach (NXOpen.Features.Feature featBlk in __work_part_.Features)
+                    if (__work_part_.__HasDynamicBlock())
                     {
-                        if (featBlk.FeatureType == "BLOCK")
+
+                        NXOpen.Features.Block block1 = (NXOpen.Features.Block)__work_part_.__DynamicBlock();
+
+                        NXOpen.Features.BlockFeatureBuilder blockFeatureBuilderMatch;
+                        blockFeatureBuilderMatch =
+                            __work_part_.Features.CreateBlockFeatureBuilder(block1);
+                        NXOpen.Point3d bOrigin = blockFeatureBuilderMatch.Origin;
+                        string blength = blockFeatureBuilderMatch.Length.RightHandSide;
+                        string bwidth = blockFeatureBuilderMatch.Width.RightHandSide;
+                        string bheight = blockFeatureBuilderMatch.Height.RightHandSide;
+                        double mLength = blockFeatureBuilderMatch.Length.Value;
+                        double mWidth = blockFeatureBuilderMatch.Width.Value;
+                        double mHeight = blockFeatureBuilderMatch.Height.Value;
+
+                        if (_isUprParallel)
                         {
-                            if (featBlk.Name == "DYNAMIC BLOCK")
-                            {
-                                NXOpen.Features.Block block1 = (NXOpen.Features.Block)featBlk;
+                            _parallelHeightExp = "uprParallelHeight";
+                            _parallelWidthExp = "uprParallelWidth";
+                        }
 
-                                NXOpen.Features.BlockFeatureBuilder blockFeatureBuilderMatch;
-                                blockFeatureBuilderMatch =
-                                    __work_part_.Features.CreateBlockFeatureBuilder(block1);
-                                NXOpen.Point3d bOrigin = blockFeatureBuilderMatch.Origin;
-                                string blength = blockFeatureBuilderMatch.Length.RightHandSide;
-                                string bwidth = blockFeatureBuilderMatch.Width.RightHandSide;
-                                string bheight = blockFeatureBuilderMatch.Height.RightHandSide;
-                                double mLength = blockFeatureBuilderMatch.Length.Value;
-                                double mWidth = blockFeatureBuilderMatch.Width.Value;
-                                double mHeight = blockFeatureBuilderMatch.Height.Value;
+                        if (_isLwrParallel)
+                        {
+                            _parallelHeightExp = "lwrParallelHeight";
+                            _parallelWidthExp = "lwrParallelWidth";
+                        }
 
-                                if (_isUprParallel)
-                                {
-                                    _parallelHeightExp = "uprParallelHeight";
-                                    _parallelWidthExp = "uprParallelWidth";
-                                }
+                        blockFeatureBuilderMatch.GetOrientation(
+                            out NXOpen.Vector3d xAxis,
+                            out NXOpen.Vector3d yAxis
+                        );
 
-                                if (_isLwrParallel)
-                                {
-                                    _parallelHeightExp = "lwrParallelHeight";
-                                    _parallelWidthExp = "lwrParallelWidth";
-                                }
-
-                                blockFeatureBuilderMatch.GetOrientation(
-                                    out NXOpen.Vector3d xAxis,
-                                    out NXOpen.Vector3d yAxis
-                                );
-
-                                double[] initOrigin = new double[]
-                                {
+                        double[] initOrigin = new double[]
+                        {
                                     bOrigin.X,
                                     bOrigin.Y,
                                     bOrigin.Z
-                                };
-                                double[] xVector = new double[] { xAxis.X, xAxis.Y, xAxis.Z };
-                                double[] yVector = new double[] { yAxis.X, yAxis.Y, yAxis.Z };
-                                double[] initMatrix = new double[9];
-                                TheUFSession.Mtx3.Initialize(xVector, yVector, initMatrix);
-                                TheUFSession.Csys.CreateMatrix(
-                                    initMatrix,
-                                    out NXOpen.Tag tempMatrix
-                                );
-                                TheUFSession.Csys.CreateTempCsys(
-                                    initOrigin,
-                                    tempMatrix,
-                                    out NXOpen.Tag tempCsys
-                                );
-                                NXOpen.CartesianCoordinateSystem setTempCsys =
-                                    (NXOpen.CartesianCoordinateSystem)
-                                    NXOpen.Utilities.NXObjectManager.Get(tempCsys);
+                        };
+                        double[] xVector = new double[] { xAxis.X, xAxis.Y, xAxis.Z };
+                        double[] yVector = new double[] { yAxis.X, yAxis.Y, yAxis.Z };
+                        double[] initMatrix = new double[9];
+                        TheUFSession.Mtx3.Initialize(xVector, yVector, initMatrix);
+                        TheUFSession.Csys.CreateMatrix(
+                            initMatrix,
+                            out NXOpen.Tag tempMatrix
+                        );
+                        TheUFSession.Csys.CreateTempCsys(
+                            initOrigin,
+                            tempMatrix,
+                            out NXOpen.Tag tempCsys
+                        );
+                        NXOpen.CartesianCoordinateSystem setTempCsys =
+                            (NXOpen.CartesianCoordinateSystem)
+                            NXOpen.Utilities.NXObjectManager.Get(tempCsys);
 
-                                __display_part_.WCS.SetOriginAndMatrix(
-                                    setTempCsys.Origin,
-                                    setTempCsys.Orientation.Element
-                                );
+                        __display_part_.WCS.SetOriginAndMatrix(
+                            setTempCsys.Origin,
+                            setTempCsys.Orientation.Element
+                        );
 
-                                NXOpen.CartesianCoordinateSystem featBlkCsys =
-                                    __display_part_.WCS.Save();
-                                featBlkCsys.SetName("EDITCSYS");
-                                featBlkCsys.Layer = 254;
+                        NXOpen.CartesianCoordinateSystem featBlkCsys =
+                            __display_part_.WCS.Save();
+                        featBlkCsys.SetName("EDITCSYS");
+                        featBlkCsys.Layer = 254;
 
-                                NXOpen.NXObject[] addToBody = new NXOpen.NXObject[] { featBlkCsys };
+                        NXOpen.NXObject[] addToBody = new NXOpen.NXObject[] { featBlkCsys };
 
-                                foreach (
-                                    NXOpen.ReferenceSet bRefSet in __display_part_.GetAllReferenceSets()
-                                )
+                        foreach (
+                            NXOpen.ReferenceSet bRefSet in __display_part_.GetAllReferenceSets()
+                        )
+                        {
+                            if (bRefSet.Name == "BODY")
+                            {
+                                bRefSet.AddObjectsToReferenceSet(addToBody);
+                            }
+                        }
+
+                        session_.Parts.SetDisplay(
+                            _originalDisplayPart,
+                            false,
+                            false,
+                            out NXOpen.PartLoadStatus setDispLoadStatus1
+                        );
+                        setDispLoadStatus1.Dispose();
+                        session_.Parts.SetWorkComponent(
+                            compRefCsys,
+                            out NXOpen.PartLoadStatus partLoadStatusWorkComp
+                        );
+                        partLoadStatusWorkComp.Dispose();
+                        // UpdateSessionParts();
+
+                        foreach (
+                            NXOpen.CartesianCoordinateSystem wpCsys in __work_part_.CoordinateSystems
+                        )
+                        {
+                            if (wpCsys.Layer == 254)
+                            {
+                                if (wpCsys.Name == "EDITCSYS")
                                 {
-                                    if (bRefSet.Name == "BODY")
+                                    NXOpen.NXObject csysOccurrence;
+                                    csysOccurrence =
+                                        session_.Parts.WorkComponent.FindOccurrence(wpCsys);
+
+                                    NXOpen.CartesianCoordinateSystem editCsys =
+                                        (NXOpen.CartesianCoordinateSystem)csysOccurrence;
+
+                                    if (editCsys != null)
                                     {
-                                        bRefSet.AddObjectsToReferenceSet(addToBody);
+                                        __display_part_.WCS.SetOriginAndMatrix(
+                                            editCsys.Origin,
+                                            editCsys.Orientation.Element
+                                        );
+                                        _workCompOrigin = editCsys.Origin;
+                                        _workCompOrientation = editCsys.Orientation.Element;
                                     }
-                                }
 
-                                session_.Parts.SetDisplay(
-                                    _originalDisplayPart,
-                                    false,
-                                    false,
-                                    out NXOpen.PartLoadStatus setDispLoadStatus1
-                                );
-                                setDispLoadStatus1.Dispose();
-                                session_.Parts.SetWorkComponent(
-                                    compRefCsys,
-                                    out NXOpen.PartLoadStatus partLoadStatusWorkComp
-                                );
-                                partLoadStatusWorkComp.Dispose();
-                                // UpdateSessionParts();
+                                    NXOpen.Session.UndoMarkId markDeleteObjs;
+                                    markDeleteObjs = session_.SetUndoMark(
+                                        NXOpen.Session.MarkVisibility.Invisible,
+                                        ""
+                                    );
 
-                                foreach (
-                                    NXOpen.CartesianCoordinateSystem wpCsys in __work_part_.CoordinateSystems
-                                )
-                                {
-                                    if (wpCsys.Layer == 254)
-                                    {
-                                        if (wpCsys.Name == "EDITCSYS")
-                                        {
-                                            NXOpen.NXObject csysOccurrence;
-                                            csysOccurrence =
-                                                session_.Parts.WorkComponent.FindOccurrence(wpCsys);
+                                    session_.UpdateManager.AddToDeleteList(wpCsys);
 
-                                            NXOpen.CartesianCoordinateSystem editCsys =
-                                                (NXOpen.CartesianCoordinateSystem)csysOccurrence;
+                                    int errsDelObjs;
+                                    errsDelObjs = session_.UpdateManager.DoUpdate(
+                                        markDeleteObjs
+                                    );
 
-                                            if (editCsys != null)
-                                            {
-                                                __display_part_.WCS.SetOriginAndMatrix(
-                                                    editCsys.Origin,
-                                                    editCsys.Orientation.Element
-                                                );
-                                                _workCompOrigin = editCsys.Origin;
-                                                _workCompOrientation = editCsys.Orientation.Element;
-                                            }
-
-                                            NXOpen.Session.UndoMarkId markDeleteObjs;
-                                            markDeleteObjs = session_.SetUndoMark(
-                                                NXOpen.Session.MarkVisibility.Invisible,
-                                                ""
-                                            );
-
-                                            session_.UpdateManager.AddToDeleteList(wpCsys);
-
-                                            int errsDelObjs;
-                                            errsDelObjs = session_.UpdateManager.DoUpdate(
-                                                markDeleteObjs
-                                            );
-
-                                            session_.DeleteUndoMark(markDeleteObjs, "");
-                                        }
-                                    }
+                                    session_.DeleteUndoMark(markDeleteObjs, "");
                                 }
                             }
                         }
@@ -4894,28 +4891,10 @@ namespace TSG_Library.UFuncs
                     foreach (NXOpen.Expression exp in __work_part_.Expressions)
                     {
                         if (exp.Name == "uprParallel")
-                        {
-                            if (exp.RightHandSide.Contains("yes"))
-                            {
-                                _isUprParallel = true;
-                            }
-                            else
-                            {
-                                _isUprParallel = false;
-                            }
-                        }
+                            _isUprParallel = exp.RightHandSide.Contains("yes");
 
                         if (exp.Name == "lwrParallel")
-                        {
-                            if (exp.RightHandSide.Contains("yes"))
-                            {
-                                _isLwrParallel = true;
-                            }
-                            else
-                            {
-                                _isLwrParallel = false;
-                            }
-                        }
+                            _isLwrParallel = exp.RightHandSide.Contains("yes");
                     }
 
                     foreach (NXOpen.Features.Feature featBlk in __work_part_.Features)
