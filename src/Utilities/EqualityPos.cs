@@ -10,9 +10,9 @@ namespace TSG_Library.Utilities
 
         public bool Equals(Point3d x, Point3d y)
         {
-            return Math.Abs(x.X - y.X) < Tolerance
-                   && Math.Abs(x.Y - y.Y) < Tolerance
-                   && Math.Abs(x.Z - y.Z) < Tolerance;
+            return System.Math.Abs(x.X - y.X) < Tolerance
+                   && System.Math.Abs(x.Y - y.Y) < Tolerance
+                   && System.Math.Abs(x.Z - y.Z) < Tolerance;
         }
 
         public int GetHashCode(Point3d obj)

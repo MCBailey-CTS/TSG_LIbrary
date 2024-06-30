@@ -2898,8 +2898,8 @@ namespace TSG_Library.UFuncs
         private static void RoundAndTruncate(double number, out double roundValue, out double truncateValue,
             out double fractionValue)
         {
-            roundValue = Math.Round(number, 3);
-            truncateValue = Math.Truncate(roundValue);
+            roundValue = System.Math.Round(number, 3);
+            truncateValue = System.Math.Truncate(roundValue);
             fractionValue = roundValue - truncateValue;
         }
 
@@ -2911,7 +2911,7 @@ namespace TSG_Library.UFuncs
                 RoundAndTruncate(distances[i], out double roundValue, out double truncateValue,
                     out double fractionValue);
 
-                if (Math.Abs(fractionValue) <= Tolerance)
+                if (System.Math.Abs(fractionValue) <= Tolerance)
                 {
                     distances[i] = roundValue;
                     continue;
@@ -2944,7 +2944,7 @@ namespace TSG_Library.UFuncs
                 RoundAndTruncate(minCorner[i], out double roundValue, out double truncateValue,
                     out double fractionValue);
 
-                if (Math.Abs(fractionValue) <= Tolerance)
+                if (System.Math.Abs(fractionValue) <= Tolerance)
                 {
                     minCorner[i] = roundValue;
                     continue;
@@ -3327,7 +3327,7 @@ namespace TSG_Library.UFuncs
                             throw new ArgumentOutOfRangeException();
                     }
 
-                    distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
+                    distance = System.Math.Abs(mappedPoint[index] - mappedBase[index]);
 
                     if (mappedBase[index] < mappedPoint[index])
                         distance *= -1;
@@ -3710,7 +3710,7 @@ namespace TSG_Library.UFuncs
 
                     double distance;
 
-                    distance = Math.Abs(mappedPoint[index] - mappedBase[index]);
+                    distance = System.Math.Abs(mappedPoint[index] - mappedBase[index]);
 
                     if (mappedBase[index] < mappedPoint[index])
                         distance *= -1;
@@ -4241,8 +4241,8 @@ namespace TSG_Library.UFuncs
 
                 string dim =
                     __display_part_.PartUnits == BasePart.Units.Inches
-                        ? $"{Math.Round(eLine.GetLength(), 3):0.000}"
-                        : $"{Math.Round(eLine.GetLength(), 3) / 25.4:0.000}";
+                        ? $"{System.Math.Round(eLine.GetLength(), 3):0.000}"
+                        : $"{System.Math.Round(eLine.GetLength(), 3) / 25.4:0.000}";
 
                 double[] midPoint = new double[3];
                 UFObj.DispProps dispProps = new UFObj.DispProps { color = 31 };
@@ -4318,7 +4318,7 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                if (Math.Abs(distance) < 0.001)
+                if (System.Math.Abs(distance) < 0.001)
                     return;
 
                 __display_part_.WCS.SetOriginAndMatrix(_workCompOrigin, _workCompOrientation);
@@ -4766,7 +4766,7 @@ namespace TSG_Library.UFuncs
 
                     __work_part_ = __display_part_;
 
-                    if (Math.Abs(mLength) < .001 || Math.Abs(mWidth) < .001 || Math.Abs(mHeight) < .001)
+                    if (System.Math.Abs(mLength) < .001 || System.Math.Abs(mWidth) < .001 || System.Math.Abs(mHeight) < .001)
                         return;
 
                     // create edit block feature
@@ -5418,26 +5418,26 @@ namespace TSG_Library.UFuncs
                         out double radData,
                         out int normDir
                     );
-                    dir[0] = Math.Round(dir[0], 10);
-                    dir[1] = Math.Round(dir[1], 10);
-                    dir[2] = Math.Round(dir[2], 10);
+                    dir[0] = System.Math.Round(dir[0], 10);
+                    dir[1] = System.Math.Round(dir[1], 10);
+                    dir[2] = System.Math.Round(dir[2], 10);
                     double[] wcsVectorX =
                     {
-                        Math.Round(matrix1.Xx, 10),
-                        Math.Round(matrix1.Xy, 10),
-                        Math.Round(matrix1.Xz, 10)
+                        System.Math.Round(matrix1.Xx, 10),
+                        System.Math.Round(matrix1.Xy, 10),
+                        System.Math.Round(matrix1.Xz, 10)
                     };
                     double[] wcsVectorY =
                     {
-                        Math.Round(matrix1.Yx, 10),
-                        Math.Round(matrix1.Yy, 10),
-                        Math.Round(matrix1.Yz, 10)
+                        System.Math.Round(matrix1.Yx, 10),
+                        System.Math.Round(matrix1.Yy, 10),
+                        System.Math.Round(matrix1.Yz, 10)
                     };
                     double[] wcsVectorZ =
                     {
-                        Math.Round(matrix1.Zx, 10),
-                        Math.Round(matrix1.Zy, 10),
-                        Math.Round(matrix1.Zz, 10)
+                        System.Math.Round(matrix1.Zx, 10),
+                        System.Math.Round(matrix1.Zy, 10),
+                        System.Math.Round(matrix1.Zz, 10)
                     };
                     double[] wcsVectorNegX = new double[3];
                     double[] wcsVectorNegY = new double[3];
@@ -5727,7 +5727,7 @@ namespace TSG_Library.UFuncs
 
                     if (mappedPoint[index] != mappedCursor[index])
                     {
-                        double distance = Math.Sqrt(Math.Pow(mappedPoint[index] - mappedCursor[index], 2));
+                        double distance = System.Math.Sqrt(System.Math.Pow(mappedPoint[index] - mappedCursor[index], 2));
 
                         if (distance >= _gridSpace)
                         {
@@ -5859,7 +5859,7 @@ namespace TSG_Library.UFuncs
             if (mappedPoint[0] == mappedCursor[0])
                 return;
 
-            double xDistance = Math.Sqrt(Math.Pow(mappedPoint[0] - mappedCursor[0], 2));
+            double xDistance = System.Math.Sqrt(System.Math.Pow(mappedPoint[0] - mappedCursor[0], 2));
 
             if (xDistance < _gridSpace)
                 return;
@@ -5879,7 +5879,7 @@ namespace TSG_Library.UFuncs
             if (mappedPoint[2] == mappedCursor[2])
                 return;
 
-            double zDistance = Math.Sqrt(Math.Pow(mappedPoint[2] - mappedCursor[2], 2));
+            double zDistance = System.Math.Sqrt(System.Math.Pow(mappedPoint[2] - mappedCursor[2], 2));
             zDistance = RoundDistanceToGrid(_gridSpace, zDistance);
 
             if (zDistance < _gridSpace)
@@ -5907,7 +5907,7 @@ namespace TSG_Library.UFuncs
             if (mappedPoint[index] == mappedCursor[index])
                 return;
 
-            double yDistance = Math.Sqrt(Math.Pow(mappedPoint[index] - mappedCursor[index], 2));
+            double yDistance = System.Math.Sqrt(System.Math.Pow(mappedPoint[index] - mappedCursor[index], 2));
 
             if (yDistance < _gridSpace)
                 return;
@@ -6036,9 +6036,9 @@ namespace TSG_Library.UFuncs
 
         private static double RoundEnglish(double spacing, double cursor)
         {
-            double round = Math.Abs(cursor);
-            double roundValue = Math.Round(round, 3);
-            double truncateValue = Math.Truncate(roundValue);
+            double round = System.Math.Abs(cursor);
+            double roundValue = System.Math.Round(round, 3);
+            double truncateValue = System.Math.Truncate(roundValue);
             double fractionValue = roundValue - truncateValue;
             if (fractionValue != 0)
                 for (double ii = spacing; ii <= 1; ii += spacing)
@@ -6056,9 +6056,9 @@ namespace TSG_Library.UFuncs
 
         private static double RoundMetric(double spacing, double cursor)
         {
-            double round = Math.Abs(cursor / 25.4);
-            double roundValue = Math.Round(round, 3);
-            double truncateValue = Math.Truncate(roundValue);
+            double round = System.Math.Abs(cursor / 25.4);
+            double roundValue = System.Math.Round(round, 3);
+            double truncateValue = System.Math.Truncate(roundValue);
             double fractionValue = roundValue - truncateValue;
             if (fractionValue != 0)
                 for (double ii = spacing / 25.4; ii <= 1; ii += spacing / 25.4)

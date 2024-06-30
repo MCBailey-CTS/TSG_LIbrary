@@ -112,7 +112,7 @@ namespace TSG_Library.UFuncs
 
             bool Predicate(double number)
             {
-                return Math.Abs(gridSize / multiplier - number) < tolerance;
+                return System. Math.Abs(gridSize / multiplier - number) < tolerance;
             }
 
             void Action(string size, RadioButton rdoButton)

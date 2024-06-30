@@ -61,13 +61,13 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
 
                     for (int i = 1; i < jjPoint3D.Length; i++)
                     {
-                        double distance1 = Math.Sqrt(
-                            Math.Pow(baseLocation.X - jjPoint3D[i].X, 2) +
-                            Math.Pow(baseLocation.Y - jjPoint3D[i].Y, 2) +
-                            Math.Pow(baseLocation.Z - jjPoint3D[i].Z, 2));
+                        double distance1 = System.Math.Sqrt(
+                            System.Math.Pow(baseLocation.X - jjPoint3D[i].X, 2) +
+                            System.Math.Pow(baseLocation.Y - jjPoint3D[i].Y, 2) +
+                            System.Math.Pow(baseLocation.Z - jjPoint3D[i].Z, 2));
 
                         for (int j = 1; j < maxSize; j++)
-                            if (Math.Abs(distance1 - j) < tolerance)
+                            if (System.Math.Abs(distance1 - j) < tolerance)
                             {
                                 isInch = true;
                                 break;
@@ -80,9 +80,9 @@ namespace TSG_Library.UFuncs.UFuncUtilities.DesignCheckUtilities
                         {
                             for (int m = 1; m < maxSize; m++)
                             {
-                                double distance2 = Math.Sqrt(Math.Pow(k, 2) + Math.Pow(m, 2));
+                                double distance2 = System.Math.Sqrt(System.Math.Pow(k, 2) + System.Math.Pow(m, 2));
 
-                                if (!(Math.Abs(distance1 - distance2) < tolerance))
+                                if (!(System.Math.Abs(distance1 - distance2) < tolerance))
                                     continue;
 
                                 isInch = true;

@@ -476,23 +476,7 @@ namespace TSG_Library.UFuncs
                     distances[i] /= 25.4d;
 
             if (burnoutValue.ToLower() == "no")
-                for (int i = 0; i < 3; i++)
-                {
-                    double roundValue = Math.Round(distances[i], 3);
-                    double truncateValue = Math.Truncate(roundValue);
-                    double fractionValue = roundValue - truncateValue;
-                    if (Math.Abs(fractionValue) > .0001)
-                        for (double ii = .125; ii <= 1; ii += .125)
-                        {
-                            if (!(fractionValue <= ii))
-                                continue;
-                            double finalValue = truncateValue + ii;
-                            distances[i] = finalValue;
-                            break;
-                        }
-                    else
-                        distances[i] = roundValue;
-                }
+                distances.__RoundTo_125();
         }
 
         private static void NewMethod5(
@@ -502,7 +486,7 @@ namespace TSG_Library.UFuncs
             double xGrindDist
         )
         {
-            if (Math.Abs(xGrindDist - grindDistances[0]) < Tolerance)
+            if (System.Math.Abs(xGrindDist - grindDistances[0]) < Tolerance)
                 __work_part_.SetUserAttribute(
                     "DESCRIPTION",
                     -1,
@@ -510,7 +494,7 @@ namespace TSG_Library.UFuncs
                     Update.Option.Now
                 );
 
-            if (Math.Abs(xGrindDist - grindDistances[1]) < Tolerance)
+            if (System.Math.Abs(xGrindDist - grindDistances[1]) < Tolerance)
                 __work_part_.SetUserAttribute(
                     "DESCRIPTION",
                     -1,
@@ -518,7 +502,7 @@ namespace TSG_Library.UFuncs
                     Update.Option.Now
                 );
 
-            if (Math.Abs(xGrindDist - grindDistances[2]) < Tolerance)
+            if (System.Math.Abs(xGrindDist - grindDistances[2]) < Tolerance)
                 __work_part_.SetUserAttribute(
                     "DESCRIPTION",
                     -1,
@@ -534,7 +518,7 @@ namespace TSG_Library.UFuncs
             double yGrindDist
         )
         {
-            if (Math.Abs(yGrindDist - grindDistances[0]) < Tolerance)
+            if (System.Math.Abs(yGrindDist - grindDistances[0]) < Tolerance)
                 __work_part_.SetUserAttribute(
                     "DESCRIPTION",
                     -1,
@@ -548,7 +532,7 @@ namespace TSG_Library.UFuncs
                     Update.Option.Now
                 );
 
-            if (Math.Abs(yGrindDist - grindDistances[1]) < Tolerance)
+            if (System.Math.Abs(yGrindDist - grindDistances[1]) < Tolerance)
                 __work_part_.SetUserAttribute(
                     "DESCRIPTION",
                     -1,
@@ -562,7 +546,7 @@ namespace TSG_Library.UFuncs
                     Update.Option.Now
                 );
 
-            if (Math.Abs(yGrindDist - grindDistances[2]) < Tolerance)
+            if (System.Math.Abs(yGrindDist - grindDistances[2]) < Tolerance)
                 __work_part_.SetUserAttribute(
                     "DESCRIPTION",
                     -1,
@@ -584,7 +568,7 @@ namespace TSG_Library.UFuncs
             double zGrindDist
         )
         {
-            if (Math.Abs(zGrindDist - grindDistances[0]) < Tolerance)
+            if (System.Math.Abs(zGrindDist - grindDistances[0]) < Tolerance)
                 __work_part_.SetUserAttribute(
                     "DESCRIPTION",
                     -1,
@@ -598,7 +582,7 @@ namespace TSG_Library.UFuncs
                     Update.Option.Now
                 );
 
-            if (Math.Abs(zGrindDist - grindDistances[1]) < Tolerance)
+            if (System.Math.Abs(zGrindDist - grindDistances[1]) < Tolerance)
                 __work_part_.SetUserAttribute(
                     "DESCRIPTION",
                     -1,
@@ -612,7 +596,7 @@ namespace TSG_Library.UFuncs
                     Update.Option.Now
                 );
 
-            if (Math.Abs(zGrindDist - grindDistances[2]) < Tolerance)
+            if (System.Math.Abs(zGrindDist - grindDistances[2]) < Tolerance)
                 __work_part_.SetUserAttribute(
                     "DESCRIPTION",
                     -1,
@@ -712,23 +696,25 @@ namespace TSG_Library.UFuncs
                 for (int i = 0; i < distances.Length; i++)
                     distances[i] /= 25.4d;
 
-            for (int i = 0; i < 3; i++)
-            {
-                double roundValue = Math.Round(distances[i], 3);
-                double truncateValue = Math.Truncate(roundValue);
-                double fractionValue = roundValue - truncateValue;
-                if (Math.Abs(fractionValue) > .0001)
-                    for (double ii = .125; ii <= 1; ii += .125)
-                    {
-                        if (!(fractionValue <= ii))
-                            continue;
-                        double finalValue = truncateValue + ii;
-                        distances[i] = finalValue;
-                        break;
-                    }
-                else
-                    distances[i] = roundValue;
-            }
+            distances.__RoundTo_125();
+
+            //for (int i = 0; i < 3; i++)
+            //{
+            //    double roundValue = System.Math.Round(distances[i], 3);
+            //    double truncateValue = System.Math.Truncate(roundValue);
+            //    double fractionValue = roundValue - truncateValue;
+            //    if (System.Math.Abs(fractionValue) > .0001)
+            //        for (double ii = .125; ii <= 1; ii += .125)
+            //        {
+            //            if (!(fractionValue <= ii))
+            //                continue;
+            //            double finalValue = truncateValue + ii;
+            //            distances[i] = finalValue;
+            //            break;
+            //        }
+            //    else
+            //        distances[i] = roundValue;
+            //}
 
             return distances;
         }

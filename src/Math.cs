@@ -287,24 +287,7 @@
             return num;
         }
 
-        public static double RoundToEigth(double value, double tolerance = .001)
-        {
-            double roundValue = System.Math.Round(value, 3);
-            double truncateValue = System.Math.Truncate(roundValue);
-            double fractionValue = roundValue - truncateValue;
-
-            if (System.Math.Abs(fractionValue) < tolerance)
-                return roundValue;
-
-            for (double ii = .125; ii <= 1; ii += .125)
-                if (fractionValue <= ii)
-                {
-                    return truncateValue + ii;
-                }
-
-            return roundValue;
-        }
-
+      
         //
         // Summary:
         //     Evaluates value of a b-spline basis function
@@ -410,31 +393,6 @@
                 array[j] = array2[j, 0];
 
             return array;
-        }
-
-        internal static double Pow(double x, int y)
-        {
-            return System.Math.Pow(x, y);
-        }
-
-        internal static double Sqrt(double d)
-        {
-            return System.Math.Sqrt(d);
-        }
-
-        internal static double Truncate(double d)
-        {
-            return System.Math.Truncate(d);
-        }
-
-        internal static double Round(double value, int digits)
-        {
-            return System.Math.Round(value, digits);
-        }
-
-        internal static double Abs(double value)
-        {
-            return System.Math.Abs(value);
         }
 
         internal static double Sin(double a)

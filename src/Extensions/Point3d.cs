@@ -588,9 +588,9 @@ namespace TSG_Library.Extensions
 
         public static bool __IsEqualTo(this Point3d point3d, double[] array)
         {
-            return Math.Abs(point3d.X - array[0]) < .001
-                   && Math.Abs(point3d.Y - array[1]) < .001
-                   && Math.Abs(point3d.Z - array[2]) < .001;
+            return System.Math.Abs(point3d.X - array[0]) < .001
+                   && System.Math.Abs(point3d.Y - array[1]) < .001
+                   && System.Math.Abs(point3d.Z - array[2]) < .001;
         }
 
         public static double[] __ToArray(this Point3d point3d)

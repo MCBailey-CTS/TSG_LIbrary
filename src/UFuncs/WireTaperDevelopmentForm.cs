@@ -77,13 +77,13 @@ namespace TSG_Library.UFuncs
                                 // set attribute values from form
 
                                 if (radioButtonAddWtn.Checked)
-                                    __display_part_.SetUserAttribute("WTN", -1, "YES", NXOpen.Update.Option.Now);
+                                    __display_part_.__SetAttribute("WTN", "YES");
                                 if (radioButtonAddWfft.Checked)
-                                    __display_part_.SetUserAttribute("WFTD", -1, "YES", NXOpen.Update.Option.Now);
+                                    __display_part_.__SetAttribute("WFTD", "YES");
                                 if (radioButtonRemoveWtn.Checked)
-                                    __display_part_.SetUserAttribute("WTN", -1, "NO", NXOpen.Update.Option.Now);
+                                    __display_part_.__SetAttribute("WTN", "NO");
                                 if (radioButtonRemoveWfft.Checked)
-                                    __display_part_.SetUserAttribute("WFTD", -1, "NO", NXOpen.Update.Option.Now);
+                                    __display_part_.__SetAttribute("WFTD", "NO");
 
                                 // delete selected notes from 4-VIEW
 
@@ -140,14 +140,14 @@ namespace TSG_Library.UFuncs
 
                                 if (radioButtonAddWtn.Checked)
                                 {
-                                    __display_part_.SetUserAttribute("WTN", -1, "YES", NXOpen.Update.Option.Now);
+                                    __display_part_.__SetAttribute("WTN", "YES");
                                     const string path = "G:\\0Library\\Drafting\\wire-note.prt";
                                     ImportNote(path, scale);
                                 }
 
                                 if (radioButtonAddWfft.Checked)
                                 {
-                                    __display_part_.SetUserAttribute("WFTD", -1, "YES", NXOpen.Update.Option.Now);
+                                    __display_part_.__SetAttribute("WFTD", "YES");
                                     const string path = "G:\\0Library\\Drafting\\trim-note.prt";
                                     ImportNote(path, scale);
                                 }

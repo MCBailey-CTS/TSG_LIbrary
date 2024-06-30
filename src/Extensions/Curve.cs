@@ -658,7 +658,7 @@ namespace TSG_Library.Extensions
             uFSession.Modl.AskPointAlongCurve2(
                 array,
                 curve.Tag,
-                Math.Abs(arclength),
+                System.Math.Abs(arclength),
                 direction,
                 tolerance,
                 pointAlongCurve,

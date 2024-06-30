@@ -15,9 +15,9 @@ namespace TSG_Library.Utilities
 
         public override bool Equals(Point3d x, Point3d y)
         {
-            return Math.Abs(x.X - y.X) < _tolerance
-                   && Math.Abs(x.Y - y.Y) < _tolerance
-                   && Math.Abs(x.Z - y.Z) < _tolerance;
+            return System.Math.Abs(x.X - y.X) < _tolerance
+                   && System.Math.Abs(x.Y - y.Y) < _tolerance
+                   && System.Math.Abs(x.Z - y.Z) < _tolerance;
         }
 
         public override int GetHashCode(Point3d obj)
