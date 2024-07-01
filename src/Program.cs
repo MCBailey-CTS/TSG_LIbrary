@@ -17,8 +17,6 @@ public static class Program
     {
         try
         {
-            new BillOfMaterialForm().execute();
-            return;
 #pragma warning disable CS0162 // Unreachable code detected
             if (args.Length == 0)
             {
