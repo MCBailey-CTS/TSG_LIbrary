@@ -130,7 +130,12 @@ namespace TSG_Library.UFuncs
         {
             SetWorkPlane(false);
 
-            if (comboBoxGrid.Text != @"0.000")
+            if (comboBoxCompName.SelectedIndex < 0)
+                return;
+
+            var num = (double)comboBoxCompName.SelectedItem;
+
+            if (System.Math.Abs(num) < .001)
                 SetWorkPlane(true);
 
             Settings.Default.udoComponentBuilderGridIncrement = comboBoxGrid.Text;
@@ -6911,11 +6916,11 @@ namespace TSG_Library.UFuncs
             //try
             //{
 
-                if (isStart)
+            if (isStart)
 
-                    line.SetStartPoint(mappedAddX);
-                else
-                    line.SetEndPoint(mappedAddX);
+                line.SetStartPoint(mappedAddX);
+            else
+                line.SetEndPoint(mappedAddX);
             //}
             //catch (NXException ex) when (ex.ErrorCode == 1710006)
             //{
