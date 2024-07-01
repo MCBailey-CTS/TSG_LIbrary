@@ -1,4 +1,8 @@
-﻿namespace TSG_Library.UFuncs
+﻿using static TSG_Library.Extensions.Extensions;
+using static NXOpen.UF.UFConstants;
+using NXOpen;
+
+namespace TSG_Library.UFuncs
 {
     partial class ComponentBuilder
     {
@@ -559,5 +563,48 @@
         private System.Windows.Forms.Button buttonEditAlign;
         private System.Windows.Forms.Button buttonEditSize;
         private System.Windows.Forms.Button buttonEditMatch;
+
+        ///////////////////////////////////
+        ///
+
+
+
+
+        private static void NewMethod1(Body selectedBody, out bool isMetric, out double[] minCorner, out double[] distances)
+        {
+            minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            distances = new double[3];
+            ufsession_.Modl.AskBoundingBoxExact(selectedBody.Tag, _displayPart.WCS.CoordinateSystem.Tag,
+                minCorner, directions, distances);
+            isMetric = ConvertUnits(distances);
+        }
+
+        private static void NewMethod2(Body selectedBody, out double[] minCorner, out double[] distances)
+        {
+            minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            distances = new double[3];
+            ufsession_.Modl.AskBoundingBoxExact(selectedBody.Tag, _displayPart.WCS.CoordinateSystem.Tag,
+                minCorner, directions, distances);
+        }
+
+        private static void NewMethod3(Body selectedBody, out double[] minCorner, out double[] distances)
+        {
+            minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            distances = new double[3];
+            ufsession_.Modl.AskBoundingBoxExact(selectedBody.Tag, _displayPart.WCS.CoordinateSystem.Tag,
+                minCorner, directions, distances);
+        }
+
+        private static void NewMethod4(Body selectedBody, out double[] minCorner, out double[] distances)
+        {
+            minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            distances = new double[3];
+            ufsession_.Modl.AskBoundingBoxExact(selectedBody.Tag, _displayPart.WCS.CoordinateSystem.Tag,
+                minCorner, directions, distances);
+        }
     }
 }
