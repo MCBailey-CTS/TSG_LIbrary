@@ -41,9 +41,10 @@
             // buttonCreateWcsPlanView
             // 
             this.buttonCreateWcsPlanView.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonCreateWcsPlanView.Location = new System.Drawing.Point(7, 48);
+            this.buttonCreateWcsPlanView.Location = new System.Drawing.Point(9, 59);
+            this.buttonCreateWcsPlanView.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.buttonCreateWcsPlanView.Name = "buttonCreateWcsPlanView";
-            this.buttonCreateWcsPlanView.Size = new System.Drawing.Size(120, 23);
+            this.buttonCreateWcsPlanView.Size = new System.Drawing.Size(160, 28);
             this.buttonCreateWcsPlanView.TabIndex = 15;
             this.buttonCreateWcsPlanView.Text = "Create WCS/PV";
             this.buttonCreateWcsPlanView.UseVisualStyleBackColor = true;
@@ -52,9 +53,10 @@
             // buttonResetAll
             // 
             this.buttonResetAll.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonResetAll.Location = new System.Drawing.Point(6, 48);
+            this.buttonResetAll.Location = new System.Drawing.Point(8, 59);
+            this.buttonResetAll.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.buttonResetAll.Name = "buttonResetAll";
-            this.buttonResetAll.Size = new System.Drawing.Size(120, 23);
+            this.buttonResetAll.Size = new System.Drawing.Size(160, 28);
             this.buttonResetAll.TabIndex = 19;
             this.buttonResetAll.Text = "Reset All Components";
             this.buttonResetAll.UseVisualStyleBackColor = true;
@@ -63,9 +65,10 @@
             // buttonSingle
             // 
             this.buttonSingle.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonSingle.Location = new System.Drawing.Point(7, 19);
+            this.buttonSingle.Location = new System.Drawing.Point(9, 23);
+            this.buttonSingle.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.buttonSingle.Name = "buttonSingle";
-            this.buttonSingle.Size = new System.Drawing.Size(120, 23);
+            this.buttonSingle.Size = new System.Drawing.Size(160, 28);
             this.buttonSingle.TabIndex = 20;
             this.buttonSingle.Text = "Select Component";
             this.buttonSingle.UseVisualStyleBackColor = true;
@@ -76,9 +79,11 @@
             this.groupBox1.Controls.Add(this.buttonSingle);
             this.groupBox1.Controls.Add(this.buttonCreateWcsPlanView);
             this.groupBox1.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
+            this.groupBox1.Location = new System.Drawing.Point(16, 15);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(135, 85);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Size = new System.Drawing.Size(180, 105);
             this.groupBox1.TabIndex = 21;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Single Component";
@@ -88,9 +93,11 @@
             this.groupBox2.Controls.Add(this.buttonNonDatumCsys);
             this.groupBox2.Controls.Add(this.buttonResetAll);
             this.groupBox2.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBox2.Location = new System.Drawing.Point(12, 103);
+            this.groupBox2.Location = new System.Drawing.Point(16, 127);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(135, 84);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox2.Size = new System.Drawing.Size(180, 103);
             this.groupBox2.TabIndex = 22;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "All Components";
@@ -98,29 +105,33 @@
             // buttonNonDatumCsys
             // 
             this.buttonNonDatumCsys.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonNonDatumCsys.Location = new System.Drawing.Point(6, 19);
+            this.buttonNonDatumCsys.Location = new System.Drawing.Point(8, 23);
+            this.buttonNonDatumCsys.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.buttonNonDatumCsys.Name = "buttonNonDatumCsys";
-            this.buttonNonDatumCsys.Size = new System.Drawing.Size(120, 23);
+            this.buttonNonDatumCsys.Size = new System.Drawing.Size(160, 28);
             this.buttonNonDatumCsys.TabIndex = 20;
             this.buttonNonDatumCsys.Text = "Non CtsDatumCsys";
             this.buttonNonDatumCsys.UseVisualStyleBackColor = true;
             this.buttonNonDatumCsys.Click += new System.EventHandler(this.ButtonNonDatumCsys_Click);
             // 
-            // MainForm
+            // CreateResetDatumCsys
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(159, 199);
+            this.ClientSize = new System.Drawing.Size(212, 245);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Location = new System.Drawing.Point(30, 130);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "MainForm";
+            this.Name = "CreateResetDatumCsys";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Cts Datum Csys";
             this.TopMost = true;
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.CreateResetDatumCsys_FormClosed);
+            this.Load += new System.EventHandler(this.CreateResetDatumCsys_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);

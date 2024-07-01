@@ -177,18 +177,18 @@ namespace TSG_Library.UFuncs
 
         private static void MakeRefSet(NXObject[] array9, string ref_set)
         {
-            if (array9.Length != 0)
-            {
-                ReferenceSet referenceSet9 = __display_part_.GetAllReferenceSets()
-                    .SingleOrDefault(refset => refset.Name == ref_set);
-                if (referenceSet9 == null)
-                {
-                    referenceSet9 = __display_part_.CreateReferenceSet();
-                    referenceSet9.SetName(ref_set);
-                }
+            if (array9.Length == 0)
+                return;
 
-                referenceSet9.AddObjectsToReferenceSet(array9);
+            ReferenceSet referenceSet9 = __display_part_.GetAllReferenceSets().SingleOrDefault(refset => refset.Name == ref_set);
+
+            if (referenceSet9 is null)
+            {
+                referenceSet9 = __display_part_.CreateReferenceSet();
+                referenceSet9.SetName(ref_set);
             }
+
+            referenceSet9.AddObjectsToReferenceSet(array9);
         }
 
         private static NXObject[] FindBodiesOnLayerInDisplayPart(int layer)

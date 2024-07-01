@@ -23,7 +23,9 @@ namespace TSG_Library.Extensions
         public static EdgeTangentRule __Mirror(this EdgeTangentRule original, Surface.Plane plane, Component from, Component to)
         {
             throw new NotImplementedException();
+#pragma warning disable CS0162 // Unreachable code detected
             original.__Data(out var fStart, out var fEnd, out var isFromStart, out var angleTolerance, out var hasSameConvexity);
+#pragma warning restore CS0162 // Unreachable code detected
 
             var fStartCurve = fStart.__ToCurve();
 
@@ -35,7 +37,9 @@ namespace TSG_Library.Extensions
 
             fStartAssemblyCurve.__Delete();
 
+#pragma warning disable CS0618 // Type or member is obsolete
             var tStartAssemblyCurve = actualCurve.__Mirror(plane);
+#pragma warning restore CS0618 // Type or member is obsolete
 
             __work_component_ = to;
 
@@ -57,7 +61,9 @@ namespace TSG_Library.Extensions
         public static CompositeCurve __CreateLinkedCurve(this NXOpen.Curve curve)
         {
             throw new NotImplementedException();
+#pragma warning disable CS0162 // Unreachable code detected
             NXOpen.Session theSession = NXOpen.Session.GetSession();
+#pragma warning restore CS0162 // Unreachable code detected
             NXOpen.Part workPart = theSession.Parts.Work;
             NXOpen.Part displayPart = theSession.Parts.Display;
             // ----------------------------------------------

@@ -36,7 +36,7 @@ namespace TSG_Library.UFuncs.MirrorComponents.Features
 
         public static Vector _AbsVector(this Vector vector)
         {
-            return new Vector3d(Math.Abs(vector.X), Math.Abs(vector.Y), Math.Abs(vector.Z));
+            return new Vector3d(System.Math.Abs(vector.X), System.Math.Abs(vector.Y), System.Math.Abs(vector.Z));
         }
 
         public static Vector _Cross(this Vector vector1, Vector vector2)

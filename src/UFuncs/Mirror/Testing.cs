@@ -217,9 +217,9 @@ namespace TSG_Library.UFuncs.Mirror
             theSession.DeleteUndoMark(markId3, null);
             NXOpen.Session.UndoMarkId markId4;
             markId4 = theSession.SetUndoMark(NXOpen.Session.MarkVisibility.Invisible, "Paste Feature");
-            NXOpen.TaggedObject taggedObject1;
-            NXOpen.TaggedObject taggedObject2;
-            NXOpen.TaggedObject taggedObject3;
+            //NXOpen.TaggedObject taggedObject1;
+            //NXOpen.TaggedObject taggedObject2;
+            //NXOpen.TaggedObject taggedObject3;
             //NXOpen.Body body1 = ((NXOpen.Body)taggedObject3);
             //NXOpen.BasePart basePart1;
             //basePart1 = body1.OwningPart;

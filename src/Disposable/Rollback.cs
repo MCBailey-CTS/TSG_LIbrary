@@ -8,7 +8,6 @@ namespace TSG_Library.Disposable
     public class Rollback : IDisposable
     {
         private readonly Feature feat;
-        private readonly string undo;
         private readonly bool updaetFeature;
         private readonly EditWithRollbackManager rollback;
         public Rollback(Feature feat, string undo, bool updateFeature = false)

@@ -1,5 +1,6 @@
 ﻿using NXOpen;
 using NXOpen.UF;
+using NXOpen.UserDefinedObjects;
 using System;
 using TSG_Library.Utilities;
 using static TSG_Library.Extensions.Extensions;
@@ -669,7 +670,9 @@ namespace TSG_Library.UFuncs
             this.Text = "1919";
             this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+#pragma warning disable CS0618 // Type or member is obsolete
             this.Load += new System.EventHandler(this.MainForm_Load);
+#pragma warning restore CS0618 // Type or member is obsolete
             this.groupBoxAddStock.ResumeLayout(false);
             this.groupBoxAddStock.PerformLayout();
             this.groupBoxBurnSettings.ResumeLayout(false);
@@ -741,7 +744,115 @@ namespace TSG_Library.UFuncs
 
         //////////////////////////////////////////////////////////////////////////////
 
-        #region finding expression
+
+        private void UpdateBoundingBox()
+        {
+            if (!_allowBoundingBox)
+                return;
+
+            __display_part_.Views.Refresh();
+
+            // get named expressions
+            bool isNamedExpression = false;
+
+            Expression AddX = null,
+                AddY = null,
+                AddZ = null;
+
+            double xValue = 0,
+                yValue = 0,
+                zValue = 0;
+
+            NewMethod114(ref isNamedExpression, ref AddX, ref AddY, ref AddZ, ref xValue, ref yValue, ref zValue);
+
+            if (!isNamedExpression)
+                return;
+
+            _workPart.Expressions.Edit(AddX, comboBoxAddx.Text);
+            xValue = AddX.Value;
+            _workPart.Expressions.Edit(AddY, comboBoxAddy.Text);
+            yValue = AddY.Value;
+            _workPart.Expressions.Edit(AddZ, comboBoxAddz.Text);
+            zValue = AddZ.Value;
+            // get bounding box info
+            double[] distances = NewMethod33(xValue, yValue, zValue);
+            CreateTempBlockLines(__display_part_.WCS.Origin, distances[0], distances[1], distances[2]);
+        }
+
+        private void CreateTempBlockLines(Point3d wcsOrigin, double lineLength, double lineWidth, double lineHeight)
+        {
+            Tag prevWork = NXOpen.Tag.Null;
+#pragma warning disable CS0618 // Type or member is obsolete
+            ufsession_.Assem.SetWorkPartQuietly(__display_part_.Tag, out prevWork);
+#pragma warning restore CS0618 // Type or member is obsolete
+
+            Point3d mappedStartPoint1 = MapAbsoluteToWcs(wcsOrigin);
+            UFObj.DispProps dispProps = new UFObj.DispProps { color = 7 };
+            UFCurve.Line lineData1 = new UFCurve.Line();
+            Point3d endPointX1 = mappedStartPoint1.__AddX(lineLength);
+            Point3d mappedEndPointX1 = MapWcsToAbsolute(endPointX1);
+            lineData1 = DisplayUFLine(wcsOrigin, dispProps, mappedEndPointX1);
+            ShowTemporarySizeText(lineLength, wcsOrigin, mappedEndPointX1);
+            Point3d endPointY1 = mappedStartPoint1.__AddY(lineWidth);
+            Point3d mappedEndPointY1 = MapWcsToAbsolute(endPointY1);
+            _ = DisplayUFLine(wcsOrigin, dispProps, mappedEndPointY1);
+            ShowTemporarySizeText(lineWidth, wcsOrigin, mappedEndPointY1);
+            Point3d mappedEndPointZ1 = MapWcsToAbsolute(mappedStartPoint1.__AddZ(lineHeight));
+            lineData1 = DisplayUFLine(wcsOrigin, dispProps, mappedEndPointZ1);
+            ShowTemporarySizeText(lineHeight, wcsOrigin, mappedEndPointZ1);
+            Point3d endPointX2 = MapAbsoluteToWcs(mappedEndPointY1).__AddX(lineLength);
+            Point3d mappedEndPointX2 = MapWcsToAbsolute(endPointX2);
+            lineData1 = DisplayUFLine(mappedEndPointY1, dispProps, mappedEndPointX2);
+            lineData1 = DisplayUFLine(mappedEndPointX1, dispProps, mappedEndPointX2);
+            Point3d mappedStartPoint3 = MapAbsoluteToWcs(mappedEndPointZ1);
+            Point3d endPointX1Ceiling = mappedStartPoint3.__AddX(lineLength);
+            Point3d mappedEndPointX1Ceiling = MapWcsToAbsolute(endPointX1Ceiling);
+            lineData1 = DisplayUFLine(mappedEndPointZ1, dispProps, mappedEndPointX1Ceiling);
+            Point3d endPointY1Ceiling = mappedStartPoint3.__AddY(lineWidth);
+            Point3d mappedEndPointY1Ceiling = MapWcsToAbsolute(endPointY1Ceiling);
+            lineData1 = CreateUFLine(mappedEndPointZ1, mappedEndPointY1Ceiling);
+            dispProps = DisplayTemporaryLine(dispProps, lineData1);
+            Point3d mappedStartPoint4 = MapAbsoluteToWcs(mappedEndPointY1Ceiling);
+            Point3d endPointX2Ceiling = mappedStartPoint4.__AddX(lineLength);
+            Point3d mappedEndPointX2Ceiling = MapWcsToAbsolute(endPointX2Ceiling);
+            lineData1 = DisplayUFLine(mappedEndPointY1Ceiling, dispProps, mappedEndPointX2Ceiling);
+            lineData1 = DisplayUFLine(mappedEndPointX1Ceiling, dispProps, mappedEndPointX2Ceiling);
+            lineData1 = DisplayUFLine(mappedEndPointX1, dispProps, mappedEndPointX1Ceiling);
+            lineData1 = DisplayUFLine(mappedEndPointY1, dispProps, mappedEndPointY1Ceiling);
+            lineData1 = DisplayUFLine(mappedEndPointX2, dispProps, mappedEndPointX2Ceiling);
+
+            if (_selComp != null)
+            {
+                __work_component_ = _selComp;
+                return;
+            }
+
+            __work_part_ = prevWork.__To<Part>();
+            _workPart = session_.Parts.Work;
+            __display_part_ = session_.Parts.Display;
+
+            //==================================================================================================================
+        }
+
+        private void ShowTemporarySizeText(double length, Point3d start, Point3d end)
+        {
+            Tag view = __display_part_.Views.WorkView.Tag;
+            UFDisp.ViewType viewType = UFDisp.ViewType.UseWorkView;
+
+            string dim = __display_part_.PartUnits == BasePart.Units.Inches
+                ? string.Format("{0:0.000}", System.Math.Round(length, 3))
+                : string.Format("{0:0.000}", System.Math.Round(length, 3) / 25.4);
+
+            double[] midPoint = new double[3];
+            UFObj.DispProps dispProps = new UFObj.DispProps { color = 31 };
+            double charSize;
+            int font = 1;
+            charSize = __display_part_.PartUnits == BasePart.Units.Inches ? .125 : 3.175;
+            midPoint[0] = (start.X + end.X) / 2;
+            midPoint[1] = (start.Y + end.Y) / 2;
+            midPoint[2] = (start.Z + end.Z) / 2;
+            ufsession_.Disp.DisplayTemporaryText(view, viewType, dim, midPoint, UFDisp.TextRef.Middlecenter, ref dispProps, charSize, font);
+        }
 
         private static UFObj.DispProps DisplayTemporaryLine(UFObj.DispProps dispProps, UFCurve.Line lineData1)
         {
@@ -753,6 +864,1132 @@ namespace TSG_Library.UFuncs
                             ref dispProps);
             return dispProps;
         }
+
+        private static string NewMethod73(string description)
+        {
+            if (__work_part_.__HasAttribute("DESCRIPTION"))
+                description = __work_part_.__GetStringAttribute("DESCRIPTION");
+            else
+                __work_part_.__SetAttribute("DESCRIPTION", "NO DESCRIPTION");
+            return description;
+        }
+
+        private static void NewMethod73()
+        {
+            using (session_.__UsingSuppressDisplay())
+            using (session_.__UsingDisplayPartReset())
+                foreach (var weldmentComp in _selectedComponents)
+                {
+                    __display_part_ = weldmentComp.__Prototype();
+                    _workPart = session_.Parts.Work;
+                    __display_part_ = session_.Parts.Display;
+                    Expression noteExp = null;
+                    bool isExpression = false;
+                    NewMethod51(ref noteExp, ref isExpression);
+                    string description = string.Empty;
+
+                    description = NewMethod72(description);
+
+                    NewMethod36(noteExp, isExpression, description);
+                }
+        }
+
+        private static string NewMethod72(string description)
+        {
+            if (_workPart.__HasAttribute("DESCRIPTION"))
+                description = _workPart.__GetStringAttribute("DESCRIPTION");
+            else
+                _workPart.__SetAttribute("DESCRIPTION", "NO DESCRIPTION");
+            return description;
+        }
+
+
+        private static void NewMethod76()
+        {
+            using (session_.__UsingSuppressDisplay())
+            using (session_.__UsingDisplayPartReset())
+                foreach (var diesetComp in _selectedComponents)
+                {
+                    __display_part_ = diesetComp.__Prototype();
+                    Expression noteExp = null;
+                    bool isExpression = false;
+                    NewMethod35(ref noteExp, ref isExpression);
+                    string description = _workPart.__GetStringAttribute("DESCRIPTION");
+                    NewMethod34(noteExp, isExpression, description);
+                }
+        }
+
+        private static void NewMethod74()
+        {
+            using (session_.__UsingDisplayPartReset())
+            using (session_.__UsingSuppressDisplay())
+                foreach (var weldmentComp in _selectedComponents)
+                {
+                    __display_part_ = weldmentComp.__Prototype();
+                    Expression noteExp = null;
+                    bool isExpression = false;
+                    NewMethod2(ref noteExp, ref isExpression);
+                    string description = _workPart.__GetStringAttribute("DESCRIPTION");
+                    NewMethod37(noteExp, isExpression, description);
+                }
+        }
+
+        private static void NewMethod59(UserDefinedObject[] currentUdo)
+        {
+            UserDefinedObject myUDO = currentUdo[0];
+            int[] updateFlag = myUDO.GetIntegers();
+            int[] updateOn = { 1 };
+            myUDO.SetIntegers(updateOn);
+            _workPart.__SetAttribute("AUTO UPDATE", "ON");
+        }
+
+        private static void NewMethod58(UserDefinedObject[] currentUdo)
+        {
+            UserDefinedObject myUDO = currentUdo[0];
+            int[] updateFlag = myUDO.GetIntegers();
+            int[] updateOn = { 1 };
+            myUDO.SetIntegers(updateOn);
+            _workPart.__SetAttribute("AUTO UPDATE", "ON");
+        }
+
+
+        private void NewMethod55()
+        {
+            Unit unit1 = _workPart.UnitCollection.FindObject("MilliMeter");
+
+            if (comboBoxAddx.SelectedIndex > 0)
+                _ = _workPart.Expressions.CreateWithUnits($"AddX={comboBoxAddx.Text}", unit1);
+            else
+                _ = _workPart.Expressions.CreateWithUnits("AddX=.000", unit1);
+
+            if (comboBoxAddy.SelectedIndex > 0)
+                _ = _workPart.Expressions.CreateWithUnits($"AddY={comboBoxAddy.Text}", unit1);
+            else
+                _ = _workPart.Expressions.CreateWithUnits("AddY=.000", unit1);
+
+            if (comboBoxAddz.SelectedIndex > 0)
+                _ = _workPart.Expressions.CreateWithUnits(NewMethod60(), unit1);
+            else
+                _ = _workPart.Expressions.CreateWithUnits("AddZ=.000", unit1);
+        }
+
+        private void NewMethod54()
+        {
+            Unit unit1 = _workPart.UnitCollection.FindObject("Inch");
+
+            if (comboBoxAddx.SelectedIndex > 0)
+                _ = _workPart.Expressions.CreateWithUnits($"AddX={comboBoxAddx.Text}", unit1);
+            else
+                _ = _workPart.Expressions.CreateWithUnits("AddX=.000", unit1);
+
+            if (comboBoxAddy.SelectedIndex > 0)
+                _ = _workPart.Expressions.CreateWithUnits($"AddY={comboBoxAddy.Text}", unit1);
+            else
+                _ = _workPart.Expressions.CreateWithUnits("AddY=.000", unit1);
+
+            if (comboBoxAddz.SelectedIndex > 0)
+                _ = _workPart.Expressions.CreateWithUnits($"AddZ={comboBoxAddz.Text}", unit1);
+            else
+                _ = _workPart.Expressions.CreateWithUnits("AddZ=.000", unit1);
+        }
+
+        private static void NewMethod77(string diesetValue)
+        {
+            if (diesetValue == "yes")
+            {
+                string description = _workPart.__GetStringAttribute("DESCRIPTION");
+
+                if (!description.ToLower().Contains("dieset"))
+                {
+                    description += " DIESET";
+                    _workPart.__SetAttribute("DESCRIPTION", description);
+                }
+            }
+        }
+
+        private static void NewMethod75(string diesetValue)
+        {
+            if (diesetValue == "yes")
+            {
+                string description = _workPart.__GetStringAttribute("DESCRIPTION");
+
+                if (!description.ToLower().Contains("dieset"))
+                {
+                    description += " DIESET";
+                    _workPart.__SetAttribute("DESCRIPTION", description);
+                }
+            }
+        }
+
+        private static void NewMethod41(string burnDirValue, string grindTolValue, double xGrindDist, double yGrindDist, double zGrindDist)
+        {
+            if (burnDirValue.ToLower() == "x")
+                _workPart.__SetAttribute("DESCRIPTION", NewMethod61(grindTolValue, xGrindDist));
+
+            if (burnDirValue.ToLower() == "y")
+                _workPart.__SetAttribute("DESCRIPTION", NewMethod62(grindTolValue, yGrindDist));
+
+            if (burnDirValue.ToLower() == "z")
+                _workPart.__SetAttribute("DESCRIPTION", NewMethod63(grindTolValue, zGrindDist));
+        }
+        private static void NewMethod40(string grindTolValue, double[] distances, double[] grindDistances, double zGrindDist)
+        {
+            if (zGrindDist == grindDistances[0])
+                _workPart.__SetAttribute("DESCRIPTION", NewMethod64(grindTolValue, distances, grindDistances));
+
+            if (zGrindDist == grindDistances[1])
+                _workPart.__SetAttribute("DESCRIPTION",
+                    NewMethod65(grindTolValue, distances, grindDistances));
+
+            if (zGrindDist == grindDistances[2])
+                _workPart.__SetAttribute("DESCRIPTION",
+                    NewMethod66(grindTolValue, distances, grindDistances));
+        }
+
+        private static void NewMethod39(string grindTolValue, double[] distances, double[] grindDistances, double yGrindDist)
+        {
+            if (yGrindDist == grindDistances[0])
+                _workPart.__SetAttribute("DESCRIPTION",
+                    NewMethod78(grindTolValue, distances, grindDistances));
+
+            if (yGrindDist == grindDistances[1])
+                _workPart.__SetAttribute("DESCRIPTION",
+                    NewMethod79(grindTolValue, distances, grindDistances));
+            if (yGrindDist == grindDistances[2])
+                _workPart.__SetAttribute("DESCRIPTION",
+                    NewMethod80(grindTolValue, distances, grindDistances));
+        }
+
+        private static void NewMethod38(string grindTolValue, double[] distances, double[] grindDistances, double xGrindDist)
+        {
+            if (xGrindDist == grindDistances[0])
+                _workPart.__SetAttribute("DESCRIPTION",
+                    NewMethod92(grindTolValue, distances, grindDistances));
+            if (xGrindDist == grindDistances[1])
+                _workPart.__SetAttribute("DESCRIPTION",
+                    NewMethod105(grindTolValue, distances, grindDistances));
+            if (xGrindDist == grindDistances[2])
+                NewMethod106(grindTolValue, distances, grindDistances);
+        }
+
+        private static void NewMethod69(string grindTolValue, double[] distances, double[] grindDistances, double zGrindDist, double tolerance)
+        {
+            if (System.Math.Abs(zGrindDist - grindDistances[0]) < tolerance)
+                _workPart.SetUserAttribute("DESCRIPTION", -1,
+                    $"{grindDistances[0]:f3} {grindTolValue} X {distances[1]:f2} X {distances[2]:f2}",
+                    NXOpen.Update.Option.Now);
+            if (System.Math.Abs(zGrindDist - grindDistances[1]) < tolerance)
+                _workPart.SetUserAttribute("DESCRIPTION", -1,
+                    $"{distances[0]:f2} X {grindDistances[1]:f3} {grindTolValue} X {distances[2]:f2}",
+                    NXOpen.Update.Option.Now);
+            if (System.Math.Abs(zGrindDist - grindDistances[2]) < tolerance)
+                _workPart.SetUserAttribute("DESCRIPTION", -1,
+                    $"{distances[0]:f2} X {distances[1]:f2} X {grindDistances[2]:f3} {grindTolValue}",
+                    NXOpen.Update.Option.Now);
+        }
+
+        private static void NewMethod68(string grindTolValue, double[] distances, double[] grindDistances, double yGrindDist, double tolerance)
+        {
+            if (System.Math.Abs(yGrindDist - grindDistances[0]) < tolerance)
+                _workPart.SetUserAttribute("DESCRIPTION", -1,
+                    $"{grindDistances[0]:f3} {grindTolValue} X {distances[1]:f2} X {distances[2]:f2}",
+                    NXOpen.Update.Option.Now);
+            if (System.Math.Abs(yGrindDist - grindDistances[1]) < tolerance)
+                _workPart.SetUserAttribute("DESCRIPTION", -1,
+                    $"{distances[0]:f2} X {grindDistances[1]:f3} {grindTolValue} X {distances[2]:f2}",
+                    NXOpen.Update.Option.Now);
+            if (System.Math.Abs(yGrindDist - grindDistances[2]) < tolerance)
+                _workPart.SetUserAttribute("DESCRIPTION", -1,
+                    $"{distances[0]:f2} X {distances[1]:f2} X {grindDistances[2]:f3} {grindTolValue}",
+                    NXOpen.Update.Option.Now);
+        }
+
+        private static void NewMethod67(string grindTolValue, double[] distances, double[] grindDistances, double xGrindDist, double tolerance)
+        {
+            if (System.Math.Abs(xGrindDist - grindDistances[0]) < tolerance)
+                _workPart.SetUserAttribute("DESCRIPTION", -1,
+                    $"{grindDistances[0]:f3} {grindTolValue} X {distances[1]:f2} X {distances[2]:f2}",
+                    NXOpen.Update.Option.Now);
+            if (System.Math.Abs(xGrindDist - grindDistances[1]) < tolerance)
+                _workPart.SetUserAttribute("DESCRIPTION", -1,
+                    $"{distances[0]:f2} X {grindDistances[1]:f3} {grindTolValue} X {distances[2]:f2}",
+                    NXOpen.Update.Option.Now);
+            if (System.Math.Abs(xGrindDist - grindDistances[2]) < tolerance)
+                _workPart.SetUserAttribute("DESCRIPTION", -1,
+                    $"{distances[0]:f2} X {distances[1]:f2} X {grindDistances[2]:f3} {grindTolValue}",
+                    NXOpen.Update.Option.Now);
+        }
+
+        private static void NewMethod42(string burnDirValue, double yDist, double zDist)
+        {
+            if (burnDirValue.ToLower() == "x")
+                _workPart.__SetAttribute("DESCRIPTION", $"BURN {"{xDist:f2}"}");
+
+            if (burnDirValue.ToLower() == "y")
+                _workPart.__SetAttribute("DESCRIPTION", $"BURN {string.Format("{0:f2}", yDist)}");
+
+            if (burnDirValue.ToLower() == "z")
+                _workPart.__SetAttribute("DESCRIPTION", $"BURN {string.Format("{0:f2}", zDist)}");
+        }
+
+
+
+
+
+        private static string NewMethod57(double[] distances)
+        {
+            return string.Format("{0:f2}", distances[0]) + " X " + string.Format("{0:f2}", distances[1]) +
+                                        " X " +
+                                        string.Format("{0:f2}", distances[2]);
+        }
+
+        private static string NewMethod56(double[] distances)
+        {
+            return $"{distances[0]:f2} X {$"{distances[1]:f2}"} X {distances[2]:f2}";
+        }
+
+
+
+
+        private static string NewMethod63(string grindTolValue, double zGrindDist)
+        {
+            return $"BURN {$"{zGrindDist:f3}"} {grindTolValue}";
+        }
+
+        private static string NewMethod62(string grindTolValue, double yGrindDist)
+        {
+            return $"BURN {$"{yGrindDist:f3}"} {grindTolValue}";
+        }
+
+        private static string NewMethod61(string grindTolValue, double xGrindDist)
+        {
+            return $"BURN {$"{xGrindDist:f3}"} {grindTolValue}";
+        }
+
+
+
+        private static string NewMethod66(string grindTolValue, double[] distances, double[] grindDistances)
+        {
+            return $"{distances[0]:f2}" + " X " +
+                                $"{distances[1]:f2}" + " X " +
+                                $"{grindDistances[2]:f3}" + " " + grindTolValue;
+        }
+
+        private static string NewMethod65(string grindTolValue, double[] distances, double[] grindDistances)
+        {
+            return $"{distances[0]:f2}" + " X " +
+                                $"{grindDistances[1]:f3}" + " " + grindTolValue +
+                                " X " +
+                                $"{distances[2]:f2}";
+        }
+
+        private static string NewMethod64(string grindTolValue, double[] distances, double[] grindDistances)
+        {
+            return $"{grindDistances[0]:f3} {grindTolValue} X {$"{distances[1]:f2}"} X {$"{distances[2]:f2}"}";
+        }
+
+
+
+        private static string NewMethod80(string grindTolValue, double[] distances, double[] grindDistances)
+        {
+            return $"{string.Format("{0:f2}", distances[0])} X {string.Format("{0:f2}", distances[1])} X {string.Format("{0:f3}", grindDistances[2])} {grindTolValue}";
+        }
+
+        private static string NewMethod79(string grindTolValue, double[] distances, double[] grindDistances)
+        {
+            return $"{$"{distances[0]:f2}"} X " +
+                                $"{$"{grindDistances[1]:f3}"} {grindTolValue} X {string.Format("{0:f2}", distances[2])}";
+        }
+
+        private static string NewMethod78(string grindTolValue, double[] distances, double[] grindDistances)
+        {
+            return $"{$"{grindDistances[0]:f3}"} {grindTolValue} X {$"{distances[1]:f2}"} X {string.Format("{0:f2}", distances[2])}";
+        }
+
+
+        private static void NewMethod106(string grindTolValue, double[] distances, double[] grindDistances)
+        {
+            _workPart.__SetAttribute("DESCRIPTION",
+                                string.Format("{0:f2}", distances[0]) + " X " +
+                                string.Format("{0:f2}", distances[1]) + " X " +
+                                string.Format("{0:f3}", grindDistances[2]) + " " + grindTolValue);
+        }
+
+        private static string NewMethod105(string grindTolValue, double[] distances, double[] grindDistances)
+        {
+            return $"{distances[0]:f2} X {$"{grindDistances[1]:f3}"} {grindTolValue} X {string.Format("{0:f2}", distances[2])}";
+        }
+
+        private static string NewMethod92(string grindTolValue, double[] distances, double[] grindDistances)
+        {
+            return $"{grindDistances[0]:f3} {grindTolValue} X {$"{distances[1]:f2}"} X {string.Format("{0:f2}", distances[2])}";
+        }
+
+
+        private static void NewMethod36(Expression noteExp, bool isExpression, string description)
+        {
+            if (description == "" && isExpression)
+            {
+                noteExp.RightHandSide = "\"yes\"";
+                _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"yes\"");
+                return;
+            }
+
+            if (!description.ToLower().Contains("weldment"))
+            {
+                description += " WELDMENT";
+                _workPart.__SetAttribute("DESCRIPTION", description);
+            }
+
+            if (isExpression)
+                noteExp.RightHandSide = "\"yes\"";
+
+            _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"yes\"");
+        }
+
+
+
+        private static void NewMethod37(Expression noteExp, bool isExpression, string description)
+        {
+            if (description != "")
+            {
+                description = description.Replace(" WELDMENT", "");
+                _workPart.__SetAttribute("DESCRIPTION", description);
+
+                if (isExpression)
+                {
+                    noteExp.RightHandSide = "\"no\"";
+                }
+                else
+                {
+                    Expression weldmentExp =
+                        _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"no\"");
+                }
+            }
+            else
+            {
+                if (isExpression)
+                {
+                    noteExp.RightHandSide = "\"no\"";
+                }
+                else
+                {
+                    Expression weldmentExp =
+                        _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"no\"");
+                }
+            }
+        }
+
+        private static void NewMethod34(Expression noteExp, bool isExpression, string description)
+        {
+            if (description != "")
+            {
+                description = description.Replace(" DIESET", "");
+                _workPart.__SetAttribute("DESCRIPTION", description);
+
+                if (isExpression)
+                {
+                    noteExp.RightHandSide = "\"no\"";
+                }
+                else
+                {
+                    Expression diesetExp =
+                        _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
+                }
+            }
+            else
+            {
+                if (isExpression)
+                {
+                    noteExp.RightHandSide = "\"no\"";
+                }
+                else
+                {
+                    Expression diesetExp =
+                        _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
+                }
+            }
+        }
+
+
+        private static void NewMethod1(Expression noteExp, bool isExpression)
+        {
+            if (isExpression)
+            {
+                noteExp.RightHandSide = "\"yes\"";
+            }
+            else
+            {
+                Expression diesetExp =
+                    _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
+            }
+        }
+
+        private static void NewMethod(Expression noteExp, bool isExpression)
+        {
+            if (isExpression)
+            {
+                noteExp.RightHandSide = "\"yes\"";
+            }
+            else
+            {
+                Expression diesetExp =
+                    _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
+            }
+        }
+
+
+
+
+
+        private static void NewMethod26(ref Expression noteExp, ref bool isExpression)
+        {
+            foreach (Expression exp in _workPart.Expressions)
+                if (exp.Name == "DiesetNote")
+                {
+                    isExpression = true;
+                    noteExp = exp;
+                }
+        }
+
+
+
+
+        private static void NewMethod35(ref Expression noteExp, ref bool isExpression)
+        {
+            foreach (Expression exp in _workPart.Expressions)
+                if (exp.Name == "DiesetNote")
+                {
+                    isExpression = true;
+                    noteExp = exp;
+                }
+        }
+
+
+
+
+        private static void NewMethod51(ref Expression noteExp, ref bool isExpression)
+        {
+            foreach (Expression exp in _workPart.Expressions)
+                if (exp.Name == "WeldmentNote")
+                {
+                    isExpression = true;
+                    noteExp = exp;
+                }
+        }
+
+
+        private static void NewMethod2(ref Expression noteExp, ref bool isExpression)
+        {
+            foreach (Expression exp in _workPart.Expressions)
+                if (exp.Name == "WeldmentNote")
+                {
+                    isExpression = true;
+                    noteExp = exp;
+                }
+        }
+
+
+
+        private void NewMethod12(Expression AddZ)
+        {
+            foreach (CtsAttributes addZ in comboBoxAddz.Items)
+            {
+                if (AddZ.RightHandSide == addZ.AttrValue)
+                {
+                    comboBoxAddz.SelectedItem = addZ;
+
+                    break;
+                }
+
+                comboBoxAddz.SelectedIndex = 0;
+            }
+        }
+
+        private void NewMethod11(Expression AddY)
+        {
+            foreach (CtsAttributes addY in comboBoxAddy.Items)
+            {
+                if (AddY.RightHandSide == addY.AttrValue)
+                {
+                    comboBoxAddy.SelectedItem = addY;
+
+                    break;
+                }
+
+                comboBoxAddy.SelectedIndex = 0;
+            }
+        }
+
+        private void NewMethod10(Expression AddX)
+        {
+            foreach (CtsAttributes addX in comboBoxAddx.Items)
+            {
+                if (AddX.RightHandSide == addX.AttrValue)
+                {
+                    comboBoxAddx.SelectedItem = addX;
+
+                    break;
+                }
+
+                comboBoxAddx.SelectedIndex = 0;
+            }
+        }
+
+        private void NewMethod18(Expression AddZ)
+        {
+            foreach (CtsAttributes addZ in comboBoxAddz.Items)
+            {
+                if (AddZ.RightHandSide == addZ.AttrValue)
+                {
+                    comboBoxAddz.SelectedItem = addZ;
+
+                    break;
+                }
+
+                comboBoxAddz.SelectedIndex = 0;
+            }
+        }
+
+        private void NewMethod17(Expression AddY)
+        {
+            foreach (CtsAttributes addY in comboBoxAddy.Items)
+            {
+                if (AddY.RightHandSide == addY.AttrValue)
+                {
+                    comboBoxAddy.SelectedItem = addY;
+
+                    break;
+                }
+
+                comboBoxAddy.SelectedIndex = 0;
+            }
+        }
+
+        private void NewMethod16(Expression AddX)
+        {
+            foreach (CtsAttributes addX in comboBoxAddx.Items)
+            {
+                if (AddX.RightHandSide == addX.AttrValue)
+                {
+                    comboBoxAddx.SelectedItem = addX;
+
+                    break;
+                }
+
+                comboBoxAddx.SelectedIndex = 0;
+            }
+        }
+
+
+        private void NewMethod28(Expression AddX, Expression AddY, Expression AddZ)
+        {
+            foreach (CtsAttributes addX in comboBoxAddx.Items)
+                try
+                {
+                    if (AddX.RightHandSide == addX.AttrValue)
+                    {
+                        comboBoxAddx.SelectedItem = addX;
+
+                        break;
+                    }
+
+                    comboBoxAddx.SelectedIndex = 0;
+                }
+                catch (Exception ex)
+                {
+                    UI.GetUI().NXMessageBox.Show("DJ", NXMessageBox.DialogType.Error, ex.Message);
+                }
+
+            foreach (CtsAttributes addY in comboBoxAddy.Items)
+            {
+                if (AddY.RightHandSide == addY.AttrValue)
+                {
+                    comboBoxAddy.SelectedItem = addY;
+
+                    break;
+                }
+
+                comboBoxAddy.SelectedIndex = 0;
+            }
+
+            foreach (CtsAttributes addZ in comboBoxAddz.Items)
+            {
+                if (AddZ.RightHandSide == addZ.AttrValue)
+                {
+                    comboBoxAddz.SelectedItem = addZ;
+
+                    break;
+                }
+
+                comboBoxAddz.SelectedIndex = 0;
+            }
+        }
+
+
+
+        private void NewMethod7(Expression AddZ)
+        {
+            foreach (CtsAttributes addZ in comboBoxAddz.Items)
+            {
+                if (AddZ.RightHandSide == addZ.AttrValue)
+                {
+                    comboBoxAddz.SelectedItem = addZ;
+
+                    break;
+                }
+
+                comboBoxAddz.SelectedIndex = 0;
+            }
+        }
+
+        private void NewMethod6(Expression AddY)
+        {
+            foreach (CtsAttributes addY in comboBoxAddy.Items)
+            {
+                if (AddY.RightHandSide == addY.AttrValue)
+                {
+                    comboBoxAddy.SelectedItem = addY;
+
+                    break;
+                }
+
+                comboBoxAddy.SelectedIndex = 0;
+            }
+        }
+
+        private void NewMethod5(Expression AddX)
+        {
+            foreach (CtsAttributes addX in comboBoxAddx.Items)
+            {
+                if (AddX.RightHandSide == addX.AttrValue)
+                {
+                    comboBoxAddx.SelectedItem = addX;
+
+                    break;
+                }
+
+                comboBoxAddx.SelectedIndex = 0;
+            }
+        }
+
+
+
+
+        private void NewMethod13(string burnDirValue, string burnoutValue, string grindValue)
+        {
+            if (burnoutValue.ToLower() == "yes")
+                checkBoxBurnout.Checked = true;
+            else
+                checkBoxBurnout.Checked = false;
+            if (grindValue.ToLower() == "yes")
+                checkBoxGrind.Checked = true;
+            else
+                checkBoxGrind.Checked = false;
+            if (burnDirValue.ToLower() == "x")
+                checkBoxBurnDirX.Checked = true;
+            if (burnDirValue.ToLower() == "y")
+                checkBoxBurnDirY.Checked = true;
+            if (burnDirValue.ToLower() == "z")
+                checkBoxBurnDirZ.Checked = true;
+        }
+
+        private void NewMethod112(string burnDirValue, string burnoutValue, string grindValue)
+        {
+            if (burnoutValue.ToLower() == "yes")
+                checkBoxBurnout.Checked = true;
+            else
+                checkBoxBurnout.Checked = false;
+            if (grindValue.ToLower() == "yes")
+                checkBoxGrind.Checked = true;
+            else
+                checkBoxGrind.Checked = false;
+            if (burnDirValue.ToLower() == "x")
+                checkBoxBurnDirX.Checked = true;
+            if (burnDirValue.ToLower() == "y")
+                checkBoxBurnDirY.Checked = true;
+            if (burnDirValue.ToLower() == "z")
+                checkBoxBurnDirZ.Checked = true;
+        }
+        private void NewMethod113(string burnDirValue, string burnoutValue, string grindValue)
+        {
+            if (burnoutValue.ToLower() == "yes")
+                checkBoxBurnout.Checked = true;
+            else
+                checkBoxBurnout.Checked = false;
+            if (grindValue.ToLower() == "yes")
+                checkBoxGrind.Checked = true;
+            else
+                checkBoxGrind.Checked = false;
+            if (burnDirValue.ToLower() == "x")
+                checkBoxBurnDirX.Checked = true;
+            if (burnDirValue.ToLower() == "y")
+                checkBoxBurnDirY.Checked = true;
+            if (burnDirValue.ToLower() == "z")
+                checkBoxBurnDirZ.Checked = true;
+        }
+        private void NewMethod115(string burnDirValue, string burnoutValue, string grindValue)
+        {
+            if (burnoutValue.ToLower() == "yes")
+                checkBoxBurnout.Checked = true;
+            else
+                checkBoxBurnout.Checked = false;
+            if (grindValue.ToLower() == "yes")
+                checkBoxGrind.Checked = true;
+            else
+                checkBoxGrind.Checked = false;
+            if (burnDirValue.ToLower() == "x")
+                checkBoxBurnDirX.Checked = true;
+            if (burnDirValue.ToLower() == "y")
+                checkBoxBurnDirY.Checked = true;
+            if (burnDirValue.ToLower() == "z")
+                checkBoxBurnDirZ.Checked = true;
+        }
+
+        private void NewMethod8(double xValue, double yValue, double zValue)
+        {
+            // get bounding box info
+            double[] distances = NewMethod148();
+            // add stock values
+            distances[0] += xValue;
+            distances[1] += yValue;
+            distances[2] += zValue;
+            NewMethod147(distances);
+            NewMethod146(distances);
+        }
+
+        private static double[] NewMethod148()
+        {
+            double[] minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            double[] distances = new double[3];
+
+            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
+                __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
+            return distances;
+        }
+
+        private static void NewMethod147(double[] distances)
+        {
+            NewMethod81(distances);
+            distances.__RoundTo_125();
+        }
+
+        private static void NewMethod81(double[] distances)
+        {
+            if (_workPart.PartUnits == BasePart.Units.Millimeters)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+        }
+
+        private void NewMethod146(double[] distances)
+        {
+            CreateTempBlockLines(__display_part_.WCS.Origin, distances[0], distances[1],
+                            distances[2]);
+            _allowBoundingBox = true;
+        }
+
+        private static double[] NewMethod3(double xValue, double yValue, double zValue)
+        {
+            // get bounding box info
+
+            double[] distances = NewMethod145();
+
+            // add stock values
+
+            distances[0] += xValue;
+            distances[1] += yValue;
+            distances[2] += zValue;
+            NewMethod144(distances);
+
+            return distances;
+        }
+
+        private static double[] NewMethod145()
+        {
+            double[] minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            double[] distances = new double[3];
+
+            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
+                __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
+            return distances;
+        }
+
+        private static void NewMethod144(double[] distances)
+        {
+            NewMethod82(distances);
+            distances.__RoundTo_125();
+        }
+
+        private static void NewMethod82(double[] distances)
+        {
+            if (_workPart.PartUnits == BasePart.Units.Millimeters)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+        }
+
+        private void NewMethod20(double xValue, double yValue, double zValue)
+        {
+            // get bounding box info
+
+            double[] distances = NewMethod143();
+
+            // add stock values
+
+            distances[0] += xValue;
+            distances[1] += yValue;
+            distances[2] += zValue;
+            NewMethod142(distances);
+            NewMethod141(distances);
+        }
+
+        private static double[] NewMethod143()
+        {
+            double[] minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            double[] distances = new double[3];
+
+            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
+                __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
+            return distances;
+        }
+
+        private static void NewMethod142(double[] distances)
+        {
+            NewMethod83(distances);
+            distances.__RoundTo_125();
+        }
+
+        private static void NewMethod83(double[] distances)
+        {
+            if (_workPart.PartUnits == BasePart.Units.Millimeters)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+        }
+
+        private void NewMethod141(double[] distances)
+        {
+            CreateTempBlockLines(__display_part_.WCS.Origin, distances[0], distances[1],
+                            distances[2]);
+            _allowBoundingBox = true;
+        }
+
+        private void NewMethod14(double xValue, double yValue, double zValue)
+        {
+            // get bounding box info
+            double[] distances = NewMethod139();
+            // add stock values
+            distances[0] += xValue;
+            distances[1] += yValue;
+            distances[2] += zValue;
+            NewMethod138(distances);
+            NewMethod140(distances);
+        }
+
+        private void NewMethod140(double[] distances)
+        {
+            CreateTempBlockLines(__display_part_.WCS.Origin, distances[0], distances[1],
+                            distances[2]);
+            _allowBoundingBox = true;
+        }
+
+        private static double[] NewMethod139()
+        {
+            double[] minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            double[] distances = new double[3];
+
+            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
+                __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
+            return distances;
+        }
+
+        private static void NewMethod138(double[] distances)
+        {
+            NewMethod84(distances);
+         distances.__RoundTo_125();
+        }
+
+        private static void NewMethod84(double[] distances)
+        {
+            if (_workPart.PartUnits == BasePart.Units.Millimeters)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+        }
+
+        private static double[] NewMethod24(CartesianCoordinateSystem tempCsys, bool isMetric)
+        {
+            // get bounding box of solid body
+            double[] distances = NewMethod137(tempCsys);
+            NewMethod136(isMetric, distances);
+            return distances;
+        }
+
+        private static double[] NewMethod137(CartesianCoordinateSystem tempCsys)
+        {
+            double[] minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            double[] distances = new double[3];
+
+            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag, tempCsys.Tag, minCorner, directions, distances);
+            return distances;
+        }
+
+        private static void NewMethod136(bool isMetric, double[] distances)
+        {
+            NewMethod85(isMetric, distances);
+            distances.__RoundTo_125();
+        }
+
+        private static void NewMethod85(bool isMetric, double[] distances)
+        {
+            if (isMetric)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+        }
+
+        private static double[] NewMethod32(bool isMetric, Body[] sizeBody, Tag tempCsys)
+        {
+            double[] distances = NewMethod135(sizeBody, tempCsys);
+            NewMethod134(isMetric, distances);
+
+            return distances;
+        }
+
+        private static double[] NewMethod135(Body[] sizeBody, Tag tempCsys)
+        {
+            double[] minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            double[] distances = new double[3];
+
+            ufsession_.Modl.AskBoundingBoxExact(sizeBody[0].Tag, tempCsys, minCorner, directions,
+                distances);
+            return distances;
+        }
+
+        private static void NewMethod134(bool isMetric, double[] distances)
+        {
+            NewMethod86(isMetric, distances);
+            distances.__RoundTo_125();
+        }
+
+        private static void NewMethod86(bool isMetric, double[] distances)
+        {
+            if (isMetric)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+        }
+
+        private static void NewMethod31(bool isMetric, string burnoutValue, double[] distances)
+        {
+            NewMethod133(isMetric, distances);
+
+            if (burnoutValue.ToLower() == "no")
+                distances.__RoundTo_125();
+        }
+
+        private static void NewMethod133(bool isMetric, double[] distances)
+        {
+            if (isMetric)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+        }
+
+        private double AskSteelSize(double distance, BasePart part)
+        {
+            //            if (part.Leaf.Contains("200"))
+            //                Debugger.Launch();
+            double roundValue, truncateValue, fractionValue;
+            NewMethod132(distance, out roundValue, out truncateValue, out fractionValue);
+
+            // If it doesn't seem to be working you might have any issue with metric vs english,
+            // or you can revert the code back to the orignal line before you changed to float-point comparison.
+            if (System.Math.Abs(fractionValue) <= .001)
+                return roundValue;
+
+            for (double ii = .125; ii <= 1; ii += .125)
+                if (fractionValue <= ii)
+                {
+                    double finalValue = truncateValue + ii;
+                    return finalValue;
+                }
+
+            throw new Exception($"Ask Steel Size, Part: {part.Leaf}. {nameof(distance)}: {distance}");
+        }
+
+        private static void NewMethod132(double distance, out double roundValue, out double truncateValue, out double fractionValue)
+        {
+            roundValue = System.Math.Round(distance, 3);
+            truncateValue = System.Math.Truncate(roundValue);
+            fractionValue = roundValue - truncateValue;
+        }
+
+        private static double[] NewMethod33(double xValue, double yValue, double zValue)
+        {
+            double[] distances = NewMethod23();
+
+            // add stock values
+
+            distances[0] += xValue;
+            distances[1] += yValue;
+            distances[2] += zValue;
+            NewMethod131(distances);
+
+            return distances;
+        }
+
+        private static void NewMethod131(double[] distances)
+        {
+            NewMethod87(distances);
+            distances.__RoundTo_125();
+        }
+
+        private static void NewMethod87(double[] distances)
+        {
+            if (_workPart.PartUnits == BasePart.Units.Millimeters)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
+        }
+
+        private static double[] NewMethod23()
+        {
+            double[] minCorner = new double[3];
+            double[,] directions = new double[3, 3];
+            double[] distances = new double[3];
+
+            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag, __display_part_.WCS.CoordinateSystem.Tag,
+                minCorner, directions, distances);
+            return distances;
+        }
+
+        private static void NewMethod114(ref bool isNamedExpression, ref Expression AddX, ref Expression AddY, ref Expression AddZ, ref double xValue, ref double yValue, ref double zValue)
+        {
+            foreach (Expression exp in _workPart.Expressions.ToArray())
+            {
+                if (exp.Name == "AddX")
+                {
+                    isNamedExpression = true;
+                    AddX = exp;
+                    xValue = exp.Value;
+                }
+
+                if (exp.Name == "AddY")
+                {
+                    isNamedExpression = true;
+                    AddY = exp;
+                    yValue = exp.Value;
+                }
+
+                if (exp.Name == "AddZ")
+                {
+                    isNamedExpression = true;
+                    AddZ = exp;
+                    zValue = exp.Value;
+                }
+            }
+        }
+
 
         private static void NewMethod27(ref bool isNamedExpression, ref Expression AddX, ref Expression AddY, ref Expression AddZ, ref Expression BurnDir, ref Expression Burnout, ref Expression Grind, ref Expression GrindTolerance, ref double xValue, ref double yValue, ref double zValue, ref string burnDirValue, ref string burnoutValue, ref string grindValue, ref string grindTolValue)
         {
@@ -1154,1011 +2391,123 @@ namespace TSG_Library.UFuncs
         }
 
 
-        #endregion
 
-        /////////////////////////////////////////////////////////////////////
 
-        #region rounding
-        private void NewMethod8(double xValue, double yValue, double zValue)
+
+
+
+
+
+
+
+        private void NewMethod116()
         {
-            // get bounding box info
+            textBoxDescription.Clear();
+            textBoxMaterial.Clear();
+            buttonReset.PerformClick();
+            buttonSelectCustom.Enabled = false;
+            comboBoxMaterial.Enabled = false;
+            groupBoxDescription.Enabled = true;
+            groupBoxMaterial.Enabled = true;
+            groupBoxAttributes.Enabled = true;
+            groupBoxBlockExpressions.Enabled = false;
+            _isCustom = true;
+            _isMeasureBody = false;
+            _isSelectMultiple = true;
+            _allSelectedComponents = SelectMultipleComponents();
+        }
 
-            double[] minCorner = new double[3];
-            double[,] directions = new double[3, 3];
-            double[] distances = new double[3];
-
-            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
-                __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
-
-            // add stock values
-
-            distances[0] += xValue;
-            distances[1] += yValue;
-            distances[2] += zValue;
-
-            if (_workPart.PartUnits == BasePart.Units.Millimeters)
-                for (int i = 0; i < distances.Length; i++)
-                    distances[i] /= 25.4d;
-
-            for (int i = 0; i < 3; i++)
-            {
-                double roundValue = System.Math.Round(distances[i], 3);
-                double truncateValue = System.Math.Truncate(roundValue);
-                double fractionValue = roundValue - truncateValue;
-                if (fractionValue != 0)
-                    for (double ii = .125; ii <= 1; ii += .125)
-                    {
-                        if (fractionValue <= ii)
-                        {
-                            double finalValue = truncateValue + ii;
-                            distances[i] = finalValue;
-                            break;
-                        }
-                    }
-                else
-                    distances[i] = roundValue;
-            }
-
-            CreateTempBlockLines(__display_part_.WCS.Origin, distances[0], distances[1],
-                distances[2]);
-            _allowBoundingBox = true;
+        private void NewMethod117()
+        {
+            textBoxDescription.Clear();
+            textBoxMaterial.Clear();
+            comboBoxDescription.SelectedIndex = -1;
+            comboBoxMaterial.SelectedIndex = -1;
+            _isCustom = false;
+            _isMeasureBody = false;
+            _isSelectMultiple = false;
+            _selectedComponents = SelectMultipleComponents();
         }
 
 
-        private static double[] NewMethod3(double xValue, double yValue, double zValue)
+        private void NewMethod118()
         {
-            // get bounding box info
+            textBoxDescription.Clear();
+            textBoxMaterial.Clear();
+            comboBoxDescription.SelectedIndex = -1;
+            comboBoxMaterial.SelectedIndex = -1;
+            _workPart = session_.Parts.Work;
+            __display_part_ = session_.Parts.Display;
+            _originalWorkPart = _workPart; _originalDisplayPart = __display_part_; ;
+            _isCustom = false;
+            _isMeasureBody = false;
+            _isSelectMultiple = false;
+            _selectedComponents = SelectMultipleComponents();
+        }
 
-            double[] minCorner = new double[3];
-            double[,] directions = new double[3, 3];
-            double[] distances = new double[3];
+        private void NewMethod119()
+        {
+            textBoxDescription.Clear();
+            textBoxMaterial.Clear();
+            comboBoxDescription.SelectedIndex = -1;
+            comboBoxMaterial.SelectedIndex = -1;
+            _workPart = session_.Parts.Work;
+            __display_part_ = session_.Parts.Display;
+            _originalWorkPart = _workPart; _originalDisplayPart = __display_part_; ;
+            _isCustom = false;
+            _isMeasureBody = false;
+            _isSelectMultiple = false;
+            _selectedComponents = SelectMultipleComponents();
+        }
 
-            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
-                __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
-
-            // add stock values
-
-            distances[0] += xValue;
-            distances[1] += yValue;
-            distances[2] += zValue;
-
-            if (_workPart.PartUnits == BasePart.Units.Millimeters)
-                for (int i = 0; i < distances.Length; i++)
-                    distances[i] /= 25.4d;
-
-            for (int i = 0; i < 3; i++)
-            {
-                double roundValue = System.Math.Round(distances[i], 3);
-                double truncateValue = System.Math.Truncate(roundValue);
-                double fractionValue = roundValue - truncateValue;
-                if (fractionValue != 0)
-                    for (double ii = .125; ii <= 1; ii += .125)
-                    {
-                        if (fractionValue <= ii)
-                        {
-                            double finalValue = truncateValue + ii;
-                            distances[i] = finalValue;
-                            break;
-                        }
-                    }
-                else
-                    distances[i] = roundValue;
-            }
-
-            return distances;
+        private void NewMethod120()
+        {
+            textBoxDescription.Clear();
+            textBoxMaterial.Clear();
+            comboBoxDescription.SelectedIndex = -1;
+            comboBoxMaterial.SelectedIndex = -1;
+            _workPart = session_.Parts.Work;
+            __display_part_ = session_.Parts.Display;
+            _originalWorkPart = _workPart; _originalDisplayPart = __display_part_; ;
+            _isCustom = false;
+            _isMeasureBody = false;
+            _isSelectMultiple = false;
+            _selectedComponents = SelectMultipleComponents();
         }
 
 
-
-
-        private void NewMethod20(double xValue, double yValue, double zValue)
+        private void NewMethod124(string grindTolValue)
         {
-            // get bounding box info
-
-            double[] minCorner = new double[3];
-            double[,] directions = new double[3, 3];
-            double[] distances = new double[3];
-
-            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
-                __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
-
-            // add stock values
-
-            distances[0] += xValue;
-            distances[1] += yValue;
-            distances[2] += zValue;
-
-            if (_workPart.PartUnits == BasePart.Units.Millimeters)
-                for (int i = 0; i < distances.Length; i++)
-                    distances[i] /= 25.4d;
-
-            for (int i = 0; i < 3; i++)
-            {
-                double roundValue = System.Math.Round(distances[i], 3);
-                double truncateValue = System.Math.Truncate(roundValue);
-                double fractionValue = roundValue - truncateValue;
-                if (fractionValue != 0)
-                    for (double ii = .125; ii <= 1; ii += .125)
-                    {
-                        if (fractionValue <= ii)
-                        {
-                            double finalValue = truncateValue + ii;
-                            distances[i] = finalValue;
-                            break;
-                        }
-                    }
-                else
-                    distances[i] = roundValue;
-            }
-
-            CreateTempBlockLines(__display_part_.WCS.Origin, distances[0], distances[1],
-                distances[2]);
-            _allowBoundingBox = true;
-        }
-
-
-
-        private void NewMethod14(double xValue, double yValue, double zValue)
-        {
-            // get bounding box info
-
-            double[] minCorner = new double[3];
-            double[,] directions = new double[3, 3];
-            double[] distances = new double[3];
-
-            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag,
-                __display_part_.WCS.CoordinateSystem.Tag, minCorner, directions, distances);
-
-            // add stock values
-
-            distances[0] += xValue;
-            distances[1] += yValue;
-            distances[2] += zValue;
-
-            if (_workPart.PartUnits == BasePart.Units.Millimeters)
-                for (int i = 0; i < distances.Length; i++)
-                    distances[i] /= 25.4d;
-
-            for (int i = 0; i < 3; i++)
-            {
-                double roundValue = System.Math.Round(distances[i], 3);
-                double truncateValue = System.Math.Truncate(roundValue);
-                double fractionValue = roundValue - truncateValue;
-                if (fractionValue != 0)
-                    for (double ii = .125; ii <= 1; ii += .125)
-                    {
-                        if (fractionValue <= ii)
-                        {
-                            double finalValue = truncateValue + ii;
-                            distances[i] = finalValue;
-                            break;
-                        }
-                    }
-                else
-                    distances[i] = roundValue;
-            }
-
-            CreateTempBlockLines(__display_part_.WCS.Origin, distances[0], distances[1],
-                distances[2]);
-            _allowBoundingBox = true;
-        }
-
-
-
-        private static double[] NewMethod24(CartesianCoordinateSystem tempCsys, bool isMetric)
-        {
-            // get bounding box of solid body
-
-            double[] minCorner = new double[3];
-            double[,] directions = new double[3, 3];
-            double[] distances = new double[3];
-
-            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag, tempCsys.Tag, minCorner, directions,
-                distances);
-
-            if (isMetric)
-                for (int i = 0; i < distances.Length; i++)
-                    distances[i] /= 25.4d;
-
-            for (int i = 0; i < 3; i++)
-            {
-                double roundValue = System.Math.Round(distances[i], 3);
-                double truncateValue = System.Math.Truncate(roundValue);
-                double fractionValue = roundValue - truncateValue;
-                if (fractionValue != 0)
-                    for (double ii = .125; ii <= 1; ii += .125)
-                    {
-                        if (fractionValue <= ii)
-                        {
-                            double finalValue = truncateValue + ii;
-                            distances[i] = finalValue;
-                            break;
-                        }
-                    }
-                else
-                    distances[i] = roundValue;
-            }
-
-            return distances;
-        }
-
-        private static void NewMethod23(double[] distances)
-        {
-            for (int i = 0; i < 3; i++)
-            {
-                double roundValue = System.Math.Round(distances[i], 3);
-                double truncateValue = System.Math.Truncate(roundValue);
-                double fractionValue = roundValue - truncateValue;
-                if (fractionValue != 0)
-                    for (double ii = .125; ii <= 1; ii += .125)
-                    {
-                        if (fractionValue <= ii)
-                        {
-                            double finalValue = truncateValue + ii;
-                            distances[i] = finalValue;
-                            break;
-                        }
-                    }
-                else
-                    distances[i] = roundValue;
-            }
-        }
-
-        private static double[] NewMethod32(bool isMetric, Body[] sizeBody, Tag tempCsys)
-        {
-            double[] minCorner = new double[3];
-            double[,] directions = new double[3, 3];
-            double[] distances = new double[3];
-
-            ufsession_.Modl.AskBoundingBoxExact(sizeBody[0].Tag, tempCsys, minCorner, directions,
-                distances);
-
-            if (isMetric)
-                for (int i = 0; i < distances.Length; i++)
-                    distances[i] /= 25.4d;
-
-            for (int i = 0; i < 3; i++)
-            {
-                double roundValue = System.Math.Round(distances[i], 3);
-                double truncateValue = System.Math.Truncate(roundValue);
-                double fractionValue = roundValue - truncateValue;
-                if (fractionValue != 0)
-                    for (double ii = .125; ii <= 1; ii += .125)
-                    {
-                        if (fractionValue <= ii)
-                        {
-                            double finalValue = truncateValue + ii;
-                            distances[i] = finalValue;
-                            break;
-                        }
-                    }
-                else
-                    distances[i] = roundValue;
-            }
-
-            return distances;
-        }
-
-        private static void NewMethod31(bool isMetric, string burnoutValue, double[] distances)
-        {
-            if (isMetric)
-                for (int i = 0; i < distances.Length; i++)
-                    distances[i] /= 25.4d;
-
-            if (burnoutValue.ToLower() == "no")
-                for (int i = 0; i < 3; i++)
-                {
-                    double roundValue = System.Math.Round(distances[i], 3);
-                    double truncateValue = System.Math.Truncate(roundValue);
-                    double fractionValue = roundValue - truncateValue;
-                    if (fractionValue != 0)
-                        for (double ii = .125; ii <= 1; ii += .125)
-                        {
-                            if (fractionValue <= ii)
-                            {
-                                double finalValue = truncateValue + ii;
-                                distances[i] = finalValue;
-                                break;
-                            }
-                        }
-                    else
-                        distances[i] = roundValue;
-                }
-        }
-
-        private double AskSteelSize(double distance, BasePart part)
-        {
-            //            if (part.Leaf.Contains("200"))
-            //                Debugger.Launch();
-            double roundValue = System.Math.Round(distance, 3);
-            double truncateValue = System.Math.Truncate(roundValue);
-            double fractionValue = roundValue - truncateValue;
-
-            // If it doesn't seem to be working you might have any issue with metric vs english,
-            // or you can revert the code back to the orignal line before you changed to float-point comparison.
-            if (System.Math.Abs(fractionValue) > .001)
-            {
-                for (double ii = .125; ii <= 1; ii += .125)
-                    if (fractionValue <= ii)
-                    {
-                        double finalValue = truncateValue + ii;
-                        return finalValue;
-                    }
-            }
-            else
-            {
-                return roundValue;
-            }
-
-            throw new Exception($"Ask Steel Size, Part: {part.Leaf}. {nameof(distance)}: {distance}");
-        }
-
-        private static double[] NewMethod33(double xValue, double yValue, double zValue)
-        {
-            double[] minCorner = new double[3];
-            double[,] directions = new double[3, 3];
-            double[] distances = new double[3];
-
-            ufsession_.Modl.AskBoundingBoxExact(_sizeBody.Tag, __display_part_.WCS.CoordinateSystem.Tag,
-                minCorner, directions, distances);
-
-            // add stock values
-
-            distances[0] += xValue;
-            distances[1] += yValue;
-            distances[2] += zValue;
-
-            if (_workPart.PartUnits == BasePart.Units.Millimeters)
-                for (int i = 0; i < distances.Length; i++)
-                    distances[i] /= 25.4d;
-
-            for (int i = 0; i < 3; i++)
-            {
-                double roundValue = System.Math.Round(distances[i], 3);
-                double truncateValue = System.Math.Truncate(roundValue);
-                double fractionValue = roundValue - truncateValue;
-                if (fractionValue != 0)
-                    for (double ii = .125; ii <= 1; ii += .125)
-                    {
-                        if (fractionValue <= ii)
-                        {
-                            double finalValue = truncateValue + ii;
-                            distances[i] = finalValue;
-                            break;
-                        }
-                    }
-                else
-                    distances[i] = roundValue;
-            }
-
-            return distances;
-        }
-
-
-
-        #endregion
-
-
-        #region other stuff
-        private static void NewMethod50()
-        {
-            Expression Weldment = null;
-
-            foreach (Expression exp in _workPart.Expressions.ToArray())
-                if (exp.Name == "WeldmentNote")
-                    Weldment = exp;
-
-            if (Weldment != null)
-                Weldment.RightHandSide = "\"no\"";
-            else
-                _ = _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"no\"");
-
-            string description = _workPart.__GetStringAttribute("DESCRIPTION");
-            description = description.Replace("WELDMENT", "");
-            _workPart.__SetAttribute("DESCRIPTION", description);
-        }
-
-        private static void NewMethod49()
-        {
-            Expression Weldment = null;
-
-            foreach (Expression exp in _workPart.Expressions.ToArray())
-                if (exp.Name == "WeldmentNote")
-                    Weldment = exp;
-
-            if (Weldment != null)
-                Weldment.RightHandSide = "\"yes\"";
-            else
-                _ = _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"yes\"");
-
-            string description = _workPart.__GetStringAttribute("DESCRIPTION");
-
-            if (!description.ToLower().Contains("weldment"))
-            {
-                description += " WELDMENT";
-                _workPart.__SetAttribute("DESCRIPTION", description);
-            }
-        }
-
-        private static void NewMethod48()
-        {
-            Expression Dieset = null;
-
-            foreach (Expression exp in _workPart.Expressions.ToArray())
-                if (exp.Name == "DiesetNote")
-                    Dieset = exp;
-
-            if (Dieset != null)
-                Dieset.RightHandSide = "\"no\"";
-            else
-                _ = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
-
-            string description = _workPart.__GetStringAttribute("DESCRIPTION");
-            description = description.Replace("DIESET", "");
-            _workPart.__SetAttribute("DESCRIPTION", description);
-        }
-
-        private static void NewMethod47()
-        {
-            Expression Dieset = null;
-
-            foreach (Expression exp in _workPart.Expressions.ToArray())
-                if (exp.Name == "DiesetNote")
-                    Dieset = exp;
-
-            if (Dieset != null)
-                Dieset.RightHandSide = "\"yes\"";
-            else
-                _ = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
-
-            string description = _workPart.__GetStringAttribute("DESCRIPTION");
-
-            if (!description.ToLower().Contains("dieset"))
-            {
-                description += " DIESET";
-                _workPart.__SetAttribute("DESCRIPTION", description);
-            }
-        }
-
-        private static void NewMethod46()
-        {
-            Expression Weldment = null;
-
-            foreach (Expression exp in _workPart.Expressions.ToArray())
-                if (exp.Name == "WeldmentNote")
-                    Weldment = exp;
-
-            if (Weldment != null)
-                Weldment.RightHandSide = "\"no\"";
-            else
-                _ = _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"no\"");
-
-            string description = _workPart.__GetStringAttribute("DESCRIPTION");
-            description = description.Replace("WELDMENT", "");
-            _workPart.__SetAttribute("DESCRIPTION", description);
-        }
-
-        private static void NewMethod45()
-        {
-            Expression Weldment = null;
-
-            foreach (Expression exp in _workPart.Expressions.ToArray())
-                if (exp.Name == "WeldmentNote")
-                    Weldment = exp;
-
-            if (Weldment != null)
-                Weldment.RightHandSide = "\"yes\"";
-            else
-                _ = _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"yes\"");
-
-            string description = _workPart.__GetStringAttribute("DESCRIPTION");
-            if (!description.ToLower().Contains("weldment"))
-            {
-                description += " WELDMENT";
-                _workPart.__SetAttribute("DESCRIPTION", description);
-            }
-        }
-
-        private static void NewMethod44()
-        {
-            Expression Dieset = null;
-
-            foreach (Expression exp in _workPart.Expressions.ToArray())
-                if (exp.Name == "DiesetNote")
-                    Dieset = exp;
-
-            if (Dieset != null)
-                Dieset.RightHandSide = "\"no\"";
-            else
-                _ = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
-
-            string description = _workPart.__GetStringAttribute("DESCRIPTION");
-            description = description.Replace("DIESET", "");
-            _workPart.__SetAttribute("DESCRIPTION", description);
-        }
-
-        private static void NewMethod43()
-        {
-            Expression Dieset = null;
-
-            foreach (Expression exp in _workPart.Expressions.ToArray())
-                if (exp.Name == "DiesetNote")
-                    Dieset = exp;
-
-            if (Dieset != null)
-                Dieset.RightHandSide = "\"yes\"";
-            else
-                _ = _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
-
-            string description = _workPart.__GetStringAttribute("DESCRIPTION");
-            if (!description.ToLower().Contains("dieset"))
-            {
-                description += " DIESET";
-                _workPart.__SetAttribute("DESCRIPTION", description);
-            }
-        }
-        #endregion
-
-
-
-
-
-
-        #region CTS Attributes
-
-
-
-        private void NewMethod12(Expression AddZ)
-        {
-            foreach (CtsAttributes addZ in comboBoxAddz.Items)
-            {
-                if (AddZ.RightHandSide == addZ.AttrValue)
-                {
-                    comboBoxAddz.SelectedItem = addZ;
-
-                    break;
-                }
-
-                comboBoxAddz.SelectedIndex = 0;
-            }
-        }
-
-        private void NewMethod11(Expression AddY)
-        {
-            foreach (CtsAttributes addY in comboBoxAddy.Items)
-            {
-                if (AddY.RightHandSide == addY.AttrValue)
-                {
-                    comboBoxAddy.SelectedItem = addY;
-
-                    break;
-                }
-
-                comboBoxAddy.SelectedIndex = 0;
-            }
-        }
-
-        private void NewMethod10(Expression AddX)
-        {
-            foreach (CtsAttributes addX in comboBoxAddx.Items)
-            {
-                if (AddX.RightHandSide == addX.AttrValue)
-                {
-                    comboBoxAddx.SelectedItem = addX;
-
-                    break;
-                }
-
-                comboBoxAddx.SelectedIndex = 0;
-            }
-        }
-
-        private void NewMethod18(Expression AddZ)
-        {
-            foreach (CtsAttributes addZ in comboBoxAddz.Items)
-            {
-                if (AddZ.RightHandSide == addZ.AttrValue)
-                {
-                    comboBoxAddz.SelectedItem = addZ;
-
-                    break;
-                }
-
-                comboBoxAddz.SelectedIndex = 0;
-            }
-        }
-
-        private void NewMethod17(Expression AddY)
-        {
-            foreach (CtsAttributes addY in comboBoxAddy.Items)
-            {
-                if (AddY.RightHandSide == addY.AttrValue)
-                {
-                    comboBoxAddy.SelectedItem = addY;
-
-                    break;
-                }
-
-                comboBoxAddy.SelectedIndex = 0;
-            }
-        }
-
-        private void NewMethod16(Expression AddX)
-        {
-            foreach (CtsAttributes addX in comboBoxAddx.Items)
-            {
-                if (AddX.RightHandSide == addX.AttrValue)
-                {
-                    comboBoxAddx.SelectedItem = addX;
-
-                    break;
-                }
-
-                comboBoxAddx.SelectedIndex = 0;
-            }
-        }
-
-
-        private void NewMethod28(Expression AddX, Expression AddY, Expression AddZ)
-        {
-            foreach (CtsAttributes addX in comboBoxAddx.Items)
-                try
-                {
-                    if (AddX.RightHandSide == addX.AttrValue)
-                    {
-                        comboBoxAddx.SelectedItem = addX;
-
-                        break;
-                    }
-
-                    comboBoxAddx.SelectedIndex = 0;
-                }
-                catch (Exception ex)
-                {
-                    UI.GetUI().NXMessageBox.Show("DJ", NXMessageBox.DialogType.Error, ex.Message);
-                }
-
-            foreach (CtsAttributes addY in comboBoxAddy.Items)
-            {
-                if (AddY.RightHandSide == addY.AttrValue)
-                {
-                    comboBoxAddy.SelectedItem = addY;
-
-                    break;
-                }
-
-                comboBoxAddy.SelectedIndex = 0;
-            }
-
-            foreach (CtsAttributes addZ in comboBoxAddz.Items)
-            {
-                if (AddZ.RightHandSide == addZ.AttrValue)
-                {
-                    comboBoxAddz.SelectedItem = addZ;
-
-                    break;
-                }
-
-                comboBoxAddz.SelectedIndex = 0;
-            }
-        }
-
-
-
-        private void NewMethod7(Expression AddZ)
-        {
-            foreach (CtsAttributes addZ in comboBoxAddz.Items)
-            {
-                if (AddZ.RightHandSide == addZ.AttrValue)
-                {
-                    comboBoxAddz.SelectedItem = addZ;
-
-                    break;
-                }
-
-                comboBoxAddz.SelectedIndex = 0;
-            }
-        }
-
-        private void NewMethod6(Expression AddY)
-        {
-            foreach (CtsAttributes addY in comboBoxAddy.Items)
-            {
-                if (AddY.RightHandSide == addY.AttrValue)
-                {
-                    comboBoxAddy.SelectedItem = addY;
-
-                    break;
-                }
-
-                comboBoxAddy.SelectedIndex = 0;
-            }
-        }
-
-        private void NewMethod5(Expression AddX)
-        {
-            foreach (CtsAttributes addX in comboBoxAddx.Items)
-            {
-                if (AddX.RightHandSide == addX.AttrValue)
-                {
-                    comboBoxAddx.SelectedItem = addX;
-
-                    break;
-                }
-
-                comboBoxAddx.SelectedIndex = 0;
-            }
-        }
-
-
-
-        #endregion
-
-
-        private void NewMethod30(string burnDirValue, string burnoutValue, string grindValue, string grindTolValue)
-        {
-            if (burnoutValue.ToLower() == "yes")
-                checkBoxBurnout.Checked = true;
-            else
-                checkBoxBurnout.Checked = false;
-            if (grindValue.ToLower() == "yes")
-                checkBoxGrind.Checked = true;
-            else
-                checkBoxGrind.Checked = false;
-            if (burnDirValue.ToLower() == "x")
-                checkBoxBurnDirX.Checked = true;
-            if (burnDirValue.ToLower() == "y")
-                checkBoxBurnDirY.Checked = true;
-            if (burnDirValue.ToLower() == "z")
-                checkBoxBurnDirZ.Checked = true;
             foreach (CtsAttributes tolSetting in comboBoxTolerance.Items)
                 if (grindTolValue == tolSetting.AttrValue)
                     comboBoxTolerance.SelectedItem = tolSetting;
         }
 
-        private void NewMethod29(double xValue, double yValue, double zValue, string burnDirValue, string burnoutValue, string grindValue, string grindTolValue)
+        private void NewMethod125(string grindTolValue)
         {
-            if (burnoutValue.ToLower() == "yes")
-                checkBoxBurnout.Checked = true;
-            else
-                checkBoxBurnout.Checked = false;
-            if (grindValue.ToLower() == "yes")
-                checkBoxGrind.Checked = true;
-            else
-                checkBoxGrind.Checked = false;
-            if (burnDirValue.ToLower() == "x")
-                checkBoxBurnDirX.Checked = true;
-            if (burnDirValue.ToLower() == "y")
-                checkBoxBurnDirY.Checked = true;
-            if (burnDirValue.ToLower() == "z")
-                checkBoxBurnDirZ.Checked = true;
             foreach (CtsAttributes tolSetting in comboBoxTolerance.Items)
                 if (grindTolValue == tolSetting.AttrValue)
                     comboBoxTolerance.SelectedItem = tolSetting;
-
-            double[] distances = NewMethod3(xValue, yValue, zValue);
-
-            CreateTempBlockLines(__display_part_.WCS.Origin, distances[0], distances[1],
-                distances[2]);
-            _allowBoundingBox = true;
         }
-
-
-        private void NewMethod19(string burnDirValue, string burnoutValue, string grindValue, string grindTolValue)
+        private void NewMethod126(string grindTolValue)
         {
-            if (burnoutValue.ToLower() == "yes")
-                checkBoxBurnout.Checked = true;
-            else
-                checkBoxBurnout.Checked = false;
-            if (grindValue.ToLower() == "yes")
-                checkBoxGrind.Checked = true;
-            else
-                checkBoxGrind.Checked = false;
-            if (burnDirValue.ToLower() == "x")
-                checkBoxBurnDirX.Checked = true;
-            if (burnDirValue.ToLower() == "y")
-                checkBoxBurnDirY.Checked = true;
-            if (burnDirValue.ToLower() == "z")
-                checkBoxBurnDirZ.Checked = true;
             foreach (CtsAttributes tolSetting in comboBoxTolerance.Items)
                 if (grindTolValue == tolSetting.AttrValue)
                     comboBoxTolerance.SelectedItem = tolSetting;
         }
 
-
-
-
-
-
-        private void NewMethod13(string burnDirValue, string burnoutValue, string grindValue)
+        private void NewMethod127(string grindTolValue)
         {
-            if (burnoutValue.ToLower() == "yes")
-                checkBoxBurnout.Checked = true;
-            else
-                checkBoxBurnout.Checked = false;
-            if (grindValue.ToLower() == "yes")
-                checkBoxGrind.Checked = true;
-            else
-                checkBoxGrind.Checked = false;
-            if (burnDirValue.ToLower() == "x")
-                checkBoxBurnDirX.Checked = true;
-            if (burnDirValue.ToLower() == "y")
-                checkBoxBurnDirY.Checked = true;
-            if (burnDirValue.ToLower() == "z")
-                checkBoxBurnDirZ.Checked = true;
+            foreach (CtsAttributes tolSetting in comboBoxTolerance.Items)
+                if (grindTolValue == tolSetting.AttrValue)
+                    comboBoxTolerance.SelectedItem = tolSetting;
         }
 
-
-
-
-private static void NewMethod26(ref Expression noteExp, ref bool isExpression)
+        private static void NewMethod149(bool isMetric, double[] distances)
         {
-            foreach (Expression exp in _workPart.Expressions)
-                if (exp.Name == "DiesetNote")
-                {
-                    isExpression = true;
-                    noteExp = exp;
-                }
+            if (isMetric)
+                for (int i = 0; i < distances.Length; i++)
+                    distances[i] /= 25.4d;
         }
-
-        private static void NewMethod1(Expression noteExp, bool isExpression)
-        {
-            if (isExpression)
-            {
-                noteExp.RightHandSide = "\"yes\"";
-            }
-            else
-            {
-                Expression diesetExp =
-                    _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
-            }
-        }
-
-        private static void NewMethod(Expression noteExp, bool isExpression)
-        {
-            if (isExpression)
-            {
-                noteExp.RightHandSide = "\"yes\"";
-            }
-            else
-            {
-                Expression diesetExp =
-                    _workPart.Expressions.CreateExpression("String", "DiesetNote=\"yes\"");
-            }
-        }
-
-
-
-private static void NewMethod35(ref Expression noteExp, ref bool isExpression)
-        {
-            foreach (Expression exp in _workPart.Expressions)
-                if (exp.Name == "DiesetNote")
-                {
-                    isExpression = true;
-                    noteExp = exp;
-                }
-        }
-
-        private static void NewMethod34(Expression noteExp, bool isExpression, string description)
-        {
-            if (description != "")
-            {
-                description = description.Replace(" DIESET", "");
-                _workPart.__SetAttribute("DESCRIPTION", description);
-
-                if (isExpression)
-                {
-                    noteExp.RightHandSide = "\"no\"";
-                }
-                else
-                {
-                    Expression diesetExp =
-                        _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
-                }
-            }
-            else
-            {
-                if (isExpression)
-                {
-                    noteExp.RightHandSide = "\"no\"";
-                }
-                else
-                {
-                    Expression diesetExp =
-                        _workPart.Expressions.CreateExpression("String", "DiesetNote=\"no\"");
-                }
-            }
-        }
-
-
-private static void NewMethod51(ref Expression noteExp, ref bool isExpression)
-        {
-            foreach (Expression exp in _workPart.Expressions)
-                if (exp.Name == "WeldmentNote")
-                {
-                    isExpression = true;
-                    noteExp = exp;
-                }
-        }
-
-        private static void NewMethod36(Expression noteExp, bool isExpression, string description)
-        {
-            if (description != "")
-            {
-                if (!description.ToLower().Contains("weldment"))
-                {
-                    description += " WELDMENT";
-                    _workPart.__SetAttribute("DESCRIPTION", description);
-                }
-
-                if (isExpression)
-                {
-                    noteExp.RightHandSide = "\"yes\"";
-                }
-                else
-                {
-                    Expression weldmentExp =
-                        _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"yes\"");
-                }
-            }
-            else
-            {
-                if (isExpression)
-                {
-                    noteExp.RightHandSide = "\"yes\"";
-                }
-                else
-                {
-                    Expression weldmentExp =
-                        _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"yes\"");
-                }
-            }
-        }
-
-
-
-        private static void NewMethod37(Expression noteExp, bool isExpression, string description)
-        {
-            if (description != "")
-            {
-                description = description.Replace(" WELDMENT", "");
-                _workPart.__SetAttribute("DESCRIPTION", description);
-
-                if (isExpression)
-                {
-                    noteExp.RightHandSide = "\"no\"";
-                }
-                else
-                {
-                    Expression weldmentExp =
-                        _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"no\"");
-                }
-            }
-            else
-            {
-                if (isExpression)
-                {
-                    noteExp.RightHandSide = "\"no\"";
-                }
-                else
-                {
-                    Expression weldmentExp =
-                        _workPart.Expressions.CreateExpression("String", "WeldmentNote=\"no\"");
-                }
-            }
-        }
-
-        private static void NewMethod2(ref Expression noteExp, ref bool isExpression)
-        {
-            foreach (Expression exp in _workPart.Expressions)
-                if (exp.Name == "WeldmentNote")
-                {
-                    isExpression = true;
-                    noteExp = exp;
-                }
-        }
-
-
-
     }
 }

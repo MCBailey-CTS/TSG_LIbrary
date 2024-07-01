@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NXOpen;
 using NXOpen.Assemblies;
@@ -123,11 +124,11 @@ namespace TSG_Library.Ui
                 predicate);
         }
 
-        public static Spline SelectSingleSpline(Predicate<Spline> predicate = null)
+        public static Spline SelectSingleSpline(string message = "Select Single Spline",  Predicate<Spline> predicate = null)
         {
             return SelectSingleTaggedObject(
-                "Select Single Spline",
-                "Select Single Spline",
+                message,
+                message,
                 new[] { Masks.Spline_Mask },
                 predicate);
         }
@@ -352,6 +353,17 @@ namespace TSG_Library.Ui
 
                 return objs.ToArray();
             }
+        }
+
+        [Obsolete]
+        internal static IEnumerable<NXOpen.Assemblies.Component> SelectComponents()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static IEnumerable<NXOpen.NXObject> SelectSplines()
+        {
+            throw new NotImplementedException();
         }
     }
 }

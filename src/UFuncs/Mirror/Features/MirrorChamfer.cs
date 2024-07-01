@@ -59,7 +59,9 @@ namespace TSG_Library.UFuncs.Mirror.Features
 
 
                     throw new System.InvalidOperationException("EXPECTED ERROR");
+#pragma warning disable CS0162 // Unreachable code detected
                     IList<SelectionIntentRule> list = new List<SelectionIntentRule>();
+#pragma warning restore CS0162 // Unreachable code detected
                     collector.GetRules(out SelectionIntentRule[] rules);
                     foreach (SelectionIntentRule originalRule in rules)
                         list.Add(BaseMirrorRule.MirrorRule(originalRule, originalFeature, plane, originalComp, dict));

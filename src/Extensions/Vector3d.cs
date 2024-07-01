@@ -121,7 +121,7 @@ namespace TSG_Library.Extensions
         /// <returns>Norm (length) of vector</returns>
         public static double __Norm(this Vector3d u)
         {
-            return Math.Sqrt(u.X * u.X + u.Y * u.Y + u.Z * u.Z);
+            return System.Math.Sqrt(u.X * u.X + u.Y * u.Y + u.Z * u.Z);
         }
 
         public static Matrix3x3 __ToMatrix3x3(this Vector3d axisZ)

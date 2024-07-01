@@ -140,6 +140,7 @@ namespace TSG_Library.Utilities
             throw new ArgumentException($"Could not make GFolder from '{jobFolder}'");
         }
 
+
         public static GFolder create_or_null(Part workPart)
         {
             try
@@ -149,6 +150,19 @@ namespace TSG_Library.Utilities
             catch (Exception ex)
             {
                 ex.__PrintException($"Exception caught for GFolder '{workPart.FullPath}'");
+                return null;
+            }
+        }
+
+        public static GFolder create_or_null(string workPart)
+        {
+            try
+            {
+                return Create(workPart);
+            }
+            catch (Exception ex)
+            {
+                ex.__PrintException($"Exception caught for GFolder '{workPart}'");
                 return null;
             }
         }

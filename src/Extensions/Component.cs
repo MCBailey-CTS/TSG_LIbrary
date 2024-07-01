@@ -16,8 +16,7 @@ namespace TSG_Library.Extensions
     {
         #region Component
 
-        public static IEnumerable<Component> __DescendantsAll(
-            this Component component)
+        public static IEnumerable<Component> __DescendantsAll(this Component component)
         {
             return from descendant in component.__Descendants(true, true, true) select descendant;
         }
@@ -26,7 +25,8 @@ namespace TSG_Library.Extensions
             this Component rootComponent,
             bool includeRoot = true,
             bool includeSuppressed = false,
-            bool includeUnloaded = false)
+            bool includeUnloaded = false
+        )
         {
             if (includeRoot)
                 yield return rootComponent;
@@ -41,8 +41,13 @@ namespace TSG_Library.Extensions
                 if (!children[index].__IsLoaded() && !includeUnloaded)
                     continue;
 
-                foreach (Component descendant in children[index]
-                             .__Descendants(includeRoot, includeSuppressed, includeUnloaded))
+                foreach (
+                    Component descendant in children[index].__Descendants(
+                        includeRoot,
+                        includeSuppressed,
+                        includeUnloaded
+                    )
+                )
                     yield return descendant;
             }
         }
@@ -78,8 +83,7 @@ namespace TSG_Library.Extensions
                 {
                     ex.__PrintException();
                 }
-            }
-            while (tag != 0);
+            } while (tag != 0);
 
             return list;
         }
@@ -92,8 +96,13 @@ namespace TSG_Library.Extensions
         public static Component __ProtoChildComp(this Component component)
         {
             Tag instance = component.__InstanceTag();
-            Tag root_component = component.OwningComponent.__Prototype().ComponentAssembly.RootComponent.Tag;
-            Tag proto_child_fastener_tag = ufsession_.Assem.AskPartOccOfInst(root_component, instance);
+            Tag root_component = component.OwningComponent
+                .__Prototype()
+                .ComponentAssembly.RootComponent.Tag;
+            Tag proto_child_fastener_tag = ufsession_.Assem.AskPartOccOfInst(
+                root_component,
+                instance
+            );
             return (Component)session_.__GetTaggedObject(proto_child_fastener_tag);
         }
 
@@ -107,11 +116,14 @@ namespace TSG_Library.Extensions
                 builder.Type = WaveLinkBuilder.Types.BodyLink;
                 builder.ExtractFaceBuilder.Associative = true;
                 ScCollector scCollector1 = builder.ExtractFaceBuilder.ExtractBodyCollector;
-                builder.ExtractFaceBuilder.FeatureOption =
-                    ExtractFaceBuilder.FeatureOptionType.OneFeatureForAllBodies;
+                builder.ExtractFaceBuilder.FeatureOption = ExtractFaceBuilder
+                    .FeatureOptionType
+                    .OneFeatureForAllBodies;
                 Body[] bodies1 = new Body[1];
-                BodyDumbRule bodyDumbRule1 =
-                    __work_part_.ScRuleFactory.CreateRuleBodyDumb(child.__SolidBodyMembers(), false);
+                BodyDumbRule bodyDumbRule1 = __work_part_.ScRuleFactory.CreateRuleBodyDumb(
+                    child.__SolidBodyMembers(),
+                    false
+                );
                 SelectionIntentRule[] rules1 = new SelectionIntentRule[1];
                 rules1[0] = bodyDumbRule1;
                 scCollector1.ReplaceRules(rules1, false);
@@ -147,29 +159,38 @@ namespace TSG_Library.Extensions
 
         public static CartesianCoordinateSystem __AbsoluteCsysOcc(this Component component)
         {
-            return (CartesianCoordinateSystem)component.FindOccurrence(component.__Prototype().__AbsoluteCsys());
+            return (CartesianCoordinateSystem)
+                component.FindOccurrence(component.__Prototype().__AbsoluteCsys());
         }
 
         public static DatumPlane __AbsOccDatumPlaneXY(this Component component)
         {
-            return (DatumPlane)component.FindOccurrence(component.__Prototype().__AbsoluteDatumCsys()
-                .__DatumPlaneXY());
+            return (DatumPlane)
+                component.FindOccurrence(
+                    component.__Prototype().__AbsoluteDatumCsys().__DatumPlaneXY()
+                );
         }
 
         public static DatumPlane __AbsOccDatumPlaneXZ(this Component component)
         {
-            return (DatumPlane)component.FindOccurrence(component.__Prototype().__AbsoluteDatumCsys()
-                .__DatumPlaneXZ());
+            return (DatumPlane)
+                component.FindOccurrence(
+                    component.__Prototype().__AbsoluteDatumCsys().__DatumPlaneXZ()
+                );
         }
 
         public static DatumPlane __AbsOccDatumPlaneYZ(this Component component)
         {
-            return (DatumPlane)component.FindOccurrence(component.__Prototype().__AbsoluteDatumCsys()
-                .__DatumPlaneYZ());
+            return (DatumPlane)
+                component.FindOccurrence(
+                    component.__Prototype().__AbsoluteDatumCsys().__DatumPlaneYZ()
+                );
         }
 
-        public static Component __FindComponent(this Component component,
-            string __journal_identifier)
+        public static Component __FindComponent(
+            this Component component,
+            string __journal_identifier
+        )
         {
             try
             {
@@ -179,17 +200,16 @@ namespace TSG_Library.Extensions
             {
                 ex.AssertErrorCode(3520016);
                 throw new Exception(
-                    $"Could not find component with journal identifier: '{__journal_identifier}' in component '{component.DisplayName}'");
+                    $"Could not find component with journal identifier: '{__journal_identifier}' in component '{component.DisplayName}'"
+                );
             }
         }
-
 
         public static Component __InstOfPartOcc(this Component component)
         {
             Tag instance = ufsession_.Assem.AskInstOfPartOcc(component.Tag);
             return (Component)session_.__GetTaggedObject(instance);
         }
-
 
         public static bool __IsShcs(this Component component)
         {
@@ -201,23 +221,29 @@ namespace TSG_Library.Extensions
             return component.DisplayName.__IsFastener();
         }
 
-        public static void __ReplaceComponent(this Component component, string path, string name,
-            bool replace_all)
+        public static void __ReplaceComponent(
+            this Component component,
+            string path,
+            string name,
+            bool replace_all
+        )
         {
             ReplaceComponentBuilder replace_builder =
                 __work_part_.AssemblyManager.CreateReplaceComponentBuilder();
 
             using (session_.__UsingBuilderDestroyer(replace_builder))
             {
-                replace_builder.ComponentNameType =
-                    ReplaceComponentBuilder.ComponentNameOption.AsSpecified;
+                replace_builder.ComponentNameType = ReplaceComponentBuilder
+                    .ComponentNameOption
+                    .AsSpecified;
                 replace_builder.ComponentsToReplace.Add(component);
                 replace_builder.ReplaceAllOccurrences = replace_all;
                 replace_builder.ComponentName = name;
                 replace_builder.ReplacementPart = path;
                 replace_builder.SetComponentReferenceSetType(
                     ReplaceComponentBuilder.ComponentReferenceSet.Maintain,
-                    null);
+                    null
+                );
                 replace_builder.Commit();
             }
         }
@@ -278,7 +304,6 @@ namespace TSG_Library.Extensions
             return component.DirectOwner;
         }
 
-
         public static void __NXOpenAssembliesComponent(Component component)
         {
             //component.DisplayName
@@ -309,7 +334,6 @@ namespace TSG_Library.Extensions
             //component.UsedArrangement
         }
 
-
         //public static NXOpen.Point3d _Origin(this NXOpen.Assemblies.Component component)
         //{
         //    // ReSharper disable once UnusedVariable
@@ -338,7 +362,9 @@ namespace TSG_Library.Extensions
         public static void __ReferenceSet(this Component component, string referenceSetTitle)
         {
             if (!(component.Prototype is Part part))
-                throw new ArgumentException($"The given component \"{component.DisplayName}\" is not loaded.");
+                throw new ArgumentException(
+                    $"The given component \"{component.DisplayName}\" is not loaded."
+                );
 
             //   part._RightClickOpen
             switch (referenceSetTitle)
@@ -348,10 +374,11 @@ namespace TSG_Library.Extensions
                     component.DirectOwner.ReplaceReferenceSet(component, referenceSetTitle);
                     break;
                 default:
-                    _ = part.__FindReferenceSetOrNull(referenceSetTitle)
-                        ??
-                        throw new InvalidOperationException(
-                            $"Cannot set component \"{component.DisplayName}\" to the reference set \"{referenceSetTitle}\".");
+                    _ =
+                        part.__FindReferenceSetOrNull(referenceSetTitle)
+                        ?? throw new InvalidOperationException(
+                            $"Cannot set component \"{component.DisplayName}\" to the reference set \"{referenceSetTitle}\"."
+                        );
 
                     component.DirectOwner.ReplaceReferenceSet(component, referenceSetTitle);
                     break;
@@ -365,10 +392,7 @@ namespace TSG_Library.Extensions
 
         public static Body[] __SolidBodyMembers(this Component component)
         {
-            return component.__Members()
-                .OfType<Body>()
-                .Where(__b => __b.IsSolidBody)
-                .ToArray();
+            return component.__Members().OfType<Body>().Where(__b => __b.IsSolidBody).ToArray();
         }
 
         public static TreeNode __TreeNode(this Component component)
@@ -391,6 +415,11 @@ namespace TSG_Library.Extensions
         {
             component.GetPosition(out Point3d origin, out _);
             return origin;
+        }
+
+        public static void __SetWcs(this Component comp)
+        {
+            __display_part_.WCS.SetOriginAndMatrix(comp.__Origin(), comp.__Orientation());
         }
 
         //public static NXOpen.Assemblies.Component find_component_or_null(this NXOpen.Assemblies.Component component , string journal_identifier)

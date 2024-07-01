@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Assemblies;
+using NXOpen.CAE;
 using NXOpen.Features;
 using NXOpen.GeometricAnalysis;
 using TSG_Library.Attributes;
@@ -207,6 +208,7 @@ namespace TSG_Library.UFuncs
         private void MainForm_Load(object sender, EventArgs e)
         {
             Location = Settings.Default.detail_number_note_form_window_location;
+            Text = AssemblyFileVersion;
         }
 
 

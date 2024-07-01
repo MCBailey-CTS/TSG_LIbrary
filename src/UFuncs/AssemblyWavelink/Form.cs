@@ -19,6 +19,7 @@ namespace TSG_Library.UFuncs.AssemblyWavelink
         private void AssemblyWavelink_Load(object sender, EventArgs e)
         {
             Location = Settings.Default.assembly_wave_link_form_window_location;
+            Text = AssemblyFileVersion;
         }
 
         private void AssemblyWavelink_FormClosed(object sender, FormClosedEventArgs e)

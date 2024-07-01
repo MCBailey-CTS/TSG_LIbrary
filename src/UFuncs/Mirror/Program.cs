@@ -511,7 +511,6 @@ namespace TSG_Library.UFuncs.Mirror
                 workPart = theSession.Parts.Work; // 001449-010-109
                 Component[] components1 = new Component[1];
                 components1[0] = component1;
-                ErrorList errorList1;
                 component1.__ReferenceSet("Entire Part");
                 Component component2 = toComp;
                 __work_component_ = component2;
@@ -2255,7 +2254,7 @@ namespace TSG_Library.UFuncs.Mirror
                 matchedReferenceData2[0].MatchedEntity = scCollector1;
                 matchedReferenceData2[0].MatchedStatus = MatchedReferenceBuilder.ResolvedStatus.ByUser;
                 featureReferencesBuilder1.AutomaticMatch(false);
-                Session.UndoMarkId markId7;
+                //Session.UndoMarkId markId7;
                 Session.UndoMarkId markId8;
                 markId8 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Paste Feature");
                 NXObject nXObject1;

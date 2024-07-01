@@ -72,7 +72,8 @@ namespace TSG_Library.Extensions
         public static TSG_Library.Disposable.Rollback __UsingRollback(
             this Session session,
             NXOpen.Features.Feature feat
-        ) {return new Rollback(feat, "Rollback"); }
+        )
+        { return new Rollback(feat, "Rollback"); }
 
         public static void __SetWorkPlane(
             this Session _,
@@ -503,5 +504,32 @@ namespace TSG_Library.Extensions
         }
 
         #endregion
+
+
+        public static NXOpen.ICurve SelectCurveOrEdge(Predicate<NXOpen.ICurve> pred = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        // public static NXOpen.Curve SelectCurve(
+        //     string message = "Select Curve",
+        //     string title = "Select Curve")
+        // {
+        //     NXOpen.Edge e = null;
+        //     e.SolidEdgeType == 
+
+        //     throw new NotImplementedException();
+        // }
+
+
+        public static NXOpen.Edge SelectCurveOrEdge() => null;
+        public static NXOpen.Edge SelectEdgeLinear() => null;
+        public static NXOpen.Edge SelectEdge() => null;
+        public static NXOpen.Edge SelectEdgeCircular() => null;
+        public static NXOpen.Edge SelectECurve() => null;
+        public static NXOpen.Edge SelectLine() => null;
+        public static NXOpen.Edge SelectArc() => null;
+
+
     }
 }

@@ -634,5 +634,53 @@ namespace TSG_Library.Properties {
                 this["com_builder_any_assembly"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0, 0")]
+        public global::System.Drawing.Point create_reset_datum_csys_location {
+            get {
+                return ((global::System.Drawing.Point)(this["create_reset_datum_csys_location"]));
+            }
+            set {
+                this["create_reset_datum_csys_location"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0, 0")]
+        public global::System.Drawing.Point simplify_curves_window_location {
+            get {
+                return ((global::System.Drawing.Point)(this["simplify_curves_window_location"]));
+            }
+            set {
+                this["simplify_curves_window_location"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0, 0")]
+        public global::System.Drawing.Point plot_detail_drawings_location {
+            get {
+                return ((global::System.Drawing.Point)(this["plot_detail_drawings_location"]));
+            }
+            set {
+                this["plot_detail_drawings_location"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0, 0")]
+        public global::System.Drawing.Point tap_and_ream_location {
+            get {
+                return ((global::System.Drawing.Point)(this["tap_and_ream_location"]));
+            }
+            set {
+                this["tap_and_ream_location"] = value;
+            }
+        }
     }
 }

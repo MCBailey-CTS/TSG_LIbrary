@@ -9,6 +9,7 @@ using NXOpen.Assemblies;
 using TSG_Library.Attributes;
 using TSG_Library.Utilities;
 using static TSG_Library.Extensions.Extensions;
+using static TSG_Library.UFuncs.AssemblyExportDesignDataForm;
 
 namespace TSG_Library.UFuncs
 {
@@ -42,15 +43,16 @@ namespace TSG_Library.UFuncs
         public override void execute()
         {
             // Creates an instance of GFolderWithCtsNumber using the current Displayed Part as it's source.
-            GFolder folder = GFolder.Create(__work_part_.FullPath);
+            GFolder folder = GFolder.create_or_null(__work_part_.FullPath);
 
             if (folder is null)
             {
+                print_($"{AssemblyFileVersion} - Clean Job Directory");
                 print_("The current work part does not reside within a GFolder.");
                 return;
             }
 
-            DialogResult result = MessageBox.Show(@"Are you sure you want to run Clean Job Directory?", @"Alert",
+            DialogResult result = MessageBox.Show(@"Are you sure you want to run Clean Job Directory?", $"{AssemblyFileVersion} - Clean Job Directory",
                 MessageBoxButtons.YesNo);
 
             if (result == DialogResult.No)

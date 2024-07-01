@@ -14,18 +14,19 @@ namespace TSG_Library.UFuncs
     //[Revision("1.0.1", "Revision Log Created for NX 11.")]
     //[RevisionEntry("11.1", "2023", "01", "09")]
     //[Revision("11.1.1", "Removed validation")]
-    public class NitroTravels
+    public class NitroTravels : _UFunc
     {
-        public void execute()
+        public override void execute()
         {
             try
             {
-                IEnumerable<string> partFiles = Directory
+                print_(ufunc_rev_name);
+
+                var partFiles = Directory
                     .GetFiles(@"G:\0Library\NitroCylinders", "*.prt", SearchOption.AllDirectories)
                     .Select(Path.GetFileNameWithoutExtension)
-                    .Select(t => t.ToUpper());
-
-                ISet<string> hash = new HashSet<string>(partFiles);
+                    .Select(t => t.ToUpper())
+                    .ToHashSet();
 
                 if (__display_part_.ComponentAssembly.RootComponent is null)
                 {
@@ -35,17 +36,19 @@ namespace TSG_Library.UFuncs
 
                 Part[] parts = __display_part_.ComponentAssembly.RootComponent
                     .__Descendants()
-                    .Select(__c => __c.Prototype).OfType<Part>()
-                    .OrderBy(p => p.Leaf).ToArray();
+                    .Select(__c => __c.Prototype)
+                    .OfType<Part>()
+                    .OrderBy(p => p.Leaf)
+                    .ToArray();
 
                 foreach (Part part in parts)
                 {
-                    if (!part.HasUserAttribute("LIBRARY", NXObject.AttributeType.String, -1))
+                    if (!part.__HasAttribute("LIBRARY"))
                         continue;
 
-                    string att = part.GetUserAttributeAsString("LIBRARY", NXObject.AttributeType.String, -1).ToUpper();
+                    string att = part.__GetAttribute("LIBRARY").ToUpper();
 
-                    if (!hash.Contains(att))
+                    if (!partFiles.Contains(att))
                         continue;
 
                     Expression expression = part.__FindExpressionOrNull("TRAVEL");

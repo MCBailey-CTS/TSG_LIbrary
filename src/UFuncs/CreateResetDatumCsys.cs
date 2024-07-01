@@ -629,5 +629,17 @@ namespace TSG_Library.UFuncs
                 ex.__PrintException();
             }
         }
+
+        private void CreateResetDatumCsys_Load(object sender, EventArgs e)
+        {
+            Text = AssemblyFileVersion;
+            Location = Properties.Settings.Default.create_reset_datum_csys_location;
+        }
+
+        private void CreateResetDatumCsys_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Properties.Settings.Default.create_reset_datum_csys_location = Location;
+            Properties.Settings.Default.Save();
+        }
     }
 }

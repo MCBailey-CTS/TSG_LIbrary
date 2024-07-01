@@ -7,6 +7,7 @@ using NXOpen.UF;
 using TSG_Library.Attributes;
 using TSG_Library.Geom;
 using TSG_Library.UFuncs;
+using TSG_Library.UFuncs.AssemblyWavelink;
 using TSG_Library.UFuncs.Mirror;
 using static TSG_Library.Extensions.Extensions;
 
@@ -47,7 +48,8 @@ public static class Program
 
         foreach (Type type in Assembly.GetAssembly(typeof(Program)).GetTypes())
         {
-            UFuncAttribute ufunc_att = type.GetCustomAttributes().OfType<UFuncAttribute>().SingleOrDefault();
+            UFuncAttribute ufunc_att = 
+                type.GetCustomAttributes().OfType<UFuncAttribute>().SingleOrDefault();
 
             if (ufunc_att is null)
                 continue;
