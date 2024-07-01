@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using MoreLinq;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Drawings;
@@ -340,7 +339,7 @@ namespace TSG_Library.UFuncs
                             Directory.CreateDirectory(exportDirectory);
 
                         Regex detailRegex = new Regex(RegexDetail, RegexOptions.IgnoreCase);
-                        validParts = validParts.DistinctBy(part => part.Leaf).ToArray();
+                        validParts = validParts.Distinct(new EqualityLeaf()).ToArray();
 
                         IDictionary<string, ISet<Part>> exportDict = SortPartsForExport(validParts);
 
@@ -1456,7 +1455,7 @@ namespace TSG_Library.UFuncs
 
             public static void UpdateParts(params Part[] parts)
             {
-                Part[] validParts = parts.Where(part => !part.Leaf.__IsAssemblyHolder()).DistinctBy(part => part.Leaf)
+                Part[] validParts = parts.Where(part => !part.Leaf.__IsAssemblyHolder()).Distinct(new EqualityLeaf())
                     .ToArray();
 
                 for (int i = 0; i < validParts.Length; i++)

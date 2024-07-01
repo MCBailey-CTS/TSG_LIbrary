@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MoreLinq;
 using NXOpen;
 using NXOpen.Annotations;
 using NXOpen.Assemblies;
@@ -42,7 +41,7 @@ namespace TSG_Library.UFuncs
 
                 if (allComponents.Count != 0)
                 {
-                    selComponents = new HashSet<Component>(allComponents.DistinctBy(__c => __c.DisplayName)).ToList();
+                    selComponents = new HashSet<Component>(allComponents.Distinct(new EqualityDisplayName())).ToList();
 
                     if (selComponents.Count != 0)
                     {

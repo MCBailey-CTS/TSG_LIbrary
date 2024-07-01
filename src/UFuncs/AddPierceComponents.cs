@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using MoreLinq;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Positioning;

@@ -1,6 +1,4 @@
-﻿//using MoreLinq;
-
-using System;
+﻿using System;
 using System.Linq;
 using NXOpen;
 using NXOpen.Features;

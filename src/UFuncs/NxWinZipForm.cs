@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using MoreLinq;
 using NXOpen;
 using NXOpen.Assemblies;
 using TSG_Library.Attributes;
@@ -98,7 +97,7 @@ namespace TSG_Library.UFuncs
 
                 assmParts.Add(displayPart);
                 GetAllChildComponents(displayPart.ComponentAssembly.RootComponent);
-                selComponents = allComponents.DistinctBy(__c => __c.DisplayName).ToList();
+                selComponents = allComponents.Distinct(new EqualityDisplayName()).ToList();
 
                 if (selComponents != null)
                     foreach (Component comp in selComponents)

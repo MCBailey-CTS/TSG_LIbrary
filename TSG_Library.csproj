@@ -37,9 +37,6 @@
       <HintPath>packages\Microsoft.Office.Interop.Excel.15.0.4795.1001\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="MoreLinq, Version=4.2.0.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
-      <HintPath>packages\morelinq.4.2.0\lib\netstandard2.0\MoreLinq.dll</HintPath>
-    </Reference>
     <Reference Include="NXOpen">
       <HintPath>..\..\Program Files\Siemens\NX1899\NXBIN\managed\NXOpen.dll</HintPath>
     </Reference>
@@ -397,6 +394,7 @@
     <Compile Include="src\UFuncs\DrawDieAssembly\IDrawDieComponent.cs" />
     <Compile Include="src\UFuncs\DynamicHandle.cs" />
     <Compile Include="src\UFuncs\EqualityDisplayName.cs" />
+    <Compile Include="src\UFuncs\EqualityLeaf.cs" />
     <Compile Include="src\UFuncs\EtchingForm.cs">
       <SubType>Form</SubType>
     </Compile>

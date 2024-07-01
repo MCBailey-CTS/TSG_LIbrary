@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using MoreLinq;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
@@ -213,7 +212,7 @@ namespace TSG_Library.UFuncs
 
                     if (children.Count != 0)
                     {
-                        oneChild = children.DistinctBy(__c => __c.DisplayName).ToList();
+                        oneChild = children.Distinct(new EqualityDisplayName()).ToList();
 
                         ufsession_.Disp.SetDisplay(UFConstants.UF_DISP_SUPPRESS_DISPLAY);
 

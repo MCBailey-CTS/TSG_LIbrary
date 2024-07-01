@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using MoreLinq;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
@@ -16,6 +15,7 @@ using TSG_Library.Disposable;
 using TSG_Library.Enum;
 using TSG_Library.Exceptions;
 using TSG_Library.Geom;
+using TSG_Library.UFuncs;
 using TSG_Library.Utilities;
 using static NXOpen.Session;
 using Curve = NXOpen.Curve;
@@ -264,7 +264,7 @@ namespace TSG_Library.Extensions
         public static IEnumerable<BasePart> __DescendantParts(this BasePart nxPart)
         {
             return nxPart.ComponentAssembly.RootComponent.__Descendants(true, true)
-                .DistinctBy(c => c.DisplayName)
+                .Distinct(new EqualityDisplayName())
                 .Select(c => c.Prototype)
                 .OfType<BasePart>()
                 .ToArray();
@@ -2477,7 +2477,7 @@ namespace TSG_Library.Extensions
 
         public static bool __TryDynamicBlock(this BasePart basePart, out Block dynamic)
         {
-            dynamic = basePart.Features.OfType<Block>().Single(f=>f.Name == "DYNAMIC BLOCK");
+            dynamic = basePart.Features.OfType<Block>().Single(f => f.Name == "DYNAMIC BLOCK");
             return !(dynamic is null);
         }
 

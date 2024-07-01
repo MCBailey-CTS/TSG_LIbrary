@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using MoreLinq;
 using NXOpen;
 using NXOpen.Annotations;
 using NXOpen.Assemblies;
@@ -181,7 +180,7 @@ namespace TSG_Library.UFuncs
                     _allComponents.AddRange(selectComponents);
 
                     List<Component> trimmedComponents = _allComponents.Where(comp => !comp.IsSuppressed)
-                        .DistinctBy(__c => __c.DisplayName)
+                        .Distinct(new EqualityDisplayName())
                         .ToList();
 
                     trimmedComponents.Sort((c1, c2) => string.Compare(c1.Name, c2.Name, StringComparison.Ordinal));
@@ -282,7 +281,7 @@ namespace TSG_Library.UFuncs
                     }
 
                     passedComponents = passedComponents.Where(comp => !comp.IsSuppressed)
-                        .DistinctBy(comp => comp.DisplayName)
+                        .Distinct(new EqualityDisplayName())
                         .ToList();
 
                     passedComponents.Sort((c1, c2) => string.Compare(c1.Name, c2.Name, StringComparison.Ordinal));

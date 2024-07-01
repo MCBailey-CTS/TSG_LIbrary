@@ -1,6 +1,4 @@
-﻿//using MoreLinq;
-
-namespace TSG_Library.UFuncs.DrainHoleCreator
+﻿namespace TSG_Library.UFuncs.DrainHoleCreator
 {
     public class DrainHoleSettings : IDrainHoleSettings
     {

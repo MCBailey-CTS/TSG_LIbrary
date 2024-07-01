@@ -1,6 +1,4 @@
-﻿//using MoreLinq;
-
-using NXOpen;
+﻿using NXOpen;
 
 namespace TSG_Library.UFuncs.DrainHoleCreator
 {

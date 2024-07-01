@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Windows.Forms;
-using MoreLinq.Extensions;
 using NXOpen;
 using NXOpen.Assemblies;
 using TSG_Library.Attributes;
@@ -36,10 +35,10 @@ namespace TSG_Library.UFuncs
                     .__Descendants()
                     .Where(__c => !__c.IsSuppressed)
                     .Where(__c => __c.__IsLoaded())
-                    .DistinctBy(__c => __c)
+                    .Distinct(new EqualityDisplayName())
                     .ToArray();
 
-                Component[] components = comps.DistinctBy(__c => __c.DisplayName)
+                Component[] components = comps.Distinct(new EqualityDisplayName())
                     .ToArray();
 
                 bool foundBodies = false;

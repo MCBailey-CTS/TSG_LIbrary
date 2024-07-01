@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using MoreLinq;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Features;
@@ -34,7 +33,7 @@ namespace TSG_Library.UFuncs
             Component[] components = __display_part_.ComponentAssembly.RootComponent
                 .__Descendants()
                 .Where(__c => __c.__IsLoaded())
-                .DistinctBy(__c => __c.DisplayName)
+                .Distinct(new EqualityDisplayName())
                 .ToArray();
 
             foreach (Component __c in components)

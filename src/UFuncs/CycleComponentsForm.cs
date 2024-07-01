@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using MoreLinq;
 using NXOpen;
 using NXOpen.Annotations;
 using NXOpen.Assemblies;
@@ -300,7 +299,7 @@ namespace TSG_Library.UFuncs
                     .__DescendantsAll()
                     .Where(__c => !__c.IsSuppressed);
 
-                HashSet<Component> hashSet = new HashSet<Component>(descendants.DistinctBy(__d => __d.DisplayName));
+                HashSet<Component> hashSet = new HashSet<Component>(descendants.Distinct(new EqualityDisplayName()));
                 Component[] trimmedComponents = hashSet.Select(component => component).ToArray();
 
                 foreach (Component component in trimmedComponents)

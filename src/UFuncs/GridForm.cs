@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using MoreLinq;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Preferences;
@@ -149,8 +148,9 @@ namespace TSG_Library.UFuncs
             if (Session.GetSession().Parts.Display is null)
                 return;
 
-            new[] { chkShowGrid, chkSnapToGrid }.Pipe(box => box.Enabled = !rdoGridOff.Checked)
-                .ForEach(box => box.Checked = !rdoGridOff.Checked);
+            chkShowGrid.Enabled = !rdoGridOff.Checked;
+            chkSnapToGrid.Enabled = !rdoGridOff.Checked;
+
             if (rdoGridOff.Checked)
             {
                 txtGrid.Text = @"Grid Off";
