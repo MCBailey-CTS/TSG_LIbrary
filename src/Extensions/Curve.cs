@@ -2,7 +2,7 @@
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.UF;
-using PostSharp.Aspects.Advices;
+//using PostSharp.Aspects.Advices;
 using TSG_Library.Geom;
 using Curve = NXOpen.Curve;
 

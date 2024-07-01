@@ -9,7 +9,6 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Microsoft.Office.Interop.Excel;
-using MoreLinq;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.UF;
@@ -478,11 +477,14 @@ namespace TSG_Library.UFuncs
                         dict_sizes[data.RowIndex] = data;
                 }
 
+                System.Diagnostics.Debugger.Launch();
 
                 foreach (int key in dict_parts.Keys)
                     try
                     {
-                        Part part = session_.__FindOrOpen($"{folder.CustomerNumber}-{dict_parts[key].Data}");
+                        var temp = $"{folder.CustomerNumber}-{dict_parts[key].Data}";
+
+                        Part part = session_.__FindOrOpen(temp);
                         string description = dict_sizes[key].Data;
 
                         if (!chkMM.Checked)
@@ -641,7 +643,7 @@ namespace TSG_Library.UFuncs
 
                 if (selectedComponents.Length > 0)
                 {
-                    _selectedComponents = selectedComponents.DistinctBy(comp => comp.DisplayName).ToList();
+                    _selectedComponents = selectedComponents.Distinct(new EqualityDisplayName()).ToList();
 
                     return;
                 }
@@ -715,7 +717,7 @@ namespace TSG_Library.UFuncs
             _childComponents = Preselect.GetUserSelections(selectDeselectComps);
 
             if (_childComponents.Count != 0)
-                _selectedComponents = _childComponents.DistinctBy(comp => comp.DisplayName).ToList();
+                _selectedComponents = _childComponents.Distinct(new EqualityDisplayName()).ToList();
         }
 
         private void GetChildComponents(Component assembly)
@@ -900,10 +902,10 @@ namespace TSG_Library.UFuncs
                     //else
                     //{
                     compName = excelComp.DisplayName.Substring(excelComp.DisplayName.Length - 4, 4);
-                    print_(compName);
+                    //print_(compName);
                     int.TryParse(compName, out compNumber);
                     opNumberName = excelComp.DisplayName.Substring(excelComp.DisplayName.Length - 8, 3);
-                    print_(opNumberName);
+                    //print_(opNumberName);
                     // Added OpNumber - 2013-09-25 dvw
                     isConverted = int.TryParse(opNumberName, out _);
                     //}

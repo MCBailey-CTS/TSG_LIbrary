@@ -6528,10 +6528,10 @@ namespace TSG_Library.UFuncs
         {
             try
             {
-                print_(_gridSpace);
+                //print_(_gridSpace);
                 if (_isDynamic)
                 {
-                    print_("Dynamic");
+                    //print_("Dynamic");
                     Point pointPrototype = _udoPointHandle.IsOccurrence
                         ? (Point)_udoPointHandle.Prototype
                         : _udoPointHandle;
@@ -6589,7 +6589,7 @@ namespace TSG_Library.UFuncs
                 }
                 else
                 {
-                    print_("Not Dynamic");
+                    //print_("Not Dynamic");
                     Point pointPrototype = _udoPointHandle.IsOccurrence
                         ? (Point)_udoPointHandle.Prototype
                         : _udoPointHandle;
@@ -6908,24 +6908,24 @@ namespace TSG_Library.UFuncs
 
             Point3d mappedAddX = MapWcsToAbsolute(add);
 
-            try
-            {
+            //try
+            //{
 
                 if (isStart)
 
                     line.SetStartPoint(mappedAddX);
                 else
                     line.SetEndPoint(mappedAddX);
-            }
-            catch (NXException ex) when (ex.ErrorCode == 1710006)
-            {
-                print_("///////////////////");
-                print_(line.StartPoint);
-                print_(line.EndPoint);
-                print_(mappedAddX);
+            //}
+            //catch (NXException ex) when (ex.ErrorCode == 1710006)
+            //{
+            //    print_("///////////////////");
+            //    print_(line.StartPoint);
+            //    print_(line.EndPoint);
+            //    print_(mappedAddX);
 
-                //System.Diagnostics.Debugger.Launch();
-            }
+            //    //System.Diagnostics.Debugger.Launch();
+            //}
         }
 
         private double RoundDistanceToGrid(double spacing, double cursor)
